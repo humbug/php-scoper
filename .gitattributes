@@ -1,3 +1,7 @@
+# Make sure heredoc with "\n" endings used in the tests is interpreted equally
+# on Windows and Unix
+*.php text eol=lf
+
 # Ignore all test and documentation with "export-ignore".
 /.gitattributes     export-ignore
 /.gitignore         export-ignore
