@@ -13,10 +13,6 @@ namespace Webmozart\PhpScoper;
 
 use Puli\Cli\Handler\AddPrefixCommandHandler;
 use Webmozart\Console\Api\Args\Format\Argument;
-use Webmozart\Console\Api\Args\Format\Option;
-use Webmozart\Console\Api\Event\ConsoleEvents;
-use Webmozart\Console\Api\Event\PreHandleEvent;
-use Webmozart\Console\Api\Formatter\Style;
 use Webmozart\Console\Config\DefaultApplicationConfig;
 
 /**

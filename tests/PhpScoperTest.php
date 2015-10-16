@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Puli\Cli\Tests;
+namespace Webmozart\PhpScoper\Tests;
 
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
@@ -27,7 +27,7 @@ class PuliBinTest extends PHPUnit_Framework_TestCase
 {
     private static $php;
 
-    private $rootDir;
+    private $tempDir;
 
     private $phpScoper;
 
@@ -44,22 +44,22 @@ class PuliBinTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('The "php" command could not be found.');
         }
 
-        $this->rootDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
+        $this->tempDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
         $this->phpScoper = Path::canonicalize(__DIR__.'/../bin/php-scoper');
 
         $filesystem = new Filesystem();
-        $filesystem->mirror(__DIR__.'/Fixtures/dir', $this->rootDir);
+        $filesystem->mirror(__DIR__.'/Fixtures/original/dir', $this->tempDir);
     }
 
     protected function tearDown()
     {
         $filesystem = new Filesystem();
-        $filesystem->remove($this->rootDir);
+        $filesystem->remove($this->tempDir);
     }
 
     public function testAddPrefixToDir()
     {
-        $output = $this->runPhpScoper(['add-prefix', 'MyPrefix\\', $this->rootDir]);
+        $output = $this->runPhpScoper(['add-prefix', 'MyPrefix\\', $this->tempDir]);
 
         // Test $output
     }
@@ -69,7 +69,7 @@ class PuliBinTest extends PHPUnit_Framework_TestCase
         $php = escapeshellcmd(self::$php);
         $phpScoper = ProcessUtils::escapeArgument($this->phpScoper);
         $args = array_map([ProcessUtils::class, 'escapeArgument'], $args);
-        $process = new Process($php.' '.$phpScoper.' '.implode(' ', $args), $this->rootDir);
+        $process = new Process($php.' '.$phpScoper.' '.implode(' ', $args), $this->tempDir);
         $status = $process->run();
         $output = (string) $process->getOutput();
 

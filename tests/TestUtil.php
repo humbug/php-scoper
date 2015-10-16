@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Puli\Cli\Tests;
+namespace Webmozart\PhpScoper\Tests;
 
 use Webmozart\PathUtil\Path;
 
