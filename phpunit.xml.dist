@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Webmozart PHP-Scoper Test Suite">
+            <directory suffix="Test.php">./tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- Whitelist for code coverage -->
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src/</directory>
+        </whitelist>
+    </filter>
+</phpunit>

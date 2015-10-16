@@ -1,0 +1,39 @@
+{
+    "name": "webmozart/php-scoper",
+    "description": "PHP-Scoper prefixes all PHP namespaces in a file/directory.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bernhard Schussek",
+            "email": "bschussek@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "webmozart/console": "^1.0-beta2",
+        "webmozart/path-util": "^2.2.2",
+        "symfony/filesystem": "^2.7",
+        "symfony/process": "^2.7",
+        "padraic/phar-updater": "^1.0.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.6",
+        "sebastian/version": "^1.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webmozart\\PhpScoper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webmozart\\PhpScoper\\Tests\\": "tests/"
+        }
+    },
+    "bin": ["bin/php-scoper"],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}

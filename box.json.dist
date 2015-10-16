@@ -1,0 +1,29 @@
+{
+    "directories": [
+        "src"
+    ],
+    "files": [
+        "LICENSE"
+    ],
+    "finder": [
+        {
+            "name": "*.php",
+            "exclude": [
+                "Tester",
+                "Tests",
+                "tests"
+            ],
+            "in": "vendor"
+        }
+    ],
+    "compactors": [
+        "Herrera\\Box\\Compactor\\Json",
+        "Herrera\\Box\\Compactor\\Php"
+    ],
+    "compression": "GZ",
+    "git-version": "package_version",
+    "main": "bin/php-scoper",
+    "output": "build/php-scoper-@git-version@.phar",
+    "chmod": "0755",
+    "stub": true
+}
