@@ -14,6 +14,8 @@ namespace Webmozart\PhpScoper\Tests\Handler;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Console\Api\Command\Command;
+use Webmozart\Console\Args\ArgvArgs;
+use Webmozart\Console\Args\StringArgs;
 use Webmozart\Console\ConsoleApplication;
 use Webmozart\Console\Formatter\PlainFormatter;
 use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
@@ -24,7 +26,7 @@ use Webmozart\PhpScoper\Tests\TestUtil;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class AddPrefixCommandHandlerTest extends AbstractCommandHand
+class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
 {
     /**
      * @var Application
@@ -83,7 +85,7 @@ class AddPrefixCommandHandlerTest extends AbstractCommandHand
     {
         chdir(dirname($this->tempDir));
 
-        $args = self::$command->parseArgs(new StringArgs('MyPrefix\\ dir'));
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir']));
 
         $expected = <<<EOF
 ...

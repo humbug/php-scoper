@@ -21,6 +21,14 @@ use Webmozart\Console\Api\IO\IO;
  */
 class AddPrefixCommandHandler
 {
+    /**
+     * Handles the "add-prefix" command.
+     *
+     * @param Args $args The console arguments.
+     * @param IO   $io   The I/O.
+     *
+     * @return int Returns 0 on success and a positive integer on error.
+     */
     public function handle(Args $args, IO $io)
     {
         $prefix = $args->getArgument('prefix');
@@ -28,5 +36,9 @@ class AddPrefixCommandHandler
 
         // search all $paths, add $prefix to all namespace declarations, use
         // statements and class usages with fully-qualified class names
+
+        $io->writeLine('...');
+
+        return 0;
     }
 }
