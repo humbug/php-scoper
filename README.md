@@ -24,8 +24,8 @@ distinct PHP namespace. This is necessary when building PHARs that
 * bundle their own vendor dependencies
 * load code of arbitrary PHP projects
 
-These PHARs run the risk raising conflicts between their bundled vendors and the
-vendors of the loaded project, if the vendors are required in incompatible
+These PHARs run the risk of raising conflicts between their bundled vendors and 
+the vendors of the loaded project, if the vendors are required in incompatible
 versions.
 
 Usage
