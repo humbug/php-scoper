@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Puli\Cli\Handler;
+namespace Webmozart\PhpScoper\Handler;
 
 use Webmozart\Console\Api\Args\Args;
 use Webmozart\Console\Api\IO\IO;

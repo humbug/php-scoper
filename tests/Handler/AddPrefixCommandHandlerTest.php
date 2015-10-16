@@ -12,11 +12,11 @@
 namespace Webmozart\PhpScoper\Tests\Handler;
 
 use PHPUnit_Framework_TestCase;
-use Puli\Cli\Handler\AddPrefixCommandHandler;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Console\Api\Command\Command;
 use Webmozart\Console\ConsoleApplication;
 use Webmozart\Console\Formatter\PlainFormatter;
+use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
 use Webmozart\PhpScoper\PhpScoperApplicationConfig;
 use Webmozart\PhpScoper\Tests\Handler\Util\NormalizedLineEndingsIO;
 use Webmozart\PhpScoper\Tests\TestUtil;

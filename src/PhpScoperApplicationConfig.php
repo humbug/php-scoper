@@ -11,7 +11,7 @@
 
 namespace Webmozart\PhpScoper;
 
-use Puli\Cli\Handler\AddPrefixCommandHandler;
+use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
 use Webmozart\Console\Api\Args\Format\Argument;
 use Webmozart\Console\Config\DefaultApplicationConfig;
 
@@ -25,7 +25,7 @@ use Webmozart\Console\Config\DefaultApplicationConfig;
 class PhpScoperApplicationConfig extends DefaultApplicationConfig
 {
     /**
-     * The version of the Puli CLI.
+     * The version of the PHP-Scoper.
      */
     const VERSION = '@package_version@';
 

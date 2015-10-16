@@ -19,11 +19,9 @@ use Symfony\Component\Process\ProcessUtils;
 use Webmozart\PathUtil\Path;
 
 /**
- * @since  1.0
- *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class PuliBinTest extends PHPUnit_Framework_TestCase
+class PhpScoperTest extends PHPUnit_Framework_TestCase
 {
     private static $php;
 
