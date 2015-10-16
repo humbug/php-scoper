@@ -15,7 +15,6 @@ use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Console\Api\Command\Command;
 use Webmozart\Console\Args\ArgvArgs;
-use Webmozart\Console\Args\StringArgs;
 use Webmozart\Console\ConsoleApplication;
 use Webmozart\Console\Formatter\PlainFormatter;
 use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;

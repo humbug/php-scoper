@@ -11,9 +11,9 @@
 
 namespace Webmozart\PhpScoper;
 
-use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
 use Webmozart\Console\Api\Args\Format\Argument;
 use Webmozart\Console\Config\DefaultApplicationConfig;
+use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
 
 /**
  * The configuration of the PHP-Scoper CLI.
