@@ -47,4 +47,22 @@ EOF;
 
         $this->assertEquals($expected, $this->scoper->scope($content, 'Foo'));
     }
+
+    public function testScopeUseNamespace()
+    {
+        $content = <<<EOF
+<?php
+
+use Baz;
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use Foo\Baz;
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->scope($content, 'Foo'));
+    }
 }

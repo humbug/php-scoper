@@ -17,6 +17,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use Webmozart\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
+use Webmozart\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 
 class Scoper
 {
@@ -40,6 +41,7 @@ class Scoper
     {
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
+        $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
 
         //TODO Manage errors
         $statements = $this->parser->parse($content);
