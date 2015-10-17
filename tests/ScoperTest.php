@@ -65,4 +65,22 @@ EOF;
 
         $this->assertEquals($expected, $this->scoper->scope($content, 'Foo'));
     }
+
+    public function testScopeFullyQualifiedNamespaceUse()
+    {
+        $content = <<<EOF
+<?php
+
+\$class = new \stdClass();
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+\$class = new Foo\stdClass();
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->scope($content, 'Foo'));
+    }
 }
