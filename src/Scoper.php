@@ -13,8 +13,10 @@ namespace Webmozart\PhpScoper;
 
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+use Webmozart\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 
 class Scoper
 {
@@ -36,16 +38,12 @@ class Scoper
      */
     public function scope($content, $prefix)
     {
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
+
         //TODO Manage errors
         $statements = $this->parser->parse($content);
-
-        foreach ($statements as $statement) {
-            if ($statement instanceof Namespace_) {
-                if ($statement->name->parts[0] !== $prefix) {
-                    $statement->name = Name::concat($prefix, $statement->name);
-                }
-            }
-        }
+        $statements = $traverser->traverse($statements);
 
         $prettyPrinter = new Standard();
 
