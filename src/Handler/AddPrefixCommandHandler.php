@@ -11,9 +11,6 @@
 
 namespace Webmozart\PhpScoper\Handler;
 
-use PhpParser\Lexer;
-use PhpParser\Node\Name;
-use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Console\Api\Args\Args;
