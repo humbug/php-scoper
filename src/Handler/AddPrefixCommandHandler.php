@@ -13,6 +13,7 @@ namespace Webmozart\PhpScoper\Handler;
 
 use PhpParser\ParserFactory;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Webmozart\Console\Api\Args\Args;
 use Webmozart\Console\Api\IO\IO;
 use Webmozart\PhpScoper\Scoper;
@@ -29,9 +30,23 @@ class AddPrefixCommandHandler
      */
     private $filesystem;
 
-    public function __construct(Filesystem $filesystem)
+    /**
+     * @var Finder
+     */
+    private $finder;
+
+    /**
+     * @var Scoper
+     */
+    private $scoper;
+
+    public function __construct(Filesystem $filesystem, Finder $finder)
     {
         $this->filesystem = $filesystem;
+        $this->finder = $finder;
+
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $this->scoper = new Scoper($parser);
     }
 
     /**
@@ -47,25 +62,35 @@ class AddPrefixCommandHandler
         $prefix = rtrim($args->getArgument('prefix'), '\\');
         $paths = $args->getArgument('path');
 
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-        $scoper = new Scoper($parser);
-
         foreach ($paths as $path) {
             if (!$this->filesystem->isAbsolutePath($path)) {
                 $path = getcwd().DIRECTORY_SEPARATOR.$path;
+            }
+
+            if (is_dir($path)) {
+                $this->finder->files()->in($path);
+
+                foreach ($this->finder as $file) {
+                    $this->scopeFile($file->getPathName(), $prefix);
+                }
             }
 
             if (!is_file($path)) {
                 continue;
             }
 
-            $fileContent = file_get_contents($path);
-            $scoppedContent = $scoper->scope($fileContent, $prefix);
-            $this->filesystem->dumpFile($path, $scoppedContent);
+            $this->scopeFile($path, $prefix);
         }
 
         $io->writeLine('...');
 
         return 0;
+    }
+
+    private function scopeFile($path, $prefix)
+    {
+        $fileContent = file_get_contents($path);
+        $scoppedContent = $this->scoper->scope($fileContent, $prefix);
+        $this->filesystem->dumpFile($path, $scoppedContent);
     }
 }

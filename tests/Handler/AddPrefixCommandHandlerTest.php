@@ -13,6 +13,7 @@ namespace Webmozart\PhpScoper\Tests\Handler;
 
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 use Webmozart\Console\Api\Command\Command;
 use Webmozart\Console\Args\ArgvArgs;
 use Webmozart\Console\ConsoleApplication;
@@ -67,11 +68,12 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $filesystem = new Filesystem();
-        $this->handler = new AddPrefixCommandHandler($filesystem);
+        $finder = new Finder();
+        $this->handler = new AddPrefixCommandHandler($filesystem, $finder);
         $this->io = new NormalizedLineEndingsIO('', self::$formatter);
         $this->tempDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
 
-        $filesystem->mirror(__DIR__.'/../Fixtures/original/dir', $this->tempDir);
+        $filesystem->mirror(__DIR__.'/../Fixtures/original', $this->tempDir);
     }
 
     protected function tearDown()
@@ -82,7 +84,7 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
 
     public function testAddPrefixToDirectory()
     {
-        chdir(dirname($this->tempDir));
+        chdir($this->tempDir);
 
         $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir']));
 
@@ -95,14 +97,27 @@ EOF;
         $this->assertSame($expected, $this->io->fetchOutput());
         $this->assertEmpty($this->io->fetchErrors());
 
-        // check that the files in $this->tempDir match those in Fixtures/replaced/dir
+        $this->assertFileEquals(
+            __DIR__.'/../Fixtures/replaced/dir/MyClass.php',
+            $this->tempDir.'/dir/MyClass.php'
+        );
+
+        $this->assertFileEquals(
+            __DIR__.'/../Fixtures/replaced/dir/MySecondClass.php',
+            $this->tempDir.'/dir/MySecondClass.php'
+        );
+
+        $this->assertFileEquals(
+            __DIR__.'/../Fixtures/replaced/dir/dir/MyThirdClass.php',
+            $this->tempDir.'/dir/dir/MyThirdClass.php'
+        );
     }
 
     public function testAddPrefixToFile()
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'MyClass.php']));
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/MyClass.php']));
 
         $expected = <<<EOF
 ...
@@ -115,7 +130,7 @@ EOF;
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/MyClass.php',
-            $this->tempDir.'/MyClass.php'
+            $this->tempDir.'/dir/MyClass.php'
         );
     }
 
@@ -123,7 +138,7 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'MyClass.php', 'MySecondClass.php']));
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/MyClass.php', 'dir/MySecondClass.php']));
 
         $expected = <<<EOF
 ...
@@ -136,12 +151,12 @@ EOF;
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/MyClass.php',
-            $this->tempDir.'/MyClass.php'
+            $this->tempDir.'/dir/MyClass.php'
         );
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/MySecondClass.php',
-            $this->tempDir.'/MySecondClass.php'
+            $this->tempDir.'/dir/MySecondClass.php'
         );
     }
 }
