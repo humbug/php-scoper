@@ -12,7 +12,6 @@
 namespace Webmozart\PhpScoper;
 
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;

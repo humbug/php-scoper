@@ -102,7 +102,7 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'Bar.php']));
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'MyClass.php']));
 
         $expected = <<<EOF
 ...
@@ -114,8 +114,8 @@ EOF;
         $this->assertEmpty($this->io->fetchErrors());
 
         $this->assertFileEquals(
-            __DIR__.'/../Fixtures/replaced/dir/Bar.php',
-            $this->tempDir.'/Bar.php'
+            __DIR__.'/../Fixtures/replaced/dir/MyClass.php',
+            $this->tempDir.'/MyClass.php'
         );
     }
 

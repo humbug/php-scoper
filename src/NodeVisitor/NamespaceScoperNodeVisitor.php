@@ -3,6 +3,8 @@
 namespace Webmozart\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
 class NamespaceScoperNodeVisitor extends NodeVisitorAbstract
@@ -19,8 +21,8 @@ class NamespaceScoperNodeVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
-        if ($node instanceof Node\Stmt\Namespace_) {
-            $node->name = Node\Name::concat($this->prefix, $node->name);
+        if ($node instanceof Namespace_) {
+            $node->name = Name::concat($this->prefix, $node->name);
         }
     }
 }

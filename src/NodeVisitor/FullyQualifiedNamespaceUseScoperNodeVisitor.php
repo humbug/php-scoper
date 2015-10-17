@@ -3,6 +3,8 @@
 namespace Webmozart\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeVisitorAbstract;
 
 class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstract
@@ -19,8 +21,8 @@ class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
-        if ($node instanceof Node\Name\FullyQualified) {
-            return new Node\Name(Node\Name::concat($this->prefix, (string) $node));
+        if ($node instanceof FullyQualified) {
+            return new Name(Name::concat($this->prefix, (string) $node));
         }
     }
 }

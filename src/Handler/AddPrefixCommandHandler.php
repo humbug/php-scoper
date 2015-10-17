@@ -13,10 +13,8 @@ namespace Webmozart\PhpScoper\Handler;
 
 use PhpParser\Lexer;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
-use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Console\Api\Args\Args;
 use Webmozart\Console\Api\IO\IO;
@@ -70,9 +68,6 @@ class AddPrefixCommandHandler
         }
 
         $io->writeLine('...');
-
-        // search all $paths, add $prefix to all namespace declarations, use
-        // statements and class usages with fully-qualified class names
 
         return 0;
     }

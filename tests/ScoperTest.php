@@ -35,17 +35,17 @@ class ScoperTest extends PHPUnit_Framework_TestCase
         $content = <<<EOF
 <?php
 
-namespace Bar;
+namespace MyNamespace;
 
 EOF;
         $expected = <<<EOF
 <?php
 
-namespace Foo\Bar;
+namespace MyPrefix\MyNamespace;
 
 EOF;
 
-        $this->assertEquals($expected, $this->scoper->scope($content, 'Foo'));
+        $this->assertEquals($expected, $this->scoper->scope($content, 'MyPrefix'));
     }
 
     public function testScopeUseNamespace()
@@ -53,17 +53,17 @@ EOF;
         $content = <<<EOF
 <?php
 
-use Baz;
+use AnotherNamespace;
 
 EOF;
         $expected = <<<EOF
 <?php
 
-use Foo\Baz;
+use MyPrefix\AnotherNamespace;
 
 EOF;
 
-        $this->assertEquals($expected, $this->scoper->scope($content, 'Foo'));
+        $this->assertEquals($expected, $this->scoper->scope($content, 'MyPrefix'));
     }
 
     public function testScopeFullyQualifiedNamespaceUse()
@@ -77,10 +77,10 @@ EOF;
         $expected = <<<EOF
 <?php
 
-\$class = new Foo\stdClass();
+\$class = new MyPrefix\stdClass();
 
 EOF;
 
-        $this->assertEquals($expected, $this->scoper->scope($content, 'Foo'));
+        $this->assertEquals($expected, $this->scoper->scope($content, 'MyPrefix'));
     }
 }
