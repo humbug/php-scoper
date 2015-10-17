@@ -21,7 +21,7 @@ class NamespaceScoperNodeVisitor extends NodeVisitorAbstract
 
     public function enterNode(Node $node)
     {
-        if ($node instanceof Namespace_) {
+        if ($node instanceof Namespace_ && null !== $node->name) {
             $node->name = Name::concat($this->prefix, $node->name);
         }
     }
