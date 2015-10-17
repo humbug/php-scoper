@@ -49,7 +49,7 @@ class PhpScoperApplicationConfig extends DefaultApplicationConfig
 
         $this
             ->beginCommand('add-prefix')
-                ->addArgument('prefix', Argument::REQUIRED, 'The manespace prefix to add. Must end with a backslash.')
+                ->addArgument('prefix', Argument::REQUIRED, 'The namespace prefix to add. Must end with a backslash.')
                 ->addArgument('path', Argument::REQUIRED | Argument::MULTI_VALUED, 'The path(s) to process.')
                 ->setHandler(function () {
                     return new AddPrefixCommandHandler(new Filesystem());
