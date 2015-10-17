@@ -4,7 +4,7 @@ namespace MyNamespace;
 
 use AnotherNamespace;
 
-class MyClass
+class MyClass extends \MyFQExtendedClass implements \MyFQInterface
 {
     public function useFullyQualifiedNamespace(\stdClass $class)
     {
