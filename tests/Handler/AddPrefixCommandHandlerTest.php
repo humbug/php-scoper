@@ -100,7 +100,23 @@ EOF;
 
     public function testAddPrefixToFile()
     {
-        // TODO
+        chdir($this->tempDir);
+
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'Bar.php']));
+
+        $expected = <<<EOF
+...
+
+EOF;
+
+        $this->assertSame(0, $this->handler->handle($args, $this->io));
+        $this->assertSame($expected, $this->io->fetchOutput());
+        $this->assertEmpty($this->io->fetchErrors());
+
+        $this->assertFileEquals(
+            __DIR__.'/../Fixtures/replaced/dir/Bar.php',
+            $this->tempDir.'/Bar.php'
+        );
     }
 
     public function testAddPrefixToMultiplePaths()
