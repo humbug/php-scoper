@@ -121,6 +121,27 @@ EOF;
 
     public function testAddPrefixToMultiplePaths()
     {
-        // TODO
+        chdir($this->tempDir);
+
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'MyClass.php', 'MySecondClass.php']));
+
+        $expected = <<<EOF
+...
+
+EOF;
+
+        $this->assertSame(0, $this->handler->handle($args, $this->io));
+        $this->assertSame($expected, $this->io->fetchOutput());
+        $this->assertEmpty($this->io->fetchErrors());
+
+        $this->assertFileEquals(
+            __DIR__.'/../Fixtures/replaced/dir/MyClass.php',
+            $this->tempDir.'/MyClass.php'
+        );
+
+        $this->assertFileEquals(
+            __DIR__.'/../Fixtures/replaced/dir/MySecondClass.php',
+            $this->tempDir.'/MySecondClass.php'
+        );
     }
 }
