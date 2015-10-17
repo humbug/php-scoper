@@ -66,11 +66,11 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->handler = new AddPrefixCommandHandler();
+        $filesystem = new Filesystem();
+        $this->handler = new AddPrefixCommandHandler($filesystem);
         $this->io = new NormalizedLineEndingsIO('', self::$formatter);
         $this->tempDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
 
-        $filesystem = new Filesystem();
         $filesystem->mirror(__DIR__.'/../Fixtures/original/dir', $this->tempDir);
     }
 

@@ -20,6 +20,7 @@ use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Console\Api\Args\Args;
 use Webmozart\Console\Api\IO\IO;
+use Webmozart\PhpScoper\Scoper;
 
 /**
  * Handles the "add-prefix" command.
@@ -33,15 +34,9 @@ class AddPrefixCommandHandler
      */
     private $filesystem;
 
-    /**
-     * @var Parser
-     */
-    private $parser;
-
-    public function __construct()
+    public function __construct(Filesystem $filesystem)
     {
-        $this->filesystem = new Filesystem();
-        $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -57,6 +52,9 @@ class AddPrefixCommandHandler
         $prefix = rtrim($args->getArgument('prefix'), '\\');
         $paths = $args->getArgument('path');
 
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $scoper = new Scoper($parser);
+
         foreach ($paths as $path) {
             if (!$this->filesystem->isAbsolutePath($path)) {
                 $path = getcwd().DIRECTORY_SEPARATOR.$path;
@@ -66,22 +64,9 @@ class AddPrefixCommandHandler
                 continue;
             }
 
-            $content = file_get_contents($path);
-
-            //TODO Manage errors
-            $statements = $this->parser->parse($content);
-
-            foreach ($statements as $statement) {
-                if ($statement instanceof Namespace_) {
-                    if ($statement->name->parts[0] !== $prefix) {
-                        $statement->name = Name::concat($prefix, $statement->name);
-                    }
-                }
-            }
-
-            $prettyPrinter = new Standard();
-
-            file_put_contents($path, $prettyPrinter->prettyPrintFile($statements)."\n");
+            $fileContent = file_get_contents($path);
+            $scoppedContent = $scoper->scope($fileContent, $prefix);
+            $this->filesystem->dumpFile($path, $scoppedContent);
         }
 
         $io->writeLine('...');
