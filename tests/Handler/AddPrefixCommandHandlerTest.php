@@ -113,6 +113,27 @@ EOF;
         );
     }
 
+    public function testAddPrefixToDirectoryShouldIgnoreNotPHPFiles()
+    {
+        chdir($this->tempDir);
+
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir']));
+
+        $expected = <<<EOF
+...
+
+EOF;
+
+        $this->assertSame(0, $this->handler->handle($args, $this->io));
+        $this->assertSame($expected, $this->io->fetchOutput());
+        $this->assertEmpty($this->io->fetchErrors());
+
+        $this->assertFileEquals(
+            __DIR__.'/../Fixtures/replaced/dir/NotAPHPFile.txt',
+            $this->tempDir.'/dir/NotAPHPFile.txt'
+        );
+    }
+
     public function testAddPrefixToFile()
     {
         chdir($this->tempDir);
