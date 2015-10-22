@@ -36,7 +36,7 @@ class Scoper
      *
      * @return string
      */
-    public function scope($content, $prefix)
+    public function addNamespacePrefix($content, $prefix)
     {
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));

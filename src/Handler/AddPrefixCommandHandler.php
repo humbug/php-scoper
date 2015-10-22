@@ -90,7 +90,7 @@ class AddPrefixCommandHandler
     private function scopeFile($path, $prefix)
     {
         $fileContent = file_get_contents($path);
-        $scoppedContent = $this->scoper->scope($fileContent, $prefix);
+        $scoppedContent = $this->scoper->addNamespacePrefix($fileContent, $prefix);
         $this->filesystem->dumpFile($path, $scoppedContent);
     }
 }

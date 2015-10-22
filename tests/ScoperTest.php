@@ -45,7 +45,7 @@ namespace MyPrefix\MyNamespace;
 
 EOF;
 
-        $this->assertEquals($expected, $this->scoper->scope($content, 'MyPrefix'));
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
     }
 
     public function testScopeUseNamespace()
@@ -63,7 +63,7 @@ use MyPrefix\AnotherNamespace;
 
 EOF;
 
-        $this->assertEquals($expected, $this->scoper->scope($content, 'MyPrefix'));
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
     }
 
     public function testScopeFullyQualifiedNamespaceUse()
@@ -81,6 +81,6 @@ EOF;
 
 EOF;
 
-        $this->assertEquals($expected, $this->scoper->scope($content, 'MyPrefix'));
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
     }
 }
