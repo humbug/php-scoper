@@ -13,7 +13,6 @@ namespace Webmozart\PhpScoper\Tests\Handler;
 
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Webmozart\Console\Api\Command\Command;
 use Webmozart\Console\Args\ArgvArgs;
 use Webmozart\Console\ConsoleApplication;
@@ -67,12 +66,11 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $filesystem = new Filesystem();
-        $finder = new Finder();
-        $this->handler = new AddPrefixCommandHandler($filesystem, $finder);
+        $this->handler = new AddPrefixCommandHandler();
         $this->io = new NormalizedLineEndingsIO('', self::$formatter);
         $this->tempDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
 
+        $filesystem = new Filesystem();
         $filesystem->mirror(__DIR__.'/../Fixtures/original', $this->tempDir);
     }
 

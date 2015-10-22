@@ -11,8 +11,6 @@
 
 namespace Webmozart\PhpScoper;
 
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
 use Webmozart\Console\Api\Args\Format\Argument;
 use Webmozart\Console\Config\DefaultApplicationConfig;
 use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
@@ -53,7 +51,7 @@ class PhpScoperApplicationConfig extends DefaultApplicationConfig
                 ->addArgument('prefix', Argument::REQUIRED, 'The namespace prefix to add. Must end with a backslash.')
                 ->addArgument('path', Argument::REQUIRED | Argument::MULTI_VALUED, 'The path(s) to process.')
                 ->setHandler(function () {
-                    return new AddPrefixCommandHandler(new Filesystem(), new Finder());
+                    return new AddPrefixCommandHandler();
                 })
             ->end()
         ;

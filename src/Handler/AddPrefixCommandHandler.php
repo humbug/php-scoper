@@ -40,10 +40,10 @@ class AddPrefixCommandHandler
      */
     private $scoper;
 
-    public function __construct(Filesystem $filesystem, Finder $finder)
+    public function __construct()
     {
-        $this->filesystem = $filesystem;
-        $this->finder = $finder;
+        $this->filesystem = new Filesystem();
+        $this->finder = new Finder();
 
         $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
         $this->scoper = new Scoper($parser);
