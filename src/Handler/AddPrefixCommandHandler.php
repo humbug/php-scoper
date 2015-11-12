@@ -71,7 +71,7 @@ class AddPrefixCommandHandler
                 $this->finder->files()->name('*.php')->in($path);
 
                 foreach ($this->finder as $file) {
-                    $this->scopeFile($file->getPathName(), $prefix);
+                    $this->scopeFile($file->getPathName(), $prefix, $io);
                 }
             }
 
@@ -79,18 +79,20 @@ class AddPrefixCommandHandler
                 continue;
             }
 
-            $this->scopeFile($path, $prefix);
+            $this->scopeFile($path, $prefix, $io);
         }
-
-        $io->writeLine('...');
 
         return 0;
     }
 
-    private function scopeFile($path, $prefix)
+    private function scopeFile($path, $prefix, IO $io)
     {
+        $io->write(sprintf('Scoping %s. . . ', $path));
+
         $fileContent = file_get_contents($path);
         $scoppedContent = $this->scoper->addNamespacePrefix($fileContent, $prefix);
         $this->filesystem->dumpFile($path, $scoppedContent);
+
+        $io->writeLine('Success');
     }
 }

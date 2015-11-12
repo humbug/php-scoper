@@ -87,7 +87,9 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
         $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir']));
 
         $expected = <<<EOF
-...
+Scoping $this->tempDir/dir/dir/MyThirdClass.php. . . Success
+Scoping $this->tempDir/dir/MyClass.php. . . Success
+Scoping $this->tempDir/dir/MySecondClass.php. . . Success
 
 EOF;
 
@@ -118,7 +120,9 @@ EOF;
         $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir']));
 
         $expected = <<<EOF
-...
+Scoping $this->tempDir/dir/dir/MyThirdClass.php. . . Success
+Scoping $this->tempDir/dir/MyClass.php. . . Success
+Scoping $this->tempDir/dir/MySecondClass.php. . . Success
 
 EOF;
 
@@ -139,7 +143,7 @@ EOF;
         $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/MyClass.php']));
 
         $expected = <<<EOF
-...
+Scoping $this->tempDir/dir/MyClass.php. . . Success
 
 EOF;
 
@@ -160,7 +164,8 @@ EOF;
         $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/MyClass.php', 'dir/MySecondClass.php']));
 
         $expected = <<<EOF
-...
+Scoping $this->tempDir/dir/MyClass.php. . . Success
+Scoping $this->tempDir/dir/MySecondClass.php. . . Success
 
 EOF;
 
