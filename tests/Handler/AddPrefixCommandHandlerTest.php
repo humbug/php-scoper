@@ -50,6 +50,11 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
     /**
      * @var string
      */
+    private $workingDirectory;
+
+    /**
+     * @var string
+     */
     private $tempDir;
 
     /**
@@ -68,6 +73,7 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
     {
         $this->handler = new AddPrefixCommandHandler();
         $this->io = new NormalizedLineEndingsIO('', self::$formatter);
+        $this->workingDirectory = getcwd();
         $this->tempDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
 
         $filesystem = new Filesystem();
@@ -76,6 +82,7 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
+        chdir($this->workingDirectory);
         $filesystem = new Filesystem();
         $filesystem->remove($this->tempDir);
     }
@@ -84,7 +91,15 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/dir']));
+        $args = self::$command->parseArgs(
+            new ArgvArgs(
+                [
+                    'add-prefix',
+                    'MyPrefix\\',
+                    'dir'.DIRECTORY_SEPARATOR.'dir',
+                ]
+            )
+        );
 
         $expected = <<<EOF
 Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
@@ -92,6 +107,7 @@ Scoping $this->tempDir/dir/dir/MySecondClass.php. . . Success
 Scoping $this->tempDir/dir/dir/MyThirdClass.php. . . Success
 
 EOF;
+        $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
         $this->assertSame(0, $this->handler->handle($args, $this->io));
         $this->assertSame($expected, $this->io->fetchOutput());
@@ -117,7 +133,15 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/dir2']));
+        $args = self::$command->parseArgs(
+            new ArgvArgs(
+                [
+                    'add-prefix',
+                    'MyPrefix\\',
+                    'dir'.DIRECTORY_SEPARATOR.'dir2',
+                ]
+            )
+        );
 
         $expected = <<<EOF
 
@@ -137,12 +161,21 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/dir/MyClass.php']));
+        $args = self::$command->parseArgs(
+            new ArgvArgs(
+                [
+                    'add-prefix',
+                    'MyPrefix\\',
+                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php',
+                ]
+            )
+        );
 
         $expected = <<<EOF
 Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
 
 EOF;
+        $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
         $this->assertSame(0, $this->handler->handle($args, $this->io));
         $this->assertSame($expected, $this->io->fetchOutput());
@@ -158,13 +191,22 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/dir/MyClass.php', 'dir/dir/MySecondClass.php']));
+        $args = self::$command->parseArgs(
+            new ArgvArgs(
+                [
+                    'add-prefix',
+                    'MyPrefix\\', 'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php',
+                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MySecondClass.php',
+                ]
+            )
+        );
 
         $expected = <<<EOF
 Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
 Scoping $this->tempDir/dir/dir/MySecondClass.php. . . Success
 
 EOF;
+        $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
         $this->assertSame(0, $this->handler->handle($args, $this->io));
         $this->assertSame($expected, $this->io->fetchOutput());
@@ -185,12 +227,21 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/MyIncorrectClass.php']));
+        $args = self::$command->parseArgs(
+            new ArgvArgs(
+                [
+                    'add-prefix',
+                    'MyPrefix\\',
+                    'dir'.DIRECTORY_SEPARATOR.'MyIncorrectClass.php',
+                ]
+            )
+        );
 
         $expected = <<<EOF
 Scoping $this->tempDir/dir/MyIncorrectClass.php. . . Fail
 
 EOF;
+        $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
         $this->assertSame(0, $this->handler->handle($args, $this->io));
         $this->assertSame($expected, $this->io->fetchErrors());
