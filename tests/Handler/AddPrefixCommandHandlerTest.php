@@ -180,4 +180,19 @@ EOF;
             $this->tempDir.'/dir/dir/MySecondClass.php'
         );
     }
+
+    public function testAddPrefixToIncorrectFile()
+    {
+        chdir($this->tempDir);
+
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/MyIncorrectClass.php']));
+
+        $expected = <<<EOF
+Scoping $this->tempDir/dir/MyIncorrectClass.php. . . Fail
+
+EOF;
+
+        $this->assertSame(0, $this->handler->handle($args, $this->io));
+        $this->assertSame($expected, $this->io->fetchErrors());
+    }
 }

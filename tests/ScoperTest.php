@@ -30,6 +30,19 @@ class ScoperTest extends PHPUnit_Framework_TestCase
         $this->scoper = new Scoper((new ParserFactory())->create(ParserFactory::PREFER_PHP7));
     }
 
+    public function testScopeIncorrectFile()
+    {
+        $content = <<<EOF
+<?php
+
+\$class = ;
+
+EOF;
+
+        $this->setExpectedException('Webmozart\PhpScoper\Exception\ParsingException');
+        $this->scoper->addNamespacePrefix($content, 'MyPrefix');
+    }
+
     public function testScopeNamespace()
     {
         $content = <<<EOF

@@ -16,6 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Webmozart\Console\Api\Args\Args;
 use Webmozart\Console\Api\IO\IO;
+use Webmozart\PhpScoper\Exception\ParsingException;
 use Webmozart\PhpScoper\Scoper;
 
 /**
@@ -87,12 +88,13 @@ class AddPrefixCommandHandler
 
     private function scopeFile($path, $prefix, IO $io)
     {
-        $io->write(sprintf('Scoping %s. . . ', $path));
-
         $fileContent = file_get_contents($path);
-        $scoppedContent = $this->scoper->addNamespacePrefix($fileContent, $prefix);
-        $this->filesystem->dumpFile($path, $scoppedContent);
-
-        $io->writeLine('Success');
+        try {
+            $scoppedContent = $this->scoper->addNamespacePrefix($fileContent, $prefix);
+            $this->filesystem->dumpFile($path, $scoppedContent);
+            $io->writeLine(sprintf('Scoping %s. . . Success', $path));
+        } catch (ParsingException $exception) {
+            $io->errorLine(sprintf('Scoping %s. . . Fail', $path));
+        }
     }
 }
