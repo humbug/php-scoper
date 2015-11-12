@@ -84,12 +84,12 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir']));
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/dir']));
 
         $expected = <<<EOF
+Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
+Scoping $this->tempDir/dir/dir/MySecondClass.php. . . Success
 Scoping $this->tempDir/dir/dir/MyThirdClass.php. . . Success
-Scoping $this->tempDir/dir/MyClass.php. . . Success
-Scoping $this->tempDir/dir/MySecondClass.php. . . Success
 
 EOF;
 
@@ -98,13 +98,13 @@ EOF;
         $this->assertEmpty($this->io->fetchErrors());
 
         $this->assertFileEquals(
-            __DIR__.'/../Fixtures/replaced/dir/MyClass.php',
-            $this->tempDir.'/dir/MyClass.php'
+            __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
+            $this->tempDir.'/dir/dir/MyClass.php'
         );
 
         $this->assertFileEquals(
-            __DIR__.'/../Fixtures/replaced/dir/MySecondClass.php',
-            $this->tempDir.'/dir/MySecondClass.php'
+            __DIR__.'/../Fixtures/replaced/dir/dir/MySecondClass.php',
+            $this->tempDir.'/dir/dir/MySecondClass.php'
         );
 
         $this->assertFileEquals(
@@ -117,12 +117,9 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir']));
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/dir2']));
 
         $expected = <<<EOF
-Scoping $this->tempDir/dir/dir/MyThirdClass.php. . . Success
-Scoping $this->tempDir/dir/MyClass.php. . . Success
-Scoping $this->tempDir/dir/MySecondClass.php. . . Success
 
 EOF;
 
@@ -131,8 +128,8 @@ EOF;
         $this->assertEmpty($this->io->fetchErrors());
 
         $this->assertFileEquals(
-            __DIR__.'/../Fixtures/replaced/dir/NotAPHPFile.txt',
-            $this->tempDir.'/dir/NotAPHPFile.txt'
+            __DIR__.'/../Fixtures/replaced/dir/dir2/NotAPHPFile.txt',
+            $this->tempDir.'/dir/dir2/NotAPHPFile.txt'
         );
     }
 
@@ -140,10 +137,10 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/MyClass.php']));
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/dir/MyClass.php']));
 
         $expected = <<<EOF
-Scoping $this->tempDir/dir/MyClass.php. . . Success
+Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
 
 EOF;
 
@@ -152,8 +149,8 @@ EOF;
         $this->assertEmpty($this->io->fetchErrors());
 
         $this->assertFileEquals(
-            __DIR__.'/../Fixtures/replaced/dir/MyClass.php',
-            $this->tempDir.'/dir/MyClass.php'
+            __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
+            $this->tempDir.'/dir/dir/MyClass.php'
         );
     }
 
@@ -161,11 +158,11 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/MyClass.php', 'dir/MySecondClass.php']));
+        $args = self::$command->parseArgs(new ArgvArgs(['add-prefix', 'MyPrefix\\', 'dir/dir/MyClass.php', 'dir/dir/MySecondClass.php']));
 
         $expected = <<<EOF
-Scoping $this->tempDir/dir/MyClass.php. . . Success
-Scoping $this->tempDir/dir/MySecondClass.php. . . Success
+Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
+Scoping $this->tempDir/dir/dir/MySecondClass.php. . . Success
 
 EOF;
 
@@ -174,13 +171,13 @@ EOF;
         $this->assertEmpty($this->io->fetchErrors());
 
         $this->assertFileEquals(
-            __DIR__.'/../Fixtures/replaced/dir/MyClass.php',
-            $this->tempDir.'/dir/MyClass.php'
+            __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
+            $this->tempDir.'/dir/dir/MyClass.php'
         );
 
         $this->assertFileEquals(
-            __DIR__.'/../Fixtures/replaced/dir/MySecondClass.php',
-            $this->tempDir.'/dir/MySecondClass.php'
+            __DIR__.'/../Fixtures/replaced/dir/dir/MySecondClass.php',
+            $this->tempDir.'/dir/dir/MySecondClass.php'
         );
     }
 }
