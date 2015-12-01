@@ -14,7 +14,7 @@ namespace Webmozart\PhpScoper\Tests\Handler;
 use PHPUnit_Framework_TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Console\Api\Command\Command;
-use Webmozart\Console\Args\ArgvArgs;
+use Webmozart\Console\Args\StringArgs;
 use Webmozart\Console\ConsoleApplication;
 use Webmozart\Console\Formatter\PlainFormatter;
 use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
@@ -91,15 +91,7 @@ class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(
-            new ArgvArgs(
-                [
-                    'add-prefix',
-                    'MyPrefix\\',
-                    'dir'.DIRECTORY_SEPARATOR.'dir',
-                ]
-            )
-        );
+        $args = self::$command->parseArgs(new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir'));
 
         $expected = <<<EOF
 Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
@@ -133,15 +125,7 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(
-            new ArgvArgs(
-                [
-                    'add-prefix',
-                    'MyPrefix\\',
-                    'dir'.DIRECTORY_SEPARATOR.'dir2',
-                ]
-            )
-        );
+        $args = self::$command->parseArgs(new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir2'));
 
         $expected = <<<EOF
 
@@ -162,13 +146,7 @@ EOF;
         chdir($this->tempDir);
 
         $args = self::$command->parseArgs(
-            new ArgvArgs(
-                [
-                    'add-prefix',
-                    'MyPrefix\\',
-                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php',
-                ]
-            )
+            new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php')
         );
 
         $expected = <<<EOF
@@ -192,12 +170,10 @@ EOF;
         chdir($this->tempDir);
 
         $args = self::$command->parseArgs(
-            new ArgvArgs(
-                [
-                    'add-prefix',
-                    'MyPrefix\\', 'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php',
-                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MySecondClass.php',
-                ]
+            new StringArgs(
+                    'MyPrefix\\\\'.
+                    ' dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php'.
+                    ' dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MySecondClass.php'
             )
         );
 
@@ -228,13 +204,7 @@ EOF;
         chdir($this->tempDir);
 
         $args = self::$command->parseArgs(
-            new ArgvArgs(
-                [
-                    'add-prefix',
-                    'MyPrefix\\',
-                    'dir'.DIRECTORY_SEPARATOR.'MyIncorrectClass.php',
-                ]
-            )
+            new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'MyIncorrectClass.php')
         );
 
         $expected = <<<EOF
