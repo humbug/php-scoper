@@ -5,3 +5,7 @@ enabled:
 
 disabled:
     - empty_return
+
+finder:
+  exclude:
+    - "tests/Fixtures"
