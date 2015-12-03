@@ -14,11 +14,11 @@ namespace Webmozart\PhpScoper;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard;
 use Webmozart\PhpScoper\Exception\ParsingException;
 use Webmozart\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
 use Webmozart\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Webmozart\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
+use Webmozart\PhpScoper\Util\MutableString;
 
 class Scoper
 {
@@ -40,10 +40,12 @@ class Scoper
      */
     public function addNamespacePrefix($content, $prefix)
     {
+        $mutableContent = new MutableString($content);
+
         $traverser = new NodeTraverser();
-        $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
-        $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
-        $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));
+        $traverser->addVisitor(new NamespaceScoperNodeVisitor($mutableContent, $prefix));
+        $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($mutableContent, $prefix));
+        $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($mutableContent, $prefix));
 
         try {
             $statements = $this->parser->parse($content);
@@ -51,10 +53,8 @@ class Scoper
             throw new ParsingException($error->getMessage());
         }
 
-        $statements = $traverser->traverse($statements);
+        $traverser->traverse($statements);
 
-        $prettyPrinter = new Standard();
-
-        return $prettyPrinter->prettyPrintFile($statements)."\n";
+        return $mutableContent->getModifiedString();
     }
 }

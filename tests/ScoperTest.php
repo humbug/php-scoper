@@ -11,6 +11,7 @@
 
 namespace Webmozart\PhpScoper\Tests;
 
+use PhpParser\Lexer;
 use PhpParser\ParserFactory;
 use PHPUnit_Framework_TestCase;
 use Webmozart\PhpScoper\Scoper;
@@ -27,7 +28,13 @@ class ScoperTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->scoper = new Scoper((new ParserFactory())->create(ParserFactory::PREFER_PHP7));
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Lexer([
+            'usedAttributes' => [
+                'startFilePos',
+            ],
+        ]));
+
+        $this->scoper = new Scoper($parser);
     }
 
     public function testScopeIncorrectFile()
