@@ -2,6 +2,10 @@ build: false
 platform: x86
 clone_folder: c:\projects\webmozart\php-scoper
 
+branches:
+  only:
+    - master
+
 cache:
   - '%LOCALAPPDATA%\Composer\files'
 
