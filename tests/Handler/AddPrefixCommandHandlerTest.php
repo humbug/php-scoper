@@ -127,7 +127,7 @@ EOF;
 
         $args = self::$command->parseArgs(new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir2'));
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 
 EOF;
 

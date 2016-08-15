@@ -32,10 +32,10 @@ class ScoperTest extends PHPUnit_Framework_TestCase
 
     public function testScopeIncorrectFile()
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
 <?php
 
-\$class = ;
+$class = ;
 
 EOF;
 
@@ -45,7 +45,7 @@ EOF;
 
     public function testScopeNamespace()
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
 <?php
 
 namespace MyNamespace;
@@ -63,7 +63,7 @@ EOF;
 
     public function testScopeUseNamespace()
     {
-        $content = <<<EOF
+        $content = <<<'EOF'
 <?php
 
 use AnotherNamespace;
