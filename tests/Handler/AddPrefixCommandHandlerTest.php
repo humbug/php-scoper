@@ -94,9 +94,9 @@ class AddPrefixCommandHandlerTest extends TestCase
         $args = self::$command->parseArgs(new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir'));
 
         $expected = <<<EOF
+Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
 Scoping $this->tempDir/dir/dir/MySecondClass.php. . . Success
 Scoping $this->tempDir/dir/dir/MyThirdClass.php. . . Success
-Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
 
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
