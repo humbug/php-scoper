@@ -1,12 +1,12 @@
 PHP-Scoper
 ==========
 
-[![Build Status](https://travis-ci.org/webmozart/php-scoper.svg?branch=master)](https://travis-ci.org/webmozart/php-scoper)
-[![Build status](https://ci.appveyor.com/api/projects/status/n06gckamgc2lr8vl/branch/master?svg=true)](https://ci.appveyor.com/project/webmozart/cli/branch/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmozart/php-scoper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/webmozart/php-scoper/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/webmozart/php-scoper/v/stable.svg)](https://packagist.org/packages/webmozart/php-scoper)
-[![Total Downloads](https://poser.pugx.org/webmozart/php-scoper/downloads.svg)](https://packagist.org/packages/webmozart/php-scoper)
-[![Dependency Status](https://www.versioneye.com/php/webmozart:php-scoper/1.0.0/badge.svg)](https://www.versioneye.com/php/webmozart:php-scoper/1.0.0)
+[![Build Status](https://travis-ci.org/humbug/php-scoper.svg?branch=master)](https://travis-ci.org/humbug/php-scoper)
+[![Build status](https://ci.appveyor.com/api/projects/status/oa95nul9v8uv9emw/branch/master?svg=true)](https://ci.appveyor.com/project/humbug/php-scoper/branch/master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/humbug/php-scoper/v/stable.svg)](https://packagist.org/packages/humbug/php-scoper)
+[![Total Downloads](https://poser.pugx.org/humbug/php-scoper/downloads.svg)](https://packagist.org/packages/humbug/php-scoper)
+[![Dependency Status](https://www.versioneye.com/php/humbug:php-scoper/1.0.0/badge.svg)](https://www.versioneye.com/php/humbug:php-scoper/1.0.0)
 
 Latest release: none
 
@@ -58,17 +58,18 @@ Contributions to are very welcome!
 Support
 -------
 
-If you are having problems, send a mail to bschussek@gmail.com or shout out to
-[@webmozart] on Twitter.
+Pending
 
 License
 -------
 
 All contents of this package are licensed under the [MIT license].
 
-[Bernhard Schussek]: http://webmozarts.com
-[The Community Contributors]: https://github.com/webmozart/php-scoper/graphs/contributors
-[issue tracker]: https://github.com/webmozart/php-scoper/issues
-[Git repository]: https://github.com/webmozart/php-scoper
-[@webmozart]: https://twitter.com/webmozart
+[The Community Contributors]: https://github.com/humbug/php-scoper/graphs/contributors
+[Issue tracker]: https://github.com/humbug/php-scoper/issues
+[Git repository]: https://github.com/humbug/php-scoper
 [MIT license]: LICENSE
+
+Project originally created by:
+[Bernhard Schussek]: http://webmozarts.com
+[@webmozart]: https://twitter.com/webmozart
