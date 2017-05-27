@@ -1,5 +1,5 @@
 {
-    "name": "webmozart/php-scoper",
+    "name": "humbug/php-scoper",
     "description": "PHP-Scoper prefixes all PHP namespaces in a file/directory.",
     "license": "MIT",
     "authors": [
