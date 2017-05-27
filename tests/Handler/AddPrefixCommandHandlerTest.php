@@ -93,7 +93,7 @@ class AddPrefixCommandHandlerTest extends TestCase
 
     public function testAddPrefixToDirectory()
     {
-        chdir($this->tempDir); exit;
+        chdir($this->tempDir);
 
         $args = self::$command->parseArgs(new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir'));
 
