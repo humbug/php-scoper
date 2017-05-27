@@ -69,7 +69,7 @@ class AddPrefixCommandHandler
             }
 
             if (is_dir($path)) {
-                $this->finder->files()->name('*.php')->in($path);
+                $this->finder->files()->name('*.php')->in($path)->sortByName();
 
                 foreach ($this->finder as $file) {
                     $this->scopeFile($file->getPathName(), $prefix, $io);

@@ -12,13 +12,13 @@
 namespace Webmozart\PhpScoper\Tests;
 
 use PhpParser\ParserFactory;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Webmozart\PhpScoper\Scoper;
 
 /**
  * @author Matthieu Auger <mail@matthieuauger.com>
  */
-class ScoperTest extends PHPUnit_Framework_TestCase
+class ScoperTest extends TestCase
 {
     /**
      * @var Scoper
@@ -30,6 +30,9 @@ class ScoperTest extends PHPUnit_Framework_TestCase
         $this->scoper = new Scoper((new ParserFactory())->create(ParserFactory::PREFER_PHP7));
     }
 
+    /**
+     * @expectedException Webmozart\PhpScoper\Exception\ParsingException
+     */
     public function testScopeIncorrectFile()
     {
         $content = <<<'EOF'
@@ -39,7 +42,6 @@ $class = ;
 
 EOF;
 
-        $this->setExpectedException('Webmozart\PhpScoper\Exception\ParsingException');
         $this->scoper->addNamespacePrefix($content, 'MyPrefix');
     }
 
@@ -55,6 +57,7 @@ EOF;
 <?php
 
 namespace MyPrefix\MyNamespace;
+
 
 EOF;
 
