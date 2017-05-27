@@ -11,7 +11,7 @@
 
 namespace Webmozart\PhpScoper\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\PhpExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -21,7 +21,7 @@ use Webmozart\PathUtil\Path;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class PhpScoperTest extends PHPUnit_Framework_TestCase
+class PhpScoperTest extends TestCase
 {
     private static $php;
 

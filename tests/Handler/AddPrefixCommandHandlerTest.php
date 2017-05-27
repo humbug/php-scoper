@@ -11,7 +11,7 @@
 
 namespace Webmozart\PhpScoper\Tests\Handler;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\Console\Api\Command\Command;
 use Webmozart\Console\Args\StringArgs;
@@ -25,7 +25,7 @@ use Webmozart\PhpScoper\Tests\TestUtil;
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class AddPrefixCommandHandlerTest extends PHPUnit_Framework_TestCase
+class AddPrefixCommandHandlerTest extends TestCase
 {
     /**
      * @var Application
