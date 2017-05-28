@@ -26,7 +26,7 @@ class AddPrefixCommandHandlerTest extends TestCase
     /**
      * @var ApplicationTester
      */
-    private static $appTester;
+    private $appTester;
 
     /**
      * @var string
@@ -38,16 +38,17 @@ class AddPrefixCommandHandlerTest extends TestCase
      */
     private $tempDir;
 
-    public static function setUpBeforeClass()
-    {
-        $app = new PhpScoperApplication();
-        PhpScoperApplicationConfig::configure($app);
-        $app->setAutoExit(false);
-        self::$appTester = new ApplicationTester($app);
-    }
 
     protected function setUp()
     {
+        if (is_null($this->appTester)) {
+            $app = new PhpScoperApplication();
+            $conf = new PhpScoperApplicationConfig();
+            $conf->configure($app);
+            $app->setAutoExit(false);
+            $this->appTester = new ApplicationTester($app);
+        }
+        
         $this->workingDirectory = getcwd();
         $this->tempDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
 
@@ -66,7 +67,7 @@ class AddPrefixCommandHandlerTest extends TestCase
     {
         chdir($this->tempDir);
 
-        self::$appTester->run(
+        $this->appTester->run(
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
@@ -83,9 +84,9 @@ Scoping $this->tempDir/dir/dir/MyThirdClass.php. . . Success
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
-        $this->assertSame(0, self::$appTester->getStatusCode());
-        $this->assertSame($expected, self::$appTester->getDisplay(true));
-        $this->assertEmpty(self::$appTester->getErrorOutput(true));
+        $this->assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertEmpty($this->appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
@@ -107,7 +108,7 @@ EOF;
     {
         chdir($this->tempDir);
 
-        self::$appTester->run(
+        $this->appTester->run(
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
@@ -120,9 +121,9 @@ EOF;
 
 EOF;
 
-        $this->assertSame(0, self::$appTester->getStatusCode());
-        $this->assertSame($expected, self::$appTester->getDisplay(true));
-        $this->assertEmpty(self::$appTester->getErrorOutput(true));
+        $this->assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertEmpty($this->appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/dir2/NotAPHPFile.txt',
@@ -134,7 +135,7 @@ EOF;
     {
         chdir($this->tempDir);
 
-        self::$appTester->run(
+        $this->appTester->run(
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
@@ -149,9 +150,9 @@ Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
-        $this->assertSame(0, self::$appTester->getStatusCode());
-        $this->assertSame($expected, self::$appTester->getDisplay(true));
-        $this->assertEmpty(self::$appTester->getErrorOutput(true));
+        $this->assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertEmpty($this->appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
@@ -163,7 +164,7 @@ EOF;
     {
         chdir($this->tempDir);
 
-        self::$appTester->run(
+        $this->appTester->run(
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
@@ -182,9 +183,9 @@ Scoping $this->tempDir/dir/dir/MySecondClass.php. . . Success
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
-        $this->assertSame(0, self::$appTester->getStatusCode());
-        $this->assertSame($expected, self::$appTester->getDisplay(true));
-        $this->assertEmpty(self::$appTester->getErrorOutput(true));
+        $this->assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertEmpty($this->appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
@@ -201,7 +202,7 @@ EOF;
     {
         chdir($this->tempDir);
 
-        self::$appTester->run(
+        $this->appTester->run(
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
@@ -216,7 +217,7 @@ Scoping $this->tempDir/dir/MyIncorrectClass.php. . . Fail
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
-        $this->assertSame(0, self::$appTester->getStatusCode());
-        $this->assertSame($expected, self::$appTester->getDisplay(true));
+        $this->assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame($expected, $this->appTester->getDisplay(true));
     }
 }

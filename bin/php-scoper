@@ -20,6 +20,7 @@ if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {
 }
 
 $app = new PhpScoperApplication();
-PhpScoperApplicationConfig::configure($app);
+$conf = new PhpScoperApplicationConfig();
+$conf->configure($app);
 
 $app->run();

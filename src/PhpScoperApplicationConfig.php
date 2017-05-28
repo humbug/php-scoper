@@ -23,7 +23,7 @@ use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
  */
 class PhpScoperApplicationConfig
 {
-    public static function configure(PhpScoperApplication $app)
+    public function configure(PhpScoperApplication $app)
     {
         $app->command(
             'add-prefix prefix path*',
