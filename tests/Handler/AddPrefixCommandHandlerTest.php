@@ -40,7 +40,7 @@ class AddPrefixCommandHandlerTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        $app = new PhpScoperApplication;
+        $app = new PhpScoperApplication();
         PhpScoperApplicationConfig::configure($app);
         $app->setAutoExit(false);
         self::$appTester = new ApplicationTester($app);
