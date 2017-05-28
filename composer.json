@@ -10,13 +10,13 @@
     ],
     "require": {
         "php": ">=5.5",
-        "webmozart/console": "^1.0-beta5",
         "webmozart/path-util": "^2.3",
         "symfony/filesystem": "^3.2",
         "symfony/process": "^3.2",
         "symfony/finder": "^3.2",
         "padraic/phar-updater": "^1.0.3",
-        "nikic/php-parser": "^3.0"
+        "nikic/php-parser": "^3.0",
+        "mnapoli/silly": "^1.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",

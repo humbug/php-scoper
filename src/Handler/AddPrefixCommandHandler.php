@@ -12,10 +12,11 @@
 namespace Webmozart\PhpScoper\Handler;
 
 use PhpParser\ParserFactory;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Webmozart\Console\Api\Args\Args;
-use Webmozart\Console\Api\IO\IO;
+//use Webmozart\Console\Api\Args\Args;
+//use Webmozart\Console\Api\IO\IO;
 use Webmozart\PhpScoper\Exception\ParsingException;
 use Webmozart\PhpScoper\Scoper;
 
@@ -58,10 +59,9 @@ class AddPrefixCommandHandler
      *
      * @return int Returns 0 on success and a positive integer on error.
      */
-    public function handle(Args $args, IO $io)
+    public function handle($prefix, array $paths, OutputInterface $output)
     {
-        $prefix = rtrim($args->getArgument('prefix'), '\\');
-        $paths = $args->getArgument('path');
+        $prefix = rtrim($prefix, '\\');
 
         foreach ($paths as $path) {
             if (!$this->filesystem->isAbsolutePath($path)) {
@@ -72,7 +72,7 @@ class AddPrefixCommandHandler
                 $this->finder->files()->name('*.php')->in($path)->sortByName();
 
                 foreach ($this->finder as $file) {
-                    $this->scopeFile($file->getPathName(), $prefix, $io);
+                    $this->scopeFile($file->getPathName(), $prefix, $output);
                 }
             }
 
@@ -80,21 +80,21 @@ class AddPrefixCommandHandler
                 continue;
             }
 
-            $this->scopeFile($path, $prefix, $io);
+            $this->scopeFile($path, $prefix, $output);
         }
 
         return 0;
     }
 
-    private function scopeFile($path, $prefix, IO $io)
+    private function scopeFile($path, $prefix, OutputInterface $output)
     {
         $fileContent = file_get_contents($path);
         try {
             $scoppedContent = $this->scoper->addNamespacePrefix($fileContent, $prefix);
             $this->filesystem->dumpFile($path, $scoppedContent);
-            $io->writeLine(sprintf('Scoping %s. . . Success', $path));
+            $output->writeLn(sprintf('Scoping %s. . . Success', $path));
         } catch (ParsingException $exception) {
-            $io->errorLine(sprintf('Scoping %s. . . Fail', $path));
+            $output->writeLn(sprintf('Scoping %s. . . Fail', $path));
         }
     }
 }

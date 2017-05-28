@@ -59,7 +59,11 @@ class PhpScoperTest extends TestCase
     {
         $output = $this->runPhpScoper(['add-prefix', 'MyPrefix\\', $this->tempDir]);
 
-        // Test $output
+        /**
+         * Just quickly check that directly running bin/php-scoper output
+         * that it was working:
+         */
+        $this->assertStringStartsWith('Scoping', $output);
     }
 
     private function runPhpScoper(array $args)

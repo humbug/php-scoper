@@ -13,13 +13,9 @@ namespace Webmozart\PhpScoper\Tests\Handler;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\Console\Api\Command\Command;
-use Webmozart\Console\Args\StringArgs;
-use Webmozart\Console\ConsoleApplication;
-use Webmozart\Console\Formatter\PlainFormatter;
-use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
+use Symfony\Component\Console\Tester\ApplicationTester;
+use Webmozart\PhpScoper\PhpScoperApplication;
 use Webmozart\PhpScoper\PhpScoperApplicationConfig;
-use Webmozart\PhpScoper\Tests\Handler\Util\NormalizedLineEndingsIO;
 use Webmozart\PhpScoper\Tests\TestUtil;
 
 /**
@@ -28,24 +24,9 @@ use Webmozart\PhpScoper\Tests\TestUtil;
 class AddPrefixCommandHandlerTest extends TestCase
 {
     /**
-     * @var Application
+     * @var ApplicationTester
      */
-    private static $application;
-
-    /**
-     * @var Formatter
-     */
-    private static $formatter;
-
-    /**
-     * @var Command
-     */
-    private static $command;
-
-    /**
-     * @var NormalizedLineEndingsIO
-     */
-    private $io;
+    private static $appTester;
 
     /**
      * @var string
@@ -57,22 +38,16 @@ class AddPrefixCommandHandlerTest extends TestCase
      */
     private $tempDir;
 
-    /**
-     * @var AddPrefixCommandHandler
-     */
-    private $handler;
-
     public static function setUpBeforeClass()
     {
-        self::$application = new ConsoleApplication(new PhpScoperApplicationConfig());
-        self::$formatter = new PlainFormatter(self::$application->getConfig()->getStyleSet());
-        self::$command = self::$application->getCommand('add-prefix');
+        $app = new PhpScoperApplication;
+        PhpScoperApplicationConfig::configure($app);
+        $app->setAutoExit(false);
+        self::$appTester = new ApplicationTester($app);
     }
 
     protected function setUp()
     {
-        $this->handler = new AddPrefixCommandHandler();
-        $this->io = new NormalizedLineEndingsIO('', self::$formatter);
         $this->workingDirectory = getcwd();
         $this->tempDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
 
@@ -91,7 +66,14 @@ class AddPrefixCommandHandlerTest extends TestCase
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir'));
+        self::$appTester->run(
+            [
+                'add-prefix',
+                'prefix' => 'MyPrefix\\\\',
+                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir']
+            ],
+            ['capture_stderr_separately' => true]
+        );
 
         $expected = <<<EOF
 Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
@@ -101,9 +83,9 @@ Scoping $this->tempDir/dir/dir/MyThirdClass.php. . . Success
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
-        $this->assertSame(0, $this->handler->handle($args, $this->io));
-        $this->assertSame($expected, $this->io->fetchOutput());
-        $this->assertEmpty($this->io->fetchErrors());
+        $this->assertSame(0, self::$appTester->getStatusCode());
+        $this->assertSame($expected, self::$appTester->getDisplay(true));
+        $this->assertEmpty(self::$appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
@@ -125,15 +107,22 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir2'));
+        self::$appTester->run(
+            [
+                'add-prefix',
+                'prefix' => 'MyPrefix\\\\',
+                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir2']
+            ],
+            ['capture_stderr_separately' => true]
+        );
 
         $expected = <<<'EOF'
 
 EOF;
 
-        $this->assertSame(0, $this->handler->handle($args, $this->io));
-        $this->assertSame($expected, $this->io->fetchOutput());
-        $this->assertEmpty($this->io->fetchErrors());
+        $this->assertSame(0, self::$appTester->getStatusCode());
+        $this->assertSame($expected, self::$appTester->getDisplay(true));
+        $this->assertEmpty(self::$appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/dir2/NotAPHPFile.txt',
@@ -145,8 +134,13 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(
-            new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php')
+        self::$appTester->run(
+            [
+                'add-prefix',
+                'prefix' => 'MyPrefix\\\\',
+                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php']
+            ],
+            ['capture_stderr_separately' => true]
         );
 
         $expected = <<<EOF
@@ -155,9 +149,9 @@ Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
-        $this->assertSame(0, $this->handler->handle($args, $this->io));
-        $this->assertSame($expected, $this->io->fetchOutput());
-        $this->assertEmpty($this->io->fetchErrors());
+        $this->assertSame(0, self::$appTester->getStatusCode());
+        $this->assertSame($expected, self::$appTester->getDisplay(true));
+        $this->assertEmpty(self::$appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
@@ -169,12 +163,16 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(
-            new StringArgs(
-                    'MyPrefix\\\\'.
-                    ' dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php'.
-                    ' dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MySecondClass.php'
-            )
+        self::$appTester->run(
+            [
+                'add-prefix',
+                'prefix' => 'MyPrefix\\\\',
+                'path' => [
+                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php',
+                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MySecondClass.php'
+                ]
+            ],
+            ['capture_stderr_separately' => true]
         );
 
         $expected = <<<EOF
@@ -184,9 +182,9 @@ Scoping $this->tempDir/dir/dir/MySecondClass.php. . . Success
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
-        $this->assertSame(0, $this->handler->handle($args, $this->io));
-        $this->assertSame($expected, $this->io->fetchOutput());
-        $this->assertEmpty($this->io->fetchErrors());
+        $this->assertSame(0, self::$appTester->getStatusCode());
+        $this->assertSame($expected, self::$appTester->getDisplay(true));
+        $this->assertEmpty(self::$appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
             __DIR__.'/../Fixtures/replaced/dir/dir/MyClass.php',
@@ -203,8 +201,13 @@ EOF;
     {
         chdir($this->tempDir);
 
-        $args = self::$command->parseArgs(
-            new StringArgs('MyPrefix\\\\ dir'.DIRECTORY_SEPARATOR.'MyIncorrectClass.php')
+        self::$appTester->run(
+            [
+                'add-prefix',
+                'prefix' => 'MyPrefix\\\\',
+                'path' => ['dir'.DIRECTORY_SEPARATOR.'MyIncorrectClass.php']
+            ],
+            ['capture_stderr_separately' => true]
         );
 
         $expected = <<<EOF
@@ -213,7 +216,7 @@ Scoping $this->tempDir/dir/MyIncorrectClass.php. . . Fail
 EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
-        $this->assertSame(0, $this->handler->handle($args, $this->io));
-        $this->assertSame($expected, $this->io->fetchErrors());
+        $this->assertSame(0, self::$appTester->getStatusCode());
+        $this->assertSame($expected, self::$appTester->getDisplay(true));
     }
 }

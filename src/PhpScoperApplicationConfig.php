@@ -11,8 +11,7 @@
 
 namespace Webmozart\PhpScoper;
 
-use Webmozart\Console\Api\Args\Format\Argument;
-use Webmozart\Console\Config\DefaultApplicationConfig;
+use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
 
 /**
@@ -22,38 +21,17 @@ use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class PhpScoperApplicationConfig extends DefaultApplicationConfig
+class PhpScoperApplicationConfig
 {
-    /**
-     * The version of the PHP-Scoper.
-     */
-    const VERSION = '@package_version@';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    public static function configure(PhpScoperApplication $app)
     {
-        parent::configure();
-
-        $this
-            ->setName('php-scoper')
-            ->setDisplayName('PHP-Scoper')
-            ->setVersion(self::VERSION)
-
-            // Enable debug for unreleased versions only. Split the string to
-            // prevent its replacement during release
-            ->setDebug('@pack'.'age_version@' === self::VERSION)
-        ;
-
-        $this
-            ->beginCommand('add-prefix')
-                ->addArgument('prefix', Argument::REQUIRED, 'The namespace prefix to add. Must end with a backslash.')
-                ->addArgument('path', Argument::REQUIRED | Argument::MULTI_VALUED, 'The path(s) to process.')
-                ->setHandler(function () {
-                    return new AddPrefixCommandHandler();
-                })
-            ->end()
-        ;
+        $app->command(
+            'add-prefix prefix path*',
+            function ($prefix, $path, OutputInterface $output) {
+                $handler = new AddPrefixCommandHandler;
+                $handler->handle($prefix, $path, $output);
+            }
+        );
+        $app->setDefaultCommand('add-prefix');
     }
 }
