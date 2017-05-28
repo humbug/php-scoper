@@ -31,7 +31,7 @@ class ScoperTest extends TestCase
     }
 
     /**
-     * @expectedException Webmozart\PhpScoper\Exception\ParsingException
+     * @expectedException \Webmozart\PhpScoper\Exception\ParsingException
      */
     public function testScopeIncorrectFile()
     {
