@@ -15,8 +15,6 @@ use PhpParser\ParserFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-//use Webmozart\Console\Api\Args\Args;
-//use Webmozart\Console\Api\IO\IO;
 use Webmozart\PhpScoper\Exception\ParsingException;
 use Webmozart\PhpScoper\Scoper;
 
