@@ -48,7 +48,7 @@ class AddPrefixCommandHandlerTest extends TestCase
             $app->setAutoExit(false);
             $this->appTester = new ApplicationTester($app);
         }
-        
+
         $this->workingDirectory = getcwd();
         $this->tempDir = TestUtil::makeTempDir('php-scoper', __CLASS__);
 
