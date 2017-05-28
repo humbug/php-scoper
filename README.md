@@ -4,6 +4,7 @@ PHP-Scoper
 [![Build Status](https://travis-ci.org/humbug/php-scoper.svg?branch=master)](https://travis-ci.org/humbug/php-scoper)
 [![Build status](https://ci.appveyor.com/api/projects/status/oa95nul9v8uv9emw/branch/master?svg=true)](https://ci.appveyor.com/project/humbug/php-scoper/branch/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
+[![StyleCI](https://styleci.io/repos/44384447/shield?branch=master)](https://styleci.io/repos/44384447)
 [![Latest Stable Version](https://poser.pugx.org/humbug/php-scoper/v/stable.svg)](https://packagist.org/packages/humbug/php-scoper)
 [![Total Downloads](https://poser.pugx.org/humbug/php-scoper/downloads.svg)](https://packagist.org/packages/humbug/php-scoper)
 [![Dependency Status](https://www.versioneye.com/php/humbug:php-scoper/1.0.0/badge.svg)](https://www.versioneye.com/php/humbug:php-scoper/1.0.0)
