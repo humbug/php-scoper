@@ -12,8 +12,8 @@
 namespace Webmozart\PhpScoper\Tests\Handler;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Console\Tester\ApplicationTester;
+use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PhpScoper\PhpScoperApplication;
 use Webmozart\PhpScoper\PhpScoperApplicationConfig;
 use Webmozart\PhpScoper\Tests\TestUtil;
@@ -70,7 +70,7 @@ class AddPrefixCommandHandlerTest extends TestCase
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
-                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir']
+                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir'],
             ],
             ['capture_stderr_separately' => true]
         );
@@ -111,7 +111,7 @@ EOF;
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
-                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir2']
+                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir2'],
             ],
             ['capture_stderr_separately' => true]
         );
@@ -138,7 +138,7 @@ EOF;
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
-                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php']
+                'path' => ['dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php'],
             ],
             ['capture_stderr_separately' => true]
         );
@@ -169,8 +169,8 @@ EOF;
                 'prefix' => 'MyPrefix\\\\',
                 'path' => [
                     'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php',
-                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MySecondClass.php'
-                ]
+                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MySecondClass.php',
+                ],
             ],
             ['capture_stderr_separately' => true]
         );
@@ -205,7 +205,7 @@ EOF;
             [
                 'add-prefix',
                 'prefix' => 'MyPrefix\\\\',
-                'path' => ['dir'.DIRECTORY_SEPARATOR.'MyIncorrectClass.php']
+                'path' => ['dir'.DIRECTORY_SEPARATOR.'MyIncorrectClass.php'],
             ],
             ['capture_stderr_separately' => true]
         );

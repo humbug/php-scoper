@@ -59,7 +59,7 @@ class PhpScoperTest extends TestCase
     {
         $output = $this->runPhpScoper(['add-prefix', 'MyPrefix\\', $this->tempDir]);
 
-        /**
+        /*
          * Just quickly check that directly running bin/php-scoper output
          * that it was working:
          */

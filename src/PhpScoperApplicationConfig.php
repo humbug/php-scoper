@@ -28,7 +28,7 @@ class PhpScoperApplicationConfig
         $app->command(
             'add-prefix prefix path*',
             function ($prefix, $path, OutputInterface $output) {
-                $handler = new AddPrefixCommandHandler;
+                $handler = new AddPrefixCommandHandler();
                 $handler->handle($prefix, $path, $output);
             }
         );
