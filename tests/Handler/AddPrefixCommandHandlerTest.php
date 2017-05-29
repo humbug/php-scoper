@@ -38,7 +38,6 @@ class AddPrefixCommandHandlerTest extends TestCase
      */
     private $tempDir;
 
-
     protected function setUp()
     {
         if (is_null($this->appTester)) {

@@ -16,7 +16,7 @@
         "symfony/finder": "^3.2",
         "padraic/phar-updater": "^1.0.3",
         "nikic/php-parser": "^3.0",
-        "mnapoli/silly": "^1.5",
+        "mnapoli/silly": "^1.6",
         "symfony/console": "^3.2"
     },
     "require-dev": {
