@@ -57,7 +57,7 @@ class PhpScoperTest extends TestCase
 
     public function testAddPrefixToDir()
     {
-        $output = $this->runPhpScoper(['add-prefix', 'MyPrefix\\', $this->tempDir]);
+        $output = $this->runPhpScoper(['add-prefix', 'MyPrefix\\', '-vvv', $this->tempDir]);
 
         /*
          * Just quickly check that directly running bin/php-scoper output
@@ -77,7 +77,7 @@ class PhpScoperTest extends TestCase
 
         if (0 !== $status) {
             // for debugging
-            var_dump($process->getErrorOutput());
+            echo(PHP_EOL . $process->getErrorOutput() . PHP_EOL);
         }
 
         $this->assertSame(0, $status);

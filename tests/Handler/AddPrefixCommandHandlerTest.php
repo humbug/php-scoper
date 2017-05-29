@@ -14,8 +14,8 @@ namespace Webmozart\PhpScoper\Tests\Handler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PhpScoper\PhpScoperApplication;
-use Webmozart\PhpScoper\PhpScoperApplicationConfig;
+use Webmozart\PhpScoper\Console\Application;
+use Webmozart\PhpScoper\Console\ApplicationConfig;
 use Webmozart\PhpScoper\Tests\TestUtil;
 
 /**
@@ -41,10 +41,11 @@ class AddPrefixCommandHandlerTest extends TestCase
     protected function setUp()
     {
         if (is_null($this->appTester)) {
-            $app = new PhpScoperApplication();
-            $conf = new PhpScoperApplicationConfig();
+            $app = new Application();
+            $conf = new ApplicationConfig();
             $conf->configure($app);
             $app->setAutoExit(false);
+            $app->setCatchExceptions(false);
             $this->appTester = new ApplicationTester($app);
         }
 
@@ -117,6 +118,7 @@ EOF;
         );
 
         $expected = <<<'EOF'
+No PHP files to scope located with given path(s).
 
 EOF;
 
@@ -218,5 +220,24 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
         $this->assertSame($expected, $this->appTester->getDisplay(true));
+    }
+
+    /**
+     * @expectedException Webmozart\PhpScoper\Exception\RuntimeException
+     */
+    public function testNonExistingPathOrFileThrowsException()
+    {
+        chdir($this->tempDir);
+
+        $this->appTester->run(
+            [
+                'add-prefix',
+                'prefix' => 'MyPrefix\\\\',
+                'path' => ['./the/path/to/nowhere'],
+            ],
+            ['capture_stderr_separately' => true]
+        );
+
+        $this->assertSame(1, $this->appTester->getStatusCode());
     }
 }

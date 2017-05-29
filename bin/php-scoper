@@ -10,8 +10,8 @@
  * file that was distributed with this source code.
  */
 
-use Webmozart\PhpScoper\PhpScoperApplication;
-use Webmozart\PhpScoper\PhpScoperApplicationConfig;
+use Webmozart\PhpScoper\Console\Application;
+use Webmozart\PhpScoper\Console\ApplicationConfig;
 
 if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {
     require_once $autoload;
@@ -19,8 +19,8 @@ if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {
     require_once __DIR__.'/../vendor/autoload.php';
 }
 
-$app = new PhpScoperApplication();
-$conf = new PhpScoperApplicationConfig();
+$app = new Application();
+$conf = new ApplicationConfig();
 $conf->configure($app);
 
 $app->run();

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper;
+namespace Webmozart\PhpScoper\Console;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
@@ -21,9 +21,9 @@ use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
  *
  * @author Bernhard Schussek <bschussek@gmail.com>
  */
-class PhpScoperApplicationConfig
+class ApplicationConfig
 {
-    public function configure(PhpScoperApplication $app)
+    public function configure(Application $app)
     {
         $app->command(
             'add-prefix prefix path*',
@@ -32,6 +32,5 @@ class PhpScoperApplicationConfig
                 $handler->handle($prefix, $path, $output);
             }
         );
-        $app->setDefaultCommand('add-prefix');
     }
 }

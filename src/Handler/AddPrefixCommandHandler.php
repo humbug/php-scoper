@@ -16,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Webmozart\PhpScoper\Exception\ParsingException;
+use Webmozart\PhpScoper\Exception\RuntimeException;
 use Webmozart\PhpScoper\Scoper;
 
 /**
@@ -60,25 +61,42 @@ class AddPrefixCommandHandler
     public function handle($prefix, array $paths, OutputInterface $output)
     {
         $prefix = rtrim($prefix, '\\');
+        $pathsToSearch = [];
+        $filesToAppend = [];
 
         foreach ($paths as $path) {
             if (!$this->filesystem->isAbsolutePath($path)) {
                 $path = getcwd().DIRECTORY_SEPARATOR.$path;
             }
 
+            if (($exists = !file_exists($path)) || !is_readable($path)) {
+                $issue = $exists ? 'does not exist' : 'is not readable';
+                throw new RuntimeException(sprintf(
+                    'A given path %s: %s',
+                    $issue,
+                    $path
+                ));
+            }
+
             if (is_dir($path)) {
-                $this->finder->files()->name('*.php')->in($path)->sortByName();
-
-                foreach ($this->finder as $file) {
-                    $this->scopeFile($file->getPathName(), $prefix, $output);
-                }
+                $pathsToSearch[] = $path;
+            } else {
+                $filesToAppend[] = $path;
             }
+        }
 
-            if (!is_file($path)) {
-                continue;
+        $this->finder->files()
+            ->name('*.php')
+            ->in($pathsToSearch)
+            ->append($filesToAppend)
+            ->sortByName();
+
+        if (0 == count($this->finder)) {
+            $output->writeLn('No PHP files to scope located with given path(s).');
+        } else {
+            foreach ($this->finder as $file) {
+                $this->scopeFile($file->getPathName(), $prefix, $output);
             }
-
-            $this->scopeFile($path, $prefix, $output);
         }
 
         return 0;

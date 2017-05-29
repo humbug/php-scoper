@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper;
+namespace Webmozart\PhpScoper\Console;
 
 use Silly\Application as SillyApplication;
 
-class PhpScoperApplication extends SillyApplication
+class Application extends SillyApplication
 {
     /**
      * The version of the PHP-Scoper.
