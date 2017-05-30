@@ -28,9 +28,9 @@ class ApplicationConfig
     {
         $app->command(
             'add-prefix prefix path*',
-            function ($prefix, $path, OutputInterface $output) use ($app) {
+            function ($prefix, $path, OutputInterface $output) {
                 $formatter = new BasicFormatter($output);
-                $formatter->outputScopingStart($app);
+                $formatter->outputScopingStart();
                 $handler = new AddPrefixCommandHandler();
                 $handler->handle($prefix, $path, $formatter);
                 $formatter->outputScopingEnd();

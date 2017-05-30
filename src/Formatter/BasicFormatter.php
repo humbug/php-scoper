@@ -27,7 +27,7 @@ class BasicFormatter
         $this->io = $output;
     }
 
-    public function outputScopingStart(Application $app)
+    public function outputScopingStart()
     {
         if (Application::VERSION == '@package_version@') {
             $version = '1.0-dev';

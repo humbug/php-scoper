@@ -19,4 +19,18 @@ class Application extends SillyApplication
      * The version of the PHP-Scoper.
      */
     const VERSION = '@package_version@';
+
+    public function __construct()
+    {
+        if (Application::VERSION == '@package_version@') {
+            $version = '1.0-dev';
+        } else {
+            $version = Application::VERSION;
+        }
+        
+        parent::__construct(
+            'php-scoper',
+            $version
+        );
+    }
 }
