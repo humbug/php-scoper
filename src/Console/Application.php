@@ -27,7 +27,7 @@ class Application extends SillyApplication
         } else {
             $version = self::VERSION;
         }
-        
+
         parent::__construct(
             'php-scoper',
             $version
