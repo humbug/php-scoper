@@ -22,10 +22,10 @@ class Application extends SillyApplication
 
     public function __construct()
     {
-        if (Application::VERSION == '@package_version@') {
+        if (self::VERSION == '@package_version@') {
             $version = '1.0-dev';
         } else {
-            $version = Application::VERSION;
+            $version = self::VERSION;
         }
         
         parent::__construct(

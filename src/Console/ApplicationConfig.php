@@ -12,8 +12,8 @@
 namespace Webmozart\PhpScoper\Console;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
 use Webmozart\PhpScoper\Formatter\BasicFormatter;
+use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
 
 /**
  * The configuration of the PHP-Scoper CLI.

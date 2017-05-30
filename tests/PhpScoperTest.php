@@ -77,7 +77,7 @@ class PhpScoperTest extends TestCase
 
         if (0 !== $status) {
             // for debugging
-            echo(PHP_EOL.$process->getErrorOutput().PHP_EOL);
+            echo PHP_EOL.$process->getErrorOutput().PHP_EOL;
         }
 
         $this->assertSame(0, $status);
