@@ -63,7 +63,7 @@ class PhpScoperTest extends TestCase
          * Just quickly check that directly running bin/php-scoper output
          * that it was working:
          */
-        $this->assertStringStartsWith('Scoping', $output);
+        $this->assertContains('Scoping', $output);
     }
 
     private function runPhpScoper(array $args)
@@ -77,7 +77,7 @@ class PhpScoperTest extends TestCase
 
         if (0 !== $status) {
             // for debugging
-            echo(PHP_EOL . $process->getErrorOutput() . PHP_EOL);
+            echo(PHP_EOL.$process->getErrorOutput().PHP_EOL);
         }
 
         $this->assertSame(0, $status);

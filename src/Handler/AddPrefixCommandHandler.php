@@ -12,11 +12,11 @@
 namespace Webmozart\PhpScoper\Handler;
 
 use PhpParser\ParserFactory;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Webmozart\PhpScoper\Exception\ParsingException;
 use Webmozart\PhpScoper\Exception\RuntimeException;
+use Webmozart\PhpScoper\Formatter\BasicFormatter;
 use Webmozart\PhpScoper\Scoper;
 
 /**
@@ -58,7 +58,7 @@ class AddPrefixCommandHandler
      *
      * @return int Returns 0 on success and a positive integer on error.
      */
-    public function handle($prefix, array $paths, OutputInterface $output)
+    public function handle($prefix, array $paths, BasicFormatter $formatter)
     {
         $prefix = rtrim($prefix, '\\');
         $pathsToSearch = [];
@@ -91,26 +91,32 @@ class AddPrefixCommandHandler
             ->append($filesToAppend)
             ->sortByName();
 
-        if (0 == count($this->finder)) {
-            $output->writeLn('No PHP files to scope located with given path(s).');
-        } else {
-            foreach ($this->finder as $file) {
-                $this->scopeFile($file->getPathName(), $prefix, $output);
-            }
-        }
+        $this->scopeFiles($prefix, $formatter);
 
         return 0;
     }
 
-    private function scopeFile($path, $prefix, OutputInterface $output)
+    private function scopeFiles($prefix, BasicFormatter $formatter)
+    {
+        $count = count($this->finder);
+        $formatter->outputFileCount($count);
+
+        if ($count > 0) {
+            foreach ($this->finder as $file) {
+                $this->scopeFile($file->getPathName(), $prefix, $formatter);
+            }
+        }
+    }
+
+    private function scopeFile($path, $prefix, BasicFormatter $formatter)
     {
         $fileContent = file_get_contents($path);
         try {
             $scoppedContent = $this->scoper->addNamespacePrefix($fileContent, $prefix);
             $this->filesystem->dumpFile($path, $scoppedContent);
-            $output->writeLn(sprintf('Scoping %s. . . Success', $path));
+            $formatter->outputSuccess($path);
         } catch (ParsingException $exception) {
-            $output->writeLn(sprintf('Scoping %s. . . Fail', $path));
+            $formatter->outputFail($path);
         }
     }
 }

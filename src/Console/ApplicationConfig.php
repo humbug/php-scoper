@@ -13,6 +13,7 @@ namespace Webmozart\PhpScoper\Console;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PhpScoper\Handler\AddPrefixCommandHandler;
+use Webmozart\PhpScoper\Formatter\BasicFormatter;
 
 /**
  * The configuration of the PHP-Scoper CLI.
@@ -27,9 +28,12 @@ class ApplicationConfig
     {
         $app->command(
             'add-prefix prefix path*',
-            function ($prefix, $path, OutputInterface $output) {
+            function ($prefix, $path, OutputInterface $output) use ($app) {
+                $formatter = new BasicFormatter($output);
+                $formatter->outputScopingStart($app);
                 $handler = new AddPrefixCommandHandler();
-                $handler->handle($prefix, $path, $output);
+                $handler->handle($prefix, $path, $formatter);
+                $formatter->outputScopingEnd();
             }
         );
     }

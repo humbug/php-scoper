@@ -85,7 +85,7 @@ EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
-        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertStringEndsWith($expected, $this->appTester->getDisplay(true));
         $this->assertEmpty($this->appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
@@ -123,7 +123,7 @@ No PHP files to scope located with given path(s).
 EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
-        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertStringEndsWith($expected, $this->appTester->getDisplay(true));
         $this->assertEmpty($this->appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
@@ -152,7 +152,7 @@ EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
-        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertStringEndsWith($expected, $this->appTester->getDisplay(true));
         $this->assertEmpty($this->appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
@@ -185,7 +185,7 @@ EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
-        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertStringEndsWith($expected, $this->appTester->getDisplay(true));
         $this->assertEmpty($this->appTester->getErrorOutput(true));
 
         $this->assertFileEquals(
@@ -219,11 +219,11 @@ EOF;
         $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
-        $this->assertSame($expected, $this->appTester->getDisplay(true));
+        $this->assertStringEndsWith($expected, $this->appTester->getDisplay(true));
     }
 
     /**
-     * @expectedException Webmozart\PhpScoper\Exception\RuntimeException
+     * @expectedException \Webmozart\PhpScoper\Exception\RuntimeException
      */
     public function testNonExistingPathOrFileThrowsException()
     {
