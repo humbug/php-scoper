@@ -57,6 +57,5 @@ class BasicFormatter
 
     public function outputScopingEnd()
     {
-
     }
 }
