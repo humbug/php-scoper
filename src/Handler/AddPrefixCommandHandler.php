@@ -53,8 +53,9 @@ class AddPrefixCommandHandler
     /**
      * Handles the "add-prefix" command.
      *
-     * @param Args $args The console arguments.
-     * @param IO   $io   The I/O.
+     * @param string $prefix
+     * @param string[] $paths
+     * @param BasicFormatter $formatter
      *
      * @return int Returns 0 on success and a positive integer on error.
      */
@@ -96,18 +97,29 @@ class AddPrefixCommandHandler
         return 0;
     }
 
+    /**
+     * Scopes all files attached to Finder instance
+     * 
+     * @param string $prefix
+     * @param BasicFormatter $formatter
+     */
     private function scopeFiles($prefix, BasicFormatter $formatter)
     {
         $count = count($this->finder);
         $formatter->outputFileCount($count);
 
-        if ($count > 0) {
-            foreach ($this->finder as $file) {
-                $this->scopeFile($file->getPathName(), $prefix, $formatter);
-            }
+        foreach ($this->finder as $file) {
+            $this->scopeFile($file->getPathName(), $prefix, $formatter);
         }
     }
 
+    /**
+     * Scopes a given file
+     * 
+     * @param string $path
+     * @param string $prefix
+     * @param BasicFormatter $formatter
+     */
     private function scopeFile($path, $prefix, BasicFormatter $formatter)
     {
         $fileContent = file_get_contents($path);

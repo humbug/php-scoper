@@ -33,4 +33,13 @@ class Application extends SillyApplication
             $version
         );
     }
+
+    /**
+     * Retrieve version from composer.lock
+     * @return string
+     */
+    private function retrieveVersion()
+    {
+
+    }
 }

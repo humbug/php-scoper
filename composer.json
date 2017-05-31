@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
+        "php": "^7.0 || ^7.1",
         "webmozart/path-util": "^2.3",
         "symfony/filesystem": "^3.2",
         "symfony/process": "^3.2",
