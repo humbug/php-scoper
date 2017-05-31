@@ -53,8 +53,8 @@ class AddPrefixCommandHandler
     /**
      * Handles the "add-prefix" command.
      *
-     * @param string $prefix
-     * @param string[] $paths
+     * @param string         $prefix
+     * @param string[]       $paths
      * @param BasicFormatter $formatter
      *
      * @return int Returns 0 on success and a positive integer on error.
@@ -100,7 +100,7 @@ class AddPrefixCommandHandler
     /**
      * Scopes all files attached to Finder instance
      * 
-     * @param string $prefix
+     * @param string         $prefix
      * @param BasicFormatter $formatter
      */
     private function scopeFiles($prefix, BasicFormatter $formatter)
@@ -116,8 +116,8 @@ class AddPrefixCommandHandler
     /**
      * Scopes a given file
      * 
-     * @param string $path
-     * @param string $prefix
+     * @param string         $path
+     * @param string         $prefix
      * @param BasicFormatter $formatter
      */
     private function scopeFile($path, $prefix, BasicFormatter $formatter)
