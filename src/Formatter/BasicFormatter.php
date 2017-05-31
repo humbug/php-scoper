@@ -23,11 +23,17 @@ class BasicFormatter
      */
     protected $io;
 
+    /**
+     * @param OutputInterface $output
+     */
     public function __construct(OutputInterface $output)
     {
         $this->io = $output;
     }
 
+    /**
+     * Output version details at start
+     */
     public function outputScopingStart()
     {
         if (Application::VERSION == '@package_version@') {
@@ -38,6 +44,11 @@ class BasicFormatter
         $this->io->writeLn(sprintf('PHP Scoper %s', $version));
     }
 
+    /**
+     * Output file count message if relevant
+     *
+     * @param int $count
+     */
     public function outputFileCount(int $count)
     {
         if (0 === $count) {
@@ -45,11 +56,21 @@ class BasicFormatter
         }
     }
 
+    /**
+     * Output file count message if relevant
+     *
+     * @param string $path
+     */
     public function outputSuccess(string $path)
     {
         $this->io->writeLn(sprintf('Scoping %s. . . Success', $path));
     }
 
+    /**
+     * Output file count message if relevant
+     *
+     * @param string $path
+     */
     public function outputFail(string $path)
     {
         $this->io->writeLn(sprintf('Scoping %s. . . Fail', $path));
