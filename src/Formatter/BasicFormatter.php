@@ -32,7 +32,7 @@ class BasicFormatter
     }
 
     /**
-     * Output version details at start
+     * Output version details at start.
      */
     public function outputScopingStart()
     {
@@ -45,7 +45,7 @@ class BasicFormatter
     }
 
     /**
-     * Output file count message if relevant
+     * Output file count message if relevant.
      *
      * @param int $count
      */
@@ -57,7 +57,7 @@ class BasicFormatter
     }
 
     /**
-     * Output file count message if relevant
+     * Output scoping success message.
      *
      * @param string $path
      */
@@ -67,7 +67,7 @@ class BasicFormatter
     }
 
     /**
-     * Output file count message if relevant
+     * Output scoping failure message.
      *
      * @param string $path
      */
