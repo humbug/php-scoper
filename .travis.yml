@@ -21,6 +21,8 @@ matrix:
     - php: nightly
   fast_finish: true
 
+before_script: phpenv config-rm xdebug.ini || true
+
 install: composer update --no-interaction --no-suggest --prefer-dist $COMPOSER_FLAGS
 
-script: vendor/bin/phpunit --verbose --coverage-text
+script: phpdbg -qrr vendor/bin/phpunit --verbose --coverage-text

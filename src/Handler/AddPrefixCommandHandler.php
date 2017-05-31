@@ -98,7 +98,7 @@ class AddPrefixCommandHandler
     }
 
     /**
-     * Scopes all files attached to Finder instance
+     * Scopes all files attached to Finder instance.
      *
      * @param string         $prefix
      * @param BasicFormatter $formatter
@@ -114,7 +114,7 @@ class AddPrefixCommandHandler
     }
 
     /**
-     * Scopes a given file
+     * Scopes a given file.
      *
      * @param string         $path
      * @param string         $prefix
