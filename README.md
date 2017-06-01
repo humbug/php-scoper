@@ -1,37 +1,31 @@
-PHP-Scoper
-==========
+# PHP-Scoper
 
-[![Build Status](https://travis-ci.org/humbug/php-scoper.svg?branch=master)](https://travis-ci.org/humbug/php-scoper)
-[![Build status](https://ci.appveyor.com/api/projects/status/oa95nul9v8uv9emw/branch/master?svg=true)](https://ci.appveyor.com/project/humbug/php-scoper/branch/master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
+[![Package version](https://img.shields.io/packagist/v/humbug/php-scoper.svg?style=flat-square)](https://packagist.org/packages/humbug/php-scoper)
+[![Travis Build Status](https://img.shields.io/travis/humbug/php-scoper.svg?branch=master&style=flat-square)](https://travis-ci.org/humbug/php-scoper?branch=master)
+[![AppVeyor Build Status](https://img.shields.io/appveyor/ci/humbug/php-scoper.svg?branch=master&style=flat-square)](https://ci.appveyor.com/project/humbug/php-scoper/branch/master)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/humbug/php-scoper.svg?branch=master&style=flat-square)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
-[![StyleCI](https://styleci.io/repos/44384447/shield?branch=master)](https://styleci.io/repos/44384447)
-[![Latest Stable Version](https://poser.pugx.org/humbug/php-scoper/v/stable.svg)](https://packagist.org/packages/humbug/php-scoper)
-[![Total Downloads](https://poser.pugx.org/humbug/php-scoper/downloads.svg)](https://packagist.org/packages/humbug/php-scoper)
-[![Dependency Status](https://www.versioneye.com/php/humbug:php-scoper/1.0.0/badge.svg)](https://www.versioneye.com/php/humbug:php-scoper/1.0.0)
-
-Latest release: none
-
-PHP >= 7.0
+[![Slack](https://img.shields.io/badge/slack-%23humbug-red.svg?style=flat-square)](https://symfony.com/slack-invite)
+[![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](LICENSE)
 
 PHP-Scoper is a tool for adding a prefix to all PHP namespaces in a given file
 or directory. 
 
-Goal
-----
+
+## Goal
 
 PHP-Scoper's goal is to make sure that all code in a directory lies in a 
 distinct PHP namespace. This is necessary when building PHARs that 
 
-* bundle their own vendor dependencies
-* load code of arbitrary PHP projects
+* Bundle their own vendor dependencies
+* Load code of arbitrary PHP projects
 
 These PHARs run the risk of raising conflicts between their bundled vendors and 
 the vendors of the loaded project, if the vendors are required in incompatible
 versions.
 
-Usage
------
+
+## Usage
 
 Use PHP-Scoper like this:
 
@@ -43,30 +37,17 @@ The first argument is the prefix to add to all namespace declarations and class
 usages. The second argument is one or more files/directories which should be 
 processed.
 
-Authors
--------
 
-* [The Community Contributors]
+## Contributing
 
-Contribute
-----------
+[Contribution Guide](CONTRIBUTING.md)
 
-Contributions to are very welcome!
 
-* Report any bugs or issues you find on the [issue tracker].
-* You can grab the source code at PHP-Scoper's [Git repository].
+## Credits
 
-Support
--------
+Project originally created by: [Bernhard Schussek]([@webmozart]) which has then been moved under the
+[Humbug umbrella][humbug].
 
-Pending
-
-License
--------
-
-All contents of this package are licensed under the [MIT license].
-
-Project originally created by: [Bernhard Schussek] ([@webmozart])
 
 [The Community Contributors]: https://github.com/humbug/php-scoper/graphs/contributors
 [Issue tracker]: https://github.com/humbug/php-scoper/issues
@@ -74,3 +55,4 @@ Project originally created by: [Bernhard Schussek] ([@webmozart])
 [MIT license]: LICENSE
 [Bernhard Schussek]: https://webmozart.io/
 [@webmozart]: https://twitter.com/webmozart
+[humbug]: https://github.com/humbug

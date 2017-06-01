@@ -1,0 +1,6 @@
+{
+    "require-dev": {
+        "sllh/php-cs-fixer-styleci-bridge": "^2.1",
+        "friendsofphp/php-cs-fixer": "^2.3"
+    }
+}

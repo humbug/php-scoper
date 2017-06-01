@@ -1,4 +1,5 @@
-/build/
-/vendor/
-/composer.lock
 /box.json
+/build/
+/composer.lock
+/vendor/
+/vendor-bin/*/vendor/
