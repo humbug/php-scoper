@@ -29,7 +29,6 @@
         "webmozart/path-util": "^2.3"
     },
     "require-dev": {
-        "bamarni/composer-bin-plugin": "^1.1",
         "phpunit/phpunit": "^6.1",
         "sebastian/version": "^2.0"
     },
@@ -50,9 +49,6 @@
         "sort-packages": true
     },
     "extra": {
-        "bamarni-bin": {
-            "bin-links": false
-        },
         "branch-alias": {
             "dev-master": "1.0-dev"
         }

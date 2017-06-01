@@ -2,4 +2,3 @@
 /build/
 /composer.lock
 /vendor/
-/vendor-bin/*/vendor/
