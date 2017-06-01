@@ -72,5 +72,5 @@ Project originally created by: [Bernhard Schussek] ([@webmozart])
 [Issue tracker]: https://github.com/humbug/php-scoper/issues
 [Git repository]: https://github.com/humbug/php-scoper
 [MIT license]: LICENSE
-[Bernhard Schussek]: http://webmozarts.com
+[Bernhard Schussek]: https://webmozart.io/
 [@webmozart]: https://twitter.com/webmozart
