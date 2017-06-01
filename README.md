@@ -4,6 +4,7 @@ PHP-Scoper
 [![Build Status](https://travis-ci.org/humbug/php-scoper.svg?branch=master)](https://travis-ci.org/humbug/php-scoper)
 [![Build status](https://ci.appveyor.com/api/projects/status/oa95nul9v8uv9emw/branch/master?svg=true)](https://ci.appveyor.com/project/humbug/php-scoper/branch/master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
 [![StyleCI](https://styleci.io/repos/44384447/shield?branch=master)](https://styleci.io/repos/44384447)
 [![Latest Stable Version](https://poser.pugx.org/humbug/php-scoper/v/stable.svg)](https://packagist.org/packages/humbug/php-scoper)
 [![Total Downloads](https://poser.pugx.org/humbug/php-scoper/downloads.svg)](https://packagist.org/packages/humbug/php-scoper)
@@ -11,7 +12,7 @@ PHP-Scoper
 
 Latest release: none
 
-PHP >= 5.5
+PHP >= 7.0
 
 PHP-Scoper is a tool for adding a prefix to all PHP namespaces in a given file
 or directory. 
@@ -45,7 +46,6 @@ processed.
 Authors
 -------
 
-* [Bernhard Schussek] a.k.a. [@webmozart]
 * [The Community Contributors]
 
 Contribute
@@ -66,11 +66,11 @@ License
 
 All contents of this package are licensed under the [MIT license].
 
+Project originally created by: [Bernhard Schussek] ([@webmozart])
+
 [The Community Contributors]: https://github.com/humbug/php-scoper/graphs/contributors
 [Issue tracker]: https://github.com/humbug/php-scoper/issues
 [Git repository]: https://github.com/humbug/php-scoper
 [MIT license]: LICENSE
-
-Project originally created by:
 [Bernhard Schussek]: http://webmozarts.com
 [@webmozart]: https://twitter.com/webmozart
