@@ -82,6 +82,150 @@ EOF;
         $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
     }
 
+    public function testShouldScopeMNamespacedFunctionUse()
+    {
+        $content = <<<EOF
+<?php
+
+use function FooNamespace\\foo;
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use function MyPrefix\FooNamespace\\foo;
+
+EOF;
+
+        $this->assertEquals($expected, $r = $this->scoper->addNamespacePrefix($content, 'MyPrefix'), $r);
+    }
+
+    public function testShouldScopeNamespacedConstantUse()
+    {
+        $content = <<<EOF
+<?php
+
+use const FooNamespace\FOO;
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use const MyPrefix\FooNamespace\FOO;
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+    }
+
+    public function testShouldScopeMultipleNamespaceUsesInOneStatement()
+    {
+        $content = <<<EOF
+<?php
+
+use FooNamespace as Foo, BarNamespace as Bar;
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use MyPrefix\FooNamespace as Foo, MyPrefix\BarNamespace as Bar;
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+    }
+
+    public function testShouldScopeMultipleNamespacedFunctionUsesInOneStatement()
+    {
+        $content = <<<EOF
+<?php
+
+use function FooNamespace\\foo, BarNamespace\bar;
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use function MyPrefix\FooNamespace\\foo, MyPrefix\BarNamespace\bar;
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+    }
+
+    public function testShouldScopeMultipleNamespacedConstantUsesInOneStatement()
+    {
+        $content = <<<EOF
+<?php
+
+use const FooNamespace\FOO, BarNamespace\BAR;
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use const MyPrefix\FooNamespace\FOO, MyPrefix\BarNamespace\BAR;
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+    }
+
+    public function testShouldScopeMultipleSubNamespaceUsesInOneStatement()
+    {
+        $content = <<<EOF
+<?php
+
+use AnotherNamespace\{Foo,Bar,Baz};
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use MyPrefix\AnotherNamespace\{Foo,Bar,Baz};
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+    }
+
+    public function testShouldScopeMultipleSubNamespacedFunctionUsesInOneStatement()
+    {
+        $content = <<<EOF
+<?php
+
+use function AnotherNamespace\{foo,bar,baz};
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use function MyPrefix\AnotherNamespace\{foo,bar,baz};
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+    }
+
+    public function testShouldScopeMultipleSubNamespacedConstantUsesInOneStatement()
+    {
+        $content = <<<EOF
+<?php
+
+use const AnotherNamespace\{FOO,BAR,BAZ};
+
+EOF;
+        $expected = <<<EOF
+<?php
+
+use const MyPrefix\AnotherNamespace\{FOO,BAR,BAZ};
+
+EOF;
+
+        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+    }
+
     public function testScopeFullyQualifiedNamespaceUse()
     {
         $content = <<<EOF
