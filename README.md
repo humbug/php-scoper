@@ -45,14 +45,10 @@ processed.
 
 ## Credits
 
-Project originally created by: [Bernhard Schussek]([@webmozart]) which has then been moved under the
+Project originally created by: [Bernhard Schussek] ([@webmozart]) which has then been moved under the
 [Humbug umbrella][humbug].
 
 
-[The Community Contributors]: https://github.com/humbug/php-scoper/graphs/contributors
-[Issue tracker]: https://github.com/humbug/php-scoper/issues
-[Git repository]: https://github.com/humbug/php-scoper
-[MIT license]: LICENSE
 [Bernhard Schussek]: https://webmozart.io/
 [@webmozart]: https://twitter.com/webmozart
 [humbug]: https://github.com/humbug
