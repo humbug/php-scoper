@@ -14,9 +14,9 @@ namespace Webmozart\PhpScoper\Handler;
 use PhpParser\ParserFactory;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Webmozart\Console\Api\Args\Args;
-use Webmozart\Console\Api\IO\IO;
 use Webmozart\PhpScoper\Exception\ParsingException;
+use Webmozart\PhpScoper\Exception\RuntimeException;
+use Webmozart\PhpScoper\Formatter\BasicFormatter;
 use Webmozart\PhpScoper\Scoper;
 
 /**
@@ -53,48 +53,82 @@ class AddPrefixCommandHandler
     /**
      * Handles the "add-prefix" command.
      *
-     * @param Args $args The console arguments.
-     * @param IO   $io   The I/O.
+     * @param string         $prefix
+     * @param string[]       $paths
+     * @param BasicFormatter $formatter
      *
      * @return int Returns 0 on success and a positive integer on error.
      */
-    public function handle(Args $args, IO $io)
+    public function handle($prefix, array $paths, BasicFormatter $formatter)
     {
-        $prefix = rtrim($args->getArgument('prefix'), '\\');
-        $paths = $args->getArgument('path');
+        $prefix = rtrim($prefix, '\\');
+        $pathsToSearch = [];
+        $filesToAppend = [];
 
         foreach ($paths as $path) {
             if (!$this->filesystem->isAbsolutePath($path)) {
                 $path = getcwd().DIRECTORY_SEPARATOR.$path;
             }
 
+            if (($exists = !file_exists($path)) || !is_readable($path)) {
+                $issue = $exists ? 'does not exist' : 'is not readable';
+                throw new RuntimeException(sprintf(
+                    'A given path %s: %s',
+                    $issue,
+                    $path
+                ));
+            }
+
             if (is_dir($path)) {
-                $this->finder->files()->name('*.php')->in($path)->sortByName();
-
-                foreach ($this->finder as $file) {
-                    $this->scopeFile($file->getPathName(), $prefix, $io);
-                }
+                $pathsToSearch[] = $path;
+            } else {
+                $filesToAppend[] = $path;
             }
-
-            if (!is_file($path)) {
-                continue;
-            }
-
-            $this->scopeFile($path, $prefix, $io);
         }
+
+        $this->finder->files()
+            ->name('*.php')
+            ->in($pathsToSearch)
+            ->append($filesToAppend)
+            ->sortByName();
+
+        $this->scopeFiles($prefix, $formatter);
 
         return 0;
     }
 
-    private function scopeFile($path, $prefix, IO $io)
+    /**
+     * Scopes all files attached to Finder instance.
+     *
+     * @param string         $prefix
+     * @param BasicFormatter $formatter
+     */
+    private function scopeFiles($prefix, BasicFormatter $formatter)
+    {
+        $count = count($this->finder);
+        $formatter->outputFileCount($count);
+
+        foreach ($this->finder as $file) {
+            $this->scopeFile($file->getPathName(), $prefix, $formatter);
+        }
+    }
+
+    /**
+     * Scopes a given file.
+     *
+     * @param string         $path
+     * @param string         $prefix
+     * @param BasicFormatter $formatter
+     */
+    private function scopeFile($path, $prefix, BasicFormatter $formatter)
     {
         $fileContent = file_get_contents($path);
         try {
             $scoppedContent = $this->scoper->addNamespacePrefix($fileContent, $prefix);
             $this->filesystem->dumpFile($path, $scoppedContent);
-            $io->writeLine(sprintf('Scoping %s. . . Success', $path));
+            $formatter->outputSuccess($path);
         } catch (ParsingException $exception) {
-            $io->errorLine(sprintf('Scoping %s. . . Fail', $path));
+            $formatter->outputFail($path);
         }
     }
 }

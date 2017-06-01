@@ -12,23 +12,17 @@ cache:
 
 matrix:
   include:
-    - php: 5.5
-    - php: 5.6
-    - php: 7.0
-    - php: 7.1
-    - php: 7.1
-      env: COMPOSER_FLAGS='--prefer-lowest --prefer-stable'
-    - php: hhvm
+    - php: '7.0'
+    - php: '7.1'
+    - php: '7.1'
+      env: COMPOSER_FLAGS='--prefer-lowest'
     - php: nightly
   allow_failures:
-    - php: 5.5
-    - php: hhvm
     - php: nightly
   fast_finish: true
 
-install: composer update $COMPOSER_FLAGS --prefer-source -n
+before_script: phpenv config-rm xdebug.ini || true
 
-script: vendor/bin/phpunit --verbose --coverage-clover=coverage.clover
+install: composer update --no-interaction --no-suggest --prefer-dist $COMPOSER_FLAGS
 
-after_script:
-  - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then wget https://scrutinizer-ci.com/ocular.phar && php ocular.phar code-coverage:upload --format=php-clover coverage.clover; fi;'
+script: phpdbg -qrr vendor/bin/phpunit --verbose --coverage-text
