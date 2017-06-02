@@ -514,4 +514,10 @@ use const Humbug\FooNamespace\FOO;
 PHP
             ];
     }
+
+    public function testShouldNotScopePhpOrSplReservedClasses()
+    {
+        $content = file_get_contents(__DIR__.'/Fixtures/reserved_classes.php');
+        $this->assertEquals($content, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+    }
 }

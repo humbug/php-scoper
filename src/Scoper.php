@@ -24,6 +24,14 @@ use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+<<<<<<< HEAD
+=======
+use Webmozart\PhpScoper\Exception\ParsingException;
+use Webmozart\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
+use Webmozart\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
+use Webmozart\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
+use Webmozart\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
+>>>>>>> Add method to ignore specific use statements
 
 /**
  * @final
@@ -48,8 +56,12 @@ class Scoper
     public function scope(string $content, string $prefix): string
     {
         $traverser = new NodeTraverser();
+<<<<<<< HEAD
         $traverser->addVisitor(new ParentNodeVisitor());
         $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
+=======
+        $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor());
+>>>>>>> Add method to ignore specific use statements
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));
