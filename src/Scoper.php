@@ -17,6 +17,7 @@ use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 use Webmozart\PhpScoper\Exception\ParsingException;
 use Webmozart\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
+use Webmozart\PhpScoper\NodeVisitor\GroupUseNamespaceScoperNodeVisitor;
 use Webmozart\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Webmozart\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 
@@ -43,6 +44,7 @@ class Scoper
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
+        $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));
 
         try {
