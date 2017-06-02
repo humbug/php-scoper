@@ -60,7 +60,11 @@ class AddPrefixCommandHandlerTest extends TestCase
     {
         chdir($this->workingDirectory);
         $filesystem = new Filesystem();
-        $filesystem->remove($this->tempDir);
+        if (!defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $filesystem->remove($this->tempDir);
+        } else {
+            exec(sprintf("rd /s /q %s", escapeshellarg($this->tempDir)));
+        }
     }
 
     public function testAddPrefixToDirectory()
