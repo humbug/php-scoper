@@ -183,7 +183,7 @@ EOF;
         $expected = <<<EOF
 <?php
 
-use MyPrefix\AnotherNamespace\{Foo,Bar,Baz};
+use MyPrefix\AnotherNamespace\{Foo, Bar, Baz};
 
 EOF;
 
@@ -201,7 +201,7 @@ EOF;
         $expected = <<<EOF
 <?php
 
-use function MyPrefix\AnotherNamespace\{foo,bar,baz};
+use function MyPrefix\AnotherNamespace\{foo, bar, baz};
 
 EOF;
 
@@ -219,7 +219,7 @@ EOF;
         $expected = <<<EOF
 <?php
 
-use const MyPrefix\AnotherNamespace\{FOO,BAR,BAZ};
+use const MyPrefix\AnotherNamespace\{FOO, BAR, BAZ};
 
 EOF;
 
