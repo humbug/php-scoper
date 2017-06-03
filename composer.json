@@ -21,11 +21,12 @@
         "php": "^7.0",
         "mnapoli/silly": "^1.6",
         "nikic/php-parser": "^3.0",
+        "ocramius/package-versions": "^1.1",
+        "padraic/phar-updater": "^1.0.3",
         "symfony/console": "^3.2",
         "symfony/filesystem": "^3.2",
         "symfony/finder": "^3.2",
         "symfony/process": "^3.2",
-        "padraic/phar-updater": "^1.0.3",
         "webmozart/path-util": "^2.3"
     },
     "require-dev": {
@@ -41,8 +42,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Webmozart\\PhpScoper\\Tests\\": "tests/"
-        }
+            "Webmozart\\PhpScoper\\": "tests/"
+        },
+        "files": [
+            "tests/functions.php"
+        ]
     },
 
     "config": {

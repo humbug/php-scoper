@@ -15,16 +15,13 @@ use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use Webmozart\PhpScoper\Exception\ParsingException;
+use Webmozart\PhpScoper\Throwable\Exception\ParsingException;
 use Webmozart\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
 use Webmozart\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Webmozart\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 
-class Scoper
+final class Scoper
 {
-    /**
-     * @var Parser
-     */
     private $parser;
 
     public function __construct(Parser $parser)
@@ -33,12 +30,14 @@ class Scoper
     }
 
     /**
-     * @param $content
-     * @param $prefix
+     * @param string $content Content of the file to scope
+     * @param string $prefix Prefix to apply to the file
      *
-     * @return string
+     * @throws ParsingException
+     *
+     * @return string Content of the file with the prefix applied
      */
-    public function addNamespacePrefix($content, $prefix)
+    public function addNamespacePrefix(string $content, string $prefix): string
     {
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
@@ -48,7 +47,7 @@ class Scoper
         try {
             $statements = $this->parser->parse($content);
         } catch (Error $error) {
-            throw new ParsingException($error->getMessage());
+            throw new ParsingException($error->getMessage(), 0, $error);
         }
 
         $statements = $traverser->traverse($statements);

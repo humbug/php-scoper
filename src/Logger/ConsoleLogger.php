@@ -11,24 +11,23 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper\Formatter;
+namespace Webmozart\PhpScoper\Logger;
 
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\OutputInterface;
-use Webmozart\PhpScoper\Console\Application;
 
-class BasicFormatter
+/**
+ * @private
+ */
+final class ConsoleLogger
 {
-    /**
-     * @var OutputInterface
-     */
-    protected $io;
+    private $application;
+    private $io;
 
-    /**
-     * @param OutputInterface $output
-     */
-    public function __construct(OutputInterface $output)
+    public function __construct(Application $application, OutputInterface $output)
     {
         $this->io = $output;
+        $this->application = $application;
     }
 
     /**
@@ -36,11 +35,8 @@ class BasicFormatter
      */
     public function outputScopingStart()
     {
-        if (Application::VERSION == '@package_version@') {
-            $version = '1.0-dev';
-        } else {
-            $version = Application::VERSION;
-        }
+        $version = $this->application->getVersion();
+
         $this->io->writeLn(sprintf('PHP Scoper %s', $version));
     }
 

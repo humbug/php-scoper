@@ -1,7 +1,7 @@
-PHPUNIT=php -d zend.enable_gc=0 vendor/bin/phpunit
+PHPUNIT=vendor/bin/phpunit
 
 .DEFAULT_GOAL := help
-.PHONY: test tu
+.PHONY: test tc
 
 
 help:
@@ -12,13 +12,12 @@ help:
 ## Tests
 ##---------------------------------------------------------------------------
 
-test:           ## Run all the tests
-test: tu
+test:             ## Run PHPUnit tests
+test: vendor
+	php -d zend.enable_gc=0 $(PHPUNIT)
 
-tu:             ## Run the tests for the core library
-tu: vendor
-	$(PHPUNIT)
-
+tc: vendor
+	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage
 
 ##
 ## Rules from files

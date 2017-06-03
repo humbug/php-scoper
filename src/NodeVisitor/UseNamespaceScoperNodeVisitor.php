@@ -7,7 +7,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
-class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
     /**
      * @var string
@@ -19,6 +19,9 @@ class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         $this->prefix = $prefix;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof UseUse) {
