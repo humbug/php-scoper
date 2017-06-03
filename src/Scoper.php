@@ -40,9 +40,15 @@ class Scoper
 {
     private $parser;
 
-    public function __construct(Parser $parser)
+    /**
+     * @var array
+     */
+    private $declaredClasses;
+
+    public function __construct(Parser $parser, array $declaredClasses = [])
     {
         $this->parser = $parser;
+        $this->declaredClasses = $declaredClasses;
     }
 
     /**
@@ -57,11 +63,15 @@ class Scoper
     {
         $traverser = new NodeTraverser();
 <<<<<<< HEAD
+<<<<<<< HEAD
         $traverser->addVisitor(new ParentNodeVisitor());
         $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
 =======
         $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor());
 >>>>>>> Add method to ignore specific use statements
+=======
+        $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor($this->declaredClasses));
+>>>>>>> Map declared classes at start and route to Node Visitor
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));

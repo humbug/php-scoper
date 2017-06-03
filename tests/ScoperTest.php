@@ -34,7 +34,14 @@ class ScoperTest extends TestCase
      */
     public function setUp()
     {
+<<<<<<< HEAD
         $this->scoper = new Scoper(createParser());
+=======
+        $this->scoper = new Scoper(
+            (new ParserFactory())->create(ParserFactory::PREFER_PHP7),
+            ['Closure']
+        );
+>>>>>>> Map declared classes at start and route to Node Visitor
     }
 
     public function test_cannot_scope_an_invalid_PHP_file()

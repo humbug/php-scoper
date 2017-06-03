@@ -13,20 +13,28 @@
 namespace Webmozart\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
-class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
 
-    private static $reserved = [
-        'Closure'
-    ];
+    /**
+     * @var array
+     */
+    private $reserved;
 
+    public function __construct(array $declaredClasses)
+    {
+        $this->reserved = $declaredClasses;
+    }
+
+    /**
+     * @param Node $node
+     */
     public function enterNode(Node $node)
     {
-        if ($node instanceof UseUse && in_array((string) $node->name, self::$reserved)) {
+        if ($node instanceof UseUse && in_array((string) $node->name, $this->reserved)) {
             $node->setAttribute('phpscoper_ignore', true);
         }
     }
