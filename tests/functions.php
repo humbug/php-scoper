@@ -27,7 +27,7 @@ function makeTempDir(string $namespace, string $className): string
     // symlink to another directory (e.g. /var => /private/var on some Macs)
     // We want to know the real path to avoid comparison failures with
     // code that uses real paths only
-    $systemTempDir = Path::normalize(realpath(sys_get_temp_dir()));
+    $systemTempDir = str_replace('\\', '/', realpath(sys_get_temp_dir()));
     $basePath = $systemTempDir.'/'.$namespace.'/'.$shortClass;
 
     while (false === @mkdir($tempDir = $basePath.rand(10000, 99999), 0777, true)) {
