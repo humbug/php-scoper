@@ -11,7 +11,6 @@
 
 namespace Webmozart\PhpScoper\Handler;
 
-use Iterator;
 use PhpParser\ParserFactory;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;

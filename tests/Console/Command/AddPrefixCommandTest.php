@@ -15,7 +15,6 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
-use Symfony\Component\Console\Tests\ApplicationTest;
 use Symfony\Component\Filesystem\Filesystem;
 use function Webmozart\PhpScoper\makeTempDir;
 
