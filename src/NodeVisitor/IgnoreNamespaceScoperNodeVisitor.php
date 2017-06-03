@@ -13,6 +13,7 @@
 namespace Webmozart\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
@@ -20,7 +21,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
 
     /**
-     * @var array
+     * @var array Class names to ignore when scoping
      */
     private $reserved;
 
@@ -35,6 +36,9 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof UseUse && in_array((string) $node->name, $this->reserved)) {
+            $node->setAttribute('phpscoper_ignore', true);
+        }
+        if ($node instanceof FullyQualified && in_array((string) $node, $this->reserved)) {
             $node->setAttribute('phpscoper_ignore', true);
         }
     }
