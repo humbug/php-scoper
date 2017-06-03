@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper\Handler;
+namespace Humbug\PhpScoper\Handler;
 
 use PhpParser\ParserFactory;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Webmozart\PhpScoper\Throwable\Exception\ParsingException;
-use Webmozart\PhpScoper\Logger\ConsoleLogger;
-use Webmozart\PhpScoper\Scoper;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
+use Humbug\PhpScoper\Logger\ConsoleLogger;
+use Humbug\PhpScoper\Scoper;
 
 /**
  * @inheritdoc

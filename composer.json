@@ -37,12 +37,12 @@
     "bin": ["bin/php-scoper"],
     "autoload": {
         "psr-4": {
-            "Webmozart\\PhpScoper\\": "src/"
+            "Humbug\\PhpScoper\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Webmozart\\PhpScoper\\": "tests/"
+            "Humbug\\PhpScoper\\": "tests/"
         },
         "files": [
             "tests/functions.php"

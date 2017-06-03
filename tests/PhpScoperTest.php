@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper\Tests;
+namespace Humbug\PhpScoper\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;

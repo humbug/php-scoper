@@ -1,6 +1,6 @@
 <?php
 
-namespace Webmozart\PhpScoper\Throwable\Exception;
+namespace Humbug\PhpScoper\Throwable\Exception;
 
 use RuntimeException;
 

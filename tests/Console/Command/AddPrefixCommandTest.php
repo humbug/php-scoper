@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper\Console\Command;
+namespace Humbug\PhpScoper\Console\Command;
 
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
-use function Webmozart\PhpScoper\makeTempDir;
+use function Humbug\PhpScoper\makeTempDir;
 
 /**
- * @covers \Webmozart\PhpScoper\Console\Command\AddPrefixCommand
+ * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
  */
 class AddPrefixCommandTest extends TestCase
 {

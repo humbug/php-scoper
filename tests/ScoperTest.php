@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper;
+namespace Humbug\PhpScoper;
 
 use PhpParser\Error;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use Webmozart\PhpScoper\Scoper;
-use Webmozart\PhpScoper\Throwable\Exception\ParsingException;
+use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 
 /**
- * @covers \Webmozart\PhpScoper\Scoper
+ * @covers \Humbug\PhpScoper\Scoper
  */
 class ScoperTest extends TestCase
 {

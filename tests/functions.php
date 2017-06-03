@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Webmozart\PhpScoper;
+namespace Humbug\PhpScoper;
 
 use Webmozart\PathUtil\Path;
 

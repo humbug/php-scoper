@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper\Logger;
+namespace Humbug\PhpScoper\Logger;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\OutputInterface;

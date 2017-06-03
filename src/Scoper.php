@@ -9,16 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper;
+namespace Humbug\PhpScoper;
 
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use Webmozart\PhpScoper\Throwable\Exception\ParsingException;
-use Webmozart\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
-use Webmozart\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
-use Webmozart\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
+use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 
 final class Scoper
 {

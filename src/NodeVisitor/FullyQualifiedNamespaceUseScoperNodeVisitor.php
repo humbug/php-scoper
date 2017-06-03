@@ -1,6 +1,6 @@
 <?php
 
-namespace Webmozart\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
