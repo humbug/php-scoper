@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+This file is part of the humbug/php-scoper package.
+
+(c) 2017 Bernhard Schussek (pre-2017), Théo Fidry, Pádraic Brady
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+-->
+
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.0/phpunit.xsd"
          backupGlobals="false"
@@ -11,7 +21,6 @@
         </testsuite>
     </testsuites>
 
-    <!-- Whitelist for code coverage -->
     <filter>
         <whitelist>
             <directory suffix=".php">./src/</directory>
