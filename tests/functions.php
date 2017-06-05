@@ -48,7 +48,7 @@ function remove_dir(string $path)
     $path = escape_path($path);
 
     if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-        exec(sprintf("rd /s /q %s", escapeshellarg($path)));
+        exec(sprintf('rd /s /q %s', escapeshellarg($path)));
     } else {
         $filesystem = new Filesystem();
         $filesystem->remove($path);
