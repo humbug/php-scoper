@@ -28,9 +28,14 @@ function makeTempDir(string $namespace, string $className): string
     $systemTempDir = str_replace('\\', '/', realpath(sys_get_temp_dir()));
     $basePath = $systemTempDir.'/'.$namespace.'/'.$shortClass;
 
-    while (false === @mkdir($tempDir = $basePath.rand(10000, 99999), 0777, true)) {
+    while (false === @mkdir($tempDir = escape_path($basePath.rand(10000, 99999)), 0777, true)) {
         // Run until we are able to create a directory
     }
 
     return $tempDir;
+}
+
+function escape_path(string $path): string
+{
+    return str_replace('/', DIRECTORY_SEPARATOR, $path);
 }

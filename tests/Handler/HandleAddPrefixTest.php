@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Handler;
 
+use function Humbug\PhpScoper\escape_path;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
@@ -65,8 +66,8 @@ class HandleAddPrefixTest extends TestCase
         $this->tmpDir1 = makeTempDir('scoper1', __CLASS__);
 
         $filesystem = new Filesystem();
-        $filesystem->mirror(self::FIXTURE_PATH_000, $this->tmpDir0);
-        $filesystem->mirror(self::FIXTURE_PATH_001, $this->tmpDir1);
+        $filesystem->mirror(escape_path(self::FIXTURE_PATH_000), $this->tmpDir0);
+        $filesystem->mirror(escape_path(self::FIXTURE_PATH_001), $this->tmpDir1);
 
         $this->scoperProphecy = $this->prophesize(Scoper::class);
         /** @var Scoper $scoper */
@@ -85,7 +86,7 @@ class HandleAddPrefixTest extends TestCase
         chdir($this->cwd);
 
         $filesystem = new Filesystem();
-        $filesystem->remove($this->tmpDir0);
+        $filesystem->remove(escape_path($this->tmpDir0));
     }
 
     /**
@@ -99,7 +100,7 @@ class HandleAddPrefixTest extends TestCase
 
         $paths = array_map(
             function (string $relativePath) {
-                return $this->tmpDir0.'/'.$relativePath;
+                return escape_path($this->tmpDir0.'/'.$relativePath);
             },
             $paths
         );
@@ -129,7 +130,7 @@ class HandleAddPrefixTest extends TestCase
 
         $prefix = 'MyPrefix';
         $paths = [
-            $filePath = $this->tmpDir1.'/file.php',
+            $filePath = escape_path($this->tmpDir1.'/file.php'),
         ];
 
         /** @var ConsoleLogger $logger */

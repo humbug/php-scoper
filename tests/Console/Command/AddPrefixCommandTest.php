@@ -11,6 +11,7 @@
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use function Humbug\PhpScoper\escape_path;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
@@ -63,9 +64,9 @@ class AddPrefixCommandTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                '/path/to/dir1',
-                '/path/to/dir2',
-                '/path/to/file',
+                escape_path('/path/to/dir1'),
+                escape_path('/path/to/dir2'),
+                escape_path('/path/to/file'),
             ],
         ];
 
@@ -73,9 +74,9 @@ class AddPrefixCommandTest extends TestCase
             ->__invoke(
                 'MyPrefix',
                 [
-                    '/path/to/dir1',
-                    '/path/to/dir2',
-                    '/path/to/file',
+                    escape_path('/path/to/dir1'),
+                    escape_path('/path/to/dir2'),
+                    escape_path('/path/to/file'),
                 ],
                 Argument::type(ConsoleLogger::class)
             )
@@ -95,9 +96,9 @@ class AddPrefixCommandTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                '/path/to/dir1',
-                'relative-path/to/dir2',
-                'relative-path/to/file',
+                escape_path('/path/to/dir1'),
+                escape_path('relative-path/to/dir2'),
+                escape_path('relative-path/to/file'),
             ],
         ];
 
@@ -105,9 +106,9 @@ class AddPrefixCommandTest extends TestCase
             ->__invoke(
                 'MyPrefix',
                 [
-                    '/path/to/dir1',
-                    $this->cwd.'/relative-path/to/dir2',
-                    $this->cwd.'/relative-path/to/file',
+                    escape_path('/path/to/dir1'),
+                    escape_path($this->cwd.'/relative-path/to/dir2'),
+                    escape_path($this->cwd.'/relative-path/to/file'),
                 ],
                 Argument::type(ConsoleLogger::class)
             )
@@ -127,9 +128,9 @@ class AddPrefixCommandTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix\\',
             'paths' => [
-                '/path/to/dir1',
-                '/path/to/dir2',
-                '/path/to/file',
+                escape_path('/path/to/dir1'),
+                escape_path('/path/to/dir2'),
+                escape_path('/path/to/file'),
             ],
         ];
 
@@ -137,9 +138,9 @@ class AddPrefixCommandTest extends TestCase
             ->__invoke(
                 'MyPrefix',
                 [
-                    '/path/to/dir1',
-                    '/path/to/dir2',
-                    '/path/to/file',
+                    escape_path('/path/to/dir1'),
+                    escape_path('/path/to/dir2'),
+                    escape_path('/path/to/file'),
                 ],
                 Argument::type(ConsoleLogger::class)
             )
@@ -159,9 +160,9 @@ class AddPrefixCommandTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix\\\\',
             'paths' => [
-                '/path/to/dir1',
-                '/path/to/dir2',
-                '/path/to/file',
+                escape_path('/path/to/dir1'),
+                escape_path('/path/to/dir2'),
+                escape_path('/path/to/file'),
             ],
         ];
 
@@ -169,9 +170,9 @@ class AddPrefixCommandTest extends TestCase
             ->__invoke(
                 'MyPrefix',
                 [
-                    '/path/to/dir1',
-                    '/path/to/dir2',
-                    '/path/to/file',
+                    escape_path('/path/to/dir1'),
+                    escape_path('/path/to/dir2'),
+                    escape_path('/path/to/file'),
                 ],
                 Argument::type(ConsoleLogger::class)
             )
@@ -194,9 +195,9 @@ class AddPrefixCommandTest extends TestCase
             'add-prefix',
             'prefix' => $prefix,
             'paths' => [
-                '/path/to/dir1',
-                'relative-path/to/dir2',
-                'relative-path/to/file',
+                escape_path('/path/to/dir1'),
+                escape_path('relative-path/to/dir2'),
+                escape_path('relative-path/to/file'),
             ],
         ];
 
@@ -224,9 +225,9 @@ class AddPrefixCommandTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                '/path/to/dir1',
-                '/path/to/dir2',
-                '/path/to/file',
+                escape_path('/path/to/dir1'),
+                escape_path('/path/to/dir2'),
+                escape_path('/path/to/file'),
             ],
         ];
 
