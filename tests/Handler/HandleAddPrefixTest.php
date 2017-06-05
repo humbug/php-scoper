@@ -83,7 +83,7 @@ class HandleAddPrefixTest extends TestCase
      */
     protected function tearDown()
     {
-        chdir($this->cwd);
+        chdir(escape_path($this->cwd));
 
         $filesystem = new Filesystem();
         $filesystem->remove(escape_path($this->tmpDir0));
@@ -94,7 +94,7 @@ class HandleAddPrefixTest extends TestCase
      */
     public function test_scopes_all_the_files_found_in_the_given_paths(array $paths, array $expected)
     {
-        chdir($this->tmpDir0);
+        chdir(escape_path($this->tmpDir0));
 
         $prefix = 'MyPrefix';
 
@@ -109,7 +109,7 @@ class HandleAddPrefixTest extends TestCase
         $logger = $this->loggerProphecy->reveal();
 
         foreach ($expected as $fileContent) {
-            $filePath = $this->tmpDir0.$fileContent;
+            $filePath = escape_path($this->tmpDir0.$fileContent);
 
             $this->scoperProphecy->scope($fileContent, $prefix)->shouldBeCalled();
             $this->loggerProphecy->outputSuccess($filePath)->shouldBeCalled();
@@ -126,7 +126,7 @@ class HandleAddPrefixTest extends TestCase
 
     public function test_replaces_the_content_of_the_files_with_the_scoped_content()
     {
-        chdir($this->tmpDir1);
+        chdir(escape_path($this->tmpDir1));
 
         $prefix = 'MyPrefix';
         $paths = [
