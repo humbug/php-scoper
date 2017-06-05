@@ -11,6 +11,7 @@
 
 namespace Humbug\PhpScoper\Handler;
 
+use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
 use PhpParser\ParserFactory;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -19,9 +20,9 @@ use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 
 /**
- * @inheritdoc
+ * @final
  */
-final class HandleAddPrefix
+class HandleAddPrefix
 {
     private $fileSystem;
     private $scoper;
@@ -39,13 +40,15 @@ final class HandleAddPrefix
      *
      * @param string        $prefix
      * @param string[]      $paths
-     * @param ConsoleLogger $formatter
+     * @param ConsoleLogger $logger
+     *
+     * @throws RuntimeException
      */
-    public function __invoke(string $prefix, array $paths, ConsoleLogger $formatter)
+    public function __invoke(string $prefix, array $paths, ConsoleLogger $logger)
     {
         $files = $this->retrieveFiles($paths);
 
-        $this->scopeFiles($files, $prefix, $formatter);
+        $this->scopeFiles($files, $prefix, $logger);
     }
 
     /**
@@ -84,6 +87,25 @@ final class HandleAddPrefix
         $formatter->outputFileCount($count);
 
         foreach ($files as $file) {
+            if (false === file_exists($file)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Could not find the path "%s".',
+                        $file
+                    )
+                );
+            }
+
+            if (false === is_readable($file)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Could not read the path "%s".',
+                        $file
+                    )
+                );
+            }
+
+
             $this->scopeFile($file->getPathName(), $prefix, $formatter);
         }
     }

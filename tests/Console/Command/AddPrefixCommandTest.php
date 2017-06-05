@@ -11,20 +11,22 @@
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Humbug\PhpScoper\Handler\HandleAddPrefix;
+use Humbug\PhpScoper\Logger\ConsoleLogger;
+use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
-use Symfony\Component\Filesystem\Filesystem;
-use function Humbug\PhpScoper\makeTempDir;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
  */
 class AddPrefixCommandTest extends TestCase
 {
-    const FIXTURES_DIR = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'../fixtures';
-    
     /**
      * @var ApplicationTester
      */
@@ -36,219 +38,242 @@ class AddPrefixCommandTest extends TestCase
     private $cwd;
 
     /**
-     * @var string
+     * @var HandleAddPrefix|ObjectProphecy
      */
-    private $tempDir;
+    private $handleProphecy;
 
     /**
      * @inheritdoc
      */
     protected function setUp()
     {
-        if (file_exists($this->tempDir)) {
-            chdir($this->tempDir);
-        }
-
         if (null !== $this->appTester) {
             return;
         }
 
         $this->cwd = getcwd();
 
-        $application = new Application('php-scoper-test');
-        $application->addCommands([
-            new AddPrefixCommand(),
-        ]);
-        $application->setAutoExit(false);
+        $this->handleProphecy = $this->prophesize(HandleAddPrefix::class);
 
-        $this->appTester = new ApplicationTester($application);
+        $this->appTester = $this->createAppTester(false);
+    }
 
+    public function test_scope_the_given_paths()
+    {
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix',
+            'paths' => [
+                '/path/to/dir1',
+                '/path/to/dir2',
+                '/path/to/file',
+            ],
+        ];
 
-        $this->tempDir = makeTempDir('php-scoper', __CLASS__);
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    '/path/to/dir1',
+                    '/path/to/dir2',
+                    '/path/to/file',
+                ],
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
 
-        $filesystem = new Filesystem();
-        $filesystem->mirror(self::FIXTURES_DIR.DIRECTORY_SEPARATOR.'original', $this->tempDir);
+        $this->appTester->run($input);
+
+        Assert::assertSame(0, $this->appTester->getStatusCode());
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_relative_paths_are_relative_to_the_current_working_directory()
+    {
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix',
+            'paths' => [
+                '/path/to/dir1',
+                'relative-path/to/dir2',
+                'relative-path/to/file',
+            ],
+        ];
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    '/path/to/dir1',
+                    $this->cwd.'/relative-path/to/dir2',
+                    $this->cwd.'/relative-path/to/file',
+                ],
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        Assert::assertSame(0, $this->appTester->getStatusCode());
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_prefix_can_end_by_a_backslash()
+    {
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix\\',
+            'paths' => [
+                '/path/to/dir1',
+                '/path/to/dir2',
+                '/path/to/file',
+            ],
+        ];
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    '/path/to/dir1',
+                    '/path/to/dir2',
+                    '/path/to/file',
+                ],
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        Assert::assertSame(0, $this->appTester->getStatusCode());
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_prefix_can_end_by_multiple_backslashes()
+    {
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix\\\\',
+            'paths' => [
+                '/path/to/dir1',
+                '/path/to/dir2',
+                '/path/to/file',
+            ],
+        ];
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    '/path/to/dir1',
+                    '/path/to/dir2',
+                    '/path/to/file',
+                ],
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        Assert::assertSame(0, $this->appTester->getStatusCode());
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
     /**
-     * @inheritdoc
+     * @dataProvider provideEmptyPrefixes
      */
-    protected function tearDown()
+    public function test_the_prefix_given_cannot_be_empty(string $prefix)
     {
-        chdir($this->cwd);
+        $input = [
+            'add-prefix',
+            'prefix' => $prefix,
+            'paths' => [
+                '/path/to/dir1',
+                'relative-path/to/dir2',
+                'relative-path/to/file',
+            ],
+        ];
 
-        $filesystem = new Filesystem();
-        $filesystem->remove($this->tempDir);
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+
+        try {
+            $this->appTester->run($input);
+
+            $this->fail('Expected exception to be thrown.');
+        } catch (SymfonyConsoleRuntimeException $exception) {
+            $this->assertSame(
+                'Expected "prefix" argument to be a non empty string.',
+                $exception->getMessage()
+            );
+            $this->assertSame(0, $exception->getCode());
+            $this->assertNull($exception->getPrevious());
+        }
     }
 
-    public function test_scope_all_files_found_in_a_directory()
+    public function test_throws_an_error_when_scoping_fails()
     {
-        $this->appTester->run(
-            [
-                'add-prefix',
-                'prefix' => 'MyPrefix',
-                'paths' => [
-                    $basePath = self::FIXTURES_DIR.DIRECTORY_SEPARATOR.'original'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'dir'
-                ],
+        $this->appTester = $this->createAppTester(true);
+
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix',
+            'paths' => [
+                '/path/to/dir1',
+                '/path/to/dir2',
+                '/path/to/file',
             ],
-            [
-                'capture_stderr_separately' => true,
-                'set'
-            ]
-        );
+        ];
 
-        $expected = <<<EOF
-Scoping $basePath/MyClass.php. . . Success
-Scoping $basePath/MySecondClass.php. . . Success
-Scoping $basePath/MyThirdClass.php. . . Success
+        $this->handleProphecy
+            ->__invoke(Argument::cetera())
+            ->willThrow(
+                $exception = new ScopingRuntimeException('Foo')
+            )
+        ;
 
-EOF;
-        $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
-
-        Assert::assertEmpty(
-            $this->appTester->getErrorOutput(true),
-            $this->appTester->getErrorOutput(true)
-        );
-        Assert::assertSame(0, $this->appTester->getStatusCode());
-        Assert::assertStringEndsWith($expected, $this->appTester->getDisplay(true));
-
-        Assert::assertFileEquals(
-            self::FIXTURES_DIR.'/replaced/dir/dir/MyClass.php',
-            $this->tempDir.'/dir/dir/MyClass.php'
-        );
-
-        Assert::assertFileEquals(
-            self::FIXTURES_DIR.'/replaced/dir/dir/MySecondClass.php',
-            $this->tempDir.'/dir/dir/MySecondClass.php'
-        );
-
-        Assert::assertFileEquals(
-            self::FIXTURES_DIR.'/replaced/dir/dir/MyThirdClass.php',
-            $this->tempDir.'/dir/dir/MyThirdClass.php'
-        );
-    }
-
-    public function test_does_not_scope_non_PHP_files()
-    {
         $this->appTester->run(
-            [
-                'add-prefix',
-                'prefix' => 'MyPrefix\\\\',
-                'paths' => ['dir'.DIRECTORY_SEPARATOR.'dir2'],
-            ],
+            $input,
             ['capture_stderr_separately' => true]
         );
 
-        $expected = <<<'EOF'
-No PHP files to scope located with given path(s).
+        $this->assertNotEmpty($this->appTester->getErrorOutput(true));
+        $this->assertSame(1, $this->appTester->getStatusCode());
 
-EOF;
-
-        Assert::assertSame(0, $this->appTester->getStatusCode());
-        Assert::assertStringEndsWith($expected, $this->appTester->getDisplay(true));
-        Assert::assertEmpty($this->appTester->getErrorOutput(true));
-
-        Assert::assertFileEquals(
-            self::FIXTURES_DIR.'/replaced/dir/dir2/NotAPHPFile.txt',
-            $this->tempDir.'/dir/dir2/NotAPHPFile.txt'
-        );
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
-    public function test_can_scope_a_file()
+    public function provideEmptyPrefixes()
     {
-        $this->appTester->run(
-            [
-                'add-prefix',
-                'prefix' => 'MyPrefix\\\\',
-                'paths' => ['dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php'],
-            ],
-            ['capture_stderr_separately' => true]
-        );
+        yield 'empty' => [''];
 
-        $expected = <<<EOF
-Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
+        yield 'space only' => ['  '];
 
-EOF;
-        $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
+        yield 'backslashes' => ['\\'];
 
-        Assert::assertSame(0, $this->appTester->getStatusCode());
-        Assert::assertStringEndsWith($expected, $this->appTester->getDisplay(true));
-        Assert::assertEmpty($this->appTester->getErrorOutput(true));
+        yield '1 backslash' => ['\\'];
 
-        Assert::assertFileEquals(
-            self::FIXTURES_DIR.'/replaced/dir/dir/MyClass.php',
-            $this->tempDir.'/dir/dir/MyClass.php'
-        );
+        yield '2 backslashes' => ['\\\\'];
     }
 
-    public function test_can_scope_for_multiple_paths()
+    private function createAppTester(bool $catchExceptions): ApplicationTester
     {
-        $this->appTester->run(
-            [
-                'add-prefix',
-                'prefix' => 'MyPrefix\\\\',
-                'paths' => [
-                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MyClass.php',
-                    'dir'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'MySecondClass.php',
-                ],
-            ],
-            ['capture_stderr_separately' => true]
-        );
+        /** @var HandleAddPrefix $handle */
+        $handle = $this->handleProphecy->reveal();
 
-        $expected = <<<EOF
-Scoping $this->tempDir/dir/dir/MyClass.php. . . Success
-Scoping $this->tempDir/dir/dir/MySecondClass.php. . . Success
+        $application = new Application('php-scoper-test');
+        $application->addCommands([
+            new AddPrefixCommand($handle),
+        ]);
+        $application->setAutoExit(false);
+        $application->setCatchExceptions($catchExceptions);
 
-EOF;
-        $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
-
-        Assert::assertSame(0, $this->appTester->getStatusCode());
-        Assert::assertStringEndsWith($expected, $this->appTester->getDisplay(true));
-        Assert::assertEmpty($this->appTester->getErrorOutput(true));
-
-        Assert::assertFileEquals(
-            self::FIXTURES_DIR.'/replaced/dir/dir/MyClass.php',
-            $this->tempDir.'/dir/dir/MyClass.php'
-        );
-
-        Assert::assertFileEquals(
-            self::FIXTURES_DIR.'/replaced/dir/dir/MySecondClass.php',
-            $this->tempDir.'/dir/dir/MySecondClass.php'
-        );
-    }
-
-    public function test_ignore_invalid_files()
-    {
-        $this->appTester->run(
-            [
-                'add-prefix',
-                'prefix' => 'MyPrefix\\\\',
-                'paths' => ['dir'.DIRECTORY_SEPARATOR.'MyIncorrectClass.php'],
-            ],
-            ['capture_stderr_separately' => true]
-        );
-
-        $expected = <<<EOF
-Scoping $this->tempDir/dir/MyIncorrectClass.php. . . Fail
-
-EOF;
-        $expected = str_replace('/', DIRECTORY_SEPARATOR, $expected);
-
-        Assert::assertSame(0, $this->appTester->getStatusCode());
-        Assert::assertStringEndsWith($expected, $this->appTester->getDisplay(true));
-    }
-
-    public function test_cannot_scope_nonexistent_files()
-    {
-        $this->appTester->run(
-            [
-                'add-prefix',
-                'prefix' => 'MyPrefix\\\\',
-                'paths' => ['./the/path/to/nowhere'],
-            ],
-            ['capture_stderr_separately' => true]
-        );
-
-        Assert::assertSame(1, $this->appTester->getStatusCode());
+        return new ApplicationTester($application);
     }
 }

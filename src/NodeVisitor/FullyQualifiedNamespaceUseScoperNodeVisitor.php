@@ -27,5 +27,7 @@ final class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstr
         if ($node instanceof FullyQualified) {
             return new Name(Name::concat($this->prefix, (string) $node));
         }
+
+        return $node;
     }
 }

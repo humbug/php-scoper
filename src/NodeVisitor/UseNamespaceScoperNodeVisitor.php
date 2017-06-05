@@ -27,5 +27,7 @@ final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof UseUse) {
             $node->name = Name::concat($this->prefix, $node->name);
         }
+
+        return $node;
     }
 }

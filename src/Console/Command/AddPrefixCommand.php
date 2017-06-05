@@ -25,12 +25,12 @@ final class AddPrefixCommand extends Command
     /**
      * @inheritdoc
      */
-    public function __construct()
+    public function __construct(HandleAddPrefix $handle)
     {
         parent::__construct();
 
         $this->fileSystem = new Filesystem();
-        $this->handle = new HandleAddPrefix();
+        $this->handle = $handle;
     }
 
 
@@ -58,17 +58,25 @@ final class AddPrefixCommand extends Command
         $logger = new ConsoleLogger($this->getApplication(), $output);
 
         $logger->outputScopingStart();
-        $this->handle->__invoke(
-            $input->getArgument(self::PREFIX_ARG),
-            $input->getArgument(self::PATH_ARG),
-            $logger
-        );
-        $logger->outputScopingEnd();
+
+        try {
+            $this->handle->__invoke(
+                $input->getArgument(self::PREFIX_ARG),
+                $input->getArgument(self::PATH_ARG),
+                $logger
+            );
+        } finally {
+            $logger->outputScopingEnd();
+        }
     }
 
     private function validatePrefix(InputInterface $input)
     {
         $prefix = trim($input->getArgument(self::PREFIX_ARG));
+
+        if (1 === preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
+            $prefix = $matches['prefix'];
+        }
 
         if ('' === $prefix) {
             throw new RuntimeException(
@@ -79,10 +87,6 @@ final class AddPrefixCommand extends Command
             );
         }
 
-        if ('\\' !== substr($prefix, -1)) {
-            $prefix .= '\\';
-        }
-
         $input->setArgument(self::PREFIX_ARG, $prefix);
     }
 
@@ -91,26 +95,8 @@ final class AddPrefixCommand extends Command
         $cwd = getcwd();
         $fileSystem = $this->fileSystem;
 
-        array_map(
+        $paths = array_map(
             function (string $path) use ($cwd, $fileSystem) {
-                if (false === file_exists($path)) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Could not find the path "%s".',
-                            $path
-                        )
-                    );
-                }
-
-                if (false === is_readable($path)) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Could not read the path "%s".',
-                            $path
-                        )
-                    );
-                }
-
                 if (false === $fileSystem->isAbsolutePath($path)) {
                     return $cwd.DIRECTORY_SEPARATOR.$path;
                 }
@@ -119,5 +105,7 @@ final class AddPrefixCommand extends Command
             },
             $input->getArgument(self::PATH_ARG)
         );
+
+        $input->setArgument(self::PATH_ARG, $paths);
     }
 }

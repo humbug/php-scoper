@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Webmozart\PathUtil\Path;
-
 /**
  * Creates a temporary directory.
  *

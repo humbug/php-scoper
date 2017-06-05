@@ -27,5 +27,7 @@ final class NamespaceScoperNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof Namespace_ && null !== $node->name) {
             $node->name = Name::concat($this->prefix, $node->name);
         }
+
+        return $node;
     }
 }

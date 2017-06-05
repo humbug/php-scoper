@@ -28,6 +28,9 @@ class ScoperTest extends TestCase
      */
     private $scoper;
 
+    /**
+     * @inheritdoc
+     */
     public function setUp()
     {
         $this->scoper = new Scoper((new ParserFactory())->create(ParserFactory::PREFER_PHP7));
