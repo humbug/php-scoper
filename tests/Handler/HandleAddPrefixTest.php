@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Handler;
 
-use function Humbug\PhpScoper\escape_path;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
+use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\makeTempDir;
 
 /**

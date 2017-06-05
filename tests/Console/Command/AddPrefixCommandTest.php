@@ -11,7 +11,6 @@
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use function Humbug\PhpScoper\escape_path;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
@@ -21,6 +20,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
+use function Humbug\PhpScoper\escape_path;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
