@@ -51,12 +51,12 @@ PHP;
             
             Assert::fail('Expected exception to have been thrown.');
         } catch (ParsingException $exception) {
-            Assert::assertEquals(
+            $this->assertEquals(
                 'Syntax error, unexpected \';\' on line 3',
                 $exception->getMessage()
             );
-            Assert::assertSame(0, $exception->getCode());
-            Assert::assertInstanceOf(Error::class, $exception->getPrevious());
+            $this->assertSame(0, $exception->getCode());
+            $this->assertInstanceOf(Error::class, $exception->getPrevious());
         }
     }
 
@@ -67,7 +67,7 @@ PHP;
     {
         $actual = $this->scoper->scope($content, $prefix);
 
-        Assert::assertSame($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     public function provideValidFiles()

@@ -92,7 +92,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
         $this->appTester->run($input);
 
-        Assert::assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame(0, $this->appTester->getStatusCode());
 
         $this->assertFilesAreSame(self::FIXTURE_PATH.'/../scoped', $this->tmpDir);
     }

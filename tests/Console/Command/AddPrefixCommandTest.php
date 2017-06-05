@@ -85,7 +85,7 @@ class AddPrefixCommandTest extends TestCase
 
         $this->appTester->run($input);
 
-        Assert::assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame(0, $this->appTester->getStatusCode());
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -117,7 +117,7 @@ class AddPrefixCommandTest extends TestCase
 
         $this->appTester->run($input);
 
-        Assert::assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame(0, $this->appTester->getStatusCode());
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -149,7 +149,7 @@ class AddPrefixCommandTest extends TestCase
 
         $this->appTester->run($input);
 
-        Assert::assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame(0, $this->appTester->getStatusCode());
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -181,7 +181,7 @@ class AddPrefixCommandTest extends TestCase
 
         $this->appTester->run($input);
 
-        Assert::assertSame(0, $this->appTester->getStatusCode());
+        $this->assertSame(0, $this->appTester->getStatusCode());
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }

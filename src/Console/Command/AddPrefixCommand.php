@@ -41,7 +41,7 @@ final class AddPrefixCommand extends Command
     {
         $this
             ->setName('add-prefix')
-            ->setDescription('Goes through all the PHP files found in the given paths to apply the given prefix.')
+            ->setDescription('Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.')
             ->addArgument(self::PREFIX_ARG, InputArgument::REQUIRED, 'The namespace prefix to add')
             ->addArgument(self::PATH_ARG, InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The path(s) to process.')
         ;
