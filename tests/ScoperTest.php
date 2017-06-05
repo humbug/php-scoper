@@ -11,12 +11,11 @@
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error;
 use PhpParser\ParserFactory;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper

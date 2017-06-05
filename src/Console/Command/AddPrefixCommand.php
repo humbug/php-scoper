@@ -1,16 +1,17 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Humbug\PhpScoper\Handler\HandleAddPrefix;
+use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Humbug\PhpScoper\Logger\ConsoleLogger;
-use Humbug\PhpScoper\Handler\HandleAddPrefix;
 
 final class AddPrefixCommand extends Command
 {
@@ -32,7 +33,6 @@ final class AddPrefixCommand extends Command
         $this->fileSystem = new Filesystem();
         $this->handle = $handle;
     }
-
 
     /**
      * @inheritdoc

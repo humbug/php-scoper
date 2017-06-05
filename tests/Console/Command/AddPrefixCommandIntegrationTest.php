@@ -11,14 +11,13 @@
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use function Humbug\PhpScoper\createApplication;
-use function Humbug\PhpScoper\makeTempDir;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use function Humbug\PhpScoper\createApplication;
+use function Humbug\PhpScoper\makeTempDir;
 
 /**
  * @coversNothing

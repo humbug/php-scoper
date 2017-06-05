@@ -1,15 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Handler;
 
 use Humbug\PhpScoper\Logger\ConsoleLogger;
-use function Humbug\PhpScoper\makeTempDir;
 use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
+use function Humbug\PhpScoper\makeTempDir;
 
 /**
  * @covers \Humbug\PhpScoper\Handler\HandleAddPrefix
@@ -115,7 +116,6 @@ class HandleAddPrefixTest extends TestCase
 
         $this->loggerProphecy->outputFileCount(count($expected))->shouldBeCalled();
 
-
         $this->handle->__invoke($prefix, $paths, $logger);
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expected));
@@ -161,7 +161,7 @@ PHP;
             ],
             [
                 '/dir1/fileA.php',
-            ]
+            ],
         ];
 
         yield 'PHP file' => [
@@ -170,21 +170,21 @@ PHP;
             ],
             [
                 '/file1.php',
-            ]
+            ],
         ];
 
         yield 'non PHP file' => [
             [
                 'unknown',
             ],
-            []
+            [],
         ];
 
         yield 'empty directory' => [
             [
                 'empty-dir',
             ],
-            []
+            [],
         ];
 
         yield 'complete sample' => [
@@ -199,7 +199,7 @@ PHP;
                 '/dir2/fileB.php',
                 '/dir2/fileC.php',
                 '/file2.php',
-            ]
+            ],
         ];
     }
 }

@@ -14,7 +14,6 @@ namespace Humbug\PhpScoper\Console\Command;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;

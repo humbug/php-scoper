@@ -11,12 +11,12 @@
 
 namespace Humbug\PhpScoper\Handler;
 
+use Humbug\PhpScoper\Logger\ConsoleLogger;
+use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use Humbug\PhpScoper\Logger\ConsoleLogger;
-use Humbug\PhpScoper\Scoper;
 
 /**
  * @final
@@ -104,7 +104,6 @@ class HandleAddPrefix
                     )
                 );
             }
-
 
             $this->scopeFile($file->getPathName(), $prefix, $logger);
         }

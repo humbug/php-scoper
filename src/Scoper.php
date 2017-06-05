@@ -11,14 +11,14 @@
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 
 /**
  * @final
@@ -34,7 +34,7 @@ class Scoper
 
     /**
      * @param string $content Content of the file to scope
-     * @param string $prefix Prefix to apply to the file
+     * @param string $prefix  Prefix to apply to the file
      *
      * @throws ParsingException
      *
