@@ -12,6 +12,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\makeTempDir;
+use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Handler\HandleAddPrefix
@@ -83,10 +84,10 @@ class HandleAddPrefixTest extends TestCase
      */
     protected function tearDown()
     {
-        chdir(escape_path($this->cwd));
+        chdir($this->cwd);
 
-        $filesystem = new Filesystem();
-        $filesystem->remove(escape_path($this->tmpDir0));
+        remove_dir($this->tmpDir0);
+        remove_dir($this->tmpDir1);
     }
 
     /**
@@ -94,7 +95,7 @@ class HandleAddPrefixTest extends TestCase
      */
     public function test_scopes_all_the_files_found_in_the_given_paths(array $paths, array $expected)
     {
-        chdir(escape_path($this->tmpDir0));
+        chdir($this->tmpDir0);
 
         $prefix = 'MyPrefix';
 
@@ -126,7 +127,7 @@ class HandleAddPrefixTest extends TestCase
 
     public function test_replaces_the_content_of_the_files_with_the_scoped_content()
     {
-        chdir(escape_path($this->tmpDir1));
+        chdir($this->tmpDir1);
 
         $prefix = 'MyPrefix';
         $paths = [

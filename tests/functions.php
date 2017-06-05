@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Symfony\Component\Filesystem\Filesystem;
+
 /**
  * Creates a temporary directory.
  *
@@ -38,4 +40,17 @@ function makeTempDir(string $namespace, string $className): string
 function escape_path(string $path): string
 {
     return str_replace('/', DIRECTORY_SEPARATOR, $path);
+}
+
+//TODO: https://github.com/humbug/php-scoper/pull/19/files#r118838268
+function remove_dir(string $path)
+{
+    $path = escape_path($path);
+
+    if (defined('PHP_WINDOWS_VERSION_BUILD')) {
+        exec(sprintf("rd /s /q %s", escapeshellarg($path)));
+    } else {
+        $filesystem = new Filesystem();
+        $filesystem->remove($path);
+    }
 }

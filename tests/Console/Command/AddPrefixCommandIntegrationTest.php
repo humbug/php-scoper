@@ -18,6 +18,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function Humbug\PhpScoper\createApplication;
 use function Humbug\PhpScoper\makeTempDir;
+use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @coversNothing
@@ -75,8 +76,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
     {
         chdir($this->cwd);
 
-        $filesystem = new Filesystem();
-        $filesystem->remove($this->tmpDir);
+        remove_dir($this->tmpDir);
     }
 
     public function test_scope_the_given_paths()
