@@ -38,7 +38,7 @@ class ScoperTest extends TestCase
 
     public function test_cannot_scope_an_invalid_PHP_file()
     {
-        $content = <<<PHP
+        $content = <<<'PHP'
 <?php
 
 $class = ;
@@ -48,7 +48,7 @@ PHP;
 
         try {
             $this->scoper->scope($content, $prefix);
-            
+
             Assert::fail('Expected exception to have been thrown.');
         } catch (ParsingException $exception) {
             $this->assertEquals(
@@ -73,7 +73,7 @@ PHP;
     public function provideValidFiles()
     {
         yield 'simple namespace' => [
-            <<<PHP
+            <<<'PHP'
 <?php
 
 namespace MyNamespace;
@@ -81,7 +81,7 @@ namespace MyNamespace;
 PHP
             ,
             'MyPrefix',
-            <<<PHP
+            <<<'PHP'
 <?php
 
 namespace MyPrefix\MyNamespace;
@@ -93,7 +93,7 @@ PHP
         // ============================
 
         yield 'use namespace' => [
-            <<<PHP
+            <<<'PHP'
 <?php
 
 use AnotherNamespace;
@@ -101,7 +101,7 @@ use AnotherNamespace;
 PHP
             ,
             'MyPrefix',
-            <<<PHP
+            <<<'PHP'
 <?php
 
 use MyPrefix\AnotherNamespace;
@@ -112,7 +112,7 @@ PHP
         // ============================
 
         yield 'FQ namespace used' => [
-            <<<PHP
+            <<<'PHP'
 <?php
 
 $class = new \stdClass();
@@ -120,7 +120,7 @@ $class = new \stdClass();
 PHP
             ,
             'MyPrefix',
-            <<<PHP
+            <<<'PHP'
 <?php
 
 $class = new MyPrefix\stdClass();
