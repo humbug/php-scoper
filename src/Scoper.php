@@ -20,7 +20,10 @@ use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 
-final class Scoper
+/**
+ * @final
+ */
+class Scoper
 {
     private $parser;
 
@@ -37,7 +40,7 @@ final class Scoper
      *
      * @return string Content of the file with the prefix applied
      */
-    public function addNamespacePrefix(string $content, string $prefix): string
+    public function scope(string $content, string $prefix): string
     {
         $traverser = new NodeTraverser();
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));

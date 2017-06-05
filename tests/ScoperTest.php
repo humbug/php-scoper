@@ -47,7 +47,7 @@ PHP;
         $prefix = 'MyPrefix';
 
         try {
-            $this->scoper->addNamespacePrefix($content, $prefix);
+            $this->scoper->scope($content, $prefix);
             
             Assert::fail('Expected exception to have been thrown.');
         } catch (ParsingException $exception) {
@@ -65,7 +65,7 @@ PHP;
      */
     public function test_can_scope_valid_files(string $content, string $prefix, string $expected)
     {
-        $actual = $this->scoper->addNamespacePrefix($content, $prefix);
+        $actual = $this->scoper->scope($content, $prefix);
 
         Assert::assertSame($expected, $actual);
     }

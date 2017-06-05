@@ -18,8 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * @private
+ * @final
  */
-final class ConsoleLogger
+class ConsoleLogger
 {
     private $application;
     private $io;

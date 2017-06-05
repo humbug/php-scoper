@@ -12,7 +12,6 @@
 namespace Humbug\PhpScoper\Handler;
 
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
-use PhpParser\ParserFactory;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -24,15 +23,16 @@ use Humbug\PhpScoper\Scoper;
  */
 class HandleAddPrefix
 {
+    /** @internal */
+    const PHP_FILE_PATTERN = '/\.php$/';
+
     private $fileSystem;
     private $scoper;
 
-    public function __construct()
+    public function __construct(Scoper $scoper)
     {
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-
         $this->fileSystem = new Filesystem();
-        $this->scoper = new Scoper($parser);
+        $this->scoper = $scoper;
     }
 
     /**
@@ -64,7 +64,7 @@ class HandleAddPrefix
         foreach ($paths as $path) {
             if (is_dir($path)) {
                 $pathsToSearch[] = $path;
-            } else {
+            } elseif (1 === preg_match(self::PHP_FILE_PATTERN, $path)) {
                 $filesToAppend[] = $path;
             }
         }
@@ -72,7 +72,7 @@ class HandleAddPrefix
         $finder = new Finder();
 
         $finder->files()
-            ->name('*.php')
+            ->name(self::PHP_FILE_PATTERN)
             ->in($pathsToSearch)
             ->append($filesToAppend)
             ->sortByName()
@@ -81,10 +81,10 @@ class HandleAddPrefix
         return $finder;
     }
 
-    private function scopeFiles(Finder $files, string $prefix, ConsoleLogger $formatter)
+    private function scopeFiles(Finder $files, string $prefix, ConsoleLogger $logger)
     {
         $count = count($files);
-        $formatter->outputFileCount($count);
+        $logger->outputFileCount($count);
 
         foreach ($files as $file) {
             if (false === file_exists($file)) {
@@ -106,23 +106,23 @@ class HandleAddPrefix
             }
 
 
-            $this->scopeFile($file->getPathName(), $prefix, $formatter);
+            $this->scopeFile($file->getPathName(), $prefix, $logger);
         }
     }
 
-    private function scopeFile(string $path, string $prefix, ConsoleLogger $formatter)
+    private function scopeFile(string $path, string $prefix, ConsoleLogger $logger)
     {
         $fileContent = file_get_contents($path);
 
         try {
-            $scoppedContent = $this->scoper->addNamespacePrefix($fileContent, $prefix);
+            $scoppedContent = $this->scoper->scope($fileContent, $prefix);
 
             $this->fileSystem->dumpFile($path, $scoppedContent);
 
-            $formatter->outputSuccess($path);
+            $logger->outputSuccess($path);
         } catch (ParsingException $exception) {
             //TODO: display error in verbose mode
-            $formatter->outputFail($path);
+            $logger->outputFail($path);
         }
     }
 }
