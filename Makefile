@@ -17,7 +17,7 @@ test: vendor
 	php -d zend.enable_gc=0 $(PHPUNIT)
 
 tc: vendor
-	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage
+	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 ##
 ## Rules from files
