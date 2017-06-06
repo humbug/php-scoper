@@ -13,7 +13,6 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error;
-use PhpParser\ParserFactory;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +31,7 @@ class ScoperTest extends TestCase
      */
     public function setUp()
     {
-        $this->scoper = new Scoper((new ParserFactory())->create(ParserFactory::PREFER_PHP7));
+        $this->scoper = new Scoper(createParser());
     }
 
     public function test_cannot_scope_an_invalid_PHP_file()
@@ -43,7 +42,7 @@ class ScoperTest extends TestCase
 $class = ;
 
 PHP;
-        $prefix = 'MyPrefix';
+        $prefix = 'Humbug';
 
         try {
             $this->scoper->scope($content, $prefix);
@@ -71,7 +70,27 @@ PHP;
 
     public function provideValidFiles()
     {
-        yield 'simple namespace' => [
+        //
+        // Namespace declaration
+        //
+        // ============================
+
+        yield '[Namespace declaration] no declaration' => [
+            <<<'PHP'
+<?php
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+
+
+PHP
+        ];
+
+        yield '[Namespace declaration] simple declaration' => [
             <<<'PHP'
 <?php
 
@@ -79,52 +98,417 @@ namespace MyNamespace;
 
 PHP
             ,
-            'MyPrefix',
+            'Humbug',
             <<<'PHP'
 <?php
 
-namespace MyPrefix\MyNamespace;
+namespace Humbug\MyNamespace;
 
 
 PHP
         ];
 
-        // ============================
+        yield '[Namespace declaration] simple declaration with brackets' => [
+        <<<'PHP'
+<?php
 
-        yield 'use namespace' => [
+namespace MyNamespace {
+}
+
+PHP
+        ,
+        'Humbug',
+        <<<'PHP'
+<?php
+
+namespace Humbug\MyNamespace;
+
+
+PHP
+    ];
+
+        yield '[Namespace declaration] prefixed simple declaration' => [
             <<<'PHP'
 <?php
 
-use AnotherNamespace;
+namespace Humbug\MyNamespace;
 
 PHP
             ,
-            'MyPrefix',
+            'Humbug',
             <<<'PHP'
 <?php
 
-use MyPrefix\AnotherNamespace;
+namespace Humbug\MyNamespace;
+
 
 PHP
         ];
 
-        // ============================
-
-        yield 'FQ namespace used' => [
+        yield '[Namespace declaration] multiple declarations' => [
             <<<'PHP'
 <?php
 
-$class = new \stdClass();
+namespace MyNamespace1;
+namespace MyNamespace2;
+namespace MyNamespace3;
 
 PHP
             ,
-            'MyPrefix',
+            'Humbug',
             <<<'PHP'
 <?php
 
-$class = new MyPrefix\stdClass();
+namespace Humbug\MyNamespace1;
+
+namespace Humbug\MyNamespace2;
+
+namespace Humbug\MyNamespace3;
+
 
 PHP
         ];
+
+        yield '[Namespace declaration] multiple declarations with prefixed ones' => [
+            <<<'PHP'
+<?php
+
+namespace MyNamespace1;
+namespace Humbug\MyNamespace2;
+namespace MyNamespace3;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+namespace Humbug\MyNamespace1;
+
+namespace Humbug\MyNamespace2;
+
+namespace Humbug\MyNamespace3;
+
+
+PHP
+        ];
+
+        yield 'Namespace declaration] root namespace declaration' => [
+            <<<'PHP'
+<?php
+
+namespace {
+}
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+namespace {
+}
+
+PHP
+        ];
+
+        //
+        // Use statement for a class
+        //
+        // ============================
+
+        yield '[Use statement for a class] simple statement' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] prefixed statement' => [
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] simple statement with an alias' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace\X as XAlias;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace\X as XAlias;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] prefixed statement with an alias' => [
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace\X as XAlias;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace\X as XAlias;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] multiple statement' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace;
+use BarNamespace;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace;
+use Humbug\BarNamespace;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] multiple statement with prefixed ones' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace;
+use Humbug\BarNamespace;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace;
+use Humbug\BarNamespace;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] multiple statement with aliases' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace\X as XAlias;
+use BarNamespace\Y;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace\X as XAlias;
+use Humbug\BarNamespace\Y;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] multiple statement in-lined' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace, BarNamespace;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace, Humbug\BarNamespace;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] multiple statement in-lined with in-lined ones' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace, Humbug\BarNamespace;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace, Humbug\BarNamespace;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] grouped use statements' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace\{X, Y, Z};
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace\{X, Y, Z};
+
+PHP
+        ];
+
+        yield '[Use statement for a class] grouped use statements with prefixed ones' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace\{X, Y, Z};
+use Humbug\BarNamespace\{X, Y, Z};
+use BazNamespace\{X, Y, Z};
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace\{X, Y, Z};
+use Humbug\BarNamespace\{X, Y, Z};
+use Humbug\BazNamespace\{X, Y, Z};
+
+PHP
+        ];
+
+        yield '[Use statement for a class] multiple declaration with collision' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace;
+use Humbug\FooNamespace;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\FooNamespace;
+use Humbug\FooNamespace;
+
+PHP
+        ];
+
+        //
+        // Use statement for a function
+        //
+        // ============================
+
+        yield '[Use statement for a function] simple statement' => [
+            <<<'PHP'
+<?php
+
+use function FooNamespace\foo;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use function Humbug\FooNamespace\foo;
+
+PHP
+        ];
+
+        yield '[Use statement for a function] prefixed statement' => [
+            <<<'PHP'
+<?php
+
+use function Humbug\FooNamespace\foo;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use function Humbug\FooNamespace\foo;
+
+PHP
+        ];
+
+        //
+        // Use statement for a constant
+        //
+        // ============================
+
+        yield '[Use statement for a function] simple statement' => [
+            <<<'PHP'
+<?php
+
+use const FooNamespace\FOO;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use const Humbug\FooNamespace\FOO;
+
+PHP
+        ];
+
+        yield '[Use statement for a function] prefixed statement' => [
+            <<<'PHP'
+<?php
+
+use const Humbug\FooNamespace\FOO;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use const Humbug\FooNamespace\FOO;
+
+PHP
+            ];
     }
 }
