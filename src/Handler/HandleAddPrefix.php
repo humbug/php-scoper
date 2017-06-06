@@ -90,7 +90,7 @@ class HandleAddPrefix
         $logger->outputFileCount($count);
 
         foreach ($files as $file) {
-            if (false === file_exists($file)) {
+            if (false === file_exists((string) $file)) {
                 throw new RuntimeException(
                     sprintf(
                         'Could not find the path "%s".',
@@ -99,7 +99,7 @@ class HandleAddPrefix
                 );
             }
 
-            if (false === is_readable($file)) {
+            if (false === is_readable((string) $file)) {
                 throw new RuntimeException(
                     sprintf(
                         'Could not read the path "%s".',
