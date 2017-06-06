@@ -47,8 +47,8 @@ install:
     # Install composer and update per matrix
     - appveyor-retry appveyor DownloadFile https://getcomposer.org/composer.phar
     - cd c:\projects\webmozart\php-scoper
-    - IF %dependencies%==lowest appveyor-retry composer update --no-suggest --prefer-dist --prefer-lowest
-    - IF %dependencies%==highest appveyor-retry composer update --no-suggest --prefer-dist
+    - IF %dependencies%==lowest appveyor-retry composer update --no-suggest --no-interaction --no-progress --prefer-dist --prefer-lowest
+    - IF %dependencies%==highest appveyor-retry composer update --no-suggest --no-interaction --no-progress --prefer-dist
     - composer show
 
 

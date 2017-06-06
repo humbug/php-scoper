@@ -1,13 +1,13 @@
 <?php
 
-namespace Webmozart\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
-class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
     /**
      * @var string
@@ -19,10 +19,15 @@ class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         $this->prefix = $prefix;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof UseUse) {
             $node->name = Name::concat($this->prefix, $node->name);
         }
+
+        return $node;
     }
 }

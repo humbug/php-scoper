@@ -9,14 +9,16 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper\Tests;
+namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
+use PhpParser\Error;
 use PhpParser\ParserFactory;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use Webmozart\PhpScoper\Scoper;
 
 /**
- * @author Matthieu Auger <mail@matthieuauger.com>
+ * @covers \Humbug\PhpScoper\Scoper
  */
 class ScoperTest extends TestCase
 {
@@ -25,78 +27,104 @@ class ScoperTest extends TestCase
      */
     private $scoper;
 
+    /**
+     * @inheritdoc
+     */
     public function setUp()
     {
         $this->scoper = new Scoper((new ParserFactory())->create(ParserFactory::PREFER_PHP7));
     }
 
-    /**
-     * @expectedException \Webmozart\PhpScoper\Exception\ParsingException
-     */
-    public function testScopeIncorrectFile()
+    public function test_cannot_scope_an_invalid_PHP_file()
     {
-        $content = <<<'EOF'
+        $content = <<<'PHP'
 <?php
 
 $class = ;
 
-EOF;
+PHP;
+        $prefix = 'MyPrefix';
 
-        $this->scoper->addNamespacePrefix($content, 'MyPrefix');
+        try {
+            $this->scoper->scope($content, $prefix);
+
+            Assert::fail('Expected exception to have been thrown.');
+        } catch (ParsingException $exception) {
+            $this->assertEquals(
+                'Syntax error, unexpected \';\' on line 3',
+                $exception->getMessage()
+            );
+            $this->assertSame(0, $exception->getCode());
+            $this->assertInstanceOf(Error::class, $exception->getPrevious());
+        }
     }
 
-    public function testScopeNamespace()
+    /**
+     * @dataProvider provideValidFiles
+     */
+    public function test_can_scope_valid_files(string $content, string $prefix, string $expected)
     {
-        $content = <<<'EOF'
+        $actual = $this->scoper->scope($content, $prefix);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function provideValidFiles()
+    {
+        yield 'simple namespace' => [
+            <<<'PHP'
 <?php
 
 namespace MyNamespace;
 
-EOF;
-        $expected = <<<EOF
+PHP
+            ,
+            'MyPrefix',
+            <<<'PHP'
 <?php
 
 namespace MyPrefix\MyNamespace;
 
 
-EOF;
+PHP
+        ];
 
-        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
-    }
+        // ============================
 
-    public function testScopeUseNamespace()
-    {
-        $content = <<<'EOF'
+        yield 'use namespace' => [
+            <<<'PHP'
 <?php
 
 use AnotherNamespace;
 
-EOF;
-        $expected = <<<EOF
+PHP
+            ,
+            'MyPrefix',
+            <<<'PHP'
 <?php
 
 use MyPrefix\AnotherNamespace;
 
-EOF;
+PHP
+        ];
 
-        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
-    }
+        // ============================
 
-    public function testScopeFullyQualifiedNamespaceUse()
-    {
-        $content = <<<EOF
+        yield 'FQ namespace used' => [
+            <<<'PHP'
 <?php
 
-\$class = new \stdClass();
+$class = new \stdClass();
 
-EOF;
-        $expected = <<<EOF
+PHP
+            ,
+            'MyPrefix',
+            <<<'PHP'
 <?php
 
-\$class = new MyPrefix\stdClass();
+$class = new MyPrefix\stdClass();
 
-EOF;
-
-        $this->assertEquals($expected, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
+PHP
+        ];
     }
 }

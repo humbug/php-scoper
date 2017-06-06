@@ -1,13 +1,13 @@
 <?php
 
-namespace Webmozart\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeVisitorAbstract;
 
-class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstract
+final class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstract
 {
     /**
      * @var string
@@ -19,10 +19,15 @@ class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstract
         $this->prefix = $prefix;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function enterNode(Node $node)
     {
         if ($node instanceof FullyQualified) {
             return new Name(Name::concat($this->prefix, (string) $node));
         }
+
+        return $node;
     }
 }
