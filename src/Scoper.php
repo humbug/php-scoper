@@ -12,7 +12,9 @@
 namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\GroupUseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\ParentNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error;
@@ -43,6 +45,8 @@ class Scoper
     public function scope(string $content, string $prefix): string
     {
         $traverser = new NodeTraverser();
+        $traverser->addVisitor(new ParentNodeVisitor());
+        $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));

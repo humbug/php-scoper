@@ -7,6 +7,7 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use PackageVersions\Versions;
+use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Symfony\Component\Console\Application;
 
@@ -18,11 +19,16 @@ function createApplication(): Application
         new AddPrefixCommand(
             new HandleAddPrefix(
                 new Scoper(
-                    (new ParserFactory())->create(ParserFactory::PREFER_PHP7)
+                    createParser()
                 )
             )
         ),
     ]);
 
     return $app;
+}
+
+function createParser(): Parser
+{
+    return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
 }
