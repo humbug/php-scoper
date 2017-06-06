@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * This file is part of the webmozart/php-scoper package.
+ * This file is part of the humbug/php-scoper package.
  *
- * (c) Bernhard Schussek <bschussek@gmail.com>
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -87,7 +90,7 @@ class HandleAddPrefix
         $logger->outputFileCount($count);
 
         foreach ($files as $file) {
-            if (false === file_exists($file)) {
+            if (false === file_exists((string) $file)) {
                 throw new RuntimeException(
                     sprintf(
                         'Could not find the path "%s".',
@@ -96,7 +99,7 @@ class HandleAddPrefix
                 );
             }
 
-            if (false === is_readable($file)) {
+            if (false === is_readable((string) $file)) {
                 throw new RuntimeException(
                     sprintf(
                         'Could not read the path "%s".',
