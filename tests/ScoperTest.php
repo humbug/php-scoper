@@ -212,7 +212,6 @@ namespace {
 PHP
         ];
 
-
         //
         // Use statement for a class
         //
@@ -434,7 +433,6 @@ use Humbug\FooNamespace;
 PHP
         ];
 
-
         //
         // Use statement for a function
         //
@@ -473,7 +471,6 @@ use function Humbug\FooNamespace\foo;
 
 PHP
         ];
-
 
         //
         // Use statement for a constant

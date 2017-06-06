@@ -5,7 +5,6 @@ namespace Humbug\PhpScoper\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
 final class GroupUseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
