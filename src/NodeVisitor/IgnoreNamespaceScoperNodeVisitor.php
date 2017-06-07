@@ -36,10 +36,13 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         /**
          * @todo  UseUse should not be skipped if part of FullyQualified sub-section
          */
-        if ($node instanceof UseUse && in_array((string) $node->name, $this->reserved)) {
+        if ($node instanceof FullyQualified && in_array((string) $node, $this->reserved)) {
             $node->setAttribute('phpscoper_ignore', true);
         }
-        if ($node instanceof FullyQualified && in_array((string) $node, $this->reserved)) {
+
+        if ($node instanceof UseUse
+        && (!$node->hasAttribute('phpscoper_ignore') || false === $node->getAttribute('phpscoper_ignore'))
+        && in_array((string) $node->name, $this->reserved)) {
             $node->setAttribute('phpscoper_ignore', true);
         }
     }
