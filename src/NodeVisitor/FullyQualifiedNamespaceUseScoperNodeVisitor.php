@@ -37,7 +37,8 @@ final class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstr
     public function enterNode(Node $node)
     {
         if ($node instanceof FullyQualified) {
-            if ($node->hasAttribute('phpscoper_ignore')) {
+            if ($node->hasAttribute('phpscoper_ignore')
+            && true === $node->getAttribute('phpscoper_ignore')) {
                 return;
             }
             return new Name(Name::concat($this->prefix, (string) $node));

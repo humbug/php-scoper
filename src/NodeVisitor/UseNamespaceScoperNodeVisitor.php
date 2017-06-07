@@ -41,7 +41,8 @@ final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
             && $node->hasAttribute('parent') && false === ($node->getAttribute('parent') instanceof  GroupUse)
             && $this->prefix !== $node->name->getFirst()
         ) {
-            if ($node->hasAttribute('phpscoper_ignore')) {
+            if ($node->hasAttribute('phpscoper_ignore')
+            && true === $node->getAttribute('phpscoper_ignore')) {
                 return;
             }
             $node->name = Name::concat($this->prefix, $node->name);
