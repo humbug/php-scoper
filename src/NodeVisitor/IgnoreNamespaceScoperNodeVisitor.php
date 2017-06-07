@@ -12,7 +12,6 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-
 namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
@@ -22,24 +21,26 @@ use PhpParser\NodeVisitorAbstract;
 
 final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
-
     /**
      * @var array Class names to ignore when scoping
      */
     private $reserved = ['toberemoved'];
 
     /**
-     * @param Node $node
+     * @inheritdoc
      */
     public function enterNode(Node $node)
     {
-        /*
-         * @todo  UseUse should not be skipped if part of FullyQualified sub-section
-         */
-        if ($node instanceof FullyQualified && in_array((string) $node, $this->reserved)) {
+        
+        if ($node instanceof FullyQualified
+        && $node->isFullyQualified()
+        && 1 === count($node->getSubNodeNames())) {
             $node->setAttribute('phpscoper_ignore', true);
         }
 
+        /*
+         * @todo  UseUse should not be skipped if part of FullyQualified sub-section
+         */
         if ($node instanceof UseUse
         && (!$node->hasAttribute('phpscoper_ignore') || false === $node->getAttribute('phpscoper_ignore'))
         && in_array((string) $node->name, $this->reserved)) {

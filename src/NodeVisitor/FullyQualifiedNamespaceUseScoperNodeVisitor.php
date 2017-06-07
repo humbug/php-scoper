@@ -41,7 +41,7 @@ final class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstr
             && true === $node->getAttribute('phpscoper_ignore')) {
                 return;
             }
-            
+
             return new Name(Name::concat($this->prefix, (string) $node));
         }
 
