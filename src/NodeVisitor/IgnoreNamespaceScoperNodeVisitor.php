@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -10,7 +12,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Webmozart\PhpScoper\NodeVisitor;
+
+namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
@@ -23,18 +26,16 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
     /**
      * @var array Class names to ignore when scoping
      */
-    private $reserved;
-
-    public function __construct(array $declaredClasses)
-    {
-        $this->reserved = $declaredClasses;
-    }
+    private $reserved = ['toberemoved'];
 
     /**
      * @param Node $node
      */
     public function enterNode(Node $node)
     {
+        /**
+         * @todo  UseUse should not be skipped if part of FullyQualified sub-section
+         */
         if ($node instanceof UseUse && in_array((string) $node->name, $this->reserved)) {
             $node->setAttribute('phpscoper_ignore', true);
         }

@@ -34,14 +34,7 @@ class ScoperTest extends TestCase
      */
     public function setUp()
     {
-<<<<<<< HEAD
         $this->scoper = new Scoper(createParser());
-=======
-        $this->scoper = new Scoper(
-            (new ParserFactory())->create(ParserFactory::PREFER_PHP7),
-            ['Closure']
-        );
->>>>>>> Map declared classes at start and route to Node Visitor
     }
 
     public function test_cannot_scope_an_invalid_PHP_file()
@@ -76,6 +69,12 @@ PHP;
         $actual = $this->scoper->scope($content, $prefix);
 
         $this->assertSame($expected, $actual);
+    }
+
+    public function testShouldNotScopePhpOrSplReservedClasses()
+    {
+        $content = file_get_contents(__DIR__.'/Fixtures/reserved_classes.php');
+        $this->assertEquals($content, $this->scoper->scope($content, 'MyPrefix'));
     }
 
     public function provideValidFiles()
@@ -520,11 +519,5 @@ use const Humbug\FooNamespace\FOO;
 
 PHP
             ];
-    }
-
-    public function testShouldNotScopePhpOrSplReservedClasses()
-    {
-        $content = file_get_contents(__DIR__.'/Fixtures/reserved_classes.php');
-        $this->assertEquals($content, $this->scoper->addNamespacePrefix($content, 'MyPrefix'));
     }
 }

@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\GroupUseNamespaceScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\ParentNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
@@ -24,31 +25,20 @@ use PhpParser\Error;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-<<<<<<< HEAD
-=======
-use Webmozart\PhpScoper\Exception\ParsingException;
-use Webmozart\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
-use Webmozart\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
-use Webmozart\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
-use Webmozart\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
->>>>>>> Add method to ignore specific use statements
 
 /**
  * @final
  */
 class Scoper
 {
+    /**
+     * @var Parser
+     */
     private $parser;
 
-    /**
-     * @var array
-     */
-    private $declaredClasses;
-
-    public function __construct(Parser $parser, array $declaredClasses = [])
+    public function __construct(Parser $parser)
     {
         $this->parser = $parser;
-        $this->declaredClasses = $declaredClasses;
     }
 
     /**
@@ -62,16 +52,9 @@ class Scoper
     public function scope(string $content, string $prefix): string
     {
         $traverser = new NodeTraverser();
-<<<<<<< HEAD
-<<<<<<< HEAD
         $traverser->addVisitor(new ParentNodeVisitor());
         $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
-=======
         $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor());
->>>>>>> Add method to ignore specific use statements
-=======
-        $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor($this->declaredClasses));
->>>>>>> Map declared classes at start and route to Node Visitor
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));
