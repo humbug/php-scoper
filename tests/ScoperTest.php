@@ -71,6 +71,12 @@ PHP;
         $this->assertSame($expected, $actual);
     }
 
+    public function testShouldNotScopePhpOrSplReservedClasses()
+    {
+        $content = file_get_contents(__DIR__.'/Fixtures/reserved_classes.php');
+        $this->assertEquals($content, $this->scoper->scope($content, 'MyPrefix'));
+    }
+
     public function provideValidFiles()
     {
         //
