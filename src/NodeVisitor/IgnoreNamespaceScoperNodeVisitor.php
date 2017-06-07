@@ -33,7 +33,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
-        /**
+        /*
          * @todo  UseUse should not be skipped if part of FullyQualified sub-section
          */
         if ($node instanceof FullyQualified && in_array((string) $node, $this->reserved)) {
