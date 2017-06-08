@@ -19,7 +19,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use function Humbug\PhpScoper\createApplication;
+use function Humbug\PhpScoper\create_application;
 use function Humbug\PhpScoper\makeTempDir;
 use function Humbug\PhpScoper\remove_dir;
 
@@ -60,7 +60,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
         $this->cwd = getcwd();
 
-        $application = createApplication();
+        $application = create_application();
         $application->setAutoExit(false);
         $application->setCatchExceptions(false);
 

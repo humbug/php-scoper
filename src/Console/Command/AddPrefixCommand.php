@@ -21,6 +21,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class AddPrefixCommand extends Command
@@ -65,9 +66,15 @@ final class AddPrefixCommand extends Command
         $this->validatePrefix($input);
         $this->validatePaths($input);
 
-        $logger = new ConsoleLogger($this->getApplication(), $output);
+        $logger = new ConsoleLogger(
+            $this->getApplication(),
+            new SymfonyStyle($input, $output)
+        );
 
-        $logger->outputScopingStart();
+        $logger->outputScopingStart(
+            $input->getArgument(self::PREFIX_ARG),
+            $input->getArgument(self::PATH_ARG)
+        );
 
         try {
             $this->handle->__invoke(
@@ -75,9 +82,13 @@ final class AddPrefixCommand extends Command
                 $input->getArgument(self::PATH_ARG),
                 $logger
             );
-        } finally {
-            $logger->outputScopingEnd();
+        } catch (\Throwable $throwable) {
+            $logger->outputScopingEndWithFailure();
+
+            throw $throwable;
         }
+
+        $logger->outputScopingEnd();
     }
 
     private function validatePrefix(InputInterface $input)

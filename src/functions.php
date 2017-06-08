@@ -14,22 +14,26 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use PackageVersions\Versions;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
-use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Application as SymfonyApplication;
 
-function createApplication(): Application
+/**
+ * @private
+ */
+function create_application(): SymfonyApplication
 {
-    $app = new Application('php-scoper', Versions::getVersion('humbug/php-scoper'));
+    $app = new Application('PHP Scoper', get_version());
 
     $app->addCommands([
         new AddPrefixCommand(
             new HandleAddPrefix(
                 new Scoper(
-                    createParser()
+                    create_parser()
                 )
             )
         ),
@@ -38,7 +42,22 @@ function createApplication(): Application
     return $app;
 }
 
-function createParser(): Parser
+/**
+ * @private
+ */
+function get_version(): string
+{
+    $rawVersion = Versions::getVersion('humbug/php-scoper');
+
+    list($prettyVersion, $commitHash) = explode('@', $rawVersion);
+
+    return (1 === preg_match('/9{7}/', $prettyVersion)) ? $commitHash : $prettyVersion;
+}
+
+/**
+ * @private
+ */
+function create_parser(): Parser
 {
     return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
 }
