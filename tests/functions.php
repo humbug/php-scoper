@@ -25,7 +25,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @return string The path to the created directory.
  */
-function makeTempDir(string $namespace, string $className): string
+function make_tmp_dir(string $namespace, string $className): string
 {
     if (false !== ($pos = strrpos($className, '\\'))) {
         $shortClass = substr($className, $pos + 1);

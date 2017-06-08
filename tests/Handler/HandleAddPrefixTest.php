@@ -21,7 +21,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 use function Humbug\PhpScoper\escape_path;
-use function Humbug\PhpScoper\makeTempDir;
+use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
 
 /**
@@ -73,8 +73,8 @@ class HandleAddPrefixTest extends TestCase
 
         $this->cwd = getcwd();
 
-        $this->tmpDir0 = makeTempDir('scoper0', __CLASS__);
-        $this->tmpDir1 = makeTempDir('scoper1', __CLASS__);
+        $this->tmpDir0 = make_tmp_dir('scoper0', __CLASS__);
+        $this->tmpDir1 = make_tmp_dir('scoper1', __CLASS__);
 
         $filesystem = new Filesystem();
         $filesystem->mirror(escape_path(self::FIXTURE_PATH_000), $this->tmpDir0);

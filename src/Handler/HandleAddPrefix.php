@@ -14,12 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Handler;
 
+use function Humbug\PhpScoper\get_common_path;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
 
 /**
  * @final
@@ -41,25 +44,32 @@ class HandleAddPrefix
     /**
      * Apply prefix to all the code found in the given paths, AKA scope all the files found.
      *
-     * @param string        $prefix
-     * @param string[]      $paths
+     * @param string        $prefix e.g. 'Foo'
+     * @param string[]      $paths List of files to scan (absolute paths)
+     * @param string        $output absolute path to the output directory
      * @param ConsoleLogger $logger
-     *
-     * @throws RuntimeException
      */
-    public function __invoke(string $prefix, array $paths, ConsoleLogger $logger)
+    public function __invoke(string $prefix, array $paths, string $output, ConsoleLogger $logger)
     {
-        $files = $this->retrieveFiles($paths);
+        $this->fileSystem->mkdir($output);
 
-        $this->scopeFiles($files, $prefix, $logger);
+        try {
+            $files = $this->retrieveFiles($paths, $output);
+
+            $this->scopeFiles($files, $prefix, $logger);
+        } catch (Throwable $throwable) {
+            $this->fileSystem->remove($output);
+
+            throw $throwable;
+        }
     }
 
     /**
      * @param string[] $paths
      *
-     * @return Finder
+     * @return string[] absolute paths
      */
-    private function retrieveFiles(array $paths): Finder
+    private function retrieveFiles(array $paths, string $output): array
     {
         $pathsToSearch = [];
         $filesToAppend = [];
@@ -81,34 +91,48 @@ class HandleAddPrefix
             ->sortByName()
         ;
 
-        return $finder;
+        $files = array_keys(iterator_to_array($finder));
+
+        $commonPath = get_common_path($files);
+
+        return array_map(
+            function (string $file) use ($output, $commonPath): string {
+                if (false === file_exists($file)) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Could not find the file "%s".',
+                            $file
+                        )
+                    );
+                }
+
+                if (false === is_readable($file)) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Could not read the file "%s".',
+                            $file
+                        )
+                    );
+                }
+
+                return $output.str_replace($commonPath, '', $file);
+            },
+            $files
+        );
     }
 
-    private function scopeFiles(Finder $files, string $prefix, ConsoleLogger $logger)
+    /**
+     * @param string[]      $files
+     * @param string        $prefix
+     * @param ConsoleLogger $logger
+     */
+    private function scopeFiles(array $files, string $prefix, ConsoleLogger $logger)
     {
         $count = count($files);
         $logger->outputFileCount($count);
 
         foreach ($files as $file) {
-            if (false === file_exists((string) $file)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Could not find the path "%s".',
-                        $file
-                    )
-                );
-            }
-
-            if (false === is_readable((string) $file)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Could not read the path "%s".',
-                        $file
-                    )
-                );
-            }
-
-            $this->scopeFile($file->getPathName(), $prefix, $logger);
+            $this->scopeFile($file, $prefix, $logger);
         }
     }
 
@@ -116,15 +140,10 @@ class HandleAddPrefix
     {
         $fileContent = file_get_contents($path);
 
-        try {
-            $scoppedContent = $this->scoper->scope($fileContent, $prefix);
+        $scoppedContent = $this->scoper->scope($fileContent, $prefix);
 
-            $this->fileSystem->dumpFile($path, $scoppedContent);
+        $this->fileSystem->dumpFile($path, $scoppedContent);
 
-            $logger->outputSuccess($path);
-        } catch (ParsingException $exception) {
-            //TODO: display error in verbose mode
-            $logger->outputFail($path);
-        }
+        $logger->outputSuccess($path);
     }
 }

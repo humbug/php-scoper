@@ -22,14 +22,19 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use Throwable;
 
 final class AddPrefixCommand extends Command
 {
-    /** @private */
+    /** @internal */
     const PREFIX_ARG = 'prefix';
-    /** @private */
+    /** @internal */
     const PATH_ARG = 'paths';
+    /** @internal */
+    const OUTPUT_DIR = 'output-dir';
 
     private $fileSystem;
     private $handle;
@@ -53,8 +58,23 @@ final class AddPrefixCommand extends Command
         $this
             ->setName('add-prefix')
             ->setDescription('Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.')
-            ->addArgument(self::PREFIX_ARG, InputArgument::REQUIRED, 'The namespace prefix to add')
-            ->addArgument(self::PATH_ARG, InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The path(s) to process.')
+            ->addArgument(
+                self::PREFIX_ARG,
+                InputArgument::REQUIRED,
+                'The namespace prefix to add'
+            )
+            ->addArgument(
+                self::PATH_ARG,
+                InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+                'The path(s) to process.'
+            )
+            ->addOption(
+                self::OUTPUT_DIR,
+                'o',
+                InputOption::VALUE_REQUIRED,
+                'The output directory in which the prefixed code will be dumped.',
+                'lib'
+            )
         ;
     }
 
@@ -63,8 +83,11 @@ final class AddPrefixCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+
         $this->validatePrefix($input);
         $this->validatePaths($input);
+        $this->validateOutputDir($input, $io);
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
@@ -80,9 +103,10 @@ final class AddPrefixCommand extends Command
             $this->handle->__invoke(
                 $input->getArgument(self::PREFIX_ARG),
                 $input->getArgument(self::PATH_ARG),
+                $input->getOption(self::OUTPUT_DIR),
                 $logger
             );
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             $logger->outputScopingEndWithFailure();
 
             throw $throwable;

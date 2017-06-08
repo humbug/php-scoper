@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function Humbug\PhpScoper\create_application;
-use function Humbug\PhpScoper\makeTempDir;
+use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
 
 /**
@@ -66,7 +66,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
         $this->appTester = new ApplicationTester($application);
 
-        $this->tmpDir = makeTempDir('scoper', __CLASS__);
+        $this->tmpDir = make_tmp_dir('scoper', __CLASS__);
 
         $filesystem = new Filesystem();
         $filesystem->mirror(self::FIXTURE_PATH, $this->tmpDir);

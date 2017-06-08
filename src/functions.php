@@ -61,3 +61,41 @@ function create_parser(): Parser
 {
     return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
 }
+
+/**
+ * @param string[] $paths Absolute paths
+ *
+ * @return string
+ */
+function get_common_path(array $paths): string
+{
+    $lastOffset = 1;
+    $common = DIRECTORY_SEPARATOR;
+
+    while (false !== ($index = strpos($paths[0], DIRECTORY_SEPARATOR, $lastOffset))) {
+        $dirLen = $index - $lastOffset + 1;
+        $dir = substr($paths[0], $lastOffset, $dirLen);
+
+        foreach ($paths as $path) {
+            if (substr($path, $lastOffset, $dirLen) !== $dir) {
+                if (0 < strlen($common) && DIRECTORY_SEPARATOR === $common[strlen($common) - 1]) {
+                    $common = substr($common, 0, strlen($common) - 1);
+                }
+
+                return $common;
+            }
+        }
+
+        $common .= $dir;
+        $lastOffset = $index + 1;
+    }
+
+    $common = substr($common, 0, -1);
+
+    if (0 < strlen($common) && DIRECTORY_SEPARATOR === $common[strlen($common) - 1]) {
+        $common = substr($common, 0, strlen($common) - 1);
+    }
+
+    return $common;
+}
+
