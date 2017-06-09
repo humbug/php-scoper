@@ -127,7 +127,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'prefix' => 'MyPrefix',
             'paths' => [
                 $this->tmpDir,
-            ]
+            ],
         ];
 
         $this->appTester->run($input);

@@ -40,8 +40,8 @@ class ConsoleLogger
     }
 
     /**
-     * @param string $prefix
-     * @param string[]  $paths
+     * @param string   $prefix
+     * @param string[] $paths
      */
     public function outputScopingStart(string $prefix, array $paths)
     {
