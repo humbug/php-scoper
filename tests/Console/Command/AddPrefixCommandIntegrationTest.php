@@ -99,6 +99,120 @@ class AddPrefixCommandIntegrationTest extends TestCase
         $this->assertFilesAreSame(self::FIXTURE_PATH.'/../scoped', $this->tmpDir);
     }
 
+    public function test_scope_in_quiet_mode()
+    {
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix',
+            'paths' => [
+                $this->tmpDir,
+            ],
+            '--quiet',
+        ];
+
+        $this->appTester->run($input);
+
+        $expected = '';
+
+        $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
+
+        $this->assertSame($expected, $actual);
+        $this->assertSame(0, $this->appTester->getStatusCode());
+    }
+
+    public function test_scope_in_normal_mode()
+    {
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix',
+            'paths' => [
+                $this->tmpDir,
+            ]
+        ];
+
+        $this->appTester->run($input);
+
+        $expected = <<<'EOF'
+
+    ____  __  ______     _____                           
+   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+ / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /    
+/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/     
+                                     /_/
+
+PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+
+    0 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]
+    1 [▓░░░░░░░░░░░░░░░░░░░░░░░░░░░]
+
+ [OK] Successfully prefixed 1 files.                                            
+
+
+EOF;
+
+        $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
+
+        $this->assertSame($expected, $actual);
+        $this->assertSame(0, $this->appTester->getStatusCode());
+    }
+
+    public function test_scope_in_verbose_mode()
+    {
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix',
+            'paths' => [
+                $this->tmpDir,
+            ],
+            '-v',
+        ];
+
+        $this->appTester->run($input);
+
+        $expected = <<<'EOF'
+
+    ____  __  ______     _____                           
+   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+ / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /    
+/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/     
+                                     /_/
+
+PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+
+ * [OK] /path/to/file.php
+
+
+ [OK] Successfully prefixed 1 files.                                            
+
+ // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s                            
+
+
+EOF;
+
+        $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
+
+        $this->assertSame($expected, $actual);
+        $this->assertSame(0, $this->appTester->getStatusCode());
+    }
+
+    private function getNormalizeDisplay(string $display)
+    {
+        $display = str_replace($this->tmpDir, '/path/to', $display);
+        $display = preg_replace(
+            '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
+            '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
+            $display
+        );
+
+        return preg_replace(
+            '/\b([a-f0-9]{40})\b/',
+            '12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
+            $display
+        );
+    }
+
     private function assertFilesAreSame(string $expectedDir, string $actualDir)
     {
         $expected = $this->collectFiles($expectedDir);

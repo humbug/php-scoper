@@ -29,22 +29,14 @@ class ConsoleLogger
     private $application;
     private $io;
     private $startTime;
-
-    /**
-     * @var ProgressBar
-     */
     private $progressBar;
-
-    /**
-     * @var int|null
-     */
-    private $fileCount;
 
     public function __construct(Application $application, SymfonyStyle $io)
     {
         $this->io = $io;
         $this->application = $application;
         $this->startTime = microtime(true);
+        $this->progressBar = new ProgressBar(new NullOutput());
     }
 
     /**
@@ -80,8 +72,6 @@ class ConsoleLogger
      */
     public function outputFileCount(int $count)
     {
-        $this->fileCount = $count;
-
         if (OutputInterface::VERBOSITY_NORMAL === $this->io->getVerbosity()) {
             $this->progressBar = $this->io->createProgressBar($count);
             $this->progressBar->start(0);
