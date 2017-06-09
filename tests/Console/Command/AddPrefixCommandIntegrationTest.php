@@ -207,7 +207,7 @@ EOF;
         );
 
         return preg_replace(
-            '/\b([a-f0-9]{40})\b/',
+            '/(dev-)?\b([a-f0-9]{40})\b/',
             '12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
             $display
         );
