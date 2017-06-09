@@ -34,7 +34,7 @@ class ScoperTest extends TestCase
      */
     public function setUp()
     {
-        $this->scoper = new Scoper(createParser());
+        $this->scoper = new Scoper(create_parser());
     }
 
     public function test_cannot_scope_an_invalid_PHP_file()

@@ -15,7 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Logger;
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @private
@@ -25,21 +28,41 @@ class ConsoleLogger
 {
     private $application;
     private $io;
+    private $startTime;
+    private $progressBar;
 
-    public function __construct(Application $application, OutputInterface $output)
+    public function __construct(Application $application, SymfonyStyle $io)
     {
-        $this->io = $output;
+        $this->io = $io;
         $this->application = $application;
+        $this->startTime = microtime(true);
+        $this->progressBar = new ProgressBar(new NullOutput());
     }
 
     /**
-     * Output version details at start.
+     * @param string   $prefix
+     * @param string[] $paths
      */
-    public function outputScopingStart()
+    public function outputScopingStart(string $prefix, array $paths)
     {
-        $version = $this->application->getVersion();
+        $this->io->writeln($this->application->getHelp());
 
-        $this->io->writeLn(sprintf('PHP Scoper %s', $version));
+        $newLine = 1;
+        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG) {
+            $this->io->section('Input');
+            $this->io->writeln(
+                sprintf(
+                    'Prefix: %s',
+                    $prefix
+                )
+            );
+            $this->io->writeln('Paths:');
+            $this->io->listing($paths);
+            $this->io->section('Processing');
+            $newLine = 0;
+        }
+
+        $this->io->newLine($newLine);
     }
 
     /**
@@ -49,8 +72,11 @@ class ConsoleLogger
      */
     public function outputFileCount(int $count)
     {
-        if (0 === $count) {
-            $this->io->writeLn('No PHP files to scope located with given path(s).');
+        if (OutputInterface::VERBOSITY_NORMAL === $this->io->getVerbosity()) {
+            $this->progressBar = $this->io->createProgressBar($count);
+            $this->progressBar->start(0);
+        } elseif ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->progressBar = new ProgressBar(new NullOutput());
         }
     }
 
@@ -61,7 +87,16 @@ class ConsoleLogger
      */
     public function outputSuccess(string $path)
     {
-        $this->io->writeLn(sprintf('Scoping %s. . . Success', $path));
+        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->io->writeln(
+                sprintf(
+                    ' * [<info>OK</info>] %s',
+                    $path
+                )
+            );
+        }
+
+        $this->progressBar->advance();
     }
 
     /**
@@ -71,10 +106,51 @@ class ConsoleLogger
      */
     public function outputFail(string $path)
     {
-        $this->io->writeLn(sprintf('Scoping %s. . . Fail', $path));
+        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->io->writeln(
+                sprintf(
+                    ' * [<error>FA</error>] %s',
+                    $path
+                )
+            );
+        }
+
+        $this->progressBar->advance();
     }
 
     public function outputScopingEnd()
     {
+        $this->finish(false);
+    }
+
+    public function outputScopingEndWithFailure()
+    {
+        $this->finish(true);
+    }
+
+    private function finish(bool $failed)
+    {
+        $this->progressBar->finish();
+        $this->io->newLine(2);
+
+        if (false === $failed) {
+            $this->io->success(
+                sprintf(
+                    'Successfully prefixed %d files.',
+                    $this->progressBar->getMaxSteps()
+                )
+            );
+        }
+
+        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->io->comment(
+                sprintf(
+                    '<info>Memory usage: %.2fMB (peak: %.2fMB), time: %.2fs<info>',
+                    round(memory_get_usage() / 1024 / 1024, 2),
+                    round(memory_get_peak_usage() / 1024 / 1024, 2),
+                    round(microtime(true) - $this->startTime, 2)
+                )
+            );
+        }
     }
 }
