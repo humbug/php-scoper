@@ -10,4 +10,4 @@ disabled:
 
 finder:
   exclude:
-    - 'reserved_classes.php'
+    - 'fixtures'
