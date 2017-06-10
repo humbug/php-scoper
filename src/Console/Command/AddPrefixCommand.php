@@ -42,11 +42,11 @@ final class AddPrefixCommand extends Command
     /**
      * @inheritdoc
      */
-    public function __construct(HandleAddPrefix $handle)
+    public function __construct(Filesystem $fileSystem, HandleAddPrefix $handle)
     {
         parent::__construct();
 
-        $this->fileSystem = new Filesystem();
+        $this->fileSystem = $fileSystem;
         $this->handle = $handle;
     }
 
@@ -91,7 +91,7 @@ final class AddPrefixCommand extends Command
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
-            new SymfonyStyle($input, $output)
+            $io
         );
 
         $logger->outputScopingStart(
@@ -152,5 +152,46 @@ final class AddPrefixCommand extends Command
         );
 
         $input->setArgument(self::PATH_ARG, $paths);
+    }
+
+    private function validateOutputDir(InputInterface $input, OutputStyle $io)
+    {
+        $outputDir = $input->getOption(self::OUTPUT_DIR);
+
+        if (false === $this->fileSystem->isAbsolutePath($outputDir)) {
+            $outputDir = getcwd().DIRECTORY_SEPARATOR.$outputDir;
+        }
+
+        $input->setOption(self::OUTPUT_DIR, $outputDir);
+
+        if (false === $this->fileSystem->exists($outputDir)) {
+            return;
+        }
+
+        if (false === is_dir($outputDir)) {
+            $canDeleteFile = $io->confirm(
+                sprintf(
+                    'Expected "%s" to be a directory but found a file instead. It will be removed, do you wish '
+                    .'to proceed?',
+                    $outputDir
+                ),
+                false
+            );
+
+            if (false === $canDeleteFile) {
+                return;
+            }
+
+            $this->fileSystem->remove($outputDir);
+        }
+
+        if (false === is_writable($outputDir)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Expected "%s" to be writeable.',
+                    $outputDir
+                )
+            );
+        }
     }
 }

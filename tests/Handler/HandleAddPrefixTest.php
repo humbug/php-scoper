@@ -66,8 +66,6 @@ class HandleAddPrefixTest extends TestCase
             return;
         }
 
-        $this->cwd = getcwd();
-
         $this->tmpDir = make_tmp_dir('scoper', __CLASS__);
 
         $this->scoperProphecy = $this->prophesize(Scoper::class);
@@ -84,8 +82,6 @@ class HandleAddPrefixTest extends TestCase
      */
     protected function tearDown()
     {
-        chdir($this->cwd);
-
         remove_dir($this->tmpDir);
     }
 

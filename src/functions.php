@@ -21,6 +21,7 @@ use PackageVersions\Versions;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Symfony\Component\Console\Application as SymfonyApplication;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @private
@@ -31,6 +32,7 @@ function create_application(): SymfonyApplication
 
     $app->addCommands([
         new AddPrefixCommand(
+            new Filesystem(),
             new HandleAddPrefix(
                 new Scoper(
                     create_parser()
@@ -102,4 +104,3 @@ function get_common_path(array $paths): string
 
     return $common;
 }
-
