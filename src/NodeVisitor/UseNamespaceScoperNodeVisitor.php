@@ -38,11 +38,13 @@ final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof UseUse
-            && $node->hasAttribute('parent') && false === ($node->getAttribute('parent') instanceof  GroupUse)
+            && $node->hasAttribute('parent')
+            && false === ($node->getAttribute('parent') instanceof GroupUse)
             && $this->prefix !== $node->name->getFirst()
         ) {
             if ($node->hasAttribute('phpscoper_ignore')
-            && true === $node->getAttribute('phpscoper_ignore')) {
+                && true === $node->getAttribute('phpscoper_ignore')
+            ) {
                 return;
             }
             $node->name = Name::concat($this->prefix, $node->name);
