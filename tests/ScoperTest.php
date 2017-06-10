@@ -662,5 +662,47 @@ PHP
 
 PHP
         ];
+
+        yield '[Single part global namespace reference] a fully qualified typehint' => [
+            <<<'PHP'
+<?php
+
+function foo($bar) : \Closure
+{
+}
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+function foo($bar) : \Closure
+{
+}
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQN typehint' => [
+            <<<'PHP'
+<?php
+
+function foo($bar) : Closure
+{
+}
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+function foo($bar) : Closure
+{
+}
+
+PHP
+        ];
     }
 }
