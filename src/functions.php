@@ -69,6 +69,10 @@ function create_parser(): Parser
  */
 function get_common_path(array $paths): string
 {
+    if (0 === count($paths)) {
+        return '';
+    }
+
     $lastOffset = 1;
     $common = DIRECTORY_SEPARATOR;
 

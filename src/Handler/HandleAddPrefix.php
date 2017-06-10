@@ -19,9 +19,9 @@ use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 
 /**
@@ -91,12 +91,20 @@ class HandleAddPrefix
             ->sortByName()
         ;
 
-        $files = array_keys(iterator_to_array($finder));
+        $files = array_values(
+            array_map(
+                function (SplFileInfo $fileInfo) {
+                    return $fileInfo->getRealPath();
+                },
+                iterator_to_array($finder)
+            )
+        );
 
         $commonPath = get_common_path($files);
 
-        return array_map(
-            function (string $file) use ($output, $commonPath): string {
+        return array_reduce(
+            $files,
+            function (array $files, string $file) use ($output, $commonPath): array {
                 if (false === file_exists($file)) {
                     throw new RuntimeException(
                         sprintf(
@@ -115,9 +123,11 @@ class HandleAddPrefix
                     );
                 }
 
-                return $output.str_replace($commonPath, '', $file);
+                $files[$file] = $output.str_replace($commonPath, '', $file);
+
+                return $files;
             },
-            $files
+            []
         );
     }
 
@@ -131,19 +141,19 @@ class HandleAddPrefix
         $count = count($files);
         $logger->outputFileCount($count);
 
-        foreach ($files as $file) {
-            $this->scopeFile($file, $prefix, $logger);
+        foreach ($files as $inputFilePath => $outputFilePath) {
+            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $logger);
         }
     }
 
-    private function scopeFile(string $path, string $prefix, ConsoleLogger $logger)
+    private function scopeFile(string $inputFilePath, string $outputFilePath, string $prefix, ConsoleLogger $logger)
     {
-        $fileContent = file_get_contents($path);
+        $fileContent = file_get_contents($inputFilePath);
 
         $scoppedContent = $this->scoper->scope($fileContent, $prefix);
 
-        $this->fileSystem->dumpFile($path, $scoppedContent);
+        $this->fileSystem->dumpFile($outputFilePath, $scoppedContent);
 
-        $logger->outputSuccess($path);
+        $logger->outputSuccess($inputFilePath);
     }
 }

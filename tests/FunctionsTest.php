@@ -20,6 +20,11 @@ class FunctionsTest extends TestCase
     public function providePaths()
     {
         yield [
+            [],
+            '',
+        ];
+
+        yield [
             [
                 '/path/to/file',
 

@@ -67,9 +67,6 @@ class AddPrefixCommandIntegrationTest extends TestCase
         $this->appTester = new ApplicationTester($application);
 
         $this->tmpDir = make_tmp_dir('scoper', __CLASS__);
-
-        $filesystem = new Filesystem();
-        $filesystem->mirror(self::FIXTURE_PATH, $this->tmpDir);
     }
 
     /**
@@ -88,8 +85,9 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                $this->tmpDir,
+                self::FIXTURE_PATH,
             ],
+            '--output-dir' => $this->tmpDir,
         ];
 
         $this->appTester->run($input);

@@ -50,12 +50,7 @@ class HandleAddPrefixTest extends TestCase
     /**
      * @var string
      */
-    private $tmpDir0 = '';
-
-    /**
-     * @var string
-     */
-    private $tmpDir1 = '';
+    private $tmpDir = '';
 
     /**
      * @var string
@@ -67,18 +62,13 @@ class HandleAddPrefixTest extends TestCase
      */
     protected function setUp()
     {
-        if (file_exists($this->tmpDir0)) {
+        if (file_exists($this->tmpDir)) {
             return;
         }
 
         $this->cwd = getcwd();
 
-        $this->tmpDir0 = make_tmp_dir('scoper0', __CLASS__);
-        $this->tmpDir1 = make_tmp_dir('scoper1', __CLASS__);
-
-        $filesystem = new Filesystem();
-        $filesystem->mirror(escape_path(self::FIXTURE_PATH_000), $this->tmpDir0);
-        $filesystem->mirror(escape_path(self::FIXTURE_PATH_001), $this->tmpDir1);
+        $this->tmpDir = make_tmp_dir('scoper', __CLASS__);
 
         $this->scoperProphecy = $this->prophesize(Scoper::class);
         /** @var Scoper $scoper */
@@ -96,8 +86,7 @@ class HandleAddPrefixTest extends TestCase
     {
         chdir($this->cwd);
 
-        remove_dir($this->tmpDir0);
-        remove_dir($this->tmpDir1);
+        remove_dir($this->tmpDir);
     }
 
     /**
@@ -105,22 +94,23 @@ class HandleAddPrefixTest extends TestCase
      */
     public function test_scopes_all_the_files_found_in_the_given_paths(array $paths, array $expected)
     {
-        chdir($this->tmpDir0);
-
         $prefix = 'MyPrefix';
 
         $paths = array_map(
             function (string $relativePath) {
-                return escape_path($this->tmpDir0.'/'.$relativePath);
+                return escape_path(self::FIXTURE_PATH_000.'/'.$relativePath);
             },
             $paths
         );
+
+        $outputPath = $this->tmpDir;
 
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
 
         foreach ($expected as $fileContent) {
-            $filePath = escape_path($this->tmpDir0.$fileContent);
+            $filePath = realpath(escape_path(self::FIXTURE_PATH_000.$fileContent));
+            $this->assertNotFalse($filePath, 'Type check.');
 
             $this->scoperProphecy->scope($fileContent, $prefix)->shouldBeCalled();
             $this->loggerProphecy->outputSuccess($filePath)->shouldBeCalled();
@@ -128,7 +118,7 @@ class HandleAddPrefixTest extends TestCase
 
         $this->loggerProphecy->outputFileCount(count($expected))->shouldBeCalled();
 
-        $this->handle->__invoke($prefix, $paths, $logger);
+        $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expected));
         $this->loggerProphecy->outputSuccess(Argument::cetera())->shouldHaveBeenCalledTimes(count($expected));
@@ -137,12 +127,13 @@ class HandleAddPrefixTest extends TestCase
 
     public function test_replaces_the_content_of_the_files_with_the_scoped_content()
     {
-        chdir($this->tmpDir1);
-
         $prefix = 'MyPrefix';
+
         $paths = [
-            $filePath = escape_path($this->tmpDir1.'/file.php'),
+            $filePath = escape_path(self::FIXTURE_PATH_001.'/file.php'),
         ];
+
+        $outputPath = $this->tmpDir;
 
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
@@ -158,9 +149,11 @@ PHP;
 
         $this->scoperProphecy->scope(Argument::any(), $prefix)->willReturn($expected);
 
-        $this->handle->__invoke($prefix, $paths, $logger);
+        $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
 
-        $actual = file_get_contents($filePath);
+        $actual = file_get_contents(
+            escape_path($this->tmpDir.'/file.php')
+        );
 
         $this->assertSame($expected, $actual);
     }

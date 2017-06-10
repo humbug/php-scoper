@@ -146,6 +146,7 @@ EOF;
                     escape_path('/path/to/dir2'),
                     escape_path('/path/to/file'),
                 ],
+                $this->cwd.DIRECTORY_SEPARATOR.'lib',
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -178,6 +179,7 @@ EOF;
                     escape_path($this->cwd.'/relative-path/to/dir2'),
                     escape_path($this->cwd.'/relative-path/to/file'),
                 ],
+                $this->cwd.DIRECTORY_SEPARATOR.'lib',
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -210,6 +212,7 @@ EOF;
                     escape_path('/path/to/dir2'),
                     escape_path('/path/to/file'),
                 ],
+                $this->cwd.DIRECTORY_SEPARATOR.'lib',
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -242,6 +245,7 @@ EOF;
                     escape_path('/path/to/dir2'),
                     escape_path('/path/to/file'),
                 ],
+                $this->cwd.DIRECTORY_SEPARATOR.'lib',
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
