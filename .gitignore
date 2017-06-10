@@ -1,5 +1,8 @@
+/bin/php-scoper.phar
 /box.json
 /dist/
 /build/
 /composer.lock
 /vendor/
+/vendor-bin/box/vendor/
+/vendor-bin/box/composer.lock
