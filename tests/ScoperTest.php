@@ -711,7 +711,7 @@ function foo($bar) : Closure
 PHP
         ];
 
-        yield '[Single part global namespace reference] a fully qualified typehint' => [
+        yield '[Single part global namespace reference] a fully qualified return type' => [
             <<<'PHP'
 <?php
 
@@ -732,7 +732,7 @@ function foo($bar) : \Closure
 PHP
         ];
 
-        yield '[Single part global namespace reference] a non-FQN typehint' => [
+        yield '[Single part global namespace reference] a non-FQN return type' => [
             <<<'PHP'
 <?php
 
