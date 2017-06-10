@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Handler;
 
+use Error;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +24,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
+use Throwable;
 
 /**
  * @covers \Humbug\PhpScoper\Handler\HandleAddPrefix
@@ -152,6 +154,35 @@ PHP;
         );
 
         $this->assertSame($expected, $actual);
+    }
+
+    public function test_removes_scoped_files_on_failure()
+    {
+        $prefix = 'MyPrefix';
+
+        $paths = [
+            $filePath = escape_path(self::FIXTURE_PATH_001.'/file.php'),
+        ];
+
+        $outputPath = $this->tmpDir.DIRECTORY_SEPARATOR.'output-dir';
+
+        /** @var ConsoleLogger $logger */
+        $logger = $this->loggerProphecy->reveal();
+
+        $this->scoperProphecy
+            ->scope(Argument::any(), $prefix)
+            ->willThrow($error = new Error())
+        ;
+
+        try {
+            $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
+
+            $this->fail('Expected exception to be thrown.');
+        } catch (Throwable $throwable) {
+            $this->assertSame($error, $throwable);
+        }
+
+        $this->assertFalse(file_exists($outputPath));
     }
 
     public function providePaths()
