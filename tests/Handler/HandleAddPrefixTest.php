@@ -20,11 +20,10 @@ use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Component\Filesystem\Filesystem;
+use Throwable;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
-use Throwable;
 
 /**
  * @covers \Humbug\PhpScoper\Handler\HandleAddPrefix

@@ -14,15 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Handler;
 
-use function Humbug\PhpScoper\get_common_path;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Throwable;
+use function Humbug\PhpScoper\get_common_path;
 
 /**
  * @final
@@ -45,7 +44,7 @@ class HandleAddPrefix
      * Apply prefix to all the code found in the given paths, AKA scope all the files found.
      *
      * @param string        $prefix e.g. 'Foo'
-     * @param string[]      $paths List of files to scan (absolute paths)
+     * @param string[]      $paths  List of files to scan (absolute paths)
      * @param string        $output absolute path to the output directory
      * @param ConsoleLogger $logger
      */

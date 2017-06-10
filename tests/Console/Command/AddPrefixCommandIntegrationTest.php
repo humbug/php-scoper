@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function Humbug\PhpScoper\create_application;

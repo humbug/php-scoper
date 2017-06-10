@@ -17,17 +17,15 @@ namespace Humbug\PhpScoper\Console\Command;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
-use function Humbug\PhpScoper\make_tmp_dir;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
-use phpmock\prophecy\PHPProphet;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
-use function Humbug\PhpScoper\escape_path;
 use Symfony\Component\Filesystem\Filesystem;
+use function Humbug\PhpScoper\escape_path;
+use function Humbug\PhpScoper\make_tmp_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
