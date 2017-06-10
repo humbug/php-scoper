@@ -1,0 +1,14 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/mikeSimonson/box2"
+        }
+    ],
+    "require-dev": {
+        "kherge/box": "dev-fix-autoloader-cgr as 2.7.x-dev"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
