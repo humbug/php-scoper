@@ -71,12 +71,6 @@ PHP;
         $this->assertSame($expected, $actual);
     }
 
-    public function testShouldNotScopePhpOrSplReservedClasses()
-    {
-        $content = file_get_contents(__DIR__.'/Fixtures/reserved_classes.php');
-        $this->assertEquals($content, $this->scoper->scope($content, 'MyPrefix'));
-    }
-
     public function provideValidFiles()
     {
         //
@@ -230,7 +224,7 @@ PHP
             <<<'PHP'
 <?php
 
-use FooNamespace;
+use Bar\FooNamespace;
 
 PHP
             ,
@@ -238,7 +232,7 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\FooNamespace;
+use Humbug\Bar\FooNamespace;
 
 PHP
         ];
@@ -298,8 +292,8 @@ PHP
             <<<'PHP'
 <?php
 
-use FooNamespace;
-use BarNamespace;
+use Bar\FooNamespace;
+use Bar\BarNamespace;
 
 PHP
             ,
@@ -307,8 +301,8 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\FooNamespace;
-use Humbug\BarNamespace;
+use Humbug\Bar\FooNamespace;
+use Humbug\Bar\BarNamespace;
 
 PHP
         ];
@@ -317,7 +311,7 @@ PHP
             <<<'PHP'
 <?php
 
-use FooNamespace;
+use Bar\FooNamespace;
 use Humbug\BarNamespace;
 
 PHP
@@ -326,7 +320,7 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\FooNamespace;
+use Humbug\Bar\FooNamespace;
 use Humbug\BarNamespace;
 
 PHP
@@ -355,7 +349,7 @@ PHP
             <<<'PHP'
 <?php
 
-use FooNamespace, BarNamespace;
+use Bar\FooNamespace, Bar\BarNamespace;
 
 PHP
             ,
@@ -363,7 +357,7 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\FooNamespace, Humbug\BarNamespace;
+use Humbug\Bar\FooNamespace, Humbug\Bar\BarNamespace;
 
 PHP
         ];
@@ -372,7 +366,7 @@ PHP
             <<<'PHP'
 <?php
 
-use FooNamespace, Humbug\BarNamespace;
+use Bar\FooNamespace, Humbug\BarNamespace;
 
 PHP
             ,
@@ -380,7 +374,7 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\FooNamespace, Humbug\BarNamespace;
+use Humbug\Bar\FooNamespace, Humbug\BarNamespace;
 
 PHP
         ];
@@ -427,8 +421,8 @@ PHP
             <<<'PHP'
 <?php
 
-use FooNamespace;
-use Humbug\FooNamespace;
+use Bar\FooNamespace;
+use Humbug\Bar\FooNamespace;
 
 PHP
             ,
@@ -436,8 +430,8 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\FooNamespace;
-use Humbug\FooNamespace;
+use Humbug\Bar\FooNamespace;
+use Humbug\Bar\FooNamespace;
 
 PHP
         ];
@@ -518,6 +512,155 @@ PHP
 use const Humbug\FooNamespace\FOO;
 
 PHP
-            ];
+        ];
+
+        //
+        // Single part global namespace reference
+        //
+        // ======================================
+
+        yield '[Single part global namespace reference] a simple use statement' => [
+            <<<'PHP'
+<?php
+
+use Closure;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Closure;
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a full qualified class reference' => [
+            <<<'PHP'
+<?php
+
+$foo = new \Closure();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+$foo = new \Closure();
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQN class reference' => [
+            <<<'PHP'
+<?php
+
+$foo = new Closure();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+$foo = new Closure();
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a fully qualified typehint' => [
+            <<<'PHP'
+<?php
+
+function foo(\Closure $bar)
+{
+}
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+function foo(\Closure $bar)
+{
+}
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQN typehint' => [
+            <<<'PHP'
+<?php
+
+function foo(Closure $bar)
+{
+}
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+function foo(Closure $bar)
+{
+}
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a fully qualified constant' => [
+            <<<'PHP'
+<?php
+
+$a = \PHP_EOL;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+$a = \PHP_EOL;
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQN constant' => [
+            <<<'PHP'
+<?php
+
+$a = PHP_EOL;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+$a = PHP_EOL;
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a fully qualified function' => [
+            <<<'PHP'
+<?php
+
+\var_dump(1);
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+\var_dump(1);
+
+PHP
+        ];
     }
 }

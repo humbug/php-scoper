@@ -22,28 +22,22 @@ use PhpParser\NodeVisitorAbstract;
 final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var array Class names to ignore when scoping
-     */
-    private $reserved = ['toberemoved'];
-
-    /**
      * @inheritdoc
      */
     public function enterNode(Node $node)
     {
-        
         if ($node instanceof FullyQualified
-        && $node->isFullyQualified()
-        && 1 === count($node->getSubNodeNames())) {
+            && $node->isFullyQualified()
+            && 1 === count($node->getSubNodeNames())
+        ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
 
-        /*
-         * @todo  UseUse should not be skipped if part of FullyQualified sub-section
-         */
         if ($node instanceof UseUse
-        && (!$node->hasAttribute('phpscoper_ignore') || false === $node->getAttribute('phpscoper_ignore'))
-        && in_array((string) $node->name, $this->reserved)) {
+            && $node->hasAttribute('parent')
+            && false === ($node->getAttribute('parent') instanceof GroupUse)
+            && 1 === count($node->name->parts)
+        ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
     }
