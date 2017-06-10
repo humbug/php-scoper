@@ -45,7 +45,8 @@ final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
             && true === $node->getAttribute('phpscoper_ignore'))
         ) {
             if ($node->hasAttribute('phpscoper_ignore')
-            && true === $node->getAttribute('phpscoper_ignore')) {
+                && true === $node->getAttribute('phpscoper_ignore')
+            ) {
                 return;
             }
             $node->name = Name::concat($this->prefix, $node->name);
