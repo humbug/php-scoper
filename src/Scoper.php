@@ -20,9 +20,9 @@ use Humbug\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\ParentNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
-use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 
@@ -42,13 +42,26 @@ class Scoper
      * @param string $content Content of the file to scope
      * @param string $prefix  Prefix to apply to the file
      *
-     * @throws ParsingException
+     * @throws Error
      *
      * @return string Content of the file with the prefix applied
      */
     public function scope(string $content, string $prefix): string
     {
+        $traverser = $this->createNodeTraverser($prefix);
+
+        $statements = $this->parser->parse($content);
+        $statements = $traverser->traverse($statements);
+
+        $prettyPrinter = new Standard();
+
+        return $prettyPrinter->prettyPrintFile($statements)."\n";
+    }
+
+    private function createNodeTraverser(string $prefix): NodeTraverserInterface
+    {
         $traverser = new NodeTraverser();
+
         $traverser->addVisitor(new ParentNodeVisitor());
         $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor());
         $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
@@ -56,16 +69,6 @@ class Scoper
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));
 
-        try {
-            $statements = $this->parser->parse($content);
-        } catch (Error $error) {
-            throw new ParsingException($error->getMessage(), 0, $error);
-        }
-
-        $statements = $traverser->traverse($statements);
-
-        $prettyPrinter = new Standard();
-
-        return $prettyPrinter->prettyPrintFile($statements)."\n";
+        return $traverser;
     }
 }
