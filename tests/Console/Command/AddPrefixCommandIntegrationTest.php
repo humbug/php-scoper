@@ -102,7 +102,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                $this->tmpDir,
+                self::FIXTURE_PATH,
             ],
             '--quiet',
         ];
@@ -123,7 +123,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                $this->tmpDir,
+                self::FIXTURE_PATH,
             ],
         ];
 
@@ -160,7 +160,7 @@ EOF;
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                $this->tmpDir,
+                self::FIXTURE_PATH,
             ],
             '-v',
         ];
@@ -196,6 +196,7 @@ EOF;
 
     private function getNormalizeDisplay(string $display)
     {
+        $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmpDir, '/path/to', $display);
         $display = preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
