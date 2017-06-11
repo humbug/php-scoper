@@ -15,41 +15,30 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
-final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @var string
-     */
-    private $prefix;
-
-    public function __construct($prefix)
-    {
-        $this->prefix = $prefix;
-    }
-
     /**
      * @inheritdoc
      */
     public function enterNode(Node $node)
     {
+        if ($node instanceof FullyQualified
+            && $node->isFullyQualified()
+            && 1 === count($node->getSubNodeNames())
+        ) {
+            $node->setAttribute('phpscoper_ignore', true);
+        }
+
         if ($node instanceof UseUse
             && $node->hasAttribute('parent')
             && false === ($node->getAttribute('parent') instanceof GroupUse)
-            && $this->prefix !== $node->name->getFirst()
+            && 1 === count($node->name->parts)
         ) {
-            if ($node->hasAttribute('phpscoper_ignore')
-                && true === $node->getAttribute('phpscoper_ignore')
-            ) {
-                return;
-            }
-            $node->name = Name::concat($this->prefix, $node->name);
+            $node->setAttribute('phpscoper_ignore', true);
         }
-
-        return $node;
     }
 }

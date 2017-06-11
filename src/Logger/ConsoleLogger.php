@@ -74,7 +74,7 @@ class ConsoleLogger
     {
         if (OutputInterface::VERBOSITY_NORMAL === $this->io->getVerbosity()) {
             $this->progressBar = $this->io->createProgressBar($count);
-            $this->progressBar->start(0);
+            $this->progressBar->start();
         } elseif ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->progressBar = new ProgressBar(new NullOutput());
         }
@@ -142,7 +142,7 @@ class ConsoleLogger
             );
         }
 
-        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
             $this->io->comment(
                 sprintf(
                     '<info>Memory usage: %.2fMB (peak: %.2fMB), time: %.2fs<info>',
