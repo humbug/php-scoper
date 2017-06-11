@@ -1,29 +1,27 @@
 {
+    "output": "bin/php-scoper.phar",
+    "main": "bin/php-scoper",
     "directories": [
         "src"
     ],
-    "files": [
-        "LICENSE"
-    ],
     "finder": [
         {
-            "name": "*.php",
+            "notName": "/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/",
             "exclude": [
-                "Tester",
+                "doc",
+                "test",
+                "test_old",
+                "tests",
                 "Tests",
-                "tests"
+                "vendor-bin"
             ],
             "in": "vendor"
         }
     ],
+    "compression": "GZ",
     "compactors": [
         "Herrera\\Box\\Compactor\\Json",
         "Herrera\\Box\\Compactor\\Php"
     ],
-    "compression": "GZ",
-    "git-version": "package_version",
-    "main": "bin/php-scoper",
-    "output": "build/php-scoper-@git-version@.phar",
-    "chmod": "0755",
     "stub": true
 }

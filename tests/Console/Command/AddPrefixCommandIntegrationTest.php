@@ -16,11 +16,10 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function Humbug\PhpScoper\create_application;
-use function Humbug\PhpScoper\makeTempDir;
+use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
 
 /**
@@ -66,10 +65,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
         $this->appTester = new ApplicationTester($application);
 
-        $this->tmpDir = makeTempDir('scoper', __CLASS__);
-
-        $filesystem = new Filesystem();
-        $filesystem->mirror(self::FIXTURE_PATH, $this->tmpDir);
+        $this->tmpDir = make_tmp_dir('scoper', __CLASS__);
     }
 
     /**
@@ -88,8 +84,9 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                $this->tmpDir,
+                self::FIXTURE_PATH,
             ],
+            '--output-dir' => $this->tmpDir,
         ];
 
         $this->appTester->run($input);
@@ -105,7 +102,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                $this->tmpDir,
+                self::FIXTURE_PATH,
             ],
             '--quiet',
         ];
@@ -126,7 +123,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                $this->tmpDir,
+                self::FIXTURE_PATH,
             ],
         ];
 
@@ -163,7 +160,7 @@ EOF;
             'add-prefix',
             'prefix' => 'MyPrefix',
             'paths' => [
-                $this->tmpDir,
+                self::FIXTURE_PATH,
             ],
             '-v',
         ];
@@ -199,6 +196,7 @@ EOF;
 
     private function getNormalizeDisplay(string $display)
     {
+        $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmpDir, '/path/to', $display);
         $display = preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',

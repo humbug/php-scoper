@@ -20,16 +20,21 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use Throwable;
 
 final class AddPrefixCommand extends Command
 {
-    /** @private */
+    /** @internal */
     const PREFIX_ARG = 'prefix';
-    /** @private */
+    /** @internal */
     const PATH_ARG = 'paths';
+    /** @internal */
+    const OUTPUT_DIR = 'output-dir';
 
     private $fileSystem;
     private $handle;
@@ -37,11 +42,11 @@ final class AddPrefixCommand extends Command
     /**
      * @inheritdoc
      */
-    public function __construct(HandleAddPrefix $handle)
+    public function __construct(Filesystem $fileSystem, HandleAddPrefix $handle)
     {
         parent::__construct();
 
-        $this->fileSystem = new Filesystem();
+        $this->fileSystem = $fileSystem;
         $this->handle = $handle;
     }
 
@@ -53,8 +58,23 @@ final class AddPrefixCommand extends Command
         $this
             ->setName('add-prefix')
             ->setDescription('Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.')
-            ->addArgument(self::PREFIX_ARG, InputArgument::REQUIRED, 'The namespace prefix to add')
-            ->addArgument(self::PATH_ARG, InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The path(s) to process.')
+            ->addArgument(
+                self::PREFIX_ARG,
+                InputArgument::REQUIRED,
+                'The namespace prefix to add'
+            )
+            ->addArgument(
+                self::PATH_ARG,
+                InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+                'The path(s) to process.'
+            )
+            ->addOption(
+                self::OUTPUT_DIR,
+                'o',
+                InputOption::VALUE_REQUIRED,
+                'The output directory in which the prefixed code will be dumped.',
+                'build'
+            )
         ;
     }
 
@@ -63,12 +83,15 @@ final class AddPrefixCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+
         $this->validatePrefix($input);
         $this->validatePaths($input);
+        $this->validateOutputDir($input, $io);
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
-            new SymfonyStyle($input, $output)
+            $io
         );
 
         $logger->outputScopingStart(
@@ -80,9 +103,10 @@ final class AddPrefixCommand extends Command
             $this->handle->__invoke(
                 $input->getArgument(self::PREFIX_ARG),
                 $input->getArgument(self::PATH_ARG),
+                $input->getOption(self::OUTPUT_DIR),
                 $logger
             );
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             $logger->outputScopingEndWithFailure();
 
             throw $throwable;
@@ -128,5 +152,46 @@ final class AddPrefixCommand extends Command
         );
 
         $input->setArgument(self::PATH_ARG, $paths);
+    }
+
+    private function validateOutputDir(InputInterface $input, OutputStyle $io)
+    {
+        $outputDir = $input->getOption(self::OUTPUT_DIR);
+
+        if (false === $this->fileSystem->isAbsolutePath($outputDir)) {
+            $outputDir = getcwd().DIRECTORY_SEPARATOR.$outputDir;
+        }
+
+        $input->setOption(self::OUTPUT_DIR, $outputDir);
+
+        if (false === $this->fileSystem->exists($outputDir)) {
+            return;
+        }
+
+        if (false === is_dir($outputDir)) {
+            $canDeleteFile = $io->confirm(
+                sprintf(
+                    'Expected "%s" to be a directory but found a file instead. It will be removed, do you wish '
+                    .'to proceed?',
+                    $outputDir
+                ),
+                false
+            );
+
+            if (false === $canDeleteFile) {
+                return;
+            }
+
+            $this->fileSystem->remove($outputDir);
+        }
+
+        if (false === is_writable($outputDir)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Expected "%s" to be writeable.',
+                    $outputDir
+                )
+            );
+        }
     }
 }
