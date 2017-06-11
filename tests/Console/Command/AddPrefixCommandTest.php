@@ -23,7 +23,9 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
+use Symfony\Component\Filesystem\Filesystem;
 use function Humbug\PhpScoper\escape_path;
+use function Humbug\PhpScoper\make_tmp_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
@@ -41,6 +43,11 @@ class AddPrefixCommandTest extends TestCase
     private $cwd;
 
     /**
+     * @var string
+     */
+    private $tmp;
+
+    /**
      * @var HandleAddPrefix|ObjectProphecy
      */
     private $handleProphecy;
@@ -55,6 +62,8 @@ class AddPrefixCommandTest extends TestCase
         }
 
         $this->cwd = getcwd();
+
+        $this->tmp = make_tmp_dir('scoper', __CLASS__);
 
         $this->handleProphecy = $this->prophesize(HandleAddPrefix::class);
 
@@ -136,6 +145,7 @@ EOF;
                 escape_path('/path/to/dir2'),
                 escape_path('/path/to/file'),
             ],
+            '--output-dir' => $this->tmp,
         ];
 
         $this->handleProphecy
@@ -146,6 +156,7 @@ EOF;
                     escape_path('/path/to/dir2'),
                     escape_path('/path/to/file'),
                 ],
+                $this->tmp,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -168,6 +179,7 @@ EOF;
                 escape_path('relative-path/to/dir2'),
                 escape_path('relative-path/to/file'),
             ],
+            '--output-dir' => $this->tmp,
         ];
 
         $this->handleProphecy
@@ -178,6 +190,7 @@ EOF;
                     escape_path($this->cwd.'/relative-path/to/dir2'),
                     escape_path($this->cwd.'/relative-path/to/file'),
                 ],
+                $this->tmp,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -200,6 +213,7 @@ EOF;
                 escape_path('/path/to/dir2'),
                 escape_path('/path/to/file'),
             ],
+            '--output-dir' => $this->tmp,
         ];
 
         $this->handleProphecy
@@ -210,6 +224,7 @@ EOF;
                     escape_path('/path/to/dir2'),
                     escape_path('/path/to/file'),
                 ],
+                $this->tmp,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -232,6 +247,7 @@ EOF;
                 escape_path('/path/to/dir2'),
                 escape_path('/path/to/file'),
             ],
+            '--output-dir' => $this->tmp,
         ];
 
         $this->handleProphecy
@@ -242,6 +258,79 @@ EOF;
                     escape_path('/path/to/dir2'),
                     escape_path('/path/to/file'),
                 ],
+                $this->tmp,
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        $this->assertSame(0, $this->appTester->getStatusCode());
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_a_output_directory_can_be_given()
+    {
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+                escape_path('relative-path/to/dir2'),
+                escape_path('relative-path/to/file'),
+            ],
+            '--output-dir' => $this->cwd,
+        ];
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    escape_path('/path/to/dir1'),
+                    escape_path($this->cwd.'/relative-path/to/dir2'),
+                    escape_path($this->cwd.'/relative-path/to/file'),
+                ],
+                $this->cwd,
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        $this->assertSame(0, $this->appTester->getStatusCode());
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_relative_output_directory_are_made_absolute()
+    {
+        chdir($this->tmp);
+
+        $input = [
+            'add-prefix',
+            'prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+                escape_path('relative-path/to/dir2'),
+                escape_path('relative-path/to/file'),
+            ],
+            '--output-dir' => 'output-dir',
+        ];
+
+        $x = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    escape_path('/path/to/dir1'),
+                    escape_path($this->tmp.'/relative-path/to/dir2'),
+                    escape_path($this->tmp.'/relative-path/to/file'),
+                ],
+                $this->tmp.DIRECTORY_SEPARATOR.'output-dir',
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -337,7 +426,7 @@ EOF;
 
         $application = new Application('php-scoper-test');
         $application->addCommands([
-            new AddPrefixCommand($handle),
+            new AddPrefixCommand(new Filesystem(), $handle),
         ]);
         $application->setAutoExit(false);
         $application->setCatchExceptions($catchExceptions);
