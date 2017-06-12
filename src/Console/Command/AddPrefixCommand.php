@@ -190,7 +190,7 @@ final class AddPrefixCommand extends Command
         if (false === is_writable($outputDir)) {
             throw new RuntimeException(
                 sprintf(
-                    'Expected "%s" to be writeable.',
+                    'Expected "<comment>%s</comment>" to be writeable.',
                     $outputDir
                 )
             );
