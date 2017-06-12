@@ -783,5 +783,24 @@ function foo($bar) : Closure
 
 PHP
         ];
+
+        yield '[Single part global namespace reference] an aliased root namespace' => [
+            <<<'PHP'
+<?php
+
+use Foo as Bar;
+new Bar\Baz();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\Foo as Bar;
+new Bar\Baz();
+
+PHP
+        ];
     }
 }
