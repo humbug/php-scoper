@@ -71,12 +71,6 @@ PHP;
         $this->assertSame($expected, $actual);
     }
 
-    public function testShouldNotScopePhpOrSplReservedClasses()
-    {
-        $content = file_get_contents(__DIR__.'/Fixtures/reserved_classes.php');
-        $this->assertEquals($content, $this->scoper->scope($content, 'MyPrefix'));
-    }
-
     public function provideValidFiles()
     {
         //
@@ -665,48 +659,6 @@ PHP
 <?php
 
 \var_dump(1);
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a fully qualified return type' => [
-            <<<'PHP'
-<?php
-
-function foo($bar) : \Closure
-{
-}
-
-PHP
-            ,
-            'Humbug',
-            <<<'PHP'
-<?php
-
-function foo($bar) : \Closure
-{
-}
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a non-FQN return type' => [
-            <<<'PHP'
-<?php
-
-function foo($bar) : Closure
-{
-}
-
-PHP
-            ,
-            'Humbug',
-            <<<'PHP'
-<?php
-
-function foo($bar) : Closure
-{
-}
 
 PHP
         ];
