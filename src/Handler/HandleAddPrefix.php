@@ -16,9 +16,7 @@ namespace Humbug\PhpScoper\Handler;
 
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
-use PhpParser\Error;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -30,6 +28,9 @@ use function Humbug\PhpScoper\get_common_path;
  */
 class HandleAddPrefix
 {
+    /** @internal */
+    const PHP_FILE_PATTERN = '/\.php$/';
+
     private $fileSystem;
     private $scoper;
 
@@ -64,9 +65,8 @@ class HandleAddPrefix
 
     /**
      * @param string[] $paths
-     * @param string   $output
      *
-     * @return string[]
+     * @return string[] absolute paths
      */
     private function retrieveFiles(array $paths, string $output): array
     {
@@ -74,18 +74,9 @@ class HandleAddPrefix
         $filesToAppend = [];
 
         foreach ($paths as $path) {
-            if (false === file_exists($path)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Could not find the file "%s".',
-                        $path
-                    )
-                );
-            }
-
             if (is_dir($path)) {
                 $pathsToSearch[] = $path;
-            } else {
+            } elseif (1 === preg_match(self::PHP_FILE_PATTERN, $path)) {
                 $filesToAppend[] = $path;
             }
         }
@@ -93,6 +84,7 @@ class HandleAddPrefix
         $finder = new Finder();
 
         $finder->files()
+            ->name(self::PHP_FILE_PATTERN)
             ->in($pathsToSearch)
             ->append($filesToAppend)
             ->sortByName()
@@ -157,21 +149,7 @@ class HandleAddPrefix
     {
         $fileContent = file_get_contents($inputFilePath);
 
-        try {
-            $scoppedContent = (1 === preg_match('/.*\.php$/', $inputFilePath))
-                ? $this->scoper->scope($fileContent, $prefix)
-                : $fileContent
-            ;
-        } catch (Error $error) {
-            throw new ParsingException(
-                sprintf(
-                    'Could not parse the file "%s".',
-                    $inputFilePath
-                ),
-                0,
-                $error
-            );
-        }
+        $scoppedContent = $this->scoper->scope($fileContent, $prefix);
 
         $this->fileSystem->dumpFile($outputFilePath, $scoppedContent);
 

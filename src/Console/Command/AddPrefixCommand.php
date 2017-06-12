@@ -196,7 +196,7 @@ final class AddPrefixCommand extends Command
             );
         }
 
-        if ($input->hasOption(self::FORCE_OPT)) {
+        if ($input->getOption(self::FORCE_OPT)) {
             $this->fileSystem->remove($outputDir);
 
             return;

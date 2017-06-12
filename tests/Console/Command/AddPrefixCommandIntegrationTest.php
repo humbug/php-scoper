@@ -57,14 +57,13 @@ class AddPrefixCommandIntegrationTest extends TestCase
             return;
         }
 
-        $this->cwd = getcwd();
-
         $application = create_application();
         $application->setAutoExit(false);
         $application->setCatchExceptions(false);
 
         $this->appTester = new ApplicationTester($application);
 
+        $this->cwd = getcwd();
         $this->tmp = make_tmp_dir('scoper', __CLASS__);
     }
 
@@ -82,7 +81,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
     {
         $input = [
             'add-prefix',
-            'prefix' => 'MyPrefix',
+            '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
@@ -100,7 +99,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
     {
         $input = [
             'add-prefix',
-            'prefix' => 'MyPrefix',
+            '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
@@ -122,7 +121,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
     {
         $input = [
             'add-prefix',
-            'prefix' => 'MyPrefix',
+            '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
@@ -162,7 +161,7 @@ EOF;
     {
         $input = [
             'add-prefix',
-            'prefix' => 'MyPrefix',
+            '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
