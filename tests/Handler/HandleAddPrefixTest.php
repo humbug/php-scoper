@@ -115,7 +115,7 @@ class HandleAddPrefixTest extends TestCase
 
             if ($isScoped) {
                 $this->scoperProphecy->scope($fileContent, $prefix)->shouldBeCalled();
-                $scopedFiles++;
+                ++$scopedFiles;
             } else {
                 $this->scoperProphecy->scope($fileContent, $prefix)->shouldNotBeCalled();
             }
