@@ -44,7 +44,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
     /**
      * @var string
      */
-    private $tmpDir;
+    private $tmp;
 
     /**
      * @inheritdoc
@@ -52,7 +52,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
     protected function setUp()
     {
         if (null !== $this->appTester) {
-            chdir($this->tmpDir);
+            chdir($this->tmp);
 
             return;
         }
@@ -65,7 +65,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
         $this->appTester = new ApplicationTester($application);
 
-        $this->tmpDir = make_tmp_dir('scoper', __CLASS__);
+        $this->tmp = make_tmp_dir('scoper', __CLASS__);
     }
 
     /**
@@ -75,7 +75,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
     {
         chdir($this->cwd);
 
-        remove_dir($this->tmpDir);
+        remove_dir($this->tmp);
     }
 
     public function test_scope_the_given_paths()
@@ -86,14 +86,14 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmpDir,
+            '--output-dir' => $this->tmp,
         ];
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->assertFilesAreSame(self::FIXTURE_PATH.'/../scoped', $this->tmpDir);
+        $this->assertFilesAreSame(self::FIXTURE_PATH.'/../scoped', $this->tmp);
     }
 
     public function test_scope_in_quiet_mode()
@@ -104,6 +104,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'paths' => [
                 self::FIXTURE_PATH,
             ],
+            '--output-dir' => $this->tmp,
             '--quiet',
         ];
 
@@ -125,6 +126,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
             'paths' => [
                 self::FIXTURE_PATH,
             ],
+            '--output-dir' => $this->tmp,
         ];
 
         $this->appTester->run($input);
@@ -140,10 +142,12 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
-    0 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]
-    1 [▓░░░░░░░░░░░░░░░░░░░░░░░░░░░]
+ 0/1 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 1/1 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
  [OK] Successfully prefixed 1 files.                                            
+
+ // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s                            
 
 
 EOF;
@@ -162,6 +166,7 @@ EOF;
             'paths' => [
                 self::FIXTURE_PATH,
             ],
+            '--output-dir' => $this->tmp,
             '-v',
         ];
 
@@ -197,7 +202,7 @@ EOF;
     private function getNormalizeDisplay(string $display)
     {
         $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
-        $display = str_replace($this->tmpDir, '/path/to', $display);
+        $display = str_replace($this->tmp, '/path/to', $display);
         $display = preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
             '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
