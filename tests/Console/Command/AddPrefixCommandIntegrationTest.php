@@ -86,6 +86,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
                 self::FIXTURE_PATH,
             ],
             '--output-dir' => $this->tmp,
+            '--no-interaction' => null,
         ];
 
         $this->appTester->run($input);
@@ -104,7 +105,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
                 self::FIXTURE_PATH,
             ],
             '--output-dir' => $this->tmp,
-            '--quiet',
+            '--quiet' => null,
         ];
 
         $this->appTester->run($input);
@@ -126,6 +127,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
                 self::FIXTURE_PATH,
             ],
             '--output-dir' => $this->tmp,
+            '--no-interaction' => null,
         ];
 
         $this->appTester->run($input);
@@ -166,7 +168,8 @@ EOF;
                 self::FIXTURE_PATH,
             ],
             '--output-dir' => $this->tmp,
-            '-v',
+            '-v' => null,
+            '--no-interaction' => null,
         ];
 
         $this->appTester->run($input);

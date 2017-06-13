@@ -161,6 +161,7 @@ EOF;
                 escape_path('/path/to/file'),
             ],
             '--output-dir' => $this->tmp,
+            '--no-interaction',
         ];
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
@@ -511,10 +512,11 @@ EOF;
             '--prefix' => 'MyPrefix',
             'paths' => [
                 escape_path('/path/to/dir1'),
-                escape_path('/path/to/dir2'),
-                escape_path('/path/to/file'),
             ],
         ];
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
 
         $this->handleProphecy
             ->__invoke(Argument::cetera())
