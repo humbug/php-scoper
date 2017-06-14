@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
+use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
@@ -43,6 +44,10 @@ function create_application(): SymfonyApplication
             )
         ),
     ]);
+
+    if ('phar:' === substr(__FILE__, 0, 5)) {
+        $app->add(new SelfUpdateCommand());
+    }
 
     return $app;
 }
