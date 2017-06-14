@@ -80,5 +80,4 @@ final class SingleLevelUseAliasVisitor extends NodeVisitorAbstract
             unset($this->aliases[$node->getFirst()]);
         }
     }
-
 }
