@@ -1,6 +1,7 @@
 {
     "output": "bin/php-scoper.phar",
     "main": "bin/php-scoper",
+    "base-path": "build",
     "directories": [
         "src"
     ],

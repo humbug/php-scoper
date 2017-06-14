@@ -57,14 +57,13 @@ class AddPrefixCommandIntegrationTest extends TestCase
             return;
         }
 
-        $this->cwd = getcwd();
-
         $application = create_application();
         $application->setAutoExit(false);
         $application->setCatchExceptions(false);
 
         $this->appTester = new ApplicationTester($application);
 
+        $this->cwd = getcwd();
         $this->tmp = make_tmp_dir('scoper', __CLASS__);
     }
 
@@ -82,11 +81,12 @@ class AddPrefixCommandIntegrationTest extends TestCase
     {
         $input = [
             'add-prefix',
-            'prefix' => 'MyPrefix',
+            '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
             '--output-dir' => $this->tmp,
+            '--no-interaction' => null,
         ];
 
         $this->appTester->run($input);
@@ -100,12 +100,12 @@ class AddPrefixCommandIntegrationTest extends TestCase
     {
         $input = [
             'add-prefix',
-            'prefix' => 'MyPrefix',
+            '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
             '--output-dir' => $this->tmp,
-            '--quiet',
+            '--quiet' => null,
         ];
 
         $this->appTester->run($input);
@@ -122,11 +122,12 @@ class AddPrefixCommandIntegrationTest extends TestCase
     {
         $input = [
             'add-prefix',
-            'prefix' => 'MyPrefix',
+            '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
             '--output-dir' => $this->tmp,
+            '--no-interaction' => null,
         ];
 
         $this->appTester->run($input);
@@ -162,12 +163,13 @@ EOF;
     {
         $input = [
             'add-prefix',
-            'prefix' => 'MyPrefix',
+            '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
             '--output-dir' => $this->tmp,
-            '-v',
+            '-v' => null,
+            '--no-interaction' => null,
         ];
 
         $this->appTester->run($input);

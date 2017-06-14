@@ -30,11 +30,13 @@ use Throwable;
 final class AddPrefixCommand extends Command
 {
     /** @internal */
-    const PREFIX_ARG = 'prefix';
-    /** @internal */
     const PATH_ARG = 'paths';
     /** @internal */
-    const OUTPUT_DIR = 'output-dir';
+    const PREFIX_OPT = 'prefix';
+    /** @internal */
+    const OUTPUT_DIR_OPT = 'output-dir';
+    /** @internal */
+    const FORCE_OPT = 'force';
 
     private $fileSystem;
     private $handle;
@@ -59,21 +61,28 @@ final class AddPrefixCommand extends Command
             ->setName('add-prefix')
             ->setDescription('Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.')
             ->addArgument(
-                self::PREFIX_ARG,
-                InputArgument::REQUIRED,
-                'The namespace prefix to add'
-            )
-            ->addArgument(
                 self::PATH_ARG,
-                InputArgument::REQUIRED | InputArgument::IS_ARRAY,
+                InputArgument::IS_ARRAY,
                 'The path(s) to process.'
             )
             ->addOption(
-                self::OUTPUT_DIR,
+                self::PREFIX_OPT,
+                'p',
+                InputOption::VALUE_REQUIRED,
+                'The namespace prefix to add'
+            )
+            ->addOption(
+                self::OUTPUT_DIR_OPT,
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'The output directory in which the prefixed code will be dumped.',
                 'build'
+            )
+            ->addOption(
+                self::FORCE_OPT,
+                'f',
+                InputOption::VALUE_NONE,
+                'Deletes any existing content in the output directory without any warning'
             )
         ;
     }
@@ -95,15 +104,15 @@ final class AddPrefixCommand extends Command
         );
 
         $logger->outputScopingStart(
-            $input->getArgument(self::PREFIX_ARG),
+            $input->getOption(self::PREFIX_OPT),
             $input->getArgument(self::PATH_ARG)
         );
 
         try {
             $this->handle->__invoke(
-                $input->getArgument(self::PREFIX_ARG),
+                $input->getOption(self::PREFIX_OPT),
                 $input->getArgument(self::PATH_ARG),
-                $input->getOption(self::OUTPUT_DIR),
+                $input->getOption(self::OUTPUT_DIR_OPT),
                 $logger
             );
         } catch (Throwable $throwable) {
@@ -117,7 +126,13 @@ final class AddPrefixCommand extends Command
 
     private function validatePrefix(InputInterface $input)
     {
-        $prefix = trim($input->getArgument(self::PREFIX_ARG));
+        $prefix = $input->getOption(self::PREFIX_OPT);
+
+        if (null === $prefix) {
+            $prefix = uniqid('PhpScoper');
+        } else {
+            $prefix = trim($prefix);
+        }
 
         if (1 === preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
             $prefix = $matches['prefix'];
@@ -127,12 +142,12 @@ final class AddPrefixCommand extends Command
             throw new RuntimeException(
                 sprintf(
                     'Expected "%s" argument to be a non empty string.',
-                    self::PREFIX_ARG
+                    self::PREFIX_OPT
                 )
             );
         }
 
-        $input->setArgument(self::PREFIX_ARG, $prefix);
+        $input->setOption(self::PREFIX_OPT, $prefix);
     }
 
     private function validatePaths(InputInterface $input)
@@ -151,28 +166,47 @@ final class AddPrefixCommand extends Command
             $input->getArgument(self::PATH_ARG)
         );
 
+        if (0 === count($paths)) {
+            $paths[] = $cwd;
+        }
+
         $input->setArgument(self::PATH_ARG, $paths);
     }
 
     private function validateOutputDir(InputInterface $input, OutputStyle $io)
     {
-        $outputDir = $input->getOption(self::OUTPUT_DIR);
+        $outputDir = $input->getOption(self::OUTPUT_DIR_OPT);
 
         if (false === $this->fileSystem->isAbsolutePath($outputDir)) {
             $outputDir = getcwd().DIRECTORY_SEPARATOR.$outputDir;
         }
 
-        $input->setOption(self::OUTPUT_DIR, $outputDir);
+        $input->setOption(self::OUTPUT_DIR_OPT, $outputDir);
 
         if (false === $this->fileSystem->exists($outputDir)) {
+            return;
+        }
+
+        if (false === is_writable($outputDir)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Expected "<comment>%s</comment>" to be writeable.',
+                    $outputDir
+                )
+            );
+        }
+
+        if ($input->getOption(self::FORCE_OPT)) {
+            $this->fileSystem->remove($outputDir);
+
             return;
         }
 
         if (false === is_dir($outputDir)) {
             $canDeleteFile = $io->confirm(
                 sprintf(
-                    'Expected "%s" to be a directory but found a file instead. It will be removed, do you wish '
-                    .'to proceed?',
+                    'Expected "<comment>%s</comment>" to be a directory but found a file instead. It will be '
+                    .'removed, do you wish to proceed?',
                     $outputDir
                 ),
                 false
@@ -183,15 +217,21 @@ final class AddPrefixCommand extends Command
             }
 
             $this->fileSystem->remove($outputDir);
-        }
-
-        if (false === is_writable($outputDir)) {
-            throw new RuntimeException(
+        } else {
+            $canDeleteFile = $io->confirm(
                 sprintf(
-                    'Expected "%s" to be writeable.',
+                    'The output directory "<comment>%s</comment>" already exists. Continuing will erase its'
+                    .' content, do you wish to proceed?',
                     $outputDir
-                )
+                ),
+                false
             );
+
+            if (false === $canDeleteFile) {
+                return;
+            }
+
+            $this->fileSystem->remove($outputDir);
         }
     }
 }
