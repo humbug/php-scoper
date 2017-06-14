@@ -74,7 +74,7 @@ class AddPrefixCommandTest extends TestCase
 
         $this->handleProphecy = $this->prophesize(HandleAddPrefix::class);
 
-        $this->appTester = $this->createAppTester(false);
+        $this->appTester = $this->createAppTester();
     }
 
     public function test_get_help_menu()
@@ -505,8 +505,6 @@ EOF;
 
     public function test_throws_an_error_when_scoping_fails()
     {
-        $this->appTester = $this->createAppTester(true);
-
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
@@ -525,13 +523,13 @@ EOF;
             )
         ;
 
-        $this->appTester->run(
-            $input,
-            ['capture_stderr_separately' => true]
-        );
+        try {
+            $this->appTester->run($input);
 
-        $this->assertNotEmpty($this->appTester->getErrorOutput(true));
-        $this->assertSame(1, $this->appTester->getStatusCode());
+            $this->fail('Expected exception to be thrown.');
+        } catch (ScopingRuntimeException $caughtException) {
+            $this->assertSame($caughtException, $exception);
+        }
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -549,7 +547,7 @@ EOF;
         yield '2 backslashes' => ['\\\\'];
     }
 
-    private function createAppTester(bool $catchExceptions): ApplicationTester
+    private function createAppTester(): ApplicationTester
     {
         /** @var Filesystem $fileSystem */
         $fileSystem = $this->fileSystemProphecy->reveal();
@@ -562,7 +560,7 @@ EOF;
             new AddPrefixCommand($fileSystem, $handle),
         ]);
         $application->setAutoExit(false);
-        $application->setCatchExceptions($catchExceptions);
+        $application->setCatchExceptions(false);
 
         return new ApplicationTester($application);
     }
