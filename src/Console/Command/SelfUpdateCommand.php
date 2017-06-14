@@ -15,12 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\SelfUpdate\Updater;
-use Humbug\SelfUpdate\Strategy\GithubStrategy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Throwable;
 
 final class SelfUpdateCommand extends Command
 {
@@ -66,7 +64,7 @@ final class SelfUpdateCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -74,16 +72,15 @@ final class SelfUpdateCommand extends Command
         $this->output = $output;
         $this->version = $this->getApplication()->getVersion();
 
-        /**
-         * Check for ancilliary options
-         */
         if ($input->getOption('rollback')) {
             $this->rollback();
+
             return;
         }
 
         if ($input->getOption('check')) {
             $this->printAvailableUpdates();
+
             return;
         }
 
@@ -98,16 +95,13 @@ final class SelfUpdateCommand extends Command
     /**
      * @return Updater
      */
-    private function getStableUpdater() : Updater
+    private function getStableUpdater(): Updater
     {
         $updater = new Updater();
         $updater->setStrategy(Updater::STRATEGY_GITHUB);
         return $this->getGithubReleasesUpdater($updater);
     }
 
-    /**
-     * Perform in-place update of phar.
-     */
     private function update(Updater $updater)
     {
         $this->output->writeln('Updating...'.PHP_EOL);
@@ -175,7 +169,7 @@ final class SelfUpdateCommand extends Command
     }
 
     /**
-     * @param  Updater $updater
+     * @param Updater $updater
      */
     private function printVersion(Updater $updater)
     {
@@ -198,10 +192,10 @@ final class SelfUpdateCommand extends Command
     }
 
     /**
-     * @param  Updater $updater
+     * @param Updater $updater
      * @return Updater
      */
-    private function getGithubReleasesUpdater(Updater $updater) : Updater
+    private function getGithubReleasesUpdater(Updater $updater): Updater
     {
         $updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
         $updater->getStrategy()->setPharName(self::REMOTE_FILENAME);
