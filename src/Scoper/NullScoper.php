@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\GroupUseNamespaceScoperNodeVisitor;
@@ -20,23 +20,21 @@ use Humbug\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\ParentNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
+use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error;
 use PhpParser\NodeTraverser;
+use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 
-interface Scoper
+final class NullScoper implements Scoper
 {
     /**
-     * Scope AKA. apply the given prefix to the file in the appropriate way.
-     *
-     * @param string $filePath File to scope
-     * @param string $prefix Prefix to apply to the file
-     *
-     * @throws ParsingException
-     *
-     * @return string Content of the file with the prefix applied
+     * @inheritdoc
      */
-    public function scope(string $filePath, string $prefix): string;
+    public function scope(string $filePath, string $prefix): string
+    {
+        return file_get_contents($filePath);
+    }
 }

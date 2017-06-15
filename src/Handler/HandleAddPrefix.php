@@ -155,13 +155,8 @@ class HandleAddPrefix
 
     private function scopeFile(string $inputFilePath, string $outputFilePath, string $prefix, ConsoleLogger $logger)
     {
-        $fileContent = file_get_contents($inputFilePath);
-
         try {
-            $scoppedContent = (1 === preg_match('/.*\.php$/', $inputFilePath))
-                ? $this->scoper->scope($fileContent, $prefix)
-                : $fileContent
-            ;
+            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix);
         } catch (Error $error) {
             throw new ParsingException(
                 sprintf(

@@ -19,6 +19,7 @@ build: bin/php-scoper
 	rm composer.lock
 	composer install --no-dev --prefer-dist --classmap-authoritative
 	php -d zend.enable_gc=0 bin/php-scoper add-prefix --force
+	cd build && composer dump-autoload --classmap-authoritative
 	php -d zend.enable_gc=0 $(BOX) build
 	mv build/bin/php-scoper.phar bin/
 	composer install
