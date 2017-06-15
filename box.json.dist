@@ -1,9 +1,10 @@
 {
-    "output": "bin/php-scoper.phar",
-    "main": "bin/php-scoper",
     "base-path": "build",
+    "main": "bin/php-scoper.php",
+    "output": "bin/php-scoper.phar",
     "directories": [
-        "src"
+        "src",
+        "tests"
     ],
     "finder": [
         {

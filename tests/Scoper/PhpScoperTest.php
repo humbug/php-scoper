@@ -515,6 +515,23 @@ use Humbug\Bar\FooNamespace;
 PHP
         ];
 
+        yield '[Use statement for a class] composer use statement' => [
+            <<<'PHP'
+<?php
+
+use Composer\Unknown;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Composer\Unknown;
+
+PHP
+        ];
+
         //
         // Use statement for a function
         //
