@@ -5,9 +5,12 @@ namespace Humbug\PhpScoper\Scoper;
 
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
+use function Humbug\PhpScoper\remove_dir;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\ComposerScoper;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -15,6 +18,11 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class ComposerScoperTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    private $cwd;
+
     /**
      * @var string
      */
@@ -26,6 +34,7 @@ class ComposerScoperTest extends TestCase
     public function setUp()
     {
         if (null == $this->tmp) {
+            $this->cwd = getcwd();
             $this->tmp = make_tmp_dir('scoper', __CLASS__);
         }
 
@@ -37,12 +46,57 @@ class ComposerScoperTest extends TestCase
      */
     public function tearDown()
     {
-        (new Filesystem())->remove($this->tmp);
+        chdir($this->cwd);
+
+        remove_dir($this->tmp);
     }
 
     public function test_it_is_a_Scoper()
     {
         $this->assertTrue(is_a(ComposerScoper::class, Scoper::class, true));
+    }
+
+    public function test_returns_the_file_content_if_file_is_a_composerlock_file()
+    {
+        $filePath = escape_path($this->tmp.'/composer.lock');
+        $expected = 'Lock content';
+
+        touch($filePath);
+        file_put_contents($filePath, $expected);
+
+        $scoper = new ComposerScoper(new FakeScoper());
+
+        $actual = $scoper->scope($filePath, 'Foo');
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_composer_file()
+    {
+        $filePath = escape_path($this->tmp.'/file.php');
+        $prefix = 'Humbug';
+
+        touch($filePath);
+        file_put_contents($filePath, '');
+
+        /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
+        $decoratedScoperProphecy = $this->prophesize(Scoper::class);
+        $decoratedScoperProphecy
+            ->scope($filePath, $prefix)
+            ->willReturn(
+                $expected = 'Scoped content'
+            )
+        ;
+        /** @var Scoper $decoratedScoper */
+        $decoratedScoper = $decoratedScoperProphecy->reveal();
+
+        $scoper = new ComposerScoper($decoratedScoper);
+
+        $actual = $scoper->scope($filePath, $prefix);
+
+        $this->assertSame($expected, $actual);
+
+        $decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
     /**

@@ -12,17 +12,25 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Scoper;
 
+use function Humbug\PhpScoper\create_parser;
+use function Humbug\PhpScoper\escape_path;
+use function Humbug\PhpScoper\make_tmp_dir;
+use Humbug\PhpScoper\PhpParser\FakeParser;
+use function Humbug\PhpScoper\remove_dir;
+use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use PhpParser\Error;
-use PHPUnit\Framework\Assert;
+use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper
+ * @covers \Humbug\PhpScoper\Scoper\PhpScoper
  */
-class ScoperTest extends TestCase
+class PhpScoperTest extends TestCase
 {
     /**
      * @var Scoper
@@ -30,34 +38,102 @@ class ScoperTest extends TestCase
     private $scoper;
 
     /**
+     * @var string
+     */
+    private $cwd;
+
+    /**
+     * @var string
+     */
+    private $tmp;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
     {
-        $this->scoper = new Scoper(create_parser());
+        $this->scoper = new PhpScoper(
+            create_parser(),
+            new FakeScoper()
+        );
+
+        if (null === $this->tmp) {
+            $this->cwd = getcwd();
+            $this->tmp = make_tmp_dir('scoper', __CLASS__);
+        }
+
+        chdir($this->tmp);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tearDown()
+    {
+        chdir($this->cwd);
+
+        remove_dir($this->tmp);
+    }
+
+    public function test_is_a_Scoper()
+    {
+        $this->assertTrue(is_a(PhpScoper::class, Scoper::class, true));
+    }
+
+    public function test_does_not_scope_file_if_is_not_a_PHP_file()
+    {
+        $filePath = 'file.yaml';
+        $prefix = 'Humbug';
+
+        /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
+        $decoratedScoperProphecy = $this->prophesize(Scoper::class);
+        $decoratedScoperProphecy
+            ->scope($filePath, $prefix)
+            ->willReturn(
+                $expected = 'Scoped content'
+            )
+        ;
+        /** @var Scoper $decoratedScoper */
+        $decoratedScoper = $decoratedScoperProphecy->reveal();
+
+        $scoper = new PhpScoper(
+            new FakeParser(),
+            $decoratedScoper
+        );
+
+        $actual = $scoper->scope($filePath, $prefix);
+
+        $this->assertSame($expected, $actual);
+
+        $decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
     public function test_cannot_scope_an_invalid_PHP_file()
     {
+        $filePath = escape_path($this->tmp.'/invalid-file.php');
         $content = <<<'PHP'
 <?php
 
 $class = ;
 
 PHP;
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
         $prefix = 'Humbug';
 
         try {
-            $this->scoper->scope($content, $prefix);
+            $this->scoper->scope($filePath, $prefix);
 
-            Assert::fail('Expected exception to have been thrown.');
-        } catch (ParsingException $exception) {
+            $this->fail('Expected exception to have been thrown.');
+        } catch (PhpParserError $error) {
             $this->assertEquals(
                 'Syntax error, unexpected \';\' on line 3',
-                $exception->getMessage()
+                $error->getMessage()
             );
-            $this->assertSame(0, $exception->getCode());
-            $this->assertInstanceOf(Error::class, $exception->getPrevious());
+            $this->assertSame(0, $error->getCode());
+            $this->assertNull($error->getPrevious());
         }
     }
 
@@ -66,7 +142,12 @@ PHP;
      */
     public function test_can_scope_valid_files(string $content, string $prefix, string $expected)
     {
-        $actual = $this->scoper->scope($content, $prefix);
+        $filePath = escape_path($this->tmp.'/file.php');
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
+        $actual = $this->scoper->scope($filePath, $prefix);
 
         $this->assertSame($expected, $actual);
     }

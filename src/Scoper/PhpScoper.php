@@ -22,7 +22,7 @@ use Humbug\PhpScoper\NodeVisitor\ParentNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use PhpParser\Error;
+use PhpParser\Error as PhpParserError;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
@@ -46,6 +46,8 @@ final class PhpScoper implements Scoper
      * Scopes PHP files
      *
      * {@inheritdoc}
+     *
+     * @throws PhpParserError
      */
     public function scope(string $filePath, string $prefix): string
     {
@@ -57,12 +59,7 @@ final class PhpScoper implements Scoper
 
         $traverser = $this->createTraverser($prefix);
 
-        try {
-            $statements = $this->parser->parse($content);
-        } catch (Error $error) {
-            throw new ParsingException($error->getMessage(), 0, $error);
-        }
-
+        $statements = $this->parser->parse($content);
         $statements = $traverser->traverse($statements);
 
         $prettyPrinter = new Standard();
