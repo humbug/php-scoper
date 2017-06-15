@@ -594,6 +594,28 @@ PHP
         ];
 
         //
+        // FQN usage for a name
+        //
+        // ====================
+
+        yield '[FQN usage for a name] fully qualified class' => [
+            <<<'PHP'
+<?php
+
+new \Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+new \Humbug\Foo\Bar();
+
+PHP
+        ];
+
+        //
         // Single part global namespace reference
         //
         // ======================================
