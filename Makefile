@@ -16,7 +16,7 @@ help:
 
 build:            ## Build the PHAR
 build: vendor
-	rm bin/php-scoper.phar
+	rm -f bin/php-scoper.phar
 	rm -rf build
 	rm composer.lock
 	#
