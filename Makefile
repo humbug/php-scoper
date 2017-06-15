@@ -48,6 +48,22 @@ e2e: vendor
 	php build/set004/bin/greet.phar > build/output
 	diff fixtures/set004/expected-output build/output
 
+tb:				  ## Run Blackfire profiling
+tb: vendor
+	rm -rf build
+  	#
+  	# As of now, files included in `autoload-dev` are not excluded from the
+  	# classmap.
+  	#
+  	# See: https://github.com/composer/composer/issues/6457
+  	#
+  	# As a result, the the flag `--no-dev` for `composer install` cannot
+  	# be used and `box.json.dist` must include the `tests` directory
+  	#
+	composer install --prefer-dist --classmap-authoritative
+	blackfire --new-reference run bin/php-scoper add-prefix -f -q
+	composer install
+
 
 ##
 ## Rules from files
