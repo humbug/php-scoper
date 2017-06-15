@@ -13,6 +13,7 @@ cache:
 matrix:
   include:
     - php: '7.0'
+      env: COVERAGE='true'
     - php: '7.1'
     - php: '7.1'
       env: COMPOSER_FLAGS='--prefer-lowest'
@@ -25,4 +26,11 @@ before_script: phpenv config-rm xdebug.ini || true
 
 install: composer update --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
 
-script: phpdbg -qrr vendor/bin/phpunit --verbose --coverage-text
+script:
+  - |
+    if [ "$COVERAGE" == "true" ]; then
+        make tc
+    else
+        make tu
+    fi
+    - make e2e

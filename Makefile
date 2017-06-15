@@ -2,7 +2,7 @@ BOX=vendor-bin/box/vendor/bin/box
 PHPUNIT=vendor/bin/phpunit
 
 .DEFAULT_GOAL := help
-.PHONY: build test tc
+.PHONY: build test tu tc e2e
 
 
 help:
@@ -29,13 +29,24 @@ build: bin/php-scoper
 ## Tests
 ##---------------------------------------------------------------------------
 
-test:             ## Run PHPUnit tests
-test: vendor
+test:             ## Run all the tests
+test: tu e2e
+
+tu:               ## Run PHPUnit tests
+tu: vendor
 	php -d zend.enable_gc=0 $(PHPUNIT)
 
 tc:               ## Run PHPUnit tests with test coverage
 tc: vendor
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
+
+e2e:			  ## Run end-to-end tests
+e2e: vendor
+	php -d zend.enable_gc=0 bin/php-scoper add-prefix fixtures/set004 -o build/set004 -f
+	composer -d=build/set004 dump-autoload
+	php -d zend.enable_gc=0 $(BOX) build -c build/set004/box.json.dist
+	php build/set004/bin/greet.phar > build/output
+	diff fixtures/set004/expected-output build/output
 
 
 ##
