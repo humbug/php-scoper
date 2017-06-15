@@ -134,11 +134,11 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
         $expected = <<<'EOF'
 
-    ____  __  ______     _____                           
+    ____  __  ______     _____
    / __ \/ / / / __ \   / ___/_________  ____  ___  _____
   / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
- / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /    
-/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/     
+ / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
@@ -146,9 +146,9 @@ PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
  0/1 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
  1/1 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
- [OK] Successfully prefixed 1 files.                                            
+ [OK] Successfully prefixed 1 files.
 
- // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s                            
+ // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
 
 EOF;
@@ -176,11 +176,11 @@ EOF;
 
         $expected = <<<'EOF'
 
-    ____  __  ______     _____                           
+    ____  __  ______     _____
    / __ \/ / / / __ \   / ___/_________  ____  ___  _____
   / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
- / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /    
-/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/     
+ / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
@@ -188,9 +188,9 @@ PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
  * [OK] /path/to/file.php
 
 
- [OK] Successfully prefixed 1 files.                                            
+ [OK] Successfully prefixed 1 files.
 
- // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s                            
+ // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
 
 EOF;
@@ -211,11 +211,20 @@ EOF;
             $display
         );
 
-        return preg_replace(
+        $display = preg_replace(
             '/(dev-)?\b([a-f0-9]{40})\b/',
             '12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
             $display
         );
+
+        $lines = explode("\n", $display);
+
+        $lines = array_map(
+            'rtrim',
+            $lines
+        );
+
+        return implode("\n", $lines);
     }
 
     private function assertFilesAreSame(string $expectedDir, string $actualDir)
