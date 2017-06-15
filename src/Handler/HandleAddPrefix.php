@@ -18,7 +18,7 @@ use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
-use PhpParser\Error;
+use PhpParser\Error as PhpParserError;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -155,14 +155,9 @@ class HandleAddPrefix
 
     private function scopeFile(string $inputFilePath, string $outputFilePath, string $prefix, ConsoleLogger $logger)
     {
-        $fileContent = file_get_contents($inputFilePath);
-
         try {
-            $scoppedContent = (1 === preg_match('/.*\.php$/', $inputFilePath))
-                ? $this->scoper->scope($fileContent, $prefix)
-                : $fileContent
-            ;
-        } catch (Error $error) {
+            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix);
+        } catch (PhpParserError $error) {
             throw new ParsingException(
                 sprintf(
                     'Could not parse the file "%s".',

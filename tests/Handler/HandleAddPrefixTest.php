@@ -54,23 +54,24 @@ class HandleAddPrefixTest extends TestCase
     /**
      * @var string
      */
-    private $tmpDir = '';
+    private $cwd;
 
     /**
      * @var string
      */
-    private $cwd;
+    private $tmp = '';
 
     /**
      * @inheritdoc
      */
     protected function setUp()
     {
-        if (file_exists($this->tmpDir)) {
+        if (file_exists($this->tmp)) {
             return;
         }
 
-        $this->tmpDir = make_tmp_dir('scoper', __CLASS__);
+        $this->cwd = getcwd();
+        $this->tmp = make_tmp_dir('scoper', __CLASS__);
 
         $this->scoperProphecy = $this->prophesize(Scoper::class);
         /** @var Scoper $scoper */
@@ -86,7 +87,9 @@ class HandleAddPrefixTest extends TestCase
      */
     protected function tearDown()
     {
-        remove_dir($this->tmpDir);
+        chdir($this->cwd);
+
+        remove_dir($this->tmp);
     }
 
     /**
@@ -98,27 +101,22 @@ class HandleAddPrefixTest extends TestCase
 
         $paths = array_map(
             function (string $relativePath) {
-                return escape_path(self::FIXTURE_PATH_000.'/'.$relativePath);
+                return realpath(escape_path(self::FIXTURE_PATH_000.'/'.$relativePath));
             },
             $paths
         );
 
-        $outputPath = $this->tmpDir;
+        $outputPath = $this->tmp;
 
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
 
-        $scopedFiles = 0;
-        foreach ($expected as $fileContent => $isScoped) {
+        foreach ($expected as $fileContent) {
             $filePath = realpath(escape_path(self::FIXTURE_PATH_000.$fileContent));
             $this->assertNotFalse($filePath, 'Type check.');
 
-            if ($isScoped) {
-                $this->scoperProphecy->scope($fileContent, $prefix)->shouldBeCalled();
-                ++$scopedFiles;
-            } else {
-                $this->scoperProphecy->scope($fileContent, $prefix)->shouldNotBeCalled();
-            }
+            $this->scoperProphecy->scope($filePath, $prefix)->shouldBeCalled();
+
             $this->loggerProphecy->outputSuccess($filePath)->shouldBeCalled();
         }
 
@@ -126,7 +124,7 @@ class HandleAddPrefixTest extends TestCase
 
         $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
 
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes($scopedFiles);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expected));
 
         $this->loggerProphecy->outputSuccess(Argument::cetera())->shouldHaveBeenCalledTimes(count($expected));
         $this->loggerProphecy->outputFileCount(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -140,7 +138,7 @@ class HandleAddPrefixTest extends TestCase
             $filePath = escape_path(self::FIXTURE_PATH_001.'/file.php'),
         ];
 
-        $outputPath = $this->tmpDir;
+        $outputPath = $this->tmp;
 
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
@@ -159,35 +157,7 @@ PHP;
         $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
 
         $actual = file_get_contents(
-            escape_path($this->tmpDir.'/file.php')
-        );
-
-        $this->assertSame($expected, $actual);
-    }
-
-    public function test_leaves_non_PHP_files_unchanged()
-    {
-        $prefix = 'MyPrefix';
-
-        $paths = [
-            $filePath = escape_path(self::FIXTURE_PATH_000.'/unknown'),
-        ];
-
-        $outputPath = $this->tmpDir;
-
-        /** @var ConsoleLogger $logger */
-        $logger = $this->loggerProphecy->reveal();
-
-        $expected = <<<'TEXT'
-/unknown
-TEXT;
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
-
-        $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
-
-        $actual = file_get_contents(
-            escape_path($this->tmpDir.'/unknown')
+            escape_path($this->tmp.'/file.php')
         );
 
         $this->assertSame($expected, $actual);
@@ -201,7 +171,7 @@ TEXT;
             $filePath = escape_path('/nowhere'),
         ];
 
-        $outputPath = $this->tmpDir.DIRECTORY_SEPARATOR.'output-dir';
+        $outputPath = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
@@ -232,7 +202,7 @@ TEXT;
             $filePath = escape_path(self::FIXTURE_PATH_001.'/file.php'),
         ];
 
-        $outputPath = $this->tmpDir.DIRECTORY_SEPARATOR.'output-dir';
+        $outputPath = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
@@ -261,7 +231,7 @@ TEXT;
             $filePath = escape_path(self::FIXTURE_PATH_001.'/file.php'),
         ];
 
-        $outputPath = $this->tmpDir.DIRECTORY_SEPARATOR.'output-dir';
+        $outputPath = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
@@ -294,7 +264,7 @@ TEXT;
                 'dir1',
             ],
             [
-                '/dir1/fileA.php' => true,
+                '/dir1/fileA.php',
             ],
         ];
 
@@ -303,7 +273,7 @@ TEXT;
                 'file1.php',
             ],
             [
-                '/file1.php' => true,
+                '/file1.php',
             ],
         ];
 
@@ -312,7 +282,7 @@ TEXT;
                 'unknown',
             ],
             [
-                '/unknown' => false,
+                '/unknown',
             ],
         ];
 
@@ -330,13 +300,13 @@ TEXT;
                 'file2.php',
             ],
             [
-                '/dir1/fileA.php' => true,
-                '/dir2/dir3/fileD.php' => true,
-                '/dir2/dir3/unknown' => false,
-                '/dir2/fileB.php' => true,
-                '/dir2/fileC.php' => true,
-                '/dir2/unknown' => false,
-                '/file2.php' => true,
+                '/dir1/fileA.php',
+                '/dir2/dir3/fileD.php',
+                '/dir2/dir3/unknown',
+                '/dir2/fileB.php',
+                '/dir2/fileC.php',
+                '/dir2/unknown',
+                '/file2.php',
             ],
         ];
     }

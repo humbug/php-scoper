@@ -60,7 +60,6 @@ function remove_dir(string $path)
     if (defined('PHP_WINDOWS_VERSION_BUILD')) {
         exec(sprintf('rd /s /q %s', escapeshellarg($path)));
     } else {
-        $filesystem = new Filesystem();
-        $filesystem->remove($path);
+        (new Filesystem())->remove($path);
     }
 }

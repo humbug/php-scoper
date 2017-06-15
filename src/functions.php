@@ -17,6 +17,9 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
+use Humbug\PhpScoper\Scoper\ComposerScoper;
+use Humbug\PhpScoper\Scoper\NullScoper;
+use Humbug\PhpScoper\Scoper\PhpScoper;
 use PackageVersions\Versions;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -34,9 +37,7 @@ function create_application(): SymfonyApplication
         new AddPrefixCommand(
             new Filesystem(),
             new HandleAddPrefix(
-                new Scoper(
-                    create_parser()
-                )
+                create_scoper()
             )
         ),
     ]);
@@ -54,6 +55,19 @@ function get_version(): string
     list($prettyVersion, $commitHash) = explode('@', $rawVersion);
 
     return (1 === preg_match('/9{7}/', $prettyVersion)) ? $commitHash : $prettyVersion;
+}
+
+/**
+ * @private
+ */
+function create_scoper(): Scoper
+{
+    return new ComposerScoper(
+        new PhpScoper(
+            create_parser(),
+            new NullScoper()
+        )
+    );
 }
 
 /**
