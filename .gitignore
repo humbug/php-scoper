@@ -3,6 +3,7 @@
 /dist/
 /build/
 /composer.lock
+/fixtures/*/vendor
 /vendor/
 /vendor-bin/box/vendor/
 /vendor-bin/box/composer.lock

@@ -54,4 +54,4 @@ install:
 
 test_script:
     - cd c:\projects\webmozart\php-scoper
-    - vendor\bin\phpunit -c phpunit.xml.dist
+    - make tu
