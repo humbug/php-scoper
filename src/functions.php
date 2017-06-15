@@ -23,6 +23,7 @@ use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\SelfUpdate\Updater;
 use PackageVersions\Versions;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -87,6 +88,14 @@ function create_scoper(): Scoper
 function create_parser(): Parser
 {
     return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
+}
+
+/**
+ * @private
+ */
+function create_updater(): Updater
+{
+    return new Updater();
 }
 
 /**

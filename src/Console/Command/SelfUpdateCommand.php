@@ -14,11 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Humbug\PhpScoper\Logger\UpdateConsoleLogger;
 use Humbug\SelfUpdate\Updater;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 final class SelfUpdateCommand extends Command
 {
@@ -34,6 +36,11 @@ final class SelfUpdateCommand extends Command
     const CHECK_OPT = 'check';
 
     /**
+     * @var Updater
+     */
+    private $updater;
+
+    /**
      * @var OutputInterface
      */
     private $output;
@@ -43,16 +50,38 @@ final class SelfUpdateCommand extends Command
      */
     private $version;
 
+    /**
+     * @var UpdateConsoleLogger
+     */
+    private $logger;
+
+    /**
+     * @param Updater $updater
+     */
+    public function __construct(Updater $updater)
+    {
+        parent::__construct();
+
+        $this->version = $this->getApplication()->getVersion();
+        $this->updater = $updater;
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function configure()
     {
         $this
             ->setName('self-update')
-            ->setDescription('Update php-scoper.phar to most recent stable build.')
+            ->setDescription(sprintf(
+                    'Update %s to most recent stable build.',
+                    $this->getLocalPharName()
+            ))
             ->addOption(
                 self::ROLLBACK_OPT,
                 'r',
                 InputOption::VALUE_NONE,
-                'Rollback to previous version of php-scoper if available on filesystem.'
+                'Rollback to previous version of PHP-Scoper if available on filesystem.'
             )
             ->addOption(
                 self::CHECK_OPT,
@@ -64,13 +93,17 @@ final class SelfUpdateCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
-     * @param OutputInterface $output
+     * @inheritdoc
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+        $this->logger = new UpdateConsoleLogger(
+            $this->getApplication(),
+            $io
+        );
+
         $this->output = $output;
-        $this->version = $this->getApplication()->getVersion();
 
         if ($input->getOption('rollback')) {
             $this->rollback();
@@ -97,55 +130,40 @@ final class SelfUpdateCommand extends Command
      */
     private function getStableUpdater(): Updater
     {
-        $updater = new Updater();
-        $updater->setStrategy(Updater::STRATEGY_GITHUB);
+        $this->updater->setStrategy(Updater::STRATEGY_GITHUB);
         return $this->getGithubReleasesUpdater($updater);
     }
 
     private function update(Updater $updater)
     {
-        $this->output->writeln('Updating...'.PHP_EOL);
+        $this->logger->startUpdating();
         try {
-            $result = $updater->update();
+            $result = $this->updater->update();
 
-            $newVersion = $updater->getNewVersion();
-            $oldVersion = $updater->getOldVersion();
+            $newVersion = $this->updater->getNewVersion();
+            $oldVersion = $this->updater->getOldVersion();
         
             if ($result) {
-                $this->output->writeln('php-scoper has been updated.');
-                $this->output->writeln(sprintf(
-                    'Current version is: %s.',
-                    $newVersion
-                ));
-                $this->output->writeln(sprintf(
-                    'Previous version was: %s.',
-                    $oldVersion
-                ));
+                $this->logger->updateSuccess($newVersion, $oldVersion);
             } else {
-                $this->output->writeln('php-scoper is currently up to date.');
-                $this->output->writeln(sprintf(
-                    'Current version is: %s.',
-                    $oldVersion
-                ));
+                $this->logger->updateNotNeeded($oldVersion);
             }
         } catch (\Exception $e) {
-            $this->output->writeln(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->error($e);
         }
-        $this->output->write(PHP_EOL);
     }
 
     private function rollback()
     {
-        $updater = new Updater();
         try {
-            $result = $updater->rollback();
+            $result = $this->updater->rollback();
             if ($result) {
-                $this->output->writeln('php-scoper has been rolled back to prior version.');
+                $this->logger->rollbackSuccess();
             } else {
-                $this->output->writeln('Rollback failed for reasons unknown.');
+                $this->logger->rollbackFail();
             }
         } catch (\Exception $e) {
-            $this->output->writeln(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->error($e);
         }
     }
 
@@ -157,10 +175,7 @@ final class SelfUpdateCommand extends Command
 
     private function printCurrentLocalVersion()
     {
-        $this->output->writeln(sprintf(
-            'Your current local version is: %s',
-            $this->version
-        ));
+        $this->logger->printLocalVersion($this->version);
     }
 
     private function printCurrentStableVersion()
@@ -174,20 +189,20 @@ final class SelfUpdateCommand extends Command
     private function printVersion(Updater $updater)
     {
         $stability = self::STABILITY_STABLE;
+
         try {
-            if ($updater->hasUpdate()) {
-                $this->output->writeln(sprintf(
-                    'The current %s build available remotely is: %s',
+            if ($this->updater->hasUpdate()) {
+                $this->logger->printRemoteVersion(
                     $stability,
-                    $updater->getNewVersion()
-                ));
-            } elseif (false == $updater->getNewVersion()) {
-                $this->output->writeln(sprintf('There are no new %s builds available.', $stability));
+                    $this->updater->getNewVersion()
+                );
+            } elseif (false == $this->updater->getNewVersion()) {
+                $this->logger->noNewRemoteVersions($stability);
             } else {
-                $this->output->writeln(sprintf('You have the current %s build installed.', $stability));
+                $this->logger->currentVersionInstalled($stability);
             }
         } catch (\Exception $e) {
-            $this->output->writeln(sprintf('Error: %s', $e->getMessage()));
+            $this->logger->error($e);
         }
     }
 
@@ -197,9 +212,14 @@ final class SelfUpdateCommand extends Command
      */
     private function getGithubReleasesUpdater(Updater $updater): Updater
     {
-        $updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
-        $updater->getStrategy()->setPharName(self::REMOTE_FILENAME);
-        $updater->getStrategy()->setCurrentLocalVersion($this->version);
+        $this->updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
+        $this->updater->getStrategy()->setPharName(self::REMOTE_FILENAME);
+        $this->updater->getStrategy()->setCurrentLocalVersion($this->version);
         return $updater;
+    }
+
+    private function getLocalPharName(): string
+    {
+        return basename(\PHAR::running());
     }
 }
