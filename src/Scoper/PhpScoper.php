@@ -19,6 +19,7 @@ use Humbug\PhpScoper\NodeVisitor\GroupUseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\ParentNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\SingleLevelUseAliasVisitor;
 use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\Scoper;
 use PhpParser\Error as PhpParserError;
@@ -71,6 +72,7 @@ final class PhpScoper implements Scoper
         $traverser = new NodeTraverser();
 
         $traverser->addVisitor(new ParentNodeVisitor());
+        $traverser->addVisitor(new SingleLevelUseAliasVisitor($prefix));
         $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor());
         $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
