@@ -131,6 +131,7 @@ final class SelfUpdateCommand extends Command
     private function getStableUpdater(): Updater
     {
         $this->updater->setStrategy(Updater::STRATEGY_GITHUB);
+
         return $this->getGithubReleasesUpdater($updater);
     }
 
@@ -208,6 +209,7 @@ final class SelfUpdateCommand extends Command
 
     /**
      * @param Updater $updater
+     * 
      * @return Updater
      */
     private function getGithubReleasesUpdater(Updater $updater): Updater
@@ -215,6 +217,7 @@ final class SelfUpdateCommand extends Command
         $this->updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
         $this->updater->getStrategy()->setPharName(self::REMOTE_FILENAME);
         $this->updater->getStrategy()->setCurrentLocalVersion($this->version);
+
         return $updater;
     }
 

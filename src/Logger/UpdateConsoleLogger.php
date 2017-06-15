@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Logger;
 
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -50,11 +48,11 @@ class UpdateConsoleLogger
     {
         $this->io->writeln('PHP-Scoper has been updated.');
         $this->io->writeln(sprintf(
-            'Current version is: %s.',
+            'Current version is: <comment>%s</comment>.',
             $newVersion
         ));
         $this->io->writeln(sprintf(
-            'Previous version was: %s.',
+            'Previous version was: <comment>%s</comment>.',
             $oldVersion
         ));
     }
@@ -63,14 +61,17 @@ class UpdateConsoleLogger
     {
         $this->io->writeln('PHP-Scoper is currently up to date.');
         $this->io->writeln(sprintf(
-            'Current version is: %s.',
+            'Current version is: <comment>%s</comment>.',
             $oldVersion
         ));
     }
     
     public function error(\Exception $e)
     {
-        $this->io->writeln(sprintf('Error: %s', $e->getMessage()));
+        $this->io->writeln(
+            '<error>Unexpected error. If updating, your original phar is untouched.</error>'
+        );
+        $this->io->writeln(sprintf('<error>%s</error>', $e->getMessage()));
     }
 
     public function rollbackSuccess()
@@ -86,7 +87,7 @@ class UpdateConsoleLogger
     public function printLocalVersion(string $version)
     {
         $this->io->writeln(sprintf(
-            'Your current local version is: %s',
+            'Your current local version is: <comment>%s</comment>',
             $version
         ));
     }
@@ -94,7 +95,7 @@ class UpdateConsoleLogger
     public function printRemoteVersion(string $stability, string $version)
     {
         $this->io->writeln(sprintf(
-            'The current %s build available remotely is: %s',
+            'The current <comment>%s</comment> build available remotely is: <comment>%s</comment>',
             $stability,
             $version
         ));
@@ -102,11 +103,11 @@ class UpdateConsoleLogger
 
     public function noNewRemoteVersions(string $stability)
     {
-        $this->io->writeln(sprintf('There are no new %s builds available.', $stability));
+        $this->io->writeln(sprintf('There are no new <comment>%s</comment> builds available.', $stability));
     }
 
     public function currentVersionInstalled(string $stability)
     {
-        $this->io->writeln(sprintf('You have the current %s build installed.', $stability));
+        $this->io->writeln(sprintf('You have the current <comment>%s</comment> build installed.', $stability));
     }
 }
