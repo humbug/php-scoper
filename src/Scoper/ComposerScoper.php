@@ -32,11 +32,7 @@ final class ComposerScoper implements Scoper
      */
     public function scope(string $filePath, string $prefix): string
     {
-        if (preg_match('/composer\.lock$/', $filePath)) {
-            return file_get_contents($filePath);
-        }
-
-        if (1 !== preg_match('/composer\.json$/', $filePath)) {
+        if (1 !== preg_match('/composer\.(json|lock)$/', $filePath)) {
             return $this->decoratedScoper->scope($filePath, $prefix);
         }
 
@@ -45,12 +41,10 @@ final class ComposerScoper implements Scoper
             true
         );
 
-        if (isset($decodedJson['autoload'])) {
-            $decodedJson['autoload'] = $this->prefixAutoloaders($decodedJson['autoload'], $prefix);
-        }
-
-        if (isset($decodedJson['autoload-dev'])) {
-            $decodedJson['autoload-dev'] = $this->prefixAutoloaders($decodedJson['autoload-dev'], $prefix);
+        if (preg_match('/composer\.lock$/', $filePath)) {
+            $decodedJson = $this->scopeComposerLockFile($decodedJson, $prefix);
+        } else {
+            $decodedJson = $this->scopeComposerFile($decodedJson, $prefix);
         }
 
         return json_encode(
@@ -59,20 +53,67 @@ final class ComposerScoper implements Scoper
         );
     }
 
-    private function prefixAutoloaders(array $autoloader, string $prefix): array
+    /**
+     * @param array  $content Decoded JSON of the `composer.lock` file
+     * @param string $prefix
+     *
+     * @return array Prefixed decoded JSON
+     */
+    private function scopeComposerLockFile(array $content, string $prefix): array
     {
-        if (isset($autoloader['psr-4'])) {
-            $autoloader['psr-4'] = $this->prefixAutoloader($autoloader['psr-4'], $prefix);
+        if (isset($content['packages'])) {
+            $content['packages'] = $this->prefixLockPackages($content['packages'], $prefix);
         }
 
-        return $autoloader;
+        if (isset($content['packages-dev'])) {
+            $content['packages-dev'] = $this->prefixLockPackages($content['packages-dev'], $prefix);
+        }
+
+        return $content;
     }
 
-    private function prefixAutoloader(array $autoloader, string $prefix): array
+    private function prefixLockPackages(array $packages, string $prefix): array
+    {
+        foreach ($packages as $index => $package) {
+            $packages[$index] = $this->scopeComposerFile($package, $prefix);
+        }
+
+        return $packages;
+    }
+
+    /**
+     * @param array  $content Decoded JSON of the `composer.json` file
+     * @param string $prefix
+     *
+     * @return array Prefixed decoded JSON
+     */
+    private function scopeComposerFile(array $content, string $prefix): array
+    {
+        if (isset($content['autoload'])) {
+            $content['autoload'] = $this->prefixAutoloads($content['autoload'], $prefix);
+        }
+
+        if (isset($content['autoload-dev'])) {
+            $content['autoload-dev'] = $this->prefixAutoloads($content['autoload-dev'], $prefix);
+        }
+
+        return $content;
+    }
+
+    private function prefixAutoloads(array $autoload, string $prefix): array
+    {
+        if (isset($autoload['psr-4'])) {
+            $autoload['psr-4'] = $this->prefixAutoload($autoload['psr-4'], $prefix);
+        }
+
+        return $autoload;
+    }
+
+    private function prefixAutoload(array $autoload, string $prefix): array
     {
         $loader = [];
 
-        foreach ($autoloader as $namespace => $paths) {
+        foreach ($autoload as $namespace => $paths) {
             $loader[sprintf('%s\\%s', $prefix, $namespace)] = $paths;
         }
 
