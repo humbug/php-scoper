@@ -28,7 +28,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
     {
         if ($node instanceof FullyQualified
             && $node->isFullyQualified()
-            && 1 === count($node->getSubNodeNames())
+            && 1 === count($node->parts)
         ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
