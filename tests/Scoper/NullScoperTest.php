@@ -14,18 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function Humbug\PhpScoper\create_parser;
+use Humbug\PhpScoper\Scoper;
+use PHPUnit\Framework\TestCase;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
-use Humbug\PhpScoper\PhpParser\FakeParser;
 use function Humbug\PhpScoper\remove_dir;
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use PhpParser\Error as PhpParserError;
-use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\NullScoper

@@ -14,17 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\GroupUseNamespaceScoperNodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\ParentNodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use PhpParser\Error;
-use PhpParser\NodeTraverser;
-use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard;
 
 interface Scoper
 {
@@ -32,7 +22,7 @@ interface Scoper
      * Scope AKA. apply the given prefix to the file in the appropriate way.
      *
      * @param string $filePath File to scope
-     * @param string $prefix Prefix to apply to the file
+     * @param string $prefix   Prefix to apply to the file
      *
      * @throws ParsingException
      *

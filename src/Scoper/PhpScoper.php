@@ -21,7 +21,6 @@ use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\ParentNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\UseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error as PhpParserError;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeTraverserInterface;
@@ -43,7 +42,7 @@ final class PhpScoper implements Scoper
     }
 
     /**
-     * Scopes PHP files
+     * Scopes PHP files.
      *
      * {@inheritdoc}
      *
