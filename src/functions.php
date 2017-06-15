@@ -47,7 +47,11 @@ function create_application(): SymfonyApplication
     ]);
 
     if ('phar:' === substr(__FILE__, 0, 5)) {
-        $app->add(new SelfUpdateCommand());
+        $app->add(
+            new SelfUpdateCommand(
+                new Updater()
+            )
+        );
     }
 
     return $app;
@@ -88,14 +92,6 @@ function create_scoper(): Scoper
 function create_parser(): Parser
 {
     return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
-}
-
-/**
- * @private
- */
-function create_updater(): Updater
-{
-    return new Updater();
 }
 
 /**

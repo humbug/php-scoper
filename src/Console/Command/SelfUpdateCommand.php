@@ -97,10 +97,8 @@ final class SelfUpdateCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
         $this->logger = new UpdateConsoleLogger(
-            $this->getApplication(),
-            $io
+            new SymfonyStyle($input, $output)
         );
 
         $this->output = $output;
@@ -117,11 +115,6 @@ final class SelfUpdateCommand extends Command
             return;
         }
 
-        $this->updateToStableBuild();
-    }
-
-    private function updateToStableBuild()
-    {
         $this->update($this->getStableUpdater());
     }
 
@@ -131,8 +124,11 @@ final class SelfUpdateCommand extends Command
     private function getStableUpdater(): Updater
     {
         $this->updater->setStrategy(Updater::STRATEGY_GITHUB);
+        $this->updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
+        $this->updater->getStrategy()->setPharName(self::REMOTE_FILENAME);
+        $this->updater->getStrategy()->setCurrentLocalVersion($this->version);
 
-        return $this->getGithubReleasesUpdater($updater);
+        return $this->updater;
     }
 
     private function update(Updater $updater)
@@ -170,34 +166,22 @@ final class SelfUpdateCommand extends Command
 
     private function printAvailableUpdates()
     {
-        $this->printCurrentLocalVersion();
-        $this->printCurrentStableVersion();
-    }
-
-    private function printCurrentLocalVersion()
-    {
         $this->logger->printLocalVersion($this->version);
+        $this->printCurrentStableVersion();
     }
 
     private function printCurrentStableVersion()
     {
-        $this->printVersion($this->getStableUpdater());
-    }
-
-    /**
-     * @param Updater $updater
-     */
-    private function printVersion(Updater $updater)
-    {
+        $updater = $this->getStableUpdater();
         $stability = self::STABILITY_STABLE;
 
         try {
-            if ($this->updater->hasUpdate()) {
+            if ($updater->hasUpdate()) {
                 $this->logger->printRemoteVersion(
                     $stability,
-                    $this->updater->getNewVersion()
+                    $updater->getNewVersion()
                 );
-            } elseif (false == $this->updater->getNewVersion()) {
+            } elseif (false == $updater->getNewVersion()) {
                 $this->logger->noNewRemoteVersions($stability);
             } else {
                 $this->logger->currentVersionInstalled($stability);
@@ -205,20 +189,6 @@ final class SelfUpdateCommand extends Command
         } catch (\Exception $e) {
             $this->logger->error($e);
         }
-    }
-
-    /**
-     * @param Updater $updater
-     * 
-     * @return Updater
-     */
-    private function getGithubReleasesUpdater(Updater $updater): Updater
-    {
-        $this->updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
-        $this->updater->getStrategy()->setPharName(self::REMOTE_FILENAME);
-        $this->updater->getStrategy()->setCurrentLocalVersion($this->version);
-
-        return $updater;
     }
 
     private function getLocalPharName(): string

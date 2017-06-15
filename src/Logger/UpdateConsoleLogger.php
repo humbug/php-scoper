@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Logger;
 
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -33,7 +32,7 @@ class UpdateConsoleLogger
      */
     private $io;
 
-    public function __construct(Application $application, SymfonyStyle $io)
+    public function __construct(SymfonyStyle $io)
     {
         $this->io = $io;
         $this->application = $application;
