@@ -64,7 +64,7 @@ class UpdateConsoleLogger
             $oldVersion
         ));
     }
-    
+
     public function error(\Exception $e)
     {
         $this->io->writeln(

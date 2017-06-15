@@ -139,7 +139,7 @@ final class SelfUpdateCommand extends Command
 
             $newVersion = $this->updater->getNewVersion();
             $oldVersion = $this->updater->getOldVersion();
-        
+
             if ($result) {
                 $this->logger->updateSuccess($newVersion, $oldVersion);
             } else {
