@@ -52,13 +52,13 @@ tc: vendor
 
 e2e:			  ## Run end-to-end tests
 e2e: scoper
-#	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set004 -o build/set004 -f
-#	composer -d=build/set004 dump-autoload
-#	php -d zend.enable_gc=0 $(BOX) build -c build/set004/box.json.dist
-#	php build/set004/bin/greet.phar > build/output
-#	diff fixtures/set004/expected-output build/output
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set004 -o build/set004 -f
+	composer -d=build/set004 dump-autoload
+	php -d zend.enable_gc=0 $(BOX) build -c build/set004/box.json.dist
+	php build/set004/bin/greet.phar > build/output
+	diff fixtures/set004/expected-output build/output
 
-	php -d zend.enable_gc=0 bin/php-scoper.php add-prefix fixtures/set005 -o build/set005 -f
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set005 -o build/set005 -f
 	composer -d=build/set005 dump-autoload
 	php -d zend.enable_gc=0 $(BOX) build -c build/set005/box.json.dist
 	php build/set005/bin/greet.phar > build/output

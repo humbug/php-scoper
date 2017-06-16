@@ -17,8 +17,8 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
-use Humbug\PhpScoper\Scoper\ComposerInstalledPackagesScoper;
-use Humbug\PhpScoper\Scoper\ComposerScoper;
+use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
+use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use PackageVersions\Versions;
@@ -63,8 +63,8 @@ function get_version(): string
  */
 function create_scoper(): Scoper
 {
-    return new ComposerScoper(
-        new ComposerInstalledPackagesScoper(
+    return new JsonFileScoper(
+        new InstalledPackagesScoper(
             new PhpScoper(
                 create_parser(),
                 new NullScoper()

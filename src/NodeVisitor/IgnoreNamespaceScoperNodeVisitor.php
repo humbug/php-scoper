@@ -36,8 +36,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof UseUse
             && $node->hasAttribute('parent')
             && false === ($node->getAttribute('parent') instanceof GroupUse)
-            && 1 === count($node->name->parts)
-//            && (1 === count($node->name->parts) || 'Composer' === $node->name->getFirst())
+            && (1 === count($node->name->parts) || 'Composer' === $node->name->getFirst())
         ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
