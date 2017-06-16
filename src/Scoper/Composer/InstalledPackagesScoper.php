@@ -67,7 +67,6 @@ final class InstalledPackagesScoper implements Scoper
         );
     }
 
-
     private function prefixLockPackages(array $packages, string $prefix): array
     {
         foreach ($packages as $index => $package) {

@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 
 final class JsonFileScoper implements Scoper
 {
