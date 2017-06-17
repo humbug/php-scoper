@@ -12,9 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper;
+namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\FakeScoper;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -23,9 +24,9 @@ use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\ComposerScoper
+ * @covers \Humbug\PhpScoper\Scoper\Composer\JsonFileScoper
  */
-class ComposerScoperTest extends TestCase
+class JsonFileScoperTest extends TestCase
 {
     /**
      * @var string
@@ -62,22 +63,7 @@ class ComposerScoperTest extends TestCase
 
     public function test_it_is_a_Scoper()
     {
-        $this->assertTrue(is_a(ComposerScoper::class, Scoper::class, true));
-    }
-
-    public function test_returns_the_file_content_if_file_is_a_composerlock_file()
-    {
-        $filePath = escape_path($this->tmp.'/composer.lock');
-        $expected = 'Lock content';
-
-        touch($filePath);
-        file_put_contents($filePath, $expected);
-
-        $scoper = new ComposerScoper(new FakeScoper());
-
-        $actual = $scoper->scope($filePath, 'Foo');
-
-        $this->assertSame($expected, $actual);
+        $this->assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
     }
 
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_composer_file()
@@ -99,7 +85,7 @@ class ComposerScoperTest extends TestCase
         /** @var Scoper $decoratedScoper */
         $decoratedScoper = $decoratedScoperProphecy->reveal();
 
-        $scoper = new ComposerScoper($decoratedScoper);
+        $scoper = new JsonFileScoper($decoratedScoper);
 
         $actual = $scoper->scope($filePath, $prefix);
 
@@ -111,12 +97,12 @@ class ComposerScoperTest extends TestCase
     /**
      * @dataProvider provideComposerFiles
      */
-    public function test_it_prefixes_the_composer_autoloader(string $fileContent, string $expected)
+    public function test_it_prefixes_the_composer_autoloaders(string $fileContent, string $expected)
     {
         touch($filePath = escape_path($this->tmp.'/composer.json'));
         file_put_contents($filePath, $fileContent);
 
-        $scoper = new ComposerScoper(new FakeScoper());
+        $scoper = new JsonFileScoper(new FakeScoper());
 
         $actual = $scoper->scope($filePath, 'Foo');
 
