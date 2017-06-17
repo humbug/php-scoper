@@ -25,17 +25,41 @@ the vendors of the loaded project, if the vendors are required in incompatible
 versions.
 
 
+## Installation
+
+You can install PHP-Scoper with Composer:
+
+```bash
+composer global require humbug/php-scoper:dev-master
+```
+
+If you cannot install it because of a dependency conflict or you prefer to
+install it for your project, we recommend you to take a look at
+[bamarni/composer-bin-plugin][bamarni/composer-bin-plugin]. Example:
+
+```bash
+composer require --dev bamarni/composer-bin-plugin
+composer bin php-scoper require --dev humbug/php-scoper:dev-master
+```
+
+A PHAR should be availaible soon as well.
+
+
 ## Usage
 
-Use PHP-Scoper like this:
-
-```
-$ php-scoper add-prefix MyPhar\\ .
+```bash
+php-scoper add-prefix
 ```
 
-The first argument is the prefix to add to all namespace declarations and class 
-usages. The second argument is one or more files/directories which should be 
-processed.
+This will prefix all the files found in the current working directory.
+The prefixed files will be accessible in a `build` folder. You can
+then use the prefixed code to build your PHAR.
+
+**Warning**: After prefexing the files, if you are relying on Composer
+for the autoloading, dumping the autoloader again is required.
+
+For a more concrete example, you can take a look at PHP-Scoper's build
+step in [Makefile](Makefile).
 
 
 ## Contributing
@@ -52,3 +76,4 @@ Project originally created by: [Bernhard Schussek] ([@webmozart]) which has then
 [Bernhard Schussek]: https://webmozart.io/
 [@webmozart]: https://twitter.com/webmozart
 [humbug]: https://github.com/humbug
+[bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin

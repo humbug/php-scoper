@@ -16,8 +16,10 @@ help:
 
 build:            ## Build the PHAR
 build: vendor
+	# Cleanup existing artefacts
 	rm -f bin/php-scoper.phar
 	rm -rf build
+	# Delete local `composer.lock` to ensure fresh dependencies are used
 	rm composer.lock
 	#
 	# As of now, files included in `autoload-dev` are not excluded from the
@@ -28,10 +30,11 @@ build: vendor
 	# As a result, the the flag `--no-dev` for `composer install` cannot
 	# be used and `box.json.dist` must include the `tests` directory
 	#
-	composer install --prefer-dist --classmap-authoritative
+	composer install --prefer-dist
 	php -d zend.enable_gc=0 bin/php-scoper.php add-prefix --force
 	cd build && composer dump-autoload --classmap-authoritative
 	php -d zend.enable_gc=0 $(BOX) build
+	# Install back all the dependencies
 	composer install
 
 
