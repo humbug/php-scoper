@@ -3,7 +3,7 @@ PHPUNIT=vendor/bin/phpunit
 PHPSCOPER=bin/php-scoper.phar
 
 .DEFAULT_GOAL := help
-.PHONY: build test tu tc e2e
+.PHONY: build test tu tc e2e tb
 
 
 help:
@@ -57,6 +57,12 @@ e2e: scoper
 	php -d zend.enable_gc=0 $(BOX) build -c build/set004/box.json.dist
 	php build/set004/bin/greet.phar > build/output
 	diff fixtures/set004/expected-output build/output
+
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set005 -o build/set005 -f
+	composer -d=build/set005 dump-autoload
+	php -d zend.enable_gc=0 $(BOX) build -c build/set005/box.json.dist
+	php build/set005/bin/greet.phar > build/output
+	diff fixtures/set005/expected-output build/output
 
 tb:				  ## Run Blackfire profiling
 tb: vendor
