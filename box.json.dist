@@ -1,5 +1,6 @@
 {
     "base-path": "build",
+    "chmod": "0755",
     "main": "bin/php-scoper.php",
     "output": "bin/php-scoper.phar",
     "directories": [
