@@ -34,7 +34,6 @@ final class StringReplacer implements Scoper
     public function setReplaceMap(array $replaceMap)
     {
         $this->mapByFile($replaceMap);
-        var_dump($this->replaceMap);
     }
 
     /**

@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Handler;
 
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Scoper\StringReplacer;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
 use PhpParser\Error as PhpParserError;
@@ -33,7 +32,6 @@ class HandleAddPrefix
 {
     private $fileSystem;
     private $scoper;
-    private $stringReplacer;
 
     public function __construct(Scoper $scoper)
     {

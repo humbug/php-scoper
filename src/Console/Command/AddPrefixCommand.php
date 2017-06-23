@@ -263,7 +263,12 @@ final class AddPrefixCommand extends Command
         $input->setOption(self::REPLACE_STRINGS_OPT, $replaceStrings);
 
         if (false === $this->fileSystem->exists($replaceStrings)) {
-            return;
+            throw new RuntimeException(
+                sprintf(
+                    'Replacement strings config "<comment>%s</comment>" does not exist.',
+                    $replaceStrings
+                )
+            );
         }
 
         if (false === is_readable($replaceStrings)) {
