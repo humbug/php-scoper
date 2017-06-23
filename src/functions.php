@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Scoper\StringReplacer;
 use PackageVersions\Versions;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -38,8 +39,11 @@ function create_application(): SymfonyApplication
         new AddPrefixCommand(
             new Filesystem(),
             new HandleAddPrefix(
-                create_scoper()
-            )
+                $stringReplacer = new StringReplacer(
+                    create_scoper()
+                )
+            ),
+            $stringReplacer
         ),
     ]);
 

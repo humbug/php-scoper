@@ -31,7 +31,7 @@ build: vendor
 	# be used and `box.json.dist` must include the `tests` directory
 	#
 	composer install --prefer-dist
-	php -d zend.enable_gc=0 bin/php-scoper.php add-prefix --force
+	php -d zend.enable_gc=0 bin/php-scoper.php add-prefix --replace-strings=scoper.json --force
 	cd build && composer dump-autoload --classmap-authoritative
 	php -d zend.enable_gc=0 $(BOX) build
 	# Install back all the dependencies

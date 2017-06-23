@@ -1,0 +1,18 @@
+{
+    "replacements": [
+        {
+            "pattern": "%name \\= 'PhpParser\\\\\\\\Parser\\\\\\\\Tokens\\:\\:'%",
+            "replacement": "name = array_shift(explode(__NAMESPACE__, '\\\\\\\\')) . '\\\\\\\\' . 'PhpParser\\\\\\\\Parser\\\\\\\\Tokens::'",
+            "files": [
+                "vendor\/nikic\/php-parser\/lib\/PhpParser\/Lexer.php"
+            ]
+        },
+        {
+            "pattern": "%rtrim\\(get_class\\(\\$this\\), '_'\\), 15\\)%",
+            "replacement": "rtrim(get_class($this), '_'), 15+23)",
+            "files": [
+                "vendor\/nikic\/php-parser\/lib\/PhpParser\/NodeAbstract.php"
+            ]
+        }
+    ]
+}
