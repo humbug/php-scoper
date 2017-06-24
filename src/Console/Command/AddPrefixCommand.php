@@ -291,7 +291,7 @@ final class AddPrefixCommand extends Command
             if (empty($replaceStringsMap) || !isset($replaceStringsMap['replacements'])) {
                 throw new RuntimeException(
                     sprintf(
-                        "No replacement strings configured in: %s", $replaceStrings
+                        'No replacement strings configured in: %s', $replaceStrings
                     )
                 );
             }
@@ -320,7 +320,7 @@ final class AddPrefixCommand extends Command
         } catch (\Exception $e) {
             throw new RuntimeException(
                 sprintf(
-                    "Unable to parse replacement strings JSON file: %s%s%s",
+                    'Unable to parse replacement strings JSON file: %s%s%s',
                     $replaceStrings,
                     PHP_EOL,
                     $e->getMessage()

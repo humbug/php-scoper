@@ -43,7 +43,7 @@ final class StringReplacer implements Scoper
      */
     public function scope(string $filePath, string $prefix): string
     {
-        $content = $this->decoratedScoper->scope($filePath, $prefix); 
+        $content = $this->decoratedScoper->scope($filePath, $prefix);
 
         if (is_array($this->replaceMap) && isset($this->replaceMap[$filePath])) {
             foreach ($this->replaceMap[$filePath] as $replacement) {
@@ -58,10 +58,10 @@ final class StringReplacer implements Scoper
                 if (0 === $count) {
                     throw new RuntimeException(
                         sprintf(
-                            'The following string replacement could not be applied:' . PHP_EOL
-                                . 'File: %s' . PHP_EOL
-                                . 'Pattern: %s' . PHP_EOL
-                                . 'Replacement: %s',
+                            'The following string replacement could not be applied:'.PHP_EOL
+                                .'File: %s'.PHP_EOL
+                                .'Pattern: %s'.PHP_EOL
+                                .'Replacement: %s',
                             $filePath,
                             $replacement['pattern'],
                             $replacement['replacement']
@@ -81,7 +81,7 @@ final class StringReplacer implements Scoper
             foreach ($replace['files'] as $file) {
                 $this->replaceMap[$file][] = [
                     'pattern' => $replace['pattern'],
-                    'replacement' => $replace['replacement']
+                    'replacement' => $replace['replacement'],
                 ];
             }
         }
