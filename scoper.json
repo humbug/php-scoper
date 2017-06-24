@@ -1,8 +1,8 @@
 {
     "replacements": [
         {
-            "pattern": "%name \\= 'PhpParser\\\\\\\\Parser\\\\\\\\Tokens\\:\\:'%",
-            "replacement": "name = array_shift(explode(__NAMESPACE__, '\\\\\\\\')) . '\\\\\\\\' . 'PhpParser\\\\\\\\Parser\\\\\\\\Tokens::'",
+            "pattern": "%if \\(defined\\(\\$name \\= 'PhpParser\\\\\\\\Parser\\\\\\\\Tokens\\:\\:'%",
+            "replacement": "$ns = explode('\\\\\\\\', __NAMESPACE__);\nif (defined($name = array_shift($ns) . '\\\\\\\\' . 'PhpParser\\\\\\\\Parser\\\\\\\\Tokens::'",
             "files": [
                 "vendor\/nikic\/php-parser\/lib\/PhpParser\/Lexer.php"
             ]
