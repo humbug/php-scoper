@@ -3,7 +3,7 @@ PHPUNIT=vendor/bin/phpunit
 PHPSCOPER=bin/php-scoper.phar
 
 .DEFAULT_GOAL := help
-.PHONY: build test tu tc e2e tb
+.PHONY: build test tu tc e2e tb clean
 
 
 help:
@@ -61,7 +61,9 @@ e2e: scoper
 	php build/set004/bin/greet.phar > build/output
 	diff fixtures/set004/expected-output build/output
 
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set005 -o build/set005 -f
+	cp -R fixtures/set005 build/fixtures
+	composer install -d=build/fixtures/set005 --prefer-dist
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix build/fixtures/set005 -o build/set005 -f
 	composer -d=build/set005 dump-autoload
 	php -d zend.enable_gc=0 $(BOX) build -c build/set005/box.json.dist
 	php build/set005/bin/greet.phar > build/output
@@ -83,6 +85,9 @@ tb: vendor
 	blackfire --new-reference run bin/php-scoper add-prefix -f -q
 	composer install
 
+clean:
+	rm -rf build
+	rm bin/php-scoper.phar
 
 ##
 ## Rules from files
