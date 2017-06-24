@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\UseUse;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\NodeVisitorAbstract;
 
 final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
