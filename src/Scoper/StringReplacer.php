@@ -17,13 +17,16 @@ namespace Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
 
-final class StringReplacer implements Scoper
+/**
+ * @final
+ */
+class StringReplacer implements Scoper
 {
-    /**
-     * @var array
-     */
-    private $replaceMap;
+    private $replaceMap = [];
 
+    /**
+     * @var Scoper
+     */
     private $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
@@ -31,9 +34,9 @@ final class StringReplacer implements Scoper
         $this->decoratedScoper = $decoratedScoper;
     }
 
-    public function setReplaceMap(array $replaceMap)
+    public function configureReplaceMap(array $replaceMap)
     {
-        $this->mapByFile($replaceMap);
+        $this->replaceMap = $this->mapByFile($replaceMap);
     }
 
     /**
@@ -45,45 +48,50 @@ final class StringReplacer implements Scoper
     {
         $content = $this->decoratedScoper->scope($filePath, $prefix);
 
-        if (is_array($this->replaceMap) && isset($this->replaceMap[$filePath])) {
-            foreach ($this->replaceMap[$filePath] as $replacement) {
-                $content = preg_replace(
-                    $replacement['pattern'],
-                    $replacement['replacement'],
-                    $content,
-                    -1,
-                    $count
-                );
+        if (!isset($this->replaceMap[$filePath])) {
+            
+            return $content;
+        }
 
-                if (0 === $count) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'The following string replacement could not be applied:'.PHP_EOL
-                                .'File: %s'.PHP_EOL
-                                .'Pattern: %s'.PHP_EOL
-                                .'Replacement: %s',
-                            $filePath,
-                            $replacement['pattern'],
-                            $replacement['replacement']
-                        )
-                    );
-                }
+        foreach ($this->replaceMap[$filePath] as $replacement) {
+            $content = preg_replace(
+                $replacement['pattern'],
+                $replacement['replacement'],
+                $content,
+                -1,
+                $count
+            );
+
+            if (0 === $count) {
+                throw new RuntimeException(
+                    sprintf(
+                        'The following string replacement could not be applied:'.PHP_EOL
+                            .'File: %s'.PHP_EOL
+                            .'Pattern: %s'.PHP_EOL
+                            .'Replacement: %s',
+                        $filePath,
+                        $replacement['pattern'],
+                        $replacement['replacement']
+                    )
+                );
             }
         }
 
         return $content;
     }
 
-    private function mapByFile(array $replaceMap)
+    private function mapByFile(array $replaceMap): array
     {
-        $this->replaceMap = [];
+        $map = [];
         foreach ($replaceMap as $replace) {
             foreach ($replace['files'] as $file) {
-                $this->replaceMap[$file][] = [
+                $map[$file][] = [
                     'pattern' => $replace['pattern'],
                     'replacement' => $replace['replacement'],
                 ];
             }
         }
+
+        return $map;
     }
 }

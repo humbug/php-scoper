@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
+use Humbug\PhpScoper\Scoper\StringReplacer;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -73,6 +74,8 @@ class AddPrefixCommandTest extends TestCase
         $this->fileSystemProphecy = $this->prophesize(Filesystem::class);
 
         $this->handleProphecy = $this->prophesize(HandleAddPrefix::class);
+
+        $this->stringReplacerProphecy = $this->prophesize(StringReplacer::class);
 
         $this->appTester = $this->createAppTester();
     }
@@ -164,6 +167,9 @@ EOF;
             '--no-interaction',
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
@@ -185,8 +191,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -202,6 +208,9 @@ EOF;
             ],
             '--output-dir' => $this->tmp,
         ];
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
@@ -233,8 +242,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -246,6 +255,9 @@ EOF;
             '--prefix' => 'MyPrefix',
             '--output-dir' => $this->tmp,
         ];
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
@@ -266,8 +278,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -284,6 +296,9 @@ EOF;
             ],
             '--output-dir' => $this->tmp,
         ];
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath($path0)->willReturn(true);
         $this->fileSystemProphecy->isAbsolutePath($path1)->willReturn(false);
@@ -309,8 +324,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -328,6 +343,9 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
@@ -349,8 +367,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -368,6 +386,9 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
@@ -389,8 +410,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -405,6 +426,9 @@ EOF;
             ],
             '--output-dir' => $outDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir',
         ];
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($outDir)->willReturn(false);
@@ -425,8 +449,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -445,6 +469,9 @@ EOF;
         ];
 
         $expectedOutputDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath('output-dir')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
@@ -466,8 +493,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -513,6 +540,9 @@ EOF;
             ],
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists('build')->willReturn(false);
 
@@ -555,9 +585,12 @@ EOF;
         /** @var HandleAddPrefix $handle */
         $handle = $this->handleProphecy->reveal();
 
+        /** @var StringReplacer $stringReplacer */
+        $stringReplacer = $this->stringReplacerProphecy->reveal();
+
         $application = new Application('php-scoper-test');
         $application->addCommands([
-            new AddPrefixCommand($fileSystem, $handle),
+            new AddPrefixCommand($fileSystem, $handle, $stringReplacer),
         ]);
         $application->setAutoExit(false);
         $application->setCatchExceptions(false);

@@ -40,6 +40,8 @@ final class AddPrefixCommand extends Command
     const FORCE_OPT = 'force';
     /** @internal */
     const REPLACE_STRINGS_OPT = 'replace-strings';
+    /** @internal */
+    const REPLACE_STRINGS_DEFAULT = 'scoper.json';
 
     private $fileSystem;
     private $handle;
@@ -48,7 +50,7 @@ final class AddPrefixCommand extends Command
     /**
      * @inheritdoc
      */
-    public function __construct(Filesystem $fileSystem, HandleAddPrefix $handle, StringReplacer $stringReplacer = null)
+    public function __construct(Filesystem $fileSystem, HandleAddPrefix $handle, StringReplacer $stringReplacer)
     {
         parent::__construct();
 
@@ -109,10 +111,9 @@ final class AddPrefixCommand extends Command
         $this->validatePaths($input);
         $this->validateOutputDir($input, $io);
 
-        $replaceStrings = $input->getOption(self::REPLACE_STRINGS_OPT);
-        if (is_string($replaceStrings)) {
-            $stringReplacements = $this->validateReplaceStrings($input);
-            $this->stringReplacer->setReplaceMap($stringReplacements);
+        $stringReplacements = $this->validateReplaceStrings($input);
+        if (null !== $stringReplacements) {
+            $this->stringReplacer->configureReplaceMap($stringReplacements);
         }
 
         $logger = new ConsoleLogger(
@@ -256,20 +257,27 @@ final class AddPrefixCommand extends Command
     {
         $replaceStrings = $input->getOption(self::REPLACE_STRINGS_OPT);
 
-        if (false === $this->fileSystem->isAbsolutePath($replaceStrings)) {
-            $replaceStrings = getcwd().DIRECTORY_SEPARATOR.$replaceStrings;
+        if (null === $replaceStrings) {
+            $replaceStrings = $this->makeAbsolutePath(self::REPLACE_STRINGS_DEFAULT);
+
+            if (false === $this->fileSystem->exists($replaceStrings)) {
+                
+                return;
+            }
+        } else {
+            $replaceStrings = $this->makeAbsolutePath($replaceStrings);
+
+            if (false === $this->fileSystem->exists($replaceStrings)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Replacement strings config "<comment>%s</comment>" does not exist.',
+                        $replaceStrings
+                    )
+                );
+            }
         }
 
         $input->setOption(self::REPLACE_STRINGS_OPT, $replaceStrings);
-
-        if (false === $this->fileSystem->exists($replaceStrings)) {
-            throw new RuntimeException(
-                sprintf(
-                    'Replacement strings config "<comment>%s</comment>" does not exist.',
-                    $replaceStrings
-                )
-            );
-        }
 
         if (false === is_readable($replaceStrings)) {
             throw new RuntimeException(
@@ -327,5 +335,14 @@ final class AddPrefixCommand extends Command
                 )
             );
         }
+    }
+
+    private function makeAbsolutePath(string $path): string
+    {
+        if (false === $this->fileSystem->isAbsolutePath($path)) {
+            $path = getcwd().DIRECTORY_SEPARATOR.$path;
+        }
+
+        return $path;
     }
 }
