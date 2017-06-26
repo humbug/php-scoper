@@ -167,8 +167,8 @@ EOF;
             '--no-interaction',
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
@@ -209,8 +209,8 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
@@ -256,8 +256,8 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
@@ -297,8 +297,8 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath($path0)->willReturn(true);
         $this->fileSystemProphecy->isAbsolutePath($path1)->willReturn(false);
@@ -343,8 +343,8 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
@@ -386,8 +386,8 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
@@ -427,8 +427,8 @@ EOF;
             '--output-dir' => $outDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir',
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($outDir)->willReturn(false);
@@ -470,8 +470,8 @@ EOF;
 
         $expectedOutputDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath('output-dir')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
@@ -540,8 +540,8 @@ EOF;
             ],
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.json'))->willReturn(false);
-        $this->fileSystemProphecy->exists(Argument::containingString('scoper.json'))->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::containingString('scoper.yml'))->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::containingString('scoper.yml'))->willReturn(false);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists('build')->willReturn(false);

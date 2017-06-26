@@ -1,0 +1,13 @@
+replacements:
+    -
+        pattern: '%if \(defined\(\$name \= ''PhpParser\\\\Parser\\\\Tokens\:\:''%'
+        replacement: |
+                        $ns = explode('\\\\', __NAMESPACE__);
+                        if (defined($name = array_shift($ns) . '\\\\' . 'PhpParser\\\\Parser\\\\Tokens::'
+        files:
+            - vendor/nikic/php-parser/lib/PhpParser/Lexer.php
+    -
+        pattern: '%rtrim\(get_class\(\$this\), ''_''\), 15\)%'
+        replacement: 'rtrim(get_class($this), ''_''), 15+23)'
+        files:
+            - vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php

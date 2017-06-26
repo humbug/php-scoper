@@ -26,6 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 final class AddPrefixCommand extends Command
@@ -41,7 +42,7 @@ final class AddPrefixCommand extends Command
     /** @internal */
     const REPLACE_STRINGS_OPT = 'replace-strings';
     /** @internal */
-    const REPLACE_STRINGS_DEFAULT = 'scoper.json';
+    const REPLACE_STRINGS_DEFAULT = 'scoper.yml';
 
     private $fileSystem;
     private $handle;
@@ -292,9 +293,8 @@ final class AddPrefixCommand extends Command
             $cwd = getcwd();
             $fileSystem = $this->fileSystem;
 
-            $replaceStringsMap = json_decode(
-                file_get_contents($replaceStrings),
-                true
+            $replaceStringsMap = Yaml::parse(
+                file_get_contents($replaceStrings)
             );
             if (empty($replaceStringsMap) || !isset($replaceStringsMap['replacements'])) {
                 throw new RuntimeException(
