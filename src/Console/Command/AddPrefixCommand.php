@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
+use Humbug\PhpScoper\Scoper\StringReplacer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -25,6 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 final class AddPrefixCommand extends Command
@@ -37,19 +39,25 @@ final class AddPrefixCommand extends Command
     const OUTPUT_DIR_OPT = 'output-dir';
     /** @internal */
     const FORCE_OPT = 'force';
+    /** @internal */
+    const REPLACE_STRINGS_OPT = 'replace-strings';
+    /** @internal */
+    const REPLACE_STRINGS_DEFAULT = 'scoper.yml';
 
     private $fileSystem;
     private $handle;
+    private $stringReplacer;
 
     /**
      * @inheritdoc
      */
-    public function __construct(Filesystem $fileSystem, HandleAddPrefix $handle)
+    public function __construct(Filesystem $fileSystem, HandleAddPrefix $handle, StringReplacer $stringReplacer)
     {
         parent::__construct();
 
         $this->fileSystem = $fileSystem;
         $this->handle = $handle;
+        $this->stringReplacer = $stringReplacer;
     }
 
     /**
@@ -79,6 +87,12 @@ final class AddPrefixCommand extends Command
                 'build'
             )
             ->addOption(
+                self::REPLACE_STRINGS_OPT,
+                'r',
+                InputOption::VALUE_REQUIRED,
+                'File in which string replacements are defined.'
+            )
+            ->addOption(
                 self::FORCE_OPT,
                 'f',
                 InputOption::VALUE_NONE,
@@ -97,6 +111,11 @@ final class AddPrefixCommand extends Command
         $this->validatePrefix($input);
         $this->validatePaths($input);
         $this->validateOutputDir($input, $io);
+
+        $stringReplacements = $this->validateReplaceStrings($input);
+        if (null !== $stringReplacements) {
+            $this->stringReplacer->configureReplaceMap($stringReplacements);
+        }
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
@@ -233,5 +252,97 @@ final class AddPrefixCommand extends Command
 
             $this->fileSystem->remove($outputDir);
         }
+    }
+
+    private function validateReplaceStrings(InputInterface $input)
+    {
+        $replaceStrings = $input->getOption(self::REPLACE_STRINGS_OPT);
+
+        if (null === $replaceStrings) {
+            $replaceStrings = $this->makeAbsolutePath(self::REPLACE_STRINGS_DEFAULT);
+
+            if (false === $this->fileSystem->exists($replaceStrings)) {
+                
+                return;
+            }
+        } else {
+            $replaceStrings = $this->makeAbsolutePath($replaceStrings);
+
+            if (false === $this->fileSystem->exists($replaceStrings)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Replacement strings config "<comment>%s</comment>" does not exist.',
+                        $replaceStrings
+                    )
+                );
+            }
+        }
+
+        $input->setOption(self::REPLACE_STRINGS_OPT, $replaceStrings);
+
+        if (false === is_readable($replaceStrings)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Expected "<comment>%s</comment>" to be readable.',
+                    $replaceStrings
+                )
+            );
+        }
+
+        try {
+            $cwd = getcwd();
+            $fileSystem = $this->fileSystem;
+
+            $replaceStringsMap = Yaml::parse(
+                file_get_contents($replaceStrings)
+            );
+            if (empty($replaceStringsMap) || !isset($replaceStringsMap['replacements'])) {
+                throw new RuntimeException(
+                    sprintf(
+                        'No replacement strings configured in: %s', $replaceStrings
+                    )
+                );
+            }
+
+            $map = array_map(
+                function (array $replacement) use ($cwd, $fileSystem) {
+                    $replacement['files'] = array_map(
+                        function (string $path) use ($cwd, $fileSystem) {
+                            if (false === $fileSystem->isAbsolutePath($path)) {
+                                return $cwd.DIRECTORY_SEPARATOR.$path;
+                            }
+
+                            return $path;
+                        },
+                        $replacement['files']
+                    );
+
+                    return $replacement;
+                },
+                $replaceStringsMap['replacements']
+            );
+
+            return $map;
+        } catch (RuntimeException $e) {
+            throw $e;
+        } catch (\Exception $e) {
+            throw new RuntimeException(
+                sprintf(
+                    'Unable to parse replacement strings JSON file: %s%s%s',
+                    $replaceStrings,
+                    PHP_EOL,
+                    $e->getMessage()
+                )
+            );
+        }
+    }
+
+    private function makeAbsolutePath(string $path): string
+    {
+        if (false === $this->fileSystem->isAbsolutePath($path)) {
+            $path = getcwd().DIRECTORY_SEPARATOR.$path;
+        }
+
+        return $path;
     }
 }
