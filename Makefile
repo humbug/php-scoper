@@ -14,7 +14,7 @@ help:
 ## Build
 ##---------------------------------------------------------------------------
 
-build:            ## Build the PHAR
+build:		## Build the PHAR
 build: vendor
 	# Cleanup existing artefacts
 	rm -f bin/php-scoper.phar
@@ -42,18 +42,18 @@ build: vendor
 ## Tests
 ##---------------------------------------------------------------------------
 
-test:             ## Run all the tests
+test:		## Run all the tests
 test: tu e2e
 
-tu:               ## Run PHPUnit tests
+tu:		## Run PHPUnit tests
 tu: vendor
 	php -d zend.enable_gc=0 $(PHPUNIT)
 
-tc:               ## Run PHPUnit tests with test coverage
+tc:		## Run PHPUnit tests with test coverage
 tc: vendor
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
-e2e:			  ## Run end-to-end tests
+e2e:		## Run end-to-end tests
 e2e: scoper
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set004 -o build/set004 -f
 	composer -d=build/set004 dump-autoload
@@ -67,7 +67,7 @@ e2e: scoper
 	php build/set005/bin/greet.phar > build/output
 	diff fixtures/set005/expected-output build/output
 
-tb:				  ## Run Blackfire profiling
+tb:		## Run Blackfire profiling
 tb: vendor
 	rm -rf build
   	#
