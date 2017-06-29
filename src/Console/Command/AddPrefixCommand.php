@@ -37,6 +37,10 @@ final class AddPrefixCommand extends Command
     const OUTPUT_DIR_OPT = 'output-dir';
     /** @internal */
     const FORCE_OPT = 'force';
+    /** @internal */
+    const PATCH_FILE = 'patch-file';
+    /** @internal */
+    const PATCH_FILE_DEFAULT = 'php-scoper.php';
 
     private $fileSystem;
     private $handle;
@@ -69,7 +73,7 @@ final class AddPrefixCommand extends Command
                 self::PREFIX_OPT,
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'The namespace prefix to add'
+                'The namespace prefix to add.'
             )
             ->addOption(
                 self::OUTPUT_DIR_OPT,
@@ -82,7 +86,14 @@ final class AddPrefixCommand extends Command
                 self::FORCE_OPT,
                 'f',
                 InputOption::VALUE_NONE,
-                'Deletes any existing content in the output directory without any warning'
+                'Deletes any existing content in the output directory without any warning.'
+            )
+            ->addOption(
+                self::PATCH_FILE,
+                'c',
+                InputOption::VALUE_REQUIRED,
+                'Configuration file for the patchers.',
+                self::PATCH_FILE_DEFAULT
             )
         ;
     }
@@ -97,6 +108,7 @@ final class AddPrefixCommand extends Command
         $this->validatePrefix($input);
         $this->validatePaths($input);
         $this->validateOutputDir($input, $io);
+        $patchers = $this->validatePatchers($input, $io);
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
@@ -113,6 +125,7 @@ final class AddPrefixCommand extends Command
                 $input->getOption(self::PREFIX_OPT),
                 $input->getArgument(self::PATH_ARG),
                 $input->getOption(self::OUTPUT_DIR_OPT),
+                $patchers,
                 $logger
             );
         } catch (Throwable $throwable) {
@@ -233,5 +246,70 @@ final class AddPrefixCommand extends Command
 
             $this->fileSystem->remove($outputDir);
         }
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputStyle    $io
+     *
+     * @return callable[]
+     */
+    private function validatePatchers(InputInterface $input, OutputStyle $io): array
+    {
+        $patchFile = $this->makeAbsolutePath($input->getOption(self::PATCH_FILE));
+
+        if (false === file_exists($patchFile) && self::PATCH_FILE === $patchFile) {
+            if (self::PATCH_FILE === $input->getOption(self::PATCH_FILE)) {
+                $io->writeln(
+                    sprintf(
+                        'Patch file "%s" not found. Skipping.',
+                        $patchFile
+                    ),
+                    OutputStyle::VERBOSITY_DEBUG
+                );
+
+                return [];
+            }
+
+            throw new RuntimeException(
+                sprintf(
+                    'Could not find the file "%s".',
+                    $patchFile
+                )
+            );
+        }
+
+        $patchers = include_once $patchFile;
+
+        if (false === is_array($patchers)) {
+            throw new RuntimeException(
+                sprintf(
+                    'Expected patchers to be an array of callables, found "%s" instead.',
+                    gettype($patchers)
+                )
+            );
+        }
+
+        foreach ($patchers as $index => $patcher) {
+            if (false === is_callable($patcher)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Expected patchers to be an array of callables, the "%d" element is not.',
+                        $index
+                    )
+                );
+            }
+        }
+
+        return $patchers;
+    }
+
+    private function makeAbsolutePath(string $path): string
+    {
+        if (false === $this->fileSystem->isAbsolutePath($path)) {
+            $path = getcwd().DIRECTORY_SEPARATOR.$path;
+        }
+
+        return realpath($path);
     }
 }

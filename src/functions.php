@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
+use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use PackageVersions\Versions;
 use PhpParser\Parser;
@@ -63,11 +64,13 @@ function get_version(): string
  */
 function create_scoper(): Scoper
 {
-    return new JsonFileScoper(
-        new InstalledPackagesScoper(
-            new PhpScoper(
-                create_parser(),
-                new NullScoper()
+    return new PatchScoper(
+        new JsonFileScoper(
+            new InstalledPackagesScoper(
+                new PhpScoper(
+                    create_parser(),
+                    new NullScoper()
+                )
             )
         )
     );
