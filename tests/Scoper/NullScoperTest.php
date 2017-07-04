@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
 use function Humbug\PhpScoper\escape_path;
@@ -73,9 +74,11 @@ class NullScoperTest extends TestCase
 
         $prefix = 'Humbug';
 
+        $patchers = [create_fake_patcher()];
+
         $scoper = new NullScoper();
 
-        $actual = $scoper->scope($filePath, $prefix);
+        $actual = $scoper->scope($filePath, $prefix, $patchers);
 
         $this->assertSame($expected, $actual);
     }

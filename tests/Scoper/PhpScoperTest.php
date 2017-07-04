@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
 use PhpParser\Error as PhpParserError;
@@ -94,8 +95,8 @@ class PhpScoperTest extends TestCase
     public function test_can_scope_a_PHP_file()
     {
         $prefix = 'Humbug';
-
         $filePath = escape_path($this->tmp.'/file.php');
+        $patchers = [create_fake_patcher()];
 
         $content = <<<'PHP'
 echo "Humbug!";
@@ -109,7 +110,7 @@ echo "Humbug!";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $prefix);
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers);
 
         $this->assertSame($expected, $actual);
     }
@@ -118,9 +119,10 @@ PHP;
     {
         $filePath = 'file.yaml';
         $prefix = 'Humbug';
+        $patchers = [create_fake_patcher()];
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix)
+            ->scope($filePath, $prefix, $patchers)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -131,7 +133,7 @@ PHP;
             $this->decoratedScoper
         );
 
-        $actual = $scoper->scope($filePath, $prefix);
+        $actual = $scoper->scope($filePath, $prefix, $patchers);
 
         $this->assertSame($expected, $actual);
 
@@ -215,9 +217,10 @@ PHP;
         file_put_contents($filePath, $content);
 
         $prefix = 'Humbug';
+        $patchers = [create_fake_patcher()];
 
         try {
-            $this->scoper->scope($filePath, $prefix);
+            $this->scoper->scope($filePath, $prefix, $patchers);
 
             $this->fail('Expected exception to have been thrown.');
         } catch (PhpParserError $error) {
@@ -240,7 +243,9 @@ PHP;
         touch($filePath);
         file_put_contents($filePath, $content);
 
-        $actual = $this->scoper->scope($filePath, $prefix);
+        $patchers = [create_fake_patcher()];
+
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers);
 
         $this->assertSame($expected, $actual);
     }

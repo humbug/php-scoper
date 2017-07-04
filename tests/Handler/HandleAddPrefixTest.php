@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Handler;
 
 use Error;
+use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -108,6 +109,8 @@ class HandleAddPrefixTest extends TestCase
 
         $outputPath = $this->tmp;
 
+        $patchers = [create_fake_patcher()];
+
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
 
@@ -115,14 +118,14 @@ class HandleAddPrefixTest extends TestCase
             $filePath = realpath(escape_path(self::FIXTURE_PATH_000.$fileContent));
             $this->assertNotFalse($filePath, 'Type check.');
 
-            $this->scoperProphecy->scope($filePath, $prefix)->shouldBeCalled();
+            $this->scoperProphecy->scope($filePath, $prefix, $patchers)->shouldBeCalled();
 
             $this->loggerProphecy->outputSuccess($filePath)->shouldBeCalled();
         }
 
         $this->loggerProphecy->outputFileCount(count($expected))->shouldBeCalled();
 
-        $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
+        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $logger);
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expected));
 
@@ -140,6 +143,8 @@ class HandleAddPrefixTest extends TestCase
 
         $outputPath = $this->tmp;
 
+        $patchers = [create_fake_patcher()];
+
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
 
@@ -152,9 +157,9 @@ namespace Myprefix\MyNamespace;
 
 PHP;
 
-        $this->scoperProphecy->scope(Argument::any(), $prefix)->willReturn($expected);
+        $this->scoperProphecy->scope(Argument::any(), $prefix, $patchers)->willReturn($expected);
 
-        $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
+        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $logger);
 
         $actual = file_get_contents(
             escape_path($this->tmp.'/file.php')
@@ -173,13 +178,15 @@ PHP;
 
         $outputPath = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
+        $patchers = [create_fake_patcher()];
+
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
 
         try {
-            $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
+            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $logger);
 
             $this->fail('Expected exception to be thrown.');
         } catch (RuntimeException $exception) {
@@ -204,16 +211,18 @@ PHP;
 
         $outputPath = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
+        $patchers = [create_fake_patcher()];
+
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
 
         $this->scoperProphecy
-            ->scope(Argument::any(), $prefix)
+            ->scope(Argument::any(), $prefix, $patchers)
             ->willThrow($error = new Error('Unknown error'))
         ;
 
         try {
-            $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
+            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $logger);
 
             $this->fail('Expected exception to be thrown.');
         } catch (Throwable $throwable) {
@@ -233,16 +242,18 @@ PHP;
 
         $outputPath = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
+        $patchers = [create_fake_patcher()];
+
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
 
         $this->scoperProphecy
-            ->scope(Argument::any(), $prefix)
+            ->scope(Argument::any(), $prefix, $patchers)
             ->willThrow($error = new PhpParserError('Could not parse file'))
         ;
 
         try {
-            $this->handle->__invoke($prefix, $paths, $outputPath, $logger);
+            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $logger);
 
             $this->fail('Expected exception to be thrown.');
         } catch (ParsingException $exception) {

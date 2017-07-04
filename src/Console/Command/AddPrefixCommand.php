@@ -92,8 +92,11 @@ final class AddPrefixCommand extends Command
                 self::PATCH_FILE,
                 'c',
                 InputOption::VALUE_REQUIRED,
-                'Configuration file for the patchers.',
-                self::PATCH_FILE_DEFAULT
+                sprintf(
+                    'Configuration file for the patchers. Will use "%s" if found by default',
+                    self::PATCH_FILE_DEFAULT
+                ),
+                null
             )
         ;
     }
@@ -256,10 +259,12 @@ final class AddPrefixCommand extends Command
      */
     private function validatePatchers(InputInterface $input, OutputStyle $io): array
     {
-        $patchFile = $this->makeAbsolutePath($input->getOption(self::PATCH_FILE));
+        $patchFile = $input->getOption(self::PATCH_FILE);
 
-        if (false === file_exists($patchFile) && self::PATCH_FILE === $patchFile) {
-            if (self::PATCH_FILE === $input->getOption(self::PATCH_FILE)) {
+        if (null === $patchFile) {
+            $patchFile = $this->makeAbsolutePath(self::PATCH_FILE_DEFAULT);
+
+            if (false === file_exists($patchFile)) {
                 $io->writeln(
                     sprintf(
                         'Patch file "%s" not found. Skipping.',
@@ -270,7 +275,11 @@ final class AddPrefixCommand extends Command
 
                 return [];
             }
+        } else {
+            $patchFile = $this->makeAbsolutePath($patchFile);
+        }
 
+        if (false === file_exists($patchFile)) {
             throw new RuntimeException(
                 sprintf(
                     'Could not find the file "%s".',
@@ -279,7 +288,7 @@ final class AddPrefixCommand extends Command
             );
         }
 
-        $patchers = include_once $patchFile;
+        $patchers = include $patchFile;
 
         if (false === is_array($patchers)) {
             throw new RuntimeException(
@@ -310,6 +319,6 @@ final class AddPrefixCommand extends Command
             $path = getcwd().DIRECTORY_SEPARATOR.$path;
         }
 
-        return realpath($path);
+        return $path;
     }
 }
