@@ -22,6 +22,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 use function Humbug\PhpScoper\escape_path;
@@ -32,6 +33,8 @@ use function Humbug\PhpScoper\make_tmp_dir;
  */
 class AddPrefixCommandTest extends TestCase
 {
+    const FIXTURE_PATH = __DIR__.'/../../../fixtures';
+    
     /**
      * @var ApplicationTester
      */
@@ -555,6 +558,150 @@ EOF;
         }
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_throws_an_error_when_passing_a_non_existent_path_file()
+    {
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            '--patch-file' => 'unknown',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+            ],
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+
+        try {
+            $this->appTester->run($input);
+
+            $this->fail('Expected exception to be thrown.');
+        } catch (RuntimeException $exception) {
+            $patchFile = escape_path($this->cwd.'/unknown');
+
+            $this->assertSame(
+                "Could not find the file \"$patchFile\".",
+                $exception->getMessage()
+            );
+            $this->assertSame(0, $exception->getCode());
+            $this->assertNull($exception->getPrevious());
+        }
+    }
+
+    public function test_attemps_to_use_patch_file_in_current_directory()
+    {
+        chdir(escape_path(self::FIXTURE_PATH.'/set006'));
+        
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+            ],
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
+
+        $patchersFound = [];
+        $this->handleProphecy
+            ->__invoke(
+                Argument::any(),
+                Argument::any(),
+                Argument::any(),
+                Argument::that(function ($arg) use (&$patchersFound) {
+                    $patchersFound = $arg;
+
+                    return true;
+                }),
+                Argument::any()
+            )
+            ->shouldBeCalled();
+
+        $this->appTester->run($input);
+
+        $this->assertCount(1, $patchersFound);
+        $this->assertEquals('Hello world!', $patchersFound[0]());
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_do_no_apply_any_patcher_if_default_patcher_file_not_found()
+    {
+        chdir(escape_path(self::FIXTURE_PATH.'/set007'));
+
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+            ],
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
+
+        $patchersFound = [];
+        $this->handleProphecy
+            ->__invoke(
+                Argument::any(),
+                Argument::any(),
+                Argument::any(),
+                Argument::that(function ($arg) use (&$patchersFound) {
+                    $patchersFound = $arg;
+
+                    return true;
+                }),
+                Argument::any()
+            )
+            ->shouldBeCalled();
+
+        $this->appTester->run($input);
+
+        $this->assertCount(0, $patchersFound);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values()
+    {
+        chdir(escape_path(self::FIXTURE_PATH.'/set009'));
+
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+            ],
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+
+        try {
+            $this->appTester->run($input);
+
+            $this->fail('Expected exception to be thrown.');
+        } catch (RuntimeException $exception) {
+            $patchFile = escape_path($this->cwd.'/unknown');
+
+            $this->assertSame(
+                'Expected patchers to be an array of callables, the "0" element is not.',
+                $exception->getMessage()
+            );
+            $this->assertSame(0, $exception->getCode());
+            $this->assertNull($exception->getPrevious());
+        }
     }
 
     public function provideEmptyPrefixes()
