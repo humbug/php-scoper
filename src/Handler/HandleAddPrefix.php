@@ -42,9 +42,9 @@ class HandleAddPrefix
     /**
      * Apply prefix to all the code found in the given paths, AKA scope all the files found.
      *
-     * @param string        $prefix e.g. 'Foo'
-     * @param string[]      $paths List of files to scan (absolute paths)
-     * @param string        $output absolute path to the output directory
+     * @param string        $prefix   e.g. 'Foo'
+     * @param string[]      $paths    List of files to scan (absolute paths)
+     * @param string        $output   absolute path to the output directory
      * @param callable[]    $patchers
      * @param ConsoleLogger $logger
      */

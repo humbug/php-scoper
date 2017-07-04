@@ -13,8 +13,7 @@ declare(strict_types=1);
  */
 
 return [
-    function(string $filePath, string $prefix, string $content): string
-    {
+    function (string $filePath, string $prefix, string $content): string {
         //
         // PHP-Parser patch
         //

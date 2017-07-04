@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;

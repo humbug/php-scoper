@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;

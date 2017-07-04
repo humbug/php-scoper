@@ -21,8 +21,8 @@ use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeExcep
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 use function Humbug\PhpScoper\escape_path;
@@ -34,7 +34,7 @@ use function Humbug\PhpScoper\make_tmp_dir;
 class AddPrefixCommandTest extends TestCase
 {
     const FIXTURE_PATH = __DIR__.'/../../../fixtures';
-    
+
     /**
      * @var ApplicationTester
      */
@@ -596,7 +596,7 @@ EOF;
     public function test_attemps_to_use_patch_file_in_current_directory()
     {
         chdir(escape_path(self::FIXTURE_PATH.'/set006'));
-        
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
