@@ -706,7 +706,7 @@ PHP
         ];
 
         //
-        // FQN usage for a name
+        // FQN usage for a class
         //
         // ====================
 
@@ -723,6 +723,28 @@ PHP
 <?php
 
 new \Humbug\Foo\Bar();
+
+PHP
+        ];
+
+        //
+        // FQN usage for a method
+        //
+        // ====================
+
+        yield '[FQN usage for a name] fully qualified method' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+\Humbug\PHPUnit\TextUI\Command::main();
 
 PHP
         ];
