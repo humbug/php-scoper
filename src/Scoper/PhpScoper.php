@@ -31,7 +31,11 @@ use PhpParser\PrettyPrinter\Standard;
 final class PhpScoper implements Scoper
 {
     /** @internal */
-    const FILE_PATTERN = '/.*\.php$/';
+    const FILE_PATH_PATTERN = '/.*\.php$/';
+    /** @internal */
+    const NOT_FILE_BINARY = '/\..+?$/';
+    /** @internal */
+    const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
     private $parser;
     private $decoratedScoper;
@@ -51,7 +55,7 @@ final class PhpScoper implements Scoper
      */
     public function scope(string $filePath, string $prefix): string
     {
-        if (1 !== preg_match(self::FILE_PATTERN, $filePath)) {
+        if (false === $this->isPhpFile($filePath)) {
             return $this->decoratedScoper->scope($filePath, $prefix);
         }
 
@@ -65,6 +69,21 @@ final class PhpScoper implements Scoper
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile($statements)."\n";
+    }
+
+    private function isPhpFile(string $filePath): bool
+    {
+        if (1 === preg_match(self::FILE_PATH_PATTERN, $filePath)) {
+            return true;
+        }
+
+        if (1 === preg_match(self::NOT_FILE_BINARY, basename($filePath))) {
+            return false;
+        }
+
+        $content = file_get_contents($filePath);
+
+        return 1 === preg_match(self::PHP_BINARY, $content);
     }
 
     private function createTraverser(string $prefix): NodeTraverserInterface

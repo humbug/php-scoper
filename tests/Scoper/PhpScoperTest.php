@@ -46,6 +46,16 @@ class PhpScoperTest extends TestCase
     private $tmp;
 
     /**
+     * @var Scoper|ObjectProphecy
+     */
+    private $decoratedScoperProphecy;
+
+    /**
+     * @var Scoper
+     */
+    private $decoratedScoper;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
@@ -59,6 +69,9 @@ class PhpScoperTest extends TestCase
             $this->cwd = getcwd();
             $this->tmp = make_tmp_dir('scoper', __CLASS__);
         }
+
+        $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
+        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
 
         chdir($this->tmp);
     }
@@ -78,32 +91,114 @@ class PhpScoperTest extends TestCase
         $this->assertTrue(is_a(PhpScoper::class, Scoper::class, true));
     }
 
+    public function test_can_scope_a_PHP_file()
+    {
+        $prefix = 'Humbug';
+
+        $filePath = escape_path($this->tmp.'/file.php');
+
+        $content = <<<'PHP'
+echo "Humbug!";
+PHP;
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
+        $expected = <<<'PHP'
+echo "Humbug!";
+
+PHP;
+
+        $actual = $this->scoper->scope($filePath, $prefix);
+
+        $this->assertSame($expected, $actual);
+    }
+
     public function test_does_not_scope_file_if_is_not_a_PHP_file()
     {
         $filePath = 'file.yaml';
         $prefix = 'Humbug';
 
-        /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
-        $decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $decoratedScoperProphecy
+        $this->decoratedScoperProphecy
             ->scope($filePath, $prefix)
             ->willReturn(
                 $expected = 'Scoped content'
             )
         ;
-        /** @var Scoper $decoratedScoper */
-        $decoratedScoper = $decoratedScoperProphecy->reveal();
 
         $scoper = new PhpScoper(
             new FakeParser(),
-            $decoratedScoper
+            $this->decoratedScoper
         );
 
         $actual = $scoper->scope($filePath, $prefix);
 
         $this->assertSame($expected, $actual);
 
-        $decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_can_scope_PHP_binary_files()
+    {
+        $prefix = 'Humbug';
+
+        $filePath = escape_path($this->tmp.'/hello');
+
+        $content = <<<'PHP'
+#!/usr/bin/env php
+<?php
+
+echo "Hello world";
+PHP;
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
+        $expected = <<<'PHP'
+#!/usr/bin/env php
+<?php 
+echo "Hello world";
+
+PHP;
+
+        $actual = $this->scoper->scope($filePath, $prefix);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function test_does_not_scope_a_non_PHP_binary_files()
+    {
+        $prefix = 'Humbug';
+
+        $filePath = escape_path($this->tmp.'/hello');
+
+        $content = <<<'PHP'
+#!/usr/bin/env bash
+<?php
+
+echo "Hello world";
+PHP;
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
+        $this->decoratedScoperProphecy
+            ->scope($filePath, $prefix)
+            ->willReturn(
+                $expected = 'Scoped content'
+            )
+        ;
+
+        $scoper = new PhpScoper(
+            new FakeParser(),
+            $this->decoratedScoper
+        );
+
+        $actual = $scoper->scope($filePath, $prefix);
+
+        $this->assertSame($expected, $actual);
+
+        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
     public function test_cannot_scope_an_invalid_PHP_file()
