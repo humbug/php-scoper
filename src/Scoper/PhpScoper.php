@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Humbug\PhpScoper\NodeVisitor\ClassExistsScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\GroupUseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
@@ -95,6 +96,7 @@ final class PhpScoper implements Scoper
         $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor());
         $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
+        $traverser->addVisitor(new ClassExistsScoperNodeVisitor($prefix));
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));
 

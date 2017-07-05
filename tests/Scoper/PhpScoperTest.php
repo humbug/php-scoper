@@ -965,5 +965,64 @@ new Bar\Baz();
 
 PHP
         ];
+
+        //
+        // Function parameters
+        //
+        // ====================
+
+        yield '[Function parameter] class_exists' => [
+            <<<'PHP'
+<?php
+
+class_exists('Symfony\Component\Yaml\Yaml');
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+
+PHP
+        ];
+
+        yield '[Function parameter] class_exists with constant' => [
+            <<<'PHP'
+<?php
+
+class_exists(\Symfony\Component\Yaml\Yaml::class);
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+
+PHP
+        ];
+
+
+        yield '[Function parameter] class_exists with variable (no change)' => [
+            <<<'PHP'
+<?php
+
+$x = '\\Symfony\\Component\\Yaml\\Yaml';
+class_exists($x);
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+$x = '\\Symfony\\Component\\Yaml\\Yaml';
+class_exists($x);
+
+PHP
+        ];
     }
 }
