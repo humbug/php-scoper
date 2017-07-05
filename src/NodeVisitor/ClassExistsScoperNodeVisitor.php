@@ -38,6 +38,10 @@ final class ClassExistsScoperNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
 
+        if (!$node->name instanceof Node\Name) {
+            return $node;
+        }
+
         if ('class_exists' !== $node->name->getFirst()) {
             return $node;
         }
