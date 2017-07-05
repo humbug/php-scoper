@@ -1005,7 +1005,6 @@ class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 PHP
         ];
 
-
         yield '[Function parameter] class_exists with variable (no change)' => [
             <<<'PHP'
 <?php

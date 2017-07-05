@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
 final class ClassExistsScoperNodeVisitor extends NodeVisitorAbstract
@@ -49,7 +47,7 @@ final class ClassExistsScoperNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
 
-        $value->value = $this->prefix . '\\' . $value->value;
+        $value->value = $this->prefix.'\\'.$value->value;
 
         return $node;
     }
