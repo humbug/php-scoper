@@ -18,19 +18,17 @@ return [
         // PHP-Parser patch
         //
 
-        if ($filePath === realpath(__DIR__.'vendor/nikic/php-parser/lib/PhpParser/Lexer.php')) {
+        $x = __DIR__.'/vendor/nikic/php-parser/lib/PhpParser/Lexer.php';
+        $y = realpath($x);
+        if ($filePath === $y) {
             return preg_replace(
-                '%if \(defined\(\$name \= \'PhpParser\\\\Parser\\\\Tokens\:\:\'%',
-                <<<'PHP'
-$ns = explode(\'\\\\\', __NAMESPACE__);
-if (defined($name = array_shift($ns) . '\\\\' . 'PhpParser\\\\Parser\\\\Tokens::'
-PHP
-                ,
+                '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%',
+                'if (defined($name = \''.$prefix.'\\\\\\\\PhpParser\\\\\\\\Parser\\\\\\\\Tokens',
                 $content
             );
         }
 
-        if ($filePath === realpath(__DIR__.'vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php')) {
+        if ($filePath === realpath(__DIR__.'/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php')) {
             return preg_replace(
                 '%rtrim\(get_class\(\$this\), \'\'_\'\'\), 15\)%',
                 'rtrim(get_class($this), \'_\'), 15+23)',
