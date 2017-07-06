@@ -143,8 +143,8 @@ PHP;
     public function test_can_scope_PHP_binary_files()
     {
         $prefix = 'Humbug';
-
         $filePath = escape_path($this->tmp.'/hello');
+        $patchers = [create_fake_patcher()];
 
         $content = <<<'PHP'
 #!/usr/bin/env php
@@ -163,7 +163,7 @@ echo "Hello world";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $prefix);
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers);
 
         $this->assertSame($expected, $actual);
     }
@@ -173,6 +173,8 @@ PHP;
         $prefix = 'Humbug';
 
         $filePath = escape_path($this->tmp.'/hello');
+
+        $patchers = [create_fake_patcher()];
 
         $content = <<<'PHP'
 #!/usr/bin/env bash
@@ -185,7 +187,7 @@ PHP;
         file_put_contents($filePath, $content);
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix)
+            ->scope($filePath, $prefix, $patchers)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -196,7 +198,7 @@ PHP;
             $this->decoratedScoper
         );
 
-        $actual = $scoper->scope($filePath, $prefix);
+        $actual = $scoper->scope($filePath, $prefix, $patchers);
 
         $this->assertSame($expected, $actual);
 
