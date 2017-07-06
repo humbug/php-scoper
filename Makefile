@@ -46,7 +46,7 @@ tc: vendor
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
-e2e: scoper
+e2e: bin/scoper.phar
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set004 -o build/set004 -f
 	composer -d=build/set004 dump-autoload
 	php -d zend.enable_gc=0 $(BOX) build -c build/set004/box.json.dist
@@ -81,5 +81,5 @@ vendor: composer.lock
 composer.lock: composer.json
 	@echo compose.lock is not up to date.
 
-scoper: build
-
+bin/scoper.phar: bin/php-scoper src vendor scoper.inc.php
+	$(MAKE) build
