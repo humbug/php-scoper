@@ -40,7 +40,7 @@ final class AddPrefixCommand extends Command
     /** @internal */
     const PATCH_FILE = 'patch-file';
     /** @internal */
-    const PATCH_FILE_DEFAULT = 'php-scoper.php';
+    const PATCH_FILE_DEFAULT = 'scoper.inc.php';
 
     private $fileSystem;
     private $handle;

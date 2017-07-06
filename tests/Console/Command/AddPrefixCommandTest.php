@@ -167,7 +167,7 @@ EOF;
             '--no-interaction',
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
@@ -190,7 +190,7 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
@@ -209,7 +209,7 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
@@ -241,7 +241,7 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
@@ -257,7 +257,7 @@ EOF;
         ];
 
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
         $this->handleProphecy
@@ -277,7 +277,7 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
@@ -301,7 +301,7 @@ EOF;
         $this->fileSystemProphecy->isAbsolutePath($path1)->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath($path2)->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
         $this->handleProphecy
@@ -342,7 +342,7 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
@@ -365,7 +365,7 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
@@ -385,7 +385,7 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
@@ -408,7 +408,7 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
@@ -426,7 +426,7 @@ EOF;
             '--output-dir' => $outDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir',
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($outDir)->willReturn(false);
 
@@ -447,7 +447,7 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
@@ -469,7 +469,7 @@ EOF;
 
         $expectedOutputDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath('output-dir')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($expectedOutputDir)->willReturn(false);
@@ -538,7 +538,7 @@ EOF;
             ],
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath('php-scoper.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists('build')->willReturn(false);
 
