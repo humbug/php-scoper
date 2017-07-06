@@ -288,6 +288,14 @@ final class AddPrefixCommand extends Command
             );
         }
 
+        $io->writeln(
+            sprintf(
+                'Using the configuration file "%s".',
+                $patchFile
+            ),
+            OutputStyle::VERBOSITY_DEBUG
+        );
+
         $patchers = include $patchFile;
 
         if (false === is_array($patchers)) {
