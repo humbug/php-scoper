@@ -42,19 +42,20 @@ class HandleAddPrefix
     /**
      * Apply prefix to all the code found in the given paths, AKA scope all the files found.
      *
-     * @param string        $prefix e.g. 'Foo'
-     * @param string[]      $paths  List of files to scan (absolute paths)
-     * @param string        $output absolute path to the output directory
+     * @param string        $prefix   e.g. 'Foo'
+     * @param string[]      $paths    List of files to scan (absolute paths)
+     * @param string        $output   absolute path to the output directory
+     * @param callable[]    $patchers
      * @param ConsoleLogger $logger
      */
-    public function __invoke(string $prefix, array $paths, string $output, ConsoleLogger $logger)
+    public function __invoke(string $prefix, array $paths, string $output, array $patchers, ConsoleLogger $logger)
     {
         $this->fileSystem->mkdir($output);
 
         try {
             $files = $this->retrieveFiles($paths, $output);
 
-            $this->scopeFiles($files, $prefix, $logger);
+            $this->scopeFiles($files, $prefix, $patchers, $logger);
         } catch (Throwable $throwable) {
             $this->fileSystem->remove($output);
 
@@ -141,22 +142,35 @@ class HandleAddPrefix
     /**
      * @param string[]      $files
      * @param string        $prefix
+     * @param callable[]    $patchers
      * @param ConsoleLogger $logger
      */
-    private function scopeFiles(array $files, string $prefix, ConsoleLogger $logger)
+    private function scopeFiles(array $files, string $prefix, array $patchers, ConsoleLogger $logger)
     {
         $count = count($files);
         $logger->outputFileCount($count);
 
         foreach ($files as $inputFilePath => $outputFilePath) {
-            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $logger);
+            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $patchers, $logger);
         }
     }
 
-    private function scopeFile(string $inputFilePath, string $outputFilePath, string $prefix, ConsoleLogger $logger)
-    {
+    /**
+     * @param string        $inputFilePath
+     * @param string        $outputFilePath
+     * @param string        $prefix
+     * @param callable[]    $patchers
+     * @param ConsoleLogger $logger
+     */
+    private function scopeFile(
+        string $inputFilePath,
+        string $outputFilePath,
+        string $prefix,
+        array $patchers,
+        ConsoleLogger $logger
+    ) {
         try {
-            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix);
+            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers);
         } catch (PhpParserError $error) {
             throw new ParsingException(
                 sprintf(

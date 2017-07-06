@@ -53,10 +53,10 @@ final class PhpScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $prefix): string
+    public function scope(string $filePath, string $prefix, array $patchers): string
     {
         if (false === $this->isPhpFile($filePath)) {
-            return $this->decoratedScoper->scope($filePath, $prefix);
+            return $this->decoratedScoper->scope($filePath, $prefix, $patchers);
         }
 
         $content = file_get_contents($filePath);

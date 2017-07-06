@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeExcep
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
@@ -32,6 +33,8 @@ use function Humbug\PhpScoper\make_tmp_dir;
  */
 class AddPrefixCommandTest extends TestCase
 {
+    const FIXTURE_PATH = __DIR__.'/../../../fixtures';
+
     /**
      * @var ApplicationTester
      */
@@ -164,6 +167,7 @@ EOF;
             '--no-interaction',
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
@@ -176,6 +180,7 @@ EOF;
                     escape_path('/path/to/file'),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -185,7 +190,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -203,6 +209,7 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
@@ -224,6 +231,7 @@ EOF;
                     escape_path('/path/to/file'),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -233,7 +241,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -248,6 +257,7 @@ EOF;
         ];
 
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
         $this->handleProphecy
@@ -257,6 +267,7 @@ EOF;
                     $this->cwd,
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -266,7 +277,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -289,6 +301,7 @@ EOF;
         $this->fileSystemProphecy->isAbsolutePath($path1)->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath($path2)->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
         $this->handleProphecy
@@ -300,6 +313,7 @@ EOF;
                     escape_path($this->cwd.'/relative-path/to/file'),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -309,7 +323,7 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -328,6 +342,7 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
@@ -340,6 +355,7 @@ EOF;
                     escape_path('/path/to/file'),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -349,7 +365,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -368,6 +385,7 @@ EOF;
             '--output-dir' => $this->tmp,
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
@@ -380,6 +398,7 @@ EOF;
                     escape_path('/path/to/file'),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -389,7 +408,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -406,6 +426,7 @@ EOF;
             '--output-dir' => $outDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir',
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($outDir)->willReturn(false);
 
@@ -416,6 +437,7 @@ EOF;
                     escape_path('/path/to/dir1'),
                 ],
                 $outDir,
+                Argument::type('array'),
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -425,7 +447,8 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -446,6 +469,7 @@ EOF;
 
         $expectedOutputDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath('output-dir')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists($expectedOutputDir)->willReturn(false);
@@ -457,6 +481,7 @@ EOF;
                     escape_path('/path/to/dir1'),
                 ],
                 $expectedOutputDir,
+                [],
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -466,7 +491,7 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -513,6 +538,7 @@ EOF;
             ],
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists('build')->willReturn(false);
 
@@ -532,6 +558,150 @@ EOF;
         }
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_throws_an_error_when_passing_a_non_existent_path_file()
+    {
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            '--patch-file' => 'unknown',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+            ],
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+
+        try {
+            $this->appTester->run($input);
+
+            $this->fail('Expected exception to be thrown.');
+        } catch (RuntimeException $exception) {
+            $patchFile = escape_path($this->cwd.'/unknown');
+
+            $this->assertSame(
+                "Could not find the file \"$patchFile\".",
+                $exception->getMessage()
+            );
+            $this->assertSame(0, $exception->getCode());
+            $this->assertNull($exception->getPrevious());
+        }
+    }
+
+    public function test_attemps_to_use_patch_file_in_current_directory()
+    {
+        chdir(escape_path(self::FIXTURE_PATH.'/set006'));
+
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+            ],
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
+
+        $patchersFound = [];
+        $this->handleProphecy
+            ->__invoke(
+                Argument::any(),
+                Argument::any(),
+                Argument::any(),
+                Argument::that(function ($arg) use (&$patchersFound) {
+                    $patchersFound = $arg;
+
+                    return true;
+                }),
+                Argument::any()
+            )
+            ->shouldBeCalled();
+
+        $this->appTester->run($input);
+
+        $this->assertCount(1, $patchersFound);
+        $this->assertEquals('Hello world!', $patchersFound[0]());
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_do_no_apply_any_patcher_if_default_patcher_file_not_found()
+    {
+        chdir(escape_path(self::FIXTURE_PATH.'/set007'));
+
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+            ],
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
+
+        $patchersFound = [];
+        $this->handleProphecy
+            ->__invoke(
+                Argument::any(),
+                Argument::any(),
+                Argument::any(),
+                Argument::that(function ($arg) use (&$patchersFound) {
+                    $patchersFound = $arg;
+
+                    return true;
+                }),
+                Argument::any()
+            )
+            ->shouldBeCalled();
+
+        $this->appTester->run($input);
+
+        $this->assertCount(0, $patchersFound);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values()
+    {
+        chdir(escape_path(self::FIXTURE_PATH.'/set009'));
+
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+            ],
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists('build')->willReturn(false);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+
+        try {
+            $this->appTester->run($input);
+
+            $this->fail('Expected exception to be thrown.');
+        } catch (RuntimeException $exception) {
+            $patchFile = escape_path($this->cwd.'/unknown');
+
+            $this->assertSame(
+                'Expected patchers to be an array of callables, the "0" element is not.',
+                $exception->getMessage()
+            );
+            $this->assertSame(0, $exception->getCode());
+            $this->assertNull($exception->getPrevious());
+        }
     }
 
     public function provideEmptyPrefixes()

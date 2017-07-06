@@ -44,14 +44,14 @@ final class InstalledPackagesScoper implements Scoper
      *
      * {@inheritdoc}
      */
-    public function scope(string $filePath, string $prefix): string
+    public function scope(string $filePath, string $prefix, array $patchers): string
     {
         if (null === self::$filePattern) {
             throw new LogicException('Cannot be used without being initialised first.');
         }
 
         if (1 !== preg_match(self::$filePattern, $filePath)) {
-            return $this->decoratedScoper->scope($filePath, $prefix);
+            return $this->decoratedScoper->scope($filePath, $prefix, $patchers);
         }
 
         $decodedJson = json_decode(

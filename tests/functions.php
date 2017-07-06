@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Closure;
+use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -62,4 +64,11 @@ function remove_dir(string $path)
     } else {
         (new Filesystem())->remove($path);
     }
+}
+
+function create_fake_patcher(): Closure
+{
+    return function () {
+        throw new LogicException('Did not expect to be called');
+    };
 }

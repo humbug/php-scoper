@@ -12,11 +12,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper\Composer;
+namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Scoper;
 
-final class JsonFileScoper implements Scoper
+final class PatchScoper implements Scoper
 {
     private $decoratedScoper;
 
@@ -26,26 +26,18 @@ final class JsonFileScoper implements Scoper
     }
 
     /**
-     * Scopes PHP and JSON files related to Composer.
-     *
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function scope(string $filePath, string $prefix, array $patchers): string
     {
-        if (1 !== preg_match('/composer\.json$/', $filePath)) {
-            return $this->decoratedScoper->scope($filePath, $prefix, $patchers);
-        }
+        $content = $this->decoratedScoper->scope($filePath, $prefix, $patchers);
 
-        $decodedJson = json_decode(
-            file_get_contents($filePath),
-            true
-        );
-
-        $decodedJson = AutoloadPrefixer::prefixPackageAutoloads($decodedJson, $prefix);
-
-        return json_encode(
-            $decodedJson,
-            JSON_PRETTY_PRINT
+        return array_reduce(
+            $patchers,
+            function (string $content, callable $patcher) use ($filePath, $prefix): string {
+                return $patcher($filePath, $prefix, $content);
+            },
+            $content
         );
     }
 }
