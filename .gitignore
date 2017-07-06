@@ -2,7 +2,6 @@
 /box.json
 /dist/
 /build/
-/composer.lock
 /fixtures/*/vendor
 /vendor/
 /vendor-bin/box/vendor/
