@@ -59,8 +59,11 @@ final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
 
-        if ($this->prefix !== $value->value) {
-            $value->value = $this->prefix.'\\'.$value->value;
+        $stringValue = ltrim($value->value, '\\');
+
+        // Do not prefix global namespace
+        if (false !== strstr($stringValue, '\\')) {
+            $value->value = $this->prefix.'\\'.$stringValue;
         }
 
         return $node;

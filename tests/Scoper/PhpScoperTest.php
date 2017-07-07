@@ -976,6 +976,7 @@ PHP
 <?php
 
 class_exists('Symfony\\Component\\Yaml\\Yaml');
+class_exists('\\Symfony\\Component\\Yaml\\Yaml');
 
 PHP
             ,
@@ -983,6 +984,7 @@ PHP
             <<<'PHP'
 <?php
 
+class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 
 PHP
@@ -1058,11 +1060,12 @@ class_exists($x);
 PHP
         ];
 
-        yield '[Function parameter] Skip when prefix is the same' => [
+        yield '[Function parameter] Do not prepend global namespace' => [
             <<<'PHP'
 <?php
 
-class_exists('Humbug');
+class_exists('Closure');
+class_exists('\\Closure');
 
 PHP
             ,
@@ -1070,7 +1073,8 @@ PHP
             <<<'PHP'
 <?php
 
-class_exists('Humbug');
+class_exists('Closure');
+class_exists('\\Closure');
 
 PHP
         ];
