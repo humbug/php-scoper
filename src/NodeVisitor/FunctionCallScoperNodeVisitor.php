@@ -25,7 +25,8 @@ final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
     private $prefix;
 
     /**
-     * Function which first parameter should be prefixed
+     * Function which first parameter should be prefixed.
+     *
      * @var array
      */
     private $functions;
@@ -48,7 +49,6 @@ final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
         if (!$node->name instanceof Node\Name) {
             return $node;
         }
-
 
         if (!in_array($node->name->getFirst(), $this->functions)) {
             return $node;
