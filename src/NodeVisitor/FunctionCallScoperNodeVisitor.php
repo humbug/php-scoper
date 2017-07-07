@@ -23,7 +23,7 @@ final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
     private $functions;
 
     /**
-     * @param string $prefix
+     * @param string   $prefix
      * @param string[] $functions Functions which first parameter should be prefixed.
      */
     public function __construct($prefix, array $functions)
@@ -58,7 +58,7 @@ final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
 
         // Do not prefix global namespace
         if (false !== strstr($stringValue, '\\')) {
-            $value->value = ($value->value !== $stringValue ? '\\' : '') . $this->prefix.'\\'.$stringValue;
+            $value->value = ($value->value !== $stringValue ? '\\' : '').$this->prefix.'\\'.$stringValue;
         }
 
         return $node;
