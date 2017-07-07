@@ -975,7 +975,7 @@ PHP
             <<<'PHP'
 <?php
 
-class_exists('Symfony\Component\Yaml\Yaml');
+class_exists('Symfony\\Component\\Yaml\\Yaml');
 
 PHP
             ,
@@ -984,6 +984,40 @@ PHP
 <?php
 
 class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+
+PHP
+        ];
+
+        yield '[Function parameter] interface_exists' => [
+            <<<'PHP'
+<?php
+
+interface_exists('Foo\\Bar');
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+interface_exists('Humbug\\Foo\\Bar');
+
+PHP
+        ];
+
+        yield '[Function parameter] class_exists with concat strings' => [
+            <<<'PHP'
+<?php
+
+class_exists('Symfony\\Component' . '\\Yaml\\Yaml');
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+class_exists('Symfony\\Component' . '\\Yaml\\Yaml');
 
 PHP
         ];
@@ -1020,6 +1054,23 @@ PHP
 
 $x = '\\Symfony\\Component\\Yaml\\Yaml';
 class_exists($x);
+
+PHP
+        ];
+
+        yield '[Function parameter] Skip when prefix is the same' => [
+            <<<'PHP'
+<?php
+
+class_exists('Humbug');
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+class_exists('Humbug');
 
 PHP
         ];

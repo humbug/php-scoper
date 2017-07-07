@@ -17,16 +17,23 @@ namespace Humbug\PhpScoper\NodeVisitor;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
-final class ClassExistsScoperNodeVisitor extends NodeVisitorAbstract
+final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
 {
     /**
      * @var string
      */
     private $prefix;
 
-    public function __construct($prefix)
+    /**
+     * Function which first parameter should be prefixed
+     * @var array
+     */
+    private $functions;
+
+    public function __construct($prefix, array $functions = ['class_exists', 'interface_exists'])
     {
         $this->prefix = $prefix;
+        $this->functions = $functions;
     }
 
     /**
@@ -42,7 +49,8 @@ final class ClassExistsScoperNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
 
-        if ('class_exists' !== $node->name->getFirst()) {
+
+        if (!in_array($node->name->getFirst(), $this->functions)) {
             return $node;
         }
 
@@ -51,7 +59,9 @@ final class ClassExistsScoperNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
 
-        $value->value = $this->prefix.'\\'.$value->value;
+        if ($this->prefix !== $value->value) {
+            $value->value = $this->prefix.'\\'.$value->value;
+        }
 
         return $node;
     }
