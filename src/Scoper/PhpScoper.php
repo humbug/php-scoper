@@ -96,7 +96,7 @@ final class PhpScoper implements Scoper
         $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor());
         $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
-        $traverser->addVisitor(new FunctionCallScoperNodeVisitor($prefix));
+        $traverser->addVisitor(new FunctionCallScoperNodeVisitor($prefix, ['class_exists', 'interface_exists']));
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));
 

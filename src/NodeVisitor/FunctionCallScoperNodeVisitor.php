@@ -19,19 +19,14 @@ use PhpParser\NodeVisitorAbstract;
 
 final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @var string
-     */
     private $prefix;
-
-    /**
-     * Function which first parameter should be prefixed.
-     *
-     * @var array
-     */
     private $functions;
 
-    public function __construct($prefix, array $functions = ['class_exists', 'interface_exists'])
+    /**
+     * @param string $prefix
+     * @param string[] $functions Functions which first parameter should be prefixed.
+     */
+    public function __construct($prefix, array $functions)
     {
         $this->prefix = $prefix;
         $this->functions = $functions;
@@ -63,7 +58,7 @@ final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
 
         // Do not prefix global namespace
         if (false !== strstr($stringValue, '\\')) {
-            $value->value = $this->prefix.'\\'.$stringValue;
+            $value->value = ($value->value !== $stringValue ? '\\' : '') . $this->prefix.'\\'.$stringValue;
         }
 
         return $node;
