@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Handler;
 
 use Closure;
 use Error;
-use function Humbug\PhpScoper\create_fake_whitelister;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -27,6 +26,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Throwable;
 use function Humbug\PhpScoper\create_fake_patcher;
+use function Humbug\PhpScoper\create_fake_whitelister;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;

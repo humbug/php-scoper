@@ -21,8 +21,8 @@ interface Scoper
     /**
      * Scope AKA. apply the given prefix to the file in the appropriate way.
      *
-     * @param string     $filePath File to scope
-     * @param string     $prefix   Prefix to apply to the file
+     * @param string     $filePath          File to scope
+     * @param string     $prefix            Prefix to apply to the file
      * @param callable[] $patchers
      * @param callable   $globalWhitelister Closure taking a class name from the global namespace as an argument and
      *                                      returning a boolean which if `true` means the class should be scoped
