@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Humbug\PhpScoper\Console\Configuration;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Symfony\Component\Console\Command\Command;
@@ -40,9 +41,9 @@ final class AddPrefixCommand extends Command
     /** @internal */
     const STOP_ON_FAILURE_OPT = 'stop-on-failure';
     /** @internal */
-    const PATCH_FILE = 'patch-file';
+    const CONFIG_FILE = 'patch-file';
     /** @internal */
-    const PATCH_FILE_DEFAULT = 'scoper.inc.php';
+    const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
 
     private $fileSystem;
     private $handle;
@@ -97,12 +98,12 @@ final class AddPrefixCommand extends Command
                 'Stops on failure.'
             )
             ->addOption(
-                self::PATCH_FILE,
+                self::CONFIG_FILE,
                 'c',
                 InputOption::VALUE_REQUIRED,
                 sprintf(
-                    'Configuration file for the patchers. Will use "%s" if found by default',
-                    self::PATCH_FILE_DEFAULT
+                    'Configuration file. Will use "%s" if found by default',
+                    self::CONFIG_FILE_DEFAULT
                 ),
                 null
             )
@@ -119,7 +120,8 @@ final class AddPrefixCommand extends Command
         $this->validatePrefix($input);
         $this->validatePaths($input);
         $this->validateOutputDir($input, $io);
-        $patchers = $this->validatePatchers($input, $io);
+
+        $config = $this->retrieveConfig($input, $io);
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
@@ -136,7 +138,8 @@ final class AddPrefixCommand extends Command
                 $input->getOption(self::PREFIX_OPT),
                 $input->getArgument(self::PATH_ARG),
                 $input->getOption(self::OUTPUT_DIR_OPT),
-                $patchers,
+                $config->getPatchers(),
+                $config->getGlobalNamespace(),
                 $input->getOption(self::STOP_ON_FAILURE_OPT),
                 $logger
             );
@@ -260,39 +263,33 @@ final class AddPrefixCommand extends Command
         }
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputStyle    $io
-     *
-     * @return callable[]
-     */
-    private function validatePatchers(InputInterface $input, OutputStyle $io): array
+    private function retrieveConfig(InputInterface $input, OutputStyle $io): Configuration
     {
-        $patchFile = $input->getOption(self::PATCH_FILE);
+        $configFile = $input->getOption(self::CONFIG_FILE);
 
-        if (null === $patchFile) {
-            $patchFile = $this->makeAbsolutePath(self::PATCH_FILE_DEFAULT);
+        if (null === $configFile) {
+            $configFile = $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT);
 
-            if (false === file_exists($patchFile)) {
+            if (false === file_exists($configFile)) {
                 $io->writeln(
                     sprintf(
                         'Patch file "%s" not found. Skipping.',
-                        $patchFile
+                        $configFile
                     ),
                     OutputStyle::VERBOSITY_DEBUG
                 );
 
-                return [];
+                return Configuration::load(null);
             }
         } else {
-            $patchFile = $this->makeAbsolutePath($patchFile);
+            $configFile = $this->makeAbsolutePath($configFile);
         }
 
-        if (false === file_exists($patchFile)) {
+        if (false === file_exists($configFile)) {
             throw new RuntimeException(
                 sprintf(
                     'Could not find the file "%s".',
-                    $patchFile
+                    $configFile
                 )
             );
         }
@@ -300,34 +297,12 @@ final class AddPrefixCommand extends Command
         $io->writeln(
             sprintf(
                 'Using the configuration file "%s".',
-                $patchFile
+                $configFile
             ),
             OutputStyle::VERBOSITY_DEBUG
         );
 
-        $patchers = include $patchFile;
-
-        if (false === is_array($patchers)) {
-            throw new RuntimeException(
-                sprintf(
-                    'Expected patchers to be an array of callables, found "%s" instead.',
-                    gettype($patchers)
-                )
-            );
-        }
-
-        foreach ($patchers as $index => $patcher) {
-            if (false === is_callable($patcher)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Expected patchers to be an array of callables, the "%d" element is not.',
-                        $index
-                    )
-                );
-            }
-        }
-
-        return $patchers;
+        return Configuration::load($configFile);
     }
 
     private function makeAbsolutePath(string $path): string

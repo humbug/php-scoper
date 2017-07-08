@@ -21,12 +21,9 @@ use PhpParser\NodeVisitorAbstract;
 
 final class GroupUseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @var string
-     */
     private $prefix;
 
-    public function __construct($prefix)
+    public function __construct(string $prefix)
     {
         $this->prefix = $prefix;
     }

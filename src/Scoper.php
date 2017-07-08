@@ -24,10 +24,13 @@ interface Scoper
      * @param string     $filePath File to scope
      * @param string     $prefix   Prefix to apply to the file
      * @param callable[] $patchers
+     * @param callable   $globalWhitelister Closure taking a class name from the global namespace as an argument and
+     *                                      returning a boolean which if `true` means the class should be scoped
+     *                                      (i.e. is ignored) or scoped otherwise.
      *
      * @throws ParsingException
      *
      * @return string Content of the file with the prefix applied
      */
-    public function scope(string $filePath, string $prefix, array $patchers): string;
+    public function scope(string $filePath, string $prefix, array $patchers, callable $globalWhitelister): string;
 }

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Handler;
 
+use Closure;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -41,26 +42,63 @@ class HandleAddPrefix
     /**
      * Apply prefix to all the code found in the given paths, AKA scope all the files found.
      *
-     * @param string        $prefix        e.g. 'Foo'
-     * @param string[]      $paths         List of files to scan (absolute paths)
-     * @param string        $output        absolute path to the output directory
-     * @param callable[]    $patchers
-     * @param bool          $stopOnFailure
-     * @param ConsoleLogger $logger
+     * @param string              $prefix e.g. 'Foo'
+     * @param string[]            $paths List of files to scan (absolute paths)
+     * @param string              $output absolute path to the output directory
+     * @param callable[]          $patchers
+     * @param string[]|callable[] $globalNamespaceWhitelist
+     * @param bool                $stopOnFailure
+     * @param ConsoleLogger       $logger
      */
-    public function __invoke(string $prefix, array $paths, string $output, array $patchers, bool $stopOnFailure, ConsoleLogger $logger)
-    {
+    public function __invoke(
+        string $prefix,
+        array $paths,
+        string $output,
+        array $patchers,
+        array $globalNamespaceWhitelist,
+        bool $stopOnFailure,
+        ConsoleLogger $logger
+    ) {
         $this->fileSystem->mkdir($output);
 
         try {
             $files = $this->retrieveFiles($paths, $output);
 
-            $this->scopeFiles($files, $prefix, $patchers, $stopOnFailure, $logger);
+            $globalWhitelister = $this->createGlobalWhitelister($globalNamespaceWhitelist);
+
+            $this->scopeFiles($files, $prefix, $patchers, $globalWhitelister, $stopOnFailure, $logger);
         } catch (Throwable $throwable) {
             $this->fileSystem->remove($output);
 
             throw $throwable;
         }
+    }
+
+    /**
+     * @param string[]|callable[] $globalNamespaceWhitelist
+     *
+     * @return Closure
+     */
+    private function createGlobalWhitelister(array $globalNamespaceWhitelist): Closure
+    {
+        return function (string $className) use ($globalNamespaceWhitelist): bool {
+            foreach ($globalNamespaceWhitelist as $whitelister) {
+                if (is_string($whitelister)) {
+                    if ($className === $whitelister) {
+                        return true;
+                    } else {
+                        continue;
+                    }
+                }
+
+                /** @var callable $whitelister */
+                if (true === $whitelister($className)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
     }
 
     /**
@@ -143,16 +181,23 @@ class HandleAddPrefix
      * @param string[]      $files
      * @param string        $prefix
      * @param callable[]    $patchers
+     * @param callable      $globalWhitelister
      * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
      */
-    private function scopeFiles(array $files, string $prefix, array $patchers, bool $stopOnFailure, ConsoleLogger $logger)
-    {
+    private function scopeFiles(
+        array $files,
+        string $prefix,
+        array $patchers,
+        callable $globalWhitelister,
+        bool $stopOnFailure,
+        ConsoleLogger $logger
+    ) {
         $count = count($files);
         $logger->outputFileCount($count);
 
         foreach ($files as $inputFilePath => $outputFilePath) {
-            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $patchers, $stopOnFailure, $logger);
+            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $patchers, $globalWhitelister, $stopOnFailure, $logger);
         }
     }
 
@@ -161,6 +206,7 @@ class HandleAddPrefix
      * @param string        $outputFilePath
      * @param string        $prefix
      * @param callable[]    $patchers
+     * @param callable      $globalWhitelister
      * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
      */
@@ -169,12 +215,13 @@ class HandleAddPrefix
         string $outputFilePath,
         string $prefix,
         array $patchers,
+        callable $globalWhitelister,
         bool $stopOnFailure,
         ConsoleLogger $logger
     ) {
         try {
-            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers);
-        } catch (\Throwable $error) {
+            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers, $globalWhitelister, $stopOnFailure);
+        } catch (Throwable $error) {
             $exception = new ParsingException(
                 sprintf(
                     'Could not parse the file "%s".',

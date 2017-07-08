@@ -72,3 +72,10 @@ function create_fake_patcher(): Closure
         throw new LogicException('Did not expect to be called');
     };
 }
+
+function create_fake_whitelister(): Closure
+{
+    return function () {
+        throw new LogicException('Did not expect to be called');
+    };
+}

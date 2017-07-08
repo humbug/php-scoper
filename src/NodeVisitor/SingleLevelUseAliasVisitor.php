@@ -22,9 +22,6 @@ use PhpParser\NodeVisitorAbstract;
 
 final class SingleLevelUseAliasVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @var string
-     */
     private $prefix;
 
     /**

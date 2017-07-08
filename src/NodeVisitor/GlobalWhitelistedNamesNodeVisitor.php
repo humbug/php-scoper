@@ -14,19 +14,22 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
+use Closure;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
-final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+final class GlobalWhitelistedNamesNodeVisitor extends NodeVisitorAbstract
 {
     private $prefix;
+    private $whitelister;
 
-    public function __construct(string $prefix)
+    public function __construct(string $prefix, Closure $whitelister)
     {
         $this->prefix = $prefix;
+        $this->whitelister = $whitelister;
     }
 
     /**
@@ -34,14 +37,18 @@ final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
-        if ($node instanceof UseUse
-            && $node->hasAttribute('parent')
-            && false === ($node->getAttribute('parent') instanceof GroupUse)
-            && $this->prefix !== $node->name->getFirst()
-            && false === ($node->hasAttribute('phpscoper_ignore')
-            && true === $node->getAttribute('phpscoper_ignore'))
+        if ($node instanceof Name
+            && 1 === count($node->parts)
+            && true === ($this->whitelister)($node->parts[0])
         ) {
-            $node->name = Name::concat($this->prefix, $node->name);
+            return Name::concat($this->prefix, $node->parts[0]);
+        }
+
+        if ($node instanceof Name
+            && 1 === count($node->parts)
+            && true === ($this->whitelister)($node->parts[0])
+        ) {
+            return Name::concat($this->prefix, $node->parts[0]);
         }
 
         return $node;

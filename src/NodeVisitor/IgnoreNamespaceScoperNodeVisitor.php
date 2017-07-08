@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
+use Closure;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\GroupUse;
@@ -22,6 +23,13 @@ use PhpParser\NodeVisitorAbstract;
 
 final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
+    private $whitelister;
+
+    public function __construct(Closure $whitelister)
+    {
+        $this->whitelister = $whitelister;
+    }
+
     /**
      * @inheritdoc
      */
@@ -30,6 +38,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof FullyQualified
             && $node->isFullyQualified()
             && 1 === count($node->parts)
+            && (false === ($this->whitelister)($node->parts[0]))
         ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
@@ -37,9 +46,14 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof UseUse
             && $node->hasAttribute('parent')
             && false === ($node->getAttribute('parent') instanceof GroupUse)
-            && (1 === count($node->name->parts) || 'Composer' === $node->name->getFirst())
+            && (
+                (1 === count($node->name->parts) && false === ($this->whitelister)($node->name->parts[0]))
+                || 'Composer' === $node->name->getFirst()
+            )
         ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
+
+        return $node;
     }
 }

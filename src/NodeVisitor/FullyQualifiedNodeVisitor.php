@@ -19,14 +19,11 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeVisitorAbstract;
 
-final class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstract
+final class FullyQualifiedNodeVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @var string
-     */
     private $prefix;
 
-    public function __construct($prefix)
+    public function __construct(string $prefix)
     {
         $this->prefix = $prefix;
     }

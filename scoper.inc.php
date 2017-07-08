@@ -13,29 +13,35 @@ declare(strict_types=1);
  */
 
 return [
-    function (string $filePath, string $prefix, string $content): string {
-        //
-        // PHP-Parser patch
-        //
+    'global_namespace' => [
+        'AppKernel',
+        function (string $className): bool {
+            return 'PHPUnit' === substr($className, 0, 6);
+        },
+    ],
+    'patchers' => [
+        function (string $filePath, string $prefix, string $content): string {
+            //
+            // PHP-Parser patch
+            //
 
-        $x = __DIR__.'/vendor/nikic/php-parser/lib/PhpParser/Lexer.php';
-        $y = realpath($x);
-        if ($filePath === $y) {
-            return preg_replace(
-                '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%',
-                'if (defined($name = \''.$prefix.'\\\\\\\\PhpParser\\\\\\\\Parser\\\\\\\\Tokens',
-                $content
-            );
-        }
+            if ($filePath === __DIR__.'/vendor/nikic/php-parser/lib/PhpParser/Lexer.php') {
+                return preg_replace(
+                    '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%',
+                    'if (defined($name = \''.$prefix . '\\\\\\\\PhpParser\\\\\\\\Parser\\\\\\\\Tokens',
+                    $content
+                );
+            }
 
-        if ($filePath === realpath(__DIR__.'/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php')) {
-            return preg_replace(
-                '%rtrim\(get_class\(\$this\), \'_\'\), 15\)%',
-                'rtrim(get_class($this), \'_\'), 15+23)',
-                $content
-            );
-        }
+            if ($filePath === realpath(__DIR__.'/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php')) {
+                return preg_replace(
+                    '%rtrim\(get_class\(\$this\), \'_\'\), 15\)%',
+                    'rtrim(get_class($this), \'_\'), 15+23)',
+                    $content
+                );
+            }
 
-        return $content;
-    },
+            return $content;
+        },
+    ],
 ];
