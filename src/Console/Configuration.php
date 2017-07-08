@@ -9,7 +9,7 @@ final class Configuration
 {
     private $path;
     private $patchers;
-    private $globalNamespace;
+    private $globalNamespaceWhitelisters;
 
     /**
      * @param string|null         $path            Absolute path to the configuration file loaded
@@ -22,7 +22,7 @@ final class Configuration
     {
         $this->path = $path;
         $this->patchers = $patchers;
-        $this->globalNamespace = $globalNamespace;
+        $this->globalNamespaceWhitelisters = $globalNamespace;
     }
 
     /**
@@ -48,7 +48,7 @@ final class Configuration
         }
 
         $patchers = self::retrievePatchers($config);
-        $globalNamespace = self::retrieveGlobalNamespace($config);
+        $globalNamespace = self::retrieveGlobalNamespaceWhitelisters($config);
 
         return new self($path, $patchers, $globalNamespace);
     }
@@ -69,9 +69,9 @@ final class Configuration
     /**
      * @return callable[]|string[]
      */
-    public function getGlobalNamespace()
+    public function getGlobalNamespaceWhitelisters()
     {
-        return $this->globalNamespace;
+        return $this->globalNamespaceWhitelisters;
     }
 
     private static function retrievePatchers(array $config): array
@@ -105,13 +105,13 @@ final class Configuration
         return $patchers;
     }
 
-    private static function retrieveGlobalNamespace(array $config): array
+    private static function retrieveGlobalNamespaceWhitelisters(array $config): array
     {
-        if (false === array_key_exists('global_namespace', $config)) {
+        if (false === array_key_exists('global_namespace_whitelist', $config)) {
             return [];
         }
 
-        $globalNamespace = $config['global_namespace'];
+        $globalNamespace = $config['global_namespace_whitelist'];
 
         if (false === is_array($globalNamespace)) {
             throw new InvalidArgumentException(

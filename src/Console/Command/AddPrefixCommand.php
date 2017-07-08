@@ -139,7 +139,7 @@ final class AddPrefixCommand extends Command
                 $input->getArgument(self::PATH_ARG),
                 $input->getOption(self::OUTPUT_DIR_OPT),
                 $config->getPatchers(),
-                $config->getGlobalNamespace(),
+                $config->getGlobalNamespaceWhitelisters(),
                 $input->getOption(self::STOP_ON_FAILURE_OPT),
                 $logger
             );

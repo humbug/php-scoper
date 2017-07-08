@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 
 return [
-    'global_namespace' => [
+    'global_namespace_whitelist' => [
         'AppKernel',
         function (string $className): bool {
             return 'PHPUnit' === substr($className, 0, 6);
