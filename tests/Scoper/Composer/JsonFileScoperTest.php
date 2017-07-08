@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
+use function Humbug\PhpScoper\create_fake_whitelister;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use PHPUnit\Framework\TestCase;
@@ -72,6 +73,7 @@ class JsonFileScoperTest extends TestCase
         $filePath = escape_path($this->tmp.'/file.php');
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
+        $whitelister = create_fake_whitelister();
 
         touch($filePath);
         file_put_contents($filePath, '');
@@ -79,7 +81,7 @@ class JsonFileScoperTest extends TestCase
         /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers)
+            ->scope($filePath, $prefix, $patchers, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -89,7 +91,7 @@ class JsonFileScoperTest extends TestCase
 
         $scoper = new JsonFileScoper($decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -108,8 +110,9 @@ class JsonFileScoperTest extends TestCase
 
         $prefix = 'Foo';
         $patchers = [create_fake_patcher()];
+        $whitelister = create_fake_whitelister();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
