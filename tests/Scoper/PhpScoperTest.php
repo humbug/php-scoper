@@ -713,11 +713,11 @@ PHP
         ];
 
         //
-        // FQN usage for a class
+        // FQCN usage for a class
         //
         // ====================
 
-        yield '[FQN usage for a name] fully qualified class' => [
+        yield '[FQCN usage for a class] complete FQCN' => [
             <<<'PHP'
 <?php
 
@@ -734,12 +734,29 @@ new \Humbug\Foo\Bar();
 PHP
         ];
 
+        yield '[FQCN usage for a class] incomplete FQCN' => [
+            <<<'PHP'
+<?php
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+new Foo\Bar();
+
+PHP
+        ];
+
         //
-        // FQN usage for a method
+        // FQCN usage for a method
         //
         // ====================
 
-        yield '[FQN usage for a name] fully qualified method' => [
+        yield '[FQCN usage for a method] complete FQCN' => [
             <<<'PHP'
 <?php
 
@@ -752,6 +769,101 @@ PHP
 <?php
 
 \Humbug\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        //
+        // FQCN usage for a function
+        //
+        // ====================
+
+        yield '[FQCN usage for a function] complete FQCN' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+\Humbug\PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] incomplete FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        //
+        // FQCN usage for a constant
+        //
+        // ====================
+
+        yield '[FQCN usage for a constant] complete FQCN' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+\Humbug\PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::FOO;
 
 PHP
         ];
