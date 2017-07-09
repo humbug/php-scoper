@@ -219,7 +219,7 @@ EOF;
         $this->appTester->run($input);
 
         $dir = realpath(__DIR__.'/../../../');
-        
+
         $expected = <<<EOF
 
     ____  __  ______     _____
