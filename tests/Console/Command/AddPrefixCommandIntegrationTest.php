@@ -143,11 +143,12 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
- 0/2 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
- 1/2 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░]  50%
- 2/2 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+ 0/3 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 1/3 [▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░]  33%
+ 2/3 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░]  66%
+ 3/3 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
- [OK] Successfully prefixed 2 files.
+ [OK] Successfully prefixed 3 files.
 
  // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -186,11 +187,12 @@ EOF;
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
+ * [NO] /path/to/composer/installed.json
  * [OK] /path/to/file.php
  * [NO] /path/to/invalid-file.php
 
 
- [OK] Successfully prefixed 2 files.
+ [OK] Successfully prefixed 3 files.
 
  // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -231,6 +233,35 @@ EOF;
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
+ * [NO] /path/to/composer/installed.json
+	Could not parse the file "/path/to/composer/installed.json".: TypeError: Argument 1 passed to Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer::prefixPackageAutoloads() must be of the type array, string given, called in $dir/src/Scoper/Composer/InstalledPackagesScoper.php on line 73 and defined in $dir/src/Scoper/Composer/AutoloadPrefixer.php:28
+Stack trace:
+#0 $dir/src/Scoper/Composer/InstalledPackagesScoper.php(73): Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer::prefixPackageAutoloads('for the detecti...', 'MyPrefix')
+#1 $dir/src/Scoper/Composer/InstalledPackagesScoper.php(62): Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper->prefixLockPackages(Array, 'MyPrefix')
+#2 $dir/src/Scoper/Composer/JsonFileScoper.php(36): Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper->scope('/Users/theofidr...', 'MyPrefix', Array)
+#3 $dir/src/Scoper/PatchScoper.php(33): Humbug\PhpScoper\Scoper\Composer\JsonFileScoper->scope('/Users/theofidr...', 'MyPrefix', Array)
+#4 $dir/src/Handler/HandleAddPrefix.php(177): Humbug\PhpScoper\Scoper\PatchScoper->scope('/Users/theofidr...', 'MyPrefix', Array)
+#5 $dir/src/Handler/HandleAddPrefix.php(156): Humbug\PhpScoper\Handler\HandleAddPrefix->scopeFile('/Users/theofidr...', '/private/var/fo...', 'MyPrefix', Array, false, Object(Humbug\PhpScoper\Logger\ConsoleLogger))
+#6 $dir/src/Handler/HandleAddPrefix.php(59): Humbug\PhpScoper\Handler\HandleAddPrefix->scopeFiles(Array, 'MyPrefix', Array, false, Object(Humbug\PhpScoper\Logger\ConsoleLogger))
+#7 $dir/src/Console/Command/AddPrefixCommand.php(140): Humbug\PhpScoper\Handler\HandleAddPrefix->__invoke('MyPrefix', Array, '/private/var/fo...', Array, false, Object(Humbug\PhpScoper\Logger\ConsoleLogger))
+#8 $dir/vendor/symfony/console/Command/Command.php(264): Humbug\PhpScoper\Console\Command\AddPrefixCommand->execute(Object(Symfony\Component\Console\Input\ArrayInput), Object(Symfony\Component\Console\Output\StreamOutput))
+#9 $dir/vendor/symfony/console/Application.php(869): Symfony\Component\Console\Command\Command->run(Object(Symfony\Component\Console\Input\ArrayInput), Object(Symfony\Component\Console\Output\StreamOutput))
+#10 $dir/vendor/symfony/console/Application.php(223): Symfony\Component\Console\Application->doRunCommand(Object(Humbug\PhpScoper\Console\Command\AddPrefixCommand), Object(Symfony\Component\Console\Input\ArrayInput), Object(Symfony\Component\Console\Output\StreamOutput))
+#11 $dir/vendor/symfony/console/Application.php(130): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArrayInput), Object(Symfony\Component\Console\Output\StreamOutput))
+#12 $dir/vendor/symfony/console/Tester/ApplicationTester.php(100): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArrayInput), Object(Symfony\Component\Console\Output\StreamOutput))
+#13 $dir/tests/Console/Command/AddPrefixCommandIntegrationTest.php(221): Symfony\Component\Console\Tester\ApplicationTester->run(Array)
+#14 [internal function]: Humbug\PhpScoper\Console\Command\AddPrefixCommandIntegrationTest->test_scope_in_very_verbose_mode()
+#15 $dir/vendor/phpunit/phpunit/src/Framework/TestCase.php(1069): ReflectionMethod->invokeArgs(Object(Humbug\PhpScoper\Console\Command\AddPrefixCommandIntegrationTest), Array)
+#16 $dir/vendor/phpunit/phpunit/src/Framework/TestCase.php(928): PHPUnit\Framework\TestCase->runTest()
+#17 $dir/vendor/phpunit/phpunit/src/Framework/TestResult.php(695): PHPUnit\Framework\TestCase->runBare()
+#18 $dir/vendor/phpunit/phpunit/src/Framework/TestCase.php(883): PHPUnit\Framework\TestResult->run(Object(Humbug\PhpScoper\Console\Command\AddPrefixCommandIntegrationTest))
+#19 $dir/vendor/phpunit/phpunit/src/Framework/TestSuite.php(746): PHPUnit\Framework\TestCase->run(Object(PHPUnit\Framework\TestResult))
+#20 $dir/vendor/phpunit/phpunit/src/Framework/TestSuite.php(746): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#21 $dir/vendor/phpunit/phpunit/src/TextUI/TestRunner.php(537): PHPUnit\Framework\TestSuite->run(Object(PHPUnit\Framework\TestResult))
+#22 $dir/vendor/phpunit/phpunit/src/TextUI/Command.php(210): PHPUnit\TextUI\TestRunner->doRun(Object(PHPUnit\Framework\TestSuite), Array, true)
+#23 $dir/vendor/phpunit/phpunit/src/TextUI/Command.php(141): PHPUnit\TextUI\Command->run(Array, true)
+#24 $dir/vendor/phpunit/phpunit/phpunit(53): PHPUnit\TextUI\Command::main()
+#25 {main}
  * [OK] /path/to/file.php
  * [NO] /path/to/invalid-file.php
 	Could not parse the file "/path/to/invalid-file.php".: PhpParser\Error: Syntax error, unexpected EOF on line 3 in $dir/vendor/nikic/php-parser/lib/PhpParser/ParserAbstract.php:293
@@ -248,7 +279,7 @@ Stack trace:
 #10 $dir/vendor/symfony/console/Application.php(223): Symfony\Component\Console\Application->doRunCommand(Object(Humbug\PhpScoper\Console\Command\AddPrefixCommand), Object(Symfony\Component\Console\Input\ArrayInput), Object(Symfony\Component\Console\Output\StreamOutput))
 #11 $dir/vendor/symfony/console/Application.php(130): Symfony\Component\Console\Application->doRun(Object(Symfony\Component\Console\Input\ArrayInput), Object(Symfony\Component\Console\Output\StreamOutput))
 #12 $dir/vendor/symfony/console/Tester/ApplicationTester.php(100): Symfony\Component\Console\Application->run(Object(Symfony\Component\Console\Input\ArrayInput), Object(Symfony\Component\Console\Output\StreamOutput))
-#13 $dir/tests/Console/Command/AddPrefixCommandIntegrationTest.php(219): Symfony\Component\Console\Tester\ApplicationTester->run(Array)
+#13 $dir/tests/Console/Command/AddPrefixCommandIntegrationTest.php(221): Symfony\Component\Console\Tester\ApplicationTester->run(Array)
 #14 [internal function]: Humbug\PhpScoper\Console\Command\AddPrefixCommandIntegrationTest->test_scope_in_very_verbose_mode()
 #15 $dir/vendor/phpunit/phpunit/src/Framework/TestCase.php(1069): ReflectionMethod->invokeArgs(Object(Humbug\PhpScoper\Console\Command\AddPrefixCommandIntegrationTest), Array)
 #16 $dir/vendor/phpunit/phpunit/src/Framework/TestCase.php(928): PHPUnit\Framework\TestCase->runTest()
@@ -263,7 +294,7 @@ Stack trace:
 #25 {main}
 
 
- [OK] Successfully prefixed 2 files.
+ [OK] Successfully prefixed 3 files.
 
  // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 

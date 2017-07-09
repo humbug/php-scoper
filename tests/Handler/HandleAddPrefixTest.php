@@ -212,14 +212,14 @@ PHP;
         $prefix = 'MyPrefix';
 
         $paths = [
-            $filePath = escape_path(self::FIXTURE_PATH_001.'/file.php'),
+            $filePath = realpath(escape_path(self::FIXTURE_PATH_001.'/file.php')),
         ];
 
         $outputPath = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
 
         $patchers = [create_fake_patcher()];
 
-        $stopOnFailure = false;
+        $stopOnFailure = true;
 
         /** @var ConsoleLogger $logger */
         $logger = $this->loggerProphecy->reveal();
@@ -234,7 +234,15 @@ PHP;
 
             $this->fail('Expected exception to be thrown.');
         } catch (Throwable $throwable) {
-            $this->assertSame($error, $throwable);
+            $this->assertSame(
+                sprintf(
+                    'Could not parse the file "%s".',
+                    $filePath
+                ),
+                $throwable->getMessage()
+            );
+            $this->assertSame(0, $throwable->getCode());
+            $this->assertSame($error, $throwable->getPrevious());
         }
 
         $this->assertFalse(file_exists($outputPath));

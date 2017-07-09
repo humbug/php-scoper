@@ -175,7 +175,7 @@ class HandleAddPrefix
     ) {
         try {
             $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers);
-        } catch (PhpParserError $error) {
+        } catch (\Throwable $error) {
             $exception = new ParsingException(
                 sprintf(
                     'Could not parse the file "%s".',
