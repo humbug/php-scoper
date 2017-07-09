@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Logger;
 
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
@@ -92,6 +93,29 @@ class ConsoleLogger
                 sprintf(
                     ' * [<info>OK</info>] %s',
                     $path
+                )
+            );
+        }
+
+        $this->progressBar->advance();
+    }
+
+    public function outputWarnOfFailure(string $path, ParsingException $exception)
+    {
+        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->io->writeln(
+                sprintf(
+                    ' * [<error>NO</error>] %s',
+                    $path
+                )
+            );
+        }
+        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+            $this->io->writeln(
+                sprintf(
+                    "\t".'%s: %s',
+                    $exception->getMessage(),
+                    $exception->getPrevious()
                 )
             );
         }
