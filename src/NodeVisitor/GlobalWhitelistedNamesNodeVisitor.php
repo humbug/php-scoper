@@ -36,17 +36,17 @@ final class GlobalWhitelistedNamesNodeVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof Name
-            && 1 === count($node->parts)
-            && true === ($this->whitelister)($node->parts[0])
+            && 1 === $node->count($node->parts)
+            && true === ($this->whitelister)($node->getFirst())
         ) {
-            return Name::concat($this->prefix, $node->parts[0]);
+            return Name::concat($this->prefix, $node->getFirst());
         }
 
         if ($node instanceof Name
             && 1 === count($node->parts)
-            && true === ($this->whitelister)($node->parts[0])
+            && true === ($this->whitelister)($node->getFirst())
         ) {
-            return Name::concat($this->prefix, $node->parts[0]);
+            return Name::concat($this->prefix, $node->getFirst());
         }
 
         return $node;

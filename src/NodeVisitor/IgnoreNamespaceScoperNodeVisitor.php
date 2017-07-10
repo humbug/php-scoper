@@ -38,7 +38,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof FullyQualified
             && $node->isFullyQualified()
             && 1 === count($node->parts)
-            && (false === ($this->whitelister)($node->parts[0]))
+            && (false === ($this->whitelister)($node->getFirst()))
         ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
@@ -47,7 +47,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
             && $node->hasAttribute('parent')
             && false === ($node->getAttribute('parent') instanceof GroupUse)
             && (
-                (1 === count($node->name->parts) && false === ($this->whitelister)($node->name->parts[0]))
+                (1 === count($node->name->parts) && false === ($this->whitelister)($node->name->getFirst()))
                 || 'Composer' === $node->name->getFirst()
             )
         ) {
