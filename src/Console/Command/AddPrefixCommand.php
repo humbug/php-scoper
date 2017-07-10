@@ -38,6 +38,8 @@ final class AddPrefixCommand extends Command
     /** @internal */
     const FORCE_OPT = 'force';
     /** @internal */
+    const STOP_ON_FAILURE_OPT = 'stop-on-failure';
+    /** @internal */
     const PATCH_FILE = 'patch-file';
     /** @internal */
     const PATCH_FILE_DEFAULT = 'scoper.inc.php';
@@ -89,6 +91,12 @@ final class AddPrefixCommand extends Command
                 'Deletes any existing content in the output directory without any warning.'
             )
             ->addOption(
+                self::STOP_ON_FAILURE_OPT,
+                's',
+                InputOption::VALUE_NONE,
+                'Stops on failure.'
+            )
+            ->addOption(
                 self::PATCH_FILE,
                 'c',
                 InputOption::VALUE_REQUIRED,
@@ -129,6 +137,7 @@ final class AddPrefixCommand extends Command
                 $input->getArgument(self::PATH_ARG),
                 $input->getOption(self::OUTPUT_DIR_OPT),
                 $patchers,
+                $input->getOption(self::STOP_ON_FAILURE_OPT),
                 $logger
             );
         } catch (Throwable $throwable) {

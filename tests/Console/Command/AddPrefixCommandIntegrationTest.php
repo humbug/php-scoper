@@ -143,10 +143,12 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
- 0/1 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
- 1/1 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+ 0/3 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 1/3 [▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░]  33%
+ 2/3 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░]  66%
+ 3/3 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
- [OK] Successfully prefixed 1 files.
+ [OK] Successfully prefixed 3 files.
 
  // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -185,10 +187,12 @@ EOF;
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
+ * [NO] /path/to/composer/installed.json
  * [OK] /path/to/file.php
+ * [NO] /path/to/invalid-file.php
 
 
- [OK] Successfully prefixed 1 files.
+ [OK] Successfully prefixed 3 files.
 
  // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -196,6 +200,107 @@ PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 EOF;
 
         $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
+
+        $this->assertSame($expected, $actual);
+        $this->assertSame(0, $this->appTester->getStatusCode());
+    }
+
+    public function test_scope_in_very_verbose_mode()
+    {
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                self::FIXTURE_PATH,
+            ],
+            '--output-dir' => $this->tmp,
+            '-vv' => null,
+            '--no-interaction' => null,
+        ];
+
+        $this->appTester->run($input);
+
+        $dir = realpath(__DIR__.'/../../../');
+
+        $expected = <<<EOF
+
+    ____  __  ______     _____
+   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+ / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                     /_/
+
+PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+
+ * [NO] /path/to/composer/installed.json
+	Could not parse the file "/path/to/composer/installed.json".: TypeError: Argument 1 passed to Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer::prefixPackageAutoloads() must be of the type array, string given, called in $dir/src/Scoper/Composer/InstalledPackagesScoper.php on line 73 and defined in $dir/src/Scoper/Composer/AutoloadPrefixer.php:28
+Stack trace:
+#0
+#1
+#2
+#3
+#4
+#5
+#6
+#7
+#8
+#9
+#10
+#11
+#12
+#13
+#14
+#15
+#16
+#17
+#18
+#19
+#20
+#21
+#22
+#23
+#24
+ * [OK] /path/to/file.php
+ * [NO] /path/to/invalid-file.php
+	Could not parse the file "/path/to/invalid-file.php".: PhpParser\Error: Syntax error, unexpected EOF on line 3 in $dir/vendor/nikic/php-parser/lib/PhpParser/ParserAbstract.php:293
+Stack trace:
+#0
+#1
+#2
+#3
+#4
+#5
+#6
+#7
+#8
+#9
+#10
+#11
+#12
+#13
+#14
+#15
+#16
+#17
+#18
+#19
+#20
+#21
+#22
+#23
+#24
+
+
+ [OK] Successfully prefixed 3 files.
+
+ // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+
+
+EOF;
+
+        $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
+        $actual = preg_replace('/(#\d+)(.*)(\n)/', '$1$3', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());

@@ -181,6 +181,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                false,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -232,6 +233,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                false,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -268,6 +270,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                false,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -314,6 +317,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                false,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -356,6 +360,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                false,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -399,6 +404,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                false,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -438,6 +444,7 @@ EOF;
                 ],
                 $outDir,
                 Argument::type('array'),
+                false,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -482,6 +489,7 @@ EOF;
                 ],
                 $expectedOutputDir,
                 [],
+                false,
                 Argument::type(ConsoleLogger::class)
             )
             ->shouldBeCalled()
@@ -620,6 +628,7 @@ EOF;
 
                     return true;
                 }),
+                false,
                 Argument::any()
             )
             ->shouldBeCalled();
@@ -659,6 +668,7 @@ EOF;
 
                     return true;
                 }),
+                false,
                 Argument::any()
             )
             ->shouldBeCalled();
@@ -702,6 +712,47 @@ EOF;
             $this->assertSame(0, $exception->getCode());
             $this->assertNull($exception->getPrevious());
         }
+    }
+
+    public function test_can_scope_projects_with_invalid_files()
+    {
+        chdir($fixtureDir = realpath(escape_path(self::FIXTURE_PATH.'/set010')));
+
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            '--output-dir' => $this->tmp,
+            '--stop-on-failure' => null,
+            '--no-interaction' => null,
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    $fixtureDir,
+                ],
+                $this->tmp,
+                Argument::type('array'),
+                true,
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        $this->assertSame(0, $this->appTester->getStatusCode());
+
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
     public function provideEmptyPrefixes()

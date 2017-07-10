@@ -18,7 +18,6 @@ use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
-use PhpParser\Error as PhpParserError;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -42,20 +41,21 @@ class HandleAddPrefix
     /**
      * Apply prefix to all the code found in the given paths, AKA scope all the files found.
      *
-     * @param string        $prefix   e.g. 'Foo'
-     * @param string[]      $paths    List of files to scan (absolute paths)
-     * @param string        $output   absolute path to the output directory
+     * @param string        $prefix        e.g. 'Foo'
+     * @param string[]      $paths         List of files to scan (absolute paths)
+     * @param string        $output        absolute path to the output directory
      * @param callable[]    $patchers
+     * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
      */
-    public function __invoke(string $prefix, array $paths, string $output, array $patchers, ConsoleLogger $logger)
+    public function __invoke(string $prefix, array $paths, string $output, array $patchers, bool $stopOnFailure, ConsoleLogger $logger)
     {
         $this->fileSystem->mkdir($output);
 
         try {
             $files = $this->retrieveFiles($paths, $output);
 
-            $this->scopeFiles($files, $prefix, $patchers, $logger);
+            $this->scopeFiles($files, $prefix, $patchers, $stopOnFailure, $logger);
         } catch (Throwable $throwable) {
             $this->fileSystem->remove($output);
 
@@ -143,15 +143,16 @@ class HandleAddPrefix
      * @param string[]      $files
      * @param string        $prefix
      * @param callable[]    $patchers
+     * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
      */
-    private function scopeFiles(array $files, string $prefix, array $patchers, ConsoleLogger $logger)
+    private function scopeFiles(array $files, string $prefix, array $patchers, bool $stopOnFailure, ConsoleLogger $logger)
     {
         $count = count($files);
         $logger->outputFileCount($count);
 
         foreach ($files as $inputFilePath => $outputFilePath) {
-            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $patchers, $logger);
+            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $patchers, $stopOnFailure, $logger);
         }
     }
 
@@ -160,6 +161,7 @@ class HandleAddPrefix
      * @param string        $outputFilePath
      * @param string        $prefix
      * @param callable[]    $patchers
+     * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
      */
     private function scopeFile(
@@ -167,12 +169,13 @@ class HandleAddPrefix
         string $outputFilePath,
         string $prefix,
         array $patchers,
+        bool $stopOnFailure,
         ConsoleLogger $logger
     ) {
         try {
             $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers);
-        } catch (PhpParserError $error) {
-            throw new ParsingException(
+        } catch (\Throwable $error) {
+            $exception = new ParsingException(
                 sprintf(
                     'Could not parse the file "%s".',
                     $inputFilePath
@@ -180,10 +183,20 @@ class HandleAddPrefix
                 0,
                 $error
             );
+
+            if ($stopOnFailure) {
+                throw $exception;
+            }
+
+            $logger->outputWarnOfFailure($inputFilePath, $exception);
+
+            $scoppedContent = file_get_contents($inputFilePath);
         }
 
         $this->fileSystem->dumpFile($outputFilePath, $scoppedContent);
 
-        $logger->outputSuccess($inputFilePath);
+        if (false === isset($exception)) {
+            $logger->outputSuccess($inputFilePath);
+        }
     }
 }
