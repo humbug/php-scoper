@@ -261,6 +261,7 @@ Stack trace:
 #22
 #23
 #24
+#25
  * [OK] /path/to/file.php
  * [NO] /path/to/invalid-file.php
 	Could not parse the file "/path/to/invalid-file.php".: PhpParser\Error: Syntax error, unexpected EOF on line 3 in $dir/vendor/nikic/php-parser/lib/PhpParser/ParserAbstract.php:293
@@ -290,6 +291,7 @@ Stack trace:
 #22
 #23
 #24
+#25
 
 
  [OK] Successfully prefixed 3 files.
