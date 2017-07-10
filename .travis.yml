@@ -15,8 +15,6 @@ matrix:
     - php: '7.0'
       env: COVERAGE='true'
     - php: '7.1'
-    - php: '7.1'
-      env: COMPOSER_FLAGS='--prefer-lowest'
     - php: nightly
   allow_failures:
     - php: nightly
@@ -26,10 +24,10 @@ before_script: phpenv config-rm xdebug.ini || true
 
 install:
   - set -eo pipefail
-  - composer update --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
+  - composer install --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
   - |
     if [ "$COVERAGE" == "true" ]; then
-        composer bin box update --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
+        composer bin box install --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
     fi
 
 script:
