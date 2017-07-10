@@ -582,7 +582,7 @@ EOF;
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
-            '--patch-file' => 'unknown',
+            '--config' => 'unknown',
             'paths' => [
                 escape_path('/path/to/dir1'),
             ],

@@ -41,7 +41,7 @@ final class AddPrefixCommand extends Command
     /** @internal */
     const STOP_ON_FAILURE_OPT = 'stop-on-failure';
     /** @internal */
-    const CONFIG_FILE = 'patch-file';
+    const CONFIG_FILE = 'config';
     /** @internal */
     const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
 
