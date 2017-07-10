@@ -28,7 +28,7 @@ return [
             if ($filePath === __DIR__.'/vendor/nikic/php-parser/lib/PhpParser/Lexer.php') {
                 return preg_replace(
                     '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%',
-                    'if (defined($name = \''.$prefix . '\\\\\\\\PhpParser\\\\\\\\Parser\\\\\\\\Tokens',
+                    'if (defined($name = \''.$prefix.'\\\\\\\\PhpParser\\\\\\\\Parser\\\\\\\\Tokens',
                     $content
                 );
             }

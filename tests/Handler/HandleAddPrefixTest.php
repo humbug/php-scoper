@@ -132,7 +132,7 @@ class HandleAddPrefixTest extends TestCase
                 ->shouldBeCalled()
             ;
 
-            $this->loggerProphecy->outputSuccess($filePath)->shouldBeCalled();;
+            $this->loggerProphecy->outputSuccess($filePath)->shouldBeCalled();
         }
 
         $this->loggerProphecy->outputFileCount(count($expected))->shouldBeCalled();
