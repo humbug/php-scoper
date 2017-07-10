@@ -25,7 +25,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
     private $whitelister;
 
-    public function __construct(Closure $whitelister)
+    public function __construct(callable $whitelister)
     {
         $this->whitelister = $whitelister;
     }

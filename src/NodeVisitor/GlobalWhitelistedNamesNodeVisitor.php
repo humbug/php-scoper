@@ -24,7 +24,7 @@ final class GlobalWhitelistedNamesNodeVisitor extends NodeVisitorAbstract
     private $prefix;
     private $whitelister;
 
-    public function __construct(string $prefix, Closure $whitelister)
+    public function __construct(string $prefix, callable $whitelister)
     {
         $this->prefix = $prefix;
         $this->whitelister = $whitelister;

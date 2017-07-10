@@ -29,7 +29,7 @@ final class Configuration
      * @param callable[]|string[] $globalNamespace List of class names from the global namespace that should be scoped
      *                                             or closures filtering if the class should be scoped or not
      */
-    private function __construct(?string $path, array $patchers, array $globalNamespace)
+    private function __construct(string $path = null, array $patchers, array $globalNamespace)
     {
         $this->path = $path;
         $this->patchers = $patchers;
