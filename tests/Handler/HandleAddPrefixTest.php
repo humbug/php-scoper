@@ -50,6 +50,11 @@ class HandleAddPrefixTest extends TestCase
     private $loggerProphecy;
 
     /**
+     * @var ConsoleLogger
+     */
+    private $logger;
+
+    /**
      * @var HandleAddPrefix
      */
     private $handle;
@@ -83,6 +88,7 @@ class HandleAddPrefixTest extends TestCase
         $this->handle = new HandleAddPrefix($scoper);
 
         $this->loggerProphecy = $this->prophesize(ConsoleLogger::class);
+        $this->logger = $this->loggerProphecy->reveal();
     }
 
     /**
@@ -117,9 +123,6 @@ class HandleAddPrefixTest extends TestCase
 
         $stopOnFailure = false;
 
-        /** @var ConsoleLogger $logger */
-        $logger = $this->loggerProphecy->reveal();
-
         foreach ($expected as $fileContent) {
             $filePath = realpath(escape_path(self::FIXTURE_PATH_000.$fileContent));
             $this->assertNotFalse($filePath, 'Type check.');
@@ -129,12 +132,12 @@ class HandleAddPrefixTest extends TestCase
                 ->shouldBeCalled()
             ;
 
-            $this->loggerProphecy->outputSuccess($filePath)->shouldBeCalled();
+            $this->loggerProphecy->outputSuccess($filePath)->shouldBeCalled();;
         }
 
         $this->loggerProphecy->outputFileCount(count($expected))->shouldBeCalled();
 
-        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelisters, $stopOnFailure, $logger);
+        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelisters, $stopOnFailure, $this->logger);
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expected));
 

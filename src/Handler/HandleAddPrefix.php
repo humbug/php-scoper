@@ -220,7 +220,7 @@ class HandleAddPrefix
         ConsoleLogger $logger
     ) {
         try {
-            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers, $globalWhitelister, $stopOnFailure);
+            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers, $globalWhitelister);
         } catch (Throwable $error) {
             $exception = new ParsingException(
                 sprintf(

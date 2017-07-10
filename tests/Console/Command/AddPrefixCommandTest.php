@@ -749,6 +749,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                Argument::type('array'),
                 true,
                 Argument::type(ConsoleLogger::class)
             )
