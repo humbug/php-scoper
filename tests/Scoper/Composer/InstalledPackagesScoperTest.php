@@ -20,6 +20,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use function Humbug\PhpScoper\create_fake_patcher;
+use function Humbug\PhpScoper\create_fake_whitelister;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
@@ -72,6 +73,7 @@ class InstalledPackagesScoperTest extends TestCase
         $filePath = escape_path($this->tmp.'/file.php');
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
+        $whitelister = create_fake_whitelister();
 
         touch($filePath);
         file_put_contents($filePath, '');
@@ -79,7 +81,7 @@ class InstalledPackagesScoperTest extends TestCase
         /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers)
+            ->scope($filePath, $prefix, $patchers, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -89,7 +91,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $scoper = new InstalledPackagesScoper($decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -109,8 +111,9 @@ class InstalledPackagesScoperTest extends TestCase
 
         $prefix = 'Foo';
         $patchers = [create_fake_patcher()];
+        $whitelister = create_fake_whitelister();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
     }

@@ -16,11 +16,10 @@ namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\UseUse;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeVisitorAbstract;
 
-final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+final class FullyQualifiedNodeVisitor extends NodeVisitorAbstract
 {
     private $prefix;
 
@@ -34,14 +33,11 @@ final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
-        if ($node instanceof UseUse
-            && $node->hasAttribute('parent')
-            && false === ($node->getAttribute('parent') instanceof GroupUse)
-            && $this->prefix !== $node->name->getFirst()
+        if ($node instanceof FullyQualified
             && false === ($node->hasAttribute('phpscoper_ignore')
             && true === $node->getAttribute('phpscoper_ignore'))
         ) {
-            $node->name = Name::concat($this->prefix, $node->name);
+            return new Name('\\'.Name::concat($this->prefix, (string) $node));
         }
 
         return $node;

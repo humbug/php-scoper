@@ -16,19 +16,17 @@ namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeVisitorAbstract;
 
-final class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstract
+final class GlobalWhitelistedNamesNodeVisitor extends NodeVisitorAbstract
 {
-    /**
-     * @var string
-     */
     private $prefix;
+    private $whitelister;
 
-    public function __construct($prefix)
+    public function __construct(string $prefix, callable $whitelister)
     {
         $this->prefix = $prefix;
+        $this->whitelister = $whitelister;
     }
 
     /**
@@ -36,11 +34,11 @@ final class FullyQualifiedNamespaceUseScoperNodeVisitor extends NodeVisitorAbstr
      */
     public function enterNode(Node $node)
     {
-        if ($node instanceof FullyQualified
-            && false === ($node->hasAttribute('phpscoper_ignore')
-            && true === $node->getAttribute('phpscoper_ignore'))
+        if ($node instanceof Name
+            && 1 === count($node->parts)
+            && true === ($this->whitelister)($node->getFirst())
         ) {
-            return new Name('\\'.Name::concat($this->prefix, (string) $node));
+            return Name::concat($this->prefix, $node->getFirst());
         }
 
         return $node;

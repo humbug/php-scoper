@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -181,6 +182,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -233,6 +235,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -269,6 +272,7 @@ EOF;
                     $this->cwd,
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
@@ -317,6 +321,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -359,6 +364,7 @@ EOF;
                     escape_path('/path/to/file'),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
@@ -404,6 +410,7 @@ EOF;
                 ],
                 $this->tmp,
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -443,6 +450,7 @@ EOF;
                     escape_path('/path/to/dir1'),
                 ],
                 $outDir,
+                Argument::type('array'),
                 Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
@@ -488,6 +496,7 @@ EOF;
                     escape_path('/path/to/dir1'),
                 ],
                 $expectedOutputDir,
+                [],
                 [],
                 false,
                 Argument::type(ConsoleLogger::class)
@@ -573,7 +582,7 @@ EOF;
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
-            '--patch-file' => 'unknown',
+            '--config' => 'unknown',
             'paths' => [
                 escape_path('/path/to/dir1'),
             ],
@@ -601,7 +610,7 @@ EOF;
         }
     }
 
-    public function test_attemps_to_use_patch_file_in_current_directory()
+    public function test_attempts_to_use_patch_file_in_current_directory()
     {
         chdir(escape_path(self::FIXTURE_PATH.'/set006'));
 
@@ -628,6 +637,7 @@ EOF;
 
                     return true;
                 }),
+                Argument::any(),
                 false,
                 Argument::any()
             )
@@ -668,6 +678,7 @@ EOF;
 
                     return true;
                 }),
+                Argument::any(),
                 false,
                 Argument::any()
             )
@@ -702,7 +713,7 @@ EOF;
             $this->appTester->run($input);
 
             $this->fail('Expected exception to be thrown.');
-        } catch (RuntimeException $exception) {
+        } catch (InvalidArgumentException $exception) {
             $patchFile = escape_path($this->cwd.'/unknown');
 
             $this->assertSame(
@@ -737,6 +748,7 @@ EOF;
                     $fixtureDir,
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 true,
                 Argument::type(ConsoleLogger::class)

@@ -12,5 +12,5 @@ registered such as fixing the coding style or running the test.
 make
 # or
 make help
-=> will print the list of available commands
+# => will print the list of available commands
 ```

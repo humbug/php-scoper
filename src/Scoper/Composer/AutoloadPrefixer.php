@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 /**
- * @internal
+ * @private
  */
 final class AutoloadPrefixer
 {

@@ -22,6 +22,13 @@ use PhpParser\NodeVisitorAbstract;
 
 final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
 {
+    private $whitelister;
+
+    public function __construct(callable $whitelister)
+    {
+        $this->whitelister = $whitelister;
+    }
+
     /**
      * @inheritdoc
      */
@@ -30,6 +37,7 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof FullyQualified
             && $node->isFullyQualified()
             && 1 === count($node->parts)
+            && (false === ($this->whitelister)($node->getFirst()))
         ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
@@ -37,9 +45,14 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
         if ($node instanceof UseUse
             && $node->hasAttribute('parent')
             && false === ($node->getAttribute('parent') instanceof GroupUse)
-            && (1 === count($node->name->parts) || 'Composer' === $node->name->getFirst())
+            && (
+                (1 === count($node->name->parts) && false === ($this->whitelister)($node->name->getFirst()))
+                || 'Composer' === $node->name->getFirst()
+            )
         ) {
             $node->setAttribute('phpscoper_ignore', true);
         }
+
+        return $node;
     }
 }

@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 return [
-    function () {
-        return 'Hello world!';
-    }
+    'patchers' => [
+        function () {
+            return 'Hello world!';
+        }
+    ],
 ];

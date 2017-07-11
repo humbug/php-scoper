@@ -14,8 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNamespaceUseScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\FullyQualifiedNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\FunctionCallScoperNodeVisitor;
+use Humbug\PhpScoper\NodeVisitor\GlobalWhitelistedNamesNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\GroupUseNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\IgnoreNamespaceScoperNodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\NamespaceScoperNodeVisitor;
@@ -54,15 +55,15 @@ final class PhpScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $prefix, array $patchers): string
+    public function scope(string $filePath, string $prefix, array $patchers, callable $globalWhitelister): string
     {
         if (false === $this->isPhpFile($filePath)) {
-            return $this->decoratedScoper->scope($filePath, $prefix, $patchers);
+            return $this->decoratedScoper->scope($filePath, $prefix, $patchers, $globalWhitelister);
         }
 
         $content = file_get_contents($filePath);
 
-        $traverser = $this->createTraverser($prefix);
+        $traverser = $this->createTraverser($prefix, $globalWhitelister);
 
         $statements = $this->parser->parse($content);
         $statements = $traverser->traverse($statements);
@@ -87,18 +88,19 @@ final class PhpScoper implements Scoper
         return 1 === preg_match(self::PHP_BINARY, $content);
     }
 
-    private function createTraverser(string $prefix): NodeTraverserInterface
+    private function createTraverser(string $prefix, callable $globalWhitelister): NodeTraverserInterface
     {
         $traverser = new NodeTraverser();
 
         $traverser->addVisitor(new ParentNodeVisitor());
         $traverser->addVisitor(new SingleLevelUseAliasVisitor($prefix));
-        $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor());
+        $traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor($globalWhitelister));
         $traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
         $traverser->addVisitor(new FunctionCallScoperNodeVisitor($prefix, ['class_exists', 'interface_exists']));
         $traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
-        $traverser->addVisitor(new FullyQualifiedNamespaceUseScoperNodeVisitor($prefix));
+        $traverser->addVisitor(new FullyQualifiedNodeVisitor($prefix));
+        $traverser->addVisitor(new GlobalWhitelistedNamesNodeVisitor($prefix, $globalWhitelister));
 
         return $traverser;
     }

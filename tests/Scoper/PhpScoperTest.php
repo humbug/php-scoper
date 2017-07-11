@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use function Humbug\PhpScoper\create_fake_patcher;
+use function Humbug\PhpScoper\create_fake_whitelister;
 use function Humbug\PhpScoper\create_parser;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
@@ -97,6 +98,7 @@ class PhpScoperTest extends TestCase
         $prefix = 'Humbug';
         $filePath = escape_path($this->tmp.'/file.php');
         $patchers = [create_fake_patcher()];
+        $whitelister = create_fake_whitelister();
 
         $content = <<<'PHP'
 echo "Humbug!";
@@ -110,7 +112,7 @@ echo "Humbug!";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers);
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -120,9 +122,10 @@ PHP;
         $filePath = 'file.yaml';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
+        $whitelister = create_fake_whitelister();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers)
+            ->scope($filePath, $prefix, $patchers, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -133,7 +136,7 @@ PHP;
             $this->decoratedScoper
         );
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -145,6 +148,7 @@ PHP;
         $prefix = 'Humbug';
         $filePath = escape_path($this->tmp.'/hello');
         $patchers = [create_fake_patcher()];
+        $whitelister = create_fake_whitelister();
 
         $content = <<<'PHP'
 #!/usr/bin/env php
@@ -163,7 +167,7 @@ echo "Hello world";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers);
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -176,6 +180,8 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
+        $whitelister = create_fake_whitelister();
+
         $content = <<<'PHP'
 #!/usr/bin/env bash
 <?php
@@ -187,7 +193,7 @@ PHP;
         file_put_contents($filePath, $content);
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers)
+            ->scope($filePath, $prefix, $patchers, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -198,7 +204,7 @@ PHP;
             $this->decoratedScoper
         );
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -220,9 +226,10 @@ PHP;
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
+        $whitelister = create_fake_whitelister();
 
         try {
-            $this->scoper->scope($filePath, $prefix, $patchers);
+            $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
             $this->fail('Expected exception to have been thrown.');
         } catch (PhpParserError $error) {
@@ -247,7 +254,11 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers);
+        $whitelister = function (string $className) {
+            return 'AppKernel' === $className;
+        };
+
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -713,11 +724,11 @@ PHP
         ];
 
         //
-        // FQN usage for a class
+        // FQCN usage for a class
         //
         // ====================
 
-        yield '[FQN usage for a name] fully qualified class' => [
+        yield '[FQCN usage for a class] complete FQCN' => [
             <<<'PHP'
 <?php
 
@@ -734,12 +745,29 @@ new \Humbug\Foo\Bar();
 PHP
         ];
 
+        yield '[FQCN usage for a class] incomplete FQCN' => [
+            <<<'PHP'
+<?php
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+new Foo\Bar();
+
+PHP
+        ];
+
         //
-        // FQN usage for a method
+        // FQCN usage for a method
         //
         // ====================
 
-        yield '[FQN usage for a name] fully qualified method' => [
+        yield '[FQCN usage for a method] complete FQCN' => [
             <<<'PHP'
 <?php
 
@@ -752,6 +780,101 @@ PHP
 <?php
 
 \Humbug\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        //
+        // FQCN usage for a function
+        //
+        // ====================
+
+        yield '[FQCN usage for a function] complete FQCN' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+\Humbug\PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] incomplete FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        //
+        // FQCN usage for a constant
+        //
+        // ====================
+
+        yield '[FQCN usage for a constant] complete FQCN' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+\Humbug\PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::FOO;
 
 PHP
         ];
@@ -778,6 +901,23 @@ use Closure;
 PHP
         ];
 
+        yield '[Single part global namespace reference] a simple use statement of a whitelisted class' => [
+            <<<'PHP'
+<?php
+
+use AppKernel;
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+use Humbug\AppKernel;
+
+PHP
+        ];
+
         yield '[Single part global namespace reference] a full qualified class reference' => [
             <<<'PHP'
 <?php
@@ -795,7 +935,24 @@ $foo = new \Closure();
 PHP
         ];
 
-        yield '[Single part global namespace reference] a non-FQN class reference' => [
+        yield '[Single part global namespace reference] a full qualified class reference of a whitelisted class' => [
+            <<<'PHP'
+<?php
+
+$foo = new \AppKernel();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+$foo = new \Humbug\AppKernel();
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQCN class reference' => [
             <<<'PHP'
 <?php
 
@@ -808,6 +965,23 @@ PHP
 <?php
 
 $foo = new Closure();
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQCN class reference of a whitelisted class' => [
+            <<<'PHP'
+<?php
+
+$foo = new AppKernel();
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+$foo = new Humbug\AppKernel();
 
 PHP
         ];
@@ -833,7 +1007,28 @@ function foo(\Closure $bar)
 PHP
         ];
 
-        yield '[Single part global namespace reference] a non-FQN typehint' => [
+        yield '[Single part global namespace reference] a fully qualified typehint of a whitelisted class' => [
+            <<<'PHP'
+<?php
+
+function foo(\AppKernel $bar)
+{
+}
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+function foo(\Humbug\AppKernel $bar)
+{
+}
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQCN typehint' => [
             <<<'PHP'
 <?php
 
@@ -848,6 +1043,27 @@ PHP
 <?php
 
 function foo(Closure $bar)
+{
+}
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQCN typehint of a whitelisted class' => [
+            <<<'PHP'
+<?php
+
+function foo(AppKernel $kernel)
+{
+}
+
+PHP
+            ,
+            'Humbug',
+            <<<'PHP'
+<?php
+
+function foo(Humbug\AppKernel $kernel)
 {
 }
 

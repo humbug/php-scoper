@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
 use function Humbug\PhpScoper\create_fake_patcher;
+use function Humbug\PhpScoper\create_fake_whitelister;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
@@ -76,9 +77,11 @@ class NullScoperTest extends TestCase
 
         $patchers = [create_fake_patcher()];
 
+        $whitelister = create_fake_whitelister();
+
         $scoper = new NullScoper();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
