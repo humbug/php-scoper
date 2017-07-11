@@ -27,6 +27,7 @@ use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper
+ * @covers \Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer
  */
 class InstalledPackagesScoperTest extends TestCase
 {

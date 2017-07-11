@@ -19,23 +19,12 @@ use LogicException;
 
 final class InstalledPackagesScoper implements Scoper
 {
-    /**
-     * @var string
-     */
-    private static $filePattern;
+    private static $filePattern = '/composer\/installed\.json/';
 
     private $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
-        if (null === self::$filePattern) {
-            self::$filePattern = str_replace(
-                '/',
-                DIRECTORY_SEPARATOR,
-                '~composer/installed\.json~'
-            );
-        }
-
         $this->decoratedScoper = $decoratedScoper;
     }
 
@@ -46,10 +35,6 @@ final class InstalledPackagesScoper implements Scoper
      */
     public function scope(string $filePath, string $prefix, array $patchers, callable $globalWhitelister): string
     {
-        if (null === self::$filePattern) {
-            throw new LogicException('Cannot be used without being initialised first.');
-        }
-
         if (1 !== preg_match(self::$filePattern, $filePath)) {
             return $this->decoratedScoper->scope($filePath, $prefix, $patchers, $globalWhitelister);
         }

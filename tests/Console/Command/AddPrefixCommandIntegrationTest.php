@@ -234,7 +234,7 @@ EOF;
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
  * [NO] /path/to/composer/installed.json
-	Could not parse the file "/path/to/composer/installed.json".: TypeError: Argument 1 passed to Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer::prefixPackageAutoloads() must be of the type array, string given, called in $dir/src/Scoper/Composer/InstalledPackagesScoper.php on line 73 and defined in $dir/src/Scoper/Composer/AutoloadPrefixer.php:28
+	Could not parse the file "/path/to/composer/installed.json".: TypeError
 Stack trace:
 #0
 #1
@@ -264,7 +264,7 @@ Stack trace:
 #25
  * [OK] /path/to/file.php
  * [NO] /path/to/invalid-file.php
-	Could not parse the file "/path/to/invalid-file.php".: PhpParser\Error: Syntax error, unexpected EOF on line 3 in $dir/vendor/nikic/php-parser/lib/PhpParser/ParserAbstract.php:293
+	Could not parse the file "/path/to/invalid-file.php".: PhpParser
 Stack trace:
 #0
 #1
@@ -302,7 +302,8 @@ Stack trace:
 EOF;
 
         $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
-        $actual = preg_replace('/(#\d+)(.*)(\n)/', '$1$3', $actual);
+        $actual = preg_replace('/(Could not parse the file ".+?"\.: \w+).*(\n)/', '$1$2', $actual);
+        $actual = preg_replace('/(#\d+).*(\n)/', '$1$2', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
