@@ -23,11 +23,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class UpdateConsoleLogger
 {
     /**
-     * @var Application
-     */
-    private $application;
-
-    /**
      * @var SymfonyStyle
      */
     private $io;
@@ -35,7 +30,6 @@ class UpdateConsoleLogger
     public function __construct(SymfonyStyle $io)
     {
         $this->io = $io;
-        $this->application = $application;
     }
 
     public function startUpdating()

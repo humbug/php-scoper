@@ -62,7 +62,6 @@ final class SelfUpdateCommand extends Command
     {
         parent::__construct();
 
-        $this->version = $this->getApplication()->getVersion();
         $this->updater = $updater;
     }
 
@@ -102,6 +101,8 @@ final class SelfUpdateCommand extends Command
         );
 
         $this->output = $output;
+
+        $this->version = $this->getApplication()->getVersion();
 
         if ($input->getOption('rollback')) {
             $this->rollback();
