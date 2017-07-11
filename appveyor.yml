@@ -44,11 +44,12 @@ install:
     - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini
     - IF %PHP%==1 echo @php %%~dp0composer.phar %%* > composer.bat
     - IF %PHP%==1 echo memory_limit=1G >> php.ini
+    # Install Make
+    - copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
     # Install composer and update per matrix
     - appveyor-retry appveyor DownloadFile https://getcomposer.org/composer.phar
     - cd c:\projects\webmozart\php-scoper
-    - IF %dependencies%==lowest appveyor-retry composer update --no-suggest --no-interaction --no-progress --prefer-dist --prefer-lowest
-    - IF %dependencies%==highest appveyor-retry composer update --no-suggest --no-interaction --no-progress --prefer-dist
+    - appveyor-retry composer install --no-suggest --no-interaction --no-progress --prefer-dist
     - composer show
 
 
