@@ -343,7 +343,7 @@ EOF;
         $this->assertSame($expected, $actual);
     }
 
-    private function collectFiles(string $dir)
+    private function collectFiles(string $dir): array
     {
         $dir = realpath($dir);
         $finder = new Finder();

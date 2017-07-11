@@ -41,7 +41,7 @@ final class Configuration
      *
      * @return self
      */
-    public static function load(?string $path): self
+    public static function load(string $path = null): self
     {
         if (null === $path) {
             return new self(null, [], []);
@@ -64,7 +64,7 @@ final class Configuration
         return new self($path, $patchers, $globalNamespace);
     }
 
-    public function getPath(): ?string
+    public function getPath(): string
     {
         return $this->path;
     }
