@@ -166,16 +166,16 @@
         },
         {
             "name": "padraic/humbug_get_contents",
-            "version": "1.1.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/humbug/file_get_contents.git",
-                "reference": "279ff67be5b3bd0229326a917c3e262c644b98d6"
+                "reference": "6e6c47af83cb98c610f4ba7d06ee809ad59ede1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/humbug/file_get_contents/zipball/279ff67be5b3bd0229326a917c3e262c644b98d6",
-                "reference": "279ff67be5b3bd0229326a917c3e262c644b98d6",
+                "url": "https://api.github.com/repos/humbug/file_get_contents/zipball/6e6c47af83cb98c610f4ba7d06ee809ad59ede1b",
+                "reference": "6e6c47af83cb98c610f4ba7d06ee809ad59ede1b",
                 "shasum": ""
             },
             "require": {
@@ -214,6 +214,10 @@
                     "name": "Pádraic Brady",
                     "email": "padraic.brady@gmail.com",
                     "homepage": "http://blog.astrumfutura.com"
+                },
+                {
+                    "name": "Théo Fidry",
+                    "email": "theo.fidry@gmail.com"
                 }
             ],
             "description": "Secure wrapper for accessing HTTPS resources with file_get_contents for PHP 5.3+",
@@ -226,7 +230,7 @@
                 "ssl",
                 "tls"
             ],
-            "time": "2017-06-02T10:18:25+00:00"
+            "time": "2017-07-10T10:32:34+00:00"
         },
         {
             "name": "padraic/phar-updater",

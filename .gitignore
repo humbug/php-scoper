@@ -1,4 +1,5 @@
 /bin/php-scoper.phar
+/bin/php-scoper.phar.pubkey
 /box.json
 /dist/
 /build/

@@ -6,7 +6,8 @@
         }
     ],
     "require-dev": {
-        "kherge/box": "dev-fix-autoloader-cgr as 2.7.x-dev"
+        "kherge/box": "dev-fix-autoloader-cgr as 2.7.x-dev",
+        "symfony/console": "^2.8"
     },
     "config": {
         "sort-packages": true
