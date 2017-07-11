@@ -15,7 +15,7 @@ help:
 ##---------------------------------------------------------------------------
 
 build:		## Build the PHAR
-build: vendor
+build: vendor vendor-bin/box/vendor
 	# Cleanup existing artefacts
 	rm -f bin/php-scoper.phar
 	rm -rf build
@@ -78,10 +78,16 @@ tb: vendor
 vendor: composer.lock
 	composer install
 
+vendor-bin/box/vendor: vendor-bin/box/composer.lock
+	composer bin all install
+
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	 composer -d=fixtures/set005 install
 
 composer.lock: composer.json
+	@echo compose.lock is not up to date.
+
+vendor-bin/box/composer.lock: vendor-bin/box/composer.json
 	@echo compose.lock is not up to date.
 
 bin/scoper.phar: bin/php-scoper src vendor scoper.inc.php
