@@ -17,13 +17,9 @@ namespace Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
-use function Humbug\PhpScoper\create_fake_patcher;
-use function Humbug\PhpScoper\create_fake_whitelister;
-use function Humbug\PhpScoper\escape_path;
-use function Humbug\PhpScoper\make_tmp_dir;
-use function Humbug\PhpScoper\remove_dir;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use function Humbug\PhpScoper\create_fake_whitelister;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PatchScoper

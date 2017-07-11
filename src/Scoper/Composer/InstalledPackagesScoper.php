@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
-use LogicException;
 
 final class InstalledPackagesScoper implements Scoper
 {
