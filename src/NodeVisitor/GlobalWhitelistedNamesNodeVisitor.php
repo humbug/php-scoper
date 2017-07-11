@@ -41,13 +41,6 @@ final class GlobalWhitelistedNamesNodeVisitor extends NodeVisitorAbstract
             return Name::concat($this->prefix, $node->getFirst());
         }
 
-        if ($node instanceof Name
-            && 1 === count($node->parts)
-            && true === ($this->whitelister)($node->getFirst())
-        ) {
-            return Name::concat($this->prefix, $node->getFirst());
-        }
-
         return $node;
     }
 }
