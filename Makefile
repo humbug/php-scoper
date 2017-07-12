@@ -24,7 +24,7 @@ build: vendor vendor-bin/box/vendor
 
 	php -d zend.enable_gc=0 bin/php-scoper add-prefix --force
 	composer dump-autoload -d build  --classmap-authoritative
-	php -d zend.enable_gc=0 $(BOX) build
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build
 
 	# Install back all the dependencies
 	composer install
@@ -49,7 +49,7 @@ e2e:		## Run end-to-end tests
 e2e: bin/scoper.phar fixtures/set005/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set004 -o build/set004 -f
 	composer -d=build/set004 dump-autoload
-	php -d zend.enable_gc=0 $(BOX) build -c build/set004/box.json.dist
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set004/box.json.dist
 
 	php build/set004/bin/greet.phar > build/output
 	diff fixtures/set004/expected-output build/output
@@ -57,7 +57,7 @@ e2e: bin/scoper.phar fixtures/set005/vendor
 
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set005 -o build/set005 -f
 	composer -d=build/set005 dump-autoload
-	php -d zend.enable_gc=0 $(BOX) build -c build/set005/box.json.dist
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set005/box.json.dist
 
 	php build/set005/bin/greet.phar > build/output
 	diff fixtures/set005/expected-output build/output
