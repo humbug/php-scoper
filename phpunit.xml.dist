@@ -26,6 +26,10 @@ file that was distributed with this source code.
             <directory suffix=".php">./src/</directory>
             <exclude>
                 <file>src/Console/Application.php</file>
+                <file>src/Console/Configuration.php</file>
+                <directory>src/Logger</directory>
+                <directory>src/NodeVisitor</directory>
+                <file>src/functions.php</file>
             </exclude>
         </whitelist>
     </filter>

@@ -27,6 +27,7 @@ use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Composer\JsonFileScoper
+ * @covers \Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer
  */
 class JsonFileScoperTest extends TestCase
 {
