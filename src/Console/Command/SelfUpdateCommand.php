@@ -107,22 +107,19 @@ final class SelfUpdateCommand extends Command
         if ($input->getOption('rollback')) {
             $this->rollback();
 
-            return;
+            return 0;
         }
 
         if ($input->getOption('check')) {
             $this->printAvailableUpdates();
 
-            return;
+            return 0;
         }
 
-        $this->update($this->getStableUpdater());
+        $this->update($this->createUpdater());
     }
 
-    /**
-     * @return Updater
-     */
-    private function getStableUpdater(): Updater
+    private function createUpdater(): Updater
     {
         $this->updater->setStrategy(Updater::STRATEGY_GITHUB);
         $this->updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
@@ -173,7 +170,7 @@ final class SelfUpdateCommand extends Command
 
     private function printCurrentStableVersion()
     {
-        $updater = $this->getStableUpdater();
+        $updater = $this->createUpdater();
         $stability = self::STABILITY_STABLE;
 
         try {
