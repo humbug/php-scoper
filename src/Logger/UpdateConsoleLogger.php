@@ -59,7 +59,7 @@ class UpdateConsoleLogger
         ));
     }
 
-    public function error(\Exception $e)
+    public function error(\Throwable $e)
     {
         $this->io->writeln(
             '<error>Unexpected error. If updating, your original phar is untouched.</error>'
