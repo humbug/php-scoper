@@ -143,7 +143,7 @@ final class SelfUpdateCommand extends Command
             } else {
                 $this->logger->updateNotNeeded($oldVersion);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error($e);
         }
     }
@@ -157,7 +157,7 @@ final class SelfUpdateCommand extends Command
             } else {
                 $this->logger->rollbackFail();
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error($e);
         }
     }
@@ -184,7 +184,7 @@ final class SelfUpdateCommand extends Command
             } else {
                 $this->logger->currentVersionInstalled($stability);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error($e);
         }
     }
