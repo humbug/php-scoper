@@ -30,6 +30,7 @@ init:
     - SET ANSICON=121x90 (121x90)
 
 install:
+    - ps: choco install make
     - IF EXIST c:\tools\php (SET PHP=0)
     # Enable Windows update service
     - ps: Set-Service wuauserv -StartupType Manual
@@ -44,8 +45,6 @@ install:
     - IF %PHP%==1 echo extension=php_fileinfo.dll >> php.ini
     - IF %PHP%==1 echo @php %%~dp0composer.phar %%* > composer.bat
     - IF %PHP%==1 echo memory_limit=1G >> php.ini
-    # Install Make
-    - copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
     # Install composer and update per matrix
     - appveyor-retry appveyor DownloadFile https://getcomposer.org/composer.phar
     - cd c:\projects\webmozart\php-scoper
