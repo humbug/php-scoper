@@ -15,7 +15,7 @@ help:
 ##---------------------------------------------------------------------------
 
 build:		## Build the PHAR
-build: vendor vendor-bin/box/vendor
+build: src vendor vendor-bin/box/vendor
 	# Cleanup existing artefacts
 	rm -f bin/php-scoper.phar
 	rm -rf build
@@ -46,21 +46,33 @@ tc: vendor
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
-e2e: bin/scoper.phar fixtures/set005/vendor
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set004 -o build/set004 -f
-	composer -d=build/set004 dump-autoload
-	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set004/box.json.dist
+#e2e: bin/scoper.phar fixtures/set005/vendor fixtures/set011/vendor
+e2e: fixtures/set011/vendor
+#	# Set004
+#	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set004 -o build/set004 -f
+#	composer -d=build/set004 dump-autoload
+#	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set004/box.json.dist
+#
+#	php build/set004/bin/greet.phar > build/output
+#	diff fixtures/set004/expected-output build/output
+#
+#
+#	# Set005
+#	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set005 -o build/set005 -f
+#	composer -d=build/set005 dump-autoload
+#	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set005/box.json.dist
+#
+#	php build/set005/bin/greet.phar > build/output
+#	diff fixtures/set005/expected-output build/output
 
-	php build/set004/bin/greet.phar > build/output
-	diff fixtures/set004/expected-output build/output
 
+	# Set0011
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set011 -o build/set011 -f
+	composer -d=build/set011 dump-autoload
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set011/box.json.dist
 
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix fixtures/set005 -o build/set005 -f
-	composer -d=build/set005 dump-autoload
-	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set005/box.json.dist
-
-	php build/set005/bin/greet.phar > build/output
-	diff fixtures/set005/expected-output build/output
+	php build/set011/bin/greet.phar > build/output
+	diff fixtures/set011/expected-output build/output
 
 tb:		## Run Blackfire profiling
 tb: vendor
