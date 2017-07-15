@@ -57,7 +57,7 @@ to `php-scoper`, you should also rename `php-scoper.phar.pubkey` to
 You can install PHP-Scoper with Composer:
 
 ```bash
-composer global require humbug/php-scoper:dev-master
+composer global require humbug/php-scoper
 ```
 
 If you cannot install it because of a dependency conflict or you prefer to
