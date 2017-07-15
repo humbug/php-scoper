@@ -56,7 +56,7 @@ function create_application(): SymfonyApplication
         }
         $app->add(
             new SelfUpdateCommand(
-                new Updater()
+                $updater
             )
         );
     }
