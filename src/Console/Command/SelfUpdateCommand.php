@@ -41,11 +41,6 @@ final class SelfUpdateCommand extends Command
     private $updater;
 
     /**
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
      * @var string
      */
     private $version;
@@ -100,9 +95,9 @@ final class SelfUpdateCommand extends Command
             new SymfonyStyle($input, $output)
         );
 
-        $this->output = $output;
-
         $this->version = $this->getApplication()->getVersion();
+
+        $this->configureUpdater();
 
         if ($input->getOption('rollback')) {
             $this->rollback();
@@ -116,20 +111,18 @@ final class SelfUpdateCommand extends Command
             return 0;
         }
 
-        $this->update($this->createUpdater());
+        $this->update();
     }
 
-    private function createUpdater(): Updater
+    private function configureUpdater()
     {
         $this->updater->setStrategy(Updater::STRATEGY_GITHUB);
         $this->updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
         $this->updater->getStrategy()->setPharName(self::REMOTE_FILENAME);
         $this->updater->getStrategy()->setCurrentLocalVersion($this->version);
-
-        return $this->updater;
     }
 
-    private function update(Updater $updater)
+    private function update()
     {
         $this->logger->startUpdating();
         try {
@@ -172,16 +165,15 @@ final class SelfUpdateCommand extends Command
 
     private function printCurrentStableVersion()
     {
-        $updater = $this->createUpdater();
         $stability = self::STABILITY_STABLE;
 
         try {
-            if ($updater->hasUpdate()) {
+            if ($this->updater->hasUpdate()) {
                 $this->logger->printRemoteVersion(
                     $stability,
                     $updater->getNewVersion()
                 );
-            } elseif (false == $updater->getNewVersion()) {
+            } elseif (false == $this->updater->getNewVersion()) {
                 $this->logger->noNewRemoteVersions($stability);
             } else {
                 $this->logger->currentVersionInstalled($stability);
