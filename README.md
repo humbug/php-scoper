@@ -19,14 +19,17 @@ distinct PHP namespace. This is necessary, for example, when building PHARs that
 * Bundle their own vendor dependencies; and
 * Load/execute code from arbitrary PHP projects with similar dependencies
 
-These PHARs run the risk of raising conflicts between their bundled vendors and 
-the vendors of the project it is interacting with, where the PHAR's dependencies
-are used preferentially leading to difficult to debug issues due to dissimilar or
-unsupported package versions.
+When a package (of possibly different versions) exists, and is found in both a PHAR
+and the executed code, the one from the PHAR will be used. This means these
+PHARs run the risk of raising conflicts between their bundled vendors and the
+vendors of the project they are interacting with, leading to issues that are 
+potentially very difficult to debug due to dissimilar or unsupported package versions.
 
 ## Installation
 
-The preferred method of installation is to use the PHP-Scoper phar, which can
+### PHAR (preferred)
+
+The preferred method of installation is to use the PHP-Scoper PHAR, which can
 be downloaded from the most recent Github Release. Subsequent updates can be
 downloaded by running:
 
@@ -38,6 +41,23 @@ As the PHAR is signed, you should also download the matching
 `php-scoper.phar.pubkey` to the same location. If you rename `php-scoper.phar`
 to `php-scoper`, you should also rename `php-scoper.phar.pubkey` to
 `php-scoper.pubkey`.
+
+### Composer
+
+You can install PHP-Scoper with Composer:
+
+```bash
+composer global require humbug/php-scoper:dev-master
+```
+
+If you cannot install it because of a dependency conflict or you prefer to
+install it for your project, we recommend you to take a look at
+[bamarni/composer-bin-plugin][bamarni/composer-bin-plugin]. Example:
+
+```bash
+composer require --dev bamarni/composer-bin-plugin
+composer bin php-scoper require --dev humbug/php-scoper
+```
 
 ## Usage
 
@@ -102,6 +122,10 @@ Applying such a change can be achieved by defining a suitable patcher in
 `scoper.inc.php`:
 
 ```php
+<?php declare(strict_types=1)
+
+// scoper.inc.php
+
 return [
     'patchers' => [
         function (string $filePath, string $prefix, string $content): string {
@@ -133,6 +157,10 @@ also not namespaced. To ensure they are isolated, you can configure PHP-Scoper t
 allow their prefixing from `scoper.inc.php` using basic strings or callables:
 
 ```php
+<?php declare(strict_types=1)
+
+// scoper.inc.php
+
 return [
     'global_namespace_whitelist' => [
         'AppKernel',
@@ -142,8 +170,8 @@ return [
     ],
     'patchers' => [
         // patchers if relevant
-    ]
-]
+    ],
+];
 ```
 
 In this example, we're ensuring that the `AppKernal` class, and any
@@ -162,7 +190,9 @@ This is a brief run through of the basic steps encoded in PHP-Scoper's own
 
 If, for example, you are using [Box](box) to build your PHAR, you
 should set the `base-path` configuration option in your `box.json` file
-to point at the 'build' directory which will host scoped code.
+to point at the directory which will host scoped code. PHP-Scoper,
+by default, creates a `build` directory relative to the current working
+directory.
 
 ```js
 "base-path": "build"
@@ -195,7 +225,7 @@ As there are no path arguments, the current working directory will be scoped to
 or PHP scripts. Other files are copied unchanged, though we also need to scope
 certain Composer related files.
 
-Speaking of scoping Composer related files...the next step is to dump the
+Speaking of scoping Composer related files... The next step is to dump the
 Composer autoloader if we depend on it, so everything works as expected:
 
 ```bash
