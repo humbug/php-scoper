@@ -70,14 +70,14 @@ function create_application(): SymfonyApplication
 function get_version(): string
 {
     if ('phar:' === substr(__FILE__, 0, 5)) {
-        $gitVersion = "@git-version@";
+        $gitVersion = '@git-version@';
         $semanticVersion = preg_replace(
-            ["/\.\d\-/","/\-/"],
-            ['-','-dev+'],
+            ["/\.\d\-/", "/\-/"],
+            ['-', '-dev+'],
             $gitVersion,
             1
         );
-        
+
         return $semanticVersion;
     }
 
