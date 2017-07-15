@@ -8,42 +8,36 @@
 [![Slack](https://img.shields.io/badge/slack-%23humbug-red.svg?style=flat-square)](https://symfony.com/slack-invite)
 [![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](LICENSE)
 
-PHP-Scoper is a tool for adding a prefix to all PHP namespaces in a given file
-or directory. 
-
+PHP-Scoper is a tool which essentially moves any body of code, including all
+dependencies such as vendor directories, to a new and distinct namespace.
 
 ## Goal
 
-PHP-Scoper's goal is to make sure that all code in a directory lies in a 
-distinct PHP namespace. This is necessary when building PHARs that 
+PHP-Scoper's goal is to make sure that all code for a project lies in a 
+distinct PHP namespace. This is necessary, for example, when building PHARs that:
 
-* Bundle their own vendor dependencies
-* Load code of arbitrary PHP projects
+* Bundle their own vendor dependencies; and
+* Load/execute code from arbitrary PHP projects with similar dependencies
 
 These PHARs run the risk of raising conflicts between their bundled vendors and 
-the vendors of the loaded project, if the vendors are required in incompatible
-versions.
-
+the vendors of the project it is interacting with, where the PHAR's dependencies
+are used preferentially leading to difficult to debug issues due to dissimilar or
+unsupported package versions.
 
 ## Installation
 
-You can install PHP-Scoper with Composer:
+The preferred method of installation is to use the PHP-Scoper phar, which can
+be downloaded from the most recent Github Release. Subsequent updates can be
+downloaded by running:
 
 ```bash
-composer global require humbug/php-scoper:dev-master
+php-scoper.phar self-update
 ```
 
-If you cannot install it because of a dependency conflict or you prefer to
-install it for your project, we recommend you to take a look at
-[bamarni/composer-bin-plugin][bamarni/composer-bin-plugin]. Example:
-
-```bash
-composer require --dev bamarni/composer-bin-plugin
-composer bin php-scoper require --dev humbug/php-scoper:dev-master
-```
-
-A PHAR should be availaible soon as well.
-
+As the PHAR is signed, you should also download the matching
+`php-scoper.phar.pubkey` to the same location. If you rename `php-scoper.phar`
+to `php-scoper`, you should also rename `php-scoper.phar.pubkey` to
+`php-scoper.pubkey`.
 
 ## Usage
 
@@ -51,25 +45,186 @@ A PHAR should be availaible soon as well.
 php-scoper add-prefix
 ```
 
-This will prefix all the files found in the current working directory.
-The prefixed files will be accessible in a `build` folder. You can
+This will prefix all relevant namespaces in code found in the current working
+directory. The prefixed files will be accessible in a `build` folder. You can
 then use the prefixed code to build your PHAR.
 
-**Warning**: After prefexing the files, if you are relying on Composer
+**Warning**: After prefixing the files, if you are relying on Composer
 for the autoloading, dumping the autoloader again is required.
 
 For a more concrete example, you can take a look at PHP-Scoper's build
-step in [Makefile](Makefile).
+step in [Makefile](Makefile), especially if you are using Composer as
+there are steps both before and after running PHP-Scoper to consider.
 
+Refer to TBD for an in-depth look at scoping and building a PHAR taken from
+PHP-Scoper's makefile.
+
+## Patchers
+
+When scoping PHP files, there will be scenarios where some of the code being
+scoped indirectly references the original namespace. These will include, for
+example, strings or string manipulations. PHP-Scoper has limited support for
+prefixing such strings, so you may need to define `patchers`, one or more
+callables in a `scoper.inc.php` configuration file which can be used to replace
+some of the code being scoped.
+
+Here's a simple example:
+
+* Class names in strings.
+
+You can imagine instantiating a class from a variable which is based on a
+known namespace, but also on a variable classname which is selected at
+runtime. Perhaps code similar to:
+
+```php
+$type = 'Foo'; // determined at runtime
+$class = 'Humbug\\Format\\Type\\' . $type;
+```
+
+If we scoped the `Humbug` namespace to `PhpScoperABC\Humbug`, then the above
+snippet would fail as PHP-Scoper cannot interpret the above as being a namespaced
+class. To complete the scoping successfully, a) the problem must
+be located and b) the offending line replaced.
+
+The patched code which would resolve this issue might be:
+
+```php
+$type = 'Foo'; // determined at runtime
+$scopedPrefix = array_shift(explode('\\', __NAMESPACE__));
+$class = $scopedPrefix . '\\Humbug\\Format\\Type\\' . $type;
+```
+
+This and similar issues *may* arise after scoping, and can be debugged by
+running the scoped code and checking for issues. For this purpose, having a
+couple of end to end tests to validate post-scoped code or PHARs is recommended.
+
+Applying such a change can be achieved by defining a suitable patcher in
+`scoper.inc.php`:
+
+```php
+return [
+    'patchers' => [
+        function (string $filePath, string $prefix, string $content): string {
+            //
+            // PHP-Parser patch conditions for file targets
+            //
+            if ($filePath === '/path/to/offending/file') {
+                return preg_replace(
+                    "%\$class = 'Humbug\\\\Format\\\\Type\\\\' . \$type;%",
+                    '$class = \'' . $prefix . '\\\\Humbug\\\\Format\\\\Type\\\\\' . $type;',
+                    $content
+                );
+            }
+            return $content;
+        },
+    ],
+];
+```
+
+## Global Namespace Whitelisting
+
+By default, PHP-Scoper only scopes (or prefixes) code where the namespace is
+non-global. In other words, non-namespaced code is not scoped. This leaves the
+majority of classes, functions and constants in PHP, and most extensions,
+untouched.
+
+This is not necessarily a desireable outcome for vendor dependencies which are
+also not namespaced. To ensure they are isolated, you can configure PHP-Scoper to
+allow their prefixing from `scoper.inc.php` using basic strings or callables:
+
+```php
+return [
+    'global_namespace_whitelist' => [
+        'AppKernel',
+        function ($className) {
+            return 'PHPUnit' === substr($className, 0, 6);
+        },
+    ],
+    'patchers' => [
+        // patchers if relevant
+    ]
+]
+```
+
+In this example, we're ensuring that the `AppKernal` class, and any
+non-namespaced PHPUnit packages are prefixed.
 
 ## Contributing
 
 [Contribution Guide](CONTRIBUTING.md)
 
+## Building A Scoped PHAR
+
+This is a brief run through of the basic steps encoded in PHP-Scoper's own
+[Makefile](Makefile) and elsewhere to build a PHAR from scoped code.
+
+### Step 1: Configure build location and prep vendors
+
+If, for example, you are using [Box](box) to build your PHAR, you
+should set the `base-path` configuration option in your `box.json` file
+to point at the 'build' directory which will host scoped code.
+
+```js
+"base-path": "build"
+```
+
+Assuming you need no dev dependencies, run:
+
+```bash
+composer install --no-dev --prefer-dist
+```
+
+### Step 2: Run PHP-Scoper
+
+PHP-Scoper copies code to a new location during prefixing, leaving your original
+code untouched. The default location is `./build`. You can change the default
+location using the `--output-dir` option. By default, it also generates a random
+prefix string. You can set a specific prefix string using the `--prefix` option.
+If automating builds, you can set the `--force` option to overwrite any code
+existing in the output directory without being asked to confirm.
+
+Onto the basic command assuming default options from your project's root
+directory:
+
+```bash
+bin/php-scoper add-prefix
+```
+
+As there are no path arguments, the current working directory will be scoped to
+`./build` in its entirety. Of course, actual prefixing is limited to PHP files,
+or PHP scripts. Other files are copied unchanged, though we also need to scope
+certain Composer related files.
+
+Speaking of scoping Composer related files...the next step is to dump the
+Composer autoloader if we depend on it, so everything works as expected:
+
+```bash
+composer dump-autoload -d build --classmap-authoritative
+```
+
+### Step 3: Build, test, and cleanup
+
+If using [Box](box), you can now move onto actually building the PHAR:
+
+```bash
+php -d phar.readonly=0 box build -vvv
+```
+
+At this point, it's best to have some simple end-to-end tests automated to put
+the PHAR through its paces and locate any problems (see Patchers and Whitelists
+from earlier in this README). Assuming it passes testing, the PHAR is ready.
+
+Cleanup is simply to optionally delete `./build` contents, and remember to
+re-install dev dependencies removed during Step 1:
+
+```bash
+composer install
+``` 
 
 ## Credits
 
-Project originally created by: [Bernhard Schussek] ([@webmozart]) which has then been moved under the
+Project originally created by: [Bernhard Schussek] ([@webmozart]) which has
+now been moved under the
 [Humbug umbrella][humbug].
 
 
@@ -77,3 +232,4 @@ Project originally created by: [Bernhard Schussek] ([@webmozart]) which has then
 [@webmozart]: https://twitter.com/webmozart
 [humbug]: https://github.com/humbug
 [bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
+[box]: https://github.com/box-project/box2
