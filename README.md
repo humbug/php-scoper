@@ -25,13 +25,24 @@ PHARs run the risk of raising conflicts between their bundled vendors and the
 vendors of the project they are interacting with, leading to issues that are 
 potentially very difficult to debug due to dissimilar or unsupported package versions.
 
+## Table of Contents
+
+- [Goal](#goal)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Patchers](#patchers)
+- [Global Namespace Whitelisting](#global-namespace-whitelisting)
+- [Contributing](#contributing)
+- [Building A Scoped PHAR](#building-a-scoped-phar)
+- [Credits](#credits)
+
 ## Installation
 
 ### PHAR (preferred)
 
 The preferred method of installation is to use the PHP-Scoper PHAR, which can
-be downloaded from the most recent Github Release. Subsequent updates can be
-downloaded by running:
+be downloaded from the most recent [Github Release](releases). Subsequent updates
+can be downloaded by running:
 
 ```bash
 php-scoper.phar self-update
@@ -263,3 +274,4 @@ now been moved under the
 [humbug]: https://github.com/humbug
 [bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
 [box]: https://github.com/box-project/box2
+[releases]: https://github.com/humbug/php-scoper/releases
