@@ -27,7 +27,6 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 
 ## Table of Contents
 
-- [Goal](#goal)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Patchers](#patchers)
