@@ -145,6 +145,7 @@ final class SelfUpdateCommand extends Command
             }
         } catch (\Throwable $e) {
             $this->logger->error($e);
+            throw $e;
         }
     }
 
@@ -159,6 +160,7 @@ final class SelfUpdateCommand extends Command
             }
         } catch (\Throwable $e) {
             $this->logger->error($e);
+            throw $e;
         }
     }
 
@@ -186,6 +188,7 @@ final class SelfUpdateCommand extends Command
             }
         } catch (\Throwable $e) {
             $this->logger->error($e);
+            throw $e;
         }
     }
 

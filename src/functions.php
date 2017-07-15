@@ -23,6 +23,7 @@ use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\SelfUpdate\Exception\RuntimeException as SelfUpdateRuntimeException;
 use Humbug\SelfUpdate\Updater;
 use PackageVersions\Versions;
 use PhpParser\Parser;
@@ -47,6 +48,12 @@ function create_application(): SymfonyApplication
     ]);
 
     if ('phar:' === substr(__FILE__, 0, 5)) {
+        try {
+            $updater = new Updater();
+        } catch (SelfUpdateRuntimeException $e) {
+            /* Allow E2E testing of unsigned phar */
+            $updater = new Updater(null, false);
+        }
         $app->add(
             new SelfUpdateCommand(
                 new Updater()

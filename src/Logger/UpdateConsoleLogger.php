@@ -39,7 +39,7 @@ class UpdateConsoleLogger
 
     public function updateSuccess(string $newVersion, string $oldVersion)
     {
-        $this->io->writeln('PHP-Scoper has been updated.');
+        $this->io->success('PHP-Scoper has been updated.');
         $this->io->writeln(sprintf(
             'Current version is: <comment>%s</comment>.',
             $newVersion
@@ -61,20 +61,17 @@ class UpdateConsoleLogger
 
     public function error(\Throwable $e)
     {
-        $this->io->writeln(
-            '<error>Unexpected error. If updating, your original phar is untouched.</error>'
-        );
-        $this->io->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+        $this->io->error('Unexpected error. If updating, your original phar is untouched.');
     }
 
     public function rollbackSuccess()
     {
-        $this->io->writeln('PHP-Scoper has been rolled back to prior version.');
+        $this->io->success('PHP-Scoper has been rolled back to prior version.');
     }
 
     public function rollbackFail()
     {
-        $this->io->writeln('Rollback failed for reasons unknown.');
+        $this->io->error('Rollback failed for reasons unknown.');
     }
 
     public function printLocalVersion(string $version)
