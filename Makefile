@@ -24,7 +24,7 @@ build: vendor vendor-bin/box/vendor
 
 	php -d zend.enable_gc=0 bin/php-scoper add-prefix --force
 	composer dump-autoload -d build  --classmap-authoritative
-	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build $(CONFIG)
 
 	# Install back all the dependencies
 	composer install
@@ -91,4 +91,4 @@ vendor-bin/box/composer.lock: vendor-bin/box/composer.json
 	@echo compose.lock is not up to date.
 
 bin/scoper.phar: bin/php-scoper src vendor scoper.inc.php
-	$(MAKE) build
+	$(MAKE) CONFIG="-c box.json.dist" build
