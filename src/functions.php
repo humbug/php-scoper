@@ -16,12 +16,15 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
+use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\SelfUpdate\Exception\RuntimeException as SelfUpdateRuntimeException;
+use Humbug\SelfUpdate\Updater;
 use PackageVersions\Versions;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -44,6 +47,20 @@ function create_application(): SymfonyApplication
         ),
     ]);
 
+    if ('phar:' === substr(__FILE__, 0, 5)) {
+        try {
+            $updater = new Updater();
+        } catch (SelfUpdateRuntimeException $e) {
+            /* Allow E2E testing of unsigned phar */
+            $updater = new Updater(null, false);
+        }
+        $app->add(
+            new SelfUpdateCommand(
+                $updater
+            )
+        );
+    }
+
     return $app;
 }
 
@@ -52,6 +69,18 @@ function create_application(): SymfonyApplication
  */
 function get_version(): string
 {
+    if ('phar:' === substr(__FILE__, 0, 5)) {
+        $gitVersion = '@git-version@';
+        $semanticVersion = preg_replace(
+            ["/\.\d\-/", "/\-/"],
+            ['-', '-dev+'],
+            $gitVersion,
+            1
+        );
+
+        return $semanticVersion;
+    }
+
     $rawVersion = Versions::getVersion('humbug/php-scoper');
 
     list($prettyVersion, $commitHash) = explode('@', $rawVersion);
