@@ -41,9 +41,9 @@ final class Configuration
     private $globalNamespaceWhitelisters;
 
     /**
-     * @param string|null         $path Absolute path to the configuration file loaded
+     * @param string|null         $path            Absolute path to the configuration file loaded
      * @param Finder[]            $finders
-     * @param callable[]          $patchers List of closures which can alter the content of the files being
+     * @param callable[]          $patchers        List of closures which can alter the content of the files being
      *                                             scoped
      * @param callable[]|string[] $globalNamespace List of class names from the global namespace that should be scoped
      *                                             or closures filtering if the class should be scoped or not
