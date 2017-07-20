@@ -133,10 +133,12 @@ final class AddPrefixCommand extends Command
             $input->getArgument(self::PATH_ARG)
         );
 
+        $paths = $this->retrievePaths($input, $config);
+
         try {
             $this->handle->__invoke(
                 $input->getOption(self::PREFIX_OPT),
-                $input->getArgument(self::PATH_ARG),
+                $paths,
                 $input->getOption(self::OUTPUT_DIR_OPT),
                 $config->getPatchers(),
                 $config->getGlobalNamespaceWhitelisters(),
@@ -193,10 +195,6 @@ final class AddPrefixCommand extends Command
             },
             $input->getArgument(self::PATH_ARG)
         );
-
-        if (0 === count($paths)) {
-            $paths[] = $cwd;
-        }
 
         $input->setArgument(self::PATH_ARG, $paths);
     }
@@ -303,6 +301,31 @@ final class AddPrefixCommand extends Command
         );
 
         return Configuration::load($configFile);
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param Configuration  $configuration
+     *
+     * @return string[] List of absolute paths
+     */
+    private function retrievePaths(InputInterface $input, Configuration $configuration): array
+    {
+        $paths = $input->getArgument(self::PATH_ARG);
+
+        $finders = $configuration->getFinders();
+
+        foreach ($finders as $finder) {
+            foreach ($finder as $file) {
+                $paths[] = $file->getRealPath();
+            }
+        }
+
+        if (0 === count($paths)) {
+            return [getcwd()];
+        }
+
+        return $paths;
     }
 
     private function makeAbsolutePath(string $path): string

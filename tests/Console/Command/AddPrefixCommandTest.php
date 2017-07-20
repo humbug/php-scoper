@@ -200,6 +200,56 @@ EOF;
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
+    public function test_scope_the_given_paths_and_the_ones_found_by_the_finder()
+    {
+        chdir($rootPath = escape_path(self::FIXTURE_PATH.'/set012'));
+
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/dir1'),
+                escape_path('/path/to/dir2'),
+                escape_path('/path/to/file'),
+            ],
+            '--output-dir' => $this->tmp,
+            '--no-interaction',
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    escape_path('/path/to/dir1'),
+                    escape_path('/path/to/dir2'),
+                    escape_path('/path/to/file'),
+                    realpath(escape_path($rootPath.'/dir/file1.php')),
+                    realpath(escape_path($rootPath.'/dir/file2.php')),
+                ],
+                $this->tmp,
+                Argument::type('array'),
+                Argument::type('array'),
+                false,
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        $this->assertSame(0, $this->appTester->getStatusCode());
+
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
     public function test_applies_a_random_prefix_when_none_given()
     {
         $input = [
