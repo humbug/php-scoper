@@ -41,9 +41,9 @@ final class Configuration
     private $globalNamespaceWhitelisters;
 
     /**
-     * @param string|null         $path            Absolute path to the configuration file loaded
+     * @param string|null         $path Absolute path to the configuration file loaded
      * @param Finder[]            $finders
-     * @param callable[]          $patchers        List of closures which can alter the content of the files being
+     * @param callable[]          $patchers List of closures which can alter the content of the files being
      *                                             scoped
      * @param callable[]|string[] $globalNamespace List of class names from the global namespace that should be scoped
      *                                             or closures filtering if the class should be scoped or not
@@ -147,8 +147,7 @@ final class Configuration
         if (false === is_array($finders)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Expected finders to be an array of "%s", found "%s" instead.',
-                    Finder::class,
+                    'Expected finders to be an array of callables, found "%s" instead.',
                     gettype($finders)
                 )
             );
