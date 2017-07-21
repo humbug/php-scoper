@@ -325,7 +325,7 @@ final class AddPrefixCommand extends Command
             return [getcwd()];
         }
 
-        return $paths;
+        return array_unique($paths);
     }
 
     private function makeAbsolutePath(string $path): string
