@@ -68,7 +68,10 @@ e2e: fixtures/set011/vendor
 
 	# Set0011
 	# TMP: replace bin/php-scoper by $(PHPSCOPER)
-	php -d zend.enable_gc=0 bin/php-scoper add-prefix -o build/set011 -f -c fixtures/set011/scoper.inc.php
+	php -d zend.enable_gc=0 bin/php-scoper add-prefix -o build/set011 -f -c fixtures/set011/scoper.inc.php -p PhpScoper598627d709dd4
+	# Leave the `tests` autoloading of the `composer.json` intact
+#	sed -i -e 's/PhpScoper.*\\\\Set011\\\\": "tests/Set011\\\\": "tests/g' build/set011/composer.json
+	cp -f build/set011/composer.json.dist build/set011/composer.json
 	composer -d=build/set011 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set011/box.json.dist
 	cp -R fixtures/set011/tests build/set011

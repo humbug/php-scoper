@@ -491,10 +491,9 @@ PHP
             ,
             'Humbug',
             ['Bar\FooNamespace'],
+            // Removes the use statements as the usages of the whitelisted class will be transformed to make use of the FQCN
             <<<'PHP'
 <?php
-
-use Bar\FooNamespace;
 
 PHP
         ];
@@ -545,10 +544,9 @@ PHP
             ,
             'Humbug',
             ['FooNamespace\X'],
+            // Removes the use statements as the usages of the whitelisted class will be transformed to make use of the FQCN
             <<<'PHP'
 <?php
-
-use FooNamespace\X as XAlias;
 
 PHP
         ];
@@ -792,7 +790,7 @@ PHP
         //
         // ============================
 
-        yield '[Use statement for a function] simple statement' => [
+        yield '[Use statement for a constant] simple statement' => [
             <<<'PHP'
 <?php
 
@@ -810,7 +808,7 @@ use const Humbug\FooNamespace\FOO;
 PHP
         ];
 
-        yield '[Use statement for a function] prefixed statement' => [
+        yield '[Use statement for a constant] prefixed statement' => [
             <<<'PHP'
 <?php
 
@@ -828,7 +826,7 @@ use const Humbug\FooNamespace\FOO;
 PHP
         ];
 
-        yield '[Use statement for a function] whitelisted statement' => [
+        yield '[Use statement for a constant] whitelisted statement' => [
             <<<'PHP'
 <?php
 
@@ -919,7 +917,111 @@ PHP
             <<<'PHP'
 <?php
 
+new \Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete whitelisted FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use X\Foo;
+
 new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['X\Foo\Bar'],
+            <<<'PHP'
+<?php
+
+new \X\Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete non-whitelisted FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use X\Foo;
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['Foo\Bar'],
+            <<<'PHP'
+<?php
+
+use X\Foo;
+
+new Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete whitelisted FQCN with use statement and an alias' => [
+            <<<'PHP'
+<?php
+
+use X\Foo as Y;
+
+new Y\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['X\Foo\Bar'],
+            <<<'PHP'
+<?php
+
+new \X\Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete non-whitelisted FQCN with use statement and an alias' => [
+            <<<'PHP'
+<?php
+
+use X\Foo as Y;
+
+new Y\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['Foo\Bar'],
+            <<<'PHP'
+<?php
+
+use X\Foo as Y;
+
+new Y\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete whitelisted FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use X\Foo;
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['X\Foo\Bar'],
+            <<<'PHP'
+<?php
+
+new \X\Foo\Bar();
 
 PHP
         ];

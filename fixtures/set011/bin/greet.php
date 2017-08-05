@@ -8,7 +8,13 @@ use Set011\DirectionaryLocator;
 use Set011\Greeter;
 use Set011\Dictionary;
 
-$testDir = dirname(Phar::running(false)).'/../tests';
+$dir = Phar::running(false);
+if ('' === $dir) {
+    // Running outside of a PHAR
+    $dir = __DIR__.DIRECTORY_SEPARATOR.'bin';
+}
+
+$testDir = dirname($dir).'/../tests';
 
 $dictionaries = DirectionaryLocator::locateDictionaries($testDir);
 
