@@ -490,7 +490,7 @@ use Bar\FooNamespace;
 PHP
             ,
             'Humbug',
-            ['Bar/FooNamespace'],
+            ['Bar\FooNamespace'],
             <<<'PHP'
 <?php
 

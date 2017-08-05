@@ -20,6 +20,14 @@ use PhpParser\NodeTraverserInterface;
  */
 final class TraverserFactory
 {
+    /**
+     * Functions for which the arguments will be prefixed.
+     */
+    const WHITELISTED_FUNCTIONS = [
+        'class_exists',
+        'interface_exists',
+    ];
+
     private $traverser;
     
     public function create(string $prefix, array $whitelist, callable $globalWhitelister): NodeTraverserInterface
@@ -32,10 +40,10 @@ final class TraverserFactory
 
         $this->traverser->addVisitor(new ParentNodeVisitor());
         $this->traverser->addVisitor(new SingleLevelUseAliasVisitor($prefix));
-        $this->traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor($globalWhitelister));
+        $this->traverser->addVisitor(new IgnoreNamespaceScoperNodeVisitor($whitelist, $globalWhitelister));
         $this->traverser->addVisitor(new GroupUseNamespaceScoperNodeVisitor($prefix));
         $this->traverser->addVisitor(new NamespaceScoperNodeVisitor($prefix));
-        $this->traverser->addVisitor(new FunctionCallScoperNodeVisitor($prefix, ['class_exists', 'interface_exists']));
+        $this->traverser->addVisitor(new FunctionCallScoperNodeVisitor($prefix, $whitelist, self::WHITELISTED_FUNCTIONS));
         $this->traverser->addVisitor(new UseNamespaceScoperNodeVisitor($prefix));
         $this->traverser->addVisitor(new FullyQualifiedNodeVisitor($prefix));
         $this->traverser->addVisitor(new GlobalWhitelistedNamesNodeVisitor($prefix, $globalWhitelister));
