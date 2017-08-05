@@ -147,7 +147,8 @@ final class Configuration
         if (false === is_array($finders)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Expected finders to be an array of callables, found "%s" instead.',
+                    'Expected finders to be an array of "%s", found "%s" instead.',
+                    Finder::class,
                     gettype($finders)
                 )
             );
