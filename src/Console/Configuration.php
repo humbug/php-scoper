@@ -15,24 +15,44 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use InvalidArgumentException;
+use Symfony\Component\Finder\Finder;
 
 final class Configuration
 {
+    /** @internal */
+    const FINDER_KEYWORD = 'finders';
+
+    /** @internal */
+    const PATCHERS_KEYWORD = 'patchers';
+
+    /** @internal */
+    const GLOBAL_NAMESPACE_KEYWORD = 'global_namespace_whitelist';
+
+    /** @internal */
+    const KEYWORDS = [
+        self::FINDER_KEYWORD,
+        self::PATCHERS_KEYWORD,
+        self::GLOBAL_NAMESPACE_KEYWORD,
+    ];
+
     private $path;
     private $patchers;
+    private $finders;
     private $globalNamespaceWhitelisters;
 
     /**
      * @param string|null         $path            Absolute path to the configuration file loaded
+     * @param Finder[]            $finders
      * @param callable[]          $patchers        List of closures which can alter the content of the files being
      *                                             scoped
      * @param callable[]|string[] $globalNamespace List of class names from the global namespace that should be scoped
      *                                             or closures filtering if the class should be scoped or not
      */
-    private function __construct(string $path = null, array $patchers, array $globalNamespace)
+    private function __construct(string $path = null, array $finders, array $patchers, array $globalNamespace)
     {
         $this->path = $path;
         $this->patchers = $patchers;
+        $this->finders = $finders;
         $this->globalNamespaceWhitelisters = $globalNamespace;
     }
 
@@ -44,7 +64,7 @@ final class Configuration
     public static function load(string $path = null): self
     {
         if (null === $path) {
-            return new self(null, [], []);
+            return new self(null, [], [], []);
         }
 
         $config = include $path;
@@ -58,15 +78,26 @@ final class Configuration
             );
         }
 
+        self::validateConfigKeys($config);
+
+        $finders = self::retrieveFinders($config);
         $patchers = self::retrievePatchers($config);
         $globalNamespace = self::retrieveGlobalNamespaceWhitelisters($config);
 
-        return new self($path, $patchers, $globalNamespace);
+        return new self($path, $finders, $patchers, $globalNamespace);
     }
 
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    /**
+     * @return Finder[]
+     */
+    public function getFinders(): array
+    {
+        return $this->finders;
     }
 
     /**
@@ -85,13 +116,68 @@ final class Configuration
         return $this->globalNamespaceWhitelisters;
     }
 
-    private static function retrievePatchers(array $config): array
+    private static function validateConfigKeys(array $config)
     {
-        if (false === array_key_exists('patchers', $config)) {
+        array_map(
+            ['self', 'validateConfigKey'],
+            array_keys($config)
+        );
+    }
+
+    private static function validateConfigKey(string $key)
+    {
+        if (false === in_array($key, self::KEYWORDS)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid configuration key value "%s" found.',
+                    $key
+                )
+            );
+        }
+    }
+
+    private static function retrieveFinders(array $config): array
+    {
+        if (false === array_key_exists(self::FINDER_KEYWORD, $config)) {
             return [];
         }
 
-        $patchers = $config['patchers'];
+        $finders = $config[self::FINDER_KEYWORD];
+
+        if (false === is_array($finders)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected finders to be an array of "%s", found "%s" instead.',
+                    Finder::class,
+                    gettype($finders)
+                )
+            );
+        }
+
+        foreach ($finders as $index => $finder) {
+            if ($finder instanceof Finder) {
+                continue;
+            }
+
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected finders to be an array of "%s", the "%d" element is not.',
+                    Finder::class,
+                    $index
+                )
+            );
+        }
+
+        return $finders;
+    }
+
+    private static function retrievePatchers(array $config): array
+    {
+        if (false === array_key_exists(self::PATCHERS_KEYWORD, $config)) {
+            return [];
+        }
+
+        $patchers = $config[self::PATCHERS_KEYWORD];
 
         if (false === is_array($patchers)) {
             throw new InvalidArgumentException(
@@ -103,14 +189,16 @@ final class Configuration
         }
 
         foreach ($patchers as $index => $patcher) {
-            if (false === is_callable($patcher)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected patchers to be an array of callables, the "%d" element is not.',
-                        $index
-                    )
-                );
+            if (is_callable($patcher)) {
+                continue;
             }
+
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected patchers to be an array of callables, the "%d" element is not.',
+                    $index
+                )
+            );
         }
 
         return $patchers;
@@ -118,11 +206,11 @@ final class Configuration
 
     private static function retrieveGlobalNamespaceWhitelisters(array $config): array
     {
-        if (false === array_key_exists('global_namespace_whitelist', $config)) {
+        if (false === array_key_exists(self::GLOBAL_NAMESPACE_KEYWORD, $config)) {
             return [];
         }
 
-        $globalNamespace = $config['global_namespace_whitelist'];
+        $globalNamespace = $config[self::GLOBAL_NAMESPACE_KEYWORD];
 
         if (false === is_array($globalNamespace)) {
             throw new InvalidArgumentException(
@@ -134,15 +222,17 @@ final class Configuration
         }
 
         foreach ($globalNamespace as $index => $className) {
-            if (false === is_string($className) && false === is_callable($className)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected "global_namespace" to be an array of callables or strings, the "%d" element '
-                        .'is not.',
-                        $index
-                    )
-                );
+            if (is_string($className) || is_callable($className)) {
+                continue;
             }
+
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected "global_namespace" to be an array of callables or strings, the "%d" element '
+                    .'is not.',
+                    $index
+                )
+            );
         }
 
         return $globalNamespace;
