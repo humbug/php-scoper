@@ -9,3 +9,4 @@ return [
             ->in(__DIR__.DIRECTORY_SEPARATOR.'dir'),
     ],
 ];
+

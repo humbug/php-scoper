@@ -43,9 +43,10 @@ class HandleAddPrefix
      * Apply prefix to all the code found in the given paths, AKA scope all the files found.
      *
      * @param string              $prefix                   e.g. 'Foo'
-     * @param string[]            $paths                    List of files to scan (absolute paths)
-     * @param string              $output                   absolute path to the output directory
+     * @param string[]            $paths                    List of files (absolute paths) which will be scoped
+     * @param string              $output                   Absolute path to the output directory
      * @param callable[]          $patchers
+     * @param string[]            $whitelist                List of classes that will not be scoped
      * @param string[]|callable[] $globalNamespaceWhitelist
      * @param bool                $stopOnFailure
      * @param ConsoleLogger       $logger
@@ -55,6 +56,7 @@ class HandleAddPrefix
         array $paths,
         string $output,
         array $patchers,
+        array $whitelist,
         array $globalNamespaceWhitelist,
         bool $stopOnFailure,
         ConsoleLogger $logger
@@ -66,7 +68,7 @@ class HandleAddPrefix
 
             $globalWhitelister = $this->createGlobalWhitelister($globalNamespaceWhitelist);
 
-            $this->scopeFiles($files, $prefix, $patchers, $globalWhitelister, $stopOnFailure, $logger);
+            $this->scopeFiles($files, $prefix, $patchers, $whitelist, $globalWhitelister, $stopOnFailure, $logger);
         } catch (Throwable $throwable) {
             $this->fileSystem->remove($output);
 
@@ -181,6 +183,7 @@ class HandleAddPrefix
      * @param string[]      $files
      * @param string        $prefix
      * @param callable[]    $patchers
+     * @param string[]      $whitelist
      * @param callable      $globalWhitelister
      * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
@@ -189,6 +192,7 @@ class HandleAddPrefix
         array $files,
         string $prefix,
         array $patchers,
+        array $whitelist,
         callable $globalWhitelister,
         bool $stopOnFailure,
         ConsoleLogger $logger
@@ -197,7 +201,7 @@ class HandleAddPrefix
         $logger->outputFileCount($count);
 
         foreach ($files as $inputFilePath => $outputFilePath) {
-            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $patchers, $globalWhitelister, $stopOnFailure, $logger);
+            $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $patchers, $whitelist, $globalWhitelister, $stopOnFailure, $logger);
         }
     }
 
@@ -206,6 +210,7 @@ class HandleAddPrefix
      * @param string        $outputFilePath
      * @param string        $prefix
      * @param callable[]    $patchers
+     * @param string[]      $whitelist
      * @param callable      $globalWhitelister
      * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
@@ -215,12 +220,13 @@ class HandleAddPrefix
         string $outputFilePath,
         string $prefix,
         array $patchers,
+        array $whitelist,
         callable $globalWhitelister,
         bool $stopOnFailure,
         ConsoleLogger $logger
     ) {
         try {
-            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers, $globalWhitelister);
+            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers, $whitelist, $globalWhitelister);
         } catch (Throwable $error) {
             $exception = new ParsingException(
                 sprintf(

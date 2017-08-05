@@ -98,6 +98,7 @@ class PhpScoperTest extends TestCase
         $prefix = 'Humbug';
         $filePath = escape_path($this->tmp.'/file.php');
         $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
         $content = <<<'PHP'
@@ -112,7 +113,7 @@ echo "Humbug!";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -122,10 +123,11 @@ PHP;
         $filePath = 'file.yaml';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelister)
+            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -136,7 +138,7 @@ PHP;
             $this->decoratedScoper
         );
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -148,6 +150,7 @@ PHP;
         $prefix = 'Humbug';
         $filePath = escape_path($this->tmp.'/hello');
         $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
         $content = <<<'PHP'
@@ -167,7 +170,7 @@ echo "Hello world";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -179,6 +182,8 @@ PHP;
         $filePath = escape_path($this->tmp.'/hello');
 
         $patchers = [create_fake_patcher()];
+
+        $whitelist = ['Foo'];
 
         $whitelister = create_fake_whitelister();
 
@@ -193,7 +198,7 @@ PHP;
         file_put_contents($filePath, $content);
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelister)
+            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -204,7 +209,7 @@ PHP;
             $this->decoratedScoper
         );
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -226,10 +231,11 @@ PHP;
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
         try {
-            $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
+            $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
             $this->fail('Expected exception to have been thrown.');
         } catch (PhpParserError $error) {
@@ -245,7 +251,7 @@ PHP;
     /**
      * @dataProvider provideValidFiles
      */
-    public function test_can_scope_valid_files(string $content, string $prefix, string $expected)
+    public function test_can_scope_valid_files(string $content, string $prefix, array $whitelist, string $expected)
     {
         $filePath = escape_path($this->tmp.'/file.php');
 
@@ -258,7 +264,7 @@ PHP;
             return 'AppKernel' === $className;
         };
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -277,6 +283,7 @@ PHP;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -294,6 +301,7 @@ namespace MyNamespace;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -313,6 +321,7 @@ namespace MyNamespace {
 PHP
         ,
         'Humbug',
+        [],
         <<<'PHP'
 <?php
 
@@ -331,6 +340,27 @@ namespace Humbug\MyNamespace;
 PHP
             ,
             'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\MyNamespace;
+
+
+PHP
+        ];
+
+        yield '[Namespace declaration] simple declaration with whitelist' => [
+            <<<'PHP'
+<?php
+
+namespace MyNamespace;
+
+PHP
+            ,
+            'Humbug',
+            ['MyNamespace'],
+            // The whitelist does nothing here as it is meant to work only with classes
             <<<'PHP'
 <?php
 
@@ -351,6 +381,7 @@ namespace MyNamespace3;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -375,6 +406,7 @@ namespace MyNamespace3;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -398,6 +430,7 @@ namespace {
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -421,6 +454,7 @@ use Bar\FooNamespace;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -438,10 +472,29 @@ use Humbug\FooNamespace;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
 use Humbug\FooNamespace;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] simple whitelisted statement' => [
+            <<<'PHP'
+<?php
+
+use Bar\FooNamespace;
+
+PHP
+            ,
+            'Humbug',
+            ['Bar/FooNamespace'],
+            <<<'PHP'
+<?php
+
+use Bar\FooNamespace;
 
 PHP
         ];
@@ -455,6 +508,7 @@ use FooNamespace\X as XAlias;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -472,10 +526,29 @@ use Humbug\FooNamespace\X as XAlias;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
 use Humbug\FooNamespace\X as XAlias;
+
+PHP
+        ];
+
+        yield '[Use statement for a class] simple whitelisted statement with an alias' => [
+            <<<'PHP'
+<?php
+
+use FooNamespace\X as XAlias;
+
+PHP
+            ,
+            'Humbug',
+            ['FooNamespace\X'],
+            <<<'PHP'
+<?php
+
+use FooNamespace\X as XAlias;
 
 PHP
         ];
@@ -490,6 +563,7 @@ use Bar\BarNamespace;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -509,6 +583,7 @@ use Humbug\BarNamespace;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -528,6 +603,7 @@ use BarNamespace\Y;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -546,6 +622,7 @@ use Bar\FooNamespace, Bar\BarNamespace;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -563,6 +640,7 @@ use Bar\FooNamespace, Humbug\BarNamespace;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -580,6 +658,7 @@ use FooNamespace\{X, Y, Z};
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -599,6 +678,7 @@ use BazNamespace\{X, Y, Z};
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -619,6 +699,7 @@ use Humbug\Bar\FooNamespace;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -637,6 +718,7 @@ use Composer\Unknown;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -659,6 +741,7 @@ use function FooNamespace\foo;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -676,6 +759,26 @@ use function Humbug\FooNamespace\foo;
 PHP
             ,
             'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+use function Humbug\FooNamespace\foo;
+
+PHP
+        ];
+
+        yield '[Use statement for a function] simple whitelisted statement' => [
+            <<<'PHP'
+<?php
+
+use function FooNamespace\foo;
+
+PHP
+            ,
+            'Humbug',
+            ['FooNamespace\foo'],
+            // The whitelist does nothing here as it is meant to work only with classes
             <<<'PHP'
 <?php
 
@@ -698,6 +801,7 @@ use const FooNamespace\FOO;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -715,6 +819,26 @@ use const Humbug\FooNamespace\FOO;
 PHP
             ,
             'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+use const Humbug\FooNamespace\FOO;
+
+PHP
+        ];
+
+        yield '[Use statement for a function] whitelisted statement' => [
+            <<<'PHP'
+<?php
+
+use const FooNamespace\FOO;
+
+PHP
+            ,
+            'Humbug',
+            ['FooNamespace\FOO'],
+            // The whitelist does nothing here as it is meant to work only with classes
             <<<'PHP'
 <?php
 
@@ -737,10 +861,29 @@ new \Foo\Bar();
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
 new \Humbug\Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] complete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+new \Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['Foo\Bar'],
+            <<<'PHP'
+<?php
+
+new \Foo\Bar();
 
 PHP
         ];
@@ -754,6 +897,25 @@ new Foo\Bar();
 PHP
             ,
             'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+new Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['Foo\Bar'],
             <<<'PHP'
 <?php
 
@@ -776,10 +938,29 @@ PHP
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
 \Humbug\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] complete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command::main();
 
 PHP
         ];
@@ -793,6 +974,25 @@ PHPUnit\TextUI\Command::main();
 PHP
             ,
             'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
             <<<'PHP'
 <?php
 
@@ -815,10 +1015,48 @@ PHP
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
 \Humbug\PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] complete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command\main'],
+            // The whitelist does nothing here as it is meant to work only with classes
+            <<<'PHP'
+<?php
+
+\Humbug\PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] complete FQCN with whitelisted class' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command\main();
 
 PHP
         ];
@@ -832,6 +1070,44 @@ PHPUnit\TextUI\Command\main();
 PHP
             ,
             'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] incomplete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command\main'],
+            // The whitelist does nothing here as it is meant to work only with classes
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] incomplete FQCN with whitelisted class' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
             <<<'PHP'
 <?php
 
@@ -854,10 +1130,29 @@ PHP
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
 \Humbug\PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] complete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command::FOO;
 
 PHP
         ];
@@ -871,6 +1166,25 @@ PHPUnit\TextUI\Command::FOO;
 PHP
             ,
             'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
             <<<'PHP'
 <?php
 
@@ -893,6 +1207,7 @@ use Closure;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -910,6 +1225,7 @@ use AppKernel;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -918,7 +1234,11 @@ use Humbug\AppKernel;
 PHP
         ];
 
-        yield '[Single part global namespace reference] a full qualified class reference' => [
+        //TODO: do not allow to whitelist a class from the global namespace, e.g. `Foo`. Indeed they are already
+        //whitelisted and the global namespace whitelister is about scoping them when necessary. This validation can
+        //be done in the configuration
+
+        yield '[Single part global namespace reference] a fully qualified class reference' => [
             <<<'PHP'
 <?php
 
@@ -927,6 +1247,7 @@ $foo = new \Closure();
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -944,6 +1265,7 @@ $foo = new \AppKernel();
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -961,6 +1283,7 @@ $foo = new Closure();
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -978,6 +1301,7 @@ $foo = new AppKernel();
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -997,6 +1321,7 @@ function foo(\Closure $bar)
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1018,6 +1343,7 @@ function foo(\AppKernel $bar)
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1039,6 +1365,7 @@ function foo(Closure $bar)
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1060,6 +1387,7 @@ function foo(AppKernel $kernel)
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1079,6 +1407,7 @@ $a = \PHP_EOL;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1096,6 +1425,7 @@ $a = PHP_EOL;
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1113,6 +1443,7 @@ PHP
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1132,6 +1463,7 @@ function foo($bar) : \Closure
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1153,6 +1485,7 @@ function foo($bar) : Closure
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1173,6 +1506,7 @@ new Bar\Baz();
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1197,6 +1531,7 @@ class_exists('\\Symfony\\Component\\Yaml\\Yaml');
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1206,19 +1541,62 @@ class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 PHP
         ];
 
+        yield '[Function parameter] class_exists on whitelisted class' => [
+            <<<'PHP'
+<?php
+
+class_exists('Symfony\\Component\\Yaml\\Yaml');
+class_exists('\\Symfony\\Component\\Yaml\\Yaml');
+
+PHP
+            ,
+            'Humbug',
+            ['Symfony\Component\Yaml\Yaml'],
+            <<<'PHP'
+<?php
+
+class_exists('Symfony\\Component\\Yaml\\Yaml');
+class_exists('\\Symfony\\Component\\Yaml\\Yaml');
+
+PHP
+        ];
+
         yield '[Function parameter] interface_exists' => [
             <<<'PHP'
 <?php
 
 interface_exists('Foo\\Bar');
+interface_exists('\\Foo\\Bar');
 
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
 interface_exists('Humbug\\Foo\\Bar');
+interface_exists('\\Humbug\\Foo\\Bar');
+
+PHP
+        ];
+
+        yield '[Function parameter] interface_exists on whitelisted class' => [
+            <<<'PHP'
+<?php
+
+interface_exists('Foo\\Bar');
+interface_exists('\\Foo\\Bar');
+
+PHP
+            ,
+            'Humbug',
+            ['Foo\Bar'],
+            <<<'PHP'
+<?php
+
+interface_exists('Foo\\Bar');
+interface_exists('\\Foo\\Bar');
 
 PHP
         ];
@@ -1232,6 +1610,7 @@ class_exists('Symfony\\Component' . '\\Yaml\\Yaml');
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
@@ -1244,15 +1623,38 @@ PHP
             <<<'PHP'
 <?php
 
+class_exists(Symfony\Component\Yaml\Yaml::class);
 class_exists(\Symfony\Component\Yaml\Yaml::class);
 
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
+class_exists(Symfony\Component\Yaml\Yaml::class);
 class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+
+PHP
+        ];
+
+        yield '[Function parameter] class_exists with constant on whitelisted class' => [
+            <<<'PHP'
+<?php
+
+class_exists(Symfony\Component\Yaml\Yaml::class);
+class_exists(\Symfony\Component\Yaml\Yaml::class);
+
+PHP
+            ,
+            'Humbug',
+            ['Symfony\Component\Yaml\Yaml'],
+            <<<'PHP'
+<?php
+
+class_exists(Symfony\Component\Yaml\Yaml::class);
+class_exists(\Symfony\Component\Yaml\Yaml::class);
 
 PHP
         ];
@@ -1261,17 +1663,22 @@ PHP
             <<<'PHP'
 <?php
 
-$x = '\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Yaml';
+$y = '\\Symfony\\Component\\Yaml\\Yaml';
 class_exists($x);
+class_exists($y);
 
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 
-$x = '\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Yaml';
+$y = '\\Symfony\\Component\\Yaml\\Yaml';
 class_exists($x);
+class_exists($y);
 
 PHP
         ];
@@ -1286,6 +1693,7 @@ class_exists('\\Closure');
 PHP
             ,
             'Humbug',
+            [],
             <<<'PHP'
 <?php
 

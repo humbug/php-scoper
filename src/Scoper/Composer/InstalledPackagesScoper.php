@@ -32,10 +32,10 @@ final class InstalledPackagesScoper implements Scoper
      *
      * {@inheritdoc}
      */
-    public function scope(string $filePath, string $prefix, array $patchers, callable $globalWhitelister): string
+    public function scope(string $filePath, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
     {
         if (1 !== preg_match(self::$filePattern, $filePath)) {
-            return $this->decoratedScoper->scope($filePath, $prefix, $patchers, $globalWhitelister);
+            return $this->decoratedScoper->scope($filePath, $prefix, $patchers, $whitelist, $globalWhitelister);
         }
 
         $decodedJson = json_decode(

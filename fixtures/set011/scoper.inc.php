@@ -19,6 +19,9 @@ return [
         (new Finder())
             ->files()
             ->in(__DIR__)
-            ->notPath('~tests'.DIRECTORY_SEPARATOR.'.*~')
+            ->exclude('tests')
+    ],
+    'whitelist' => [
+        \Set011\Dictionary::class,
     ],
 ];

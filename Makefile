@@ -71,6 +71,7 @@ e2e: fixtures/set011/vendor
 	php -d zend.enable_gc=0 bin/php-scoper add-prefix -o build/set011 -f -c fixtures/set011/scoper.inc.php
 	composer -d=build/set011 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set011/box.json.dist
+	cp -R fixtures/set011/tests build/set011
 
 	php build/set011/bin/greet.phar > build/output
 	diff fixtures/set011/expected-output build/output
