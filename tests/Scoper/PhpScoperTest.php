@@ -1098,7 +1098,49 @@ PHP
             <<<'PHP'
 <?php
 
-PHPUnit\TextUI\Command::main();
+\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use PHPUnit\TextUI\Command;
+
+Command::main();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+use Humbug\PHPUnit\TextUI\Command;
+
+Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete whitelisted FQCN' => [
+            <<<'PHP'
+<?php
+
+use PHPUnit\TextUI\Command;
+
+Command::main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+\PHPUnit\TextUI\Command::main();
 
 PHP
         ];
