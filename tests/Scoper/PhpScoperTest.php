@@ -872,6 +872,50 @@ new \Humbug\Foo\Bar();
 PHP
         ];
 
+        yield '[FQCN usage for a class] complete FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new \Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+new \Humbug\Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] complete single-level FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new \Foo();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+new \Humbug\Foo();
+
+PHP
+        ];
+
         yield '[FQCN usage for a class] complete whitelisted FQCN' => [
             <<<'PHP'
 <?php
@@ -884,6 +928,28 @@ PHP
             ['Foo\Bar'],
             <<<'PHP'
 <?php
+
+new \Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] complete whitelisted FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new \Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['Foo\Bar'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
 
 new \Foo\Bar();
 
@@ -908,6 +974,50 @@ new Foo\Bar();
 PHP
         ];
 
+        yield '[FQCN usage for a class] incomplete FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+new Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete single-level FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new Foo();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+new Foo();
+
+PHP
+        ];
+
         yield '[FQCN usage for a class] incomplete whitelisted FQCN' => [
             <<<'PHP'
 <?php
@@ -922,6 +1032,94 @@ PHP
 <?php
 
 new Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete non-whitelisted FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['Foo\Bar'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+new Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete single-level non-whitelisted FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new Foo();
+
+PHP
+            ,
+            'Humbug',
+            ['Foo\Bar'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+new Foo();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete whitelisted FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['X\Foo\Bar'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+new \Humbug\X\Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete single-level whitelisted FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+new Foo();
+
+PHP
+            ,
+            'Humbug',
+            ['X\Foo'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+new \Humbug\X\Foo();
 
 PHP
         ];
@@ -943,6 +1141,75 @@ PHP
 
 use Humbug\X\Foo;
 new \X\Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete single-level whitelisted FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use X\Foo;
+
+new Foo();
+
+PHP
+            ,
+            'Humbug',
+            ['X\Foo'],
+            <<<'PHP'
+<?php
+
+use Humbug\X\Foo;
+new \X\Foo();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete whitelisted FQCN with use statement in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace Y;
+
+use X\Foo;
+
+new Foo\Bar();
+
+PHP
+            ,
+            'Humbug',
+            ['X\Foo\Bar'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\Y;
+use Humbug\X\Foo;
+new \X\Foo\Bar();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a class] incomplete single-level whitelisted FQCN with use statement in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace Y;
+
+use X\Foo;
+
+new Foo();
+
+PHP
+            ,
+            'Humbug',
+            ['X\Foo'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\Y;
+use Humbug\X\Foo;
+new \X\Foo();
 
 PHP
         ];
@@ -1065,6 +1332,76 @@ PHP
             <<<'PHP'
 <?php
 
+\Humbug\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+use Humbug\PHPUnit
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete FQCN in a namespace with use statement' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+use Humbug\PHPUnit
+
 PHPUnit\TextUI\Command::main();
 
 PHP
@@ -1083,7 +1420,121 @@ PHP
             <<<'PHP'
 <?php
 
+\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete non-whitelisted FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
 PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete whitelisted FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            ['X\PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+\X\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete non-whitelisted FQCN with a use statement' => [
+            <<<'PHP'
+<?php
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+use Humbug\PHPUnit;
+
+\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete whitelisted FQCN with a use statement' => [
+            <<<'PHP'
+<?php
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+use Humbug\PHPUnit;
+
+\PHPUnit\TextUI\Command::main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a method] incomplete whitelisted FQCN with a use statement in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command::main();
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+use Humbug\PHPUnit;
+
+\PHPUnit\TextUI\Command::main();
 
 PHP
         ];
@@ -1181,10 +1632,11 @@ PHP
             ,
             'Humbug',
             ['PHPUnit\TextUI\Command'],
+            // The whitelist does nothing here as it is meant to work only with classes
             <<<'PHP'
 <?php
 
-\PHPUnit\TextUI\Command\main();
+\Humbug\PHPUnit\TextUI\Command\main();
 
 PHP
         ];
@@ -1201,6 +1653,76 @@ PHP
             [],
             <<<'PHP'
 <?php
+
+\PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] incomplete FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+use Humbug\PHPUnit;
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] incomplete FQCN in namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+        ];
+
+        yield '[FQCN usage for a function] incomplete FQCN in namespace with use statement' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command\main();
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+use Humbug\PHPUnit;
 
 PHPUnit\TextUI\Command\main();
 
@@ -1236,6 +1758,7 @@ PHP
             ,
             'Humbug',
             ['PHPUnit\TextUI\Command'],
+            // The whitelist does nothing here as it is meant to work only with classes
             <<<'PHP'
 <?php
 
@@ -1298,6 +1821,76 @@ PHP
             <<<'PHP'
 <?php
 
+\PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+use Humbug\PHPUnit;
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete FQCN in a namespace with use statement' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+use Humbug\PHPUnit;
+
 PHPUnit\TextUI\Command::FOO;
 
 PHP
@@ -1316,7 +1909,77 @@ PHP
             <<<'PHP'
 <?php
 
+\PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete whitelisted FQCN with use statement' => [
+            <<<'PHP'
+<?php
+
+use PHPUnit;
+
 PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            ['PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+use Humbug\PHPUnit;
+
+\PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete whitelisted FQCN in a namespace' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            ['X\PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+\X\PHPUnit\TextUI\Command::FOO;
+
+PHP
+        ];
+
+        yield '[FQCN usage for a constant] incomplete whitelisted FQCN in a namespace with a use statement' => [
+            <<<'PHP'
+<?php
+
+namespace X;
+
+use PHPUnit;
+
+PHPUnit\TextUI\Command::FOO;
+
+PHP
+            ,
+            'Humbug',
+            ['X\PHPUnit\TextUI\Command'],
+            <<<'PHP'
+<?php
+
+namespace Humbug\X;
+
+use Humbug\PHPUnit;
+
+\X\PHPUnit\TextUI\Command::FOO;
 
 PHP
         ];
@@ -1339,7 +2002,7 @@ PHP
             <<<'PHP'
 <?php
 
-use Closure;
+use \Closure;
 
 PHP
         ];
@@ -1357,7 +2020,7 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\AppKernel;
+use \Humbug\AppKernel;
 
 PHP
         ];
@@ -1415,7 +2078,7 @@ PHP
             <<<'PHP'
 <?php
 
-$foo = new Closure();
+$foo = new \Closure();
 
 PHP
         ];
@@ -1433,7 +2096,7 @@ PHP
             <<<'PHP'
 <?php
 
-$foo = new Humbug\AppKernel();
+$foo = new \Humbug\AppKernel();
 
 PHP
         ];
@@ -1557,16 +2220,34 @@ PHP
             <<<'PHP'
 <?php
 
-$a = PHP_EOL;
+$a = \PHP_EOL;
 
 PHP
         ];
 
-        yield '[Single part global namespace reference] a fully qualified function' => [
+        yield '[Single part global namespace reference] a FQ function call' => [
             <<<'PHP'
 <?php
 
 \var_dump(1);
+
+PHP
+            ,
+            'Humbug',
+            [],
+            <<<'PHP'
+<?php
+
+\var_dump(1);
+
+PHP
+        ];
+
+        yield '[Single part global namespace reference] a non-FQ function call' => [
+            <<<'PHP'
+<?php
+
+var_dump(1);
 
 PHP
             ,
@@ -1584,7 +2265,7 @@ PHP
             <<<'PHP'
 <?php
 
-function foo($bar) : \Closure
+function foo($bar): \Closure
 {
 }
 
@@ -1595,7 +2276,7 @@ PHP
             <<<'PHP'
 <?php
 
-function foo($bar) : \Closure
+function foo($bar): \Closure
 {
 }
 
@@ -1606,7 +2287,7 @@ PHP
             <<<'PHP'
 <?php
 
-function foo($bar) : Closure
+function foo($bar): Closure
 {
 }
 
@@ -1617,7 +2298,7 @@ PHP
             <<<'PHP'
 <?php
 
-function foo($bar) : Closure
+function foo($bar): \Closure
 {
 }
 
