@@ -20,7 +20,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
 
-final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
+final class ScopeFunctionCallStmtNodeVisitor extends NodeVisitorAbstract
 {
     private $prefix;
     private $whitelist;
@@ -41,7 +41,7 @@ final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
     /**
      * @inheritdoc
      */
-    public function enterNode(Node $node)
+    public function enterNode(Node $node): Node
     {
         if (!$node instanceof FuncCall || null === $node->name) {
             return $node;
@@ -62,12 +62,12 @@ final class FunctionCallScoperNodeVisitor extends NodeVisitorAbstract
 
         $stringValue = ltrim($value->value, '\\');
 
-        // Do not prefix whitelisted classes
+        // Do not prefix whitelisted class methods
         if (in_array($stringValue, $this->whitelist)) {
             return $node;
         }
 
-        // Do not prefix global namespace
+        // Do not prefix function calls belonging to the global namespace
         if (false !== strstr($stringValue, '\\')) {
             $value->value = ($value->value !== $stringValue ? '\\' : '').$this->prefix.'\\'.$stringValue;
         }

@@ -495,6 +495,8 @@ PHP
             <<<'PHP'
 <?php
 
+
+
 PHP
         ];
 
@@ -547,6 +549,8 @@ PHP
             // Removes the use statements as the usages of the whitelisted class will be transformed to make use of the FQCN
             <<<'PHP'
 <?php
+
+
 
 PHP
         ];
@@ -917,7 +921,7 @@ PHP
             <<<'PHP'
 <?php
 
-new \Foo\Bar();
+new Foo\Bar();
 
 PHP
         ];
@@ -937,6 +941,7 @@ PHP
             <<<'PHP'
 <?php
 
+use Humbug\X\Foo;
 new \X\Foo\Bar();
 
 PHP
@@ -957,8 +962,7 @@ PHP
             <<<'PHP'
 <?php
 
-use X\Foo;
-
+use Humbug\X\Foo;
 new Foo\Bar();
 
 PHP
@@ -979,6 +983,7 @@ PHP
             <<<'PHP'
 <?php
 
+use Humbug\X\Foo as Y;
 new \X\Foo\Bar();
 
 PHP
@@ -999,32 +1004,12 @@ PHP
             <<<'PHP'
 <?php
 
-use X\Foo as Y;
-
+use Humbug\X\Foo as Y;
 new Y\Bar();
 
 PHP
         ];
 
-        yield '[FQCN usage for a class] incomplete whitelisted FQCN with use statement' => [
-            <<<'PHP'
-<?php
-
-use X\Foo;
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['X\Foo\Bar'],
-            <<<'PHP'
-<?php
-
-new \X\Foo\Bar();
-
-PHP
-        ];
 
         //
         // FQCN usage for a method
@@ -1098,7 +1083,7 @@ PHP
             <<<'PHP'
 <?php
 
-\PHPUnit\TextUI\Command::main();
+PHPUnit\TextUI\Command::main();
 
 PHP
         ];
@@ -1119,13 +1104,12 @@ PHP
 <?php
 
 use Humbug\PHPUnit\TextUI\Command;
-
 Command::main();
 
 PHP
         ];
 
-        yield '[FQCN usage for a method] incomplete whitelisted FQCN' => [
+        yield '[FQCN usage for a method] incomplete whitelisted FQCN with use statement' => [
             <<<'PHP'
 <?php
 

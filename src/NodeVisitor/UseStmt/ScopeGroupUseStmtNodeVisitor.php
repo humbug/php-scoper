@@ -12,15 +12,27 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\UseStmt;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\GroupUse;
-use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
-final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+/**
+ * Scopes relevant group statements.
+ *
+ * ```
+ * use Foo{X,Y};
+ * ```
+ *
+ * =>
+ *
+ * ```
+ * use Humbug\Foo{X,Y};
+ * ```
+ */
+final class ScopeGroupUseStmtNodeVisitor extends NodeVisitorAbstract
 {
     private $prefix;
 
@@ -32,16 +44,12 @@ final class UseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
     /**
      * @inheritdoc
      */
-    public function enterNode(Node $node)
+    public function enterNode(Node $node): Node
     {
-        if ($node instanceof UseUse
-            && $node->hasAttribute('parent')
-            && false === ($node->getAttribute('parent') instanceof GroupUse)
-            && $this->prefix !== $node->name->getFirst()
-            && false === ($node->hasAttribute('phpscoper_ignore')
-            && true === $node->getAttribute('phpscoper_ignore'))
+        if ($node instanceof GroupUse
+            && $this->prefix !== $node->prefix->getFirst()
         ) {
-            $node->name = Name::concat($this->prefix, $node->name);
+            $node->prefix = Name::concat($this->prefix, $node->prefix);
         }
 
         return $node;

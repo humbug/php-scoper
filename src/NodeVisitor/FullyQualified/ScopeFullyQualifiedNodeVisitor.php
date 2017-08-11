@@ -12,14 +12,17 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\FullyQualified;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\NodeVisitorAbstract;
 
-final class FullyQualifiedNodeVisitor extends NodeVisitorAbstract
+/**
+ * Scopes the relevant fully qualified nodes.
+ */
+final class ScopeFullyQualifiedNodeVisitor extends NodeVisitorAbstract
 {
     private $prefix;
 
@@ -31,7 +34,7 @@ final class FullyQualifiedNodeVisitor extends NodeVisitorAbstract
     /**
      * @inheritdoc
      */
-    public function enterNode(Node $node)
+    public function enterNode(Node $node): Node
     {
         if ($node instanceof FullyQualified
             && false === ($node->hasAttribute('phpscoper_ignore')

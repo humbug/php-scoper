@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use DeepCopy\DeepCopy;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
@@ -152,4 +153,14 @@ function get_common_path(array $paths): string
     }
 
     return $common;
+}
+
+/**
+ * @param $item
+ *
+ * @return mixed
+ */
+function deep_clone($item)
+{
+    return (new DeepCopy())->copy($item);
 }
