@@ -911,7 +911,7 @@ PHP
 
 namespace Humbug\X;
 
-new \Humbug\Foo();
+new \Foo();
 
 PHP
         ];
@@ -1097,7 +1097,7 @@ PHP
 
 namespace Humbug\X;
 
-new \Humbug\X\Foo\Bar();
+new \X\Foo\Bar();
 
 PHP
         ];
@@ -1119,7 +1119,7 @@ PHP
 
 namespace Humbug\X;
 
-new \Humbug\X\Foo();
+new \X\Foo();
 
 PHP
         ];
@@ -1160,7 +1160,6 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\X\Foo;
 new \X\Foo();
 
 PHP
@@ -1184,6 +1183,7 @@ PHP
 <?php
 
 namespace Humbug\Y;
+
 use Humbug\X\Foo;
 new \X\Foo\Bar();
 
@@ -1208,7 +1208,7 @@ PHP
 <?php
 
 namespace Humbug\Y;
-use Humbug\X\Foo;
+
 new \X\Foo();
 
 PHP
@@ -1387,7 +1387,7 @@ PHP
 
 namespace X;
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command::main();
 
@@ -1400,8 +1400,7 @@ PHP
 
 namespace Humbug\X;
 
-use Humbug\PHPUnit
-
+use Humbug\Foo\PHPUnit;
 PHPUnit\TextUI\Command::main();
 
 PHP
@@ -1473,7 +1472,7 @@ PHP
             <<<'PHP'
 <?php
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command::main();
 
@@ -1484,9 +1483,8 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\PHPUnit;
-
-\PHPUnit\TextUI\Command::main();
+use Humbug\Foo\PHPUnit;
+PHPUnit\TextUI\Command::main();
 
 PHP
         ];
@@ -1495,20 +1493,19 @@ PHP
             <<<'PHP'
 <?php
 
-use PHPUnit;
+use Foo\PHPUnit;
 
-PHPUnit\TextUI\Command::main();
+Foo\PHPUnit\TextUI\Command::main();
 
 PHP
             ,
             'Humbug',
-            ['PHPUnit\TextUI\Command'],
+            ['Foo\PHPUnit\TextUI\Command'],
             <<<'PHP'
 <?php
 
-use Humbug\PHPUnit;
-
-\PHPUnit\TextUI\Command::main();
+use Humbug\Foo\PHPUnit;
+\Foo\PHPUnit\TextUI\Command::main();
 
 PHP
         ];
@@ -1519,22 +1516,21 @@ PHP
 
 namespace X;
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command::main();
 
 PHP
             ,
             'Humbug',
-            ['PHPUnit\TextUI\Command'],
+            ['Foo\PHPUnit\TextUI\Command'],
             <<<'PHP'
 <?php
 
 namespace Humbug\X;
 
-use Humbug\PHPUnit;
-
-\PHPUnit\TextUI\Command::main();
+use Humbug\Foo\PHPUnit;
+\Foo\PHPUnit\TextUI\Command::main();
 
 PHP
         ];
@@ -1654,7 +1650,7 @@ PHP
             <<<'PHP'
 <?php
 
-\PHPUnit\TextUI\Command\main();
+\Humbug\PHPUnit\TextUI\Command\main();
 
 PHP
         ];
@@ -1663,7 +1659,7 @@ PHP
             <<<'PHP'
 <?php
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command\main();
 
@@ -1674,8 +1670,7 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\PHPUnit;
-
+use Humbug\Foo\PHPUnit;
 PHPUnit\TextUI\Command\main();
 
 PHP
@@ -1709,7 +1704,7 @@ PHP
 
 namespace X;
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command\main();
 
@@ -1722,8 +1717,7 @@ PHP
 
 namespace Humbug\X;
 
-use Humbug\PHPUnit;
-
+use Humbug\Foo\PHPUnit;
 PHPUnit\TextUI\Command\main();
 
 PHP
@@ -1743,7 +1737,7 @@ PHP
             <<<'PHP'
 <?php
 
-PHPUnit\TextUI\Command\main();
+\Humbug\PHPUnit\TextUI\Command\main();
 
 PHP
         ];
@@ -1762,7 +1756,7 @@ PHP
             <<<'PHP'
 <?php
 
-PHPUnit\TextUI\Command\main();
+\Humbug\PHPUnit\TextUI\Command\main();
 
 PHP
         ];
@@ -1821,7 +1815,7 @@ PHP
             <<<'PHP'
 <?php
 
-\PHPUnit\TextUI\Command::FOO;
+\Humbug\PHPUnit\TextUI\Command::FOO;
 
 PHP
         ];
@@ -1830,7 +1824,7 @@ PHP
             <<<'PHP'
 <?php
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command::FOO;
 
@@ -1841,8 +1835,7 @@ PHP
             <<<'PHP'
 <?php
 
-use Humbug\PHPUnit;
-
+use Humbug\Foo\PHPUnit;
 PHPUnit\TextUI\Command::FOO;
 
 PHP
@@ -1876,7 +1869,7 @@ PHP
 
 namespace X;
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command::FOO;
 
@@ -1889,8 +1882,7 @@ PHP
 
 namespace Humbug\X;
 
-use Humbug\PHPUnit;
-
+use Humbug\Foo\PHPUnit;
 PHPUnit\TextUI\Command::FOO;
 
 PHP
@@ -1918,20 +1910,19 @@ PHP
             <<<'PHP'
 <?php
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command::FOO;
 
 PHP
             ,
             'Humbug',
-            ['PHPUnit\TextUI\Command'],
+            ['Foo\PHPUnit\TextUI\Command'],
             <<<'PHP'
 <?php
 
-use Humbug\PHPUnit;
-
-\PHPUnit\TextUI\Command::FOO;
+use Humbug\Foo\PHPUnit;
+\Foo\PHPUnit\TextUI\Command::FOO;
 
 PHP
         ];
@@ -1964,22 +1955,21 @@ PHP
 
 namespace X;
 
-use PHPUnit;
+use Foo\PHPUnit;
 
 PHPUnit\TextUI\Command::FOO;
 
 PHP
             ,
             'Humbug',
-            ['X\PHPUnit\TextUI\Command'],
+            ['Foo\PHPUnit\TextUI\Command'],
             <<<'PHP'
 <?php
 
 namespace Humbug\X;
 
-use Humbug\PHPUnit;
-
-\X\PHPUnit\TextUI\Command::FOO;
+use Humbug\Foo\PHPUnit;
+\Foo\PHPUnit\TextUI\Command::FOO;
 
 PHP
         ];
@@ -2002,7 +1992,7 @@ PHP
             <<<'PHP'
 <?php
 
-use \Closure;
+use Closure;
 
 PHP
         ];
@@ -2020,7 +2010,7 @@ PHP
             <<<'PHP'
 <?php
 
-use \Humbug\AppKernel;
+use Humbug\AppKernel;
 
 PHP
         ];
@@ -2078,7 +2068,7 @@ PHP
             <<<'PHP'
 <?php
 
-$foo = new \Closure();
+$foo = new Closure();
 
 PHP
         ];
@@ -2096,7 +2086,7 @@ PHP
             <<<'PHP'
 <?php
 
-$foo = new \Humbug\AppKernel();
+$foo = new Humbug\AppKernel();
 
 PHP
         ];
@@ -2220,7 +2210,7 @@ PHP
             <<<'PHP'
 <?php
 
-$a = \PHP_EOL;
+$a = PHP_EOL;
 
 PHP
         ];
@@ -2256,7 +2246,7 @@ PHP
             <<<'PHP'
 <?php
 
-\var_dump(1);
+var_dump(1);
 
 PHP
         ];
@@ -2276,7 +2266,7 @@ PHP
             <<<'PHP'
 <?php
 
-function foo($bar): \Closure
+function foo($bar) : \Closure
 {
 }
 
@@ -2298,7 +2288,7 @@ PHP
             <<<'PHP'
 <?php
 
-function foo($bar): \Closure
+function foo($bar) : Closure
 {
 }
 

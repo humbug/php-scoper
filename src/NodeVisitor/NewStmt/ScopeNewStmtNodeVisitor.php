@@ -1,8 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\NewStmt;
 
+use Humbug\PhpScoper\NodeVisitor\NamespaceStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
@@ -13,14 +15,20 @@ use PhpParser\NodeVisitorAbstract;
 final class ScopeNewStmtNodeVisitor extends NodeVisitorAbstract
 {
     private $prefix;
-    private $useStmtCollection;
+    private $namespaceStatements;
+    private $useStatements;
     private $whitelist;
 
-    public function __construct(string $prefix, UseStmtCollection $useStmtCollection, array $whitelist)
-    {
+    public function __construct(
+        string $prefix,
+        NamespaceStmtCollection $namespaceStatements,
+        UseStmtCollection $useStatements,
+        array $whitelist
+    ) {
 
         $this->prefix = $prefix;
-        $this->useStmtCollection = $useStmtCollection;
+        $this->namespaceStatements = $namespaceStatements;
+        $this->useStatements = $useStatements;
         $this->whitelist = $whitelist;
     }
 
@@ -44,35 +52,26 @@ final class ScopeNewStmtNodeVisitor extends NodeVisitorAbstract
             $x = '';
         }
 
-        $useStatement = $this->findUseStatement($node->getFirst());
+        $useStatement = $this->useStatements->findStatementForName($node->getFirst());
 
         if (null === $useStatement) {
-            return $node;
+            if (0 === count($this->namespaceStatements)) {
+                return $node;
+            }
+
+            $namespaceStatement = $this->namespaceStatements->getNamespaceName();
+
+            $newNode = FullyQualified::concat($namespaceStatement, $node, $node->getAttributes());
+        } else {
+            $newNode = FullyQualified::concat($useStatement, $node->slice(1), $node->getAttributes());
         }
 
-        $newNode = FullyQualified::concat($useStatement, $node->slice(1), $node->getAttributes());
+        $newNode->setAttribute('phpscoper_ignore', true);
 
         if (in_array((string) $newNode, $this->whitelist)) {
             return $newNode;
         }
 
         return $node;
-    }
-
-    private function findUseStatement(string $name): ?Name
-    {
-        foreach ($this->useStmtCollection as $use_) {
-            foreach ($use_->uses as $useStatement) {
-                if ($useStatement instanceof UseUse) {
-                    if ($name === $useStatement->alias || $name === $useStatement->name->getLast()) {
-                        return $useStatement->name;
-                    }
-                }
-
-                //TODO
-            }
-        }
-
-        return null;
     }
 }

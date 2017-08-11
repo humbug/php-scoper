@@ -97,15 +97,15 @@ final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
 
-        // Is a method call of a whitelisted class
-        if ($parentNode instanceof FuncCall
-            && $parentNode->name instanceof Name
-            && in_array((string) $parentNode->name->slice(0, -1), $this->whitelist)
-        ) {
-            $node->setAttribute('phpscoper_ignore', true);
-
-            return $node;
-        }
+//        // Is a method call of a whitelisted class
+//        if ($parentNode instanceof FuncCall
+//            && $parentNode->name instanceof Name
+//            && in_array((string) $parentNode->name->slice(0, -1), $this->whitelist)
+//        ) {
+//            $node->setAttribute('phpscoper_ignore', true);
+//
+//            return $node;
+//        }
 
         // Is a new instance of a whitelisted class
         if ($parentNode instanceof New_

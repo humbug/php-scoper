@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\FunctionStmt;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
@@ -20,7 +20,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
 
-final class ScopeFunctionCallStmtNodeVisitor extends NodeVisitorAbstract
+final class ScopeFunctionCallArgumentsStmtNodeVisitor extends NodeVisitorAbstract
 {
     private $prefix;
     private $whitelist;

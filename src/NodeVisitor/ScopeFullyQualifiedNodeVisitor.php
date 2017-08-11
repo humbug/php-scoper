@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor\FullyQualified;
+namespace Humbug\PhpScoper\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -37,8 +37,10 @@ final class ScopeFullyQualifiedNodeVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node): Node
     {
         if ($node instanceof FullyQualified
-            && false === ($node->hasAttribute('phpscoper_ignore')
-            && true === $node->getAttribute('phpscoper_ignore'))
+            && false === (
+                $node->hasAttribute('phpscoper_ignore')
+                && true === $node->getAttribute('phpscoper_ignore')
+            )
         ) {
             return new Name('\\'.Name::concat($this->prefix, (string) $node));
         }
