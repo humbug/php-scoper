@@ -27,6 +27,7 @@ use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
 use Symfony\Component\Finder\Finder;
+use Throwable;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PhpScoper
@@ -92,165 +93,165 @@ class PhpScoperTest extends TestCase
         remove_dir($this->tmp);
     }
 
-//    public function test_is_a_Scoper()
-//    {
-//        $this->assertTrue(is_a(PhpScoper::class, Scoper::class, true));
-//    }
-//
-//    public function test_can_scope_a_PHP_file()
-//    {
-//        $prefix = 'Humbug';
-//        $filePath = escape_path($this->tmp.'/file.php');
-//        $patchers = [create_fake_patcher()];
-//        $whitelist = ['Foo'];
-//        $whitelister = create_fake_whitelister();
-//
-//        $content = <<<'PHP'
-//echo "Humbug!";
-//PHP;
-//
-//        touch($filePath);
-//        file_put_contents($filePath, $content);
-//
-//        $expected = <<<'PHP'
-//echo "Humbug!";
-//
-//PHP;
-//
-//        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-//
-//        $this->assertSame($expected, $actual);
-//    }
-//
-//    public function test_does_not_scope_file_if_is_not_a_PHP_file()
-//    {
-//        $filePath = 'file.yaml';
-//        $prefix = 'Humbug';
-//        $patchers = [create_fake_patcher()];
-//        $whitelist = ['Foo'];
-//        $whitelister = create_fake_whitelister();
-//
-//        $this->decoratedScoperProphecy
-//            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
-//            ->willReturn(
-//                $expected = 'Scoped content'
-//            )
-//        ;
-//
-//        $scoper = new PhpScoper(
-//            new FakeParser(),
-//            $this->decoratedScoper
-//        );
-//
-//        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-//
-//        $this->assertSame($expected, $actual);
-//
-//        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-//    }
-//
-//    public function test_can_scope_PHP_binary_files()
-//    {
-//        $prefix = 'Humbug';
-//        $filePath = escape_path($this->tmp.'/hello');
-//        $patchers = [create_fake_patcher()];
-//        $whitelist = ['Foo'];
-//        $whitelister = create_fake_whitelister();
-//
-//        $content = <<<'PHP'
-//#!/usr/bin/env php
-//<?php
-//
-//echo "Hello world";
-//PHP;
-//
-//        touch($filePath);
-//        file_put_contents($filePath, $content);
-//
-//        $expected = <<<'PHP'
-//#!/usr/bin/env php
-//<?php
-//echo "Hello world";
-//
-//PHP;
-//
-//        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-//
-//        $this->assertSame($expected, $actual);
-//    }
-//
-//    public function test_does_not_scope_a_non_PHP_binary_files()
-//    {
-//        $prefix = 'Humbug';
-//
-//        $filePath = escape_path($this->tmp.'/hello');
-//
-//        $patchers = [create_fake_patcher()];
-//
-//        $whitelist = ['Foo'];
-//
-//        $whitelister = create_fake_whitelister();
-//
-//        $content = <<<'PHP'
-//#!/usr/bin/env bash
-//<?php
-//
-//echo "Hello world";
-//PHP;
-//
-//        touch($filePath);
-//        file_put_contents($filePath, $content);
-//
-//        $this->decoratedScoperProphecy
-//            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
-//            ->willReturn(
-//                $expected = 'Scoped content'
-//            )
-//        ;
-//
-//        $scoper = new PhpScoper(
-//            new FakeParser(),
-//            $this->decoratedScoper
-//        );
-//
-//        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-//
-//        $this->assertSame($expected, $actual);
-//
-//        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-//    }
-//
-//    public function test_cannot_scope_an_invalid_PHP_file()
-//    {
-//        $filePath = escape_path($this->tmp.'/invalid-file.php');
-//        $content = <<<'PHP'
-//<?php
-//
-//$class = ;
-//
-//PHP;
-//
-//        touch($filePath);
-//        file_put_contents($filePath, $content);
-//
-//        $prefix = 'Humbug';
-//        $patchers = [create_fake_patcher()];
-//        $whitelist = ['Foo'];
-//        $whitelister = create_fake_whitelister();
-//
-//        try {
-//            $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-//
-//            $this->fail('Expected exception to have been thrown.');
-//        } catch (PhpParserError $error) {
-//            $this->assertEquals(
-//                'Syntax error, unexpected \';\' on line 3',
-//                $error->getMessage()
-//            );
-//            $this->assertSame(0, $error->getCode());
-//            $this->assertNull($error->getPrevious());
-//        }
-//    }
+    public function test_is_a_Scoper()
+    {
+        $this->assertTrue(is_a(PhpScoper::class, Scoper::class, true));
+    }
+
+    public function test_can_scope_a_PHP_file()
+    {
+        $prefix = 'Humbug';
+        $filePath = escape_path($this->tmp.'/file.php');
+        $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
+        $whitelister = create_fake_whitelister();
+
+        $content = <<<'PHP'
+echo "Humbug!";
+PHP;
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
+        $expected = <<<'PHP'
+echo "Humbug!";
+
+PHP;
+
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function test_does_not_scope_file_if_is_not_a_PHP_file()
+    {
+        $filePath = 'file.yaml';
+        $prefix = 'Humbug';
+        $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
+        $whitelister = create_fake_whitelister();
+
+        $this->decoratedScoperProphecy
+            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
+            ->willReturn(
+                $expected = 'Scoped content'
+            )
+        ;
+
+        $scoper = new PhpScoper(
+            new FakeParser(),
+            $this->decoratedScoper
+        );
+
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+
+        $this->assertSame($expected, $actual);
+
+        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_can_scope_PHP_binary_files()
+    {
+        $prefix = 'Humbug';
+        $filePath = escape_path($this->tmp.'/hello');
+        $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
+        $whitelister = create_fake_whitelister();
+
+        $content = <<<'PHP'
+#!/usr/bin/env php
+<?php
+
+echo "Hello world";
+PHP;
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
+        $expected = <<<'PHP'
+#!/usr/bin/env php
+<?php
+echo "Hello world";
+
+PHP;
+
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function test_does_not_scope_a_non_PHP_binary_files()
+    {
+        $prefix = 'Humbug';
+
+        $filePath = escape_path($this->tmp.'/hello');
+
+        $patchers = [create_fake_patcher()];
+
+        $whitelist = ['Foo'];
+
+        $whitelister = create_fake_whitelister();
+
+        $content = <<<'PHP'
+#!/usr/bin/env bash
+<?php
+
+echo "Hello world";
+PHP;
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
+        $this->decoratedScoperProphecy
+            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
+            ->willReturn(
+                $expected = 'Scoped content'
+            )
+        ;
+
+        $scoper = new PhpScoper(
+            new FakeParser(),
+            $this->decoratedScoper
+        );
+
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+
+        $this->assertSame($expected, $actual);
+
+        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_cannot_scope_an_invalid_PHP_file()
+    {
+        $filePath = escape_path($this->tmp.'/invalid-file.php');
+        $content = <<<'PHP'
+<?php
+
+$class = ;
+
+PHP;
+
+        touch($filePath);
+        file_put_contents($filePath, $content);
+
+        $prefix = 'Humbug';
+        $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
+        $whitelister = create_fake_whitelister();
+
+        try {
+            $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+
+            $this->fail('Expected exception to have been thrown.');
+        } catch (PhpParserError $error) {
+            $this->assertEquals(
+                'Syntax error, unexpected \';\' on line 3',
+                $error->getMessage()
+            );
+            $this->assertSame(0, $error->getCode());
+            $this->assertNull($error->getPrevious());
+        }
+    }
 
     /**
      * @dataProvider provideValidFiles
@@ -278,868 +279,30 @@ class PhpScoperTest extends TestCase
         $files = (new Finder())->files()->in(self::FIXTURES_PATH);
 
         foreach ($files as $file) {
-            $fixtures = include $file;
+            try {
+                $fixtures = include $file;
 
-            $meta = $fixtures['meta'];
-            unset($fixtures['meta']);
+                $meta = $fixtures['meta'];
+                unset($fixtures['meta']);
 
-            foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                $payload = preg_split("/\n----(?:\n|$)/", $fixtureSet['payload']);
+                foreach ($fixtures as $fixtureTitle => $fixtureSet) {
+                    $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
 
-                yield sprintf('[%s] %s', $meta['title'], $fixtureTitle) => [
-                    $payload[0],
-                    $fixtureSet['prefix'] ?? $meta['prefix'],
-                    $fixtureSet['whitelist'] ?? $meta['whitelist'],
-                    $payload[1],
-                ];
+                    $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
+
+                    yield sprintf('[%s] %s', $meta['title'], $fixtureTitle) => [
+                        $payloadParts[0],
+                        $fixtureSet['prefix'] ?? $meta['prefix'],
+                        $fixtureSet['whitelist'] ?? $meta['whitelist'],
+                        $payloadParts[1],
+                    ];
+                }
+            } catch (Throwable $e) {
+                $this->fail(sprintf('An error occurred while parsing the file "%s".', $file));
             }
         }
 
         return;
-
-        //
-        // Namespace declaration
-        //
-        // ============================
-
-
-
-        //
-        // Use statement for a class
-        //
-        // ============================
-
-        yield '[Use statement for a class] simple statement' => [
-            <<<'PHP'
-<?php
-
-use Bar\FooNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\Bar\FooNamespace;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] prefixed statement' => [
-            <<<'PHP'
-<?php
-
-use Humbug\FooNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\FooNamespace;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] simple whitelisted statement' => [
-            <<<'PHP'
-<?php
-
-use Bar\FooNamespace;
-
-PHP
-            ,
-            'Humbug',
-            ['Bar\FooNamespace'],
-            // Removes the use statements as the usages of the whitelisted class will be transformed to make use of the FQCN
-            <<<'PHP'
-<?php
-
-
-
-PHP
-        ];
-
-        yield '[Use statement for a class] simple statement with an alias' => [
-            <<<'PHP'
-<?php
-
-use FooNamespace\X as XAlias;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\FooNamespace\X as XAlias;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] prefixed statement with an alias' => [
-            <<<'PHP'
-<?php
-
-use Humbug\FooNamespace\X as XAlias;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\FooNamespace\X as XAlias;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] simple whitelisted statement with an alias' => [
-            <<<'PHP'
-<?php
-
-use FooNamespace\X as XAlias;
-
-PHP
-            ,
-            'Humbug',
-            ['FooNamespace\X'],
-            // Removes the use statements as the usages of the whitelisted class will be transformed to make use of the FQCN
-            <<<'PHP'
-<?php
-
-
-
-PHP
-        ];
-
-        yield '[Use statement for a class] multiple statement' => [
-            <<<'PHP'
-<?php
-
-use Bar\FooNamespace;
-use Bar\BarNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\Bar\FooNamespace;
-use Humbug\Bar\BarNamespace;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] multiple statement with prefixed ones' => [
-            <<<'PHP'
-<?php
-
-use Bar\FooNamespace;
-use Humbug\BarNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\Bar\FooNamespace;
-use Humbug\BarNamespace;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] multiple statement with aliases' => [
-            <<<'PHP'
-<?php
-
-use FooNamespace\X as XAlias;
-use BarNamespace\Y;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\FooNamespace\X as XAlias;
-use Humbug\BarNamespace\Y;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] multiple statement in-lined' => [
-            <<<'PHP'
-<?php
-
-use Bar\FooNamespace, Bar\BarNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\Bar\FooNamespace, Humbug\Bar\BarNamespace;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] multiple statement in-lined with in-lined ones' => [
-            <<<'PHP'
-<?php
-
-use Bar\FooNamespace, Humbug\BarNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\Bar\FooNamespace, Humbug\BarNamespace;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] grouped use statements' => [
-            <<<'PHP'
-<?php
-
-use FooNamespace\{X, Y, Z};
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\FooNamespace\{X, Y, Z};
-
-PHP
-        ];
-
-        yield '[Use statement for a class] grouped use statements with prefixed ones' => [
-            <<<'PHP'
-<?php
-
-use FooNamespace\{X, Y, Z};
-use Humbug\BarNamespace\{X, Y, Z};
-use BazNamespace\{X, Y, Z};
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\FooNamespace\{X, Y, Z};
-use Humbug\BarNamespace\{X, Y, Z};
-use Humbug\BazNamespace\{X, Y, Z};
-
-PHP
-        ];
-
-        yield '[Use statement for a class] multiple declaration with collision' => [
-            <<<'PHP'
-<?php
-
-use Bar\FooNamespace;
-use Humbug\Bar\FooNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\Bar\FooNamespace;
-use Humbug\Bar\FooNamespace;
-
-PHP
-        ];
-
-        yield '[Use statement for a class] composer use statement' => [
-            <<<'PHP'
-<?php
-
-use Composer\Unknown;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Composer\Unknown;
-
-PHP
-        ];
-
-        //
-        // Use statement for a function
-        //
-        // ============================
-
-        yield '[Use statement for a function] simple statement' => [
-            <<<'PHP'
-<?php
-
-use function FooNamespace\foo;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use function Humbug\FooNamespace\foo;
-
-PHP
-        ];
-
-        yield '[Use statement for a function] prefixed statement' => [
-            <<<'PHP'
-<?php
-
-use function Humbug\FooNamespace\foo;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use function Humbug\FooNamespace\foo;
-
-PHP
-        ];
-
-        yield '[Use statement for a function] simple whitelisted statement' => [
-            <<<'PHP'
-<?php
-
-use function FooNamespace\foo;
-
-PHP
-            ,
-            'Humbug',
-            ['FooNamespace\foo'],
-            // The whitelist does nothing here as it is meant to work only with classes
-            <<<'PHP'
-<?php
-
-use function Humbug\FooNamespace\foo;
-
-PHP
-        ];
-
-        //
-        // Use statement for a constant
-        //
-        // ============================
-
-        yield '[Use statement for a constant] simple statement' => [
-            <<<'PHP'
-<?php
-
-use const FooNamespace\FOO;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use const Humbug\FooNamespace\FOO;
-
-PHP
-        ];
-
-        yield '[Use statement for a constant] prefixed statement' => [
-            <<<'PHP'
-<?php
-
-use const Humbug\FooNamespace\FOO;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use const Humbug\FooNamespace\FOO;
-
-PHP
-        ];
-
-        yield '[Use statement for a constant] whitelisted statement' => [
-            <<<'PHP'
-<?php
-
-use const FooNamespace\FOO;
-
-PHP
-            ,
-            'Humbug',
-            ['FooNamespace\FOO'],
-            // The whitelist does nothing here as it is meant to work only with classes
-            <<<'PHP'
-<?php
-
-use const Humbug\FooNamespace\FOO;
-
-PHP
-        ];
-
-        //
-        // FQCN usage for a class
-        //
-        // ====================
-
-        yield '[FQCN usage for a class] complete FQCN' => [
-            <<<'PHP'
-<?php
-
-new \Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-new \Humbug\Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] complete FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new \Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new \Humbug\Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] complete single-level FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new \Foo();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new \Foo();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] complete whitelisted FQCN' => [
-            <<<'PHP'
-<?php
-
-new \Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['Foo\Bar'],
-            <<<'PHP'
-<?php
-
-new \Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] complete whitelisted FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new \Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['Foo\Bar'],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new \Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete FQCN' => [
-            <<<'PHP'
-<?php
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-new Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete single-level FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new Foo();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new Foo();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete whitelisted FQCN' => [
-            <<<'PHP'
-<?php
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['Foo\Bar'],
-            <<<'PHP'
-<?php
-
-new Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete non-whitelisted FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['Foo\Bar'],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete single-level non-whitelisted FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new Foo();
-
-PHP
-            ,
-            'Humbug',
-            ['Foo\Bar'],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new Foo();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete whitelisted FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['X\Foo\Bar'],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new \X\Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete single-level whitelisted FQCN in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace X;
-
-new Foo();
-
-PHP
-            ,
-            'Humbug',
-            ['X\Foo'],
-            <<<'PHP'
-<?php
-
-namespace Humbug\X;
-
-new \X\Foo();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete whitelisted FQCN with use statement' => [
-            <<<'PHP'
-<?php
-
-use X\Foo;
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['X\Foo\Bar'],
-            <<<'PHP'
-<?php
-
-use Humbug\X\Foo;
-new \X\Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete single-level whitelisted FQCN with use statement' => [
-            <<<'PHP'
-<?php
-
-use X\Foo;
-
-new Foo();
-
-PHP
-            ,
-            'Humbug',
-            ['X\Foo'],
-            <<<'PHP'
-<?php
-
-new \X\Foo();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete whitelisted FQCN with use statement in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace Y;
-
-use X\Foo;
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['X\Foo\Bar'],
-            <<<'PHP'
-<?php
-
-namespace Humbug\Y;
-
-use Humbug\X\Foo;
-new \X\Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete single-level whitelisted FQCN with use statement in a namespace' => [
-            <<<'PHP'
-<?php
-
-namespace Y;
-
-use X\Foo;
-
-new Foo();
-
-PHP
-            ,
-            'Humbug',
-            ['X\Foo'],
-            <<<'PHP'
-<?php
-
-namespace Humbug\Y;
-
-new \X\Foo();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete non-whitelisted FQCN with use statement' => [
-            <<<'PHP'
-<?php
-
-use X\Foo;
-
-new Foo\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['Foo\Bar'],
-            <<<'PHP'
-<?php
-
-use Humbug\X\Foo;
-new Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete whitelisted FQCN with use statement and an alias' => [
-            <<<'PHP'
-<?php
-
-use X\Foo as Y;
-
-new Y\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['X\Foo\Bar'],
-            <<<'PHP'
-<?php
-
-use Humbug\X\Foo as Y;
-new \X\Foo\Bar();
-
-PHP
-        ];
-
-        yield '[FQCN usage for a class] incomplete non-whitelisted FQCN with use statement and an alias' => [
-            <<<'PHP'
-<?php
-
-use X\Foo as Y;
-
-new Y\Bar();
-
-PHP
-            ,
-            'Humbug',
-            ['Foo\Bar'],
-            <<<'PHP'
-<?php
-
-use Humbug\X\Foo as Y;
-new Y\Bar();
-
-PHP
-        ];
 
 
         //
@@ -1842,207 +1005,9 @@ PHP
         // Single part global namespace reference
         //
         // ======================================
-
-        yield '[Single part global namespace reference] a simple use statement' => [
-            <<<'PHP'
-<?php
-
-use Closure;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Closure;
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a simple use statement of a whitelisted class' => [
-            <<<'PHP'
-<?php
-
-use AppKernel;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\AppKernel;
-
-PHP
-        ];
-
         //TODO: do not allow to whitelist a class from the global namespace, e.g. `Foo`. Indeed they are already
         //whitelisted and the global namespace whitelister is about scoping them when necessary. This validation can
         //be done in the configuration
-
-        yield '[Single part global namespace reference] a fully qualified class reference' => [
-            <<<'PHP'
-<?php
-
-$foo = new \Closure();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-$foo = new \Closure();
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a full qualified class reference of a whitelisted class' => [
-            <<<'PHP'
-<?php
-
-$foo = new \AppKernel();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-$foo = new \Humbug\AppKernel();
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a non-FQCN class reference' => [
-            <<<'PHP'
-<?php
-
-$foo = new Closure();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-$foo = new Closure();
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a non-FQCN class reference of a whitelisted class' => [
-            <<<'PHP'
-<?php
-
-$foo = new AppKernel();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-$foo = new Humbug\AppKernel();
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a fully qualified typehint' => [
-            <<<'PHP'
-<?php
-
-function foo(\Closure $bar)
-{
-}
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-function foo(\Closure $bar)
-{
-}
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a fully qualified typehint of a whitelisted class' => [
-            <<<'PHP'
-<?php
-
-function foo(\AppKernel $bar)
-{
-}
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-function foo(\Humbug\AppKernel $bar)
-{
-}
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a non-FQCN typehint' => [
-            <<<'PHP'
-<?php
-
-function foo(Closure $bar)
-{
-}
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-function foo(Closure $bar)
-{
-}
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a non-FQCN typehint of a whitelisted class' => [
-            <<<'PHP'
-<?php
-
-function foo(AppKernel $kernel)
-{
-}
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-function foo(Humbug\AppKernel $kernel)
-{
-}
-
-PHP
-        ];
-
         yield '[Single part global namespace reference] a fully qualified constant' => [
             <<<'PHP'
 <?php
@@ -2115,69 +1080,6 @@ var_dump(1);
 PHP
         ];
 
-        yield '[Single part global namespace reference] a fully qualified return type' => [
-            <<<'PHP'
-<?php
-
-function foo($bar): \Closure
-{
-}
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-function foo($bar) : \Closure
-{
-}
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] a non-FQN return type' => [
-            <<<'PHP'
-<?php
-
-function foo($bar): Closure
-{
-}
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-function foo($bar) : Closure
-{
-}
-
-PHP
-        ];
-
-        yield '[Single part global namespace reference] an aliased root namespace' => [
-            <<<'PHP'
-<?php
-
-use Foo as Bar;
-new Bar\Baz();
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-use Humbug\Foo as Bar;
-new Bar\Baz();
-
-PHP
-        ];
 
         //
         // Function parameters
