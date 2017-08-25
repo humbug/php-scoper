@@ -26,12 +26,16 @@ use function Humbug\PhpScoper\create_parser;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PhpScoper
  */
 class PhpScoperTest extends TestCase
 {
+    /** @private */
+    const FIXTURES_PATH = __DIR__.'/files_to_scope';
+
     /**
      * @var Scoper
      */
@@ -88,165 +92,165 @@ class PhpScoperTest extends TestCase
         remove_dir($this->tmp);
     }
 
-    public function test_is_a_Scoper()
-    {
-        $this->assertTrue(is_a(PhpScoper::class, Scoper::class, true));
-    }
-
-    public function test_can_scope_a_PHP_file()
-    {
-        $prefix = 'Humbug';
-        $filePath = escape_path($this->tmp.'/file.php');
-        $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
-
-        $content = <<<'PHP'
-echo "Humbug!";
-PHP;
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
-
-        $expected = <<<'PHP'
-echo "Humbug!";
-
-PHP;
-
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-
-        $this->assertSame($expected, $actual);
-    }
-
-    public function test_does_not_scope_file_if_is_not_a_PHP_file()
-    {
-        $filePath = 'file.yaml';
-        $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
-
-        $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
-        ;
-
-        $scoper = new PhpScoper(
-            new FakeParser(),
-            $this->decoratedScoper
-        );
-
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-
-        $this->assertSame($expected, $actual);
-
-        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-    }
-
-    public function test_can_scope_PHP_binary_files()
-    {
-        $prefix = 'Humbug';
-        $filePath = escape_path($this->tmp.'/hello');
-        $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
-
-        $content = <<<'PHP'
-#!/usr/bin/env php
-<?php
-
-echo "Hello world";
-PHP;
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
-
-        $expected = <<<'PHP'
-#!/usr/bin/env php
-<?php 
-echo "Hello world";
-
-PHP;
-
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-
-        $this->assertSame($expected, $actual);
-    }
-
-    public function test_does_not_scope_a_non_PHP_binary_files()
-    {
-        $prefix = 'Humbug';
-
-        $filePath = escape_path($this->tmp.'/hello');
-
-        $patchers = [create_fake_patcher()];
-
-        $whitelist = ['Foo'];
-
-        $whitelister = create_fake_whitelister();
-
-        $content = <<<'PHP'
-#!/usr/bin/env bash
-<?php
-
-echo "Hello world";
-PHP;
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
-
-        $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
-        ;
-
-        $scoper = new PhpScoper(
-            new FakeParser(),
-            $this->decoratedScoper
-        );
-
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-
-        $this->assertSame($expected, $actual);
-
-        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-    }
-
-    public function test_cannot_scope_an_invalid_PHP_file()
-    {
-        $filePath = escape_path($this->tmp.'/invalid-file.php');
-        $content = <<<'PHP'
-<?php
-
-$class = ;
-
-PHP;
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
-
-        $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
-
-        try {
-            $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
-
-            $this->fail('Expected exception to have been thrown.');
-        } catch (PhpParserError $error) {
-            $this->assertEquals(
-                'Syntax error, unexpected \';\' on line 3',
-                $error->getMessage()
-            );
-            $this->assertSame(0, $error->getCode());
-            $this->assertNull($error->getPrevious());
-        }
-    }
+//    public function test_is_a_Scoper()
+//    {
+//        $this->assertTrue(is_a(PhpScoper::class, Scoper::class, true));
+//    }
+//
+//    public function test_can_scope_a_PHP_file()
+//    {
+//        $prefix = 'Humbug';
+//        $filePath = escape_path($this->tmp.'/file.php');
+//        $patchers = [create_fake_patcher()];
+//        $whitelist = ['Foo'];
+//        $whitelister = create_fake_whitelister();
+//
+//        $content = <<<'PHP'
+//echo "Humbug!";
+//PHP;
+//
+//        touch($filePath);
+//        file_put_contents($filePath, $content);
+//
+//        $expected = <<<'PHP'
+//echo "Humbug!";
+//
+//PHP;
+//
+//        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+//
+//        $this->assertSame($expected, $actual);
+//    }
+//
+//    public function test_does_not_scope_file_if_is_not_a_PHP_file()
+//    {
+//        $filePath = 'file.yaml';
+//        $prefix = 'Humbug';
+//        $patchers = [create_fake_patcher()];
+//        $whitelist = ['Foo'];
+//        $whitelister = create_fake_whitelister();
+//
+//        $this->decoratedScoperProphecy
+//            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
+//            ->willReturn(
+//                $expected = 'Scoped content'
+//            )
+//        ;
+//
+//        $scoper = new PhpScoper(
+//            new FakeParser(),
+//            $this->decoratedScoper
+//        );
+//
+//        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+//
+//        $this->assertSame($expected, $actual);
+//
+//        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+//    }
+//
+//    public function test_can_scope_PHP_binary_files()
+//    {
+//        $prefix = 'Humbug';
+//        $filePath = escape_path($this->tmp.'/hello');
+//        $patchers = [create_fake_patcher()];
+//        $whitelist = ['Foo'];
+//        $whitelister = create_fake_whitelister();
+//
+//        $content = <<<'PHP'
+//#!/usr/bin/env php
+//<?php
+//
+//echo "Hello world";
+//PHP;
+//
+//        touch($filePath);
+//        file_put_contents($filePath, $content);
+//
+//        $expected = <<<'PHP'
+//#!/usr/bin/env php
+//<?php
+//echo "Hello world";
+//
+//PHP;
+//
+//        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+//
+//        $this->assertSame($expected, $actual);
+//    }
+//
+//    public function test_does_not_scope_a_non_PHP_binary_files()
+//    {
+//        $prefix = 'Humbug';
+//
+//        $filePath = escape_path($this->tmp.'/hello');
+//
+//        $patchers = [create_fake_patcher()];
+//
+//        $whitelist = ['Foo'];
+//
+//        $whitelister = create_fake_whitelister();
+//
+//        $content = <<<'PHP'
+//#!/usr/bin/env bash
+//<?php
+//
+//echo "Hello world";
+//PHP;
+//
+//        touch($filePath);
+//        file_put_contents($filePath, $content);
+//
+//        $this->decoratedScoperProphecy
+//            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
+//            ->willReturn(
+//                $expected = 'Scoped content'
+//            )
+//        ;
+//
+//        $scoper = new PhpScoper(
+//            new FakeParser(),
+//            $this->decoratedScoper
+//        );
+//
+//        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+//
+//        $this->assertSame($expected, $actual);
+//
+//        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+//    }
+//
+//    public function test_cannot_scope_an_invalid_PHP_file()
+//    {
+//        $filePath = escape_path($this->tmp.'/invalid-file.php');
+//        $content = <<<'PHP'
+//<?php
+//
+//$class = ;
+//
+//PHP;
+//
+//        touch($filePath);
+//        file_put_contents($filePath, $content);
+//
+//        $prefix = 'Humbug';
+//        $patchers = [create_fake_patcher()];
+//        $whitelist = ['Foo'];
+//        $whitelister = create_fake_whitelister();
+//
+//        try {
+//            $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+//
+//            $this->fail('Expected exception to have been thrown.');
+//        } catch (PhpParserError $error) {
+//            $this->assertEquals(
+//                'Syntax error, unexpected \';\' on line 3',
+//                $error->getMessage()
+//            );
+//            $this->assertSame(0, $error->getCode());
+//            $this->assertNull($error->getPrevious());
+//        }
+//    }
 
     /**
      * @dataProvider provideValidFiles
@@ -271,174 +275,34 @@ PHP;
 
     public function provideValidFiles()
     {
+        $files = (new Finder())->files()->in(self::FIXTURES_PATH);
+
+        foreach ($files as $file) {
+            $fixtures = include $file;
+
+            $meta = $fixtures['meta'];
+            unset($fixtures['meta']);
+
+            foreach ($fixtures as $fixtureTitle => $fixtureSet) {
+                $payload = preg_split("/\n----(?:\n|$)/", $fixtureSet['payload']);
+
+                yield sprintf('[%s] %s', $meta['title'], $fixtureTitle) => [
+                    $payload[0],
+                    $fixtureSet['prefix'] ?? $meta['prefix'],
+                    $fixtureSet['whitelist'] ?? $meta['whitelist'],
+                    $payload[1],
+                ];
+            }
+        }
+
+        return;
+
         //
         // Namespace declaration
         //
         // ============================
 
-        yield '[Namespace declaration] no declaration' => [
-            <<<'PHP'
-<?php
 
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-
-
-PHP
-        ];
-
-        yield '[Namespace declaration] simple declaration' => [
-            <<<'PHP'
-<?php
-
-namespace MyNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace Humbug\MyNamespace;
-
-
-PHP
-        ];
-
-        yield '[Namespace declaration] simple declaration with brackets' => [
-        <<<'PHP'
-<?php
-
-namespace MyNamespace {
-}
-
-PHP
-        ,
-        'Humbug',
-        [],
-        <<<'PHP'
-<?php
-
-namespace Humbug\MyNamespace;
-
-
-PHP
-    ];
-
-        yield '[Namespace declaration] prefixed simple declaration' => [
-            <<<'PHP'
-<?php
-
-namespace Humbug\MyNamespace;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace Humbug\MyNamespace;
-
-
-PHP
-        ];
-
-        yield '[Namespace declaration] simple declaration with whitelist' => [
-            <<<'PHP'
-<?php
-
-namespace MyNamespace;
-
-PHP
-            ,
-            'Humbug',
-            ['MyNamespace'],
-            // The whitelist does nothing here as it is meant to work only with classes
-            <<<'PHP'
-<?php
-
-namespace Humbug\MyNamespace;
-
-
-PHP
-        ];
-
-        yield '[Namespace declaration] multiple declarations' => [
-            <<<'PHP'
-<?php
-
-namespace MyNamespace1;
-namespace MyNamespace2;
-namespace MyNamespace3;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace Humbug\MyNamespace1;
-
-namespace Humbug\MyNamespace2;
-
-namespace Humbug\MyNamespace3;
-
-
-PHP
-        ];
-
-        yield '[Namespace declaration] multiple declarations with prefixed ones' => [
-            <<<'PHP'
-<?php
-
-namespace MyNamespace1;
-namespace Humbug\MyNamespace2;
-namespace MyNamespace3;
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace Humbug\MyNamespace1;
-
-namespace Humbug\MyNamespace2;
-
-namespace Humbug\MyNamespace3;
-
-
-PHP
-        ];
-
-        yield 'Namespace declaration] root namespace declaration' => [
-            <<<'PHP'
-<?php
-
-namespace {
-}
-
-PHP
-            ,
-            'Humbug',
-            [],
-            <<<'PHP'
-<?php
-
-namespace {
-}
-
-PHP
-        ];
 
         //
         // Use statement for a class
