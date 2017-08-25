@@ -6,30 +6,40 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Miscellaneous',
+        'title' => 'single-part new statements in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    'empty PHP file' =>  <<<'PHP'
+    'single-part' =>  <<<'PHP'
 <?php
 
+namespace X;
+
+new Foo();
 ----
 <?php
 
+namespace Humbug\X;
 
+new Foo();
 
 PHP
     ,
 
-    'empty php file with a declare statement' =>  <<<'PHP'
-<?php declare(strict_types=1);
+    'FQ single-part' =>  <<<'PHP'
+<?php
 
+namespace X;
+
+new \Foo();
 ----
 <?php
 
-declare (strict_types=1);
+namespace Humbug\X;
+
+new \Humbug\Foo();
 
 PHP
     ,
