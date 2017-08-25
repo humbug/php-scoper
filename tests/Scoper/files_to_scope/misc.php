@@ -12,40 +12,25 @@ return [
         'whitelist' => [],
     ],
 
-    'empty random file' => [
-        'input' => <<<'PHP'
-
-PHP
-        ,
-        'output' => <<<'PHP'
-
-
-PHP
-    ],
-
-    'empty php file' => [
-        'input' => <<<'PHP'
+    'empty PHP file' =>  <<<'PHP'
 <?php
 
-PHP
-        ,
-        'output' => <<<'PHP'
+----
 <?php
 
 
-PHP
-    ],
 
-    'empty php file with a declare statement' => [
-        'input' => <<<'PHP'
+PHP
+    ,
+
+    'empty php file with a declare statement' =>  <<<'PHP'
 <?php declare(strict_types=1);
 
-PHP
-        ,
-        'output' => <<<'PHP'
-<?php declare(strict_types=1);
+----
+<?php
 
+declare (strict_types=1);
 
 PHP
-    ],
+    ,
 ];
