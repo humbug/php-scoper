@@ -13,7 +13,7 @@ return [
     ],
 
     // As it is extremely rare to use a `use function` statement for a built-in function from the
-    // global scope, we can relatively safely assume it is a user-land delcare method which should
+    // global scope, we can relatively safely assume it is a user-land declare method which should
     // be prefixed.
     'single-part' =>  <<<'PHP'
 <?php
@@ -32,7 +32,7 @@ PHP
     ,
 
     // As it is extremely rare to use a `use function` statement for a built-in function from the
-    // global scope, we can relatively safely assume it is a user-land delcare method which should
+    // global scope, we can relatively safely assume it is a user-land declare method which should
     // be prefixed.
     'FQ single-part' =>  <<<'PHP'
 <?php

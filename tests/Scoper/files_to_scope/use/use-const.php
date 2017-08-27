@@ -13,7 +13,7 @@ return [
     ],
 
     // As it is extremely rare to use a `use const` statement for a built-in const from the
-    // global scope, we can relatively safely assume it is a user-land delcare method which should
+    // global scope, we can relatively safely assume it is a user-land declare method which should
     // be prefixed.
     'const form the global scope' => <<<'PHP'
 <?php
@@ -29,7 +29,7 @@ PHP
     ,
 
     // As it is extremely rare to use a `use const` statement for a built-in const from the
-    // global scope, we can relatively safely assume it is a user-land delcare method which should
+    // global scope, we can relatively safely assume it is a user-land declare method which should
     // be prefixed.
     'absolute const form the global scope' => <<<'PHP'
 <?php
