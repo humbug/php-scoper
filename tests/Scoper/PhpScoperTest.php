@@ -26,6 +26,8 @@ use function Humbug\PhpScoper\create_parser;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
+use Symfony\Component\Finder\Finder;
+use Throwable;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PhpScoper
@@ -33,7 +35,7 @@ use function Humbug\PhpScoper\remove_dir;
 class PhpScoperTest extends TestCase
 {
     /** @private */
-    const FIXTURES_PATH = __DIR__.'/files_to_scope';
+    const SPECS_PATH = __DIR__.'/../../specs';
 
     /**
      * @var Scoper
@@ -276,9 +278,32 @@ PHP;
 
     public function provideValidFiles()
     {
-        //TODO: see https://github.com/humbug/php-scoper/pull/92
-        return [
-            ['', 'Humbug', [], "<?php\n\n\n"],
-        ];
+        $files = (new Finder())->files()->in(self::SPECS_PATH);
+
+        foreach ($files as $file) {
+            try {
+                $fixtures = include $file;
+
+                $meta = $fixtures['meta'];
+                unset($fixtures['meta']);
+
+                foreach ($fixtures as $fixtureTitle => $fixtureSet) {
+                    $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
+
+                    $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
+
+                    yield sprintf('[%s] %s', $meta['title'], $fixtureTitle) => [
+                        $payloadParts[0],
+                        $fixtureSet['prefix'] ?? $meta['prefix'],
+                        $fixtureSet['whitelist'] ?? $meta['whitelist'],
+                        $payloadParts[1],
+                    ];
+                }
+            } catch (Throwable $e) {
+                $this->fail(sprintf('An error occurred while parsing the file "%s".', $file));
+            }
+        }
+
+        return;
     }
 }
