@@ -16,14 +16,14 @@ file that was distributed with this source code.
          colors="true"
 >
     <testsuites>
-        <testsuite name="Webmozart PHP-Scoper Test Suite">
-            <directory suffix="Test.php">./tests/</directory>
+        <testsuite name="Humbug PHP-Scoper Test Suite">
+            <directory suffix="Test.php">tests/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/</directory>
+            <directory suffix=".php">src/</directory>
             <exclude>
                 <file>src/Console/Application.php</file>
                 <file>src/Console/Configuration.php</file>
