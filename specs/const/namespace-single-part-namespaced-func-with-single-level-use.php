@@ -85,7 +85,7 @@ PHP
     // Whitelisting a constant reference has no effect
     'FQ whitelisted two-parts' =>  [
         'whitelist' => ['X\Foo\DUMMY_CONST'],
-        'payload' => <<<'PHcP'
+        'payload' => <<<'PHP'
 <?php
 
 namespace X;

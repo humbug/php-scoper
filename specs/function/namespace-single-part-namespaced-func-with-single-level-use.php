@@ -85,7 +85,7 @@ PHP
     // Whitelisting a function call has no effect
     'FQ whitelisted two-parts' =>  [
         'whitelist' => ['X\Foo\main'],
-        'payload' => <<<'PHcP'
+        'payload' => <<<'PHP'
 <?php
 
 namespace X;
