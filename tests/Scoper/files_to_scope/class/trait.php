@@ -6,13 +6,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Traits',
+        'title' => 'Trait declaration',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    'trait declaration' =>  <<<'PHP'
+    'Declaration in the global namespace: do not do anything.' =>  <<<'PHP'
 <?php
 
 trait A {
@@ -61,7 +61,7 @@ class B
 PHP
     ,
 
-    'namespaced trait declaration' =>  <<<'PHP'
+    'Declaration in a namespace: prefix the namespace.' =>  <<<'PHP'
 <?php
 
 namespace Foo;
@@ -108,6 +108,158 @@ class B
         E::b as protected c;
         E::d as e;
         E::f as private;
+    }
+}
+
+PHP
+    ,
+
+    'Multiple declarations in different namespaces: prefix each namespace.' =>  <<<'PHP'
+<?php
+
+namespace X {
+    trait XA
+    {
+        public function a()
+        {
+        }
+    }
+    class XB
+    {
+        use C;
+        use D {
+            a as protected b;
+            c as d;
+            e as private;
+        }
+        use E, F, G {
+            E::a insteadof F, G;
+            E::b as protected c;
+            E::d as e;
+            E::f as private;
+        }
+    }
+}
+
+namespace Y {
+    trait YA
+    {
+        public function a()
+        {
+        }
+    }
+    class YB
+    {
+        use C;
+        use D {
+            a as protected b;
+            c as d;
+            e as private;
+        }
+        use E, F, G {
+            E::a insteadof F, G;
+            E::b as protected c;
+            E::d as e;
+            E::f as private;
+        }
+    }
+}
+
+namespace Z {
+    trait ZA
+    {
+        public function a()
+        {
+        }
+    }
+    class ZB
+    {
+        use C;
+        use D {
+            a as protected b;
+            c as d;
+            e as private;
+        }
+        use E, F, G {
+            E::a insteadof F, G;
+            E::b as protected c;
+            E::d as e;
+            E::f as private;
+        }
+    }
+}
+----
+<?php
+
+namespace Humbug\X {
+    trait XA
+    {
+        public function a()
+        {
+        }
+    }
+    class XB
+    {
+        use C;
+        use D {
+            a as protected b;
+            c as d;
+            e as private;
+        }
+        use E, F, G {
+            E::a insteadof F, G;
+            E::b as protected c;
+            E::d as e;
+            E::f as private;
+        }
+    }
+}
+
+namespace Humbug\Y {
+    trait YA
+    {
+        public function a()
+        {
+        }
+    }
+    class YB
+    {
+        use C;
+        use D {
+            a as protected b;
+            c as d;
+            e as private;
+        }
+        use E, F, G {
+            E::a insteadof F, G;
+            E::b as protected c;
+            E::d as e;
+            E::f as private;
+        }
+    }
+}
+
+namespace Humbug\Z {
+    trait ZA
+    {
+        public function a()
+        {
+        }
+    }
+    class ZB
+    {
+        use C;
+        use D {
+            a as protected b;
+            c as d;
+            e as private;
+        }
+        use E, F, G {
+            E::a insteadof F, G;
+            E::b as protected c;
+            E::d as e;
+            E::f as private;
+        }
     }
 }
 

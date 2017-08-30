@@ -6,13 +6,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Anonymous classes',
+        'title' => 'Anonymous class declaration',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    'anonymous class declaration' =>  <<<'PHP'
+    'Declaration in the global namespace: do not do anything.' =>  <<<'PHP'
 <?php
 
 new class {
@@ -67,7 +67,7 @@ class A
 PHP
     ,
 
-    'namespaced anonymous class declaration' =>  <<<'PHP'
+    'Declaration in a namespace: prefix the namespace.' =>  <<<'PHP'
 <?php
 
 namespace Foo;
@@ -129,7 +129,7 @@ class A
 PHP
     ,
 
-    'multiple namespaced anonymous class declaration' =>  <<<'PHP'
+    'Multiple declarations in different namespaces: prefix each namespace.' =>  <<<'PHP'
 <?php
 
 namespace {

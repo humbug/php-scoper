@@ -6,15 +6,15 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'single-part class constant references in the global scope with single-level use statements and alias',
+        'title' => 'single-level class constant references in the global scope with single-level use statements and alias',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
     // See tests for the use statements as to why we don't touch the use statement.
-    // Won't do anything here as this class is part of the global namespace.
-    'single-part' =>  <<<'PHP'
+    'Use of the single-level alias. Do not touch the single-level use statement and transforms the reference call into '
+    .'a FQ call to' =>  <<<'PHP'
 <?php
 
 use Foo as X;

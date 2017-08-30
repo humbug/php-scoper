@@ -6,13 +6,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Interface declarations',
+        'title' => 'Interface declaration',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    'interface declaration' =>  <<<'PHP'
+    'Declaration in the global namespace: do not do anything.' =>  <<<'PHP'
 <?php
 
 interface A extends C, D {
@@ -29,7 +29,7 @@ interface A extends C, D
 PHP
     ,
 
-    'namespaced interface declaration' =>  <<<'PHP'
+    'Declaration in a namespace: prefix the namespace.' =>  <<<'PHP'
 <?php
 
 namespace Foo;
@@ -46,6 +46,56 @@ namespace Humbug\Foo;
 interface A extends C, D
 {
     public function a();
+}
+
+PHP
+    ,
+
+    'Multiple declarations in different namespaces: prefix each namespace.' =>  <<<'PHP'
+<?php
+
+namespace X {
+    interface A extends D, E
+    {
+        public function a();
+    }
+}
+
+namespace Y {
+    interface B extends D, E
+    {
+        public function a();
+    }
+}
+
+namespace Z {
+    interface C extends D, E
+    {
+        public function a();
+    }
+}
+----
+<?php
+
+namespace Humbug\X {
+    interface A extends D, E
+    {
+        public function a();
+    }
+}
+
+namespace Humbug\Y {
+    interface B extends D, E
+    {
+        public function a();
+    }
+}
+
+namespace Humbug\Z {
+    interface C extends D, E
+    {
+        public function a();
+    }
 }
 
 PHP

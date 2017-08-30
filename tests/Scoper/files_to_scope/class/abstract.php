@@ -6,13 +6,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Abstract classes',
+        'title' => 'Abstract class declaration',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    'abstract class declaration' =>  <<<'PHP'
+    'Declaration in the global namespace: do not do anything.' =>  <<<'PHP'
 <?php
 
 abstract class A {
@@ -33,7 +33,7 @@ abstract class A
 PHP
     ,
 
-    'namespaced abstract class declaration' =>  <<<'PHP'
+    'Declaration in a namespace: prefix the namespace.' =>  <<<'PHP'
 <?php
 
 namespace Foo;
@@ -58,7 +58,7 @@ abstract class A
 PHP
     ,
 
-    'multiple namespaced abstract class declaration' =>  <<<'PHP'
+    'Multiple declarations in different namespaces: prefix each namespace.' =>  <<<'PHP'
 <?php
 
 namespace Foo {
