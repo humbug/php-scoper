@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Generator;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
 use PhpParser\Error as PhpParserError;
@@ -258,7 +259,7 @@ PHP;
     /**
      * @dataProvider provideValidFiles
      */
-    public function test_can_scope_valid_files(string $content, string $prefix, array $whitelist, string $expected)
+    public function test_can_scope_valid_files(string $spec, string $content, string $prefix, array $whitelist, string $expected)
     {
         $filePath = escape_path($this->tmp.'/file.php');
 
@@ -271,9 +272,24 @@ PHP;
             return 'AppKernel' === $className;
         };
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelister);
 
-        $this->assertSame($expected, $actual);
+        $titleSeparator = str_repeat('=', strlen($spec));
+
+        $this->assertSame(
+            $expected,
+            $actual,
+            <<<OUTPUT
+$spec
+$titleSeparator
+
+$actual
+
+-----
+
+$expected
+OUTPUT
+        );
     }
 
     public function provideValidFiles()
@@ -288,22 +304,47 @@ PHP;
                 unset($fixtures['meta']);
 
                 foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
-
-                    $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
-
-                    yield sprintf('[%s] %s', $meta['title'], $fixtureTitle) => [
-                        $payloadParts[0],
-                        $fixtureSet['prefix'] ?? $meta['prefix'],
-                        $fixtureSet['whitelist'] ?? $meta['whitelist'],
-                        $payloadParts[1],
-                    ];
+                    yield $this->parseSpecFile($meta, $fixtureTitle, $fixtureSet)->current();
                 }
-            } catch (Throwable $e) {
-                $this->fail(sprintf('An error occurred while parsing the file "%s".', $file));
+            } catch (Throwable $throwable) {
+                $this->fail(
+                    sprintf(
+                        'An error occurred while parsing the file "%s": %s',
+                        $file,
+                        $throwable->getMessage()
+                    )
+                );
             }
         }
 
         return;
+    }
+
+    /**
+     * @param array        $meta
+     * @param string|int   $fixtureTitle
+     * @param string|array $fixtureSet
+     *
+     * @return Generator
+     */
+    private function parseSpecFile(array $meta, $fixtureTitle, $fixtureSet): Generator
+    {
+        $spec = sprintf(
+            '[%s] %s',
+            $meta['title'],
+            isset($fixtureSet['spec']) ? $fixtureSet['spec'] : $fixtureTitle
+        );
+
+        $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
+
+        $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
+
+        yield [
+            $spec,
+            $payloadParts[0],   // Input
+            $fixtureSet['prefix'] ?? $meta['prefix'],
+            $fixtureSet['whitelist'] ?? $meta['whitelist'],
+            $payloadParts[1],   // Expected output
+        ];
     }
 }

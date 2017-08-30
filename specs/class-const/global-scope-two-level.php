@@ -14,14 +14,20 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'two-parts class constant references in the global scope',
+        'title' => 'Class constant call of a namespaced class in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // As there is nothing in PHP core with more than two-parts, we can safely prefix.
-    'two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Constant call on a namespaced class:
+- prefix the class
+- transforms the call into a FQ call to avoid autoloading issues
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 PHPUnit\Command::MAIN_CONST;
@@ -31,10 +37,16 @@ PHPUnit\Command::MAIN_CONST;
 \Humbug\PHPUnit\Command::MAIN_CONST;
 
 PHP
-    ,
+    ],
 
-    // As there is nothing in PHP core with more than two-parts, we can safely prefix.
-    'FQ two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+FQ constant call on a namespaced class:
+- prefix the class
+- transforms the call into a FQ call to avoid autoloading issues
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 \PHPUnit\Command::MAIN_CONST;
@@ -44,10 +56,15 @@ PHP
 \Humbug\PHPUnit\Command::MAIN_CONST;
 
 PHP
-    ,
+    ],
 
-    // If is whitelisted is made into a FQCN to avoid autoloading issues
-    'whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+Constant call on a whitelisted namespaced class:
+- do not prefix the class
+- transforms the call into a FQ call to avoid autoloading issues
+SPEC
+        ,
         'whitelist' => ['PHPUnit\Command'],
         'payload' => <<<'PHP'
 <?php
@@ -61,7 +78,13 @@ PHPUnit\Command::MAIN_CONST;
 PHP
     ],
 
-    'FQ whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+FQ constant call on a whitelisted namespaced class:
+- do not prefix the class
+- transforms the call into a FQ call to avoid autoloading issues
+SPEC
+        ,
         'whitelist' => ['PHPUnit\Command'],
         'payload' => <<<'PHP'
 <?php
