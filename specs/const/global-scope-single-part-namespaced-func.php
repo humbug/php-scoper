@@ -2,7 +2,15 @@
 
 declare(strict_types=1);
 
-// Fixture file used to compare what the expected result is for the scoping for a given input
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 return [
     'meta' => [
@@ -13,7 +21,7 @@ return [
     ],
 
     // As there is no namespaced PHP core functions, we can safely prefix.
-    'two-parts' =>  <<<'PHP'
+    'two-parts' => <<<'PHP'
 <?php
 
 PHPUnit\DUMMY_CONST;
@@ -26,7 +34,7 @@ PHP
     ,
 
     // As there is no namespaced PHP core functions, we can safely prefix.
-    'FQ two-parts' =>  <<<'PHP'
+    'FQ two-parts' => <<<'PHP'
 <?php
 
 \PHPUnit\DUMMY_CONST;
@@ -39,7 +47,7 @@ PHP
     ,
 
     // Whitelisting a constant has no effect
-    'whitelisted two-parts' =>  [
+    'whitelisted two-parts' => [
         'whitelist' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
@@ -53,7 +61,7 @@ PHPUnit\DUMMY_CONST;
 PHP
     ],
 
-    'FQ whitelisted two-parts' =>  [
+    'FQ whitelisted two-parts' => [
         'whitelist' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php

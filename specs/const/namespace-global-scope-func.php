@@ -2,7 +2,15 @@
 
 declare(strict_types=1);
 
-// Fixture file used to compare what the expected result is for the scoping for a given input
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 return [
     'meta' => [
@@ -14,7 +22,7 @@ return [
 
     // We don't do anything as there is no ways to distinguish between a namespaced constant reference
     // from the same namespace and a function registered in the global scope
-    'single-part' =>  <<<'PHP'
+    'single-part' => <<<'PHP'
 <?php
 
 namespace X;
@@ -30,7 +38,7 @@ DUMMY_CONST;
 PHP
     ,
 
-    'FQ single-part' =>  <<<'PHP'
+    'FQ single-part' => <<<'PHP'
 <?php
 
 namespace X;

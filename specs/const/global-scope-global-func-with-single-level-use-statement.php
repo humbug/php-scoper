@@ -2,7 +2,15 @@
 
 declare(strict_types=1);
 
-// Fixture file used to compare what the expected result is for the scoping for a given input
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 return [
     'meta' => [
@@ -15,7 +23,7 @@ return [
     // As it is extremely rare to use a `use constant` statement for a built-in constant from the
     // global scope, we can relatively safely assume it is a user-land declared constant which should
     // be prefixed.
-    'single-part' =>  <<<'PHP'
+    'single-part' => <<<'PHP'
 <?php
 
 use constant DUMMY_CONST;
@@ -34,7 +42,7 @@ PHP
     // As it is extremely rare to use a `use constant` statement for a built-in constant from the
     // global scope, we can relatively safely assume it is a user-land declared constant which should
     // be prefixed.
-    'FQ single-part' =>  <<<'PHP'
+    'FQ single-part' => <<<'PHP'
 <?php
 
 use constant DUMMY_CONST;

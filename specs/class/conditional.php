@@ -2,7 +2,15 @@
 
 declare(strict_types=1);
 
-// Fixture file used to compare what the expected result is for the scoping for a given input
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 return [
     'meta' => [
@@ -12,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' =>  <<<'PHP'
+    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
 <?php
 
 if (true) {
@@ -30,7 +38,7 @@ if (true) {
 PHP
     ,
 
-    'Declaration in a namespace: prefix each namespace.' =>  <<<'PHP'
+    'Declaration in a namespace: prefix each namespace.' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -52,7 +60,7 @@ if (true) {
 PHP
     ,
 
-    'Multiple declarations in different namespaces: prefix each namespace.' =>  <<<'PHP'
+    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
 <?php
 
 namespace X {

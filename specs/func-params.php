@@ -2,7 +2,15 @@
 
 declare(strict_types=1);
 
-// Fixture file used to compare what the expected result is for the scoping for a given input
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 return [
     'meta' => [
@@ -12,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'FQCN string argument' =>  <<<'PHP'
+    'FQCN string argument' => <<<'PHP'
 <?php
 
 class_exists('Symfony\\Component\\Yaml\\Yaml');
@@ -53,7 +61,7 @@ PHP
     ],
 
     // Nothing changes as we don't try to scope evaluated the values
-    'FQCN string argument formed by concatened strings' =>  <<<'PHP'
+    'FQCN string argument formed by concatened strings' => <<<'PHP'
 <?php
 
 class_exists('Symfony\\Component' . '\\Yaml\\Yaml');
@@ -68,7 +76,7 @@ class_exists('\\Symfony\\Component' . '\\Yaml\\Yaml');
 PHP
     ,
 
-    'FQC constant call' =>  <<<'PHP'
+    'FQC constant call' => <<<'PHP'
 <?php
 
 class_exists(Symfony\Component\Yaml\Yaml::class);
