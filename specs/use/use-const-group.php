@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Use statements for consts with group statements',
+        'title' => 'Use statements for constants with group statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],

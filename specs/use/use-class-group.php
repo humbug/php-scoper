@@ -20,7 +20,13 @@ return [
         'whitelist' => [],
     ],
 
-    'grouped statements' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Multiple group use statement:
+- prefix each of them
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 use A\{B};
@@ -35,9 +41,15 @@ use Humbug\A\{B\C, D};
 use Humbug\A\B\{C\D, E};
 
 PHP
-    ,
+    ],
 
-    'already prefixed grouped statements' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Multiple group use statement which are already prefixed:
+- do nothing
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 use Humbug\A\{B};
@@ -49,14 +61,17 @@ use \Humbug\A\B\{C\D, E};
 
 use Humbug\A\{B};
 use Humbug\A\{B\C, D};
-use Humbug\A\B\{C\D, E};
+use \Humbug\A\B\{C\D, E};
 
 PHP
-    ,
+    ],
 
-    // The use statement is still prefixed as usual. The usages of that statement
-    // will however be transformed into FQC
-    'grouped statements with a whitelisted class' => [
+    [
+        'spec' => <<<'SPEC'
+Multiple group use statement with whitelisted classes:
+- prefix each of them: only actual usages will be whitelisted, not the use statements
+SPEC
+        ,
         'whitelist' => [
             'A\B',
             'A\B\C',
