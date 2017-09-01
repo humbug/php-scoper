@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'global constant reference in the global scope with single-level use statements and alias',
+        'title' => 'Global constant imported with a use statement used in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -23,38 +23,50 @@ return [
     // As it is extremely rare to use a `use constant` statement for a built-in constant from the
     // global scope, we can relatively safely assume it is a user-land declared constant which should
     // be prefixed.
-    'single-part' => <<<'PHP'
+
+    [
+        'spec' => <<<'SPEC'
+Constant call imported with a use statement:
+- prefix the use statement
+- prefix the call
+- transforms the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
-use constant DUMMY_CONST as FOO;
+use constant DUMMY_CONST;
 
-FOO;
+DUMMY_CONST;
 ----
 <?php
 
-use constant Humbug\DUMMY_CONST as FOO;
+use constant Humbug\DUMMY_CONST;
 
-FOO;
+\Humbug\DUMMY_CONST;
 
 PHP
-    ,
+    ],
 
-    // As it is extremely rare to use a `use constant` statement for a built-in constant from the
-    // global scope, we can relatively safely assume it is a user-land declared constant which should
-    // be prefixed.
-    'FQ single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+FQ constant call imported with a use statement:
+- prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
-use constant DUMMY_CONST as FOO;
+use constant DUMMY_CONST;
 
-\FOO;
+\DUMMY_CONST;
 ----
 <?php
 
-use constant Humbug\DUMMY_CONST as FOO;
+use constant Humbug\DUMMY_CONST;
 
-\FOO;
+\DUMMY_CONST;
 
 PHP
-    ,
+    ],
 ];

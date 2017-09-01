@@ -14,14 +14,19 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'global constant reference in the global scope',
+        'title' => 'Global constant usage in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // Won't do anything here as this class is part of the global namespace.
-    'single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Constant call in the global namespace:
+- transforms the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 DUMMY_CONST;
@@ -31,18 +36,23 @@ DUMMY_CONST;
 \DUMMY_CONST;
 
 PHP
-    ,
+    ],
 
-    // Won't do anything here as this class is part of the global namespace.
-    'FQ single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+FQ constant call in the global namespace:
+- do nothing
+SPEC
+    ,
+        'payload' => <<<'PHP'
 <?php
 
-\DUMMY_CONST;
+DUMMY_CONST;
 ----
 <?php
 
 \DUMMY_CONST;
 
 PHP
-    ,
+    ],
 ];

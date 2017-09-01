@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'FQCN string argument' => <<<'PHP'
+    'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
 <?php
 
 class_exists('Symfony\\Component\\Yaml\\Yaml');
@@ -31,15 +31,15 @@ class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 ----
 <?php
 
-class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 
 PHP
     ,
 
-    'FQCN string argument on whitelisted class' => [
+    'FQCN string argument on whitelisted class: transform into a FQCN' => [
         'whitelist' => ['Symfony\Component\Yaml\Yaml'],
         'payload' => <<<'PHP'
 <?php
@@ -52,16 +52,15 @@ class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 ----
 <?php
 
-class_exists('\\Symfony\\Component\\Yaml\\Yaml');
-class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 
 PHP
     ],
 
-    // Nothing changes as we don't try to scope evaluated the values
-    'FQCN string argument formed by concatened strings' => <<<'PHP'
+    'FQCN string argument formed by concatenated strings: do nothing' => <<<'PHP'
 <?php
 
 class_exists('Symfony\\Component' . '\\Yaml\\Yaml');
@@ -70,13 +69,13 @@ class_exists('\\Symfony\\Component' . '\\Yaml\\Yaml');
 ----
 <?php
 
-class_exists('Symfony\\Component' . '\\Yaml\\Yaml');
-class_exists('\\Symfony\\Component' . '\\Yaml\\Yaml');
+\class_exists('Symfony\\Component' . '\\Yaml\\Yaml');
+\class_exists('\\Symfony\\Component' . '\\Yaml\\Yaml');
 
 PHP
     ,
 
-    'FQC constant call' => <<<'PHP'
+    'FQC constant call: transform into FQC call and prefix them' => <<<'PHP'
 <?php
 
 class_exists(Symfony\Component\Yaml\Yaml::class);
@@ -87,15 +86,15 @@ class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 ----
 <?php
 
-class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
-class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
-class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
-class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 
 PHP
     ,
 
-    'FQC constant call on whitelisted class' => [
+    'FQC constant call on whitelisted class: transform into FQC call' => [
         'whitelist' => ['Symfony\Component\Yaml\Yaml'],
         'payload' => <<<'PHP'
 <?php
@@ -108,10 +107,10 @@ class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 ----
 <?php
 
-class_exists(\Symfony\Component\Yaml\Yaml::class);
-class_exists(\Symfony\Component\Yaml\Yaml::class);
-class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
-class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 
 PHP
     ],

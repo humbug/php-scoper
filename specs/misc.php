@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'empty PHP file' => <<<'PHP'
+    'Empty file: do nothing' => <<<'PHP'
 <?php
 
 ----
@@ -31,7 +31,7 @@ return [
 PHP
     ,
 
-    'empty php file with a declare statement' => <<<'PHP'
+    'Empty php file with a declare statement: do nothing' => <<<'PHP'
 <?php declare(strict_types=1);
 
 ----
