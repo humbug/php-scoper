@@ -14,77 +14,64 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'single-part namespaced constant reference in a namespace',
+        'title' => 'Two-levels namespaced constant call in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    'two-parts' => <<<'PHP'
-<?php
-
-namespace X;
-
-PHPUnit\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\X;
-
-PHPUnit\DUMMY_CONST;
-
-PHP
-    ,
-
-    'FQ two-parts' => <<<'PHP'
-<?php
-
-namespace X;
-
-\PHPUnit\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\X;
-
-\Humbug\PHPUnit\DUMMY_CONST;
-
-PHP
-    ,
-
-    // Whitelisting a function has no effect
-    'whitelisted two-parts' => [
-        'whitelist' => ['X\PHPUnit\DUMMY_CONST'],
+    [
+        'spec' => <<<'SPEC'
+Namespaced constant call
+- prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
-
-PHPUnit\DUMMY_CONST;
+PHPUnit\Command\DUMMY_CONST;
 ----
 <?php
 
-namespace Humbug\X;
-
-PHPUnit\DUMMY_CONST;
+\Humbug\PHPUnit\Command\DUMMY_CONST;
 
 PHP
     ],
 
-    'FQ whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+FQ namespaced constant call
+- prefix the call
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+\PHPUnit\Command\DUMMY_CONST;
+----
+<?php
+
+\Humbug\PHPUnit\Command\DUMMY_CONST;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Namespaced constant call on a whitelisted constant
+- prefix the call: the whitelist only works for classes
+SPEC
+        ,
         'whitelist' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
-
-\PHPUnit\DUMMY_CONST;
+PHPUnit\Command\DUMMY_CONST;
 ----
 <?php
 
-namespace Humbug\X;
-
-\Humbug\PHPUnit\DUMMY_CONST;
+\Humbug\PHPUnit\Command\DUMMY_CONST;
 
 PHP
     ],

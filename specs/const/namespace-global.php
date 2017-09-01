@@ -14,43 +14,54 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'global constant reference in a namespace',
+        'title' => 'Global constant usage in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // We don't do anything as there is no ways to distinguish between a namespaced constant reference
-    // from the same namespace and a function registered in the global scope
-    'single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Constant call in a namespace:
+- prefix the namespace
+- do nothing: the constant can either belong to the same namespace or the global namespace
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace A;
 
 DUMMY_CONST;
 ----
 <?php
 
-namespace Humbug\X;
+namespace Humbug\A;
 
 DUMMY_CONST;
 
 PHP
-    ,
+    ],
 
-    'FQ single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+FQ constant call in a namespace:
+- prefix the namespace
+SPEC
+    ,
+        'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace A;
 
 \DUMMY_CONST;
 ----
 <?php
 
-namespace Humbug\X;
+namespace Humbug\A;
 
 \DUMMY_CONST;
 
 PHP
-    ,
+    ],
 ];

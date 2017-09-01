@@ -14,15 +14,26 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'global constant reference in a namespace with single-level use statements and alias',
+        'title' => 'Global constant imported with an aliased use statement used in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // See tests for the use statements as to why we don't touch the use statement.
-    // Won't do anything here as this class is part of the global namespace.
-    'single-part' => <<<'PHP'
+    // As it is extremely rare to use a `use constant` statement for a built-in constant from the
+    // global scope, we can relatively safely assume it is a user-land declared constant which should
+    // be prefixed.
+
+    [
+        'spec' => <<<'SPEC'
+Constant call imported with an aliased use statement:
+- prefix the namespace
+- prefix the use statement
+- prefix the call
+- transforms the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 namespace A;
@@ -37,12 +48,19 @@ namespace Humbug\A;
 
 use constant Humbug\DUMMY_CONST as FOO;
 
-FOO;
+\Humbug\DUMMY_CONST;
 
 PHP
-    ,
+    ],
 
-    'FQ single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Constant call imported with an aliased use statement:
+- prefix the namespace
+- prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 namespace A;
@@ -60,5 +78,5 @@ use constant Humbug\DUMMY_CONST as FOO;
 \FOO;
 
 PHP
-    ,
+    ],
 ];
