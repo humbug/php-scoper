@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Class constant call of a namespaced class imported with an aliased use statement in the global scope',
+        'title' => 'Class constant call of a namespaced class imported with a use statement in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -22,7 +22,8 @@ return [
 
     [
         'spec' => <<<'SPEC'
-Constant call on a namespaced class partially imported with an aliased use statement:
+Constant call on a namespaced class partially imported with a use statement:
+- prefix the namespace
 - prefix the class only (not the use statement)
 - transforms the call into a FQ call to avoid autoloading issues
 SPEC
@@ -30,11 +31,15 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo as X;
+namespace X;
 
-X\Bar::MAIN_CONST;
+use Foo;
+
+Foo\Bar::MAIN_CONST;
 ----
 <?php
+
+namespace Humbug\X;
 
 use Foo;
 
@@ -45,7 +50,8 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-Constant call on a namespaced class imported with an aliased use statement:
+Constant call on a namespaced class imported with a use statement:
+- prefix the namespace
 - prefix the use statement
 - transform the call into a FQ call
 SPEC
@@ -53,22 +59,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo\Bar as X;
+namespace X;
 
-X::MAIN_CONST;
+use Foo\Bar;
+
+Bar\X::MAIN_CONST;
 ----
 <?php
 
-use Humbug\Foo\Bar as X;
+namespace Humbug\X;
 
-\Humbug\Foo\Bar::MAIN_CONST;
+use Humbug\Foo\Bar;
+
+\Humbug\Foo\Bar\X::MAIN_CONST;
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-FQ constant call on a namespaced class imported with an aliased use statement:
+FQ constant call on a namespaced class imported with a use statement:
+- prefix the namespace
 - prefix the class only (not the use statement)
 - transforms the call into a FQ call to avoid autoloading issues
 SPEC
@@ -76,13 +87,17 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo as X;
+namespace X;
 
-\X\Bar::MAIN_CONST;
+use Foo;
+
+\Foo\Bar::MAIN_CONST;
 ----
 <?php
 
-use Foo as X;
+namespace Humbug\X;
+
+use Foo;
 
 \Humbug\Foo\Bar::MAIN_CONST;
 
@@ -91,7 +106,8 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-FQ Constant call on a whitelisted namespaced class partially imported with an aliased use statement:
+FQ Constant call on a whitelisted namespaced class partially imported with a use statement:
+- prefix the namespace
 - do not prefix the class neither the use statement
 - transforms the call into a FQ call to avoid autoloading issues
 SPEC
@@ -100,13 +116,17 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo as X;
+namespace X;
 
-X\Bar::MAIN_CONST;
+use Foo;
+
+Foo\Bar::MAIN_CONST;
 ----
 <?php
 
-use Foo as X;
+namespace Humbug\X;
+
+use Foo;
 
 \Foo\Bar::MAIN_CONST;
 
@@ -115,7 +135,8 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-FQ constant call on a whitelisted namespaced class imported with an aliased use statement:
+FQ constant call on a whitelisted namespaced class imported with a use statement:
+- prefix the namespace
 - prefix the class only (not the use statement)
 - transforms the call into a FQ call to avoid autoloading issues
 SPEC
@@ -124,13 +145,17 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo as X;
+namespace X;
 
-\X\Bar::MAIN_CONST;
+use Foo;
+
+\Foo\Bar::MAIN_CONST;
 ----
 <?php
 
-use Foo as X;
+namespace Humbug\X;
+
+use Foo;
 
 \Foo\Bar::MAIN_CONST;
 

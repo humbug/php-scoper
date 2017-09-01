@@ -47,6 +47,7 @@ PHP
         'spec' => <<<'SPEC'
 Constant call on a namespaced class imported with a use statement:
 - prefix the use statement
+- transform the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -54,13 +55,13 @@ SPEC
 
 use Foo\Bar;
 
-Bar::MAIN_CONST;
+Bar\X::MAIN_CONST;
 ----
 <?php
 
 use Humbug\Foo\Bar;
 
-Bar::MAIN_CONST;
+\Humbug\Foo\Bar\X::MAIN_CONST;
 
 PHP
     ],
