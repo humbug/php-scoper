@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'one level' => <<<'PHP'
+    'One level namespace: prefix it' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -34,7 +34,7 @@ namespace Humbug\Foo;
 PHP
     ,
 
-    'two levels' => <<<'PHP'
+    'Two levels namespace: prefix it' => <<<'PHP'
 <?php
 
 namespace Foo\Bar;

@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'root namespace' => <<<'PHP'
+    'Root namespace: do nothing' => <<<'PHP'
 <?php
 
 namespace {
@@ -37,7 +37,7 @@ namespace {
 PHP
     ,
 
-    'one level' => <<<'PHP'
+    'One level: prefix the namespace' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -52,11 +52,8 @@ namespace Humbug\Foo;
 PHP
     ,
 
-    'whitelisted namespace - one level' => [
-        // Does nothing as the whitelist is effective only on a class
-        'whitelist' => [
-            'Foo',
-        ],
+    'One level whitelisted namespace: prefix the namespace (whitelist works only on classes)' => [
+        'whitelist' => ['Foo'],
         'payload' => <<<'PHP'
 <?php
 
@@ -72,7 +69,7 @@ namespace Humbug\Foo;
 PHP
     ],
 
-    'already prefixed namespace - one level' => <<<'PHP'
+    'Already prefixed one-level namespace: do nothing' => <<<'PHP'
 <?php
 
 namespace Humbug\Foo {
@@ -87,7 +84,7 @@ namespace Humbug\Foo;
 PHP
     ,
 
-    'two levels' => <<<'PHP'
+    'Two levels namespace: prefix it' => <<<'PHP'
 <?php
 
 namespace Foo\Bar {
@@ -102,11 +99,8 @@ namespace Humbug\Foo\Bar;
 PHP
     ,
 
-    'whitelisted namespace - two levels' => [
-        // Does nothing as the whitelist is effective only on a class
-        'whitelist' => [
-            'Foo',
-        ],
+    'Two levels whitelisted namespace: prefix it (whitelist only works on classes)' => [
+        'whitelist' => ['Foo'],
         'payload' => <<<'PHP'
 <?php
 
@@ -122,7 +116,7 @@ namespace Humbug\Foo\Bar;
 PHP
     ],
 
-    'already prefixed — two levels' => <<<'PHP'
+    'Already prefixed two levels namespace: do nothing' => <<<'PHP'
 <?php
 
 namespace Humbug\Foo\Bar;
@@ -136,7 +130,7 @@ namespace Humbug\Foo\Bar;
 PHP
     ,
 
-    'mix' => <<<'PHP'
+    'Mix' => <<<'PHP'
 <?php
 
 // single level
