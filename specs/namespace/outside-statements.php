@@ -54,7 +54,6 @@ namespace Humbug\Foo;
 PHP
     ,
 
-
     'Simple comment' => <<<'PHP'
 <?php
 
