@@ -14,49 +14,46 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'global function call in a namespace with single-level use statements',
+        'title' => 'Global function call in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    'single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Global function call in the global scope
+- do not prefix the call as may be part of PHP built-in functions
+- transform the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
-
-namespace X;
-
-use function main;
 
 main();
 ----
 <?php
 
-namespace Humbug\X;
-
-use function Humbug\main;
-
-main();
+\main();
 
 PHP
-    ,
+    ],
 
-    'FQ single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Global function call in the global scope
+- do not prefix the call as may be part of PHP built-in functions
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
-
-namespace X;
-
-use function main;
 
 \main();
 ----
 <?php
 
-namespace Humbug\X;
-
-use function Humbug\main;
-
 \main();
 
 PHP
-    ,
+    ],
 ];

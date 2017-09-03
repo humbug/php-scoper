@@ -14,14 +14,20 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'single-part namespaced function call in the global scope',
+        'title' => 'Namespaced function call statement in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // As there is no namespaced PHP core functions, we can safely prefix.
-    'two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Namespaced function call
+- prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 PHPUnit\main();
@@ -31,10 +37,15 @@ PHPUnit\main();
 \Humbug\PHPUnit\main();
 
 PHP
-    ,
+    ],
 
-    // As there is no namespaced PHP core functions, we can safely prefix.
-    'FQ two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+FQ namespaced function call
+- prefix the call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 \PHPUnit\main();
@@ -44,10 +55,15 @@ PHP
 \Humbug\PHPUnit\main();
 
 PHP
-    ,
+    ],
 
-    // Whitelisting a function has no effect
-    'whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+Whitelisted namespaced function call
+- prefix the call: whitelists only works on classes
+- transform the call into a FQ call
+SPEC
+        ,
         'whitelist' => ['PHPUnit\main'],
         'payload' => <<<'PHP'
 <?php
@@ -61,7 +77,13 @@ PHPUnit\main();
 PHP
     ],
 
-    'FQ whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+FQ whitelisted namespaced function call
+- prefix the call: whitelists only works on classes
+- transform the call into a FQ call
+SPEC
+        ,
         'whitelist' => ['PHPUnit\main'],
         'payload' => <<<'PHP'
 <?php

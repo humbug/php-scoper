@@ -14,51 +14,54 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'global function call in a namespace with single-level use statements and alias',
+        'title' => 'Global function call in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // See tests for the use statements as to why we don't touch the use statement.
-    // Won't do anything here as this class is part of the global namespace.
-    'single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Global function call in a namespace
+- do not prefix the call as may be either be a function from the global scope or the current namespace
+- transform the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 namespace A;
 
-use function main as foo;
-
-foo();
+main();
 ----
 <?php
 
 namespace Humbug\A;
 
-use function Humbug\main as foo;
-
-foo();
+main();
 
 PHP
-    ,
+    ],
 
-    'FQ single-part' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Global function call in a namespace
+- do not prefix the call as may be part of PHP built-in functions
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 namespace A;
 
-use function main as foo;
-
-\foo();
+\main();
 ----
 <?php
 
 namespace Humbug\A;
 
-use function Humbug\main as foo;
-
-\foo();
+\main();
 
 PHP
-    ,
+    ],
 ];
