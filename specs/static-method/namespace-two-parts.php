@@ -14,14 +14,21 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'two-parts static method calls in a namespace scope',
+        'title' => 'Static method call statement of a namespaced class in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // As there is nothing in PHP core with more than two-parts, we can safely prefix.
-    'two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Static method call statement of a class:
+- prefix the namespace
+- prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 namespace X;
@@ -32,13 +39,20 @@ Foo\Bar::main();
 
 namespace Humbug\X;
 
-Foo\Bar::main();
+Humbug\X\Foo\Bar::main();
 
 PHP
-    ,
+    ],
 
-    // As there is nothing in PHP core with more than two-parts, we can safely prefix.
-    'FQ two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+FQ static method call statement of a class:
+- prefix the namespace
+- prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 namespace X;
@@ -52,10 +66,16 @@ namespace Humbug\X;
 \Humbug\Foo\Bar::main();
 
 PHP
-    ,
+    ],
 
-    // If is whitelisted is made into a FQCN to avoid autoloading issues
-    'whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+Static method call statement of a whitelisted class:
+- prefix the namespace
+- do not prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
         'whitelist' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -73,8 +93,14 @@ namespace Humbug\X;
 PHP
     ],
 
-    'FQ whitelisted two-parts' => [
-        'whitelist' => ['Foo\Bar'],
+    [
+        'spec' => <<<'SPEC'
+FQ static method call statement of a non-whitelisted class:
+- prefix the namespace
+- prefix the call
+SPEC
+        ,
+        'whitelist' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
 
@@ -86,7 +112,7 @@ namespace X;
 
 namespace Humbug\X;
 
-\Foo\Bar::main();
+\Humbug\Foo\Bar::main();
 
 PHP
     ],

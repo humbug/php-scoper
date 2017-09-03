@@ -24,7 +24,7 @@ return [
         'spec' => <<<'SPEC'
 Use statement for a function belonging to the global namespace:
 - prefix the use statement: as it is extremely rare to use a `use function` statement for a built-in
-function from the global scope, we can relatively safely assume it is a user-land declare method
+function from the global scope, we can relatively safely assume it is a user-land declare static-method
 which should be prefixed.
 SPEC
         ,

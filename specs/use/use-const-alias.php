@@ -24,7 +24,7 @@ return [
         'spec' => <<<'SPEC'
 Constant use statement for a constant belonging to the global namespace:
 - prefix the use statement: as it is extremely rare to use a `use const` statement for a built-in const from the
-global scope, we can relatively safely assume it is a user-land declare method which should be prefixed.
+global scope, we can relatively safely assume it is a user-land declare static-method which should be prefixed.
 SPEC
         ,
         'payload' => <<<'PHP'
