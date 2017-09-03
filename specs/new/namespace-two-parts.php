@@ -14,14 +14,21 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'two-parts new statements in a namespace scope',
+        'title' => 'New statement call of a namespaced class in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // As there is nothing in PHP core with more than two-parts, we can safely prefix.
-    'two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+New statement call of a class:
+- prefix the namespace
+- prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 namespace X;
@@ -32,13 +39,20 @@ new Foo\Bar();
 
 namespace Humbug\X;
 
-new Foo\Bar();
+new Humbug\X\Foo\Bar();
 
 PHP
-    ,
+    ],
 
-    // As there is nothing in PHP core with more than two-parts, we can safely prefix.
-    'FQ two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+FQ new statement call of a class:
+- prefix the namespace
+- prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 namespace X;
@@ -52,10 +66,16 @@ namespace Humbug\X;
 new \Humbug\Foo\Bar();
 
 PHP
-    ,
+    ],
 
-    // If is whitelisted is made into a FQCN to avoid autoloading issues
-    'whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+New statement call of a whitelisted class:
+- prefix the namespace
+- do not prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
         'whitelist' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -73,8 +93,14 @@ new \X\Foo\Bar();
 PHP
     ],
 
-    'FQ whitelisted two-parts' => [
-        'whitelist' => ['Foo\Bar'],
+    [
+        'spec' => <<<'SPEC'
+FQ new statement call of a non-whitelisted class:
+- prefix the namespace
+- prefix the call
+SPEC
+        ,
+        'whitelist' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
 
@@ -86,7 +112,7 @@ new \Foo\Bar();
 
 namespace Humbug\X;
 
-new \Foo\Bar();
+new \Humbug\Foo\Bar();
 
 PHP
     ],

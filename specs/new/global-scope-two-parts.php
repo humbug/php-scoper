@@ -14,14 +14,20 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'two-parts new statements in the global scope',
+        'title' => 'New statement call of a namespaced class in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    // As there is nothing in PHP core with more than two-parts, we can safely prefix.
-    'two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+New statement call of a namespaced class:
+- prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 new Foo\Bar();
@@ -31,10 +37,15 @@ new Foo\Bar();
 new \Humbug\Foo\Bar();
 
 PHP
-    ,
+    ],
 
-    // As there is nothing in PHP core with more than two-parts, we can safely prefix.
-    'FQ two-parts' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+FQ new statement call of a namespaced class:
+- prefix the call
+SPEC
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 new \Foo\Bar();
@@ -44,10 +55,15 @@ new \Foo\Bar();
 new \Humbug\Foo\Bar();
 
 PHP
-    ,
+    ],
 
-    // If is whitelisted is made into a FQCN to avoid autoloading issues
-    'whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+New statement call of a namespaced class which has been whitelisted:
+- do not prefix the call
+- transform the call into a FQ call
+SPEC
+        ,
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -61,7 +77,12 @@ new \Foo\Bar();
 PHP
     ],
 
-    'FQ whitelisted two-parts' => [
+    [
+        'spec' => <<<'SPEC'
+FQ new statement call of a namespaced class which has been whitelisted:
+- do not prefix the call
+SPEC
+        ,
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
