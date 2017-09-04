@@ -284,7 +284,7 @@ EOF;
         $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmp, '/path/to', $display);
         $display = preg_replace(
-            '/PHP Scoper version dev\-.+/',
+            '/PHP Scoper version (?:dev\-)?.+/',
             'PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
             $display
         );
