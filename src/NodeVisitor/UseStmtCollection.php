@@ -48,7 +48,7 @@ final class UseStmtCollection implements IteratorAggregate
      *
      * @return null|Name
      */
-    public function findStatementForName(string $name)
+    public function findStatementForName(string $name): ?Name
     {
         foreach ($this->nodes as $use_) {
             foreach ($use_->uses as $useStatement) {
