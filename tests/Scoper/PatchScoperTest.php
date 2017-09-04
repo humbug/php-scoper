@@ -73,10 +73,12 @@ class PatchScoperTest extends TestCase
             },
         ];
 
+        $whitelist = ['Foo'];
+
         $whitelister = create_fake_whitelister();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelister)
+            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn($content)
         ;
 
@@ -84,7 +86,7 @@ class PatchScoperTest extends TestCase
 
         $scoper = new PatchScoper($this->decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 

@@ -74,6 +74,7 @@ class JsonFileScoperTest extends TestCase
         $filePath = escape_path($this->tmp.'/file.php');
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
         touch($filePath);
@@ -82,7 +83,7 @@ class JsonFileScoperTest extends TestCase
         /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelister)
+            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -92,7 +93,7 @@ class JsonFileScoperTest extends TestCase
 
         $scoper = new JsonFileScoper($decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -111,9 +112,10 @@ class JsonFileScoperTest extends TestCase
 
         $prefix = 'Foo';
         $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }

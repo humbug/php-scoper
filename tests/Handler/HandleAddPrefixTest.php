@@ -119,6 +119,8 @@ class HandleAddPrefixTest extends TestCase
 
         $patchers = [create_fake_patcher()];
 
+        $whitelist = ['Foo'];
+
         $whitelisters = [create_fake_whitelister()];
 
         $stopOnFailure = false;
@@ -128,7 +130,7 @@ class HandleAddPrefixTest extends TestCase
             $this->assertNotFalse($filePath, 'Type check.');
 
             $this->scoperProphecy
-                ->scope($filePath, $prefix, $patchers, Argument::type(Closure::class))
+                ->scope($filePath, $prefix, $patchers, $whitelist, Argument::type(Closure::class))
                 ->shouldBeCalled()
             ;
 
@@ -137,7 +139,7 @@ class HandleAddPrefixTest extends TestCase
 
         $this->loggerProphecy->outputFileCount(count($expected))->shouldBeCalled();
 
-        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelisters, $stopOnFailure, $this->logger);
+        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelist, $whitelisters, $stopOnFailure, $this->logger);
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expected));
 
@@ -157,6 +159,8 @@ class HandleAddPrefixTest extends TestCase
 
         $patchers = [create_fake_patcher()];
 
+        $whitelist = ['Foo'];
+
         $whitelisters = [create_fake_whitelister()];
 
         $stopOnFailure = false;
@@ -174,11 +178,11 @@ namespace Myprefix\MyNamespace;
 PHP;
 
         $this->scoperProphecy
-            ->scope(Argument::any(), $prefix, $patchers, Argument::type(Closure::class))
+            ->scope(Argument::any(), $prefix, $patchers, $whitelist, Argument::type(Closure::class))
             ->willReturn($expected)
         ;
 
-        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelisters, $stopOnFailure, $logger);
+        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelist, $whitelisters, $stopOnFailure, $logger);
 
         $actual = file_get_contents(
             escape_path($this->tmp.'/file.php')
@@ -199,6 +203,8 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
+        $whitelist = ['Foo'];
+
         $whitelisters = [create_fake_whitelister()];
 
         $stopOnFailure = false;
@@ -209,7 +215,7 @@ PHP;
         $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
 
         try {
-            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelisters, $stopOnFailure, $logger);
+            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelist, $whitelisters, $stopOnFailure, $logger);
 
             $this->fail('Expected exception to be thrown.');
         } catch (RuntimeException $exception) {
@@ -236,6 +242,8 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
+        $whitelist = ['Foo'];
+
         $whitelisters = [create_fake_whitelister()];
 
         $stopOnFailure = true;
@@ -244,12 +252,12 @@ PHP;
         $logger = $this->loggerProphecy->reveal();
 
         $this->scoperProphecy
-            ->scope(Argument::any(), $prefix, $patchers, Argument::type(Closure::class))
+            ->scope(Argument::any(), $prefix, $patchers, $whitelist, Argument::type(Closure::class))
             ->willThrow($error = new Error('Unknown error'))
         ;
 
         try {
-            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelisters, $stopOnFailure, $logger);
+            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelist, $whitelisters, $stopOnFailure, $logger);
 
             $this->fail('Expected exception to be thrown.');
         } catch (Throwable $throwable) {
@@ -279,6 +287,8 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
+        $whitelist = ['Foo'];
+
         $whitelisters = [create_fake_whitelister()];
 
         $stopOnFailure = false;
@@ -287,11 +297,11 @@ PHP;
         $logger = $this->loggerProphecy->reveal();
 
         $this->scoperProphecy
-            ->scope(Argument::any(), $prefix, $patchers, Argument::type(Closure::class))
+            ->scope(Argument::any(), $prefix, $patchers, $whitelist, Argument::type(Closure::class))
             ->willThrow($error = new PhpParserError('Could not parse file'))
         ;
 
-        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelisters, $stopOnFailure, $logger);
+        $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelist, $whitelisters, $stopOnFailure, $logger);
 
         $this->assertTrue(file_exists($outputPath));
     }
@@ -308,6 +318,8 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
+        $whitelist = ['Foo'];
+
         $whitelisters = [create_fake_whitelister()];
 
         $stopOnFailure = true;
@@ -316,12 +328,12 @@ PHP;
         $logger = $this->loggerProphecy->reveal();
 
         $this->scoperProphecy
-            ->scope(Argument::any(), $prefix, $patchers, Argument::type(Closure::class))
+            ->scope(Argument::any(), $prefix, $patchers, $whitelist, Argument::type(Closure::class))
             ->willThrow($error = new PhpParserError('Could not parse file'))
         ;
 
         try {
-            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelisters, $stopOnFailure, $logger);
+            $this->handle->__invoke($prefix, $paths, $outputPath, $patchers, $whitelist, $whitelisters, $stopOnFailure, $logger);
 
             $this->fail('Expected exception to be thrown.');
         } catch (ParsingException $exception) {

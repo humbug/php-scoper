@@ -77,11 +77,13 @@ class NullScoperTest extends TestCase
 
         $patchers = [create_fake_patcher()];
 
+        $whitelist = ['Foo'];
+
         $whitelister = create_fake_whitelister();
 
         $scoper = new NullScoper();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelister);
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }

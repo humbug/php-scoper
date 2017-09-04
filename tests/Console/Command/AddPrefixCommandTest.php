@@ -183,6 +183,7 @@ EOF;
                 $this->tmp,
                 Argument::type('array'),
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -231,6 +232,7 @@ EOF;
                     realpath(escape_path($rootPath.'/dir/file2.php')),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 false,
@@ -286,6 +288,7 @@ EOF;
                 $this->tmp,
                 Argument::type('array'),
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -322,6 +325,7 @@ EOF;
                     $this->cwd,
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 false,
@@ -372,6 +376,7 @@ EOF;
                 $this->tmp,
                 Argument::type('array'),
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -414,6 +419,7 @@ EOF;
                     escape_path('/path/to/file'),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 false,
@@ -461,6 +467,7 @@ EOF;
                 $this->tmp,
                 Argument::type('array'),
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -500,6 +507,7 @@ EOF;
                     escape_path('/path/to/dir1'),
                 ],
                 $outDir,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 false,
@@ -546,6 +554,7 @@ EOF;
                     escape_path('/path/to/dir1'),
                 ],
                 $expectedOutputDir,
+                [],
                 [],
                 [],
                 false,
@@ -688,6 +697,7 @@ EOF;
                     return true;
                 }),
                 Argument::any(),
+                Argument::any(),
                 false,
                 Argument::any()
             )
@@ -728,6 +738,7 @@ EOF;
 
                     return true;
                 }),
+                Argument::any(),
                 Argument::any(),
                 false,
                 Argument::any()
@@ -798,6 +809,7 @@ EOF;
                     $fixtureDir,
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 true,

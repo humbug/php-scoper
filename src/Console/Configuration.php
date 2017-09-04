@@ -53,7 +53,7 @@ final class Configuration
     public static function load(string $path = null): self
     {
         if (null === $path) {
-            return new self(null, [], [], []);
+            return new self(null, [], [], [], []);
         }
 
         $config = include $path;
