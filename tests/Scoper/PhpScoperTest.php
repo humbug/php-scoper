@@ -14,12 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Generator;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Finder\Finder;
+use Throwable;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_fake_whitelister;
 use function Humbug\PhpScoper\create_parser;
@@ -33,7 +36,7 @@ use function Humbug\PhpScoper\remove_dir;
 class PhpScoperTest extends TestCase
 {
     /** @private */
-    const FIXTURES_PATH = __DIR__.'/files_to_scope';
+    const SPECS_PATH = __DIR__.'/../../specs';
 
     /**
      * @var Scoper
@@ -256,8 +259,9 @@ PHP;
     /**
      * @dataProvider provideValidFiles
      */
-    public function test_can_scope_valid_files(string $content, string $prefix, array $whitelist, string $expected)
+    public function test_can_scope_valid_files(string $spec, string $content, string $prefix, array $whitelist, string $expected)
     {
+        $this->markTestIncomplete('TODO');
         $filePath = escape_path($this->tmp.'/file.php');
 
         touch($filePath);
@@ -271,14 +275,77 @@ PHP;
 
         $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
-        $this->assertSame($expected, $actual);
+        $titleSeparator = str_repeat('=', strlen($spec));
+
+        $this->assertSame(
+            $expected,
+            $actual,
+            <<<OUTPUT
+$spec
+$titleSeparator
+
+$actual
+
+-----
+
+$expected
+OUTPUT
+        );
     }
 
     public function provideValidFiles()
     {
-        //TODO: see https://github.com/humbug/php-scoper/pull/92
-        return [
-            ['', 'Humbug', [], "<?php\n\n\n"],
+        $files = (new Finder())->files()->in(self::SPECS_PATH);
+
+        foreach ($files as $file) {
+            try {
+                $fixtures = include $file;
+
+                $meta = $fixtures['meta'];
+                unset($fixtures['meta']);
+
+                foreach ($fixtures as $fixtureTitle => $fixtureSet) {
+                    yield $this->parseSpecFile($meta, $fixtureTitle, $fixtureSet)->current();
+                }
+            } catch (Throwable $throwable) {
+                $this->fail(
+                    sprintf(
+                        'An error occurred while parsing the file "%s": %s',
+                        $file,
+                        $throwable->getMessage()
+                    )
+                );
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * @param array        $meta
+     * @param string|int   $fixtureTitle
+     * @param string|array $fixtureSet
+     *
+     * @return Generator
+     */
+    private function parseSpecFile(array $meta, $fixtureTitle, $fixtureSet): Generator
+    {
+        $spec = sprintf(
+            '[%s] %s',
+            $meta['title'],
+            isset($fixtureSet['spec']) ? $fixtureSet['spec'] : $fixtureTitle
+        );
+
+        $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
+
+        $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
+
+        yield [
+            $spec,
+            $payloadParts[0],   // Input
+            $fixtureSet['prefix'] ?? $meta['prefix'],
+            $fixtureSet['whitelist'] ?? $meta['whitelist'],
+            $payloadParts[1],   // Expected output
         ];
     }
 }
