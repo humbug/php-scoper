@@ -83,27 +83,25 @@ namespace Z {
 ----
 <?php
 
-namespace Humbug\X {
-    if (true) {
-        class A
-        {
-        }
+namespace Humbug\X;
+
+if (true) {
+    class A
+    {
     }
 }
+namespace Humbug\Y;
 
-namespace Humbug\Y {
-    if (true) {
-        class B
-        {
-        }
+if (true) {
+    class B
+    {
     }
 }
+namespace Humbug\Z;
 
-namespace Humbug\Z {
-    if (true) {
-        class C
-        {
-        }
+if (true) {
+    class C
+    {
     }
 }
 

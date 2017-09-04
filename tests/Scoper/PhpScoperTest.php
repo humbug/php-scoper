@@ -261,7 +261,6 @@ PHP;
      */
     public function test_can_scope_valid_files(string $spec, string $content, string $prefix, array $whitelist, string $expected)
     {
-        $this->markTestIncomplete('TODO');
         $filePath = escape_path($this->tmp.'/file.php');
 
         touch($filePath);

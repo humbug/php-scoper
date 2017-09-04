@@ -85,25 +85,23 @@ namespace Z {
 ----
 <?php
 
-namespace Humbug\X {
-    interface A extends D, E
-    {
-        public function a();
-    }
-}
+namespace Humbug\X;
 
-namespace Humbug\Y {
-    interface B extends D, E
-    {
-        public function a();
-    }
+interface A extends D, E
+{
+    public function a();
 }
+namespace Humbug\Y;
 
-namespace Humbug\Z {
-    interface C extends D, E
-    {
-        public function a();
-    }
+interface B extends D, E
+{
+    public function a();
+}
+namespace Humbug\Z;
+
+interface C extends D, E
+{
+    public function a();
 }
 
 PHP
