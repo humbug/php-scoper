@@ -12,18 +12,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper;
+use Symfony\Component\Finder\Finder;
 
-use Humbug\PhpScoper\Scoper;
-use LogicException;
-
-final class FakeScoper implements Scoper
-{
-    /**
-     * @inheritdoc
-     */
-    public function scope(string $filePath, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
-    {
-        throw new LogicException();
-    }
-}
+return [
+    'finders' => [
+        (new Finder())
+            ->files()
+            ->in(__DIR__)
+            ->exclude('tests')
+    ],
+    'whitelist' => [
+        \Set011\Dictionary::class,
+    ],
+];

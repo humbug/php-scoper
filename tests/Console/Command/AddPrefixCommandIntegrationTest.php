@@ -246,22 +246,6 @@ Stack trace:
 #7
 #8
 #9
-#10
-#11
-#12
-#13
-#14
-#15
-#16
-#17
-#18
-#19
-#20
-#21
-#22
-#23
-#24
-#25
  * [OK] /path/to/file.php
  * [NO] /path/to/invalid-file.php
 	Could not parse the file "/path/to/invalid-file.php".: PhpParser
@@ -276,22 +260,6 @@ Stack trace:
 #7
 #8
 #9
-#10
-#11
-#12
-#13
-#14
-#15
-#16
-#17
-#18
-#19
-#20
-#21
-#22
-#23
-#24
-#25
 
 
  [OK] Successfully prefixed 3 files.
@@ -304,6 +272,8 @@ EOF;
         $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
         $actual = preg_replace('/(Could not parse the file ".+?"\.: \w+).*(\n)/', '$1$2', $actual);
         $actual = preg_replace('/(#\d+).*(\n)/', '$1$2', $actual);
+        // Remove overly lengthy stack-trace
+        $actual = preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
@@ -314,14 +284,13 @@ EOF;
         $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmp, '/path/to', $display);
         $display = preg_replace(
-            '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
-            '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
+            '/PHP Scoper version (?:dev\-)?.+/',
+            'PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
             $display
         );
-
         $display = preg_replace(
-            '/(dev-)?\b([a-f0-9]{40})\b/',
-            '12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
+            '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
+            '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
             $display
         );
 

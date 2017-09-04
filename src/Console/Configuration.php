@@ -26,35 +26,24 @@ final class Configuration
     const PATCHERS_KEYWORD = 'patchers';
 
     /** @internal */
+    const WHITELIST_KEYWORD = 'whitelist';
+
+    /** @internal */
     const GLOBAL_NAMESPACE_KEYWORD = 'global_namespace_whitelist';
 
     /** @internal */
     const KEYWORDS = [
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
+        self::WHITELIST_KEYWORD,
         self::GLOBAL_NAMESPACE_KEYWORD,
     ];
 
     private $path;
     private $patchers;
     private $finders;
+    private $whitelist;
     private $globalNamespaceWhitelisters;
-
-    /**
-     * @param string|null         $path            Absolute path to the configuration file loaded
-     * @param Finder[]            $finders
-     * @param callable[]          $patchers        List of closures which can alter the content of the files being
-     *                                             scoped
-     * @param callable[]|string[] $globalNamespace List of class names from the global namespace that should be scoped
-     *                                             or closures filtering if the class should be scoped or not
-     */
-    private function __construct(string $path = null, array $finders, array $patchers, array $globalNamespace)
-    {
-        $this->path = $path;
-        $this->patchers = $patchers;
-        $this->finders = $finders;
-        $this->globalNamespaceWhitelisters = $globalNamespace;
-    }
 
     /**
      * @param string|null $path Absolute path to the configuration file.
@@ -64,7 +53,7 @@ final class Configuration
     public static function load(string $path = null): self
     {
         if (null === $path) {
-            return new self(null, [], [], []);
+            return new self(null, [], [], [], []);
         }
 
         $config = include $path;
@@ -82,9 +71,33 @@ final class Configuration
 
         $finders = self::retrieveFinders($config);
         $patchers = self::retrievePatchers($config);
+        $whitelist = self::retrieveWhitelist($config);
         $globalNamespace = self::retrieveGlobalNamespaceWhitelisters($config);
 
-        return new self($path, $finders, $patchers, $globalNamespace);
+        return new self($path, $finders, $patchers, $whitelist, $globalNamespace);
+    }
+
+    /**
+     * @param string|null         $path            Absolute path to the configuration file loaded.
+     * @param Finder[]            $finders         List of finders which will provide the files that will be scoped.
+     * @param callable[]          $patchers        List of closures which can alter the content of the files being
+     *                                             scoped.
+     * @param string[]            $whitelist       List of classes that will not be scoped.
+     * @param callable[]|string[] $globalNamespace List of class names from the global namespace that should be scoped
+     *                                             or closures filtering if the class should be scoped or not.
+     */
+    private function __construct(
+        string $path = null,
+        array $finders,
+        array $patchers,
+        array $whitelist,
+        array $globalNamespace
+    ) {
+        $this->path = $path;
+        $this->patchers = $patchers;
+        $this->finders = $finders;
+        $this->whitelist = $whitelist;
+        $this->globalNamespaceWhitelisters = $globalNamespace;
     }
 
     public function getPath(): string
@@ -103,9 +116,14 @@ final class Configuration
     /**
      * @return callable[]
      */
-    public function getPatchers()
+    public function getPatchers(): array
     {
         return $this->patchers;
+    }
+
+    public function getWhitelist(): array
+    {
+        return $this->whitelist;
     }
 
     /**
@@ -202,6 +220,39 @@ final class Configuration
         }
 
         return $patchers;
+    }
+
+    private static function retrieveWhitelist(array $config): array
+    {
+        if (false === array_key_exists(self::WHITELIST_KEYWORD, $config)) {
+            return [];
+        }
+
+        $whitelist = $config[self::WHITELIST_KEYWORD];
+
+        if (false === is_array($whitelist)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected whitelist to be an array of strings, found "%s" instead.',
+                    gettype($whitelist)
+                )
+            );
+        }
+
+        foreach ($whitelist as $index => $className) {
+            if (is_string($className)) {
+                continue;
+            }
+
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected whitelist to be an array of string, the "%d" element is not.',
+                    $index
+                )
+            );
+        }
+
+        return $whitelist;
     }
 
     private static function retrieveGlobalNamespaceWhitelisters(array $config): array

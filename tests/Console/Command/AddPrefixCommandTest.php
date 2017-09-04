@@ -183,6 +183,7 @@ EOF;
                 $this->tmp,
                 Argument::type('array'),
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -195,6 +196,50 @@ EOF;
 
         $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
+    public function test_do_not_scope_duplicated_given_paths()
+    {
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/file'),
+                escape_path('/path/to/file'),
+            ],
+            '--output-dir' => $this->tmp,
+            '--no-interaction',
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    escape_path('/path/to/file'),
+                ],
+                $this->tmp,
+                Argument::type('array'),
+                Argument::type('array'),
+                Argument::type('array'),
+                false,
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        $this->assertSame(0, $this->appTester->getStatusCode());
+
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -231,6 +276,7 @@ EOF;
                     realpath(escape_path($rootPath.'/dir/file2.php')),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 false,
@@ -286,6 +332,7 @@ EOF;
                 $this->tmp,
                 Argument::type('array'),
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -322,6 +369,7 @@ EOF;
                     $this->cwd,
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 false,
@@ -372,6 +420,7 @@ EOF;
                 $this->tmp,
                 Argument::type('array'),
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -414,6 +463,7 @@ EOF;
                     escape_path('/path/to/file'),
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 false,
@@ -461,6 +511,7 @@ EOF;
                 $this->tmp,
                 Argument::type('array'),
                 Argument::type('array'),
+                Argument::type('array'),
                 false,
                 Argument::type(ConsoleLogger::class)
             )
@@ -500,6 +551,7 @@ EOF;
                     escape_path('/path/to/dir1'),
                 ],
                 $outDir,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 false,
@@ -546,6 +598,7 @@ EOF;
                     escape_path('/path/to/dir1'),
                 ],
                 $expectedOutputDir,
+                [],
                 [],
                 [],
                 false,
@@ -688,6 +741,7 @@ EOF;
                     return true;
                 }),
                 Argument::any(),
+                Argument::any(),
                 false,
                 Argument::any()
             )
@@ -728,6 +782,7 @@ EOF;
 
                     return true;
                 }),
+                Argument::any(),
                 Argument::any(),
                 false,
                 Argument::any()
@@ -798,6 +853,7 @@ EOF;
                     $fixtureDir,
                 ],
                 $this->tmp,
+                Argument::type('array'),
                 Argument::type('array'),
                 Argument::type('array'),
                 true,

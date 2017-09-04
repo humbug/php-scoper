@@ -1,0 +1,15 @@
+{
+    "bin": [
+        "bin/greet"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Set011\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Set011\\": "tests/"
+        }
+    }
+}

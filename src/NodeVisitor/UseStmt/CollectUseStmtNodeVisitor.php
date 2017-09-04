@@ -12,31 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\UseStmt;
 
+use Humbug\PhpScoper\NodeVisitor\UseStmtCollection;
 use PhpParser\Node;
-use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\GroupUse;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeVisitorAbstract;
 
-final class GroupUseNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+final class CollectUseStmtNodeVisitor extends NodeVisitorAbstract
 {
-    private $prefix;
+    private $useStatements;
 
-    public function __construct(string $prefix)
+    public function __construct(UseStmtCollection $useStatements)
     {
-        $this->prefix = $prefix;
+        $this->useStatements = $useStatements;
     }
 
     /**
      * @inheritdoc
      */
-    public function enterNode(Node $node)
+    public function enterNode(Node $node): Node
     {
-        if ($node instanceof GroupUse
-            && $this->prefix !== $node->prefix->getFirst()
-        ) {
-            $node->prefix = Name::concat($this->prefix, $node->prefix);
+        if ($node instanceof Use_) {
+            $this->useStatements->add($node);
         }
 
         return $node;

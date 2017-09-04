@@ -1,0 +1,15 @@
+{
+    "output": "build/set011/bin/greet.phar",
+    "main": "bin/greet.php",
+    "base-path": "build/set011",
+    "directories": [
+        "src",
+        "vendor"
+    ],
+    "compression": "GZ",
+    "compactors": [
+        "Herrera\\Box\\Compactor\\Json",
+        "Herrera\\Box\\Compactor\\Php"
+    ],
+    "stub": true
+}
