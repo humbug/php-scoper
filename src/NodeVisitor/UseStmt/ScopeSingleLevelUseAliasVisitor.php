@@ -21,7 +21,7 @@ use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Scopes single level use statements with an alias:
+ * Scopes single level use statements with an alias:.
  *
  * ```
  * use Foo as Bar;

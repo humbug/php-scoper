@@ -1,18 +1,24 @@
 <?php
+
 declare(strict_types=1);
+
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
-use Humbug\PhpScoper\NodeVisitor\NamespaceStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
 final class ScopeConstStmtNodeVisitor extends NodeVisitorAbstract
@@ -28,7 +34,6 @@ final class ScopeConstStmtNodeVisitor extends NodeVisitorAbstract
         UseStmtCollection $useStatements,
         array $whitelist
     ) {
-
         $this->prefix = $prefix;
         $this->namespaceStatements = $namespaceStatements;
         $this->useStmtCollection = $useStatements;
@@ -44,13 +49,12 @@ final class ScopeConstStmtNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
         /** @var ClassConstFetch $node */
-
         $constClassNode = $node->class;
 
         if (false === ($constClassNode instanceof Name)) {
             return $node;
         }
-        /** @var Name $useStatement */
+        /* @var Name $useStatement */
 
         if ($node->hasAttribute('parent') && $node->getAttribute('parent') instanceof Arg) {
             return $node;

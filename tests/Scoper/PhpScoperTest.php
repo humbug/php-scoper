@@ -26,8 +26,6 @@ use function Humbug\PhpScoper\create_parser;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
-use Symfony\Component\Finder\Finder;
-use Throwable;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PhpScoper
