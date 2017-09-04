@@ -201,6 +201,50 @@ EOF;
         $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
+    public function test_do_not_scope_duplicated_given_paths()
+    {
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                escape_path('/path/to/file'),
+                escape_path('/path/to/file'),
+            ],
+            '--output-dir' => $this->tmp,
+            '--no-interaction',
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+
+        $this->handleProphecy
+            ->__invoke(
+                'MyPrefix',
+                [
+                    escape_path('/path/to/file'),
+                ],
+                $this->tmp,
+                Argument::type('array'),
+                Argument::type('array'),
+                Argument::type('array'),
+                false,
+                Argument::type(ConsoleLogger::class)
+            )
+            ->shouldBeCalled()
+        ;
+
+        $this->appTester->run($input);
+
+        $this->assertSame(0, $this->appTester->getStatusCode());
+
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+
+        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+    }
+
     public function test_scope_the_given_paths_and_the_ones_found_by_the_finder()
     {
         chdir($rootPath = escape_path(self::FIXTURE_PATH.'/set012'));
