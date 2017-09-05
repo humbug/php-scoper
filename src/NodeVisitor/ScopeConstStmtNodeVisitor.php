@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
+use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -60,7 +62,7 @@ final class ScopeConstStmtNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
 
-        $useStatement = $this->useStmtCollection->findStatementForName($constClassNode->getFirst());
+        $useStatement = $this->useStmtCollection->findStatementForNode($constClassNode->getFirst());
 
         $prefix = false;
 
@@ -70,7 +72,7 @@ final class ScopeConstStmtNodeVisitor extends NodeVisitorAbstract
 
                 $prefix = true;
             } else {
-                $namespaceStatement = $this->namespaceStatements->getNamespaceName();
+                $namespaceStatement = $this->namespaceStatements->findNamespaceForNode();
 
                 $newClassNode = FullyQualified::concat($namespaceStatement, $constClassNode, $constClassNode->getAttributes());
             }

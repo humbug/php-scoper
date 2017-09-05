@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor\NewStmt;
 
-use Humbug\PhpScoper\NodeVisitor\NamespaceStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\UseStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
@@ -52,23 +52,23 @@ final class ScopeNewStmtNodeVisitor extends NodeVisitorAbstract
 
         $parentNode = $node->getAttribute('parent');
 
-        if (false === ($parentNode instanceof New_)) {
-            return $node;
-        }
+//        if (false === ($parentNode instanceof New_)) {
+//            return $node;
+//        }
+//
+//        if (1 === count($node->parts)) {
+//            //TODO
+//            $x = '';
+//        }
 
-        if (1 === count($node->parts)) {
-            //TODO
-            $x = '';
-        }
-
-        $useStatement = $this->useStatements->findStatementForName($node->getFirst());
+        $useStatement = $this->useStatements->findStatementForNode($node->getFirst());
 
         if (null === $useStatement) {
             if (0 === count($this->namespaceStatements)) {
                 return $node;
             }
 
-            $namespaceStatement = $this->namespaceStatements->getNamespaceName();
+            $namespaceStatement = $this->namespaceStatements->findNamespaceForNode();
 
             $newNode = FullyQualified::concat($namespaceStatement, $node, $node->getAttributes());
         } else {

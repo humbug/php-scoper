@@ -37,7 +37,6 @@ X\Bar::MAIN_CONST;
 <?php
 
 use Foo;
-
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -60,7 +59,6 @@ X::MAIN_CONST;
 <?php
 
 use Humbug\Foo\Bar as X;
-
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -83,7 +81,6 @@ use Foo as X;
 <?php
 
 use Foo as X;
-
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -107,7 +104,6 @@ X\Bar::MAIN_CONST;
 <?php
 
 use Foo as X;
-
 \Foo\Bar::MAIN_CONST;
 
 PHP
@@ -131,7 +127,6 @@ use Foo as X;
 <?php
 
 use Foo as X;
-
 \Foo\Bar::MAIN_CONST;
 
 PHP

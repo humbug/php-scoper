@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Scoper;
 use Generator;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\TraverserFactory\NativeTraverserFactory;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -37,6 +38,8 @@ class PhpScoperTest extends TestCase
 {
     /** @private */
     const SPECS_PATH = __DIR__.'/../../specs';
+    /** @private */
+    const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
 
     /**
      * @var Scoper
@@ -70,7 +73,8 @@ class PhpScoperTest extends TestCase
     {
         $this->scoper = new PhpScoper(
             create_parser(),
-            new FakeScoper()
+            new FakeScoper(),
+            new NativeTraverserFactory()
         );
 
         if (null === $this->tmp) {
@@ -141,7 +145,8 @@ PHP;
 
         $scoper = new PhpScoper(
             new FakeParser(),
-            $this->decoratedScoper
+            $this->decoratedScoper,
+            new NativeTraverserFactory()
         );
 
         $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
@@ -214,7 +219,8 @@ PHP;
 
         $scoper = new PhpScoper(
             new FakeParser(),
-            $this->decoratedScoper
+            $this->decoratedScoper,
+            new NativeTraverserFactory()
         );
 
         $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
@@ -274,27 +280,53 @@ PHP;
 
         $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
 
-        $titleSeparator = str_repeat('=', strlen($spec));
+        $titleSeparator = str_repeat(
+            '=',
+            min(
+                strlen($spec),
+                80
+            )
+        );
 
         $this->assertSame(
             $expected,
             $actual,
             <<<OUTPUT
-$spec
 $titleSeparator
+SPECIFICATION
+$titleSeparator
+$spec
 
+$titleSeparator
+INPUT
+$titleSeparator
+$content
+
+$titleSeparator
+ACTUAL
+$titleSeparator
 $actual
 
------
-
+$titleSeparator
+EXPECTED
+$titleSeparator
 $expected
+-------------------------------------------------------------------------------
 OUTPUT
         );
     }
 
     public function provideValidFiles()
     {
-        $files = (new Finder())->files()->in(self::SPECS_PATH);
+        if (file_exists(self::SECONDARY_SPECS_PATH)) {
+            $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
+
+            if (0 === count($files)) {
+                $files = (new Finder())->files()->in(self::SPECS_PATH);
+            }
+        } else {
+            $files = (new Finder())->files()->in(self::SPECS_PATH);
+        }
 
         foreach ($files as $file) {
             try {

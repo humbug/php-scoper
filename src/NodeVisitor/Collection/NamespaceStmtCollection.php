@@ -12,12 +12,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\Collection;
 
 use ArrayIterator;
 use Countable;
+use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use InvalidArgumentException;
 use IteratorAggregate;
+use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use function Humbug\PhpScoper\deep_clone;
@@ -34,17 +36,32 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         $this->nodes[] = deep_clone($node);
     }
 
-    public function getNamespaceName(): Name
+    public function findNamespaceForNode(Node $node): ?Name
     {
         if (0 === count($this->nodes)) {
-            throw new InvalidArgumentException('No name can be given: no namespace found.');
+            return null;
         }
 
         if (1 < count($this->nodes)) {
-            throw new InvalidArgumentException('No name can be given: more than one namespace found.');
+            return $this->getNodeNamespace($node);
         }
 
         return $this->nodes[0]->name;
+    }
+
+    private function getNodeNamespace(Node $node): ?Name
+    {
+        if (false === AppendParentNode::hasParent($node)) {
+            return null;
+        }
+
+        $parentNode = AppendParentNode::getParent($node);
+
+        if ($parentNode instanceof Namespace_) {
+            return $parentNode->name;
+        }
+
+        return $this->getNodeNamespace($parentNode);
     }
 
     /**

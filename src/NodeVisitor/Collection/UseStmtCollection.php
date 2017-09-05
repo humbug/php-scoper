@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\Collection;
 
 use ArrayIterator;
 use IteratorAggregate;
@@ -44,21 +44,29 @@ final class UseStmtCollection implements IteratorAggregate
      *
      * will return the use statement for `Bar\Foo`.
      *
-     * @param string $name
+     * @param Name $node
      *
      * @return null|Name
      */
-    public function findStatementForName(string $name): ?Name
+    public function findStatementForNode(Name $node): ?Name
     {
+        $name = $node->getFirst();
+
         foreach ($this->nodes as $use_) {
             foreach ($use_->uses as $useStatement) {
                 if ($useStatement instanceof UseUse) {
-                    if ($name === $useStatement->alias || $name === $useStatement->name->getLast()) {
+                    if ($name === $useStatement->alias) {
+                        // Match the alias
+                        return $useStatement->name;
+                    } elseif (null !== $useStatement->alias) {
+                        continue;
+                    }
+
+                    if ($name === $useStatement->name->getLast() && $useStatement->alias === null) {
+                        // Match a simple use statement
                         return $useStatement->name;
                     }
                 }
-
-                //TODO
             }
         }
 

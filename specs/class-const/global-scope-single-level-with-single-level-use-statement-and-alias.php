@@ -37,7 +37,6 @@ X::MAIN_CONST;
 <?php
 
 use Foo as X;
-
 \Foo::MAIN_CONST;
 
 PHP
@@ -47,7 +46,7 @@ PHP
         'spec' => <<<'SPEC'
 FQ constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace:
 - do not prefix the class (cf. class belonging to the global scope tests)
-- resolve the alias
+- do nothing
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -60,8 +59,7 @@ use Foo as X;
 <?php
 
 use Foo as X;
-
-\Foo::MAIN_CONST;
+\X::MAIN_CONST;
 
 PHP
     ],
@@ -83,7 +81,6 @@ X::MAIN_CONST;
 <?php
 
 use Humbug\AppKernel as X;
-
 \Humbug\AppKernel::MAIN_CONST;
 
 PHP
@@ -93,7 +90,7 @@ PHP
         'spec' => <<<'SPEC'
 FQ constant call on a whitelisted class which is imported via an aliased use statement and which belongs to the global namespace:
 - prefix the use statement (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
-- transform the call into a FQ call
+- do nothing
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -106,8 +103,7 @@ use AppKernel as X;
 <?php
 
 use Humbug\AppKernel as X;
-
-\Humbug\AppKernel::MAIN_CONST;
+\X::MAIN_CONST;
 
 PHP
     ],

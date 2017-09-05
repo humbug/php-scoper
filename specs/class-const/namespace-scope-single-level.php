@@ -37,7 +37,6 @@ Command::MAIN_CONST;
 <?php
 
 namespace Humbug\X;
-
 Command::MAIN_CONST;
 
 PHP
@@ -60,7 +59,6 @@ namespace X;
 <?php
 
 namespace Humbug\X;
-
 \Command::MAIN_CONST;
 
 PHP
@@ -84,7 +82,6 @@ AppKernel::MAIN_CONST;
 <?php
 
 namespace Humbug\X;
-
 \Humbug\AppKernel::MAIN_CONST;
 
 PHP

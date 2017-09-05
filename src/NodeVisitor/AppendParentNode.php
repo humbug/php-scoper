@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
+use LogicException;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
@@ -21,9 +22,22 @@ use PhpParser\NodeVisitorAbstract;
  * Appends the parent node as an attribute to each node. This allows to have more context in the other visitors when
  * inspecting a node.
  */
-final class ParentNodeVisitor extends NodeVisitorAbstract
+final class AppendParentNode extends NodeVisitorAbstract
 {
+    /** @private */
+    const PARENT_ATTRIBUTE = 'parent';
+
     private $stack;
+
+    public static function hasParent(Node $node): bool
+    {
+        return $node->hasAttribute(self::PARENT_ATTRIBUTE);
+    }
+
+    public static function getParent(Node $node): Node
+    {
+        return $node->getAttribute(self::PARENT_ATTRIBUTE);
+    }
 
     /**
      * @inheritdoc
@@ -39,7 +53,7 @@ final class ParentNodeVisitor extends NodeVisitorAbstract
     public function enterNode(Node $node): Node
     {
         if (!empty($this->stack)) {
-            $node->setAttribute('parent', $this->stack[count($this->stack) - 1]);
+            $node->setAttribute(self::PARENT_ATTRIBUTE, $this->stack[count($this->stack) - 1]);
         }
 
         $this->stack[] = $node;

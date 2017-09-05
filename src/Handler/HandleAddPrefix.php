@@ -40,7 +40,7 @@ class HandleAddPrefix
     }
 
     /**
-     * Apply prefix to all the code found in the given paths, AKA scope all the files found.
+     * Applies prefix to all the code found in the given paths, AKA scope all the files found.
      *
      * @param string              $prefix                   e.g. 'Foo'
      * @param string[]            $paths                    List of files (absolute paths) which will be scoped

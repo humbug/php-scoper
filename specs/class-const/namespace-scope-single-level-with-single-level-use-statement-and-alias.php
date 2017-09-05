@@ -42,7 +42,6 @@ X::MAIN_CONST;
 namespace Humbug\A;
 
 use Foo as X;
-
 \Foo::MAIN_CONST;
 
 PHP
@@ -70,7 +69,6 @@ use Foo as X;
 namespace Humbug\A;
 
 use Foo as X;
-
 \Foo::MAIN_CONST;
 
 PHP
@@ -98,7 +96,6 @@ X::MAIN_CONST;
 namespace Humbug\A;
 
 use Humbug\AppKernel as X;
-
 \Humbug\AppKernel::MAIN_CONST;
 
 PHP
@@ -126,7 +123,6 @@ use AppKernel as X;
 namespace Humbug\A;
 
 use Humbug\AppKernel as X;
-
 \Humbug\AppKernel::MAIN_CONST;
 
 PHP

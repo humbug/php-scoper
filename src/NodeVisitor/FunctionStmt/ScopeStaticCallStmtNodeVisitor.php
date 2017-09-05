@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor\FunctionStmt;
 
-use Humbug\PhpScoper\NodeVisitor\NamespaceStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\UseStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
@@ -64,7 +64,7 @@ final class ScopeStaticCallStmtNodeVisitor extends NodeVisitorAbstract
             $x = '';
         }
 
-        $useStatement = $this->useStmtCollection->findStatementForName($node->getFirst());
+        $useStatement = $this->useStmtCollection->findStatementForNode($node->getFirst());
 
         $prefix = false;
 
@@ -74,7 +74,7 @@ final class ScopeStaticCallStmtNodeVisitor extends NodeVisitorAbstract
 
                 $prefix = (false === in_array((string) $newNodeClass, $this->whitelist));
             } else {
-                $namespaceStatement = $this->namespaceStatements->getNamespaceName();
+                $namespaceStatement = $this->namespaceStatements->findNamespaceForNode();
 
                 $newNodeClass = FullyQualified::concat($namespaceStatement, $node, $node->getAttributes());
 

@@ -12,19 +12,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\UseStmt;
 
+use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use PhpParser\Node;
-use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeVisitorAbstract;
 
-final class CollectNamespaceStmtNodeVisitor extends NodeVisitorAbstract
+final class UseStmtCollector extends NodeVisitorAbstract
 {
-    private $namespaceStatements;
+    private $useStatements;
 
-    public function __construct(NamespaceStmtCollection $namespaceStatements)
+    public function __construct(UseStmtCollection $useStatements)
     {
-        $this->namespaceStatements = $namespaceStatements;
+        $this->useStatements = $useStatements;
     }
 
     /**
@@ -32,8 +33,8 @@ final class CollectNamespaceStmtNodeVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if ($node instanceof Namespace_) {
-            $this->namespaceStatements->add($node);
+        if ($node instanceof Use_) {
+            $this->useStatements->add($node);
         }
 
         return $node;

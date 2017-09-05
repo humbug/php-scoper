@@ -32,11 +32,11 @@ final class PhpScoper implements Scoper
     private $decoratedScoper;
     private $traverserFactory;
 
-    public function __construct(Parser $parser, Scoper $decoratedScoper)
+    public function __construct(Parser $parser, Scoper $decoratedScoper, TraverserFactory $traverserFactory)
     {
         $this->parser = $parser;
         $this->decoratedScoper = $decoratedScoper;
-        $this->traverserFactory = new TraverserFactory();
+        $this->traverserFactory = $traverserFactory;
     }
 
     /**

@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
+use Humbug\PhpScoper\Scoper\TraverserFactory\NativeTraverserFactory;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
@@ -99,7 +100,8 @@ function create_scoper(): Scoper
             new InstalledPackagesScoper(
                 new PhpScoper(
                     create_parser(),
-                    new NullScoper()
+                    new NullScoper(),
+                    new NativeTraverserFactory()
                 )
             )
         )

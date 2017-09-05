@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor\NewStmt;
 
-use Humbug\PhpScoper\NodeVisitor\NamespaceStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\UseStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
@@ -61,14 +61,14 @@ final class ScopeSingleLevelNewStmtNodeVisitor extends NodeVisitorAbstract
             return $node;
         }
 
-        $useStatement = $this->useStatements->findStatementForName($nodeClass->getFirst());
+        $useStatement = $this->useStatements->findStatementForNode($nodeClass->getFirst());
 
         if (null === $useStatement) {
             if (0 === count($this->namespaceStatements)) {
                 return $node;
             }
 
-            $namespaceStatement = $this->namespaceStatements->getNamespaceName();
+            $namespaceStatement = $this->namespaceStatements->findNamespaceForNode();
 
             $newNodeClass = FullyQualified::concat($namespaceStatement, $nodeClass, $nodeClass->getAttributes());
         } else {

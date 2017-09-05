@@ -26,7 +26,7 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
-final class IgnoreNamespaceScoperNodeVisitor extends NodeVisitorAbstract
+final class IgnoreNodeVisitor extends NodeVisitorAbstract
 {
     private $whitelist;
     private $whitelister;
