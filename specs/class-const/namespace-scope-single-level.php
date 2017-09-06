@@ -24,7 +24,7 @@ return [
         'spec' => <<<'SPEC'
 Constant call on a class belonging to the global namespace or the current namespace:
 - prefix the namespace
-- do not touch the call
+- transform the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -37,7 +37,8 @@ Command::MAIN_CONST;
 <?php
 
 namespace Humbug\X;
-Command::MAIN_CONST;
+
+\Humbug\X\Command::MAIN_CONST;
 
 PHP
     ],
@@ -59,6 +60,7 @@ namespace X;
 <?php
 
 namespace Humbug\X;
+
 \Command::MAIN_CONST;
 
 PHP
@@ -68,7 +70,6 @@ PHP
         'spec' => <<<'SPEC'
 Constant call on a whitelisted class belonging to the global namespace:
 - prefix the namespace
-- prefix the class (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
 - transforms the call into a FQ call to avoid autoloading issues
 SPEC
         ,
@@ -82,7 +83,8 @@ AppKernel::MAIN_CONST;
 <?php
 
 namespace Humbug\X;
-\Humbug\AppKernel::MAIN_CONST;
+
+\Humbug\X\AppKernel::MAIN_CONST;
 
 PHP
     ],

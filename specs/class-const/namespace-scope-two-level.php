@@ -39,7 +39,7 @@ PHPUnit\Command::MAIN_CONST;
 
 namespace Humbug\X;
 
-\Humbug\PHPUnit\Command::MAIN_CONST;
+\Humbug\X\PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],
@@ -73,10 +73,10 @@ PHP
 Constant call on a whitelisted namespaced class:
 - prefix the namespace
 - do not prefix the class
-- transforms the call into a FQ call to avoid autoloading issues
+- transform the call into a FQ call
 SPEC
         ,
-        'whitelist' => ['PHPUnit\Command'],
+        'whitelist' => ['X\PHPUnit\Command'],
         'payload' => <<<'PHP'
 <?php
 
@@ -88,7 +88,7 @@ PHPUnit\Command::MAIN_CONST;
 
 namespace Humbug\X;
 
-\PHPUnit\Command::MAIN_CONST;
+\X\PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],

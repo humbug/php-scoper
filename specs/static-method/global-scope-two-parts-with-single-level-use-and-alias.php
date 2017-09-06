@@ -38,7 +38,6 @@ A\Bar::main();
 <?php
 
 use Foo as A;
-
 \Humbug\Foo\Bar::main();
 
 PHP
@@ -62,7 +61,6 @@ A::main();
 <?php
 
 use Humbug\Foo\Bar as A;
-
 \Humbug\Foo\Bar::main();
 
 PHP
@@ -85,7 +83,6 @@ use Foo as A;
 <?php
 
 use Foo as A;
-
 \Humbug\A\Bar::main();
 
 PHP
@@ -108,7 +105,6 @@ use Foo\Bar as A;
 <?php
 
 use Humbug\Foo\Bar as A;
-
 \A::main();
 
 PHP
@@ -133,7 +129,6 @@ A\Bar::main();
 <?php
 
 use Foo as A;
-
 \Foo\Bar::main();
 
 PHP
@@ -157,8 +152,7 @@ A::main();
 ----
 <?php
 
-use Humbug\Foo\Bar as A;
-
+use Foo\Bar as A;
 \Foo\Bar::main();
 
 PHP
@@ -168,7 +162,7 @@ PHP
         'spec' => <<<'SPEC'
 FQ static method call statement of a whitelisted namespaced class partially imported with an aliased use statement:
 - do not touch the use statement: see tests for the use statements as to why
-- do not prefix the call
+- prefix the call: as the call is FQ the use statement is ignored
 SPEC
         ,
         'whitelist' => ['Foo\Bar'],
@@ -182,8 +176,7 @@ use Foo as A;
 <?php
 
 use Foo as A;
-
-\A\Bar::main();
+\Humbug\A\Bar::main();
 
 PHP
     ],
@@ -206,8 +199,7 @@ use Foo\Bar as A;
 ----
 <?php
 
-use Humbug\Foo\Bar as A;
-
+use Foo\Bar as A;
 \A::main();
 
 PHP

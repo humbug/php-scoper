@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor\UseStmt;
 
+use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Use_;
@@ -21,10 +22,12 @@ use PhpParser\NodeVisitorAbstract;
 
 final class UseStmtCollector extends NodeVisitorAbstract
 {
+    private $namespaceStatements;
     private $useStatements;
 
-    public function __construct(UseStmtCollection $useStatements)
+    public function __construct(NamespaceStmtCollection $namespaceStatements, UseStmtCollection $useStatements)
     {
+        $this->namespaceStatements = $namespaceStatements;
         $this->useStatements = $useStatements;
     }
 
@@ -34,7 +37,9 @@ final class UseStmtCollector extends NodeVisitorAbstract
     public function enterNode(Node $node): Node
     {
         if ($node instanceof Use_) {
-            $this->useStatements->add($node);
+            $namespaceName = $this->namespaceStatements->getCurrentNamespaceName();
+
+            $this->useStatements->add($namespaceName, $node);
         }
 
         return $node;

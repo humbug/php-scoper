@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor\Resolver;
 
+use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 
@@ -24,26 +27,45 @@ final class FullyQualifiedNameResolver
      *
      * @param Name $node
      *
-     * @return Name|FullyQualified
+     * @return ResolvedValue
      */
-    public function resolveName(Name $node): Name
+    public function resolveName(Name $node): ResolvedValue
     {
         if ($node instanceof FullyQualified) {
-            return $node;
+            return new ResolvedValue($node, null, null);
         }
 
-        $useStatement = $this->useStatements->findStatementForNode($node);
+        $namespaceName = $this->namespaceStatements->findNamespaceForNode($node);
 
-        if (null !== $useStatement) {
-            return FullyQualified::concat($useStatement, $node->slice(1), $node->getAttributes());
+        $useName = $this->useStatements->findStatementForNode($namespaceName, $node);
+
+        return new ResolvedValue(
+            $this->resolveNodeName($node, $namespaceName, $useName),
+            $namespaceName,
+            $useName
+        );
+    }
+
+    private function resolveNodeName(Name $name, ?Name $namespace, ?Name $use): Name
+    {
+        if (null !== $use) {
+            return FullyQualified::concat($use, $name->slice(1), $name->getAttributes());
         }
 
-        $namespaceStatement = $this->namespaceStatements->findNamespaceForNode($node);
-
-        if (null !== $namespaceStatement) {
-            return FullyQualified::concat($namespaceStatement, $node, $node->getAttributes());
+        if (null === $namespace) {
+            return new FullyQualified($name, $name->getAttributes());
         }
 
-        return new FullyQualified($node, $node->getAttributes());
+        $parentNode = AppendParentNode::getParent($name);
+
+        if (
+            ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)
+            && count($name->parts) === 1
+        ) {
+            // Ambiguous name, cannot determine the FQ name
+            return $name;
+        }
+
+        return FullyQualified::concat($namespace, $name, $name->getAttributes());
     }
 }

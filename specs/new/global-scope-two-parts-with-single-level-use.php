@@ -38,7 +38,6 @@ new Foo\Bar();
 <?php
 
 use Foo;
-
 new \Humbug\Foo\Bar();
 
 PHP
@@ -62,7 +61,6 @@ new Bar();
 <?php
 
 use Humbug\Foo\Bar;
-
 new \Humbug\Foo\Bar();
 
 PHP
@@ -85,7 +83,6 @@ new \Foo\Bar();
 <?php
 
 use Foo;
-
 new \Humbug\Foo\Bar();
 
 PHP
@@ -108,7 +105,6 @@ new \Bar();
 <?php
 
 use Humbug\Foo\Bar;
-
 new \Bar();
 
 PHP
@@ -133,7 +129,6 @@ new Foo\Bar();
 <?php
 
 use Foo;
-
 new \Foo\Bar();
 
 PHP
@@ -157,8 +152,7 @@ new Bar();
 ----
 <?php
 
-use Humbug\Foo\Bar;
-
+use Foo\Bar;
 new \Foo\Bar();
 
 PHP
@@ -182,7 +176,6 @@ new \Foo\Bar();
 <?php
 
 use Foo;
-
 new \Foo\Bar();
 
 PHP
@@ -206,8 +199,7 @@ new \Bar();
 ----
 <?php
 
-use Humbug\Foo\Bar;
-
+use Foo\Bar;
 new \Bar();
 
 PHP

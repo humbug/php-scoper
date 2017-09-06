@@ -14,13 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
+use function Humbug\PhpScoper\deep_clone;
+use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Scopes the relevant namespaces.
+ * Prefixes the relevant namespaces.
  *
  * ```
  * namespace Foo;
@@ -32,13 +34,15 @@ use PhpParser\NodeVisitorAbstract;
  * namespace Humbug\Foo;
  * ```
  */
-final class ScopeNamespaceStmtNodeVisitor extends NodeVisitorAbstract
+final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
+    private $namespaceStatements;
 
-    public function __construct(string $prefix)
+    public function __construct(string $prefix, NamespaceStmtCollection $namespaceStatements)
     {
         $this->prefix = $prefix;
+        $this->namespaceStatements = $namespaceStatements;
     }
 
     /**
@@ -46,12 +50,20 @@ final class ScopeNamespaceStmtNodeVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if ($node instanceof Namespace_
-            && null !== $node->name
-            && $this->prefix !== $node->name->getFirst()
-        ) {
+        if (false === ($node instanceof Namespace_)) {
+            return $node;
+        }
+        /** @var Namespace_ $node */
+
+        $originalNode = $node;
+
+        if (null !== $node->name && $this->prefix !== $node->name->getFirst()) {
+            $originalNode = deep_clone($node);
+
             $node->name = Name::concat($this->prefix, $node->name);
         }
+
+        $this->namespaceStatements->add($node, $originalNode);
 
         return $node;
     }

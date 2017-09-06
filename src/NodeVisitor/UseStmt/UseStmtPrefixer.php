@@ -71,7 +71,6 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         if (AppendParentNode::hasParent($node)
-            && false === (AppendParentNode::getParent($node) instanceof GroupUse)
             // The prefix is not already applied
             && $this->prefix !== $node->name->getFirst()
             // Is not an ignored use statement

@@ -37,7 +37,6 @@ new Foo();
 <?php
 
 use Foo;
-
 new \Foo();
 
 PHP
@@ -59,7 +58,6 @@ new \Foo();
 <?php
 
 use Foo;
-
 new \Foo();
 
 PHP
@@ -84,7 +82,6 @@ new AppKernel();
 <?php
 
 use Humbug\AppKernel;
-
 new \Humbug\AppKernel();
 
 PHP
@@ -108,7 +105,6 @@ new \AppKernel();
 <?php
 
 use Humbug\AppKernel;
-
 new \Humbug\AppKernel();
 
 PHP

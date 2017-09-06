@@ -38,7 +38,6 @@ X\main();
 <?php
 
 use Foo as X;
-
 \Humbug\Foo\main();
 
 PHP
@@ -61,7 +60,6 @@ use Foo as X;
 <?php
 
 use Foo as X;
-
 \Humbug\X\main();
 
 PHP
@@ -86,8 +84,7 @@ X\main();
 <?php
 
 use Foo as X;
-
-\Humbug\X\main();
+\Humbug\Foo\main();
 
 PHP
     ],

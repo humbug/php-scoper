@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Aliased use statements ',
+        'title' => 'Aliased use statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -51,7 +51,7 @@ use \Foo as A;
 ----
 <?php
 
-use \Foo as A;
+use Foo as A;
 
 PHP
     ],
@@ -69,7 +69,7 @@ use \Foo as A;
 ----
 <?php
 
-use \Foo as A;
+use Foo as A;
 
 PHP
     ],
@@ -167,7 +167,7 @@ use Foo\Bar as A;
 ----
 <?php
 
-use Humbug\Foo\Bar as A;
+use Foo\Bar as A;
 
 PHP
     ],

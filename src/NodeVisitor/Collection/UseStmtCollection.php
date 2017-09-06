@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\NodeVisitor\Collection;
 use ArrayIterator;
 use IteratorAggregate;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function Humbug\PhpScoper\deep_clone;
@@ -24,13 +25,15 @@ use function Humbug\PhpScoper\deep_clone;
 final class UseStmtCollection implements IteratorAggregate
 {
     /**
-     * @var Use_[]
+     * @var Use_[][]
      */
-    private $nodes = [];
+    private $nodes = [
+        null => [],
+    ];
 
-    public function add(Use_ $node)
+    public function add(?Name $namespaceName, Use_ $node): void
     {
-        $this->nodes[] = deep_clone($node);
+        $this->nodes[(string) $namespaceName][] = deep_clone($node);
     }
 
     /**
@@ -44,15 +47,18 @@ final class UseStmtCollection implements IteratorAggregate
      *
      * will return the use statement for `Bar\Foo`.
      *
-     * @param Name $node
+     * @param Name|null $namespaceName
+     * @param Name       $node
      *
      * @return null|Name
      */
-    public function findStatementForNode(Name $node): ?Name
+    public function findStatementForNode(?Name $namespaceName, Name $node): ?Name
     {
         $name = $node->getFirst();
 
-        foreach ($this->nodes as $use_) {
+        $useStatements = $this->nodes[(string) $namespaceName] ?? [];
+
+        foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
                 if ($useStatement instanceof UseUse) {
                     if ($name === $useStatement->alias) {
@@ -76,7 +82,7 @@ final class UseStmtCollection implements IteratorAggregate
     /**
      * @inheritdoc
      */
-    public function getIterator()
+    public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);
     }

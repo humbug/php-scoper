@@ -43,7 +43,6 @@ new Foo();
 namespace Humbug\A;
 
 use Foo;
-
 new \Foo();
 
 PHP
@@ -70,7 +69,6 @@ new \Foo();
 namespace Humbug\A;
 
 use Foo;
-
 new \Foo();
 
 PHP
@@ -98,7 +96,6 @@ new AppKernel();
 namespace Humbug\A;
 
 use Humbug\AppKernel;
-
 new \Humbug\AppKernel();
 
 PHP
@@ -126,7 +123,6 @@ new \AppKernel();
 namespace Humbug\A;
 
 use Humbug\AppKernel;
-
 new \Humbug\AppKernel();
 
 PHP

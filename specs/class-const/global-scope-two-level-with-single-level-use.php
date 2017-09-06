@@ -81,7 +81,6 @@ use Foo;
 <?php
 
 use Foo;
-
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP

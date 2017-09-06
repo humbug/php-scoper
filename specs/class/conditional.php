@@ -29,7 +29,7 @@ if (true) {
 ----
 <?php
 
-if (true) {
+if (\true) {
     class A
     {
     }

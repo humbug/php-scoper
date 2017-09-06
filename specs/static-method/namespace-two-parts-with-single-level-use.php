@@ -41,8 +41,7 @@ Foo::main();
 namespace Humbug\A;
 
 use Foo;
-
-\Humbug\A\Foo::main();
+\Foo::main();
 
 PHP
     ],
@@ -67,7 +66,6 @@ use Foo;
 namespace Humbug\A;
 
 use Foo;
-
 \Foo::main();
 
 PHP
@@ -96,7 +94,6 @@ AppKernel::main();
 namespace Humbug\A;
 
 use Humbug\AppKernel;
-
 \Humbug\AppKernel::main();
 
 PHP
@@ -124,7 +121,6 @@ use AppKernel;
 namespace Humbug\A;
 
 use Humbug\AppKernel;
-
 \Humbug\AppKernel::main();
 
 PHP

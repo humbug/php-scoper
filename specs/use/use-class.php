@@ -51,7 +51,7 @@ use \Foo;
 ----
 <?php
 
-use \Foo;
+use Foo;
 
 PHP
     ],
@@ -69,7 +69,7 @@ use \Foo;
 ----
 <?php
 
-use \Foo;
+use Foo;
 
 PHP
     ],
@@ -167,7 +167,7 @@ use Foo\Bar;
 ----
 <?php
 
-use Humbug\Foo\Bar;
+use Foo\Bar;
 
 PHP
     ],

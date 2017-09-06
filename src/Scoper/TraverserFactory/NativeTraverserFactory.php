@@ -52,18 +52,21 @@ final class NativeTraverserFactory implements TraverserFactory
 
         $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
 
+        $this->traverser->addVisitor(new NodeVisitor\UseStmt\GroupUseStmtTransformer($prefix, $whitelist, $whitelistedStatements));
+
         $this->traverser->addVisitor(new NodeVisitor\AppendParentNode());
+        $this->traverser->addVisitor(new NodeVisitor\Ignore\UseIgnoreNodeVisitor($whitelist, $globalWhitelister));
         $this->traverser->addVisitor(new NodeVisitor\IgnoreNodeVisitor($whitelist, $globalWhitelister));
 
-        $this->traverser->addVisitor(new NodeVisitor\NamespaceStmtCollector($namespaceStatements));
-        $this->traverser->addVisitor(new NodeVisitor\ScopeNamespaceStmtNodeVisitor($prefix));
+        $this->traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements));
 
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($useStatements));
+        $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
         $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $whitelistedStatements));
 //        $this->traverser->addVisitor(new NodeVisitor\UseStmt\ScopeSingleLevelUseAliasVisitor($prefix));
 //        $this->traverser->addVisitor(new NodeVisitor\UseStmt\ScopeGroupUseStmtNodeVisitor($prefix));
 
-        $this->traverser->addVisitor(new NodeVisitor\NameResolver($prefix, $whitelist, $globalWhitelister, $nameResolver));
+        $this->traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
+        $this->traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
 
 //        $this->traverser->addVisitor(new NodeVisitor\ScopeFullyQualifiedNodeVisitor($prefix));
 //        $this->traverser->addVisitor(new NodeVisitor\ScopeWhitelistedElementsFromGlobalNamespaceNodeVisitor($prefix, $globalWhitelister));

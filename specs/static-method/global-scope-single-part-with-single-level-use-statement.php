@@ -37,7 +37,6 @@ Foo::main();
 <?php
 
 use Foo;
-
 \Foo::main();
 
 PHP
@@ -59,7 +58,6 @@ use Foo;
 <?php
 
 use Foo;
-
 \Foo::main();
 
 PHP
@@ -84,7 +82,6 @@ AppKernel::main();
 <?php
 
 use Humbug\AppKernel;
-
 \Humbug\AppKernel::main();
 
 PHP
@@ -108,7 +105,6 @@ use AppKernel;
 <?php
 
 use Humbug\AppKernel;
-
 \Humbug\AppKernel::main();
 
 PHP

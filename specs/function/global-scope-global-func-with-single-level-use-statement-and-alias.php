@@ -39,7 +39,6 @@ foo();
 <?php
 
 use function Humbug\main as foo;
-
 \Humbug\main();
 
 PHP
@@ -63,7 +62,6 @@ use function main as foo;
 <?php
 
 use function Humbug\main as foo;
-
 \foo();
 
 PHP

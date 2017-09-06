@@ -12,8 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\NodeVisitor\Ignore;
 
+use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\NodeVisitor\IgnoreNodeUtility;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -26,7 +28,7 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
-final class IgnoreNodeVisitor extends NodeVisitorAbstract
+final class UseIgnoreNodeVisitor extends NodeVisitorAbstract
 {
     private $whitelist;
     private $whitelister;
@@ -46,6 +48,28 @@ final class IgnoreNodeVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
+        if (false === ($node instanceof UseUse) || false === AppendParentNode::hasParent($node)) {
+            return $node;
+        }
+
+        $parentNode = AppendParentNode::getParent($node);
+
+
+        // The parent node should be prefixed no the current node
+        // $parentNode instanceof GroupUse
+        if (
+            $this->isGlobalNotWhitelisted($node, $parentNode)
+            // Is not from the Composer namespace
+            || 'Composer' === $node->name->getFirst()
+            || $this->isWhitelisted($node, $parentNode)
+        ) {
+            IgnoreNodeUtility::ignoreNode($node);
+
+            return $node;
+        }
+
+        return $node;
+        $x = ';';
         //
         // For use statements
         //
@@ -53,7 +77,7 @@ final class IgnoreNodeVisitor extends NodeVisitorAbstract
             && AppendParentNode::hasParent($node)
             && false === (AppendParentNode::getParent($node) instanceof GroupUse)
             && (
-                // Is not a whitelisted use statement of the global namespace
+                // Is a whitelisted use statement of the global namespace
                 (1 === count($node->name->parts) && false === ($this->whitelister)($node->name->getFirst()))
                 // Is not from the Composer namespace
                 || 'Composer' === $node->name->getFirst()
@@ -64,65 +88,31 @@ final class IgnoreNodeVisitor extends NodeVisitorAbstract
                 )
             )
         ) {
+            $node->setAttribute('phpscoper_ignore', true);
+
             return $node;
         } elseif (false === ($node instanceof FullyQualified) || false === $node->isFullyQualified()) {
             return $node;
         }
 
-        /** @var FullyQualified $node */
-
-        // Is a fully qualified call from the global namespace which is not whitelisted
-        if (1 === count($node->parts)
-            && (false === ($this->whitelister)($node->getFirst()))
-        ) {
-            $node->setAttribute('phpscoper_ignore', true);
-
-            return $node;
-        }
-
-        if (false === $node->hasAttribute('parent')) {
-            return $node;
-        }
-
-        $parentNode = $node->getAttribute('parent');
-
-        // Is a static method call of a whitelisted class
-        if ($parentNode instanceof StaticCall
-            && in_array((string) $parentNode->class, $this->whitelist)
-        ) {
-            $node->setAttribute('phpscoper_ignore', true);
-
-            return $node;
-        }
-
-//        // Is a method call of a whitelisted class
-//        if ($parentNode instanceof FuncCall
-//            && $parentNode->name instanceof Name
-//            && in_array((string) $parentNode->name->slice(0, -1), $this->whitelist)
-//        ) {
-//            $node->setAttribute('phpscoper_ignore', true);
-//
-//            return $node;
-//        }
-
-        // Is a new instance of a whitelisted class
-        if ($parentNode instanceof New_
-            && in_array((string) $parentNode->class->toString(), $this->whitelist)
-        ) {
-            $node->setAttribute('phpscoper_ignore', true);
-
-            return $node;
-        }
-
-        // Is a constant call of a whitelisted class
-        if ($parentNode instanceof ClassConstFetch
-            && in_array((string) $node, $this->whitelist)
-        ) {
-            $node->setAttribute('phpscoper_ignore', true);
-
-            return $node;
-        }
-
         return $node;
+    }
+
+    private function isGlobalNotWhitelisted(UseUse $node, Use_ $parentNode): bool
+    {
+        return (
+            $parentNode->type === Use_::TYPE_NORMAL
+            && 1 === count($node->name->parts)  // Is from the global namespace
+            && false === ($this->whitelister)($node->name->getFirst())    // Is not (global) whitelisted
+        );
+    }
+
+    private function isWhitelisted(UseUse $node, Use_ $parentNode): bool
+    {
+        return (
+            $parentNode->type === Use_::TYPE_NORMAL
+            && 1 !== count($node->name->parts)  // Is not from the global namespace
+            && in_array((string) $node->name, $this->whitelist)    // Is whitelisted
+        );
     }
 }

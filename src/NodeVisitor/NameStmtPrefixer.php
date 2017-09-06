@@ -18,15 +18,17 @@ use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
 
-final class NameResolver extends NodeVisitorAbstract
+final class NameStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
     private $whitelist;
@@ -56,7 +58,7 @@ final class NameResolver extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (false === $node instanceof Name
+        if (false === ($node instanceof Name)
             || IgnoreNodeUtility::isNodeIgnored($node)
             || false === AppendParentNode::hasParent($node)
         ) {
@@ -71,7 +73,6 @@ final class NameResolver extends NodeVisitorAbstract
             || $parentNode instanceof TraitUse
             || $parentNode instanceof Interface_
             || $parentNode instanceof Node\Stmt\UseUse
-            || $parentNode instanceof ConstFetch
             || $parentNode instanceof Node\Stmt\TraitUseAdaptation\Precedence
             || $parentNode instanceof Node\Stmt\TraitUseAdaptation\Alias
         ) {
@@ -83,24 +84,44 @@ final class NameResolver extends NodeVisitorAbstract
 //            return $node;
 //        }
 
-        $resolvedNode = $this->nameResolver->resolveName($node);
+        $resolvedValue = $this->nameResolver->resolveName($node);
+
+        $resolvedName = $resolvedValue->getName();
 
         // Skip if is already prefixed
-        if ($this->prefix === $resolvedNode->getFirst()) {
-            return $resolvedNode;
+        if ($this->prefix === $resolvedName->getFirst()) {
+            return $resolvedName;
         }
 
         // Check if the class can be prefixed
-        if (1 === count($resolvedNode->parts)
-            && false === ($this->globalWhitelister)($resolvedNode->toString())
-        ) {
-            return $resolvedNode;
-        } elseif (1 < count($resolvedNode->parts)
-            && in_array($resolvedNode->toString(), $this->whitelist)
-        ) {
-            return $resolvedNode;
+        if (false === ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)) {
+            if (1 === count($resolvedName->parts)
+                && false === ($this->globalWhitelister)($resolvedName->toString())
+            ) {
+                return $resolvedName;
+            } elseif (1 < count($resolvedName->parts)
+                && in_array($resolvedName->toString(), $this->whitelist)
+            ) {
+                return $resolvedName;
+            }
         }
 
-        return FullyQualified::concat($this->prefix, $resolvedNode->toString(), $resolvedNode->getAttributes());
+        // Can we get rid of all the ignore? Seems unnecessary
+
+        if ($parentNode instanceof ConstFetch
+            && 1 === count($resolvedName->parts)
+            && null === $resolvedValue->getUse()
+        ) {
+            return $resolvedName;
+        }
+
+        if ($parentNode instanceof FuncCall
+            && 1 === count($resolvedName->parts)
+            && null === $resolvedValue->getUse()
+        ) {
+            return $resolvedName;
+        }
+
+        return FullyQualified::concat($this->prefix, $resolvedName->toString(), $resolvedName->getAttributes());
     }
 }

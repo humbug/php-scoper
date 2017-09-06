@@ -39,7 +39,7 @@ Foo\Bar::main();
 
 namespace Humbug\X;
 
-Humbug\X\Foo\Bar::main();
+\Humbug\X\Foo\Bar::main();
 
 PHP
     ],

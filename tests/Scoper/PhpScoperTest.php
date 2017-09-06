@@ -303,14 +303,15 @@ $titleSeparator
 $content
 
 $titleSeparator
+EXPECTED
+$titleSeparator
+$expected
+
+$titleSeparator
 ACTUAL
 $titleSeparator
 $actual
 
-$titleSeparator
-EXPECTED
-$titleSeparator
-$expected
 -------------------------------------------------------------------------------
 OUTPUT
         );

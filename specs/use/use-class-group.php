@@ -23,6 +23,7 @@ return [
     [
         'spec' => <<<'SPEC'
 Multiple group use statement:
+- transform grouped statements into simple statements
 - prefix each of them
 SPEC
         ,
@@ -31,14 +32,16 @@ SPEC
 
 use A\{B};
 use A\{B\C, D};
-use \A\B\{C\D, E};
+use \A\B\{C\D as ABCD, E};
 
 ----
 <?php
 
-use Humbug\A\{B};
-use Humbug\A\{B\C, D};
-use Humbug\A\B\{C\D, E};
+use Humbug\A\B;
+use Humbug\A\B\C;
+use Humbug\A\D;
+use Humbug\A\B\C\D as ABCD;
+use Humbug\A\B\E;
 
 PHP
     ],
@@ -46,7 +49,7 @@ PHP
     [
         'spec' => <<<'SPEC'
 Multiple group use statement which are already prefixed:
-- do nothing
+- transform grouped statements into simple statements
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -59,9 +62,11 @@ use \Humbug\A\B\{C\D, E};
 ----
 <?php
 
-use Humbug\A\{B};
-use Humbug\A\{B\C, D};
-use \Humbug\A\B\{C\D, E};
+use Humbug\A\B;
+use Humbug\A\B\C;
+use Humbug\A\D;
+use Humbug\A\B\C\D;
+use Humbug\A\B\E;
 
 PHP
     ],
@@ -69,6 +74,7 @@ PHP
     [
         'spec' => <<<'SPEC'
 Multiple group use statement with whitelisted classes:
+- transform grouped statements into simple statements
 - prefix each of them: only actual usages will be whitelisted, not the use statements
 SPEC
         ,
@@ -86,9 +92,11 @@ use \A\B\{C\D, E};
 ----
 <?php
 
-use Humbug\A\{B};
-use Humbug\A\{B\C, D};
-use Humbug\A\B\{C\D, E};
+use A\B;
+use A\B\C;
+use Humbug\A\D;
+use Humbug\A\B\C\D;
+use Humbug\A\B\E;
 
 PHP
     ],
