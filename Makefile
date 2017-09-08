@@ -20,10 +20,17 @@ build: src vendor vendor-bin/box/vendor
 	rm -f bin/php-scoper.phar
 	rm -rf build
 
+	# Remove unnecessary packages
 	composer install --no-dev --prefer-dist
 
+	# Prefixes the code to be bundled
 	php -d zend.enable_gc=0 bin/php-scoper add-prefix --force
+
+	# Re-dump the loader to account for the prefixing
+	# and optimize the loader
 	composer dump-autoload -d build --classmap-authoritative
+
+	# Build the PHAR
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build $(CONFIG)
 
 	# Install back all the dependencies

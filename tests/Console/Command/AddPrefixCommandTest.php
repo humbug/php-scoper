@@ -79,6 +79,8 @@ class AddPrefixCommandTest extends TestCase
         $this->handleProphecy = $this->prophesize(HandleAddPrefix::class);
 
         $this->appTester = $this->createAppTester();
+
+        chdir($this->tmp);
     }
 
     public function test_get_help_menu()
