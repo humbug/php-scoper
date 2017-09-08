@@ -37,7 +37,6 @@ Command::MAIN_CONST;
 <?php
 
 use Command;
-
 \Command::MAIN_CONST;
 
 PHP
@@ -60,7 +59,6 @@ use Command;
 <?php
 
 use Command;
-
 \Command::MAIN_CONST;
 
 PHP
@@ -69,7 +67,8 @@ PHP
     [
         'spec' => <<<'SPEC'
 Constant call on a whitelisted class which is imported via a use statement and which belongs to the global namespace:
-- transform the call in a FQ call (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
+- transform the call in a FQ call (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in
+  global whitelisted classes)
 SPEC
     ,
         'payload' => <<<'PHP'
@@ -82,8 +81,7 @@ AppKernel::MAIN_CONST;
 <?php
 
 use Humbug\AppKernel;
-
-\AppKernel::MAIN_CONST;
+\Humbug\AppKernel::MAIN_CONST;
 
 PHP
     ],
@@ -91,7 +89,8 @@ PHP
     [
         'spec' => <<<'SPEC'
 FQ constant call on a whitelisted class which is imported via a use statement and which belongs to the global namespace:
-- prefix the class (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
+- prefix the class (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global
+  whitelisted classes)
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -104,8 +103,7 @@ use AppKernel;
 <?php
 
 use Humbug\AppKernel;
-
-\AppKernel::MAIN_CONST;
+\Humbug\AppKernel::MAIN_CONST;
 
 PHP
     ],

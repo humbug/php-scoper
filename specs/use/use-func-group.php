@@ -30,9 +30,11 @@ use \A\B\{C\d, e};
 ----
 <?php
 
-use Humbug\A\{b};
-use Humbug\A\{B\c, d};
-use Humbug\A\B\{C\d, e};
+use Humbug\A\b;
+use Humbug\A\B\c;
+use Humbug\A\d;
+use Humbug\A\B\C\d;
+use Humbug\A\B\e;
 
 PHP
     ,

@@ -43,7 +43,6 @@ Foo\Bar::main();
 namespace Humbug\A;
 
 use Humbug\X\Foo;
-
 \Humbug\X\Foo\Bar::main();
 
 PHP
@@ -72,7 +71,6 @@ use X\Foo;
 namespace Humbug\A;
 
 use Humbug\X\Foo;
-
 \Humbug\Foo\Bar::main();
 
 PHP
@@ -102,7 +100,6 @@ Foo\Bar::main();
 namespace Humbug\A;
 
 use Humbug\X\Foo;
-
 \X\Foo\Bar::main();
 
 PHP
@@ -132,7 +129,6 @@ use X\Foo;
 namespace Humbug\A;
 
 use Humbug\X\Foo;
-
 \Humbug\Foo\Bar::main();
 
 PHP

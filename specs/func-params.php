@@ -31,10 +31,10 @@ class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 ----
 <?php
 
-\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 
 PHP
     ,
@@ -52,10 +52,10 @@ class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 ----
 <?php
 
-\class_exists('\\Symfony\\Component\\Yaml\\Yaml');
-\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 
 PHP
     ],

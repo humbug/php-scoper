@@ -43,23 +43,17 @@ function foo(
     \AppKernel $arg5,
     X\Y $arg6,
     \X\Y $arg7
-);
+) {
+}
 
 ----
 <?php
 
 namespace Humbug\Pi;
 
-function foo(
-    Foo $arg0,
-    \Foo $arg1,
-    Foo\Bar $arg2,
-    \Humbug\Foo\Bar $arg3,
-    AppKernel $arg4,
-    \Humbug\AppKernel $arg5,
-    X\Y $arg6,
-    \X\Y $arg7
-);
+function foo(\Humbug\Pi\Foo $arg0, \Foo $arg1, \Humbug\Pi\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \Humbug\Pi\AppKernel $arg4, \Humbug\AppKernel $arg5, \Humbug\Pi\X\Y $arg6, \X\Y $arg7)
+{
+}
 
 PHP
     ],

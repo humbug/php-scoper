@@ -15,14 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\NodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\UseStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\WhitelistedStatements;
+use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeTraverserInterface;
 
-/**
- * @internal
- */
 final class TraverserFactory
 {
     /**
@@ -35,6 +33,15 @@ final class TraverserFactory
 
     private $traverser;
 
+    /**
+     * @param string   $prefix            Prefix to apply to the files.
+     * @param string[] $whitelist         List of classes to exclude from the scoping.
+     * @param callable $globalWhitelister Closure taking a class name from the global namespace as an argument and
+     *                                    returning a boolean which if `true` means the class should be scoped
+     *                                    (i.e. is ignored) or scoped otherwise.
+     *
+     * @return NodeTraverserInterface
+     */
     public function create(string $prefix, array $whitelist, callable $globalWhitelister): NodeTraverserInterface
     {
         if (null !== $this->traverser) {
@@ -43,31 +50,22 @@ final class TraverserFactory
 
         $this->traverser = new NodeTraverser();
 
-        $namespaceStatements = new NodeVisitor\NamespaceStmtCollection();
+        $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
-        $whitelistedStatements = new WhitelistedStatements();
 
-        $this->traverser->addVisitor(new NodeVisitor\ParentNodeVisitor());
+        $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
 
-        $this->traverser->addVisitor(new NodeVisitor\CollectNamespaceStmtNodeVisitor($namespaceStatements));
-        $this->traverser->addVisitor(new NodeVisitor\IgnoreNamespaceScoperNodeVisitor($whitelist, $globalWhitelister));
-        $this->traverser->addVisitor(new NodeVisitor\ScopeNamespaceStmtNodeVisitor($prefix));
+        $this->traverser->addVisitor(new NodeVisitor\UseStmt\GroupUseStmtTransformer());
 
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\CollectUseStmtNodeVisitor($useStatements));
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\ScopeUseStmtNodeVisitor($prefix, $whitelist, $whitelistedStatements));
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\ScopeSingleLevelUseAliasVisitor($prefix));
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\ScopeGroupUseStmtNodeVisitor($prefix));
+        $this->traverser->addVisitor(new NodeVisitor\AppendParentNode());
 
-        $this->traverser->addVisitor(new NodeVisitor\ScopeFullyQualifiedNodeVisitor($prefix));
-        $this->traverser->addVisitor(new NodeVisitor\ScopeWhitelistedElementsFromGlobalNamespaceNodeVisitor($prefix, $globalWhitelister));
-        $this->traverser->addVisitor(new NodeVisitor\ScopeConstStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
+        $this->traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements));
 
-        $this->traverser->addVisitor(new NodeVisitor\NewStmt\ScopeNewStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
-        $this->traverser->addVisitor(new NodeVisitor\NewStmt\ScopeSingleLevelNewStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
+        $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
+        $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $globalWhitelister));
 
-        $this->traverser->addVisitor(new NodeVisitor\FunctionStmt\ScopeFunctionCallArgumentsStmtNodeVisitor($prefix, $whitelist, self::WHITELISTED_FUNCTIONS));
-        $this->traverser->addVisitor(new NodeVisitor\FunctionStmt\ScopeStaticCallStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
-        $this->traverser->addVisitor(new NodeVisitor\FunctionStmt\ScopeFunctionCallStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
+        $this->traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
+        $this->traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
 
         return $this->traverser;
     }

@@ -39,21 +39,15 @@ function foo(
     \AppKernel $arg5,
     X\Y $arg6,
     \X\Y $arg7
-);
+) {
+}
 
 ----
 <?php
 
-function foo(
-    \Foo $arg0,
-    \Foo $arg1,
-    \Humbug\Foo\Bar $arg2,
-    \Humbug\Foo\Bar $arg3,
-    \Humbug\AppKernel $arg4,
-    \Humbug\AppKernel $arg5,
-    \X\Y $arg6,
-    \X\Y $arg7
-);
+function foo(\Foo $arg0, \Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \Humbug\AppKernel $arg4, \Humbug\AppKernel $arg5, \X\Y $arg6, \X\Y $arg7)
+{
+}
 
 PHP
     ],
@@ -82,24 +76,17 @@ function foo(
     \AppKernel $arg5,
     X\Y $arg6,
     \X\Y $arg7
-);
+) {
+}
 
 ----
 <?php
 
 use Foo;
 use Humbug\AppKernel;
-
-function foo(
-    \Foo $arg0,
-    \Foo $arg1,
-    \Humbug\Foo\Bar $arg2,
-    \Humbug\Foo\Bar $arg3,
-    \Humbug\AppKernel $arg4,
-    \Humbug\AppKernel $arg5,
-    \X\Y $arg6,
-    \X\Y $arg7
-);
+function foo(\Foo $arg0, \Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \Humbug\AppKernel $arg4, \Humbug\AppKernel $arg5, \X\Y $arg6, \X\Y $arg7)
+{
+}
 
 PHP
     ],

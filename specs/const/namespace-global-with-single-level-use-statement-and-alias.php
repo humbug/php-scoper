@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    // As it is extremely rare to use a `use constant` statement for a built-in constant from the
+    // As it is extremely rare to use a `use const` statement for a built-in constant from the
     // global scope, we can relatively safely assume it is a user-land declared constant which should
     // be prefixed.
 
@@ -38,7 +38,7 @@ SPEC
 
 namespace A;
 
-use constant DUMMY_CONST as FOO;
+use const DUMMY_CONST as FOO;
 
 FOO;
 ----
@@ -46,8 +46,7 @@ FOO;
 
 namespace Humbug\A;
 
-use constant Humbug\DUMMY_CONST as FOO;
-
+use const Humbug\DUMMY_CONST as FOO;
 \Humbug\DUMMY_CONST;
 
 PHP
@@ -65,7 +64,7 @@ SPEC
 
 namespace A;
 
-use constant DUMMY_CONST as FOO;
+use const DUMMY_CONST as FOO;
 
 \FOO;
 ----
@@ -73,8 +72,7 @@ use constant DUMMY_CONST as FOO;
 
 namespace Humbug\A;
 
-use constant Humbug\DUMMY_CONST as FOO;
-
+use const Humbug\DUMMY_CONST as FOO;
 \FOO;
 
 PHP

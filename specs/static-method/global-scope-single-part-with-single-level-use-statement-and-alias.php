@@ -37,7 +37,6 @@ X::main();
 <?php
 
 use Foo as X;
-
 \Foo::main();
 
 PHP
@@ -60,7 +59,6 @@ use Foo as X;
 <?php
 
 use Foo as X;
-
 \X::main();
 
 PHP
@@ -85,7 +83,6 @@ X::main();
 <?php
 
 use Humbug\AppKernel as X;
-
 \Humbug\AppKernel::main();
 
 PHP
@@ -109,7 +106,6 @@ use AppKernel as X;
 <?php
 
 use Humbug\AppKernel as X;
-
 \X::main();
 
 PHP

@@ -37,7 +37,6 @@ new X();
 <?php
 
 use Foo as X;
-
 new \Foo();
 
 PHP
@@ -60,7 +59,6 @@ new \X();
 <?php
 
 use Foo as X;
-
 new \X();
 
 PHP
@@ -85,7 +83,6 @@ new X();
 <?php
 
 use Humbug\AppKernel as X;
-
 new \Humbug\AppKernel();
 
 PHP
@@ -109,7 +106,6 @@ new \X();
 <?php
 
 use Humbug\AppKernel as X;
-
 new \X();
 
 PHP

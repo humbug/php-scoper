@@ -199,75 +199,73 @@ namespace Z {
 ----
 <?php
 
-namespace Humbug\X {
-    trait XA
+namespace Humbug\X;
+
+trait XA
+{
+    public function a()
     {
-        public function a()
-        {
-        }
-    }
-    class XB
-    {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
-        }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
     }
 }
-
-namespace Humbug\Y {
-    trait YA
-    {
-        public function a()
-        {
-        }
+class XB
+{
+    use C;
+    use D {
+        a as protected b;
+        c as d;
+        e as private;
     }
-    class YB
-    {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
-        }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
+    use E, F, G {
+        E::a insteadof F, G;
+        E::b as protected c;
+        E::d as e;
+        E::f as private;
     }
 }
+namespace Humbug\Y;
 
-namespace Humbug\Z {
-    trait ZA
+trait YA
+{
+    public function a()
     {
-        public function a()
-        {
-        }
     }
-    class ZB
+}
+class YB
+{
+    use C;
+    use D {
+        a as protected b;
+        c as d;
+        e as private;
+    }
+    use E, F, G {
+        E::a insteadof F, G;
+        E::b as protected c;
+        E::d as e;
+        E::f as private;
+    }
+}
+namespace Humbug\Z;
+
+trait ZA
+{
+    public function a()
     {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
-        }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
+    }
+}
+class ZB
+{
+    use C;
+    use D {
+        a as protected b;
+        c as d;
+        e as private;
+    }
+    use E, F, G {
+        E::a insteadof F, G;
+        E::b as protected c;
+        E::d as e;
+        E::f as private;
     }
 }
 

@@ -36,8 +36,7 @@ X\Bar::MAIN_CONST;
 ----
 <?php
 
-use Foo;
-
+use Foo as X;
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -60,7 +59,6 @@ X::MAIN_CONST;
 <?php
 
 use Humbug\Foo\Bar as X;
-
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -69,8 +67,7 @@ PHP
     [
         'spec' => <<<'SPEC'
 FQ constant call on a namespaced class imported with an aliased use statement:
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
+- prefix the class only (not the use statement, cf. tests related to classes belonging to the global namespace)
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -83,8 +80,7 @@ use Foo as X;
 <?php
 
 use Foo as X;
-
-\Humbug\Foo\Bar::MAIN_CONST;
+\Humbug\X\Bar::MAIN_CONST;
 
 PHP
     ],
@@ -107,7 +103,6 @@ X\Bar::MAIN_CONST;
 <?php
 
 use Foo as X;
-
 \Foo\Bar::MAIN_CONST;
 
 PHP
@@ -116,8 +111,7 @@ PHP
     [
         'spec' => <<<'SPEC'
 FQ constant call on a whitelisted namespaced class imported with an aliased use statement:
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
+- prefix the class only (not the use statement, cf. tests related to classes belonging to the global namespace)
 SPEC
         ,
         'whitelist' => ['Foo\Bar'],
@@ -131,8 +125,7 @@ use Foo as X;
 <?php
 
 use Foo as X;
-
-\Foo\Bar::MAIN_CONST;
+\Humbug\X\Bar::MAIN_CONST;
 
 PHP
     ],

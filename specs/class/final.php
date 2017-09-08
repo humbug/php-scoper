@@ -69,22 +69,20 @@ namespace Z {
 ----
 <?php
 
-namespace Humbug\X {
-    final class A
-    {
-    }
-}
+namespace Humbug\X;
 
-namespace Humbug\Y {
-    final class B
-    {
-    }
+final class A
+{
 }
+namespace Humbug\Y;
 
-namespace Humbug\Z {
-    final class C
-    {
-    }
+final class B
+{
+}
+namespace Humbug\Z;
+
+final class C
+{
 }
 
 PHP

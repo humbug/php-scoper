@@ -42,7 +42,6 @@ Foo\Bar::MAIN_CONST;
 namespace Humbug\X;
 
 use Foo;
-
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -70,7 +69,6 @@ Bar\X::MAIN_CONST;
 namespace Humbug\X;
 
 use Humbug\Foo\Bar;
-
 \Humbug\Foo\Bar\X::MAIN_CONST;
 
 PHP
@@ -98,7 +96,6 @@ use Foo;
 namespace Humbug\X;
 
 use Foo;
-
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -127,7 +124,6 @@ Foo\Bar::MAIN_CONST;
 namespace Humbug\X;
 
 use Foo;
-
 \Foo\Bar::MAIN_CONST;
 
 PHP
@@ -156,7 +152,6 @@ use Foo;
 namespace Humbug\X;
 
 use Foo;
-
 \Foo\Bar::MAIN_CONST;
 
 PHP

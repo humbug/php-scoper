@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use DeepCopy\DeepCopy;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
@@ -27,10 +26,12 @@ use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\SelfUpdate\Exception\RuntimeException as SelfUpdateRuntimeException;
 use Humbug\SelfUpdate\Updater;
 use PackageVersions\Versions;
+use PhpParser\Node;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Filesystem\Filesystem;
+use UnexpectedValueException;
 
 /**
  * @private
@@ -156,11 +157,96 @@ function get_common_path(array $paths): string
 }
 
 /**
- * @param $item
+ * In-house clone functions. Does a partial clone that should be enough to provide the immutability required in some
+ * places for the scoper. It however does not guarantee a deep cloning as would be horribly slow for no good reasons.
+ * A better alternative would be to find a way to push immutability upstream in PHP-Parser directly.
+ *
+ * @param Node $node
+ *
+ * @return Node
+ */
+function clone_node(Node $node): Node
+{
+    $clone = deep_clone($node);
+
+    foreach ($node->getAttributes() as $key => $attribute) {
+        $clone->setAttribute($key, $attribute);
+    }
+
+    return $clone;
+}
+
+/**
+ * @param mixed $node
  *
  * @return mixed
+ *
+ * @internal
  */
-function deep_clone($item)
+function deep_clone($node)
 {
-    return (new DeepCopy())->copy($item);
+    if (is_array($node)) {
+        return array_map(__FUNCTION__, $node);
+    }
+
+    if (null === $node || is_scalar($node)) {
+        return $node;
+    }
+
+    if ($node instanceof Node\Stmt\Namespace_) {
+        return new Node\Stmt\Namespace_(
+            deep_clone($node->name)
+        );
+    }
+
+    if ($node instanceof Node\Name\Relative) {
+        return new Node\Name\Relative(
+            deep_clone($node->toString())
+        );
+    }
+
+    if ($node instanceof Node\Name\FullyQualified) {
+        return new Node\Name\FullyQualified(
+            deep_clone($node->toString())
+        );
+    }
+
+    if ($node instanceof Node\Name) {
+        return new Node\Name(
+            deep_clone($node->toString())
+        );
+    }
+
+    if ($node instanceof Node\Stmt\Use_) {
+        return new Node\Stmt\Use_(
+            deep_clone($node->uses),
+            $node->type
+        );
+    }
+
+    if ($node instanceof Node\Stmt\UseUse) {
+        return new Node\Stmt\UseUse(
+            deep_clone($node->name),
+            $node->alias,
+            $node->type
+        );
+    }
+
+    if ($node instanceof Node\Stmt\Class_) {
+        return new Node\Stmt\Class_(
+            deep_clone($node->name),
+            [
+                'flags' => deep_clone($node->flags),
+                'extends' => deep_clone($node->extends),
+                'implements' => deep_clone($node->implements),
+            ]
+        );
+    }
+
+    throw new UnexpectedValueException(
+        sprintf(
+            'Cannot clone element "%s".',
+            get_class($node)
+        )
+    );
 }

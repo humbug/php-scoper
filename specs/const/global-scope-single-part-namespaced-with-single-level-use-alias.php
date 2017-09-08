@@ -38,7 +38,6 @@ A\DUMMY_CONST;
 <?php
 
 use Foo as A;
-
 \Humbug\Foo\DUMMY_CONST;
 
 PHP
@@ -61,7 +60,6 @@ use Foo as A;
 <?php
 
 use Foo as A;
-
 \Humbug\A\DUMMY_CONST;
 
 PHP
@@ -86,7 +84,6 @@ A\DUMMY_CONST;
 <?php
 
 use Foo as A;
-
 \Humbug\Foo\DUMMY_CONST;
 
 PHP

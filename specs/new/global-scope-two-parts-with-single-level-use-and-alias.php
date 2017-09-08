@@ -38,7 +38,6 @@ new A\Bar();
 <?php
 
 use Foo as A;
-
 new \Humbug\Foo\Bar();
 
 PHP
@@ -62,7 +61,6 @@ new A();
 <?php
 
 use Humbug\Foo\Bar as A;
-
 new \Humbug\Foo\Bar();
 
 PHP
@@ -85,7 +83,6 @@ new \A\Bar();
 <?php
 
 use Foo as A;
-
 new \Humbug\A\Bar();
 
 PHP
@@ -108,7 +105,6 @@ new \A();
 <?php
 
 use Humbug\Foo\Bar as A;
-
 new \A();
 
 PHP
@@ -133,7 +129,6 @@ new A\Bar();
 <?php
 
 use Foo as A;
-
 new \Foo\Bar();
 
 PHP
@@ -157,8 +152,7 @@ new A();
 ----
 <?php
 
-use Humbug\Foo\Bar as A;
-
+use Foo\Bar as A;
 new \Foo\Bar();
 
 PHP
@@ -168,7 +162,7 @@ PHP
         'spec' => <<<'SPEC'
 FQ new statement call of a whitelisted namespaced class partially imported with an aliased use statement:
 - do not touch the use statement: see tests for the use statements as to why
-- do not prefix the call
+- prefix the call: as it is a FQ the use statement is ignored
 SPEC
         ,
         'whitelist' => ['Foo\Bar'],
@@ -182,8 +176,7 @@ new \A\Bar();
 <?php
 
 use Foo as A;
-
-new \A\Bar();
+new \Humbug\A\Bar();
 
 PHP
     ],
@@ -206,8 +199,7 @@ new \A();
 ----
 <?php
 
-use Humbug\Foo\Bar as A;
-
+use Foo\Bar as A;
 new \A();
 
 PHP

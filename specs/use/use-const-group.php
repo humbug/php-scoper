@@ -25,14 +25,16 @@ return [
 
 use const A\{B};
 use const A\{B\C, D};
-use const \A\B\{C\D, E};
+use const \A\B\{C\D as ABCD, E};
 
 ----
 <?php
 
-use const Humbug\A\{B};
-use const Humbug\A\{B\C, D};
-use const Humbug\A\B\{C\D, E};
+use const Humbug\A\B;
+use const Humbug\A\B\C;
+use const Humbug\A\D;
+use const Humbug\A\B\C\D as ABCD;
+use const Humbug\A\B\E;
 
 PHP
     ,

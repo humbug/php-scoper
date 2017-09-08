@@ -44,7 +44,6 @@ foo();
 namespace Humbug\X;
 
 use function Humbug\main as foo;
-
 \Humbug\main();
 
 PHP
@@ -73,7 +72,6 @@ use function main as foo;
 namespace Humbug\X;
 
 use function Humbug\main as foo;
-
 \foo();
 
 PHP
