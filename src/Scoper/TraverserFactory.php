@@ -14,10 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\NodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\WhitelistedStatements;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeTraverserInterface;
 
 interface TraverserFactory

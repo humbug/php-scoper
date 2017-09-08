@@ -15,35 +15,33 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor\UseStmt;
 
 use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
-use Humbug\PhpScoper\NodeVisitor\IgnoreNodeUtility;
-use Humbug\PhpScoper\NodeVisitor\WhitelistedStatements;
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Manipulates use statements.
+ * Prefixes the use statements.
+ *
+ *
  */
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
     private $whitelist;
-    private $whitelistedStatements;
+    private $globalWhitelister;
 
     /**
-     * @param string                $prefix
-     * @param string[]              $whitelist
-     * @param WhitelistedStatements $whitelistedStatements
+     * @param string   $prefix
+     * @param string[] $whitelist
+     * @param callable $globalWhitelister
      */
-    public function __construct(string $prefix, array $whitelist, WhitelistedStatements $whitelistedStatements)
+    public function __construct(string $prefix, array $whitelist, callable $globalWhitelister)
     {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
-        $this->whitelistedStatements = $whitelistedStatements;
+        $this->globalWhitelister = $globalWhitelister;
     }
 
     /**
@@ -51,56 +49,56 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node)
     {
-        if (false === ($node instanceof UseUse)) {
-            return $node;
-        }
-
-        /** @var UseUse $node */
-        if (Use_::TYPE_UNKNOWN === $node->type) {
-            $nodeType = AppendParentNode::getParent($node)->type;
-        } else {
-            $nodeType = $node->type;
-        }
-
-        // Mark use statements of whitelisted classes
-        if (Use_::TYPE_NORMAL === $nodeType && in_array((string) $node->name, $this->whitelist)
-        ) {
-            $this->whitelistedStatements->addNode($node);
-
-            return $node;
-        }
-
-        if (AppendParentNode::hasParent($node)
-            // The prefix is not already applied
-            && $this->prefix !== $node->name->getFirst()
-            // Is not an ignored use statement
-            && false === IgnoreNodeUtility::isNodeIgnored($node)
-        ) {
+        if ($node instanceof UseUse && $this->shouldPrefixUseStmt($node)) {
             $node->name = Name::concat($this->prefix, $node->name);
         }
 
         return $node;
     }
-//
-//    /**
-//     * Removes use statements of whitelisted classes.
-//     *
-//     * {@inheritdoc}
-//     */
-//    public function leaveNode(Node $node)
-//    {
-//        if ($node instanceof Use_ && 0 === count($node->uses)) {
-//            return NodeTraverser::REMOVE_NODE;
-//        }
-//
-//        if (false === ($node instanceof UseUse)) {
-//            return $node;
-//        }
-//
-//        if ($this->whitelistedStatements->has($node)) {
-//            return NodeTraverser::REMOVE_NODE;
-//        }
-//
-//        return $node;
-//    }
+
+    private function shouldPrefixUseStmt(UseUse $use): bool
+    {
+        $useType = $this->findUseType($use);
+
+        // If is already from the prefix namespace
+        if ($this->prefix === $use->name->getFirst()) {
+            return false;
+        }
+
+        // Is not from the Composer namespace
+        if ('Composer' === $use->name->getFirst()) {
+            return false;
+        }
+
+        if (1 === count($use->name->parts)) {
+            return (
+                $useType !== Use_::TYPE_NORMAL
+                || ($this->globalWhitelister)($use->name->getFirst())
+            );
+        }
+
+        return false === (
+            $useType === Use_::TYPE_NORMAL
+            && in_array((string) $use->name, $this->whitelist)
+        );
+    }
+
+    /**
+     * Finds the type of the use statement.
+     *
+     * @param UseUse $use
+     *
+     * @return int See \PhpParser\Node\Stmt\Use_ type constants.
+     */
+    private function findUseType(UseUse $use): int
+    {
+        if (Use_::TYPE_UNKNOWN === $use->type) {
+            /** @var Use_ $parentNode */
+            $parentNode = AppendParentNode::getParent($use);
+
+            return $parentNode->type;
+        }
+
+        return $use->type;
+    }
 }

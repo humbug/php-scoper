@@ -50,21 +50,25 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Namespace_)) {
-            return $node;
+        return ($node instanceof Namespace_)
+            ? $this->prefixNamespaceStmt($node)
+            : $node
+        ;
+    }
+
+    private function prefixNamespaceStmt(Namespace_ $namespace): Node
+    {
+        $originalNamespace = $namespace;
+
+        if (null !== $namespace->name && $this->prefix !== $namespace->name->getFirst()) {
+            //TODO: try to get rid of the deep_clone
+            $originalNamespace = deep_clone($namespace);
+
+            $namespace->name = Name::concat($this->prefix, $namespace->name);
         }
-        /** @var Namespace_ $node */
 
-        $originalNode = $node;
+        $this->namespaceStatements->add($namespace, $originalNamespace);
 
-        if (null !== $node->name && $this->prefix !== $node->name->getFirst()) {
-            $originalNode = deep_clone($node);
-
-            $node->name = Name::concat($this->prefix, $node->name);
-        }
-
-        $this->namespaceStatements->add($node, $originalNode);
-
-        return $node;
+        return $namespace;
     }
 }

@@ -22,27 +22,27 @@ use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Scopes relevant group statements.
+ * Transforms the grouped use statements into regular use statements which are easier to work with.
  *
  * ```
- * use Foo{X,Y};
+ * use A\B\{C\D, function b\c, const D};
  * ```
  *
  * =>
  *
  * ```
- * use Humbug\Foo{X,Y};
+ * use Humbug\A\B\C\D;
+ * use function Humbug\A\B\b\c;
+ * use const Humbug\A\B\D;
  * ```
+ *
+ * @private
  */
 final class GroupUseStmtTransformer extends NodeVisitorAbstract
 {
-    private $prefix;
-
-    public function __construct(string $prefix)
-    {
-        $this->prefix = $prefix;
-    }
-
+    /**
+     * @inheritdoc
+     */
     public function beforeTraverse(array $nodes)
     {
         $newNodes = [];
@@ -69,15 +69,15 @@ final class GroupUseStmtTransformer extends NodeVisitorAbstract
     {
         return array_map(
             function (UseUse $use) use ($node): Use_ {
+                $newUse = new UseUse(
+                    Name::concat($node->prefix, $use->name, $use->name->getAttributes()),
+                    $use->alias,
+                    $use->type,
+                    $use->getAttributes()
+                );
+
                 return new Use_(
-                    [
-                        new UseUse(
-                            Name::concat($node->prefix, $use->name, $use->name->getAttributes()),
-                            $use->alias,
-                            $use->type,
-                            $use->getAttributes()
-                        )
-                    ],
+                    [$newUse],
                     $node->type,
                     $node->getAttributes()
                 );

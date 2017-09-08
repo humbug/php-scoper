@@ -24,6 +24,10 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use function Humbug\PhpScoper\deep_clone;
 
+/**
+ * Utility class collecting all the namespaces for the scoped files allowing to easily find the namespace to which
+ * belongs a node.
+ */
 final class NamespaceStmtCollection implements IteratorAggregate, Countable
 {
     /**
@@ -37,6 +41,10 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
      */
     private $mapping = [];
 
+    /**
+     * @param Namespace_ $node New namespace, may have been prefixed.
+     * @param Namespace_ $originalName Original unchanged namespace.
+     */
     public function add(Namespace_ $node, Namespace_ $originalName)
     {
         $this->nodes[] = $originalName;
@@ -57,21 +65,6 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return $this->nodes[0]->name;
     }
 
-    private function getNodeNamespace(Node $node): ?Name
-    {
-        if (false === AppendParentNode::hasParent($node)) {
-            return null;
-        }
-
-        $parentNode = AppendParentNode::getParent($node);
-
-        if ($parentNode instanceof Namespace_) {
-            return $this->mapping[(string) $parentNode->name];
-        }
-
-        return $this->getNodeNamespace($parentNode);
-    }
-
     public function getCurrentNamespaceName(): ?Name
     {
         if (0 === count($this->nodes)) {
@@ -87,6 +80,21 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     public function count(): int
     {
         return count($this->nodes);
+    }
+
+    private function getNodeNamespace(Node $node): ?Name
+    {
+        if (false === AppendParentNode::hasParent($node)) {
+            return null;
+        }
+
+        $parentNode = AppendParentNode::getParent($node);
+
+        if ($parentNode instanceof Namespace_) {
+            return $this->mapping[(string) $parentNode->name];
+        }
+
+        return $this->getNodeNamespace($parentNode);
     }
 
     /**

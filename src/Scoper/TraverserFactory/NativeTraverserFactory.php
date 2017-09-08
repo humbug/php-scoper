@@ -48,36 +48,20 @@ final class NativeTraverserFactory implements TraverserFactory
 
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
-        $whitelistedStatements = new WhitelistedStatements();
 
         $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
 
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\GroupUseStmtTransformer($prefix, $whitelist, $whitelistedStatements));
+        $this->traverser->addVisitor(new NodeVisitor\UseStmt\GroupUseStmtTransformer());
 
         $this->traverser->addVisitor(new NodeVisitor\AppendParentNode());
-        $this->traverser->addVisitor(new NodeVisitor\Ignore\UseIgnoreNodeVisitor($whitelist, $globalWhitelister));
-        $this->traverser->addVisitor(new NodeVisitor\IgnoreNodeVisitor($whitelist, $globalWhitelister));
 
         $this->traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements));
 
         $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $whitelistedStatements));
-//        $this->traverser->addVisitor(new NodeVisitor\UseStmt\ScopeSingleLevelUseAliasVisitor($prefix));
-//        $this->traverser->addVisitor(new NodeVisitor\UseStmt\ScopeGroupUseStmtNodeVisitor($prefix));
+        $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $globalWhitelister));
 
         $this->traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
         $this->traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
-
-//        $this->traverser->addVisitor(new NodeVisitor\ScopeFullyQualifiedNodeVisitor($prefix));
-//        $this->traverser->addVisitor(new NodeVisitor\ScopeWhitelistedElementsFromGlobalNamespaceNodeVisitor($prefix, $globalWhitelister));
-//        $this->traverser->addVisitor(new NodeVisitor\ScopeConstStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
-
-//        $this->traverser->addVisitor(new NodeVisitor\NewStmt\ScopeNewStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
-//        $this->traverser->addVisitor(new NodeVisitor\NewStmt\ScopeSingleLevelNewStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
-
-//        $this->traverser->addVisitor(new NodeVisitor\FunctionStmt\ScopeFunctionCallArgumentsStmtNodeVisitor($prefix, $whitelist, self::WHITELISTED_FUNCTIONS));
-//        $this->traverser->addVisitor(new NodeVisitor\FunctionStmt\ScopeStaticCallStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
-//        $this->traverser->addVisitor(new NodeVisitor\FunctionStmt\ScopeFunctionCallStmtNodeVisitor($prefix, $namespaceStatements, $useStatements, $whitelist));
 
         return $this->traverser;
     }

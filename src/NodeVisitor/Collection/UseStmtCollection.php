@@ -22,6 +22,10 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function Humbug\PhpScoper\deep_clone;
 
+/**
+ * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
+ * may use.
+ */
 final class UseStmtCollection implements IteratorAggregate
 {
     /**

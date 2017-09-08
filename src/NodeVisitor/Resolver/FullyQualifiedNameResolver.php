@@ -11,6 +11,10 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 
+/**
+ * Attempts to resolve the node name into a fully qualified node. Returns a valid (non fully-qualified) name node on
+ * failure.
+ */
 final class FullyQualifiedNameResolver
 {
     private $namespaceStatements;
@@ -22,13 +26,6 @@ final class FullyQualifiedNameResolver
         $this->useStatements = $useStatements;
     }
 
-    /**
-     * Attempts to resolve the node name into a fully qualified node. Returns a valid name node on failure.
-     *
-     * @param Name $node
-     *
-     * @return ResolvedValue
-     */
     public function resolveName(Name $node): ResolvedValue
     {
         if ($node instanceof FullyQualified) {

@@ -21,13 +21,21 @@ use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * ```
+ * new Foo\Bar();
+ * ```
+ *
+ * =>
+ *
+ * ```
+ * new \Humbug\Foo\Bar();
+ * ```
+ *
+ * @private
+ */
 final class NameStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
@@ -58,33 +66,29 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Name)
-            || IgnoreNodeUtility::isNodeIgnored($node)
-            || false === AppendParentNode::hasParent($node)
+        return ($node instanceof Name && AppendParentNode::hasParent($node))
+            ? $this->prefixName($node)
+            : $node
+        ;
+    }
+
+    private function prefixName(Name $name): Node
+    {
+        $parentNode = AppendParentNode::getParent($name);
+
+        if (false === (
+                $parentNode instanceof ConstFetch
+                || $parentNode instanceof ClassConstFetch
+                || $parentNode instanceof Node\Param
+                || $parentNode instanceof FuncCall
+                || $parentNode instanceof Node\Expr\StaticCall
+                || $parentNode instanceof Node\Expr\New_
+            )
         ) {
-            return $node;
-        }
-        /** @var Name $node */
-
-        $parentNode = AppendParentNode::getParent($node);
-
-        if ($parentNode instanceof Namespace_
-            || $parentNode instanceof Class_
-            || $parentNode instanceof TraitUse
-            || $parentNode instanceof Interface_
-            || $parentNode instanceof Node\Stmt\UseUse
-            || $parentNode instanceof Node\Stmt\TraitUseAdaptation\Precedence
-            || $parentNode instanceof Node\Stmt\TraitUseAdaptation\Alias
-        ) {
-            return $node;
+            return $name;
         }
 
-//        if (false === ($parentNode instanceof ClassConstFetch)
-//        ) {
-//            return $node;
-//        }
-
-        $resolvedValue = $this->nameResolver->resolveName($node);
+        $resolvedValue = $this->nameResolver->resolveName($name);
 
         $resolvedName = $resolvedValue->getName();
 
@@ -105,8 +109,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 return $resolvedName;
             }
         }
-
-        // Can we get rid of all the ignore? Seems unnecessary
 
         if ($parentNode instanceof ConstFetch
             && 1 === count($resolvedName->parts)

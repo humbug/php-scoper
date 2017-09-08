@@ -28,6 +28,19 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * Prefixes the string scalar values.
+ *
+ * ```
+ * $x = 'Foo\Bar';
+ * ```
+ *
+ * =>
+ *
+ * ```
+ * $x = 'Humbug\Foo\Bar';
+ * ```
+ */
 final class StringScalarPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
@@ -58,34 +71,34 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof String_)
-            || IgnoreNodeUtility::isNodeIgnored($node)
-            || false === AppendParentNode::hasParent($node)
-        ) {
-            return $node;
-        }
-        /** @var String_ $node */
+        return ($node instanceof String_ && AppendParentNode::hasParent($node))
+            ? $this->prefixStringScalar($node)
+            : $node
+        ;
+    }
 
-        $parentNode = AppendParentNode::getParent($node);
+    private function prefixStringScalar(String_ $string): Node
+    {
+        $parentNode = AppendParentNode::getParent($string);
 
         if (false === ($parentNode instanceof Arg)) {
-            return $node;
+            return $string;
         }
 
         $stringName = new Name(
-            preg_replace('/^\\\\(.+)$/', '$1', $node->value),
-            $node->getAttributes()
+            preg_replace('/^\\\\(.+)$/', '$1', $string->value),
+            $string->getAttributes()
         );
 
         // Skip if is already prefixed
         if ($this->prefix === $stringName->getFirst()) {
             $newStringName = $stringName;
-        // Check if the class can be prefixed: class from the global namespace
+            // Check if the class can be prefixed: class from the global namespace
         } elseif (1 === count($stringName->parts)
             && false === ($this->globalWhitelister)($stringName->toString())
         ) {
             $newStringName = $stringName;
-        // Check if the class can be prefixed: regular class
+            // Check if the class can be prefixed: regular class
         } elseif (1 < count($stringName->parts)
             && in_array($stringName->toString(), $this->whitelist)
         ) {
@@ -94,6 +107,6 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             $newStringName = FullyQualified::concat($this->prefix, $stringName->toString(), $stringName->getAttributes());
         }
 
-        return new String_($newStringName->toString(), $node->getAttributes());
+        return new String_($newStringName->toString(), $string->getAttributes());
     }
 }
