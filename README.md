@@ -31,8 +31,11 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 
 - [Installation](#installation)
 - [Usage](#usage)
-- [Patchers](#patchers)
-- [Global Namespace Whitelisting](#global-namespace-whitelisting)
+- [Configuration](#configuration)
+    - [Finders and paths](#finders-and-paths)
+    - [Patchers](#patchers)
+    - [Global Namespace Whitelisting](#global-namespace-whitelisting)
+    - [Whitelist](#whitelist)
 - [Contributing](#contributing)
 - [Building A Scoped PHAR](#building-a-scoped-phar)
 - [Credits](#credits)
@@ -117,7 +120,7 @@ return [
 ```
 
 
-## Finders and paths
+### Finders and paths
 
 By default when running `php-scoper add-prefix`, it will prefix all relevant
 code found in the current working directory. You can however define which
@@ -163,7 +166,7 @@ php-scoper add-prefix file1.php bin/file2.php
 Paths added manually are appended to the paths found by the finders.
 
 
-## Patchers
+### Patchers
 
 When scoping PHP files, there will be scenarios where some of the code being
 scoped indirectly references the original namespace. These will include, for
@@ -229,7 +232,7 @@ return [
 ];
 ```
 
-## Global Namespace Whitelisting
+### Global Namespace Whitelisting
 
 By default, PHP-Scoper only scopes (or prefixes) code where the namespace is
 non-global. In other words, non-namespaced code is not scoped. This leaves the
@@ -259,7 +262,7 @@ In this example, we're ensuring that the `AppKernal` class, and any
 non-namespaced PHPUnit packages are prefixed.
 
 
-## Whitelist
+### Whitelist
 
 PHP-Scoper's goal is to make sure that all code for a project lies in a 
 distinct PHP namespace. However, you may want to share a common API between
