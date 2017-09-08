@@ -61,7 +61,6 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
         $originalNamespace = $namespace;
 
         if (null !== $namespace->name && $this->prefix !== $namespace->name->getFirst()) {
-            //TODO: try to get rid of the deep_clone
             $originalNamespace = clone_node($namespace);
 
             $namespace->name = Name::concat($this->prefix, $namespace->name);
