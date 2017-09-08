@@ -11,6 +11,7 @@
 PHP-Scoper is a tool which essentially moves any body of code, including all
 dependencies such as vendor directories, to a new and distinct namespace.
 
+
 ## Goal
 
 PHP-Scoper's goal is to make sure that all code for a project lies in a 
@@ -25,6 +26,7 @@ PHARs run the risk of raising conflicts between their bundled vendors and the
 vendors of the project they are interacting with, leading to issues that are 
 potentially very difficult to debug due to dissimilar or unsupported package versions.
 
+
 ## Table of Contents
 
 - [Installation](#installation)
@@ -35,7 +37,9 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 - [Building A Scoped PHAR](#building-a-scoped-phar)
 - [Credits](#credits)
 
+
 ## Installation
+
 
 ### PHAR (preferred)
 
@@ -51,6 +55,7 @@ As the PHAR is signed, you should also download the matching
 `php-scoper.phar.pubkey` to the same location. If you rename `php-scoper.phar`
 to `php-scoper`, you should also rename `php-scoper.phar.pubkey` to
 `php-scoper.pubkey`.
+
 
 ### Composer
 
@@ -68,6 +73,7 @@ install it for your project, we recommend you to take a look at
 composer require --dev bamarni/composer-bin-plugin
 composer bin php-scoper require --dev humbug/php-scoper
 ```
+
 
 ## Usage
 
@@ -88,6 +94,74 @@ there are steps both before and after running PHP-Scoper to consider.
 
 Refer to TBD for an in-depth look at scoping and building a PHAR taken from
 PHP-Scoper's makefile.
+
+
+## Configuration
+
+By default, PHP-Scoper will look for the file `scoper.inc.php` in the current
+working directory:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+use Symfony\Component\Finder\Finder;
+
+return [
+    'finders' => [],
+    'patchers' => [],
+    'global_namespace_whitelist' => [],
+    'whitelist' => [],
+];
+```
+
+
+## Finders and paths
+
+By default when running `php-scoper add-prefix`, it will prefix all relevant
+code found in the current working directory. You can however define which
+files should be scoped by using [Finders][symfony_finder] in the configuration:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+use Symfony\Component\Finder\Finder;
+
+return [
+    'finders' => [
+        Finder::create()->files()->in('src'),
+        Finder::create()
+            ->files()
+            ->ignoreVCS(true)
+            ->notName('/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/')
+            ->exclude([
+                'doc',
+                'test',
+                'test_old',
+                'tests',
+                'Tests',
+                'vendor-bin',
+            ])
+            ->in('vendor'),
+        Finder::create()->append([
+            'bin/php-scoper',
+            'composer.json',
+        ])
+    ],
+];
+```
+
+Besides the finder, you can also add any path via the command:
+
+```
+php-scoper add-prefix file1.php bin/file2.php
+```
+
+Paths added manually are appended to the paths found by the finders.
+
 
 ## Patchers
 
@@ -132,7 +206,7 @@ Applying such a change can be achieved by defining a suitable patcher in
 `scoper.inc.php`:
 
 ```php
-<?php declare(strict_types=1)
+<?php declare(strict_types=1);
 
 // scoper.inc.php
 
@@ -162,12 +236,12 @@ non-global. In other words, non-namespaced code is not scoped. This leaves the
 majority of classes, functions and constants in PHP, and most extensions,
 untouched.
 
-This is not necessarily a desireable outcome for vendor dependencies which are
+This is not necessarily a desirable outcome for vendor dependencies which are
 also not namespaced. To ensure they are isolated, you can configure PHP-Scoper to
 allow their prefixing from `scoper.inc.php` using basic strings or callables:
 
 ```php
-<?php declare(strict_types=1)
+<?php declare(strict_types=1);
 
 // scoper.inc.php
 
@@ -178,23 +252,49 @@ return [
             return 'PHPUnit' === substr($className, 0, 6);
         },
     ],
-    'patchers' => [
-        // patchers if relevant
-    ],
 ];
 ```
 
 In this example, we're ensuring that the `AppKernal` class, and any
 non-namespaced PHPUnit packages are prefixed.
 
+
+## Whitelist
+
+PHP-Scoper's goal is to make sure that all code for a project lies in a 
+distinct PHP namespace. However, you may want to share a common API between
+the bundled code of your PHAR and the consumer code. For example if you have
+a PHPUnit PHAR with isolated code, you still want the PHAR to be able to
+understand the `PHPUnit\Framework\TestCase` class.
+
+A way to achieve this is by specifying a list of classes to not prefix:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+return [
+    'whitelist' => [
+        'PHPUnit\Framework\TestCase',
+    ],
+];
+```
+
+Note that only classes are whitelisted, this does not affect constants
+or functions.
+
+
 ## Contributing
 
 [Contribution Guide](CONTRIBUTING.md)
+
 
 ## Building A Scoped PHAR
 
 This is a brief run through of the basic steps encoded in PHP-Scoper's own
 [Makefile](Makefile) and elsewhere to build a PHAR from scoped code.
+
 
 ### Step 1: Configure build location and prep vendors
 
@@ -213,6 +313,7 @@ Assuming you need no dev dependencies, run:
 ```bash
 composer install --no-dev --prefer-dist
 ```
+
 
 ### Step 2: Run PHP-Scoper
 
@@ -242,6 +343,7 @@ Composer autoloader if we depend on it, so everything works as expected:
 composer dump-autoload -d build --classmap-authoritative
 ```
 
+
 ### Step 3: Build, test, and cleanup
 
 If using [Box](box), you can now move onto actually building the PHAR:
@@ -261,6 +363,7 @@ re-install dev dependencies removed during Step 1:
 composer install
 ``` 
 
+
 ## Credits
 
 Project originally created by: [Bernhard Schussek] ([@webmozart]) which has
@@ -268,9 +371,10 @@ now been moved under the
 [Humbug umbrella][humbug].
 
 
-[Bernhard Schussek]: https://webmozart.io/
 [@webmozart]: https://twitter.com/webmozart
-[humbug]: https://github.com/humbug
 [bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
+[Bernhard Schussek]: https://webmozart.io/
 [box]: https://github.com/box-project/box2
+[humbug]: https://github.com/humbug
 [releases]: https://github.com/humbug/php-scoper/releases
+[symfony_finder]: https://symfony.com/doc/current/components/finder.html
