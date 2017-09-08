@@ -23,7 +23,7 @@ build: src vendor vendor-bin/box/vendor
 	composer install --no-dev --prefer-dist
 
 	php -d zend.enable_gc=0 bin/php-scoper add-prefix --force
-	composer dump-autoload -d build  --classmap-authoritative
+	composer dump-autoload -d build --classmap-authoritative
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build $(CONFIG)
 
 	# Install back all the dependencies
