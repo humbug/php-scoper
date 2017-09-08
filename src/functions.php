@@ -23,7 +23,6 @@ use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Scoper\TraverserFactory\NativeTraverserFactory;
 use Humbug\SelfUpdate\Exception\RuntimeException as SelfUpdateRuntimeException;
 use Humbug\SelfUpdate\Updater;
 use PackageVersions\Versions;
@@ -101,8 +100,7 @@ function create_scoper(): Scoper
             new InstalledPackagesScoper(
                 new PhpScoper(
                     create_parser(),
-                    new NullScoper(),
-                    new NativeTraverserFactory()
+                    new NullScoper()
                 )
             )
         )

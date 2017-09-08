@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper\Scoper;
 use Generator;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Scoper\TraverserFactory\NativeTraverserFactory;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -73,8 +72,7 @@ class PhpScoperTest extends TestCase
     {
         $this->scoper = new PhpScoper(
             create_parser(),
-            new FakeScoper(),
-            new NativeTraverserFactory()
+            new FakeScoper()
         );
 
         if (null === $this->tmp) {
@@ -145,8 +143,7 @@ PHP;
 
         $scoper = new PhpScoper(
             new FakeParser(),
-            $this->decoratedScoper,
-            new NativeTraverserFactory()
+            $this->decoratedScoper
         );
 
         $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
@@ -219,8 +216,7 @@ PHP;
 
         $scoper = new PhpScoper(
             new FakeParser(),
-            $this->decoratedScoper,
-            new NativeTraverserFactory()
+            $this->decoratedScoper
         );
 
         $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
