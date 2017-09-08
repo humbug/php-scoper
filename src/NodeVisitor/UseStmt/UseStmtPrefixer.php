@@ -23,8 +23,6 @@ use PhpParser\NodeVisitorAbstract;
 
 /**
  * Prefixes the use statements.
- *
- *
  */
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
@@ -71,10 +69,10 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         if (1 === count($use->name->parts)) {
-            return (
+            return
                 $useType !== Use_::TYPE_NORMAL
                 || ($this->globalWhitelister)($use->name->getFirst())
-            );
+            ;
         }
 
         return false === (

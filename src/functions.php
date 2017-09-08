@@ -14,18 +14,16 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use DeepCopy\DeepCopy;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
-use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
-use Humbug\PhpScoper\Scoper\TraverserFactory\NativeTraverserFactory;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Scoper\TraverserFactory\NativeTraverserFactory;
 use Humbug\SelfUpdate\Exception\RuntimeException as SelfUpdateRuntimeException;
 use Humbug\SelfUpdate\Updater;
 use PackageVersions\Versions;

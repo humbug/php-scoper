@@ -17,12 +17,10 @@ namespace Humbug\PhpScoper\NodeVisitor\Collection;
 use ArrayIterator;
 use Countable;
 use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
-use InvalidArgumentException;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
-use function Humbug\PhpScoper\clone_node;
 
 /**
  * Utility class collecting all the namespaces for the scoped files allowing to easily find the namespace to which
@@ -37,12 +35,12 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
 
     /**
      * @var Name|null[] Associative array with the potentially prefixed namespace names as keys and their original name
-     *               as value.
+     *                  as value.
      */
     private $mapping = [];
 
     /**
-     * @param Namespace_ $node New namespace, may have been prefixed.
+     * @param Namespace_ $node         New namespace, may have been prefixed.
      * @param Namespace_ $originalName Original unchanged namespace.
      */
     public function add(Namespace_ $node, Namespace_ $originalName)

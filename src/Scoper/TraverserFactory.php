@@ -19,8 +19,8 @@ use PhpParser\NodeTraverserInterface;
 interface TraverserFactory
 {
     /**
-     * @param string   $prefix Prefix to apply to the files.
-     * @param string[] $whitelist List of classes to exclude from the scoping.
+     * @param string   $prefix            Prefix to apply to the files.
+     * @param string[] $whitelist         List of classes to exclude from the scoping.
      * @param callable $globalWhitelister Closure taking a class name from the global namespace as an argument and
      *                                    returning a boolean which if `true` means the class should be scoped
      *                                    (i.e. is ignored) or scoped otherwise.

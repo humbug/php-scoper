@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper\NodeVisitor\Collection;
 use ArrayIterator;
 use IteratorAggregate;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function Humbug\PhpScoper\clone_node;
@@ -52,7 +51,7 @@ final class UseStmtCollection implements IteratorAggregate
      * will return the use statement for `Bar\Foo`.
      *
      * @param Name|null $namespaceName
-     * @param Name       $node
+     * @param Name      $node
      *
      * @return null|Name
      */

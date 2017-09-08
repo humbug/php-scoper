@@ -26,7 +26,7 @@ use PhpParser\NodeVisitorAbstract;
 /**
  * ```
  * new Foo\Bar();
- * ```
+ * ```.
  *
  * =>
  *

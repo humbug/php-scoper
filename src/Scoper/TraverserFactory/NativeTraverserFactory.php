@@ -18,7 +18,6 @@ use Humbug\PhpScoper\NodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
-use Humbug\PhpScoper\NodeVisitor\WhitelistedStatements;
 use Humbug\PhpScoper\Scoper\TraverserFactory;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeTraverserInterface;
