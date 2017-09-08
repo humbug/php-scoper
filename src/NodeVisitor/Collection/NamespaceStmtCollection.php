@@ -22,7 +22,7 @@ use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
-use function Humbug\PhpScoper\deep_clone;
+use function Humbug\PhpScoper\clone_node;
 
 /**
  * Utility class collecting all the namespaces for the scoped files allowing to easily find the namespace to which

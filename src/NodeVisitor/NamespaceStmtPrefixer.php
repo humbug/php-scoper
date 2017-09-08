@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
-use function Humbug\PhpScoper\deep_clone;
+use function Humbug\PhpScoper\clone_node;
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -62,7 +62,7 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
         if (null !== $namespace->name && $this->prefix !== $namespace->name->getFirst()) {
             //TODO: try to get rid of the deep_clone
-            $originalNamespace = deep_clone($namespace);
+            $originalNamespace = clone_node($namespace);
 
             $namespace->name = Name::concat($this->prefix, $namespace->name);
         }

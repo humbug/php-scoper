@@ -81,9 +81,10 @@ e2e: bin/scoper.phar fixtures/set005/vendor fixtures/set011/vendor
 tb:		## Run Blackfire profiling
 tb: vendor
 	rm -rf build
+	rm -rf vendor-bin/*/vendor
 
 	composer install --no-dev --prefer-dist --classmap-authoritative
-	blackfire --new-reference run bin/php-scoper add-prefix -f -q
+	blackfire --new-reference run php -d zend.enable_gc=0 bin/php-scoper add-prefix --force --quiet
 	composer install
 
 

@@ -20,7 +20,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use function Humbug\PhpScoper\deep_clone;
+use function Humbug\PhpScoper\clone_node;
 
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
@@ -37,7 +37,7 @@ final class UseStmtCollection implements IteratorAggregate
 
     public function add(?Name $namespaceName, Use_ $node): void
     {
-        $this->nodes[(string) $namespaceName][] = deep_clone($node);
+        $this->nodes[(string) $namespaceName][] = clone_node($node);
     }
 
     /**
