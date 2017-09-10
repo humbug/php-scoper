@@ -3,10 +3,7 @@
     "chmod": "0755",
     "main": "bin/php-scoper",
     "output": "bin/php-scoper.phar",
-    "directories": [
-        "src",
-        "tests"
-    ],
+    "directories": ["src"],
     "finder": [
         {
             "notName": "/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/",

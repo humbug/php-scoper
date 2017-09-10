@@ -65,6 +65,8 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
         $this->cwd = getcwd();
         $this->tmp = make_tmp_dir('scoper', __CLASS__);
+
+        chdir($this->tmp);
     }
 
     /**

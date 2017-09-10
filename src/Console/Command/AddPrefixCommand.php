@@ -272,7 +272,7 @@ final class AddPrefixCommand extends Command
             if (false === file_exists($configFile)) {
                 $io->writeln(
                     sprintf(
-                        'Patch file "%s" not found. Skipping.',
+                        'Config file "%s" not found. Skipping.',
                         $configFile
                     ),
                     OutputStyle::VERBOSITY_DEBUG
