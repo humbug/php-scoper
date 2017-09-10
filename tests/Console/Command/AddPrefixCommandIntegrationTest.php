@@ -145,13 +145,12 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
- 0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
- 1/4 [▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░]  25%
- 2/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░]  50%
- 3/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  75%
- 4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+ 0/3 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+ 1/3 [▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░]  33%
+ 2/3 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░]  66%
+ 3/3 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
- [OK] Successfully prefixed 4 files.
+ [OK] Successfully prefixed 3 files.
 
  // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -193,10 +192,9 @@ PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
  * [NO] /path/to/composer/installed.json
  * [OK] /path/to/file.php
  * [NO] /path/to/invalid-file.php
- * [OK] /path/to/scoper.inc.php
 
 
- [OK] Successfully prefixed 4 files.
+ [OK] Successfully prefixed 3 files.
 
  // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -264,10 +262,9 @@ Stack trace:
 #7
 #8
 #9
- * [OK] /path/to/scoper.inc.php
 
 
- [OK] Successfully prefixed 4 files.
+ [OK] Successfully prefixed 3 files.
 
  // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
