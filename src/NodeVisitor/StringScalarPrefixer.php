@@ -46,7 +46,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     /**
      * @param string                     $prefix
-     * @param string[]                      $whitelistedFunctions
+     * @param string[]                   $whitelistedFunctions
      * @param string[]                   $whitelist
      * @param callable                   $globalWhitelister
      * @param FullyQualifiedNameResolver $nameResolver
@@ -82,7 +82,6 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return false;
         }
         /** @var String_ $node */
-
         $parentNode = AppendParentNode::getParent($node);
 
         if (false === ($parentNode instanceof Arg) || false === AppendParentNode::hasParent($parentNode)) {
@@ -91,10 +90,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $argParent = AppendParentNode::getParent($parentNode);
 
-        return (
+        return
             $argParent instanceof FuncCall
             && in_array((string) $argParent->name, $this->whitelistedFunctions)
-        );
+        ;
     }
 
     private function prefixStringScalar(String_ $string): Node

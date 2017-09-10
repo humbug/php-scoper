@@ -103,8 +103,7 @@ class B extends \Humbug\Foo\A
 }
 
 PHP
-        ]
-    ,
+        ],
 
     'Declaration in a different namespace imported via a use statement: prefix the namespace.' => <<<'PHP'
 <?php

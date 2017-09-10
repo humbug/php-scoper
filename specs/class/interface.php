@@ -81,8 +81,7 @@ interface A extends C, D
 }
 
 PHP
-        ]
-    ,
+        ],
 
     'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
 <?php

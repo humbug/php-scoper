@@ -85,8 +85,7 @@ class A
 }
 
 PHP
-        ]
-    ,
+        ],
 
     'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
 <?php
