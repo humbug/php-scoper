@@ -368,7 +368,7 @@ EOF;
             ->__invoke(
                 'MyPrefix',
                 [
-                    $this->cwd,
+                    $this->tmp,
                 ],
                 $this->tmp,
                 Argument::type('array'),
@@ -416,8 +416,8 @@ EOF;
                 'MyPrefix',
                 [
                     escape_path('/path/to/dir1'),
-                    escape_path($this->cwd.'/relative-path/to/dir2'),
-                    escape_path($this->cwd.'/relative-path/to/file'),
+                    escape_path($this->tmp.'/relative-path/to/dir2'),
+                    escape_path($this->tmp.'/relative-path/to/file'),
                 ],
                 $this->tmp,
                 Argument::type('array'),
@@ -704,7 +704,7 @@ EOF;
 
             $this->fail('Expected exception to be thrown.');
         } catch (RuntimeException $exception) {
-            $patchFile = escape_path($this->cwd.'/unknown');
+            $patchFile = escape_path($this->tmp.'/unknown');
 
             $this->assertSame(
                 "Could not find the file \"$patchFile\".",
