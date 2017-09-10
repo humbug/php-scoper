@@ -39,7 +39,7 @@ return [
         Finder::create()->append([
             'bin/php-scoper',
             'composer.json',
-        ])
+        ]),
     ],
     'patchers' => [
         function (string $filePath, string $prefix, string $content): string {
