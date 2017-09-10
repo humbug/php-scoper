@@ -52,6 +52,27 @@ final class A
 PHP
     ,
 
+    'Declaration of a namespaced whitelisted final class: do not prefix the namespace.' => [
+        'whitelist' => ['Foo\A'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+final class A {}
+----
+<?php
+
+namespace Foo;
+
+final class A
+{
+}
+
+PHP
+        ]
+    ,
+
     'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
 <?php
 

@@ -19,8 +19,12 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -38,6 +42,12 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class NameStmtPrefixer extends NodeVisitorAbstract
 {
+    private const PHP_FUNCTION_KEYWORDS = [
+        'self',
+        'static',
+        'parent',
+    ];
+
     private $prefix;
     private $whitelist;
     private $globalWhitelister;
@@ -79,11 +89,18 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         if (false === (
                 $parentNode instanceof ConstFetch
                 || $parentNode instanceof ClassConstFetch
-                || $parentNode instanceof Node\Param
+                || $parentNode instanceof Param
                 || $parentNode instanceof FuncCall
-                || $parentNode instanceof Node\Expr\StaticCall
-                || $parentNode instanceof Node\Expr\New_
+                || $parentNode instanceof StaticCall
+                || $parentNode instanceof New_
+                || $parentNode instanceof Class_
             )
+        ) {
+            return $name;
+        }
+
+        if (($parentNode instanceof FuncCall || $parentNode instanceof StaticCall || $parentNode instanceof ClassConstFetch)
+            && in_array((string) $name, self::PHP_FUNCTION_KEYWORDS)
         ) {
             return $name;
         }

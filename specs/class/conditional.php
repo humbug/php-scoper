@@ -60,6 +60,31 @@ if (true) {
 PHP
     ,
 
+    'Declaration of a whitelisted namespaced class: prefix each namespace, too dynamic to account for.' => [
+        'whitelist' => ['Foo\A'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+if (true) {
+    class A {}
+}
+----
+<?php
+
+namespace Humbug\Foo;
+
+if (true) {
+    class A
+    {
+    }
+}
+
+PHP
+        ]
+    ,
+
     'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
 <?php
 

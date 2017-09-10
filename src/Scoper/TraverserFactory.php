@@ -59,13 +59,13 @@ final class TraverserFactory
 
         $this->traverser->addVisitor(new NodeVisitor\AppendParentNode());
 
-        $this->traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements));
+        $this->traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements, $whitelist));
 
         $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
         $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $globalWhitelister));
 
         $this->traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
-        $this->traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
+        $this->traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, self::WHITELISTED_FUNCTIONS, $whitelist, $globalWhitelister, $nameResolver));
 
         return $this->traverser;
     }
