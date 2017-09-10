@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Functions for which the arguments are whitelisted',
+        'title' => 'Functions for which the arguments are whitelisted, i.e. that will be prefixed',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],

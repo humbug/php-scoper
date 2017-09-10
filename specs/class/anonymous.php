@@ -50,14 +50,14 @@ new class
     {
     }
 };
-new class extends A implements B, C
+new class extends \A implements \B, \C
 {
 };
 new class
 {
     public $foo;
 };
-new class($a, $b) extends A
+new class($a, $b) extends \A
 {
     use T;
 };
@@ -65,7 +65,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends A
+        return new class($this) extends \A
         {
             const A = 'B';
         };
@@ -112,14 +112,14 @@ new class
     {
     }
 };
-new class extends A implements B, C
+new class extends \Humbug\Foo\A implements \Humbug\Foo\B, \Humbug\Foo\C
 {
 };
 new class
 {
     public $foo;
 };
-new class($a, $b) extends A
+new class($a, $b) extends \Humbug\Foo\A
 {
     use T;
 };
@@ -127,7 +127,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends A
+        return new class($this) extends \Humbug\Foo\A
         {
             const A = 'B';
         };
@@ -176,7 +176,7 @@ namespace {
     {
         public function test()
         {
-            return new class($this) extends A
+            return new class($this) extends \A
             {
                 const A = 'B';
             };
@@ -190,7 +190,7 @@ namespace Humbug\Foo {
         {
         }
     };
-    new class extends A implements B, C
+    new class extends \Humbug\Foo\A implements \Humbug\Foo\B, \Humbug\Foo\C
     {
     };
 }
@@ -199,7 +199,7 @@ namespace Humbug\Bar {
     {
         public $foo;
     };
-    new class($a, $b) extends A
+    new class($a, $b) extends \Humbug\Bar\A
     {
         use T;
     };

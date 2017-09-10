@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Abstract class declaration',
+        'title' => 'Class declaration with an extend',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -23,19 +23,23 @@ return [
     'Declaration in the global namespace: do not do anything.' => <<<'PHP'
 <?php
 
-abstract class A {
+class A {
     public function a() {}
-    abstract public function b();
+}
+
+class B extends A {
 }
 ----
 <?php
 
-abstract class A
+class A
 {
     public function a()
     {
     }
-    public abstract function b();
+}
+class B extends \A
+{
 }
 
 PHP
@@ -46,102 +50,125 @@ PHP
 
 namespace Foo;
 
-abstract class A {
+class A {
     public function a() {}
-    abstract public function b();
+}
+
+class B extends A {
 }
 ----
 <?php
 
 namespace Humbug\Foo;
 
-abstract class A
+class A
 {
     public function a()
     {
     }
-    public abstract function b();
+}
+class B extends \Humbug\Foo\A
+{
 }
 
 PHP
     ,
 
-    'Declaration of a whitelisted namespaced class: do not prefix the namespace.' => [
-        'whitelist' => ['Foo\A'],
+    'Declaration of a namespaced whitelisted class: do not prefix the namespace.' => [
+        'whitelist' => ['Foo\B'],
         'payload' => <<<'PHP'
 <?php
 
 namespace Foo;
 
-abstract class A {
+class A {
     public function a() {}
-    abstract public function b();
+}
+
+class B extends A {
 }
 ----
 <?php
 
-namespace Foo;
+namespace Humbug\Foo;
 
-abstract class A
+class A
 {
     public function a()
     {
     }
-    public abstract function b();
+}
+class B extends \Humbug\Foo\A
+{
 }
 
 PHP
         ],
 
-    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
+    'Declaration in a different namespace imported via a use statement: prefix the namespace.' => <<<'PHP'
 <?php
 
-namespace Foo {
+namespace Foo;
 
-    abstract class A {
-        public function a() {}
-    }
+class A {
+    public function a() {}
 }
 
-namespace Bar {
+namespace Bar;
 
-    abstract class B {
-        public function b() {}
-    }
-}
+use Foo\A;
 
-namespace {
-
-    abstract class C {
-        public function c() {}
-    }
+class B extends A {
 }
 ----
 <?php
 
-namespace Humbug\Foo {
-    abstract class A
+namespace Humbug\Foo;
+
+class A
+{
+    public function a()
     {
-        public function a()
-        {
-        }
     }
 }
-namespace Humbug\Bar {
-    abstract class B
+namespace Humbug\Bar;
+
+use Humbug\Foo\A;
+class B extends \Humbug\Foo\A
+{
+}
+
+PHP
+    ,
+
+    'Declaration in a different namespace imported via a FQ call: prefix the namespace.' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+class A {
+    public function a() {}
+}
+
+namespace Bar;
+
+class B extends \Foo\A {
+}
+----
+<?php
+
+namespace Humbug\Foo;
+
+class A
+{
+    public function a()
     {
-        public function b()
-        {
-        }
     }
 }
-namespace {
-    abstract class C
-    {
-        public function c()
-        {
-        }
-    }
+namespace Humbug\Bar;
+
+class B extends \Humbug\Foo\A
+{
 }
 
 PHP

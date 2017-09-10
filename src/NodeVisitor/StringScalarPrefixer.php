@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\NodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
@@ -38,23 +39,27 @@ use PhpParser\NodeVisitorAbstract;
 final class StringScalarPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
+    private $whitelistedFunctions;
     private $whitelist;
     private $globalWhitelister;
     private $nameResolver;
 
     /**
      * @param string                     $prefix
+     * @param string[]                   $whitelistedFunctions
      * @param string[]                   $whitelist
      * @param callable                   $globalWhitelister
      * @param FullyQualifiedNameResolver $nameResolver
      */
     public function __construct(
         string $prefix,
+        array $whitelistedFunctions,
         array $whitelist,
         callable $globalWhitelister,
         FullyQualifiedNameResolver $nameResolver
     ) {
         $this->prefix = $prefix;
+        $this->whitelistedFunctions = $whitelistedFunctions;
         $this->whitelist = $whitelist;
         $this->globalWhitelister = $globalWhitelister;
         $this->nameResolver = $nameResolver;
@@ -65,20 +70,34 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        return ($node instanceof String_ && AppendParentNode::hasParent($node))
+        return ($this->shouldPrefixScalar($node))
             ? $this->prefixStringScalar($node)
             : $node
         ;
     }
 
-    private function prefixStringScalar(String_ $string): Node
+    private function shouldPrefixScalar(Node $node): bool
     {
-        $parentNode = AppendParentNode::getParent($string);
+        if (false === ($node instanceof String_ && AppendParentNode::hasParent($node))) {
+            return false;
+        }
+        /** @var String_ $node */
+        $parentNode = AppendParentNode::getParent($node);
 
-        if (false === ($parentNode instanceof Arg)) {
-            return $string;
+        if (false === ($parentNode instanceof Arg) || false === AppendParentNode::hasParent($parentNode)) {
+            return false;
         }
 
+        $argParent = AppendParentNode::getParent($parentNode);
+
+        return
+            $argParent instanceof FuncCall
+            && in_array((string) $argParent->name, $this->whitelistedFunctions)
+        ;
+    }
+
+    private function prefixStringScalar(String_ $string): Node
+    {
         $stringName = new Name(
             preg_replace('/^\\\\(.+)$/', '$1', $string->value),
             $string->getAttributes()

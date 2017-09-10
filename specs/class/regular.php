@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Interface declaration',
+        'title' => 'Class declaration',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -23,15 +23,17 @@ return [
     'Declaration in the global namespace: do not do anything.' => <<<'PHP'
 <?php
 
-interface A extends C, D {
-    public function a();
+class A {
+    public function a() {}
 }
 ----
 <?php
 
-interface A extends C, D
+class A
 {
-    public function a();
+    public function a()
+    {
+    }
 }
 
 PHP
@@ -42,42 +44,44 @@ PHP
 
 namespace Foo;
 
-interface A extends C, D
-{
-    public function a();
+class A {
+    public function a() {}
 }
 ----
 <?php
 
 namespace Humbug\Foo;
 
-interface A extends C, D
+class A
 {
-    public function a();
+    public function a()
+    {
+    }
 }
 
 PHP
     ,
 
-    'Declaration of a whitelisted namespaced interface: do not prefix the namespace.' => [
+    'Declaration of a namespaced whitelisted class: do not prefix the namespace.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
 
 namespace Foo;
 
-interface A extends C, D
-{
-    public function a();
+class A {
+    public function a() {}
 }
 ----
 <?php
 
 namespace Foo;
 
-interface A extends C, D
+class A
 {
-    public function a();
+    public function a()
+    {
+    }
 }
 
 PHP
@@ -86,46 +90,52 @@ PHP
     'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
 <?php
 
-namespace X {
-    interface A extends D, E
-    {
-        public function a();
+namespace Foo {
+
+    class A {
+        public function a() {}
     }
 }
 
-namespace Y {
-    interface B extends D, E
-    {
-        public function a();
+namespace Bar {
+
+    class B {
+        public function b() {}
     }
 }
 
-namespace Z {
-    interface C extends D, E
-    {
-        public function a();
+namespace {
+
+    class C {
+        public function c() {}
     }
 }
 ----
 <?php
 
-namespace Humbug\X;
-
-interface A extends D, E
-{
-    public function a();
+namespace Humbug\Foo {
+    class A
+    {
+        public function a()
+        {
+        }
+    }
 }
-namespace Humbug\Y;
-
-interface B extends D, E
-{
-    public function a();
+namespace Humbug\Bar {
+    class B
+    {
+        public function b()
+        {
+        }
+    }
 }
-namespace Humbug\Z;
-
-interface C extends D, E
-{
-    public function a();
+namespace {
+    class C
+    {
+        public function c()
+        {
+        }
+    }
 }
 
 PHP
