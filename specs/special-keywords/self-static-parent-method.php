@@ -51,7 +51,7 @@ class A {
     public function create(): self {
         return new static();
         return new self();
-        return new parent::create();
+        return parent::create();
     }
 }
 
@@ -95,7 +95,7 @@ class A
     {
         return new static();
         return new self();
-        return new parent::create();
+        return parent::create();
     }
 }
 class B extends \A
@@ -147,7 +147,7 @@ namespace Foo {
         public function create(): self {
             return new static();
             return new self();
-            return new parent::create();
+            return parent::create();
         }
     }
     
@@ -195,7 +195,7 @@ namespace Humbug\Foo {
         {
             return new static();
             return new self();
-            return new parent::create();
+            return parent::create();
         }
     }
     class B extends \Humbug\Foo\A
