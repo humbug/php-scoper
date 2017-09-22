@@ -44,9 +44,14 @@ class A {
         static::who();
     }
     
-    public function getName(): string
-    {
+    public function getName(): string {
         return $this->name;
+    }
+
+    public function create(): self {
+        return new static();
+        return new self();
+        return parent::create();
     }
 }
 
@@ -85,6 +90,12 @@ class A
     public function getName() : string
     {
         return $this->name;
+    }
+    public function create() : self
+    {
+        return new static();
+        return new self();
+        return parent::create();
     }
 }
 class B extends \A
@@ -129,9 +140,14 @@ namespace Foo {
             static::who();
         }
         
-        public function getName(): string
-        {
+        public function getName(): string {
             return $this->name;
+        }
+
+        public function create(): self {
+            return new static();
+            return new self();
+            return parent::create();
         }
     }
     
@@ -174,6 +190,12 @@ namespace Humbug\Foo {
         public function getName() : string
         {
             return $this->name;
+        }
+        public function create() : self
+        {
+            return new static();
+            return new self();
+            return parent::create();
         }
     }
     class B extends \Humbug\Foo\A
