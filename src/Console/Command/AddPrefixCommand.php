@@ -41,9 +41,11 @@ final class AddPrefixCommand extends Command
     /** @internal */
     const STOP_ON_FAILURE_OPT = 'stop-on-failure';
     /** @internal */
-    const CONFIG_FILE = 'config';
+    const CONFIG_FILE_OPT = 'config';
     /** @internal */
     const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
+    /** @internal */
+    const WORKING_DIR_OPT = 'working-dir';
 
     private $fileSystem;
     private $handle;
@@ -98,13 +100,20 @@ final class AddPrefixCommand extends Command
                 'Stops on failure.'
             )
             ->addOption(
-                self::CONFIG_FILE,
+                self::CONFIG_FILE_OPT,
                 'c',
                 InputOption::VALUE_REQUIRED,
                 sprintf(
                     'Configuration file. Will use "%s" if found by default',
                     self::CONFIG_FILE_DEFAULT
                 ),
+                null
+            )
+            ->addOption(
+                self::WORKING_DIR_OPT,
+                'd',
+                InputOption::VALUE_REQUIRED,
+                'If specified, use the given directory as working directory.',
                 null
             )
         ;
@@ -116,6 +125,12 @@ final class AddPrefixCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+
+        $workingDir = $input->getOption(self::WORKING_DIR_OPT);
+
+        if (null !== $workingDir) {
+            chdir($workingDir);
+        }
 
         $this->validatePrefix($input);
         $this->validatePaths($input);
@@ -264,7 +279,7 @@ final class AddPrefixCommand extends Command
 
     private function retrieveConfig(InputInterface $input, OutputStyle $io): Configuration
     {
-        $configFile = $input->getOption(self::CONFIG_FILE);
+        $configFile = $input->getOption(self::CONFIG_FILE_OPT);
 
         if (null === $configFile) {
             $configFile = $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT);
