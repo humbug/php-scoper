@@ -99,7 +99,12 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $name;
         }
 
-        if (($parentNode instanceof FuncCall || $parentNode instanceof StaticCall || $parentNode instanceof ClassConstFetch)
+        if ((
+                $parentNode instanceof FuncCall
+                || $parentNode instanceof StaticCall
+                || $parentNode instanceof ClassConstFetch
+                || $parentNode instanceof New_
+            )
             && in_array((string) $name, self::PHP_FUNCTION_KEYWORDS)
         ) {
             return $name;
