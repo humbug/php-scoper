@@ -1,6 +1,7 @@
 BOX=vendor-bin/box/vendor/bin/box
 PHPUNIT=vendor/bin/phpunit
 PHPSCOPER=bin/php-scoper.phar
+BLACKFIRE=blackfire
 
 .DEFAULT_GOAL := help
 .PHONY: build test tu tc e2e tb
@@ -14,14 +15,22 @@ help:
 ## Build
 ##---------------------------------------------------------------------------
 
+clean:		## Clean all created artifacts
+clean:
+	rm -f bin/php-scoper.phar
+	rm -rf build
+	rm -rf vendor-back
+	rm -rf vendor
+	rm -rf vendor/box/vendor
+
 build:		## Build the PHAR
-build: bin/php-scoper src vendor scoper.inc.php
+build:
 	# Cleanup existing artefacts
 	rm -f bin/php-scoper.phar
 	rm -rf build
 
 	# Remove unnecessary packages
-	mv vendor tmp-back
+	mv -f vendor vendor-back
 	composer install --no-dev --prefer-dist
 
 	# Prefixes the code to be bundled
@@ -35,8 +44,7 @@ build: bin/php-scoper src vendor scoper.inc.php
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build $(CONFIG)
 
 	# Install back all the dependencies
-	rm -rf vendor
-	mv tmp-back vendor
+	mv -f vendor-back vendor
 
 
 ##
@@ -67,7 +75,7 @@ e2e_004: bin/scoper.phar
 	diff fixtures/set004/expected-output build/set004/output
 
 e2e_005:	## Run end-to-end tests for the fixture set 005
-e2e_005: bin/scoper.phar
+e2e_005: bin/scoper.phar fixtures/set005/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force
 	composer --working-dir=build/set005 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set005/box.json.dist
@@ -90,13 +98,13 @@ tb: vendor
 	rm -rf build
 	rm -rf vendor-bin/*/vendor
 
-	mv vendor tmp-back
+	mv -f vendor tmp-back
 	composer install --no-dev --prefer-dist --classmap-authoritative
 
-	blackfire --new-reference run php -d zend.enable_gc=0 bin/php-scoper add-prefix --output-dir=build/php-scoper --force --quiet
+	$(BLACKFIRE) --new-reference run php -d zend.enable_gc=0 bin/php-scoper add-prefix --output-dir=build/php-scoper --force --quiet
 
 	rm -rf vendor
-	mv tmp-back vendor
+	mv -f tmp-back vendor
 
 
 ##
@@ -110,13 +118,13 @@ vendor-bin/box/vendor: vendor-bin/box/composer.lock
 	composer bin all install
 
 fixtures/set005/vendor: fixtures/set005/composer.lock
-	 composer --working-dir=fixtures/set005 install
+	composer --working-dir=fixtures/set005 install
 
 fixtures/set011/vendor: fixtures/set011/composer.lock
-	 composer --working-dir=fixtures/set011 install
+	composer --working-dir=fixtures/set011 install
 
 composer.lock: composer.json
-	@echo compose.lock is not up to date.
+	@echo composer.lock is not up to date.
 
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
@@ -124,5 +132,5 @@ fixtures/set005/composer.lock: fixtures/set005/composer.json
 fixtures/set011/composer.lock: fixtures/set011/composer.json
 	@echo fixtures/set011/composer.lock is not up to date.
 
-bin/scoper.phar: bin/php-scoper src vendor scoper.inc.php
+bin/scoper.phar: bin/php-scoper src vendor-bin/box/vendor scoper.inc.php
 	$(MAKE) build
