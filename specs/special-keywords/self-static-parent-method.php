@@ -91,7 +91,7 @@ class A
     {
         return $this->name;
     }
-    public function create(): self
+    public function create() : self
     {
         return new static();
         return new self();
@@ -191,7 +191,7 @@ namespace Humbug\Foo {
         {
             return $this->name;
         }
-        public function create(): self
+        public function create() : self
         {
             return new static();
             return new self();
