@@ -52,7 +52,7 @@ final class A
 PHP
     ,
 
-    'Declaration of a namespaced whitelisted final class: do not prefix the namespace.' => [
+    'Declaration of a namespaced whitelisted final class: append aliasing.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -63,11 +63,12 @@ final class A {}
 ----
 <?php
 
-namespace Foo;
+namespace Humbug\Foo;
 
 final class A
 {
 }
+class_exists('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],

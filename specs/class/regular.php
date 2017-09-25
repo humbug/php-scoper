@@ -62,12 +62,12 @@ class A
 PHP
     ,
 
-    'Declaration of a namespaced whitelisted class: do not prefix the namespace.' => [
+    'Declaration of a namespaced whitelisted class: append aliasing.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
 
-namespace Foo;
+namespace Humbug\Foo;
 
 class A {
     public function a() {}
@@ -75,7 +75,7 @@ class A {
 ----
 <?php
 
-namespace Foo;
+namespace Humbug\Foo;
 
 class A
 {
@@ -83,6 +83,7 @@ class A
     {
     }
 }
+class_exists('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],

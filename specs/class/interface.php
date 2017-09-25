@@ -59,7 +59,7 @@ interface A extends C, D
 PHP
     ,
 
-    'Declaration of a whitelisted namespaced interface: do not prefix the namespace.' => [
+    'Declaration of a whitelisted namespaced interface: append aliasing.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -73,12 +73,13 @@ interface A extends C, D
 ----
 <?php
 
-namespace Foo;
+namespace Humbug\Foo;
 
 interface A extends C, D
 {
     public function a();
 }
+class_exists('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],

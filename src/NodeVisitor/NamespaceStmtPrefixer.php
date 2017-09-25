@@ -99,6 +99,7 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
         /** @var Class_ $firstStmt */
         $className = (string) $namespace->name.'\\'.$firstStmt->name;
 
+        return true;
         return false === in_array($className, $this->whitelist);
     }
 }
