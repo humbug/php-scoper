@@ -12,10 +12,24 @@
 
 namespace Humbug\PhpScoper;
 
-if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {
-    require_once $autoload;
-} else {
-    require_once __DIR__.'/../vendor/autoload.php';
+$autoload = (function () {
+    if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {
+        // Is installed via composer
+        return $autoload;
+    }
+
+    if (file_exists($autoload = __DIR__.'/../scoper-autoload.php')) {
+        // Is scoped (in PHAR or build directory)
+        return $autoload;
+    }
+
+    return __DIR__.'/../vendor/autoload.php';
+})();
+
+require_once $autoload;
+
+if (false === class_exists('Isolated\Symfony\Component\Finder\Finder')) {
+    class_alias('Symfony\Component\Finder\Finder', 'Isolated\Symfony\Component\Finder\Finder');
 }
 
 $app = create_application();
