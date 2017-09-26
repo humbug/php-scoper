@@ -79,7 +79,7 @@ interface A extends C, D
 {
     public function a();
 }
-class_exists('Humbug\\Foo\\A', 'Foo\\A', \false);
+class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],

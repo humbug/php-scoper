@@ -83,7 +83,7 @@ class A
     {
     }
 }
-class_exists('Humbug\\Foo\\A', 'Foo\\A', \false);
+class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],
@@ -140,5 +140,127 @@ namespace {
 }
 
 PHP
+    ,
+
+    'Multiple declarations in different namespaces with whitelisted class: prefix namespaces and append aliasing' => [
+        'whitelist' => [
+            'Foo\A',
+            'Bar\B',
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo {
+
+    class A {
+        public function a() {}
+    }
+    
+    class B {
+        public function b() {}
+    }
+    
+    class C {
+        public function c() {}
+    }
+}
+
+namespace Bar {
+
+    class A {
+        public function a() {}
+    }
+    
+    class B {
+        public function b() {}
+    }
+    
+    class C {
+        public function c() {}
+    }
+}
+
+namespace {
+
+    class A {
+        public function a() {}
+    }
+    
+    class B {
+        public function b() {}
+    }
+    
+    class C {
+        public function c() {}
+    }
+}
+----
+<?php
+
+namespace Humbug\Foo {
+    class A
+    {
+        public function a()
+        {
+        }
+    }
+    class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+    class B
+    {
+        public function b()
+        {
+        }
+    }
+    class C
+    {
+        public function c()
+        {
+        }
+    }
+}
+namespace Humbug\Bar {
+    class A
+    {
+        public function a()
+        {
+        }
+    }
+    class B
+    {
+        public function b()
+        {
+        }
+    }
+    class_alias('Humbug\\Bar\\B', 'Bar\\B', \false);
+    class C
+    {
+        public function c()
+        {
+        }
+    }
+}
+namespace {
+    class A
+    {
+        public function a()
+        {
+        }
+    }
+    class B
+    {
+        public function b()
+        {
+        }
+    }
+    class C
+    {
+        public function c()
+        {
+        }
+    }
+}
+
+PHP
+        ]
     ,
 ];

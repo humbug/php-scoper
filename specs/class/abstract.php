@@ -89,7 +89,7 @@ abstract class A
     }
     public abstract function b();
 }
-class_exists('Humbug\\Foo\\A', 'Foo\\A', \false);
+class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],
