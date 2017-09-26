@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-final class Dumper
+final class ScoperAutoloadGenerator
 {
     private $whitelist;
 

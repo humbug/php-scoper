@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Handler;
 
 use Closure;
-use Humbug\PhpScoper\Autoload\Dumper;
+use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -72,7 +72,7 @@ class HandleAddPrefix
             $vendorDir = $this->scopeFiles($files, $prefix, $patchers, $whitelist, $globalWhitelister, $stopOnFailure, $logger);
 
             if (null !== $vendorDir) {
-                $autoload = (new Dumper($whitelist))->dump($prefix);
+                $autoload = (new ScoperAutoloadGenerator($whitelist))->dump($prefix);
 
                 $this->fileSystem->dumpFile($vendorDir.'/scoper-autoload.php', $autoload);
             }
