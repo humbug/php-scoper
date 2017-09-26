@@ -84,7 +84,7 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
                         new ConstFetch(
                             new FullyQualified('false')
                         )
-                    )
+                    ),
                 ]
             );
         }

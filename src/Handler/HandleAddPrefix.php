@@ -223,7 +223,7 @@ class HandleAddPrefix
 
         usort(
             $vendorDirs,
-            function($a, $b) {
+            function ($a, $b) {
                 return strlen($b) <=> strlen($a);
             }
         );
