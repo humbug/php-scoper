@@ -72,7 +72,7 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
             }
 
             $newStmts[] = new FuncCall(
-                new Name('class_exists'),
+                new Name('class_alias'),
                 [
                     new Arg(
                         new String_($name)

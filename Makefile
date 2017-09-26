@@ -27,7 +27,6 @@ build:		## Build the PHAR
 build:
 	# Cleanup existing artefacts
 	rm -f bin/php-scoper.phar
-	rm -rf build
 
 	# Remove unnecessary packages
 	mv -f vendor vendor-back
