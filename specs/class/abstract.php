@@ -66,7 +66,7 @@ abstract class A
 PHP
     ,
 
-    'Declaration of a whitelisted namespaced class: do not prefix the namespace.' => [
+    'Declaration of a whitelisted namespaced class: append aliasing.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -80,7 +80,7 @@ abstract class A {
 ----
 <?php
 
-namespace Foo;
+namespace Humbug\Foo;
 
 abstract class A
 {
@@ -89,6 +89,7 @@ abstract class A
     }
     public abstract function b();
 }
+class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],

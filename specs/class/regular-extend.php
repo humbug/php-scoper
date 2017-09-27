@@ -74,7 +74,7 @@ class B extends \Humbug\Foo\A
 PHP
     ,
 
-    'Declaration of a namespaced whitelisted class: do not prefix the namespace.' => [
+    'Declaration of a namespaced whitelisted class: append aliasing.' => [
         'whitelist' => ['Foo\B'],
         'payload' => <<<'PHP'
 <?php
@@ -101,6 +101,7 @@ class A
 class B extends \Humbug\Foo\A
 {
 }
+class_alias('Humbug\\Foo\\B', 'Foo\\B', \false);
 
 PHP
         ],

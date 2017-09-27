@@ -17,8 +17,6 @@ namespace Humbug\PhpScoper\NodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use function Humbug\PhpScoper\clone_node;
@@ -81,24 +79,6 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
     private function shouldPrefixStmt(Namespace_ $namespace): bool
     {
-        if (null === $namespace->name || $this->prefix === $namespace->name->getFirst()) {
-            return false;
-        }
-
-        $firstStmt = current($namespace->stmts);
-
-        if (
-            false === $firstStmt
-            || false === (
-                $firstStmt instanceof Class_
-                || $firstStmt instanceof Interface_
-            )
-        ) {
-            return true;
-        }
-        /** @var Class_ $firstStmt */
-        $className = (string) $namespace->name.'\\'.$firstStmt->name;
-
-        return false === in_array($className, $this->whitelist);
+        return null !== $namespace->name && $this->prefix !== $namespace->name->getFirst();
     }
 }

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Handler;
 
 use Closure;
+use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -68,7 +69,13 @@ class HandleAddPrefix
 
             $globalWhitelister = $this->createGlobalWhitelister($globalNamespaceWhitelist);
 
-            $this->scopeFiles($files, $prefix, $patchers, $whitelist, $globalWhitelister, $stopOnFailure, $logger);
+            $vendorDir = $this->scopeFiles($files, $prefix, $patchers, $whitelist, $globalWhitelister, $stopOnFailure, $logger);
+
+            if (null !== $vendorDir) {
+                $autoload = (new ScoperAutoloadGenerator($whitelist))->dump($prefix);
+
+                $this->fileSystem->dumpFile($vendorDir.'/scoper-autoload.php', $autoload);
+            }
         } catch (Throwable $throwable) {
             $this->fileSystem->remove($output);
 
@@ -187,6 +194,8 @@ class HandleAddPrefix
      * @param callable      $globalWhitelister
      * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
+     *
+     * @return string|null
      */
     private function scopeFiles(
         array $files,
@@ -196,13 +205,30 @@ class HandleAddPrefix
         callable $globalWhitelister,
         bool $stopOnFailure,
         ConsoleLogger $logger
-    ) {
+    ): ?string {
         $count = count($files);
         $logger->outputFileCount($count);
 
+        $vendorDirs = [];
+
         foreach ($files as $inputFilePath => $outputFilePath) {
+            if (preg_match('~((?:.*)\/vendor)\/.*~', $outputFilePath, $matches)) {
+                $vendorDirs[$matches[1]] = true;
+            }
+
             $this->scopeFile($inputFilePath, $outputFilePath, $prefix, $patchers, $whitelist, $globalWhitelister, $stopOnFailure, $logger);
         }
+
+        $vendorDirs = array_keys($vendorDirs);
+
+        usort(
+            $vendorDirs,
+            function ($a, $b) {
+                return strlen($b) <=> strlen($a);
+            }
+        );
+
+        return (0 === count($vendorDirs)) ? null : $vendorDirs[0];
     }
 
     /**

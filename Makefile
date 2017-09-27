@@ -19,32 +19,29 @@ clean:		## Clean all created artifacts
 clean:
 	rm -f bin/php-scoper.phar
 	rm -rf build
-	rm -rf vendor-back
 	rm -rf vendor
 	rm -rf vendor/box/vendor
 
 build:		## Build the PHAR
-build:
+build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
 	# Cleanup existing artefacts
 	rm -f bin/php-scoper.phar
-	rm -rf build
 
 	# Remove unnecessary packages
-	mv -f vendor vendor-back
 	composer install --no-dev --prefer-dist
 
 	# Prefixes the code to be bundled
-	php -d zend.enable_gc=0 bin/php-scoper add-prefix --output-dir=build/php-scoper --force
+	php -d zend.enable_gc=0 bin/php-scoper add-prefix --prefix=Isolated --output-dir=build/php-scoper --force
 
 	# Re-dump the loader to account for the prefixing
 	# and optimize the loader
 	composer dump-autoload --working-dir=build/php-scoper --classmap-authoritative --no-dev
 
 	# Build the PHAR
-	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build $(CONFIG)
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build
 
 	# Install back all the dependencies
-	mv -f vendor-back vendor
+	composer install
 
 
 ##
@@ -132,5 +129,5 @@ fixtures/set005/composer.lock: fixtures/set005/composer.json
 fixtures/set011/composer.lock: fixtures/set011/composer.json
 	@echo fixtures/set011/composer.lock is not up to date.
 
-bin/scoper.phar: bin/php-scoper src vendor-bin/box/vendor scoper.inc.php
+bin/scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
 	$(MAKE) build

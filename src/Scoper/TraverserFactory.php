@@ -67,6 +67,8 @@ final class TraverserFactory
         $this->traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
         $this->traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, self::WHITELISTED_FUNCTIONS, $whitelist, $globalWhitelister, $nameResolver));
 
+        $this->traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
+
         return $this->traverser;
     }
 }

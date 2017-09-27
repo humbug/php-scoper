@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\Finder\Finder;
+use Isolated\Symfony\Component\Finder\Finder;
 
 return [
     'global_namespace_whitelist' => [
@@ -57,9 +57,11 @@ return [
             }
 
             if ($filePath === realpath(__DIR__.'/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php')) {
+                $length = 15 + strlen($prefix) + 1;
+
                 return preg_replace(
                     '%rtrim\(get_class\(\$this\), \'_\'\), 15\)%',
-                    'rtrim(get_class($this), \'_\'), 15+23)',
+                    sprintf('rtrim(get_class($this), \'_\'), %d)', $length),
                     $content
                 );
             }
