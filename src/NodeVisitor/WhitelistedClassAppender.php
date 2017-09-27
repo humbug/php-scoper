@@ -90,7 +90,7 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
             $name = FullyQualified::concat($namespace->name, $stmt->name);
             $originalName = $name->slice(1);
 
-            if (false === in_array((string) $originalName, $this->whitelist, true)) {
+            if (false === in_array((string)$originalName, $this->whitelist, true)) {
                 continue;
             }
 
