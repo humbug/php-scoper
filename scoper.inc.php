@@ -57,9 +57,11 @@ return [
             }
 
             if ($filePath === realpath(__DIR__.'/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php')) {
+                $length = 15 + strlen($prefix) + 1;
+
                 return preg_replace(
                     '%rtrim\(get_class\(\$this\), \'_\'\), 15\)%',
-                    'rtrim(get_class($this), \'_\'), 15+23)',
+                    sprintf('rtrim(get_class($this), \'_\'), %d)', $length),
                     $content
                 );
             }

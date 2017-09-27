@@ -19,7 +19,6 @@ clean:		## Clean all created artifacts
 clean:
 	rm -f bin/php-scoper.phar
 	rm -rf build
-	rm -rf vendor-back
 	rm -rf vendor
 	rm -rf vendor/box/vendor
 
@@ -29,7 +28,6 @@ build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
 	rm -f bin/php-scoper.phar
 
 	# Remove unnecessary packages
-	mv -f vendor vendor-back
 	composer install --no-dev --prefer-dist
 
 	# Prefixes the code to be bundled
@@ -40,10 +38,10 @@ build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
 	composer dump-autoload --working-dir=build/php-scoper --classmap-authoritative --no-dev
 
 	# Build the PHAR
-	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build $(CONFIG)
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build
 
 	# Install back all the dependencies
-	mv -f vendor-back vendor
+	composer install
 
 
 ##
