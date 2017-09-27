@@ -26,7 +26,7 @@ final class TraverserFactory
     /**
      * Functions for which the arguments will be prefixed.
      */
-    const WHITELISTED_FUNCTIONS = [
+    public const WHITELISTED_FUNCTIONS = [
         'class_exists',
         'interface_exists',
     ];

@@ -19,20 +19,12 @@ use Symfony\Component\Finder\Finder;
 
 final class Configuration
 {
-    /** @internal */
-    const FINDER_KEYWORD = 'finders';
+    private const FINDER_KEYWORD = 'finders';
+    private const PATCHERS_KEYWORD = 'patchers';
+    private const WHITELIST_KEYWORD = 'whitelist';
+    private const GLOBAL_NAMESPACE_KEYWORD = 'global_namespace_whitelist';
 
-    /** @internal */
-    const PATCHERS_KEYWORD = 'patchers';
-
-    /** @internal */
-    const WHITELIST_KEYWORD = 'whitelist';
-
-    /** @internal */
-    const GLOBAL_NAMESPACE_KEYWORD = 'global_namespace_whitelist';
-
-    /** @internal */
-    const KEYWORDS = [
+    private const KEYWORDS = [
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
         self::WHITELIST_KEYWORD,
@@ -129,12 +121,12 @@ final class Configuration
     /**
      * @return callable[]|string[]
      */
-    public function getGlobalNamespaceWhitelisters()
+    public function getGlobalNamespaceWhitelisters(): array
     {
         return $this->globalNamespaceWhitelisters;
     }
 
-    private static function validateConfigKeys(array $config)
+    private static function validateConfigKeys(array $config): void
     {
         array_map(
             ['self', 'validateConfigKey'],
@@ -142,7 +134,7 @@ final class Configuration
         );
     }
 
-    private static function validateConfigKey(string $key)
+    private static function validateConfigKey(string $key): void
     {
         if (false === in_array($key, self::KEYWORDS)) {
             throw new InvalidArgumentException(

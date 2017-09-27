@@ -26,6 +26,29 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * Appends a `class_alias` to the whitelisted classes.
+ *
+ * ```
+ * namespace A;
+ *
+ * class Foo
+ * {
+ * }
+ * ```
+ *
+ * =>
+ *
+ * ```
+ * namespace Humbug\A;
+ *
+ * class Foo
+ * {
+ * }
+ *
+ * class_alias('Humbug\A\Foo', 'A\Foo', false);
+ * ```
+ */
 final class WhitelistedClassAppender extends NodeVisitorAbstract
 {
     private $whitelist;
@@ -67,7 +90,7 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
             $name = FullyQualified::concat($namespace->name, $stmt->name);
             $originalName = $name->slice(1);
 
-            if (false === in_array((string) $originalName, $this->whitelist, true)) {
+            if (false === in_array((string)$originalName, $this->whitelist, true)) {
                 continue;
             }
 

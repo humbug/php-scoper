@@ -34,7 +34,7 @@ use function Humbug\PhpScoper\make_tmp_dir;
  */
 class AddPrefixCommandTest extends TestCase
 {
-    const FIXTURE_PATH = __DIR__.'/../../../fixtures';
+    private const FIXTURE_PATH = __DIR__.'/../../../fixtures';
 
     /**
      * @var ApplicationTester

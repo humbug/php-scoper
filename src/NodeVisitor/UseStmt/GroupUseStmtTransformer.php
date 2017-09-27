@@ -42,7 +42,7 @@ final class GroupUseStmtTransformer extends NodeVisitorAbstract
     /**
      * @inheritdoc
      */
-    public function beforeTraverse(array $nodes)
+    public function beforeTraverse(array $nodes): array
     {
         $newNodes = [];
 

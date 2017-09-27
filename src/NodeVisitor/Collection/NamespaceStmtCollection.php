@@ -56,11 +56,12 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
             return null;
         }
 
-        if (1 < count($this->nodes)) {
-            return $this->getNodeNamespace($node);
+        // Shortcut if there is only one namespace
+        if (1 === count($this->nodes)) {
+            return $this->nodes[0]->name;
         }
 
-        return $this->nodes[0]->name;
+        return $this->getNodeNamespace($node);
     }
 
     public function getCurrentNamespaceName(): ?Name

@@ -28,8 +28,6 @@ file that was distributed with this source code.
                 <file>src/Console/Application.php</file>
                 <file>src/Console/Configuration.php</file>
                 <file>src/Console/Command/SelfUpdateCommand.php</file>
-                <directory>src/Logger</directory>
-                <directory>src/NodeVisitor</directory>
                 <file>src/functions.php</file>
             </exclude>
         </whitelist>

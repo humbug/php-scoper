@@ -250,7 +250,7 @@ class HandleAddPrefix
         callable $globalWhitelister,
         bool $stopOnFailure,
         ConsoleLogger $logger
-    ) {
+    ): void {
         try {
             $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers, $whitelist, $globalWhitelister);
         } catch (Throwable $error) {

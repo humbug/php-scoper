@@ -30,15 +30,10 @@ use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
 
-/**
- * @covers \Humbug\PhpScoper\Scoper\PhpScoper
- */
 class PhpScoperTest extends TestCase
 {
-    /** @private */
-    const SPECS_PATH = __DIR__.'/../../specs';
-    /** @private */
-    const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
+    private const SPECS_PATH = __DIR__.'/../../specs';
+    private const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
 
     /**
      * @var Scoper
