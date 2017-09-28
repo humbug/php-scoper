@@ -77,6 +77,8 @@ composer require --dev bamarni/composer-bin-plugin
 composer bin php-scoper require --dev humbug/php-scoper
 ```
 
+Keep in mind however that this library is not designed to be extended.
+
 
 ## Usage
 
@@ -286,6 +288,9 @@ return [
 
 Note that only classes are whitelisted, this does not affect constants
 or functions.
+
+For whitelist to work, you then require to load `vendor/scoper-autoload.php`
+instead of the traditional `vendor/autoload.php`.
 
 
 ## Contributing

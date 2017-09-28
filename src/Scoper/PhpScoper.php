@@ -21,12 +21,9 @@ use PhpParser\PrettyPrinter\Standard;
 
 final class PhpScoper implements Scoper
 {
-    /** @internal */
-    const FILE_PATH_PATTERN = '/.*\.php$/';
-    /** @internal */
-    const NOT_FILE_BINARY = '/\..+?$/';
-    /** @internal */
-    const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
+    private const FILE_PATH_PATTERN = '/.*\.php$/';
+    private const NOT_FILE_BINARY = '/\..+?$/';
+    private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
     private $parser;
     private $decoratedScoper;

@@ -30,22 +30,14 @@ use Throwable;
 
 final class AddPrefixCommand extends Command
 {
-    /** @internal */
-    const PATH_ARG = 'paths';
-    /** @internal */
-    const PREFIX_OPT = 'prefix';
-    /** @internal */
-    const OUTPUT_DIR_OPT = 'output-dir';
-    /** @internal */
-    const FORCE_OPT = 'force';
-    /** @internal */
-    const STOP_ON_FAILURE_OPT = 'stop-on-failure';
-    /** @internal */
-    const CONFIG_FILE_OPT = 'config';
-    /** @internal */
-    const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
-    /** @internal */
-    const WORKING_DIR_OPT = 'working-dir';
+    private const PATH_ARG = 'paths';
+    private const PREFIX_OPT = 'prefix';
+    private const OUTPUT_DIR_OPT = 'output-dir';
+    private const FORCE_OPT = 'force';
+    private const STOP_ON_FAILURE_OPT = 'stop-on-failure';
+    private const CONFIG_FILE_OPT = 'config';
+    private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
+    private const WORKING_DIR_OPT = 'working-dir';
 
     private $fileSystem;
     private $handle;
@@ -64,7 +56,7 @@ final class AddPrefixCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('add-prefix')
@@ -122,7 +114,7 @@ final class AddPrefixCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -168,9 +160,11 @@ final class AddPrefixCommand extends Command
         }
 
         $logger->outputScopingEnd();
+
+        return 0;
     }
 
-    private function validatePrefix(InputInterface $input)
+    private function validatePrefix(InputInterface $input): void
     {
         $prefix = $input->getOption(self::PREFIX_OPT);
 
@@ -196,7 +190,7 @@ final class AddPrefixCommand extends Command
         $input->setOption(self::PREFIX_OPT, $prefix);
     }
 
-    private function validatePaths(InputInterface $input)
+    private function validatePaths(InputInterface $input): void
     {
         $cwd = getcwd();
         $fileSystem = $this->fileSystem;
@@ -215,7 +209,7 @@ final class AddPrefixCommand extends Command
         $input->setArgument(self::PATH_ARG, $paths);
     }
 
-    private function validateOutputDir(InputInterface $input, OutputStyle $io)
+    private function validateOutputDir(InputInterface $input, OutputStyle $io): void
     {
         $outputDir = $input->getOption(self::OUTPUT_DIR_OPT);
 

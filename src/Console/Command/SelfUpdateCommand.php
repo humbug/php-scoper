@@ -16,28 +16,22 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Logger\UpdateConsoleLogger;
 use Humbug\SelfUpdate\Updater;
+use PHAR;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 final class SelfUpdateCommand extends Command
 {
-    /** @internal */
-    const REMOTE_FILENAME = 'php-scoper.phar';
-    /** @internal */
-    const STABILITY_STABLE = 'stable';
-    /** @internal */
-    const PACKAGIST_PACKAGE_NAME = 'humbug/php-scoper';
-    /** @internal */
-    const ROLLBACK_OPT = 'rollback';
-    /** @internal */
-    const CHECK_OPT = 'check';
+    private const REMOTE_FILENAME = 'php-scoper.phar';
+    private const STABILITY_STABLE = 'stable';
+    private const PACKAGIST_PACKAGE_NAME = 'humbug/php-scoper';
+    private const ROLLBACK_OPT = 'rollback';
+    private const CHECK_OPT = 'check';
 
-    /**
-     * @var Updater
-     */
     private $updater;
 
     /**
@@ -89,7 +83,7 @@ final class SelfUpdateCommand extends Command
     /**
      * @inheritdoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->logger = new UpdateConsoleLogger(
             new SymfonyStyle($input, $output)
@@ -112,9 +106,11 @@ final class SelfUpdateCommand extends Command
         }
 
         $this->update();
+
+        return 0;
     }
 
-    private function configureUpdater()
+    private function configureUpdater(): void
     {
         $this->updater->setStrategy(Updater::STRATEGY_GITHUB);
         $this->updater->getStrategy()->setPackageName(self::PACKAGIST_PACKAGE_NAME);
@@ -122,9 +118,10 @@ final class SelfUpdateCommand extends Command
         $this->updater->getStrategy()->setCurrentLocalVersion($this->version);
     }
 
-    private function update()
+    private function update(): void
     {
         $this->logger->startUpdating();
+
         try {
             $result = $this->updater->update();
 
@@ -136,34 +133,37 @@ final class SelfUpdateCommand extends Command
             } else {
                 $this->logger->updateNotNeeded($oldVersion);
             }
-        } catch (\Throwable $e) {
-            $this->logger->error($e);
-            throw $e;
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable);
+
+            throw $throwable;
         }
     }
 
-    private function rollback()
+    private function rollback(): void
     {
         try {
             $result = $this->updater->rollback();
+
             if ($result) {
                 $this->logger->rollbackSuccess();
             } else {
                 $this->logger->rollbackFail();
             }
-        } catch (\Throwable $e) {
-            $this->logger->error($e);
-            throw $e;
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable);
+
+            throw $throwable;
         }
     }
 
-    private function printAvailableUpdates()
+    private function printAvailableUpdates(): void
     {
         $this->logger->printLocalVersion($this->version);
         $this->printCurrentStableVersion();
     }
 
-    private function printCurrentStableVersion()
+    private function printCurrentStableVersion(): void
     {
         $stability = self::STABILITY_STABLE;
 
@@ -171,21 +171,22 @@ final class SelfUpdateCommand extends Command
             if ($this->updater->hasUpdate()) {
                 $this->logger->printRemoteVersion(
                     $stability,
-                    $updater->getNewVersion()
+                    $this->updater->getNewVersion()
                 );
             } elseif (false == $this->updater->getNewVersion()) {
                 $this->logger->noNewRemoteVersions($stability);
             } else {
                 $this->logger->currentVersionInstalled($stability);
             }
-        } catch (\Throwable $e) {
-            $this->logger->error($e);
-            throw $e;
+        } catch (Throwable $throwable) {
+            $this->logger->error($throwable);
+
+            throw $throwable;
         }
     }
 
     private function getLocalPharName(): string
     {
-        return basename(\PHAR::running());
+        return basename(PHAR::running());
     }
 }

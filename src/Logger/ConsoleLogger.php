@@ -44,7 +44,7 @@ class ConsoleLogger
      * @param string   $prefix
      * @param string[] $paths
      */
-    public function outputScopingStart(string $prefix, array $paths)
+    public function outputScopingStart(string $prefix, array $paths): void
     {
         $this->io->writeln($this->application->getHelp());
 
@@ -71,7 +71,7 @@ class ConsoleLogger
      *
      * @param int $count
      */
-    public function outputFileCount(int $count)
+    public function outputFileCount(int $count): void
     {
         if (OutputInterface::VERBOSITY_NORMAL === $this->io->getVerbosity()) {
             $this->progressBar = $this->io->createProgressBar($count);
@@ -86,7 +86,7 @@ class ConsoleLogger
      *
      * @param string $path
      */
-    public function outputSuccess(string $path)
+    public function outputSuccess(string $path): void
     {
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->io->writeln(
@@ -100,7 +100,7 @@ class ConsoleLogger
         $this->progressBar->advance();
     }
 
-    public function outputWarnOfFailure(string $path, ParsingException $exception)
+    public function outputWarnOfFailure(string $path, ParsingException $exception): void
     {
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->io->writeln(
@@ -128,7 +128,7 @@ class ConsoleLogger
      *
      * @param string $path
      */
-    public function outputFail(string $path)
+    public function outputFail(string $path): void
     {
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->io->writeln(
@@ -142,17 +142,17 @@ class ConsoleLogger
         $this->progressBar->advance();
     }
 
-    public function outputScopingEnd()
+    public function outputScopingEnd(): void
     {
         $this->finish(false);
     }
 
-    public function outputScopingEndWithFailure()
+    public function outputScopingEndWithFailure(): void
     {
         $this->finish(true);
     }
 
-    private function finish(bool $failed)
+    private function finish(bool $failed): void
     {
         $this->progressBar->finish();
         $this->io->newLine(2);

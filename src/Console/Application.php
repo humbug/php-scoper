@@ -18,8 +18,7 @@ use Symfony\Component\Console\Application as SymfonyApplication;
 
 final class Application extends SymfonyApplication
 {
-    /** @private */
-    const LOGO = <<<'ASCII'
+    private const LOGO = <<<'ASCII'
 
     ____  __  ______     _____                           
    / __ \/ / / / __ \   / ___/_________  ____  ___  _____
@@ -34,7 +33,7 @@ ASCII;
     /**
      * @inheritDoc
      */
-    public function getLongVersion()
+    public function getLongVersion(): string
     {
         return sprintf(
             '<info>%s</info> version <comment>%s</comment>',
@@ -46,7 +45,7 @@ ASCII;
     /**
      * @inheritdoc
      */
-    public function getHelp()
+    public function getHelp(): string
     {
         return self::LOGO.parent::getHelp();
     }

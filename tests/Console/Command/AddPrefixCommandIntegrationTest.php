@@ -29,7 +29,7 @@ use function Humbug\PhpScoper\remove_dir;
  */
 class AddPrefixCommandIntegrationTest extends TestCase
 {
-    const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
+    private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
 
     /**
      * @var ApplicationTester

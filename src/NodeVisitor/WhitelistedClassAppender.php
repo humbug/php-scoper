@@ -26,6 +26,29 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * Appends a `class_alias` to the whitelisted classes.
+ *
+ * ```
+ * namespace A;
+ *
+ * class Foo
+ * {
+ * }
+ * ```
+ *
+ * =>
+ *
+ * ```
+ * namespace Humbug\A;
+ *
+ * class Foo
+ * {
+ * }
+ *
+ * class_alias('Humbug\A\Foo', 'A\Foo', false);
+ * ```
+ */
 final class WhitelistedClassAppender extends NodeVisitorAbstract
 {
     private $whitelist;

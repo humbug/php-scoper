@@ -36,8 +36,8 @@ use function Humbug\PhpScoper\remove_dir;
  */
 class HandleAddPrefixTest extends TestCase
 {
-    const FIXTURE_PATH_000 = __DIR__.'/../../fixtures/set000';
-    const FIXTURE_PATH_001 = __DIR__.'/../../fixtures/set001';
+    private const FIXTURE_PATH_000 = __DIR__.'/../../fixtures/set000';
+    private const FIXTURE_PATH_001 = __DIR__.'/../../fixtures/set001';
 
     /**
      * @var Scoper|ObjectProphecy

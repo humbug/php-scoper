@@ -23,8 +23,7 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class AppendParentNode extends NodeVisitorAbstract
 {
-    /** @private */
-    const PARENT_ATTRIBUTE = 'parent';
+    private const PARENT_ATTRIBUTE = 'parent';
 
     private $stack;
 
@@ -41,9 +40,11 @@ final class AppendParentNode extends NodeVisitorAbstract
     /**
      * @inheritdoc
      */
-    public function beforeTraverse(array $nodes)
+    public function beforeTraverse(array $nodes): ?array
     {
         $this->stack = [];
+
+        return $nodes;
     }
 
     /**
@@ -63,8 +64,10 @@ final class AppendParentNode extends NodeVisitorAbstract
     /**
      * @inheritdoc
      */
-    public function leaveNode(Node $node)
+    public function leaveNode(Node $node): Node
     {
         array_pop($this->stack);
+
+        return $node;
     }
 }
