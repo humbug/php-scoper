@@ -111,7 +111,7 @@ working directory:
 
 // scoper.inc.php
 
-use Symfony\Component\Finder\Finder;
+use Isolated\Symfony\Component\Finder\Finder;
 
 return [
     'finders' => [],
