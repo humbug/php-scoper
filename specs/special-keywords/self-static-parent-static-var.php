@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Self, static and parent keywords on constants',
+        'title' => 'Self, static and parent keywords on static variables',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -29,7 +29,7 @@ SPEC
 <?php
 
 class A {
-    protected const FOO = 'FOO';
+    protected static $foo = 'FOO';
     
     private $name;
     
@@ -38,8 +38,8 @@ class A {
     }
     
     public static function test() {
-        self::FOO;
-        static::FOO;
+        self::$foo;
+        static::$foo;
     }
     
     public function getName(): string
@@ -49,12 +49,12 @@ class A {
 }
 
 class B extends A {
-    const FOO = 'BAR';
+    static $foo = 'BAR';
     
     public function __construct(string $name) {
         parent::__construct($name);
         
-        parent::FOO;
+        parent::$foo;
     }
 }
 
@@ -66,7 +66,7 @@ echo (new B('yo'))->getName().PHP_EOL;
 
 class A
 {
-    protected const FOO = 'FOO';
+    protected static $foo = 'FOO';
     private $name;
     public function __construct(string $name)
     {
@@ -74,8 +74,8 @@ class A
     }
     public static function test()
     {
-        self::FOO;
-        static::FOO;
+        self::$foo;
+        static::$foo;
     }
     public function getName() : string
     {
@@ -84,11 +84,11 @@ class A
 }
 class B extends \A
 {
-    const FOO = 'BAR';
+    static $foo = 'BAR';
     public function __construct(string $name)
     {
         parent::__construct($name);
-        parent::FOO;
+        parent::$foo;
     }
 }
 \B::test();
@@ -107,7 +107,7 @@ SPEC
 
 namespace Foo {
     class A {
-        protected const FOO = 'FOO';
+        protected static $foo = 'FOO';
         
         private $name;
         
@@ -116,8 +116,8 @@ namespace Foo {
         }
         
         public static function test() {
-            self::FOO;
-            static::FOO;
+            self::$foo;
+            static::$foo;
         }
         
         public function getName(): string
@@ -127,12 +127,12 @@ namespace Foo {
     }
         
     class B extends A {
-        const FOO = 'BAR';
+        static $foo = 'BAR';
         
         public function __construct(string $name) {
             parent::__construct($name);
             
-            parent::FOO;
+            parent::$foo;
         }
     }
 }
@@ -148,7 +148,7 @@ namespace {
 namespace Humbug\Foo {
     class A
     {
-        protected const FOO = 'FOO';
+        protected static $foo = 'FOO';
         private $name;
         public function __construct(string $name)
         {
@@ -156,8 +156,8 @@ namespace Humbug\Foo {
         }
         public static function test()
         {
-            self::FOO;
-            static::FOO;
+            self::$foo;
+            static::$foo;
         }
         public function getName() : string
         {
@@ -166,11 +166,11 @@ namespace Humbug\Foo {
     }
     class B extends \Humbug\Foo\A
     {
-        const FOO = 'BAR';
+        static $foo = 'BAR';
         public function __construct(string $name)
         {
             parent::__construct($name);
-            parent::FOO;
+            parent::$foo;
         }
     }
 }

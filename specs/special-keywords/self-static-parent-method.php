@@ -53,6 +53,10 @@ class A {
         return new self();
         return parent::create();
     }
+    
+    public function with(self $arg): self {
+        return $arg;
+    }
 }
 
 class B extends A {
@@ -96,6 +100,10 @@ class A
         return new static();
         return new self();
         return parent::create();
+    }
+    public function with(self $arg) : self
+    {
+        return $arg;
     }
 }
 class B extends \A
@@ -149,6 +157,10 @@ namespace Foo {
             return new self();
             return parent::create();
         }
+        
+        public function with(self $arg): self {
+            return $arg;
+        }
     }
     
     class B extends A {
@@ -196,6 +208,10 @@ namespace Humbug\Foo {
             return new static();
             return new self();
             return parent::create();
+        }
+        public function with(self $arg) : self
+        {
+            return $arg;
         }
     }
     class B extends \Humbug\Foo\A
