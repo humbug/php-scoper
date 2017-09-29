@@ -31,8 +31,6 @@ final class TraverserFactory
         'interface_exists',
     ];
 
-    private $traverser;
-
     /**
      * @param string   $prefix            Prefix to apply to the files.
      * @param string[] $whitelist         List of classes to exclude from the scoping.
@@ -44,31 +42,27 @@ final class TraverserFactory
      */
     public function create(string $prefix, array $whitelist, callable $globalWhitelister): NodeTraverserInterface
     {
-        if (null !== $this->traverser) {
-            return $this->traverser;
-        }
-
-        $this->traverser = new NodeTraverser();
+        $traverser = new NodeTraverser();
 
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
 
         $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
 
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\GroupUseStmtTransformer());
+        $traverser->addVisitor(new NodeVisitor\UseStmt\GroupUseStmtTransformer());
 
-        $this->traverser->addVisitor(new NodeVisitor\AppendParentNode());
+        $traverser->addVisitor(new NodeVisitor\AppendParentNode());
 
-        $this->traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements, $whitelist));
+        $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements, $whitelist));
 
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
-        $this->traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $globalWhitelister));
+        $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
+        $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $globalWhitelister));
 
-        $this->traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
-        $this->traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, self::WHITELISTED_FUNCTIONS, $whitelist, $globalWhitelister, $nameResolver));
+        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $globalWhitelister, $nameResolver));
+        $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, self::WHITELISTED_FUNCTIONS, $whitelist, $globalWhitelister, $nameResolver));
 
-        $this->traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
+        $traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
 
-        return $this->traverser;
+        return $traverser;
     }
 }

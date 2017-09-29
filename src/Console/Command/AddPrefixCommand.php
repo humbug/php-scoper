@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Humbug\PhpScoper\Console\Configuration;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -37,6 +38,7 @@ final class AddPrefixCommand extends Command
     private const STOP_ON_FAILURE_OPT = 'stop-on-failure';
     private const CONFIG_FILE_OPT = 'config';
     private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
+    private const NO_CONFIG_OPT = 'no-config';
     private const WORKING_DIR_OPT = 'working-dir';
 
     private $fileSystem;
@@ -96,7 +98,17 @@ final class AddPrefixCommand extends Command
                 'c',
                 InputOption::VALUE_REQUIRED,
                 sprintf(
-                    'Configuration file. Will use "%s" if found by default',
+                    'Configuration file. Will use "%s" if found by default.',
+                    self::CONFIG_FILE_DEFAULT
+                ),
+                null
+            )
+            ->addOption(
+                self::NO_CONFIG_OPT,
+                null,
+                InputOption::VALUE_NONE,
+                sprintf(
+                    'Do not look for a configuration file.',
                     self::CONFIG_FILE_DEFAULT
                 ),
                 null
@@ -117,12 +129,9 @@ final class AddPrefixCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
+        $io->writeln('');
 
-        $workingDir = $input->getOption(self::WORKING_DIR_OPT);
-
-        if (null !== $workingDir) {
-            chdir($workingDir);
-        }
+        $this->changeWorkingDirectory($input);
 
         $this->validatePrefix($input);
         $this->validatePaths($input);
@@ -162,6 +171,32 @@ final class AddPrefixCommand extends Command
         $logger->outputScopingEnd();
 
         return 0;
+    }
+
+    private function changeWorkingDirectory(InputInterface $input): void
+    {
+        $workingDir = $input->getOption(self::WORKING_DIR_OPT);
+
+        if (null !== $workingDir) {
+            if (false === file_exists($workingDir)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Could not change the working directory to "%s": directory does not exists.',
+                        $workingDir
+                    )
+                );
+            }
+
+            if (false === chdir($workingDir)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Failed to change the working directory to "%s" from "%s".',
+                        $workingDir,
+                        getcwd()
+                    )
+                );
+            }
+        }
     }
 
     private function validatePrefix(InputInterface $input): void
@@ -273,6 +308,15 @@ final class AddPrefixCommand extends Command
 
     private function retrieveConfig(InputInterface $input, OutputStyle $io): Configuration
     {
+        if ($input->getOption(self::NO_CONFIG_OPT)) {
+            $io->writeln(
+                'Loading without configuration file.',
+                OutputStyle::VERBOSITY_DEBUG
+            );
+
+            return Configuration::load(null);
+        }
+
         $configFile = $input->getOption(self::CONFIG_FILE_OPT);
 
         if (null === $configFile) {
@@ -281,7 +325,7 @@ final class AddPrefixCommand extends Command
             if (false === file_exists($configFile)) {
                 $io->writeln(
                     sprintf(
-                        'Config file "%s" not found. Skipping.',
+                        'Config file "<comment>%s</comment>" not found. Skipping.',
                         $configFile
                     ),
                     OutputStyle::VERBOSITY_DEBUG
@@ -296,7 +340,7 @@ final class AddPrefixCommand extends Command
         if (false === file_exists($configFile)) {
             throw new RuntimeException(
                 sprintf(
-                    'Could not find the file "%s".',
+                    'Could not find the file "<comment>%s</comment>".',
                     $configFile
                 )
             );
@@ -304,7 +348,7 @@ final class AddPrefixCommand extends Command
 
         $io->writeln(
             sprintf(
-                'Using the configuration file "%s".',
+                'Using the configuration file "<comment>%s</comment>".',
                 $configFile
             ),
             OutputStyle::VERBOSITY_DEBUG
