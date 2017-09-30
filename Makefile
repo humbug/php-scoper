@@ -87,6 +87,8 @@ e2e_011: bin/scoper.phar
 	composer --working-dir=build/set011 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set011/box.json.dist
 
+	cat build/set011/scoper-autoload.php
+
 	php build/set011/bin/greet.phar > build/set011/output
 	diff fixtures/set011/expected-output build/set011/output
 
