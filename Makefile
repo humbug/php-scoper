@@ -81,13 +81,11 @@ e2e_005: bin/scoper.phar fixtures/set005/vendor
 	diff fixtures/set005/expected-output build/set005/output
 
 e2e_011:	## Run end-to-end tests for the fixture set 011
-e2e_011: bin/scoper.phar
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force -vvv
+e2e_011: bin/php-scoper.phar fixtures/set011/vendor
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force
 	cp -R fixtures/set011/tests build/set011/
 	composer --working-dir=build/set011 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set011/box.json.dist
-
-	cat build/set011/scoper-autoload.php
 
 	php build/set011/bin/greet.phar > build/set011/output
 	diff fixtures/set011/expected-output build/set011/output
@@ -119,8 +117,8 @@ vendor-bin/box/vendor: vendor-bin/box/composer.lock
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
 
-fixtures/set011/vendor: fixtures/set011/composer.lock
-	composer --working-dir=fixtures/set011 install
+fixtures/set011/vendor: fixtures/set011/vendor
+	composer --working-dir=fixtures/set011 dump-autoload
 
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
