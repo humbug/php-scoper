@@ -29,11 +29,11 @@ final class PhpScoper implements Scoper
     private $decoratedScoper;
     private $traverserFactory;
 
-    public function __construct(Parser $parser, Scoper $decoratedScoper)
+    public function __construct(Parser $parser, Scoper $decoratedScoper, TraverserFactory $traverserFactory)
     {
         $this->parser = $parser;
         $this->decoratedScoper = $decoratedScoper;
-        $this->traverserFactory = new TraverserFactory();
+        $this->traverserFactory = $traverserFactory;
     }
 
     /**
@@ -51,9 +51,10 @@ final class PhpScoper implements Scoper
 
         $content = file_get_contents($filePath);
 
+        $statements = $this->parser->parse($content);
+
         $traverser = $this->traverserFactory->create($prefix, $whitelist, $globalWhitelister);
 
-        $statements = $this->parser->parse($content);
         $statements = $traverser->traverse($statements);
 
         $prettyPrinter = new Standard();
