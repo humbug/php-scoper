@@ -60,6 +60,7 @@ var_dump('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 PHP
     ],
 
+
     'FQCN string argument formed by concatenated strings: do not touch the arguments' => <<<'PHP'
 <?php
 
@@ -71,6 +72,19 @@ var_dump('\\Symfony\\Component' . '\\Yaml\\Yaml');
 
 \var_dump('Symfony\\Component' . '\\Yaml\\Yaml');
 \var_dump('\\Symfony\\Component' . '\\Yaml\\Yaml');
+
+PHP
+    ,
+
+    'function with variable: do nothing' => <<<'PHP'
+<?php
+
+var_dump($wrap(''));
+
+----
+<?php
+
+\var_dump($wrap(''));
 
 PHP
     ,

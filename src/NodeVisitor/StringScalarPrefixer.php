@@ -92,6 +92,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         return
             $argParent instanceof FuncCall
+            && $argParent->name instanceof Name
             && in_array((string) $argParent->name, $this->whitelistedFunctions)
         ;
     }

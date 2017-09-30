@@ -49,16 +49,26 @@ class ConsoleLogger
         $this->io->writeln($this->application->getHelp());
 
         $newLine = 1;
+
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG) {
             $this->io->section('Input');
+
             $this->io->writeln(
                 sprintf(
                     'Prefix: %s',
                     $prefix
                 )
             );
-            $this->io->writeln('Paths:');
-            $this->io->listing($paths);
+
+            $this->io->write('Paths:');
+
+            if (0 === count($paths)) {
+                $this->io->writeln(' Loaded from config');
+            } else {
+                $this->io->writeln('');
+                $this->io->listing($paths);
+            }
+
             $this->io->section('Processing');
             $newLine = 0;
         }
