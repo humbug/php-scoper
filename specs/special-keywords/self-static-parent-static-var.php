@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Self, static and parent keywords on methods',
+        'title' => 'Self, static and parent keywords on static variables',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -29,43 +29,32 @@ SPEC
 <?php
 
 class A {
+    protected static $foo = 'FOO';
+    
     private $name;
     
     public function __construct(string $name) {
         $this->name = $name;
     }
     
-    public static function who() {
-        echo __METHOD__.PHP_EOL;
-    }
-    
     public static function test() {
-        self::who();
-        static::who();
+        self::$foo;
+        static::$foo;
     }
     
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->name;
-    }
-
-    public function create(): self {
-        return new static();
-        return new self();
-        return parent::create();
-    }
-    
-    public function with(self $arg): self {
-        return $arg;
     }
 }
 
 class B extends A {
+    static $foo = 'BAR';
+    
     public function __construct(string $name) {
         parent::__construct($name);
-    }
-    
-    public static function who() {
-        echo __METHOD__.PHP_EOL;
+        
+        parent::$foo;
     }
 }
 
@@ -77,44 +66,29 @@ echo (new B('yo'))->getName().PHP_EOL;
 
 class A
 {
+    protected static $foo = 'FOO';
     private $name;
     public function __construct(string $name)
     {
         $this->name = $name;
     }
-    public static function who()
-    {
-        echo __METHOD__ . \PHP_EOL;
-    }
     public static function test()
     {
-        self::who();
-        static::who();
+        self::$foo;
+        static::$foo;
     }
     public function getName() : string
     {
         return $this->name;
     }
-    public function create() : self
-    {
-        return new static();
-        return new self();
-        return parent::create();
-    }
-    public function with(self $arg) : self
-    {
-        return $arg;
-    }
 }
 class B extends \A
 {
+    static $foo = 'BAR';
     public function __construct(string $name)
     {
         parent::__construct($name);
-    }
-    public static function who()
-    {
-        echo __METHOD__ . \PHP_EOL;
+        parent::$foo;
     }
 }
 \B::test();
@@ -133,43 +107,32 @@ SPEC
 
 namespace Foo {
     class A {
+        protected static $foo = 'FOO';
+        
         private $name;
         
         public function __construct(string $name) {
             $this->name = $name;
         }
         
-        public static function who() {
-            echo __METHOD__.PHP_EOL;
-        }
-        
         public static function test() {
-            self::who();
-            static::who();
+            self::$foo;
+            static::$foo;
         }
         
-        public function getName(): string {
+        public function getName(): string
+        {
             return $this->name;
         }
-
-        public function create(): self {
-            return new static();
-            return new self();
-            return parent::create();
-        }
-        
-        public function with(self $arg): self {
-            return $arg;
-        }
     }
-    
+        
     class B extends A {
+        static $foo = 'BAR';
+        
         public function __construct(string $name) {
             parent::__construct($name);
-        }
-        
-        public static function who() {
-            echo __METHOD__.PHP_EOL;
+            
+            parent::$foo;
         }
     }
 }
@@ -185,44 +148,29 @@ namespace {
 namespace Humbug\Foo {
     class A
     {
+        protected static $foo = 'FOO';
         private $name;
         public function __construct(string $name)
         {
             $this->name = $name;
         }
-        public static function who()
-        {
-            echo __METHOD__ . PHP_EOL;
-        }
         public static function test()
         {
-            self::who();
-            static::who();
+            self::$foo;
+            static::$foo;
         }
         public function getName() : string
         {
             return $this->name;
         }
-        public function create() : self
-        {
-            return new static();
-            return new self();
-            return parent::create();
-        }
-        public function with(self $arg) : self
-        {
-            return $arg;
-        }
     }
     class B extends \Humbug\Foo\A
     {
+        static $foo = 'BAR';
         public function __construct(string $name)
         {
             parent::__construct($name);
-        }
-        public static function who()
-        {
-            echo __METHOD__ . PHP_EOL;
+            parent::$foo;
         }
     }
 }

@@ -104,6 +104,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof ClassConstFetch
                 || $parentNode instanceof New_
+                || $parentNode instanceof Param
             )
             && in_array((string) $name, self::PHP_FUNCTION_KEYWORDS)
         ) {
