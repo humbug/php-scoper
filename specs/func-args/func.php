@@ -75,6 +75,19 @@ var_dump('\\Symfony\\Component' . '\\Yaml\\Yaml');
 PHP
     ,
 
+    'function with variable: do nothing' => <<<'PHP'
+<?php
+
+var_dump($wrap(''));
+
+----
+<?php
+
+\var_dump($wrap(''));
+
+PHP
+    ,
+
     'FQC constant call: prefix the arguments as are not string arguments' => <<<'PHP'
 <?php
 
