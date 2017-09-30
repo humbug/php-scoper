@@ -17,7 +17,11 @@ namespace Humbug\PhpScoper\Scoper;
 use Generator;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
+use LogicException;
 use PhpParser\Error as PhpParserError;
+use PhpParser\Node\Name;
+use PhpParser\NodeTraverserInterface;
+use PhpParser\Parser;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -61,13 +65,44 @@ class PhpScoperTest extends TestCase
     private $decoratedScoper;
 
     /**
+     * @var TraverserFactory|ObjectProphecy
+     */
+    private $traverserFactoryProphecy;
+
+    /**
+     * @var TraverserFactory
+     */
+    private $traverserFactory;
+
+    /**
+     * @var NodeTraverserInterface|ObjectProphecy
+     */
+    private $traverserProphecy;
+
+    /**
+     * @var NodeTraverserInterface
+     */
+    private $traverser;
+
+    /**
+     * @var Parser|ObjectProphecy
+     */
+    private $parserProphecy;
+
+    /**
+     * @var Parser
+     */
+    private $parser;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
     {
         $this->scoper = new PhpScoper(
             create_parser(),
-            new FakeScoper()
+            new FakeScoper(),
+            new TraverserFactory()
         );
 
         if (null === $this->tmp) {
@@ -77,6 +112,15 @@ class PhpScoperTest extends TestCase
 
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
+
+        $this->traverserFactoryProphecy = $this->prophesize(TraverserFactory::class);
+        $this->traverserFactory = $this->traverserFactoryProphecy->reveal();
+
+        $this->traverserProphecy = $this->prophesize(NodeTraverserInterface::class);
+        $this->traverser = $this->traverserProphecy->reveal();
+
+        $this->parserProphecy = $this->prophesize(Parser::class);
+        $this->parser = $this->parserProphecy->reveal();
 
         chdir($this->tmp);
     }
@@ -136,9 +180,15 @@ PHP;
             )
         ;
 
+        $this->traverserFactoryProphecy
+            ->create(Argument::cetera())
+            ->willThrow(new LogicException('Unexpected call.'))
+        ;
+
         $scoper = new PhpScoper(
             new FakeParser(),
-            $this->decoratedScoper
+            $this->decoratedScoper,
+            $this->traverserFactory
         );
 
         $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
@@ -209,9 +259,15 @@ PHP;
             )
         ;
 
+        $this->traverserFactoryProphecy
+            ->create(Argument::cetera())
+            ->willThrow(new LogicException('Unexpected call.'))
+        ;
+
         $scoper = new PhpScoper(
             new FakeParser(),
-            $this->decoratedScoper
+            $this->decoratedScoper,
+            $this->traverserFactory
         );
 
         $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
@@ -251,6 +307,92 @@ PHP;
             $this->assertSame(0, $error->getCode());
             $this->assertNull($error->getPrevious());
         }
+    }
+
+    public function test_creates_a_new_traverser_for_each_file()
+    {
+        $files = [
+            'file1.php' =>  'file1',
+            'file2.php' =>  'file2',
+        ];
+
+        $prefix = 'Humbug';
+        $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
+        $whitelister = create_fake_whitelister();
+
+        $this->decoratedScoperProphecy
+            ->scope(Argument::any(), $prefix, $patchers, $whitelist, $whitelister)
+            ->willReturn(
+                $expected = 'Scoped content'
+            )
+        ;
+
+        $this->parserProphecy
+            ->parse('file1')
+            ->willReturn($file1Stmts = [
+                new Name('file1'),
+            ])
+        ;
+        $this->parserProphecy
+            ->parse('file2')
+            ->willReturn($file2Stmts = [
+                new Name('file2'),
+            ])
+        ;
+        
+        /** @var NodeTraverserInterface|ObjectProphecy $firstTraverserProphecy */
+        $firstTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
+        /** @var NodeTraverserInterface $firstTraverser */
+        $firstTraverser = $firstTraverserProphecy->reveal();
+
+        /** @var NodeTraverserInterface|ObjectProphecy $secondTraverserProphecy */
+        $secondTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
+        /** @var NodeTraverserInterface $secondTraverser */
+        $secondTraverser = $secondTraverserProphecy->reveal();
+
+        $i = 0;
+        $this->traverserFactoryProphecy
+            ->create($prefix, $whitelist, Argument::that(
+                function (...$args) use (&$i): bool {
+                    $i++;
+
+                    return 1 === $i;
+                }
+            ))
+            ->willReturn($firstTraverser)
+        ;
+        $this->traverserFactoryProphecy
+            ->create($prefix, $whitelist, Argument::that(
+                function (...$args) use (&$i): bool {
+                    $i++;
+
+                    return 4 === $i;
+                }
+            ))
+            ->willReturn($secondTraverser)
+        ;
+
+        $firstTraverserProphecy->traverse($file1Stmts)->willReturn([]);
+        $secondTraverserProphecy->traverse($file2Stmts)->willReturn([]);
+
+        $scoper = new PhpScoper(
+            $this->parser,
+            new FakeScoper(),
+            $this->traverserFactory
+        );
+
+        foreach ($files as $file => $content) {
+            touch($file);
+            file_put_contents($file, $content);
+
+            $scoper->scope($file, $prefix, $patchers, $whitelist, $whitelister);
+        }
+
+        $this->parserProphecy->parse(Argument::cetera())->shouldHaveBeenCalledTimes(2);
+        $this->traverserFactoryProphecy->create(Argument::cetera())->shouldHaveBeenCalledTimes(2);
+        $firstTraverserProphecy->traverse(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $secondTraverserProphecy->traverse(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
     /**
