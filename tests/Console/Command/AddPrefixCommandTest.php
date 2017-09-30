@@ -707,7 +707,7 @@ EOF;
             $patchFile = escape_path($this->tmp.'/unknown');
 
             $this->assertSame(
-                "Could not find the file \"$patchFile\".",
+                "Could not find the file \"<comment>$patchFile</comment>\".",
                 $exception->getMessage()
             );
             $this->assertSame(0, $exception->getCode());
