@@ -312,8 +312,8 @@ PHP;
     public function test_creates_a_new_traverser_for_each_file()
     {
         $files = [
-            'file1.php' =>  'file1',
-            'file2.php' =>  'file2',
+            'file1.php' => 'file1',
+            'file2.php' => 'file2',
         ];
 
         $prefix = 'Humbug';
@@ -340,7 +340,7 @@ PHP;
                 new Name('file2'),
             ])
         ;
-        
+
         /** @var NodeTraverserInterface|ObjectProphecy $firstTraverserProphecy */
         $firstTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
         /** @var NodeTraverserInterface $firstTraverser */
@@ -355,7 +355,7 @@ PHP;
         $this->traverserFactoryProphecy
             ->create($prefix, $whitelist, Argument::that(
                 function (...$args) use (&$i): bool {
-                    $i++;
+                    ++$i;
 
                     return 1 === $i;
                 }
@@ -365,7 +365,7 @@ PHP;
         $this->traverserFactoryProphecy
             ->create($prefix, $whitelist, Argument::that(
                 function (...$args) use (&$i): bool {
-                    $i++;
+                    ++$i;
 
                     return 4 === $i;
                 }
