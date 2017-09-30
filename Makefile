@@ -60,7 +60,7 @@ tc: vendor
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005
+e2e: e2e_004 e2e_005 e2e_011
 
 e2e_004:	## Run end-to-end tests for the fixture set 004
 e2e_004: bin/scoper.phar
