@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException;
+use InvalidArgumentException;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -121,7 +122,16 @@ class HandleAddPrefix
         $pathsToSearch = [];
         $filesToAppend = [];
 
-        foreach ($paths as $path) {
+        foreach ($paths as $i => $path) {
+            if (false === is_string($path)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'One of the files appended to your Finders configuration does not exists. Check your '
+                        .'configuration.'
+                    )
+                );
+            }
+
             if (false === file_exists($path)) {
                 throw new RuntimeException(
                     sprintf(

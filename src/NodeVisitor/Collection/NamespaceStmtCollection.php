@@ -28,6 +28,8 @@ use PhpParser\Node\Stmt\Namespace_;
  */
 final class NamespaceStmtCollection implements IteratorAggregate, Countable
 {
+    static $i;
+
     /**
      * @var Namespace_[]
      */
@@ -61,6 +63,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
             return $this->nodes[0]->name;
         }
 
+        self::$i = 0;
         return $this->getNodeNamespace($node);
     }
 
@@ -83,6 +86,8 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
 
     private function getNodeNamespace(Node $node): ?Name
     {
+        self::$i++;
+
         if (false === AppendParentNode::hasParent($node)) {
             return null;
         }
