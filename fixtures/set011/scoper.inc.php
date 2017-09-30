@@ -20,6 +20,7 @@ return [
             ->files()
             ->in(__DIR__)
             ->exclude('tests')
+            ->exclude('scoper.inc.php')
     ],
     'whitelist' => [
         \Set011\Dictionary::class,
