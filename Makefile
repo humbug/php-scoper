@@ -82,7 +82,7 @@ e2e_005: bin/scoper.phar fixtures/set005/vendor
 
 e2e_011:	## Run end-to-end tests for the fixture set 011
 e2e_011: bin/scoper.phar
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force -vvv
 	cp -R fixtures/set011/tests build/set011/
 	composer --working-dir=build/set011 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set011/box.json.dist
