@@ -18,6 +18,9 @@ help:
 clean:		## Clean all created artifacts
 clean:
 	rm -f bin/php-scoper.phar
+	rm -rf fixtures/set004/vendor
+	rm -rf fixtures/set005/vendor
+	rm -rf fixtures/set011/vendor
 	rm -rf build
 	rm -rf vendor
 	rm -rf vendor/box/vendor
@@ -60,10 +63,10 @@ tc: vendor
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005
+e2e: e2e_004 e2e_005 e2e_011
 
 e2e_004:	## Run end-to-end tests for the fixture set 004
-e2e_004: bin/scoper.phar
+e2e_004: bin/php-scoper.phar
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set004 --output-dir=../../build/set004 --force
 	composer --working-dir=build/set004 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set004/box.json.dist
@@ -72,7 +75,7 @@ e2e_004: bin/scoper.phar
 	diff fixtures/set004/expected-output build/set004/output
 
 e2e_005:	## Run end-to-end tests for the fixture set 005
-e2e_005: bin/scoper.phar fixtures/set005/vendor
+e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force
 	composer --working-dir=build/set005 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set005/box.json.dist
@@ -81,7 +84,7 @@ e2e_005: bin/scoper.phar fixtures/set005/vendor
 	diff fixtures/set005/expected-output build/set005/output
 
 e2e_011:	## Run end-to-end tests for the fixture set 011
-e2e_011: bin/scoper.phar
+e2e_011: bin/php-scoper.phar fixtures/set011/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force
 	cp -R fixtures/set011/tests build/set011/
 	composer --working-dir=build/set011 dump-autoload
@@ -117,8 +120,8 @@ vendor-bin/box/vendor: vendor-bin/box/composer.lock
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
 
-fixtures/set011/vendor: fixtures/set011/composer.lock
-	composer --working-dir=fixtures/set011 install
+fixtures/set011/vendor: fixtures/set011/vendor
+	composer --working-dir=fixtures/set011 dump-autoload
 
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
@@ -129,5 +132,5 @@ fixtures/set005/composer.lock: fixtures/set005/composer.json
 fixtures/set011/composer.lock: fixtures/set011/composer.json
 	@echo fixtures/set011/composer.lock is not up to date.
 
-bin/scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
+bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
 	$(MAKE) build

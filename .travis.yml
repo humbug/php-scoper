@@ -30,8 +30,7 @@ script:
   - |
     if [ "$COVERAGE" == "true" ]; then
         make tc
-        #TODO: skipped for now
-        #make e2e
+        make e2e
     else
         make tu
     fi
