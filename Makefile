@@ -17,13 +17,7 @@ help:
 
 clean:		## Clean all created artifacts
 clean:
-	rm -f bin/php-scoper.phar
-	rm -rf fixtures/set004/vendor
-	rm -rf fixtures/set005/vendor
-	rm -rf fixtures/set011/vendor
-	rm -rf build
-	rm -rf vendor
-	rm -rf vendor/box/vendor
+	git clean -fdx
 
 build:		## Build the PHAR
 build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
