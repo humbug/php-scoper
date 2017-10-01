@@ -66,7 +66,7 @@ e2e:		## Run end-to-end tests
 e2e: e2e_004 e2e_005 e2e_011
 
 e2e_004:	## Run end-to-end tests for the fixture set 004
-e2e_004: bin/scoper.phar
+e2e_004: bin/php-scoper.phar
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set004 --output-dir=../../build/set004 --force
 	composer --working-dir=build/set004 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set004/box.json.dist
@@ -75,7 +75,7 @@ e2e_004: bin/scoper.phar
 	diff fixtures/set004/expected-output build/set004/output
 
 e2e_005:	## Run end-to-end tests for the fixture set 005
-e2e_005: bin/scoper.phar fixtures/set005/vendor
+e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force
 	composer --working-dir=build/set005 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set005/box.json.dist
@@ -132,5 +132,5 @@ fixtures/set005/composer.lock: fixtures/set005/composer.json
 fixtures/set011/composer.lock: fixtures/set011/composer.json
 	@echo fixtures/set011/composer.lock is not up to date.
 
-bin/scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
+bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
 	$(MAKE) build

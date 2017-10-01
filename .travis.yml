@@ -29,8 +29,8 @@ install:
 script:
   - |
     if [ "$COVERAGE" == "true" ]; then
-        #make tc
-        make e2e_011
+        make tc
+        make e2e
     else
         make tu
     fi
