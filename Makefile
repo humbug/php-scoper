@@ -3,8 +3,9 @@ PHPUNIT=vendor/bin/phpunit
 PHPSCOPER=bin/php-scoper.phar
 BLACKFIRE=blackfire
 
+
 .DEFAULT_GOAL := help
-.PHONY: build test tu tc e2e tb
+.PHONY: build test
 
 
 help:
@@ -17,7 +18,7 @@ help:
 
 clean:		## Clean all created artifacts
 clean:
-	git clean -fdx
+	git clean --exclude=.idea/ -fdx
 
 build:		## Build the PHAR
 build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
@@ -49,11 +50,11 @@ test:		## Run all the tests
 test: tu e2e
 
 tu:		## Run PHPUnit tests
-tu: vendor
+tu: vendor/bin/phpunit
 	php -d zend.enable_gc=0 $(PHPUNIT)
 
 tc:		## Run PHPUnit tests with test coverage
-tc: vendor
+tc: vendor/bin/phpunit
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
@@ -108,7 +109,13 @@ tb: vendor
 vendor: composer.lock
 	composer install
 
-vendor-bin/box/vendor: vendor-bin/box/composer.lock
+vendor/bamarni: composer.lock
+	composer install
+
+vendor/bin/phpunit: composer.lock
+	composer install
+
+vendor-bin/box/vendor: vendor-bin/box/composer.lock vendor/bamarni
 	composer bin all install
 
 fixtures/set005/vendor: fixtures/set005/composer.lock
@@ -120,11 +127,14 @@ fixtures/set011/vendor: fixtures/set011/vendor
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
+vendor-bin/box/composer.lock: composer.lock
+	composer install
+
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
 
 fixtures/set011/composer.lock: fixtures/set011/composer.json
 	@echo fixtures/set011/composer.lock is not up to date.
 
-bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
+bin/php-scoper.phar:
 	$(MAKE) build
