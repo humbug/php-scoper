@@ -58,9 +58,9 @@ tc: vendor/bin/phpunit
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011
+e2e: e2e_004 e2e_005 e2e_011 e2e_013
 
-e2e_004:	## Run end-to-end tests for the fixture set 004
+e2e_004:	## Run end-to-end tests for the fixture set 004: source code case
 e2e_004: bin/php-scoper.phar
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set004 --output-dir=../../build/set004 --force
 	composer --working-dir=build/set004 dump-autoload
@@ -69,7 +69,7 @@ e2e_004: bin/php-scoper.phar
 	php build/set004/bin/greet.phar > build/set004/output
 	diff fixtures/set004/expected-output build/set004/output
 
-e2e_005:	## Run end-to-end tests for the fixture set 005
+e2e_005:	## Run end-to-end tests for the fixture set 005: third-party code case
 e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force
 	composer --working-dir=build/set005 dump-autoload
@@ -78,7 +78,7 @@ e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 	php build/set005/bin/greet.phar > build/set005/output
 	diff fixtures/set005/expected-output build/set005/output
 
-e2e_011:	## Run end-to-end tests for the fixture set 011
+e2e_011:	## Run end-to-end tests for the fixture set 011: whitelist case
 e2e_011: bin/php-scoper.phar fixtures/set011/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force
 	cp -R fixtures/set011/tests build/set011/
@@ -87,6 +87,11 @@ e2e_011: bin/php-scoper.phar fixtures/set011/vendor
 
 	php build/set011/bin/greet.phar > build/set011/output
 	diff fixtures/set011/expected-output build/set011/output
+
+e2e_013:	# Run end-to-end tests for the fixture set 013: the init command
+e2e_013: bin/php-scoper.phar
+	$(PHPSCOPER) init --working-dir=fixtures/set013
+	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
 
 tb:		## Run Blackfire profiling
 tb: vendor

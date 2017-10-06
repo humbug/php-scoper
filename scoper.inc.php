@@ -15,12 +15,6 @@ declare(strict_types=1);
 use Isolated\Symfony\Component\Finder\Finder;
 
 return [
-    'global_namespace_whitelist' => [
-        'AppKernel',
-        function (string $className): bool {
-            return 'PHPUnit' === substr($className, 0, 6);
-        },
-    ],
     'finders' => [
         Finder::create()->files()->in('src'),
         Finder::create()
