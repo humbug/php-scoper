@@ -39,17 +39,13 @@
             "Humbug\\PhpScoper\\": "src/"
         },
         "files": [
-            "src/check.php",
-            "src/functions.php"
+            "src/check.php"
         ]
     },
     "autoload-dev": {
         "psr-4": {
             "Humbug\\PhpScoper\\": "tests/"
-        },
-        "files": [
-            "tests/functions.php"
-        ]
+        }
     },
 
     "config": {
