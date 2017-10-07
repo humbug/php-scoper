@@ -57,23 +57,18 @@ final class UseStmtCollection implements IteratorAggregate
      */
     public function findStatementForNode(?Name $namespaceName, Name $node): ?Name
     {
-        $name = $node->getFirst();
+        $name = strtolower($node->getFirst());
 
         $useStatements = $this->nodes[(string) $namespaceName] ?? [];
 
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
                 if ($useStatement instanceof UseUse) {
-                    if ($name === $useStatement->alias) {
+                    if ($name === strtolower($useStatement->alias)) {
                         // Match the alias
                         return $useStatement->name;
                     } elseif (null !== $useStatement->alias) {
                         continue;
-                    }
-
-                    if ($name === $useStatement->name->getLast() && $useStatement->alias === null) {
-                        // Match a simple use statement
-                        return $useStatement->name;
                     }
                 }
             }
