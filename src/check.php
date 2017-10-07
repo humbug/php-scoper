@@ -19,7 +19,7 @@ use Symfony\Requirements\Requirement;
 
 /**
  * @param string $autoload
- * @param bool $verbose
+ * @param bool   $verbose
  *
  * @return bool
  */
@@ -32,13 +32,13 @@ function check_requirements($autoload, $verbose)
     $checkPassed = array_reduce(
         $requirements->getRequirements(),
         /**
-         * @param bool $checkPassed
+         * @param bool        $checkPassed
          * @param Requirement $requirement
          *
          * @return bool
          */
         function ($checkPassed, Requirement $requirement) use ($lineSize) {
-            return $checkPassed || null ===get_error_message($requirement, $lineSize);
+            return $checkPassed || null === get_error_message($requirement, $lineSize);
         },
         false
     );
@@ -50,16 +50,16 @@ function check_requirements($autoload, $verbose)
 
     echo_title('PHP-Scoper Requirements Checker', null, $verbose);
 
-    vecho('> PHP is using the following php.ini file:' . PHP_EOL, $verbose);
+    vecho('> PHP is using the following php.ini file:'.PHP_EOL, $verbose);
 
     if ($iniPath) {
-        echo_style('green', '  ' . $iniPath, $verbose);
+        echo_style('green', '  '.$iniPath, $verbose);
     } else {
         echo_style('yellow', '  WARNING: No configuration file (php.ini) used by PHP!', $verbose);
     }
 
-    vecho(PHP_EOL . PHP_EOL, $verbose);
-    vecho('> Checking PHP-Scoper requirements:' . PHP_EOL . '  ', $verbose);
+    vecho(PHP_EOL.PHP_EOL, $verbose);
+    vecho('> Checking PHP-Scoper requirements:'.PHP_EOL.'  ', $verbose);
 
     $messages = [];
 
@@ -89,7 +89,7 @@ function check_requirements($autoload, $verbose)
         echo_title('Fix the following mandatory requirements', 'red', $verbose);
 
         foreach ($messages['error'] as $helpText) {
-            vecho(' * ' . $helpText . PHP_EOL, $verbose);
+            vecho(' * '.$helpText.PHP_EOL, $verbose);
         }
     }
 
@@ -97,7 +97,7 @@ function check_requirements($autoload, $verbose)
         echo_title('Optional recommendations to improve your setup', 'yellow', $verbose);
 
         foreach ($messages['warning'] as $helpText) {
-            vecho(' * ' . $helpText . PHP_EOL, $verbose);
+            vecho(' * '.$helpText.PHP_EOL, $verbose);
         }
     }
 
@@ -115,7 +115,8 @@ function vecho($message, $verbose)
 
 /**
  * @param Requirement $requirement
- * @param int $lineSize
+ * @param int         $lineSize
+ *
  * @return string|null
  */
 function get_error_message(Requirement $requirement, $lineSize)
@@ -134,9 +135,9 @@ function get_error_message(Requirement $requirement, $lineSize)
 }
 
 /**
- * @param string $title
+ * @param string      $title
  * @param string|null $style
- * @param bool $verbose
+ * @param bool        $verbose
  */
 function echo_title($title, $style = null, $verbose)
 {
@@ -155,7 +156,7 @@ function echo_title($title, $style = null, $verbose)
 /**
  * @param string $style
  * @param string $message
- * @param bool $verbose
+ * @param bool   $verbose
  */
 function echo_style($style, $message, $verbose)
 {
@@ -182,7 +183,7 @@ function echo_style($style, $message, $verbose)
  * @param string $style
  * @param string $title
  * @param string $message
- * @param bool $verbose
+ * @param bool   $verbose
  */
 function echo_block($style, $title, $message, $verbose)
 {

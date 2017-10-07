@@ -14,10 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Composer\Semver\Constraint\Constraint;
-use Composer\Semver\Constraint\MultiConstraint;
 use Composer\Semver\Semver;
-use Composer\Semver\VersionParser;
 use Symfony\Requirements\RequirementCollection;
 
 final class Requirements extends RequirementCollection
@@ -30,7 +27,6 @@ final class Requirements extends RequirementCollection
 
         $this->addPhpVersionRequirement($composerConfig);
         $this->addExtensionRequirements($composerConfig);
-
     }
 
     private function getComposerRootDir($rootDir)
