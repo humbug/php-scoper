@@ -56,9 +56,13 @@ $isVeryVerbose = array_reduce(
     false
 );
 
-//if ('phar:' === substr(__FILE__, 0, 5)) {
-    check_requirements($autoload, $isVeryVerbose);
-//}
+if ('phar:' === substr(__FILE__, 0, 5)) {
+    $checkPassed = check_requirements($autoload, $isVeryVerbose);
+
+    if (false === $checkPassed) {
+        exit(1);
+    }
+}
 
 $app = create_application();
 

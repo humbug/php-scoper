@@ -63,18 +63,11 @@ final class Requirements extends RequirementCollection
         $this->addRequirement(
             Semver::satisfies(phpversion(), $requiredPhpVersion),
             sprintf(
-                'PHP version must satisfies <comment>%s</comment> (<comment>%s</comment> installed)',
+                'PHP version must satisfies "%s" ("%s" installed)',
                 $requiredPhpVersion,
                 $installedPhpVersion
             ),
-            '',
             ''
-        );
-
-        $this->addRequirement(
-            version_compare($installedPhpVersion, '5.3.16', '!='),
-            'PHP version must not be 5.3.16 as Symfony won\'t work properly with it',
-            'Install PHP 5.3.17 or newer (or downgrade to an earlier PHP version)'
         );
     }
 
@@ -95,10 +88,9 @@ final class Requirements extends RequirementCollection
         $this->addRequirement(
             extension_loaded($extension),
             sprintf(
-                'The extension <comment>%s</comment> must be enabled.',
+                'The extension "%s" must be enabled.',
                 $extension
             ),
-            '',
             ''
         );
     }

@@ -29,18 +29,37 @@ function check_requirements($autoload, $verbose)
     $requirements = new Requirements(dirname(dirname(realpath($autoload))));
     $iniPath = $requirements->getPhpIniPath();
 
+    $checkPassed = array_reduce(
+        $requirements->getRequirements(),
+        /**
+         * @param bool $checkPassed
+         * @param Requirement $requirement
+         *
+         * @return bool
+         */
+        function ($checkPassed, Requirement $requirement) use ($lineSize) {
+            return $checkPassed || null ===get_error_message($requirement, $lineSize);
+        },
+        false
+    );
+
+    if (false === $checkPassed) {
+        // Override the default verbosity to output errors regardless of the verbosity asked by the user
+        $verbose = true;
+    }
+
     echo_title('PHP-Scoper Requirements Checker', null, $verbose);
 
-    echo '> PHP is using the following php.ini file:' . PHP_EOL;
+    vecho('> PHP is using the following php.ini file:' . PHP_EOL, $verbose);
+
     if ($iniPath) {
         echo_style('green', '  ' . $iniPath, $verbose);
     } else {
         echo_style('yellow', '  WARNING: No configuration file (php.ini) used by PHP!', $verbose);
     }
 
-    echo PHP_EOL . PHP_EOL;
-
-    echo '> Checking PHP-Scoper requirements:' . PHP_EOL . '  ';
+    vecho(PHP_EOL . PHP_EOL, $verbose);
+    vecho('> Checking PHP-Scoper requirements:' . PHP_EOL . '  ', $verbose);
 
     $messages = [];
 
@@ -52,8 +71,6 @@ function check_requirements($autoload, $verbose)
             echo_style('green', '.', $verbose);
         }
     }
-
-    $checkPassed = empty($messages['error']);
 
     foreach ($requirements->getRecommendations() as $requirement) {
         if ($helpText = get_error_message($requirement, $lineSize)) {
@@ -67,12 +84,12 @@ function check_requirements($autoload, $verbose)
     if ($checkPassed) {
         echo_block('success', 'OK', 'Your system is ready to run PHP-Scoper.', $verbose);
     } else {
-        echo_block('error', 'ERROR', 'Your system is not ready to run Symfony projects', $verbose);
+        echo_block('error', 'ERROR', 'Your system is not ready to run PHP-Scoper', $verbose);
 
         echo_title('Fix the following mandatory requirements', 'red', $verbose);
 
         foreach ($messages['error'] as $helpText) {
-            echo ' * ' . $helpText . PHP_EOL;
+            vecho(' * ' . $helpText . PHP_EOL, $verbose);
         }
     }
 
@@ -80,11 +97,20 @@ function check_requirements($autoload, $verbose)
         echo_title('Optional recommendations to improve your setup', 'yellow', $verbose);
 
         foreach ($messages['warning'] as $helpText) {
-            echo ' * ' . $helpText . PHP_EOL;
+            vecho(' * ' . $helpText . PHP_EOL, $verbose);
         }
     }
 
     return $checkPassed;
+}
+
+function vecho($message, $verbose)
+{
+    if (false === $verbose) {
+        return;
+    }
+
+    echo $message;
 }
 
 /**
@@ -99,7 +125,10 @@ function get_error_message(Requirement $requirement, $lineSize)
     }
 
     $errorMessage = wordwrap($requirement->getTestMessage(), $lineSize - 3, PHP_EOL.'   ').PHP_EOL;
-    $errorMessage .= '   > '.wordwrap($requirement->getHelpText(), $lineSize - 5, PHP_EOL.'   > ').PHP_EOL;
+
+    if ('' !== $requirement->getHelpText()) {
+        $errorMessage .= '   > '.wordwrap($requirement->getHelpText(), $lineSize - 5, PHP_EOL.'   > ').PHP_EOL;
+    }
 
     return $errorMessage;
 }
