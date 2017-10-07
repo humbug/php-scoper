@@ -31,13 +31,20 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
+class Foo {}
+
 use Foo;
 
 Foo\DUMMY_CONST;
 ----
 <?php
 
-use Foo;
+namespace Humbug;
+
+class Foo
+{
+}
+use Humbug\Foo;
 \Humbug\Foo\DUMMY_CONST;
 
 PHP
@@ -53,13 +60,33 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo;
+namespace {
+    class Foo {}
+}
 
-\Foo\DUMMY_CONST;
+namespace Foo {
+    const DUMMY_CONST = '';
+}
+
+namespace {
+    use Foo;
+    
+    \Foo\DUMMY_CONST;
+}
 ----
 <?php
 
-use Foo;
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+const DUMMY_CONST = '';
+namespace Humbug;
+
+use Humbug\Foo;
 \Humbug\Foo\DUMMY_CONST;
 
 PHP
@@ -77,13 +104,33 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo;
+namespace {
+    class Foo {}
+}
 
-Foo\DUMMY_CONST;
+namespace Foo {
+    const DUMMY_CONST = '';
+}
+
+namespace {
+    use Foo;
+    
+    Foo\DUMMY_CONST;
+}
 ----
 <?php
 
-use Foo;
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+const DUMMY_CONST = '';
+namespace Humbug;
+
+use Humbug\Foo;
 \Humbug\Foo\DUMMY_CONST;
 
 PHP

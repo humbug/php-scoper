@@ -32,18 +32,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace A;
+namespace {
+    class Foo {}
+}
 
-use Foo;
-
-Foo::main();
+namespace A {
+    use Foo;
+    
+    Foo::main();
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
 namespace Humbug\A;
 
-use Foo;
-\Foo::main();
+use Humbug\Foo;
+\Humbug\Foo::main();
 
 PHP
     ],
@@ -58,18 +67,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace A;
+namespace {
+    class Foo {}
+}
 
-use Foo;
-
-\Foo::main();
+namespace A {
+    use Foo;
+    
+    \Foo::main();
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
 namespace Humbug\A;
 
-use Foo;
-\Foo::main();
+use Humbug\Foo;
+\Humbug\Foo::main();
 
 PHP
     ],
@@ -87,16 +105,16 @@ SPEC
 
 namespace A;
 
-use AppKernel;
+use Closure;
 
-AppKernel::main();
+Closure::bind();
 ----
 <?php
 
 namespace Humbug\A;
 
-use Humbug\AppKernel;
-\Humbug\AppKernel::main();
+use Closure;
+\Closure::bind();
 
 PHP
     ],
@@ -114,16 +132,16 @@ SPEC
 
 namespace A;
 
-use AppKernel;
+use Closure;
 
-\AppKernel::main();
+\Closure::bind();
 ----
 <?php
 
 namespace Humbug\A;
 
-use Humbug\AppKernel;
-\Humbug\AppKernel::main();
+use Closure;
+\Closure::bind();
 
 PHP
     ],

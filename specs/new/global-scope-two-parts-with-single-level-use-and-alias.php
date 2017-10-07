@@ -23,21 +23,42 @@ return [
     [
         'spec' => <<<'SPEC'
 New statement call of a namespaced class partially imported with an aliased use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- prefix the call
+- prefix the namespaces, use statement and the call
 - transform the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Foo as A;
+namespace {
+    class Foo {}
+}
 
-new A\Bar();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Foo as A;
+    
+    new A\Bar();
+}
 ----
 <?php
 
-use Foo as A;
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug;
+
+use Humbug\Foo as A;
 new \Humbug\Foo\Bar();
 
 PHP
@@ -46,19 +67,40 @@ PHP
     [
         'spec' => <<<'SPEC'
 New statement call of a namespaced class imported with an aliased use statement:
-- prefix the use statement
-- prefix the call
+- prefix the namespaces, use statement and the call
 - transform the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Foo\Bar as A;
+namespace {
+    class Foo {}
+}
 
-new A();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Foo\Bar as A;
+    
+    new A();
+}
 ----
 <?php
+
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug;
 
 use Humbug\Foo\Bar as A;
 new \Humbug\Foo\Bar();
@@ -68,21 +110,43 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-FQ new statement call of a namespaced class partially imported with an aliased use statement:
-- do not touch the use statement: see tests for the use statements and classes of the global namespace as to why
-- prefix the call
+FQ new statement call of a namespaced class with an aliased use statement:
+- prefix the namespaces, use statement and the call
+- transform the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Foo as A;
+namespace {
+    class Foo {}
+}
 
-new \A\Bar();
+namespace A {
+    class Bar {}
+}
+
+namespace {
+    use Foo as A;
+    
+    new \A\Bar();
+}
 ----
 <?php
 
-use Foo as A;
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\A;
+
+class Bar
+{
+}
+namespace Humbug;
+
+use Humbug\Foo as A;
 new \Humbug\A\Bar();
 
 PHP
@@ -90,22 +154,44 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-FQ new statement call of a namespaced class imported with an aliased use statement:
-- prefix the use statement
-- do not touch the call: see tests for the use statements and classes of the global namespace as to why
+FQ new statement call of a class with an aliased use statement:
+- prefix the namespaces, use statement and the call
+- transform the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Foo\Bar as A;
+namespace {
+    class A {}
+}
 
-new \A();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Foo\Bar as A;
+    
+    new \A();
+}
 ----
 <?php
 
+namespace Humbug;
+
+class A
+{
+}
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug;
+
 use Humbug\Foo\Bar as A;
-new \A();
+new \Humbug\A();
 
 PHP
     ],
@@ -113,8 +199,8 @@ PHP
     [
         'spec' => <<<'SPEC'
 New statement call of a whitelisted namespaced class partially imported with an aliased use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- do not prefix the call
+- prefix each namespace and the call
+- append the class_alias statement to the whitelisted class
 - transform the call into a FQ call
 SPEC
         ,
@@ -122,14 +208,37 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo as A;
+namespace {
+    class Foo {}
+}
 
-new A\Bar();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Foo as A;
+    
+    new A\Bar();
+}
 ----
 <?php
 
-use Foo as A;
-new \Foo\Bar();
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+namespace Humbug;
+
+use Humbug\Foo as A;
+new \Humbug\Foo\Bar();
 
 PHP
     ],
@@ -137,8 +246,8 @@ PHP
     [
         'spec' => <<<'SPEC'
 New statement call of a whitelisted namespaced class imported with an aliased use statement:
-- prefix the use statement
-- do not prefix the call
+- prefix the namespaces, use statement and the call
+- append the class_alias statement to the whitelisted class
 - transform the call into a FQ call
 SPEC
         ,
@@ -146,61 +255,28 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo\Bar as A;
+namespace Foo {
+    class Bar {}
+}
 
-new A();
+namespace {
+    use Foo\Bar as A;
+    
+    new A();
+}
 ----
 <?php
 
-use Foo\Bar as A;
-new \Foo\Bar();
+namespace Humbug\Foo;
 
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a whitelisted namespaced class partially imported with an aliased use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- prefix the call: as it is a FQ the use statement is ignored
-SPEC
-        ,
-        'whitelist' => ['Foo\Bar'],
-        'payload' => <<<'PHP'
-<?php
-
-use Foo as A;
-
-new \A\Bar();
-----
-<?php
-
-use Foo as A;
-new \Humbug\A\Bar();
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a whitelisted namespaced class imported with an aliased use statement:
-- prefix the use statement
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'whitelist' => ['Foo\Bar'],
-        'payload' => <<<'PHP'
-<?php
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+namespace Humbug;
 
 use Foo\Bar as A;
-
-new \A();
-----
-<?php
-
-use Foo\Bar as A;
-new \A();
+new \Humbug\Foo\Bar();
 
 PHP
     ],

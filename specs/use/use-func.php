@@ -36,6 +36,8 @@ use function foo;
 ----
 <?php
 
+namespace Humbug;
+
 use function Humbug\foo;
 
 PHP
@@ -54,6 +56,8 @@ use function Humbug\foo;
 
 ----
 <?php
+
+namespace Humbug;
 
 use function Humbug\foo;
 
@@ -74,6 +78,8 @@ use function Foo\bar;
 ----
 <?php
 
+namespace Humbug;
+
 use function Humbug\Foo\bar;
 
 PHP
@@ -92,6 +98,8 @@ use function Humbug\Foo\bar;
 
 ----
 <?php
+
+namespace Humbug;
 
 use function Humbug\Foo\bar;
 
@@ -112,6 +120,8 @@ use function Foo\bar;
 
 ----
 <?php
+
+namespace Humbug;
 
 use function Humbug\Foo\bar;
 

@@ -14,9 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
-use function Humbug\PhpScoper\create_fake_whitelister;
+use Roave\BetterReflection\BetterReflection;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\TraverserFactory
@@ -29,12 +28,12 @@ class TraverserFactoryTest extends TestCase
 
         $whitelist = ['Foo'];
 
-        $whitelister = create_fake_whitelister();
+        $classReflector  = (new BetterReflection())->classReflector();
 
-        $traverserFactory = new TraverserFactory();
+        $traverserFactory = new TraverserFactory($classReflector);
 
-        $firstTraverser = $traverserFactory->create($prefix, $whitelist, $whitelister);
-        $secondTraverser = $traverserFactory->create($prefix, $whitelist, $whitelister);
+        $firstTraverser = $traverserFactory->create($prefix, $whitelist);
+        $secondTraverser = $traverserFactory->create($prefix, $whitelist);
 
         $this->assertNotSame($firstTraverser, $secondTraverser);
     }

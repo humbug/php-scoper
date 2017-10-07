@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
-use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -22,6 +21,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
+use Roave\BetterReflection\Reflector\ClassReflector;
 
 /**
  * Prefixes the string scalar values.
@@ -41,28 +41,24 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private $prefix;
     private $whitelistedFunctions;
     private $whitelist;
-    private $globalWhitelister;
-    private $nameResolver;
+    private $classReflector;
 
     /**
-     * @param string                     $prefix
-     * @param string[]                   $whitelistedFunctions
-     * @param string[]                   $whitelist
-     * @param callable                   $globalWhitelister
-     * @param FullyQualifiedNameResolver $nameResolver
+     * @param string         $prefix
+     * @param string[]       $whitelistedFunctions
+     * @param string[]       $whitelist
+     * @param ClassReflector $classReflector
      */
     public function __construct(
         string $prefix,
         array $whitelistedFunctions,
         array $whitelist,
-        callable $globalWhitelister,
-        FullyQualifiedNameResolver $nameResolver
+        ClassReflector $classReflector
     ) {
         $this->prefix = $prefix;
         $this->whitelistedFunctions = $whitelistedFunctions;
         $this->whitelist = $whitelist;
-        $this->globalWhitelister = $globalWhitelister;
-        $this->nameResolver = $nameResolver;
+        $this->classReflector = $classReflector;
     }
 
     /**
@@ -109,7 +105,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             $newStringName = $stringName;
         // Check if the class can be prefixed: class from the global namespace
         } elseif (1 === count($stringName->parts)
-            && false === ($this->globalWhitelister)($stringName->toString())
+            && false === $this->classReflector->reflect($stringName->toString())->isInternal()
         ) {
             $newStringName = $stringName;
         // Check if the class can be prefixed: regular class

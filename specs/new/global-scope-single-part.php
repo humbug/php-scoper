@@ -23,17 +23,49 @@ return [
     [
         'spec' => <<<'SPEC'
 New statement call of a class belonging to the global namespace:
-- transform the call into a FQ call
+- wrap everything in a prefixed namespace
+- prefix the class
+- transform the class in a FQCN call
+prefix it
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
+class Foo {}
+
 new Foo();
 ----
 <?php
 
-new \Foo();
+namespace Humbug;
+
+class Foo
+{
+}
+new \Humbug\Foo();
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+New statement call of a class belonging to the global namespace:
+- wrap everything in a prefixed namespace
+- do not prefix the class
+- transform the class in a FQCN call
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+new ArrayIterator([]);
+----
+<?php
+
+namespace Humbug;
+
+new \ArrayIterator([]);
 
 PHP
     ],
@@ -41,56 +73,25 @@ PHP
     [
         'spec' => <<<'SPEC'
 FQ new statement call of a class belonging to the global namespace:
-- do not prefix the call as can be part of the global namespace
+- wrap everything in a prefixed namespace
+- prefix the class
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
+
+class Foo {}
 
 new \Foo();
 ----
 <?php
 
-new \Foo();
+namespace Humbug;
 
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-New statement call of a class belonging to the global namespace which has been whitelisted:
-- prefix the call
-- transform the call into a FQ call
-- See `scope.inc.php` for the built-in global whitelisted classes
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-new AppKernel();
-----
-<?php
-
-new \Humbug\AppKernel();
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class belonging to the global namespace which has been whitelisted:
-- prefix the call
-- See `scope.inc.php` for the built-in global whitelisted classes
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-new \AppKernel();
-----
-<?php
-
-new \Humbug\AppKernel();
+class Foo
+{
+}
+new \Humbug\Foo();
 
 PHP
     ],

@@ -20,6 +20,9 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
+use Roave\BetterReflection\BetterReflection;
+use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\Reflector\ClassReflector;
 
 /**
  * Prefixes the use statements.
@@ -28,18 +31,18 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
     private $whitelist;
-    private $globalWhitelister;
+    private $classReflector;
 
     /**
-     * @param string   $prefix
-     * @param string[] $whitelist
-     * @param callable $globalWhitelister
+     * @param string         $prefix
+     * @param string[]       $whitelist
+     * @param ClassReflector $classReflector
      */
-    public function __construct(string $prefix, array $whitelist, callable $globalWhitelister)
+    public function __construct(string $prefix, array $whitelist, ClassReflector $classReflector)
     {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
-        $this->globalWhitelister = $globalWhitelister;
+        $this->classReflector = $classReflector;
     }
 
     /**
@@ -71,7 +74,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         if (1 === count($use->name->parts)) {
             return
                 Use_::TYPE_NORMAL !== $useType
-                || ($this->globalWhitelister)($use->name->getFirst())
+                || false === $this->classReflector->reflect($use->name->getFirst())->isInternal()
             ;
         }
 

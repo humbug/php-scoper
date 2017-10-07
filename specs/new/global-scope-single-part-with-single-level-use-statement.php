@@ -23,21 +23,34 @@ return [
     [
         'spec' => <<<'SPEC'
 New statement call of a class belonging to the global namespace imported via a use statement:
-- do not touch the use statement (see tests related to the use statements of a class belonging to the global scope)
+- prefix the namespace, use and new statements
 - transform the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Foo;
+namespace {
+    class Foo {}
+}
 
-new Foo();
+namespace {
+    use Foo;
+    
+    new Foo();
+}
 ----
 <?php
 
-use Foo;
-new \Foo();
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug;
+
+use Humbug\Foo;
+new \Humbug\Foo();
 
 PHP
     ],
@@ -45,67 +58,58 @@ PHP
     [
         'spec' => <<<'SPEC'
 FQ new statement call of a class belonging to the global namespace imported via a use statement:
-- do not touch the use statement (see tests related to the use statements of a class belonging to the global scope)
+- prefix the namespace, use and new statements
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Foo;
+namespace {
+    class Foo {}
+}
 
-new \Foo();
+namespace {
+    use Foo;
+    
+    new \Foo();
+}
 ----
 <?php
 
-use Foo;
-new \Foo();
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug;
+
+use Humbug\Foo;
+new \Humbug\Foo();
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-New statement call of a class belonging to the global namespace which has been whitelisted:
-- prefix the use statement
-- prefix the call
+New statement call of an internal class:
+- wrap the call in a prefixed namespace
+- do not prefix the use and new statement 
 - transform the call into a FQ call
-- See `scope.inc.php` for the built-in global whitelisted classes
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use AppKernel;
+use ArrayIterator;
 
-new AppKernel();
+new ArrayIterator([]);
 ----
 <?php
 
-use Humbug\AppKernel;
-new \Humbug\AppKernel();
+namespace Humbug;
 
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class belonging to the global namespace which has been whitelisted:
-- prefix the statement
-- prefix the call
-- See `scope.inc.php` for the built-in global whitelisted classes
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-use AppKernel;
-
-new \AppKernel();
-----
-<?php
-
-use Humbug\AppKernel;
-new \Humbug\AppKernel();
+use ArrayIterator;
+new \ArrayIterator([]);
 
 PHP
     ],

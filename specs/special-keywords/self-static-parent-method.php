@@ -75,6 +75,8 @@ echo (new B('yo'))->getName().PHP_EOL;
 ----
 <?php
 
+namespace Humbug;
+
 class A
 {
     private $name;
@@ -106,7 +108,7 @@ class A
         return $arg;
     }
 }
-class B extends \A
+class B extends \Humbug\A
 {
     public function __construct(string $name)
     {
@@ -117,8 +119,8 @@ class B extends \A
         echo __METHOD__ . \PHP_EOL;
     }
 }
-\B::test();
-echo (new \B('yo'))->getName() . \PHP_EOL;
+\Humbug\B::test();
+echo (new \Humbug\B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ],
@@ -175,6 +177,8 @@ namespace Foo {
 }
 
 namespace {
+    use Foo\B;
+
     B::test();
     echo (new B('yo'))->getName().PHP_EOL;
 }
@@ -182,54 +186,55 @@ namespace {
 ----
 <?php
 
-namespace Humbug\Foo {
-    class A
+namespace Humbug\Foo;
+
+class A
+{
+    private $name;
+    public function __construct(string $name)
     {
-        private $name;
-        public function __construct(string $name)
-        {
-            $this->name = $name;
-        }
-        public static function who()
-        {
-            echo __METHOD__ . PHP_EOL;
-        }
-        public static function test()
-        {
-            self::who();
-            static::who();
-        }
-        public function getName() : string
-        {
-            return $this->name;
-        }
-        public function create() : self
-        {
-            return new static();
-            return new self();
-            return parent::create();
-        }
-        public function with(self $arg) : self
-        {
-            return $arg;
-        }
+        $this->name = $name;
     }
-    class B extends \Humbug\Foo\A
+    public static function who()
     {
-        public function __construct(string $name)
-        {
-            parent::__construct($name);
-        }
-        public static function who()
-        {
-            echo __METHOD__ . PHP_EOL;
-        }
+        echo __METHOD__ . PHP_EOL;
+    }
+    public static function test()
+    {
+        self::who();
+        static::who();
+    }
+    public function getName() : string
+    {
+        return $this->name;
+    }
+    public function create() : self
+    {
+        return new static();
+        return new self();
+        return parent::create();
+    }
+    public function with(self $arg) : self
+    {
+        return $arg;
     }
 }
-namespace {
-    \B::test();
-    echo (new \B('yo'))->getName() . \PHP_EOL;
+class B extends \Humbug\Foo\A
+{
+    public function __construct(string $name)
+    {
+        parent::__construct($name);
+    }
+    public static function who()
+    {
+        echo __METHOD__ . PHP_EOL;
+    }
 }
+namespace Humbug;
+
+use Humbug\Foo\B;
+\Humbug\Foo\B::test();
+echo (new \Humbug\Foo\B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ],

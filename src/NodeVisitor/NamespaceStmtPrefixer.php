@@ -41,47 +41,45 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     private $prefix;
     private $namespaceStatements;
     private $hasWhitelistedNode;
-    private $globalWhitelister;
 
-    public function __construct(
-        string $prefix,
-        NamespaceStmtCollection $namespaceStatements,
-        callable $globalWhitelister
-    ) {
+    public function __construct(string $prefix, NamespaceStmtCollection $namespaceStatements)
+    {
         $this->prefix = $prefix;
         $this->namespaceStatements = $namespaceStatements;
-        $this->globalWhitelister = $globalWhitelister;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function beforeTraverse(array $nodes)
-    {
-        $this->hasWhitelistedNode = $this->hasWhitelistedNode($nodes);
-    }
+//    /**
+//     * @inheritdoc
+//     */
+//    public function beforeTraverse(array $nodes)
+//    {
+//        $this->hasWhitelistedNode = $this->hasWhitelistedNode($nodes);
+//    }
 
     /**
      * @inheritdoc
      */
     public function enterNode(Node $node): Node
     {
+        $x = '';
+
         return ($node instanceof Namespace_)
             ? $this->prefixNamespaceStmt($node)
             : $node;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function leaveNode(Node $node)
-    {
-        return (
-            !$this->hasWhitelistedNode
-            || $node instanceof Namespace_
-            || AppendParentNode::hasParent($node)
-        ) ? $node : $this->wrapNamespace($node);
-    }
+//
+//    /**
+//     * @inheritdoc
+//     */
+//    public function leaveNode(Node $node)
+//    {
+//        $x = '';
+//
+//        return (
+//            0 === $this->namespaceStatements->count()
+//            && false === AppendParentNode::hasParent($node)
+//        ) ? $this->wrapNamespace($node) : $node;
+//    }
 
     private function prefixNamespaceStmt(Namespace_ $namespace): Node
     {
@@ -100,8 +98,8 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
     private function wrapNamespace(Node $node): Node
     {
+        return new Namespace_(new Node\Name($this->prefix), [$node]);
         if ($this->isWhitelistedNode($node)) {
-            return new Namespace_(new Node\Name($this->prefix), [$node]);
         }
 
         // Anything else needs to be wrapped with global namespace.
@@ -126,9 +124,7 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
     private function isWhitelistedNode(Node $node)
     {
-        if (($node instanceof Class_ || $node instanceof Interface_)
-            && ($this->globalWhitelister)($node->name)
-        ) {
+        if (($node instanceof Class_ || $node instanceof Interface_)) {
             return true;
         }
 
@@ -146,13 +142,15 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
     private function shouldPrefixStmt(Namespace_ $namespace): bool
     {
+        return null === $namespace->name || (null !== $namespace->name && $this->prefix !== $namespace->name->getFirst());
+
         if (null !== $namespace->name && $this->prefix !== $namespace->name->getFirst()) {
             return true;
         }
 
-        if (null === $namespace->name && $this->hasWhitelistedNode([$namespace])) {
-            return true;
-        }
+//        if (null === $namespace->name && $this->hasWhitelistedNode([$namespace])) {
+//            return true;
+//        }
 
         return false;
     }

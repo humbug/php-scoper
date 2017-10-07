@@ -204,8 +204,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    [],
-                    Argument::type(Closure::class)
+                    []
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -268,8 +267,7 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         [],
-                        [],
-                        Argument::type(Closure::class)
+                        []
                     )
                     ->willReturn($prefixedContents)
                 ;
@@ -282,8 +280,7 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         [],
-                        [],
-                        Argument::type(Closure::class)
+                        []
                     )
                     ->willThrow(new \RuntimeException('Scoping of the file failed'))
                 ;
@@ -343,8 +340,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    [],
-                    Argument::type(Closure::class)
+                    []
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -405,8 +401,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    [],
-                    Argument::type(Closure::class)
+                    []
                 )
                 ->willReturn($prefixedFileContents)
             ;
@@ -460,8 +455,7 @@ EOF;
                     }
                 ),
                 [],
-                [],
-                Argument::type(Closure::class)
+                []
             )
             ->willReturn('')
         ;
@@ -519,8 +513,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    [],
-                    Argument::type(Closure::class)
+                    []
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -566,8 +559,7 @@ EOF;
                 Argument::any(),
                 'MyPrefix',
                 [],
-                [],
-                Argument::type(Closure::class)
+                []
             )
             ->willReturn('')
         ;
@@ -610,8 +602,7 @@ EOF;
                 Argument::any(),
                 'MyPrefix',
                 [],
-                [],
-                Argument::type(Closure::class)
+                []
             )
             ->willReturn('')
         ;
@@ -669,8 +660,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    [],
-                    Argument::type(Closure::class)
+                    []
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -732,8 +722,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    [],
-                    Argument::type(Closure::class)
+                    []
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -859,8 +848,7 @@ EOF;
 
                         return true;
                     }),
-                    [],
-                    Argument::type(Closure::class)
+                    []
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -945,8 +933,7 @@ EOF;
                     $fileContents,
                     'MyPrefix',
                     [],
-                    [],
-                    Argument::type(Closure::class)
+                    []
                 )
                 ->willThrow($scopingException = new RuntimeException('Could not scope file'))
             ;

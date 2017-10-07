@@ -22,94 +22,98 @@ return [
 
     [
         'spec' => <<<'SPEC'
-Use statement of a class belonging to the global scope. Do nothing as this can belong to a PHP built-in class.
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-use Foo;
-
-----
-<?php
-
-use Foo;
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ use statement of a class belonging to the global scope. Do nothing as this can belong to a PHP built-in class.
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-use \Foo;
-
-----
-<?php
-
-use Foo;
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ use statement of a class belonging to the global scope. Do nothing as this can belong to a PHP built-in class.
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-use \Foo;
-
-----
-<?php
-
-use Foo;
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-Use statement of a (global) whitelisted class belonging to the global scope:
+Use statement of a class belonging to the global scope:
+- wrap the statement in a prefixed namespace
 - prefix the use statement
-- see `scope.inc.php` for the built-in global whitelisted classes
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use AppKernel;
+class Foo {}
+
+use Foo;
 
 ----
 <?php
 
-use Humbug\AppKernel;
+namespace Humbug;
+
+class Foo
+{
+}
+use Humbug\Foo;
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Use statement of a (global) whitelisted class belonging to the global scope which is already whitelisted:
-- do nothing
-- see `scope.inc.php` for the built-in global whitelisted classes
+FQ use statement of a class belonging to the global scope:
+- wrap the statement in a prefixed namespace
+- prefix the use statement
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Humbug\AppKernel;
+class Foo {}
+
+use \Foo;
 
 ----
 <?php
 
-use Humbug\AppKernel;
+namespace Humbug;
+
+class Foo
+{
+}
+use Humbug\Foo;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Use statement of an internal class belonging to the global scope:
+- wrap the statement in a prefixed namespace
+- do not prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use ArrayIterator;
+
+----
+<?php
+
+namespace Humbug;
+
+use ArrayIterator;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Use statement of an internal class belonging to the global scope:
+- wrap the statement in a prefixed namespace
+- do not prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use \ArrayIterator;
+
+----
+<?php
+
+namespace Humbug;
+
+use ArrayIterator;
 
 PHP
     ],
@@ -117,16 +121,30 @@ PHP
     [
         'spec' => <<<'SPEC'
 Use statement of two-level class:
+- prefix the namespaces
 - prefix the use statement
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Foo\Bar;
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Foo\Bar;
+}
 
 ----
 <?php
+
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug;
 
 use Humbug\Foo\Bar;
 
@@ -135,17 +153,31 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-Use statement of two-level class which has been already prefixed:
-- do nothing
+Already prefixed use statement of two-level class:
+- prefix the namespaces
+- prefix the use statement
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Humbug\Foo\Bar;
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Humbug\Foo\Bar;
+}
 
 ----
 <?php
+
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug;
 
 use Humbug\Foo\Bar;
 
@@ -155,17 +187,33 @@ PHP
     [
         'spec' => <<<'SPEC'
 Use statement of two-level class which has been whitelisted:
-- prefix the use statement: only actual usage of the class will be whitelisted
+- prefix the namespaces
+- append the class_alias statement to the whitelisted class
+- do not prefix the use statement
 SPEC
         ,
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
 
-use Foo\Bar;
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Foo\Bar;
+}
 
 ----
 <?php
+
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+namespace Humbug;
 
 use Foo\Bar;
 

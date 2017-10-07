@@ -22,7 +22,7 @@ final class FakeScoper implements Scoper
     /**
      * @inheritdoc
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist): string
     {
         throw new LogicException();
     }

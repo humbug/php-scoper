@@ -34,6 +34,7 @@ use PackageVersions\Versions;
 use PhpParser\Node;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use Roave\BetterReflection\BetterReflection;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -96,7 +97,9 @@ function create_scoper(): Scoper
                     new NullScoper()
                 )
             ),
-            new TraverserFactory()
+            new TraverserFactory(
+                (new BetterReflection())->classReflector()
+            )
         )
     );
 }

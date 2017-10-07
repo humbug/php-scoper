@@ -32,12 +32,17 @@ SPEC
 
 namespace X;
 
+class Command {}
+
 Command::MAIN_CONST;
 ----
 <?php
 
 namespace Humbug\X;
 
+class Command
+{
+}
 \Humbug\X\Command::MAIN_CONST;
 
 PHP
@@ -53,15 +58,24 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace {
+    class Command {}
+}
 
-\Command::MAIN_CONST;
+namespace X {
+    \Command::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Command
+{
+}
 namespace Humbug\X;
 
-\Command::MAIN_CONST;
+\Humbug\Command::MAIN_CONST;
 
 PHP
     ],
@@ -78,13 +92,16 @@ SPEC
 
 namespace X;
 
-AppKernel::MAIN_CONST;
+use Reflector;
+
+Reflector::MAIN_CONST;
 ----
 <?php
 
 namespace Humbug\X;
 
-\Humbug\X\AppKernel::MAIN_CONST;
+use Reflector;
+\Reflector::MAIN_CONST;
 
 PHP
     ],

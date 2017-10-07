@@ -28,6 +28,8 @@ preg_split('{(\|)-?}', ltrim($shortcut, '-'));
 ----
 <?php
 
+namespace Humbug;
+
 \preg_split('{(\\|)-?}', \ltrim($shortcut, '-'));
 
 PHP

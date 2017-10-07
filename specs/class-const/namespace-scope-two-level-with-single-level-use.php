@@ -31,17 +31,35 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace {
+    class Foo {}
+}
 
-use Foo;
+namespace Foo {
+    class Bar {}
+}
 
-Foo\Bar::MAIN_CONST;
+namespace X {
+    use Foo;
+    
+    Foo\Bar::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+class Bar
+{
+}
 namespace Humbug\X;
 
-use Foo;
+use Humbug\Foo;
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -58,14 +76,32 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace Foo {
+    class Bar {}
+}
 
-use Foo\Bar;
+namespace Foo\Bar {
+    class X {}
+}
 
-Bar\X::MAIN_CONST;
+namespace X {
+    use Foo\Bar;
+    
+    Bar\X::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug\Foo\Bar;
+
+class X
+{
+}
 namespace Humbug\X;
 
 use Humbug\Foo\Bar;
@@ -85,17 +121,35 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace {
+    class Foo {}
+}
 
-use Foo;
+namespace Foo {
+    class Bar {}
+}
 
-\Foo\Bar::MAIN_CONST;
+namespace X {
+    use Foo;
+    
+    \Foo\Bar::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+class Bar
+{
+}
 namespace Humbug\X;
 
-use Foo;
+use Humbug\Foo;
 \Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
@@ -113,18 +167,37 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace {
+    class Foo {}
+}
 
-use Foo;
+namespace Foo {
+    class Bar {}
+}
 
-Foo\Bar::MAIN_CONST;
+namespace X {
+    use Foo;
+    
+    Foo\Bar::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug\X;
 
-use Foo;
-\Foo\Bar::MAIN_CONST;
+use Humbug\Foo;
+\Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
     ],
@@ -141,18 +214,37 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace {
+    class Foo {}
+}
 
-use Foo;
+namespace Foo {
+    class Bar {}
+}
 
-\Foo\Bar::MAIN_CONST;
+namespace X {
+    use Foo;
+    
+    \Foo\Bar::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug\X;
 
-use Foo;
-\Foo\Bar::MAIN_CONST;
+use Humbug\Foo;
+\Humbug\Foo\Bar::MAIN_CONST;
 
 PHP
     ],

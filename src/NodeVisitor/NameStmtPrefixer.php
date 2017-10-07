@@ -25,7 +25,9 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
+use Roave\BetterReflection\Reflector\ClassReflector;
 
 /**
  * ```
@@ -50,25 +52,25 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private $prefix;
     private $whitelist;
-    private $globalWhitelister;
     private $nameResolver;
+    private $classReflector;
 
     /**
      * @param string                     $prefix
      * @param string[]                   $whitelist
-     * @param callable                   $globalWhitelister
      * @param FullyQualifiedNameResolver $nameResolver
+     * @param ClassReflector             $classReflector
      */
     public function __construct(
         string $prefix,
         array $whitelist,
-        callable $globalWhitelister,
-        FullyQualifiedNameResolver $nameResolver
+        FullyQualifiedNameResolver $nameResolver,
+        ClassReflector $classReflector
     ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
-        $this->globalWhitelister = $globalWhitelister;
+        //$this->whitelist = $whitelist;
         $this->nameResolver = $nameResolver;
+        $this->classReflector = $classReflector;
     }
 
     /**
@@ -94,12 +96,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof New_
                 || $parentNode instanceof Class_
+                || $parentNode instanceof Interface_
             )
         ) {
             return $name;
         }
 
-        if ((
+        if (
+            (
                 $parentNode instanceof FuncCall
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof ClassConstFetch
@@ -122,13 +126,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         // Check if the class can be prefixed
         if (false === ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)) {
-            if (1 === count($resolvedName->parts)
-                && false === ($this->globalWhitelister)($resolvedName->toString())
-            ) {
-                return $resolvedName;
-            } elseif (1 < count($resolvedName->parts)
-                && in_array($resolvedName->toString(), $this->whitelist)
-            ) {
+            if ($this->classReflector->reflect($resolvedName->toString())->isInternal()) {
                 return $resolvedName;
             }
         }

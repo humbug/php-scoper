@@ -31,12 +31,21 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace X\Foo {
+    class Bar {}
+}
 
-new Foo\Bar();
+namespace X {
+    new Foo\Bar();
+}
 ----
 <?php
 
+namespace Humbug\X\Foo;
+
+class Bar
+{
+}
 namespace Humbug\X;
 
 new \Humbug\X\Foo\Bar();
@@ -55,61 +64,30 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace Foo {
+    class Bar {}
+}
 
-new \Foo\Bar();
+namespace X\Foo {
+    class Bar {}
+}
+
+namespace X {
+    new \Foo\Bar();
+}
 ----
 <?php
 
-namespace Humbug\X;
+namespace Humbug\Foo;
 
-new \Humbug\Foo\Bar();
+class Bar
+{
+}
+namespace Humbug\X\Foo;
 
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-New statement call of a whitelisted class:
-- prefix the namespace
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'whitelist' => ['X\Foo\Bar'],
-        'payload' => <<<'PHP'
-<?php
-
-namespace X;
-
-new Foo\Bar();
-----
-<?php
-
-namespace Humbug\X;
-
-new \X\Foo\Bar();
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a non-whitelisted class:
-- prefix the namespace
-- prefix the call
-SPEC
-        ,
-        'whitelist' => ['X\Foo\Bar'],
-        'payload' => <<<'PHP'
-<?php
-
-namespace X;
-
-new \Foo\Bar();
-----
-<?php
-
+class Bar
+{
+}
 namespace Humbug\X;
 
 new \Humbug\Foo\Bar();

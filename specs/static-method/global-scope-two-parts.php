@@ -30,9 +30,22 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-Foo\Bar::main();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    Foo\Bar::main();
+}
 ----
 <?php
+
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug;
 
 \Humbug\Foo\Bar::main();
 
@@ -46,13 +59,21 @@ FQ static method call statement of a namespaced class:
 SPEC
         ,
         'payload' => <<<'PHP'
-<?php
+namespace Foo {
+    class Bar {}
+}
 
-\Foo\Bar::main();
+namespace {
+    \Foo\Bar::main();
+}
 ----
-<?php
+namespace Foo {
+    class Bar {}
+}
 
-\Humbug\Foo\Bar::main();
+namespace {
+    \Foo\Bar::main();
+}
 
 PHP
     ],
@@ -68,11 +89,25 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-Foo\Bar::main();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    Foo\Bar::main();
+}
 ----
 <?php
 
-\Foo\Bar::main();
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+namespace Humbug;
+
+\Humbug\Foo\Bar::main();
 
 PHP
     ],
@@ -87,11 +122,25 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-\Foo\Bar::main();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    \Foo\Bar::main();
+}
 ----
 <?php
 
-\Foo\Bar::main();
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+namespace Humbug;
+
+\Humbug\Foo\Bar::main();
 
 PHP
     ],

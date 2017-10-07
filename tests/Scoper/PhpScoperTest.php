@@ -25,10 +25,17 @@ use PhpParser\Parser;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use ReflectionClass;
+use Reflector;
+use Roave\BetterReflection\BetterReflection;
+use Roave\BetterReflection\Reflection\Reflection;
+use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 use function Humbug\PhpScoper\create_fake_patcher;
-use function Humbug\PhpScoper\create_fake_whitelister;
 use function Humbug\PhpScoper\create_parser;
 use function Humbug\PhpScoper\escape_path;
 
@@ -93,16 +100,20 @@ class PhpScoperTest extends TestCase
     private $parser;
 
     /**
+     * @var ClassReflector|ObjectProphecy
+     */
+    private $classReflectorProphecy;
+
+    /**
+     * @var ClassReflector
+     */
+    private $classReflector;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
     {
-        $this->scoper = new PhpScoper(
-            create_parser(),
-            new FakeScoper(),
-            new TraverserFactory()
-        );
-
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
 
@@ -114,6 +125,17 @@ class PhpScoperTest extends TestCase
 
         $this->parserProphecy = $this->prophesize(Parser::class);
         $this->parser = $this->parserProphecy->reveal();
+
+        $this->classReflectorProphecy = $this->prophesize(ClassReflector::class);
+        $this->classReflector = $this->classReflectorProphecy->reveal();
+
+        $this->scoper = new PhpScoper(
+            create_parser(),
+            new FakeScoper(),
+            new TraverserFactory(
+                $this->classReflector
+            )
+        );
     }
 
     public function test_is_a_Scoper()
@@ -127,18 +149,23 @@ class PhpScoperTest extends TestCase
         $filePath = escape_path($this->tmp.'/file.php');
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
 
         $contents = <<<'PHP'
+<?php
+
 echo "Humbug!";
 PHP;
 
         $expected = <<<'PHP'
+<?php
+
+namespace Humbug;
+
 echo "Humbug!";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
     }
@@ -150,10 +177,9 @@ PHP;
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister)
+            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -170,7 +196,7 @@ PHP;
             $this->traverserFactory
         );
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
 
@@ -183,7 +209,6 @@ PHP;
         $filePath = escape_path($this->tmp.'/file');
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
 
         $contents = <<<'PHP'
 <?php
@@ -195,11 +220,13 @@ PHP;
         $expected = <<<'PHP'
 <?php
 
+namespace Humbug;
+
 echo "Humbug!";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
     }
@@ -210,7 +237,6 @@ PHP;
         $filePath = escape_path($this->tmp.'/hello');
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
 
         $contents = <<<'PHP'
 #!/usr/bin/env php
@@ -222,11 +248,13 @@ PHP;
         $expected = <<<'PHP'
 #!/usr/bin/env php
 <?php 
+namespace Humbug;
+
 echo "Hello world";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
     }
@@ -241,8 +269,6 @@ PHP;
 
         $whitelist = ['Foo'];
 
-        $whitelister = create_fake_whitelister();
-
         $contents = <<<'PHP'
 #!/usr/bin/env bash
 <?php
@@ -251,7 +277,7 @@ echo "Hello world";
 PHP;
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister)
+            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -268,7 +294,7 @@ PHP;
             $this->traverserFactory
         );
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
 
@@ -288,10 +314,9 @@ PHP;
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
 
         try {
-            $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
+            $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
             $this->fail('Expected exception to have been thrown.');
         } catch (PhpParserError $error) {
@@ -314,10 +339,9 @@ PHP;
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
 
         $this->decoratedScoperProphecy
-            ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist, $whitelister)
+            ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -378,7 +402,7 @@ PHP;
         );
 
         foreach ($files as $file => $contents) {
-            $scoper->scope($file, $contents, $prefix, $patchers, $whitelist, $whitelister);
+            $scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
         }
 
         $this->parserProphecy->parse(Argument::cetera())->shouldHaveBeenCalledTimes(2);
@@ -396,11 +420,48 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
-        $whitelister = function (string $className) {
-            return 'AppKernel' === $className;
-        };
+        $nonInternalReflectionProphecy = $this->prophesize(ReflectionClass::class);
+        $nonInternalReflectionProphecy->willImplement(Reflection::class);
+        $nonInternalReflectionProphecy->isInternal()->willReturn(false);
+        $nonInternalReflection = $nonInternalReflectionProphecy->reveal();
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
+        $realReflectionProphecy = $this->prophesize(ReflectionClass::class);
+        $realReflectionProphecy->willImplement(Reflection::class);
+        $realReflectionProphecy
+            ->isInternal()
+            ->will(
+                function ($args): bool {
+                    $x = '';
+                }
+            )
+        ;
+        $internalReflection = $realReflectionProphecy->reveal();
+
+        $this->classReflectorProphecy
+            ->reflect('AppKernel')
+            ->willReturn($nonInternalReflection)
+        ;
+        $this->classReflectorProphecy
+            ->reflect(Argument::any())
+            ->willReturn($internalReflection)
+        ;
+
+        $astLocator = (new BetterReflection())->astLocator();
+
+        $this->scoper = new PhpScoper(
+            create_parser(),
+            new FakeScoper(),
+            new TraverserFactory(
+                new ClassReflector(
+                    new AggregateSourceLocator([
+                        new StringSourceLocator($contents, $astLocator),
+                        new PhpInternalSourceLocator($astLocator),
+                    ])
+                )
+            )
+        );
+
+        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
         $titleSeparator = str_repeat(
             '=',

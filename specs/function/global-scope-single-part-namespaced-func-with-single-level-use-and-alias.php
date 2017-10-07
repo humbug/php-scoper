@@ -31,13 +31,35 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo as X;
+namespace {
+    class Foo {}
+}
 
-X\main();
+namespace Foo {
+    function main() {}
+}
+
+namespace {
+    use Foo as X;
+    
+    X\main();
+}
 ----
 <?php
 
-use Foo as X;
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+function main()
+{
+}
+namespace Humbug;
+
+use Humbug\Foo as X;
 \Humbug\Foo\main();
 
 PHP
@@ -53,13 +75,35 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo as X;
+namespace {
+    class Foo {}
+}
 
-\X\main();
+namespace X {
+    function main() {}
+}
+
+namespace {
+    use Foo as X;
+    
+    \X\main();
+}
 ----
 <?php
 
-use Foo as X;
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\X;
+
+function main()
+{
+}
+namespace Humbug;
+
+use Humbug\Foo as X;
 \Humbug\X\main();
 
 PHP
@@ -77,13 +121,35 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use Foo as X;
+namespace {
+    class Foo {}
+}
 
-X\main();
+namespace Foo {
+    function main() {}
+}
+
+namespace {
+    use Foo as X;
+    
+    X\main();
+}
 ----
 <?php
 
-use Foo as X;
+namespace Humbug;
+
+class Foo
+{
+}
+namespace Humbug\Foo;
+
+function main()
+{
+}
+namespace Humbug;
+
+use Humbug\Foo as X;
 \Humbug\Foo\main();
 
 PHP

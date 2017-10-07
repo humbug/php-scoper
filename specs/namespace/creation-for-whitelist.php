@@ -111,20 +111,16 @@ class AppKernalOther
 ----
 <?php
 
-namespace {
-    class AppKernalOther2
-    {
-    }
+namespace Humbug;
+
+class AppKernalOther2
+{
 }
-namespace Humbug {
-    class AppKernel
-    {
-    }
+class AppKernel
+{
 }
-namespace {
-    class AppKernalOther
-    {
-    }
+class AppKernalOther
+{
 }
 
 PHP
@@ -148,26 +144,22 @@ interface SomeInterface
 ----
 <?php
 
-namespace Humbug {
-    interface AppKernel
-    {
-    }
+namespace Humbug;
+
+interface AppKernel
+{
 }
-namespace {
-    class AppKernalOther
-    {
-    }
+class AppKernalOther
+{
 }
-namespace {
-    interface SomeInterface
-    {
-    }
+interface SomeInterface
+{
 }
 
 PHP
     ,
 
-    'Defines should be wrapped in namespace alongside whitelisted class.' => <<<'PHP'
+    'Defines should be wrapped in namespace alongside rest.' => <<<'PHP'
 <?php
 
 define("MY_DEFINE", "value");
@@ -179,19 +171,17 @@ class AppKernel
 ----
 <?php
 
-namespace {
-    \define("MY_DEFINE", "value");
-}
-namespace Humbug {
-    class AppKernel
-    {
-    }
+namespace Humbug;
+
+\define("MY_DEFINE", "value");
+class AppKernel
+{
 }
 
 PHP
     ,
 
-    'Make sure anonymous classes are not wrapped.' => <<<'PHP'
+    'Make sure anonymous classes are wrapped in a prefixed namespace.' => <<<'PHP'
 <?php
 
 new class {};
@@ -203,60 +193,32 @@ class AppKernel
 ----
 <?php
 
-namespace {
-    new class
-    {
-    };
-}
-namespace Humbug {
-    class AppKernel
-    {
-    }
-}
+namespace Humbug;
 
-PHP
-    ,
-
-    'Make sure traits are not prefixed.' => <<<'PHP'
-<?php
-
-trait AppKernel
+new class
 {
-}
-
-----
-<?php
-
-trait AppKernel
-{
-}
-
-PHP
-    ,
-
-    'Make sure traits are not prefixed next to whitelisted class.' => <<<'PHP'
-<?php
-
-trait SomeTrait
-{
-}
-
+};
 class AppKernel
 {
 }
 
+PHP
+    ,
+
+    'Make sure traits are wrapped in a prefix namespace.' => <<<'PHP'
+<?php
+
+trait AppKernel
+{
+}
+
 ----
 <?php
 
-namespace {
-    trait SomeTrait
-    {
-    }
-}
-namespace Humbug {
-    class AppKernel
-    {
-    }
+namespace Humbug;
+
+trait AppKernel
+{
 }
 
 PHP
@@ -266,34 +228,43 @@ PHP
 <?php
 
 namespace Foo {
-    trait SomeTrait{}
+    trait SomeTrait {}
 }
 
 namespace {
-    class AppKernel{}
+    class AppKernel {
+        use Foo\SomeTrait;
+    }
 }
 
 namespace {
-    class Bla{}
+    use Foo\SomeTrait as X;
+
+    class Bla {
+        use X;
+    }
 }
 
 ----
 <?php
 
-namespace Humbug\Foo {
-    trait SomeTrait
-    {
-    }
+namespace Humbug\Foo;
+
+trait SomeTrait
+{
 }
-namespace Humbug {
-    class AppKernel
-    {
-    }
+namespace Humbug;
+
+class AppKernel
+{
+    use Foo\SomeTrait;
 }
-namespace {
-    class Bla
-    {
-    }
+namespace Humbug;
+
+use Humbug\Foo\SomeTrait as X;
+class Bla
+{
+    use X;
 }
 
 PHP

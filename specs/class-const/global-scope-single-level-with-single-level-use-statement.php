@@ -30,14 +30,21 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
+class Command {}
+
 use Command;
 
 Command::MAIN_CONST;
 ----
 <?php
 
-use Command;
-\Command::MAIN_CONST;
+namespace Humbug;
+
+class Command
+{
+}
+use Humbug\Command;
+\Humbug\Command::MAIN_CONST;
 
 PHP
     ],
@@ -52,14 +59,21 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
+class Command {}
+
 use Command;
 
 \Command::MAIN_CONST;
 ----
 <?php
 
-use Command;
-\Command::MAIN_CONST;
+namespace Humbug;
+
+class Command
+{
+}
+use Humbug\Command;
+\Humbug\Command::MAIN_CONST;
 
 PHP
     ],
@@ -74,14 +88,16 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use AppKernel;
+use Reflector;
 
-AppKernel::MAIN_CONST;
+Reflector::MAIN_CONST;
 ----
 <?php
 
-use Humbug\AppKernel;
-\Humbug\AppKernel::MAIN_CONST;
+namespace Humbug;
+
+use Reflector;
+\Reflector::MAIN_CONST;
 
 PHP
     ],
@@ -96,14 +112,16 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use AppKernel;
+use Reflector;
 
-\AppKernel::MAIN_CONST;
+\Reflector::MAIN_CONST;
 ----
 <?php
 
-use Humbug\AppKernel;
-\Humbug\AppKernel::MAIN_CONST;
+namespace Humbug;
+
+use Reflector;
+\Reflector::MAIN_CONST;
 
 PHP
     ],

@@ -36,6 +36,8 @@ use function foo as greet;
 ----
 <?php
 
+namespace Humbug;
+
 use function Humbug\foo as greet;
 
 PHP
@@ -54,6 +56,8 @@ use function Humbug\foo as greet;
 
 ----
 <?php
+
+namespace Humbug;
 
 use function Humbug\foo as greet;
 
@@ -74,6 +78,8 @@ use function Foo\bar as greet;
 ----
 <?php
 
+namespace Humbug;
+
 use function Humbug\Foo\bar as greet;
 
 PHP
@@ -92,6 +98,8 @@ use function Humbug\Foo\bar as greet;
 
 ----
 <?php
+
+namespace Humbug;
 
 use function Humbug\Foo\bar as greet;
 
@@ -112,6 +120,8 @@ use function Foo\bar as greet;
 
 ----
 <?php
+
+namespace Humbug;
 
 use function Humbug\Foo\bar as greet;
 

@@ -30,6 +30,8 @@ use const \A\B\{C\D as ABCD, E};
 ----
 <?php
 
+namespace Humbug;
+
 use const Humbug\A\B;
 use const Humbug\A\B\C;
 use const Humbug\A\D;

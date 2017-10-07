@@ -1,0 +1,17 @@
+Right now whitelisted class works as follow:
+
+- They are prefixed but a class_alias statement is appended to their declaration with the old name
+- Whitelisted class are dumped in a `scoper-autoload.php` autoloader which the users can use. This way, the class
+  aliases will be triggered at that time
+
+Right now the use statements of whitelisted class are not prefixed. IMO this should not matter and we could prefix
+them still. This would reduce the need of custom code to treat them differently.
+
+
+
+
+-----
+
+
+Prefix the return types of functions & methods; see func-declaration/global.php
+Prefix functions if they are not internal

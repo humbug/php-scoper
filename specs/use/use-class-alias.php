@@ -22,94 +22,98 @@ return [
 
     [
         'spec' => <<<'SPEC'
-Use statement of a class belonging to the global scope. Do nothing as this can belong to a PHP built-in class.
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-use Foo as A;
-
-----
-<?php
-
-use Foo as A;
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ use statement of a class belonging to the global scope. Do nothing as this can belong to a PHP built-in class.
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-use \Foo as A;
-
-----
-<?php
-
-use Foo as A;
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ use statement of a class belonging to the global scope. Do nothing as this can belong to a PHP built-in class.
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-use \Foo as A;
-
-----
-<?php
-
-use Foo as A;
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-Use statement of a (global) whitelisted class belonging to the global scope:
+Use statement of a class belonging to the global scope:
+- wrap everything in a prefixed namespace
 - prefix the use statement
-- see `scope.inc.php` for the built-in global whitelisted classes
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use AppKernel as A;
+class Foo {}
+
+use Foo as A;
 
 ----
 <?php
 
-use Humbug\AppKernel as A;
+namespace Humbug;
+
+class Foo
+{
+}
+use Humbug\Foo as A;
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Use statement of a (global) whitelisted class belonging to the global scope which is already whitelisted:
-- do nothing
-- see `scope.inc.php` for the built-in global whitelisted classes
+FQ use statement of a class belonging to the global scope:
+- wrap everything in a prefixed namespace
+- prefix the use statement
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use Humbug\AppKernel as A;
+class Foo {}
+
+use \Foo as A;
 
 ----
 <?php
 
-use Humbug\AppKernel as A;
+namespace Humbug;
+
+class Foo
+{
+}
+use Humbug\Foo as A;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Use statement of an internal class belonging to the global scope:
+- wrap everything in a prefixed namespace
+- do not prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use ArrayIterator as A;
+
+----
+<?php
+
+namespace Humbug;
+
+use ArrayIterator as A;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+FQ use statement of an internal class belonging to the global scope:
+- wrap everything in a prefixed namespace
+- do not prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use \ArrayIterator as A;
+
+----
+<?php
+
+namespace Humbug;
+
+use ArrayIterator as A;
 
 PHP
     ],
@@ -127,6 +131,8 @@ use Foo\Bar as A;
 
 ----
 <?php
+
+namespace Humbug;
 
 use Humbug\Foo\Bar as A;
 
@@ -147,6 +153,8 @@ use Humbug\Foo\Bar as A;
 ----
 <?php
 
+namespace Humbug;
+
 use Humbug\Foo\Bar as A;
 
 PHP
@@ -166,6 +174,8 @@ use Foo\Bar as A;
 
 ----
 <?php
+
+namespace Humbug;
 
 use Foo\Bar as A;
 

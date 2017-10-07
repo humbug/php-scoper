@@ -38,6 +38,8 @@ foo();
 ----
 <?php
 
+namespace Humbug;
+
 use function Humbug\main as foo;
 \Humbug\main();
 
@@ -60,6 +62,8 @@ use function main as foo;
 \foo();
 ----
 <?php
+
+namespace Humbug;
 
 use function Humbug\main as foo;
 \foo();

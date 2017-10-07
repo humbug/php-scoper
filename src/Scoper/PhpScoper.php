@@ -44,15 +44,15 @@ final class PhpScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist): string
     {
         if (false === $this->isPhpFile($filePath, $contents)) {
-            return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $globalWhitelister);
+            return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
         $statements = $this->parser->parse($contents);
 
-        $traverser = $this->traverserFactory->create($prefix, $whitelist, $globalWhitelister);
+        $traverser = $this->traverserFactory->create($prefix, $whitelist);
 
         $statements = $traverser->traverse($statements);
 

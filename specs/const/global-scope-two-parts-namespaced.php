@@ -34,6 +34,8 @@ PHPUnit\Command\DUMMY_CONST;
 ----
 <?php
 
+namespace Humbug;
+
 \Humbug\PHPUnit\Command\DUMMY_CONST;
 
 PHP
@@ -51,6 +53,8 @@ SPEC
 \PHPUnit\Command\DUMMY_CONST;
 ----
 <?php
+
+namespace Humbug;
 
 \Humbug\PHPUnit\Command\DUMMY_CONST;
 
@@ -70,6 +74,8 @@ SPEC
 PHPUnit\Command\DUMMY_CONST;
 ----
 <?php
+
+namespace Humbug;
 
 \Humbug\PHPUnit\Command\DUMMY_CONST;
 

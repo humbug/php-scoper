@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
+    'Declaration in the global namespace: add prefixed namespace.' => <<<'PHP'
 <?php
 
 abstract class A {
@@ -29,6 +29,8 @@ abstract class A {
 }
 ----
 <?php
+
+namespace Humbug;
 
 abstract class A
 {
@@ -66,7 +68,7 @@ abstract class A
 PHP
     ,
 
-    'Declaration of a whitelisted namespaced class: append aliasing.' => [
+    'Declaration of a whitelisted class: append aliasing.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -94,12 +96,22 @@ class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 PHP
         ],
 
-    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
+    [
+        'spec' => <<<'SPEC'
+Multiple declarations in different namespaces with whitelisted classes: prefix each namespace.
+SPEC
+        ,
+        'whitelist' => ['Foo\WA', 'Bar\WB', 'WC'],
+        'payload' => <<<'PHP'
 <?php
 
 namespace Foo {
 
     abstract class A {
+        public function a() {}
+    }
+    
+    abstract class WA {
         public function a() {}
     }
 }
@@ -109,6 +121,10 @@ namespace Bar {
     abstract class B {
         public function b() {}
     }
+    
+    abstract class WB {
+        public function b() {}
+    }
 }
 
 namespace {
@@ -116,35 +132,60 @@ namespace {
     abstract class C {
         public function c() {}
     }
+    
+    abstract class WC {
+        public function c() {}
+    }
 }
 ----
 <?php
 
-namespace Humbug\Foo {
-    abstract class A
+namespace Humbug\Foo;
+
+abstract class A
+{
+    public function a()
     {
-        public function a()
-        {
-        }
     }
 }
-namespace Humbug\Bar {
-    abstract class B
+abstract class WA
+{
+    public function a()
     {
-        public function b()
-        {
-        }
     }
 }
-namespace {
-    abstract class C
+class_alias('Humbug\\Foo\\WA', 'Foo\\WA', \false);
+namespace Humbug\Bar;
+
+abstract class B
+{
+    public function b()
     {
-        public function c()
-        {
-        }
     }
 }
+abstract class WB
+{
+    public function b()
+    {
+    }
+}
+class_alias('Humbug\\Bar\\WB', 'Bar\\WB', \false);
+namespace Humbug;
+
+abstract class C
+{
+    public function c()
+    {
+    }
+}
+abstract class WC
+{
+    public function c()
+    {
+    }
+}
+\class_alias('Humbug\\WC', 'WC', \false);
 
 PHP
-    ,
+    ],
 ];

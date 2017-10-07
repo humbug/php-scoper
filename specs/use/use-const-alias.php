@@ -35,6 +35,8 @@ use const FOO as A;
 ----
 <?php
 
+namespace Humbug;
+
 use const Humbug\FOO as A;
 
 PHP
@@ -53,6 +55,8 @@ use const Humbug\FOO as A;
 
 ----
 <?php
+
+namespace Humbug;
 
 use const Humbug\FOO as A;
 
@@ -73,6 +77,8 @@ use const Foo\BAR as A;
 ----
 <?php
 
+namespace Humbug;
+
 use const Humbug\Foo\BAR as A;
 
 PHP
@@ -91,6 +97,8 @@ use const Humbug\Foo\BAR as A;
 
 ----
 <?php
+
+namespace Humbug;
 
 use const Humbug\Foo\BAR as A;
 
@@ -111,6 +119,8 @@ use const Foo\BAR as A;
 
 ----
 <?php
+
+namespace Humbug;
 
 use const Humbug\Foo\BAR as A;
 

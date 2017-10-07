@@ -20,13 +20,16 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
+    'Declaration in the global namespace: prefix non-internal classes.' => <<<'PHP'
 <?php
+
+interface B {}
+interface C {}
 
 new class {
     public function test() {}
 };
-new class extends A implements B, C {};
+new class extends A implements B, C, Iterator {};
 new class() {
     public $foo;
 };
@@ -44,20 +47,28 @@ class A {
 ----
 <?php
 
+namespace Humbug;
+
+interface B
+{
+}
+interface C
+{
+}
 new class
 {
     public function test()
     {
     }
 };
-new class extends \A implements \B, \C
+new class extends \Humbug\A implements \Humbug\B, \Humbug\C, \Iterator
 {
 };
 new class
 {
     public $foo;
 };
-new class($a, $b) extends \A
+new class($a, $b) extends \Humbug\A
 {
     use T;
 };
@@ -65,7 +76,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends \A
+        return new class($this) extends \Humbug\A
         {
             const A = 'B';
         };
@@ -80,11 +91,14 @@ PHP
 
 namespace Foo;
 
+interface B {}
+interface C {}
+
 new class {
     public function test() {}
 };
 
-new class extends A implements B, C {};
+new class extends A implements B, C, \Iterator {};
 
 new class() {
     public $foo;
@@ -106,13 +120,19 @@ class A {
 
 namespace Humbug\Foo;
 
+interface B
+{
+}
+interface C
+{
+}
 new class
 {
     public function test()
     {
     }
 };
-new class extends \Humbug\Foo\A implements \Humbug\Foo\B, \Humbug\Foo\C
+new class extends \Humbug\Foo\A implements \Humbug\Foo\B, \Humbug\Foo\C, \Iterator
 {
 };
 new class
@@ -151,18 +171,25 @@ namespace {
 }
 
 namespace Foo {
+    use A;
+
+    interface B {}
+    interface C {}
+
     new class {
         public function test() {}
     };
-    
-    new class extends A implements B, C {};
+
+    new class extends A implements B, C, \Iterator {};
 }
 
 namespace Bar {
+    use A;
+
     new class() {
         public $foo;
     };
-    
+
     new class($a, $b) extends A {
         use T;
     };
@@ -171,39 +198,47 @@ namespace Bar {
 ----
 <?php
 
-namespace {
-    class A
+namespace Humbug;
+
+class A
+{
+    public function test()
     {
-        public function test()
+        return new class($this) extends \Humbug\A
         {
-            return new class($this) extends \A
-            {
-                const A = 'B';
-            };
-        }
+            const A = 'B';
+        };
     }
 }
-namespace Humbug\Foo {
-    new class
-    {
-        public function test()
-        {
-        }
-    };
-    new class extends \Humbug\Foo\A implements \Humbug\Foo\B, \Humbug\Foo\C
-    {
-    };
+namespace Humbug\Foo;
+
+use Humbug\A;
+interface B
+{
 }
-namespace Humbug\Bar {
-    new class
-    {
-        public $foo;
-    };
-    new class($a, $b) extends \Humbug\Bar\A
-    {
-        use T;
-    };
+interface C
+{
 }
+new class
+{
+    public function test()
+    {
+    }
+};
+new class extends \Humbug\A implements \Humbug\Foo\B, \Humbug\Foo\C, \Iterator
+{
+};
+namespace Humbug\Bar;
+
+use Humbug\A;
+new class
+{
+    public $foo;
+};
+new class($a, $b) extends \Humbug\A
+{
+    use T;
+};
 
 PHP
     ,

@@ -31,6 +31,8 @@ var_dump('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 ----
 <?php
 
+namespace Humbug;
+
 \var_dump('Symfony\\Component\\Yaml\\Yaml');
 \var_dump('\\Symfony\\Component\\Yaml\\Yaml');
 \var_dump('Humbug\\Symfony\\Component\\Yaml\\Yaml');
@@ -52,6 +54,8 @@ var_dump('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 ----
 <?php
 
+namespace Humbug;
+
 \var_dump('Symfony\\Component\\Yaml\\Yaml');
 \var_dump('\\Symfony\\Component\\Yaml\\Yaml');
 \var_dump('Humbug\\Symfony\\Component\\Yaml\\Yaml');
@@ -69,6 +73,8 @@ var_dump('\\Symfony\\Component' . '\\Yaml\\Yaml');
 ----
 <?php
 
+namespace Humbug;
+
 \var_dump('Symfony\\Component' . '\\Yaml\\Yaml');
 \var_dump('\\Symfony\\Component' . '\\Yaml\\Yaml');
 
@@ -83,6 +89,8 @@ var_dump($wrap(''));
 ----
 <?php
 
+namespace Humbug;
+
 \var_dump($wrap(''));
 
 PHP
@@ -91,13 +99,26 @@ PHP
     'FQC constant call: prefix the arguments as are not string arguments' => <<<'PHP'
 <?php
 
-var_dump(Symfony\Component\Yaml\Yaml::class);
-var_dump(\Symfony\Component\Yaml\Yaml::class);
-var_dump(Humbug\Symfony\Component\Yaml\Yaml::class);
-var_dump(\Humbug\Symfony\Component\Yaml\Yaml::class);
+namespace Symfony\Component\Yaml {
+    class Yaml {}
+}
+
+namespace {
+    var_dump(Symfony\Component\Yaml\Yaml::class);
+    var_dump(\Symfony\Component\Yaml\Yaml::class);
+    var_dump(Humbug\Symfony\Component\Yaml\Yaml::class);
+    var_dump(\Humbug\Symfony\Component\Yaml\Yaml::class);
+}
 
 ----
 <?php
+
+namespace Humbug\Symfony\Component\Yaml;
+
+class Yaml
+{
+}
+namespace Humbug;
 
 \var_dump(\Humbug\Symfony\Component\Yaml\Yaml::class);
 \var_dump(\Humbug\Symfony\Component\Yaml\Yaml::class);

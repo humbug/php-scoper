@@ -30,9 +30,22 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-PHPUnit\Command::MAIN_CONST;
+namespace PHPUnit {
+    class Command {}
+}
+
+namespace {
+    PHPUnit\Command::MAIN_CONST;
+}
 ----
 <?php
+
+namespace Humbug\PHPUnit;
+
+class Command
+{
+}
+namespace Humbug;
 
 \Humbug\PHPUnit\Command::MAIN_CONST;
 
@@ -49,9 +62,22 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-\PHPUnit\Command::MAIN_CONST;
+namespace PHPUnit {
+    class Command {}
+}
+
+namespace {
+    \PHPUnit\Command::MAIN_CONST;
+}
 ----
 <?php
+
+namespace Humbug\PHPUnit;
+
+class Command
+{
+}
+namespace Humbug;
 
 \Humbug\PHPUnit\Command::MAIN_CONST;
 
@@ -69,11 +95,25 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-PHPUnit\Command::MAIN_CONST;
+namespace PHPUnit {
+    class Command {}
+}
+
+namespace {
+    PHPUnit\Command::MAIN_CONST;
+}
 ----
 <?php
 
-\PHPUnit\Command::MAIN_CONST;
+namespace Humbug\PHPUnit;
+
+class Command
+{
+}
+class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
+namespace Humbug;
+
+\Humbug\PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],
@@ -89,11 +129,25 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-\PHPUnit\Command::MAIN_CONST;
+namespace PHPUnit {
+    class Command {}
+}
+
+namespace {
+    \PHPUnit\Command::MAIN_CONST;
+}
 ----
 <?php
 
-\PHPUnit\Command::MAIN_CONST;
+namespace Humbug\PHPUnit;
+
+class Command
+{
+}
+class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
+namespace Humbug;
+
+\Humbug\PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],

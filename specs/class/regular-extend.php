@@ -20,17 +20,19 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
+    'Declaration in the global namespace: prefix only non-internal classes.' => <<<'PHP'
 <?php
 
 class A {
     public function a() {}
 }
 
-class B extends A {
+class B extends A implements Iterator {
 }
 ----
 <?php
+
+namespace Humbug;
 
 class A
 {
@@ -38,7 +40,7 @@ class A
     {
     }
 }
-class B extends \A
+class B extends \Humbug\A implements \Iterator
 {
 }
 
@@ -50,31 +52,34 @@ PHP
 
 namespace Foo;
 
+use Iterator;
+
 class A {
     public function a() {}
 }
 
-class B extends A {
+class B extends A implements Iterator {
 }
 ----
 <?php
 
 namespace Humbug\Foo;
 
+use Iterator;
 class A
 {
     public function a()
     {
     }
 }
-class B extends \Humbug\Foo\A
+class B extends \Humbug\Foo\A implements \Iterator
 {
 }
 
 PHP
     ,
 
-    'Declaration of a namespaced whitelisted class: append aliasing.' => [
+    'Declaration of a whitelisted class: append aliasing.' => [
         'whitelist' => ['Foo\B'],
         'payload' => <<<'PHP'
 <?php
