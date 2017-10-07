@@ -41,4 +41,41 @@ declare (strict_types=1);
 
 PHP
     ,
+
+    [
+        'spec' => <<<'SPEC'
+When resolving fully qualified class names, keep in mind that classes are case insensitive in PHP.
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo {
+    class X {}
+}
+
+namespace {
+    use FOO\x as Y;
+    use Foo\stdClass;
+    
+    var_dump(new y());
+    var_dump(new STDCLASS());
+}
+----
+<?php
+
+namespace Humbug\Foo {
+    class X
+    {
+    }
+}
+namespace {
+    use Humbug\FOO\x as Y;
+    use Humbug\Foo\stdClass;
+    \var_dump(new \Humbug\FOO\x());
+    \var_dump(new \Humbug\Foo\stdClass());
+}
+
+PHP
+    ],
 ];
