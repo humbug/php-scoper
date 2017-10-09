@@ -292,7 +292,10 @@ final class AddPrefixCommand extends BaseCommand
             if (false === file_exists($configFile)) {
                 $initCommand = $this->getApplication()->find('init');
 
-                $initCommand->run(new StringInput(''), $output);
+                $initInput = new StringInput('');
+                $initInput->setInteractive($input->isInteractive());
+
+                $initCommand->run($initInput, $output);
 
                 $io->writeln(
                     sprintf(

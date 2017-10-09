@@ -62,7 +62,7 @@ e2e: e2e_004 e2e_005 e2e_011 e2e_013
 
 e2e_004:	## Run end-to-end tests for the fixture set 004: source code case
 e2e_004: bin/php-scoper.phar
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set004 --output-dir=../../build/set004 --force
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set004 --output-dir=../../build/set004 --force --no-interaction
 	composer --working-dir=build/set004 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set004/box.json.dist
 
@@ -71,7 +71,7 @@ e2e_004: bin/php-scoper.phar
 
 e2e_005:	## Run end-to-end tests for the fixture set 005: third-party code case
 e2e_005: bin/php-scoper.phar fixtures/set005/vendor
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force --no-interaction
 	composer --working-dir=build/set005 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set005/box.json.dist
 
@@ -80,7 +80,7 @@ e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 
 e2e_011:	## Run end-to-end tests for the fixture set 011: whitelist case
 e2e_011: bin/php-scoper.phar fixtures/set011/vendor
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force --no-interaction
 	cp -R fixtures/set011/tests build/set011/
 	composer --working-dir=build/set011 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set011/box.json.dist
@@ -90,7 +90,9 @@ e2e_011: bin/php-scoper.phar fixtures/set011/vendor
 
 e2e_013:	# Run end-to-end tests for the fixture set 013: the init command
 e2e_013: bin/php-scoper.phar
-	$(PHPSCOPER) init --working-dir=fixtures/set013
+	rm -rf build/set013
+	cp -R fixtures/set013 build/set013
+	$(PHPSCOPER) init --working-dir=build/set013 --no-interaction
 	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
 
 tb:		## Run Blackfire profiling
