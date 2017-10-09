@@ -62,7 +62,7 @@ e2e: e2e_004 e2e_005 e2e_011 e2e_013
 
 e2e_004:	## Run end-to-end tests for the fixture set 004: source code case
 e2e_004: bin/php-scoper.phar
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set004 --output-dir=../../build/set004 --force --no-interaction
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set004 --output-dir=../../build/set004 --force --no-config --no-interaction
 	composer --working-dir=build/set004 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set004/box.json.dist
 
@@ -71,7 +71,7 @@ e2e_004: bin/php-scoper.phar
 
 e2e_005:	## Run end-to-end tests for the fixture set 005: third-party code case
 e2e_005: bin/php-scoper.phar fixtures/set005/vendor
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force --no-interaction
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force --no-config --no-interaction
 	composer --working-dir=build/set005 dump-autoload
 	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set005/box.json.dist
 
