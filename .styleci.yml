@@ -11,3 +11,4 @@ disabled:
 finder:
   exclude:
     - 'fixtures'
+    - 'src/check.php'
