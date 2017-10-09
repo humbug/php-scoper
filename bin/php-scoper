@@ -13,7 +13,9 @@
 
 namespace Humbug\PhpScoper;
 
+use Isolated\Symfony\Component\Finder\Finder as IsolatedFinder;
 use RuntimeException;
+use Symfony\Component\Finder\Finder;
 
 $findAutoload = function () {
     if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {
@@ -39,8 +41,8 @@ $autoload = $findAutoload();
 require $autoload;
 
 // Exposes the finder used by PHP-Scoper PHAR to allow its usage in the configuration file.
-if (false === class_exists('Isolated\Symfony\Component\Finder\Finder')) {
-    class_alias('Symfony\Component\Finder\Finder', 'Isolated\Symfony\Component\Finder\Finder');
+if (false === class_exists(IsolatedFinder::class)) {
+    class_alias(Finder::class, IsolatedFinder::class);
 }
 
 $isVeryVerbose = array_reduce(

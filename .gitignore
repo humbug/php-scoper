@@ -6,6 +6,7 @@
 /box.json
 /dist/
 /build/
+/fixtures/set004/scoper.inc.php
 /fixtures/*/vendor
 /vendor/
 /vendor-bin/box/vendor/

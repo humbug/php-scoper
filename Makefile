@@ -29,7 +29,7 @@ build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
 	composer install --no-dev --prefer-dist
 
 	# Prefixes the code to be bundled
-	php -d zend.enable_gc=0 bin/php-scoper add-prefix --prefix=Isolated --output-dir=build/php-scoper --force
+	php -d zend.enable_gc=0 bin/php-scoper add-prefix --output-dir=build/php-scoper --force
 
 	# Re-dump the loader to account for the prefixing
 	# and optimize the loader
