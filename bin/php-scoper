@@ -58,7 +58,7 @@ $isVeryVerbose = array_reduce(
 );
 
 if ('phar:' === substr(__FILE__, 0, 5)) {
-    $checkPassed = check_requirements($autoload, $isVeryVerbose);
+    $checkPassed = check_requirements(__DIR__.'/../composer.json', $isVeryVerbose);
 
     if (false === $checkPassed) {
         exit(1);

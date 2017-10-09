@@ -16,6 +16,10 @@
                 "vendor-bin"
             ],
             "in": "vendor"
+        },
+        {
+            "name": "composer.json",
+            "in": "."
         }
     ],
     "compression": "GZ",

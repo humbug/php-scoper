@@ -19,34 +19,17 @@ use Symfony\Requirements\RequirementCollection;
 
 final class Requirements extends RequirementCollection
 {
-    public function __construct($rootDir)
+    public function __construct($composerJson)
     {
-        $rootDir = $this->getComposerRootDir($rootDir);
-
-        $composerConfig = $this->readComposer($rootDir);
+        $composerConfig = $this->readComposer($composerJson);
 
         $this->addPhpVersionRequirement($composerConfig);
         $this->addExtensionRequirements($composerConfig);
     }
 
-    private function getComposerRootDir($rootDir)
+    private function readComposer($composerJson)
     {
-        $dir = $rootDir;
-
-        while (!file_exists($dir.'/composer.json')) {
-            if ($dir === dirname($dir)) {
-                return $rootDir;
-            }
-
-            $dir = dirname($dir);
-        }
-
-        return $dir;
-    }
-
-    private function readComposer($rootDir)
-    {
-        $composer = json_decode(file_get_contents($rootDir.'/composer.json'), true);
+        $composer = json_decode(file_get_contents($composerJson), true);
 
         return $composer['require'];
     }

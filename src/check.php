@@ -16,15 +16,15 @@ use Humbug\PhpScoper\Autoload\Requirements;
 use Symfony\Requirements\Requirement;
 
 /**
- * @param string $autoload
+ * @param string $composerJson
  * @param bool   $verbose
  *
  * @return bool
  */
-function check_requirements($autoload, $verbose)
+function check_requirements($composerJson, $verbose)
 {
     $lineSize = 70;
-    $requirements = new Requirements(dirname(dirname(realpath($autoload))));
+    $requirements = new Requirements($composerJson);
     $iniPath = $requirements->getPhpIniPath();
 
     $checkPassed = array_reduce(
