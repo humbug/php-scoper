@@ -36,6 +36,9 @@ return [
             'box.json.dist',
         ]),
     ],
+    'whitelist' => [
+        Finder::class,
+    ],
     'patchers' => [
         function (string $filePath, string $prefix, string $content): string {
             //
