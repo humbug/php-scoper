@@ -11,4 +11,5 @@ disabled:
 finder:
   exclude:
     - 'fixtures'
+  notPath:
     - 'src/check.php'
