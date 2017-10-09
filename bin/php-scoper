@@ -37,7 +37,7 @@ $findAutoload = function () {
 
 $autoload = $findAutoload();
 
-require_once $autoload;
+require $autoload;
 
 // Exposes the finder used by PHP-Scoper PHAR to allow its usage in the configuration file.
 if (false === class_exists('Isolated\Symfony\Component\Finder\Finder')) {
@@ -58,13 +58,13 @@ $isVeryVerbose = array_reduce(
     false
 );
 
-//if ('phar:' === substr(__FILE__, 0, 5)) {
+if ('phar:' === substr(__FILE__, 0, 5)) {
     $checkPassed = check_requirements($autoload, $isVeryVerbose);
 
     if (false === $checkPassed) {
         exit(1);
     }
-//}
+}
 
 require __DIR__.'/../src/functions.php';
 
