@@ -17,19 +17,18 @@ namespace Humbug\PhpScoper\Console\Command;
 use Humbug\PhpScoper\Console\Configuration;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
-use InvalidArgumentException;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 
-final class AddPrefixCommand extends Command
+final class AddPrefixCommand extends BaseCommand
 {
     private const PATH_ARG = 'paths';
     private const PREFIX_OPT = 'prefix';
@@ -39,7 +38,6 @@ final class AddPrefixCommand extends Command
     private const CONFIG_FILE_OPT = 'config';
     private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
     private const NO_CONFIG_OPT = 'no-config';
-    private const WORKING_DIR_OPT = 'working-dir';
 
     private $fileSystem;
     private $handle;
@@ -60,6 +58,8 @@ final class AddPrefixCommand extends Command
      */
     protected function configure(): void
     {
+        parent::configure();
+
         $this
             ->setName('add-prefix')
             ->setDescription('Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.')
@@ -113,13 +113,6 @@ final class AddPrefixCommand extends Command
                 ),
                 null
             )
-            ->addOption(
-                self::WORKING_DIR_OPT,
-                'd',
-                InputOption::VALUE_REQUIRED,
-                'If specified, use the given directory as working directory.',
-                null
-            )
         ;
     }
 
@@ -137,7 +130,7 @@ final class AddPrefixCommand extends Command
         $this->validatePaths($input);
         $this->validateOutputDir($input, $io);
 
-        $config = $this->retrieveConfig($input, $io);
+        $config = $this->retrieveConfig($input, $output, $io);
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
@@ -171,32 +164,6 @@ final class AddPrefixCommand extends Command
         $logger->outputScopingEnd();
 
         return 0;
-    }
-
-    private function changeWorkingDirectory(InputInterface $input): void
-    {
-        $workingDir = $input->getOption(self::WORKING_DIR_OPT);
-
-        if (null !== $workingDir) {
-            if (false === file_exists($workingDir)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Could not change the working directory to "%s": directory does not exists.',
-                        $workingDir
-                    )
-                );
-            }
-
-            if (false === chdir($workingDir)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Failed to change the working directory to "%s" from "%s".',
-                        $workingDir,
-                        getcwd()
-                    )
-                );
-            }
-        }
     }
 
     private function validatePrefix(InputInterface $input): void
@@ -306,7 +273,7 @@ final class AddPrefixCommand extends Command
         }
     }
 
-    private function retrieveConfig(InputInterface $input, OutputStyle $io): Configuration
+    private function retrieveConfig(InputInterface $input, OutputInterface $output, OutputStyle $io): Configuration
     {
         if ($input->getOption(self::NO_CONFIG_OPT)) {
             $io->writeln(
@@ -323,6 +290,13 @@ final class AddPrefixCommand extends Command
             $configFile = $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT);
 
             if (false === file_exists($configFile)) {
+                $initCommand = $this->getApplication()->find('init');
+
+                $initInput = new StringInput('');
+                $initInput->setInteractive($input->isInteractive());
+
+                $initCommand->run($initInput, $output);
+
                 $io->writeln(
                     sprintf(
                         'Config file "<comment>%s</comment>" not found. Skipping.',

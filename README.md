@@ -44,7 +44,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ## Installation
 
 
-### PHAR (preferred)
+### PHAR (preferred) [NOT SUPPORTED YET]
 
 The preferred method of installation is to use the PHP-Scoper PHAR, which can
 be downloaded from the most recent [Github Release](releases). Subsequent updates
@@ -103,8 +103,9 @@ PHP-Scoper's makefile.
 
 ## Configuration
 
-By default, PHP-Scoper will look for the file `scoper.inc.php` in the current
-working directory:
+If you need more granular configuration, you can create a `scoper.inc.php` by
+running the command `php-scoper init`. A different file/location can be passed
+with a `--config` option.
 
 ```php
 <?php declare(strict_types=1);

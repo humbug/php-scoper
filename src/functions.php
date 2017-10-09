@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
+use Humbug\PhpScoper\Console\Command\InitCommand;
 use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
 use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
@@ -48,6 +49,7 @@ function create_application(): SymfonyApplication
                 create_scoper()
             )
         ),
+        new InitCommand(),
     ]);
 
     if ('phar:' === substr(__FILE__, 0, 5)) {
