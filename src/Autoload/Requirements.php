@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -17,6 +15,10 @@ namespace Humbug\PhpScoper\Autoload;
 use Composer\Semver\Semver;
 use Symfony\Requirements\RequirementCollection;
 
+/**
+ * Collect the list of requirements for running the project. Code in this file must be PHP 5.3+ compatible as is used
+ * to know if PHP-Scoper can be run or not.
+ */
 final class Requirements extends RequirementCollection
 {
     public function __construct($composerJson)

@@ -15,6 +15,10 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Autoload\Requirements;
 use Symfony\Requirements\Requirement;
 
+//
+// Code in this file must be PHP 5.3+ compatible as is used to know if PHP-Scoper can be run or not.
+//
+
 /**
  * @param string $composerJson
  * @param bool   $verbose
