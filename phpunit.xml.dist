@@ -11,12 +11,11 @@ file that was distributed with this source code.
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/6.0/phpunit.xsd"
-         backupGlobals="false"
-         bootstrap="vendor/autoload.php"
+         bootstrap="tests/autoload.php"
          colors="true"
 >
     <testsuites>
-        <testsuite name="Webmozart PHP-Scoper Test Suite">
+        <testsuite name="PHP-Scoper Test Suite">
             <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>

@@ -11,3 +11,6 @@ disabled:
 finder:
   exclude:
     - 'fixtures'
+  not-path:
+    - 'src/check.php'
+    - 'src/Autoload/Requirements.php'

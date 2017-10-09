@@ -2,9 +2,10 @@
 <?php
 
 /*
- * This file is part of the webmozart/php-scoper package.
+ * This file is part of the humbug/php-scoper package.
  *
- * (c) Bernhard Schussek <bschussek@gmail.com>
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +13,9 @@
 
 namespace Humbug\PhpScoper;
 
-$autoload = (function () {
+use RuntimeException;
+
+$findAutoload = function () {
     if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {
         // Is installed via composer
         return $autoload;
@@ -23,13 +26,49 @@ $autoload = (function () {
         return $autoload;
     }
 
-    return __DIR__.'/../vendor/autoload.php';
-})();
+    if (file_exists($autoload = __DIR__.'/../vendor/autoload.php')) {
+        // Is installed locally
+        return $autoload;
+    }
 
-require_once $autoload;
+    throw new RuntimeException('Unable to find the Composer or PHP-Scoper autoloader.');
+};
 
+$autoload = $findAutoload();
+
+require $autoload;
+
+// Exposes the finder used by PHP-Scoper PHAR to allow its usage in the configuration file.
 if (false === class_exists('Isolated\Symfony\Component\Finder\Finder')) {
     class_alias('Symfony\Component\Finder\Finder', 'Isolated\Symfony\Component\Finder\Finder');
+}
+
+$isVeryVerbose = array_reduce(
+    $argv,
+    /**
+     * @param bool $isVeryVerbose
+     * @param string $param
+     *
+     * @return bool
+     */
+    function ($isVeryVerbose, $arg) {
+        return $isVeryVerbose || '-vv' === $arg || '-vvv' === $arg;
+    },
+    false
+);
+
+if ('phar:' === substr(__FILE__, 0, 5)) {
+    $checkPassed = check_requirements(__DIR__.'/../composer.json', $isVeryVerbose);
+
+    if (false === $checkPassed) {
+        exit(1);
+    }
+}
+
+require __DIR__.'/../src/functions.php';
+
+if (file_exists(__DIR__.'/../tests/functions.php')) {
+    require __DIR__.'/../tests/functions.php';
 }
 
 $app = create_application();
