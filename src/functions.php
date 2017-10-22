@@ -130,34 +130,32 @@ function get_common_path(array $paths): string
         return '';
     }
 
-    $lastOffset = 1;
-    $common = DIRECTORY_SEPARATOR;
+    $sort_by_strlen = create_function('$a, $b', 'if (strlen($a) == strlen($b)) { return strcmp($a, $b); } return (strlen($a) < strlen($b)) ? -1 : 1;');
+    usort($paths, $sort_by_strlen);
+    
+    $longest_common_substring = array();
+    $shortest_string = str_split(array_shift($paths));
 
-    while (false !== ($index = strpos($paths[0], DIRECTORY_SEPARATOR, $lastOffset))) {
-        $dirLen = $index - $lastOffset + 1;
-        $dir = substr($paths[0], $lastOffset, $dirLen);
+    while (sizeof($shortest_string)) {
+        array_unshift($longest_common_substring, '');
 
-        foreach ($paths as $path) {
-            if (substr($path, $lastOffset, $dirLen) !== $dir) {
-                if (0 < strlen($common) && DIRECTORY_SEPARATOR === $common[strlen($common) - 1]) {
-                    $common = substr($common, 0, strlen($common) - 1);
+        foreach ($shortest_string as $ci => $char) {
+
+            foreach ($paths as $wi => $word) {
+                if (!strstr($word, $longest_common_substring[0] . $char)) {
+                    break 2;
                 }
-
-                return $common;
             }
+
+            $longest_common_substring[0].= $char;
         }
 
-        $common .= $dir;
-        $lastOffset = $index + 1;
+        array_shift($shortest_string);
     }
 
-    $common = substr($common, 0, -1);
+    usort($longest_common_substring, $sort_by_strlen);
 
-    if (0 < strlen($common) && DIRECTORY_SEPARATOR === $common[strlen($common) - 1]) {
-        $common = substr($common, 0, strlen($common) - 1);
-    }
-
-    return $common;
+    return rtrim(array_pop($longest_common_substring), DIRECTORY_SEPARATOR);
 }
 
 /**
