@@ -74,18 +74,6 @@ function create_application(): SymfonyApplication
  */
 function get_version(): string
 {
-    if ('phar:' === substr(__FILE__, 0, 5)) {
-        $gitVersion = '@git-version@';
-        $semanticVersion = preg_replace(
-            ["/\.\d\-/", "/\-/"],
-            ['-', '-dev+'],
-            $gitVersion,
-            1
-        );
-
-        return $semanticVersion;
-    }
-
     $rawVersion = Versions::getVersion('humbug/php-scoper');
 
     list($prettyVersion, $commitHash) = explode('@', $rawVersion);
