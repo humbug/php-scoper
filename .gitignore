@@ -10,3 +10,4 @@
 /vendor-bin/box/vendor/
 /.travis/
 !/.travis/.gitkeep
+!/.travis/secrets.tar.enc
