@@ -70,13 +70,13 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
 
         if (1 === count($use->name->parts)) {
             return
-                $useType !== Use_::TYPE_NORMAL
+                Use_::TYPE_NORMAL !== $useType
                 || ($this->globalWhitelister)($use->name->getFirst())
             ;
         }
 
         return false === (
-            $useType === Use_::TYPE_NORMAL
+            Use_::TYPE_NORMAL === $useType
             && in_array((string) $use->name, $this->whitelist)
         );
     }

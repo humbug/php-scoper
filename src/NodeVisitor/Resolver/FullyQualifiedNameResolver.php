@@ -68,7 +68,7 @@ final class FullyQualifiedNameResolver
 
         if (
             ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)
-            && count($name->parts) === 1
+            && 1 === count($name->parts)
         ) {
             // Ambiguous name, cannot determine the FQ name
             return $name;

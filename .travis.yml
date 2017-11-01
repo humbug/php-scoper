@@ -35,5 +35,19 @@ script:
         make tu
     fi
 
+deploy:
+  provider: releases
+  api_key:
+    secure: zFEfQrogmKsNB+6Y3B8df4cDtfOhaH7DpdOY6AzV9l/YnCVsO8zkFXdNUOynC4FxN82KSjEK9jP8dX9FgS4O8gdLMfWxp4eutvrxBYDazdiFJxRQMiE9O77jAnpcmxpsvNxzY+tNqUduAkaj3dj0uRuD5yttBhaVArosUEyRuhdIoGorfzooY3Q0zqzEy/dpm2EqJ2orXOvVmxreKyVgybalkHktEGNaPDaMgEMsfoIRNeHPP8yRmUw7uIYzbXOvIRXzeulNrBpe2GFhs9fwf3QjDJGDBJG1/Xw39+PV2elJDIQDLMUNQcQu/Uw+gpoUwXzr5VSL+HVgPizzSpvkcBU2YxoY6d3EAcjb0gH9RPC3qP/Kvy9qdON1kEBUarI3WiIpYTMPbatjB2KAIpo6x9njHqbkwKtzrfTBr2QaC72/vUJ0+HmOnJEtrqffqbUDCdltbuQr1P/mJ3RoIkMHZLJtlBzMmgBMA6q1XoGJ7z9ZJINvKc8FBsBoDMTH8Hyr2fNMLWogvEcNW44CmiQXqOuoyg/OCRA0zGaZ6nr7zGWn7PdhfkauWWIwZYZmDnb4Gbibj4Q97E9p8ZFE3jCWXgqCdiVfDyQX4CdrJsRgSFlQl5dm75uh5VJg24dqQLt4qeLWlBpwpI9CWJZNseQpblYxoH8RwhdDr4LLgMUrrK0=
+  file:
+    - bin/php-scoper.phar
+    - bin/php-scoper.phar.pubkey
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: humbug/php-scoper
+    php:  '7.1'
+    condition: "$COVERAGE"
+
 notifications:
     email: false

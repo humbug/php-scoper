@@ -22,6 +22,8 @@
             "in": "."
         }
     ],
+    "algorithm": "OPENSSL",
+    "key": ".travis/php-scoper-private.pem",
     "compression": "GZ",
     "compactors": [
         "Herrera\\Box\\Compactor\\Json",
