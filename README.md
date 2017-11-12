@@ -47,7 +47,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ### PHAR (preferred)
 
 The preferred method of installation is to use the PHP-Scoper PHAR, which can
-be downloaded from the most recent [Github Release](releases). Subsequent updates
+be downloaded from the most recent [Github Release][releases]. Subsequent updates
 can be downloaded by running:
 
 ```bash
@@ -387,3 +387,4 @@ now been moved under the
 [humbug]: https://github.com/humbug
 [releases]: https://github.com/humbug/php-scoper/releases
 [symfony_finder]: https://symfony.com/doc/current/components/finder.html
+[releases]: https://github.com/humbug/php-scoper/releases
