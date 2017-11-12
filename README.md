@@ -44,7 +44,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ## Installation
 
 
-### PHAR (preferred) [NOT SUPPORTED YET]
+### PHAR (preferred)
 
 The preferred method of installation is to use the PHP-Scoper PHAR, which can
 be downloaded from the most recent [Github Release](releases). Subsequent updates
