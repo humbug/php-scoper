@@ -21,7 +21,7 @@ clean:
 	git clean --exclude=.idea/ -fdx
 
 build:		## Build the PHAR
-build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php
+build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
 	# Cleanup existing artefacts
 	rm -f bin/php-scoper.phar
 
@@ -145,3 +145,6 @@ fixtures/set011/composer.lock: fixtures/set011/composer.json
 
 bin/php-scoper.phar:
 	$(MAKE) build
+
+box.json:
+	cat box.json.dist | sed -E 's/\"key\": \".+\",//g' | sed -E 's/\"algorithm\": \".+\",//g' > box.json

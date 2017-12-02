@@ -107,10 +107,7 @@ final class AddPrefixCommand extends BaseCommand
                 self::NO_CONFIG_OPT,
                 null,
                 InputOption::VALUE_NONE,
-                sprintf(
-                    'Do not look for a configuration file.',
-                    self::CONFIG_FILE_DEFAULT
-                ),
+            'Do not look for a configuration file.',
                 null
             )
         ;
