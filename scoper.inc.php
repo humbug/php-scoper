@@ -32,7 +32,8 @@ return [
             ->in('vendor'),
         Finder::create()->append([
             'bin/php-scoper',
-            'composer.json'
+            'composer.json',
+            'box.json.dist',
         ]),
     ],
     'whitelist' => [
