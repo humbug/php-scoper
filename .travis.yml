@@ -2,11 +2,6 @@ language: php
 
 sudo: false
 
-branches:
-  only:
-    - master
-    - /^\d+\.\d+\.\d+$/
-
 cache:
   directories:
     - $HOME/.composer/cache/files
