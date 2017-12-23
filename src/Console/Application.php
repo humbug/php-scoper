@@ -31,7 +31,7 @@ final class Application extends SymfonyApplication
 ASCII;
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
     public function getLongVersion(): string
     {

@@ -100,18 +100,13 @@ final class AddPrefixCommand extends BaseCommand
                 sprintf(
                     'Configuration file. Will use "%s" if found by default.',
                     self::CONFIG_FILE_DEFAULT
-                ),
-                null
+                )
             )
             ->addOption(
                 self::NO_CONFIG_OPT,
                 null,
                 InputOption::VALUE_NONE,
-                sprintf(
-                    'Do not look for a configuration file.',
-                    self::CONFIG_FILE_DEFAULT
-                ),
-                null
+            'Do not look for a configuration file.'
             )
         ;
     }
