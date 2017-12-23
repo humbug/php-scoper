@@ -44,7 +44,7 @@ final class Requirements extends RequirementCollection
         $this->addRequirement(
             Semver::satisfies(phpversion(), $requiredPhpVersion),
             sprintf(
-                'PHP version must satisfies "%s" ("%s" installed)',
+                'PHP version must satisfy "%s" ("%s" installed)',
                 $requiredPhpVersion,
                 $installedPhpVersion
             ),
