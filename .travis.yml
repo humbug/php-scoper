@@ -17,7 +17,6 @@ matrix:
   fast_finish: true
 
 before_install:
-    - set -euof pipefail
     - phpenv config-rm xdebug.ini || true
     - |
       if [ 'false' == "$TRAVIS_PULL_REQUEST" ]; then
