@@ -33,7 +33,6 @@ use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Filesystem\Filesystem;
-use UnexpectedValueException;
 
 /**
  * @private

@@ -62,6 +62,32 @@ class A
 PHP
     ,
 
+    'Declaration of a namespaced whitelisted class: append aliasing.' => [
+        'whitelist' => ['Foo\A'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Humbug\Foo;
+
+class A {
+    public function a() {}
+}
+----
+<?php
+
+namespace Humbug\Foo;
+
+class A
+{
+    public function a()
+    {
+    }
+}
+class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+PHP
+        ],
+
     'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
 <?php
 
