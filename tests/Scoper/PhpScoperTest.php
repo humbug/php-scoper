@@ -200,8 +200,6 @@ PHP;
 
     public function test_can_scope_PHP_binary_files()
     {
-        $this->markTestIncomplete('TODO');
-
         $prefix = 'Humbug';
         $filePath = escape_path($this->tmp.'/hello');
         $patchers = [create_fake_patcher()];
@@ -220,7 +218,7 @@ PHP;
 
         $expected = <<<'PHP'
 #!/usr/bin/env php
-<?php
+<?php 
 echo "Hello world";
 
 PHP;
