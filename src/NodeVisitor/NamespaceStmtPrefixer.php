@@ -38,18 +38,15 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
     private $namespaceStatements;
-    private $whitelist;
 
     /**
      * @param string                  $prefix
      * @param NamespaceStmtCollection $namespaceStatements
-     * @param string[]                $whitelist
      */
-    public function __construct(string $prefix, NamespaceStmtCollection $namespaceStatements, array $whitelist)
+    public function __construct(string $prefix, NamespaceStmtCollection $namespaceStatements)
     {
         $this->prefix = $prefix;
         $this->namespaceStatements = $namespaceStatements;
-        $this->whitelist = $whitelist;
     }
 
     /**
