@@ -14,15 +14,15 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title'     => 'Namespace declaration creation for whitelisted classes',
+        'title' => 'Namespace declaration creation for whitelisted classes',
         // Default values. If not specified will be the one used
-        'prefix'    => 'Humbug',
+        'prefix' => 'Humbug',
         'whitelist' => [
         ],
     ],
 
     [
-        'spec'    => <<<'SPEC'
+        'spec' => <<<'SPEC'
 Single class should receive namespace
 SPEC
         ,
@@ -46,7 +46,7 @@ PHP
     ],
 
     [
-        'spec'    => <<<'SPEC'
+        'spec' => <<<'SPEC'
 Multiple classes should all receive namespace in the same file
 SPEC
         ,

@@ -16,13 +16,12 @@ namespace Humbug\PhpScoper\NodeVisitor;
 
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use PhpParser\Node;
-
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\NodeVisitorAbstract;
 
 /**
- * Creates a namespace for whitelisted classes
+ * Creates a namespace for whitelisted classes.
  *
  * ```
  * class AppKernel {}
@@ -39,7 +38,9 @@ use PhpParser\Node\Stmt\Namespace_;
 final class NamespaceStmtCreator extends NodeVisitorAbstract
 {
     private $prefix;
+
     private $namespaceStatements;
+
     private $globalWhitelister;
 
     /**
@@ -54,9 +55,9 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
         NamespaceStmtCollection $namespaceStatements,
         callable $globalWhitelister
     ) {
-        $this->prefix              = $prefix;
+        $this->prefix = $prefix;
         $this->namespaceStatements = $namespaceStatements;
-        $this->globalWhitelister   = $globalWhitelister;
+        $this->globalWhitelister = $globalWhitelister;
     }
 
     /**
@@ -85,7 +86,7 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
             return $node;
         }
 
-        if (! ($this->globalWhitelister)($node->name)) {
+        if (!($this->globalWhitelister)($node->name)) {
             return $node;
         }
 
