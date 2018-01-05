@@ -37,6 +37,7 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class NamespaceStmtCreator extends NodeVisitorAbstract
 {
+    protected $has_class_definition = false;
     private $prefix;
 
     private $namespaceStatements;
@@ -44,18 +45,44 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     private $globalWhitelister;
 
     /**
-     * @param string                  $prefix
+     * @param string $prefix
      * @param NamespaceStmtCollection $namespaceStatements
-     * @param callable                $globalWhitelister
+     * @param callable $globalWhitelister
      */
     public function __construct(
         string $prefix,
         NamespaceStmtCollection $namespaceStatements,
         callable $globalWhitelister
     ) {
-        $this->prefix = $prefix;
+        $this->prefix              = $prefix;
         $this->namespaceStatements = $namespaceStatements;
-        $this->globalWhitelister = $globalWhitelister;
+        $this->globalWhitelister   = $globalWhitelister;
+    }
+
+    public function beforeTraverse(array $nodes)
+    {
+        $classes = array_filter($nodes, function ($node) {
+            return $node instanceof Class_;
+        });
+
+        if (empty($classes)) {
+            return;
+        }
+
+        // Group and prepare classes.
+        $classes = array_filter($classes, function ($class_node) {
+            if (null === $class_node->name) {
+                return false;
+            }
+
+            return ($this->globalWhitelister)($class_node->name);
+        });
+
+        if (empty($classes)) {
+            return;
+        }
+
+        $this->has_class_definition = true;
     }
 
     /**
@@ -63,9 +90,12 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
      */
     public function leaveNode(Node $node)
     {
-        return ($node instanceof Class_)
-            ? $this->addNamespaceStmt($node)
-            : $node;
+        if (! $this->has_class_definition) {
+            return $node;
+        }
+
+
+        return $this->wrapClassNamespace($node);
     }
 
     /**
@@ -73,19 +103,27 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
      *
      * @return Node
      */
-    private function addNamespaceStmt(Class_ $node): Node
+    private function wrapClassNamespace(Node $node): Node
     {
         $namespace = $this->namespaceStatements->findNamespaceForNode($node);
         if (null !== $namespace) {
             return $node;
         }
 
+        if (true === AppendParentNode::hasParent($node)) {
+            return $node;
+        }
+
+        if (! ($node instanceof Class_)) {
+            return new Namespace_(null, [$node]);
+        }
+
         if (null === $node->name) {
             return $node;
         }
 
-        if (!($this->globalWhitelister)($node->name)) {
-            return $node;
+        if (! ($this->globalWhitelister)($node->name)) {
+            return new Namespace_(null, [$node]);
         }
 
         return new Namespace_(new Node\Name($this->prefix), [$node]);

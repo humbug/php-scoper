@@ -53,6 +53,11 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
+define( 'hoi', 'doei' );
+
+function a() {
+}
+
 class AppKernel
 {
 }
