@@ -44,11 +44,9 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     private $globalWhitelister;
 
     /**
-     *
-     *
-     * @param string $prefix
+     * @param string                  $prefix
      * @param NamespaceStmtCollection $namespaceStatements
-     * @param callable $globalWhitelister
+     * @param callable                $globalWhitelister
      */
     public function __construct(
         string $prefix,
@@ -92,5 +90,4 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
 
         return new Namespace_(new Node\Name($this->prefix), [$node]);
     }
-
 }
