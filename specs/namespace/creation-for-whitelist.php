@@ -13,20 +13,20 @@ declare(strict_types=1);
  */
 
 return [
-	'meta' => [
-		'title' => 'Namespace declaration creation for whitelisted classes',
-		// Default values. If not specified will be the one used
-		'prefix' => 'Humbug',
-		'whitelist' => [
-		],
-	],
+    'meta' => [
+        'title'     => 'Namespace declaration creation for whitelisted classes',
+        // Default values. If not specified will be the one used
+        'prefix'    => 'Humbug',
+        'whitelist' => [
+        ],
+    ],
 
-	[
-		'spec' => <<<'SPEC'
+    [
+        'spec'    => <<<'SPEC'
 Single class should receive namespace
 SPEC
-		,
-		'payload' => <<<'PHP'
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 class AppKernel
@@ -43,14 +43,14 @@ class AppKernel
 }
 
 PHP
-	],
+    ],
 
-	[
-		'spec' => <<<'SPEC'
+    [
+        'spec'    => <<<'SPEC'
 Multiple classes should all receive namespace in the same file
 SPEC
-		,
-		'payload' => <<<'PHP'
+        ,
+        'payload' => <<<'PHP'
 <?php
 
 class AppKernel
@@ -81,6 +81,6 @@ class AppKernalOther2
 }
 
 PHP
-	],
+    ],
 
 ];
