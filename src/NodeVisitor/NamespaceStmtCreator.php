@@ -38,54 +38,58 @@ use PhpParser\Node\Stmt\Namespace_;
  */
 final class NamespaceStmtCreator extends NodeVisitorAbstract
 {
-	private $prefix;
-	private $namespaceStatements;
-	private $globalWhitelister;
+    private $prefix;
+    private $namespaceStatements;
+    private $globalWhitelister;
 
-	/**
-	 *
-	 *
-	 * @param string                  $prefix
-	 * @param NamespaceStmtCollection $namespaceStatements
-	 * @param callable                $globalWhitelister
-	 */
-	public function __construct(string $prefix, NamespaceStmtCollection $namespaceStatements, callable $globalWhitelister)
-	{
-		$this->prefix = $prefix;
-		$this->namespaceStatements = $namespaceStatements;
-		$this->globalWhitelister = $globalWhitelister;
-	}
+    /**
+     *
+     *
+     * @param string $prefix
+     * @param NamespaceStmtCollection $namespaceStatements
+     * @param callable $globalWhitelister
+     */
+    public function __construct(
+        string $prefix,
+        NamespaceStmtCollection $namespaceStatements,
+        callable $globalWhitelister
+    ) {
+        $this->prefix              = $prefix;
+        $this->namespaceStatements = $namespaceStatements;
+        $this->globalWhitelister   = $globalWhitelister;
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function leaveNode(Node $node)
-	{
-		return ($node instanceof Class_)
-			? $this->addNamespaceStmt($node)
-			: $node;
-	}
+    /**
+     * @inheritdoc
+     */
+    public function leaveNode(Node $node)
+    {
+        return ($node instanceof Class_)
+            ? $this->addNamespaceStmt($node)
+            : $node;
+    }
 
-	/**
-	 * @param Class_ $node
-	 *
-	 * @return Node
-	 */
-	private function addNamespaceStmt( Class_ $node ): Node {
-		$namespace = $this->namespaceStatements->findNamespaceForNode( $node );
-		if ( null !== $namespace ) {
-			return $node;
-		}
+    /**
+     * @param Class_ $node
+     *
+     * @return Node
+     */
+    private function addNamespaceStmt(Class_ $node): Node
+    {
+        $namespace = $this->namespaceStatements->findNamespaceForNode($node);
+        if (null !== $namespace) {
+            return $node;
+        }
 
-		if ( null === $node->name) {
-			return $node;
-		}
+        if (null === $node->name) {
+            return $node;
+        }
 
-		if ( ! ($this->globalWhitelister)($node->name) ) {
-			return $node;
-		}
+        if (! ($this->globalWhitelister)($node->name)) {
+            return $node;
+        }
 
-		return new Namespace_( new Node\Name($this->prefix), [ $node ] );
-	}
+        return new Namespace_(new Node\Name($this->prefix), [$node]);
+    }
 
 }
