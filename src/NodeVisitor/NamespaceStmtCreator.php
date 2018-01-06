@@ -85,10 +85,6 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
      */
     private function wrapClassNamespace(Node $node): Node
     {
-        if ($this->hasNamespace($node)) {
-            return $node;
-        }
-
         if (AppendParentNode::hasParent($node)) {
             return $node;
         }
@@ -103,14 +99,6 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
 
         // Anything else needs to be wrapped with global namespace.
         return new Namespace_(null, [$node]);
-    }
-
-    /**
-     * @return bool
-     */
-    private function hasNamespace(Node $node): bool
-    {
-        return null !== $this->namespaceStatements->findNamespaceForNode($node);
     }
 
     /**
