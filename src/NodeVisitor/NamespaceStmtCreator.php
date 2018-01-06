@@ -97,6 +97,9 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     }
 
     /**
+     * @param Node[] $nodes
+     *
+     * @return bool
      */
     private function hasWhitelistedNode(array $nodes): bool
     {
