@@ -60,6 +60,22 @@ abstract class AppKernel
 PHP
     ,
 
+    'Final class declaration should be prefixed.' => <<<'PHP'
+<?php
+
+final class AppKernel {}
+----
+<?php
+
+namespace Humbug;
+
+final class AppKernel
+{
+}
+
+PHP
+    ,
+
     'Interfaces can be whitelisted too.' => <<<'PHP'
 <?php
 
