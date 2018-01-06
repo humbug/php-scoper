@@ -56,8 +56,7 @@ class TraverserFactory
 
         $traverser->addVisitor(new NodeVisitor\AppendParentNode());
 
-        $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements));
-        $traverser->addVisitor(new NodeVisitor\NamespaceStmtCreator($prefix, $globalWhitelister));
+        $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements, $globalWhitelister));
 
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $globalWhitelister));

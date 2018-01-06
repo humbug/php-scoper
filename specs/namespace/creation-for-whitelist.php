@@ -263,4 +263,40 @@ namespace Humbug {
 
 PHP
     ,
+
+    'Traits in different namespace.' => <<<'PHP'
+<?php
+
+namespace Foo {
+    trait SomeTrait{}
+}
+
+namespace {
+    class AppKernel{}
+}
+
+namespace {
+    class Bla{}
+}
+
+----
+<?php
+
+namespace Humbug\Foo {
+    trait SomeTrait
+    {
+    }
+}
+namespace Humbug {
+    class AppKernel
+    {
+    }
+}
+namespace {
+    class Bla
+    {
+    }
+}
+
+PHP
 ];
