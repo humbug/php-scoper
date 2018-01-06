@@ -59,7 +59,7 @@ interface AppKernel
 PHP
     ,
 
-    'Multiple classes should all receive namespace in the same file' => <<<'PHP'
+    'Multiple classes should all receive namespace in the same file.' => <<<'PHP'
 <?php
 
 class AppKernalOther2
@@ -89,6 +89,43 @@ namespace Humbug {
 }
 namespace {
     class AppKernalOther
+    {
+    }
+}
+
+PHP
+    ,
+
+    'Multiple interfaces should all receive namespace in the same file.' => <<<'PHP'
+<?php
+
+interface AppKernel
+{
+}
+
+class AppKernalOther
+{
+}
+
+interface SomeInterface
+{
+}
+
+----
+<?php
+
+namespace Humbug {
+    interface AppKernel
+    {
+    }
+}
+namespace {
+    class AppKernalOther
+    {
+    }
+}
+namespace {
+    interface SomeInterface
     {
     }
 }
