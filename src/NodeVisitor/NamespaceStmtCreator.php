@@ -37,8 +37,9 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class NamespaceStmtCreator extends NodeVisitorAbstract
 {
-    protected $has_class_definition = false;
     private $prefix;
+
+    private $hasWhitelistedClass;
 
     private $namespaceStatements;
 
@@ -59,30 +60,19 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
         $this->globalWhitelister   = $globalWhitelister;
     }
 
-    public function beforeTraverse(array $nodes)
+    /**
+     * @param array $nodes
+     *
+     * @return void
+     */
+    public function beforeTraverse(array $nodes): void
     {
-        $classes = array_filter($nodes, function ($node) {
-            return $node instanceof Class_;
-        });
-
+        $classes = $this->getClasses($nodes);
         if (empty($classes)) {
             return;
         }
 
-        // Group and prepare classes.
-        $classes = array_filter($classes, function ($class_node) {
-            if (null === $class_node->name) {
-                return false;
-            }
-
-            return ($this->globalWhitelister)($class_node->name);
-        });
-
-        if (empty($classes)) {
-            return;
-        }
-
-        $this->has_class_definition = true;
+        $this->hasWhitelistedClass = $this->hasWhitelistedClass($classes);
     }
 
     /**
@@ -90,7 +80,7 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
      */
     public function leaveNode(Node $node)
     {
-        if (! $this->has_class_definition) {
+        if (! $this->hasWhitelistedClass) {
             return $node;
         }
 
@@ -99,18 +89,17 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     }
 
     /**
-     * @param Class_ $node
+     * @param Node $node
      *
      * @return Node
      */
     private function wrapClassNamespace(Node $node): Node
     {
-        $namespace = $this->namespaceStatements->findNamespaceForNode($node);
-        if (null !== $namespace) {
+        if ($this->hasNamespace($node)) {
             return $node;
         }
 
-        if (true === AppendParentNode::hasParent($node)) {
+        if (AppendParentNode::hasParent($node)) {
             return $node;
         }
 
@@ -118,14 +107,54 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
             return new Namespace_(null, [$node]);
         }
 
-        if (null === $node->name) {
-            return $node;
+        // Whitelisted classes need to be wrapped with prefix namespace.
+        if (null !== $node->name && ($this->globalWhitelister)($node->name)) {
+            return new Namespace_(new Node\Name($this->prefix), [$node]);
         }
 
-        if (! ($this->globalWhitelister)($node->name)) {
-            return new Namespace_(null, [$node]);
-        }
+        // Anything else needs to be wrapped with global namespace.
+        return new Namespace_(null, [$node]);
+    }
 
-        return new Namespace_(new Node\Name($this->prefix), [$node]);
+    /**
+     * @param Node $node
+     *
+     * @return bool
+     */
+    private function hasNamespace(Node $node): bool
+    {
+        return (null !== $this->namespaceStatements->findNamespaceForNode($node));
+    }
+
+    /**
+     * @param $classes
+     *
+     * @return bool
+     */
+    private function hasWhitelistedClass(array $classes): bool
+    {
+        $classes = array_filter($classes, function ($class_node) {
+            if (null === $class_node->name) {
+                return false;
+            }
+
+            return ($this->globalWhitelister)($class_node->name);
+        });
+
+        return ! empty($classes);
+    }
+
+    /**
+     * @param array $nodes
+     *
+     * @return array
+     */
+    private function getClasses(array $nodes): array
+    {
+        $classes = array_filter($nodes, function ($node) {
+            return $node instanceof Class_;
+        });
+
+        return $classes;
     }
 }

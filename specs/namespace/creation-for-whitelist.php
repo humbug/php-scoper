@@ -53,9 +53,8 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-define( 'hoi', 'doei' );
-
-function a() {
+class AppKernalOther2
+{
 }
 
 class AppKernel
@@ -63,26 +62,55 @@ class AppKernel
 }
 
 class AppKernalOther
-{
-}
-
-class AppKernalOther2
 {
 }
 
 ----
 <?php
 
-namespace Humbug;
+namespace {
+    class AppKernalOther2
+    {
+    }
+}
+namespace Humbug {
+    class AppKernel
+    {
+    }
+}
+namespace {
+    class AppKernalOther
+    {
+    }
+}
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Defines should be wrapped in namespace alongside whitelisted class.
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+define( "MY_DEFINE", "value" );
 
 class AppKernel
 {
 }
-class AppKernalOther
-{
+
+----
+<?php
+
+namespace {
+    \define("MY_DEFINE", "value");
 }
-class AppKernalOther2
-{
+namespace Humbug {
+    class AppKernel
+    {
+    }
 }
 
 PHP
