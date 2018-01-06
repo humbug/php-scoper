@@ -137,11 +137,8 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
             return true;
         }
 
-        if ($node instanceof Namespace_) {
-            if (null !== $node->name) {
-                return false;
-            }
-
+        // Check nodes in the global namespaces.
+        if ($node instanceof Namespace_ && null === $node->name) {
             foreach ($node->stmts as $statement) {
                 if ($this->isWhitelistedNode($statement)) {
                     return true;
