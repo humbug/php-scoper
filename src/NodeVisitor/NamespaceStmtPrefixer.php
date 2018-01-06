@@ -44,18 +44,18 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     private $globalWhitelister;
 
     /**
-     * @param string $prefix
+     * @param string                  $prefix
      * @param NamespaceStmtCollection $namespaceStatements
-     * @param callable $globalWhitelister
+     * @param callable                $globalWhitelister
      */
     public function __construct(
         string $prefix,
         NamespaceStmtCollection $namespaceStatements,
         callable $globalWhitelister
     ) {
-        $this->prefix              = $prefix;
+        $this->prefix = $prefix;
         $this->namespaceStatements = $namespaceStatements;
-        $this->globalWhitelister   = $globalWhitelister;
+        $this->globalWhitelister = $globalWhitelister;
     }
 
     /**
@@ -82,7 +82,7 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     public function leaveNode(Node $node)
     {
         return (
-            ! $this->hasWhitelistedNode
+            !$this->hasWhitelistedNode
             || $node instanceof Namespace_
             || AppendParentNode::hasParent($node)
         ) ? $node : $this->wrapNamespace($node);

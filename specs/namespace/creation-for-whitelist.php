@@ -17,9 +17,7 @@ return [
         'title' => 'Namespace declaration creation for whitelisted classes which belong to the global namespace.',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [
-            'Whitelisted'
-        ],
+        'whitelist' => [],
     ],
 
     'Single class should receive namespace' => <<<'PHP'
