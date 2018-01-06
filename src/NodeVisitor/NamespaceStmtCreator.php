@@ -77,7 +77,6 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     }
 
     /**
-     * @return Node
      */
     private function wrapClassNamespace(Node $node): Node
     {
@@ -98,9 +97,6 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     }
 
     /**
-     * @param Node[] $nodes List of nodes to find whitelisted nodes from.
-     *
-     * @return bool
      */
     private function hasWhitelistedNode(array $nodes): bool
     {
@@ -112,7 +108,6 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     }
 
     /**
-     * @return bool
      */
     private function isWhitelistableNode(Node $node): bool
     {
