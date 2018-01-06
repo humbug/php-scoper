@@ -18,6 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [
+            'Whitelisted'
         ],
     ],
 
@@ -147,6 +148,77 @@ class AppKernel
 
 namespace {
     \define("MY_DEFINE", "value");
+}
+namespace Humbug {
+    class AppKernel
+    {
+    }
+}
+
+PHP
+    ,
+
+    'Make sure anonymous classes are not wrapped.' => <<<'PHP'
+<?php
+
+new class {};
+
+class AppKernel
+{
+}
+
+----
+<?php
+
+namespace {
+    new class
+    {
+    };
+}
+namespace Humbug {
+    class AppKernel
+    {
+    }
+}
+
+PHP
+    ,
+
+    'Make sure traits are not prefixed.' => <<<'PHP'
+<?php
+
+trait AppKernel
+{
+}
+
+----
+<?php
+
+trait AppKernel
+{
+}
+
+PHP
+    ,
+
+    'Make sure traits are not prefixed next to whitelisted class.' => <<<'PHP'
+<?php
+
+trait SomeTrait
+{
+}
+
+class AppKernel
+{
+}
+
+----
+<?php
+
+namespace {
+    trait SomeTrait
+    {
+    }
 }
 namespace Humbug {
     class AppKernel
