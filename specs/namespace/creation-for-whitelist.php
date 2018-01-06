@@ -14,19 +14,14 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Namespace declaration creation for whitelisted classes',
+        'title'     => 'Namespace declaration creation for whitelisted classes which belong to the global namespace.',
         // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+        'prefix'    => 'Humbug',
         'whitelist' => [
         ],
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Single class should receive namespace
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Single class should receive namespace' => <<<'PHP'
 <?php
 
 class AppKernel
@@ -43,14 +38,28 @@ class AppKernel
 }
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Multiple classes should all receive namespace in the same file
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Interfaces can be whitelisted too.' => <<<'PHP'
+<?php
+
+interface AppKernel
+{
+}
+
+----
+<?php
+
+namespace Humbug;
+
+interface AppKernel
+{
+}
+
+PHP
+    ,
+
+    'Multiple classes should all receive namespace in the same file' => <<<'PHP'
 <?php
 
 class AppKernalOther2
@@ -85,14 +94,9 @@ namespace {
 }
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Defines should be wrapped in namespace alongside whitelisted class.
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Defines should be wrapped in namespace alongside whitelisted class.' => <<<'PHP'
 <?php
 
 define( "MY_DEFINE", "value" );
@@ -114,5 +118,52 @@ namespace Humbug {
 }
 
 PHP
-    ],
+    ,
+    '' => <<<'PHP'
+<?php
+
+namespace Foo {
+    class A {
+        public function a() {}
+    }
+    
+    class B {
+        public function b() {}
+    }
+    
+    class C {
+        public function c() {}
+    }
+}
+namespace Bar {
+    class A {
+        public function a() {}
+    }
+    
+    class B {
+        public function b() {}
+    }
+    
+    class C {
+        public function c() {}
+    }
+}
+namespace {
+    class AppKernel {
+        public function a() {}
+    }
+    
+    class B {
+        public function b() {}
+    }
+    
+    class C {
+        public function c() {}
+    }
+}
+
+----
+
+PHP
+    ,
 ];

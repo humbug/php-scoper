@@ -21,7 +21,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Creates a namespace for whitelisted classes.
+ * Creates a namespace for whitelisted classes and interfaces which belong to the global namespace.
  *
  * ```
  * class AppKernel {}
@@ -38,17 +38,14 @@ use PhpParser\NodeVisitorAbstract;
 final class NamespaceStmtCreator extends NodeVisitorAbstract
 {
     private $prefix;
-
-    private $hasWhitelistedClass;
-
+    private $hasWhitelistedNode;
     private $namespaceStatements;
-
     private $globalWhitelister;
 
     /**
-     * @param string $prefix
-     * @param NamespaceStmtCollection $namespaceStatements
-     * @param callable $globalWhitelister
+     * @param string $prefix Global prefix to apply.
+     * @param NamespaceStmtCollection $namespaceStatements List of statements in the current scope.
+     * @param callable $globalWhitelister List of whitelisted nodes.
      */
     public function __construct(
         string $prefix,
@@ -61,18 +58,16 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     }
 
     /**
-     * @param array $nodes
-     *
-     * @return void
+     * @inheritdoc
      */
-    public function beforeTraverse(array $nodes): void
+    public function beforeTraverse(array $nodes)
     {
-        $classes = $this->getClasses($nodes);
+        $classes = array_filter($nodes, [$this, 'isWhitelistableNode']);
         if (empty($classes)) {
             return;
         }
 
-        $this->hasWhitelistedClass = $this->hasWhitelistedClass($classes);
+        $this->hasWhitelistedNode = $this->hasWhitelistedNode($classes);
     }
 
     /**
@@ -80,17 +75,10 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
      */
     public function leaveNode(Node $node)
     {
-        if (! $this->hasWhitelistedClass) {
-            return $node;
-        }
-
-
-        return $this->wrapClassNamespace($node);
+        return $this->hasWhitelistedNode ? $this->wrapClassNamespace($node) : $node;
     }
 
     /**
-     * @param Node $node
-     *
      * @return Node
      */
     private function wrapClassNamespace(Node $node): Node
@@ -103,12 +91,11 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
             return $node;
         }
 
-        if (! ($node instanceof Class_)) {
-            return new Namespace_(null, [$node]);
-        }
-
-        // Whitelisted classes need to be wrapped with prefix namespace.
-        if (null !== $node->name && ($this->globalWhitelister)($node->name)) {
+        if (
+            null !== $node->name
+            && $this->isWhitelistableNode($node)
+            && ($this->globalWhitelister)($node->name)
+        ) {
             return new Namespace_(new Node\Name($this->prefix), [$node]);
         }
 
@@ -117,8 +104,6 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     }
 
     /**
-     * @param Node $node
-     *
      * @return bool
      */
     private function hasNamespace(Node $node): bool
@@ -127,34 +112,24 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     }
 
     /**
-     * @param $classes
+     * @param Node[] $nodes List of nodes to find whitelisted nodes from.
      *
      * @return bool
      */
-    private function hasWhitelistedClass(array $classes): bool
+    private function hasWhitelistedNode(array $nodes): bool
     {
-        $classes = array_filter($classes, function ($class_node) {
-            if (null === $class_node->name) {
-                return false;
-            }
-
-            return ($this->globalWhitelister)($class_node->name);
+        $nodes = array_filter($nodes, function ($node) {
+            return null !== $node->name && ($this->globalWhitelister)($node->name);
         });
 
-        return ! empty($classes);
+        return ! empty($nodes);
     }
 
     /**
-     * @param array $nodes
-     *
-     * @return array
+     * @return bool
      */
-    private function getClasses(array $nodes): array
+    private function isWhitelistableNode(Node $node): bool
     {
-        $classes = array_filter($nodes, function ($node) {
-            return $node instanceof Class_;
-        });
-
-        return $classes;
+        return $node instanceof Class_ || $node instanceof Node\Stmt\Interface_;
     }
 }
