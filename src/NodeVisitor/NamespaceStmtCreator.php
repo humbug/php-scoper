@@ -41,21 +41,17 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
 {
     private $prefix;
     private $hasWhitelistedNode;
-    private $namespaceStatements;
     private $globalWhitelister;
 
     /**
-     * @param string                  $prefix              Global prefix to apply.
-     * @param NamespaceStmtCollection $namespaceStatements List of statements in the current scope.
-     * @param callable                $globalWhitelister   List of whitelisted nodes.
+     * @param string   $prefix              Global prefix to apply.
+     * @param callable $globalWhitelister   List of whitelisted nodes.
      */
     public function __construct(
         string $prefix,
-        NamespaceStmtCollection $namespaceStatements,
         callable $globalWhitelister
     ) {
         $this->prefix = $prefix;
-        $this->namespaceStatements = $namespaceStatements;
         $this->globalWhitelister = $globalWhitelister;
     }
 
