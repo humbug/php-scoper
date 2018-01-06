@@ -41,6 +41,25 @@ class AppKernel
 PHP
     ,
 
+    'Single abstract class should receive namespace.' => <<<'PHP'
+<?php
+
+abstract class AppKernel
+{
+}
+
+----
+<?php
+
+namespace Humbug;
+
+abstract class AppKernel
+{
+}
+
+PHP
+    ,
+
     'Interfaces can be whitelisted too.' => <<<'PHP'
 <?php
 
