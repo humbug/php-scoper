@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title'     => 'Namespace declaration creation for whitelisted classes which belong to the global namespace.',
+        'title' => 'Namespace declaration creation for whitelisted classes which belong to the global namespace.',
         // Default values. If not specified will be the one used
-        'prefix'    => 'Humbug',
+        'prefix' => 'Humbug',
         'whitelist' => [
         ],
     ],

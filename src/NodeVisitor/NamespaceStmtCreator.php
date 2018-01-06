@@ -43,18 +43,18 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     private $globalWhitelister;
 
     /**
-     * @param string $prefix Global prefix to apply.
+     * @param string                  $prefix              Global prefix to apply.
      * @param NamespaceStmtCollection $namespaceStatements List of statements in the current scope.
-     * @param callable $globalWhitelister List of whitelisted nodes.
+     * @param callable                $globalWhitelister   List of whitelisted nodes.
      */
     public function __construct(
         string $prefix,
         NamespaceStmtCollection $namespaceStatements,
         callable $globalWhitelister
     ) {
-        $this->prefix              = $prefix;
+        $this->prefix = $prefix;
         $this->namespaceStatements = $namespaceStatements;
-        $this->globalWhitelister   = $globalWhitelister;
+        $this->globalWhitelister = $globalWhitelister;
     }
 
     /**
@@ -108,7 +108,7 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
      */
     private function hasNamespace(Node $node): bool
     {
-        return (null !== $this->namespaceStatements->findNamespaceForNode($node));
+        return null !== $this->namespaceStatements->findNamespaceForNode($node);
     }
 
     /**
@@ -122,7 +122,7 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
             return null !== $node->name && ($this->globalWhitelister)($node->name);
         });
 
-        return ! empty($nodes);
+        return !empty($nodes);
     }
 
     /**
