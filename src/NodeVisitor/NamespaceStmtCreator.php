@@ -61,7 +61,7 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
     public function beforeTraverse(array $nodes)
     {
         $classes = array_filter($nodes, [$this, 'isWhitelistableNode']);
-        if (empty($classes)) {
+        if ([] === $classes) {
             return;
         }
 
