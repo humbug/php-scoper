@@ -17,6 +17,8 @@ namespace Humbug\PhpScoper\NodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 
@@ -92,7 +94,7 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
         }
 
         if (
-            null !== $node->name
+            $node instanceof ClassLike
             && $this->isWhitelistableNode($node)
             && ($this->globalWhitelister)($node->name)
         ) {
@@ -130,6 +132,6 @@ final class NamespaceStmtCreator extends NodeVisitorAbstract
      */
     private function isWhitelistableNode(Node $node): bool
     {
-        return $node instanceof Class_ || $node instanceof Node\Stmt\Interface_;
+        return $node instanceof Class_ || $node instanceof Interface_;
     }
 }
