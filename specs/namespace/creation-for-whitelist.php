@@ -170,7 +170,7 @@ PHP
     'Defines should be wrapped in namespace alongside whitelisted class.' => <<<'PHP'
 <?php
 
-define( "MY_DEFINE", "value" );
+define("MY_DEFINE", "value");
 
 class AppKernel
 {

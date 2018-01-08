@@ -43,11 +43,6 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     private $hasWhitelistedNode;
     private $globalWhitelister;
 
-    /**
-     * @param string                  $prefix
-     * @param NamespaceStmtCollection $namespaceStatements
-     * @param callable                $globalWhitelister
-     */
     public function __construct(
         string $prefix,
         NamespaceStmtCollection $namespaceStatements,
