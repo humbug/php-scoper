@@ -18,7 +18,7 @@
     ],
 
     "require": {
-        "php": "^7.1",
+        "php": "^7.0",
         "composer/semver": "^1.4",
         "nikic/php-parser": "^3.0",
         "ocramius/package-versions": "^1.1",
