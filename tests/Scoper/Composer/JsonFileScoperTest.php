@@ -171,4 +171,76 @@ JSON
 JSON
         ];
     }
+
+    /**
+     * @dataProvider providePSRZeroComposerFiles
+     */
+    public function test_it_prefixes_psr0_autoloaders(string $fileContent, string $expected)
+    {
+        touch($filePath = escape_path($this->tmp.'/composer.json'));
+        file_put_contents($filePath, $fileContent);
+
+        $scoper = new JsonFileScoper(new FakeScoper());
+
+        $prefix = 'Foo';
+        $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
+        $whitelister = create_fake_whitelister();
+
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function providePSRZeroComposerFiles()
+    {
+        yield [
+            <<<'JSON'
+{
+    "bin": ["bin/php-scoper"],
+    "autoload": {
+        "psr-0": {
+            "Humbug\\PhpScoper\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "Humbug\\PhpScoper\\": "tests/"
+        },
+        "files": [
+            "tests/functions.php"
+        ]
+    }
+}
+
+JSON
+            ,
+            <<<'JSON'
+{
+    "bin": [
+        "bin\/php-scoper"
+    ],
+    "autoload": {
+        "files": [
+            "src\/functions.php"
+        ],
+        "psr-4": {
+            "Foo\\Humbug\\PhpScoper\\": "src\/Humbug\/PhpScoper\/\/"
+        }
+    },
+    "autoload-dev": {
+        "files": [
+            "tests\/functions.php"
+        ],
+        "psr-4": {
+            "Foo\\Humbug\\PhpScoper\\": "tests\/Humbug\/PhpScoper\/\/"
+        }
+    }
+}
+JSON
+        ];
+    }
 }

@@ -40,6 +40,13 @@ final class AutoloadPrefixer
 
     private static function prefixAutoloads(array $autoload, string $prefix): array
     {
+        if (isset($autoload['psr-0'])) {
+            foreach(self::changePSRZeroToPSRFour($autoload['psr-0']) as $key => $value) {
+                $autoload['psr-4'][$key] = $value;
+            }
+            unset($autoload['psr-0']);
+        }
+
         if (isset($autoload['psr-4'])) {
             $autoload['psr-4'] = self::prefixAutoload($autoload['psr-4'], $prefix);
         }
@@ -53,6 +60,31 @@ final class AutoloadPrefixer
 
         foreach ($autoload as $namespace => $paths) {
             $loader[sprintf('%s\\%s', $prefix, $namespace)] = $paths;
+        }
+
+        return $loader;
+    }
+
+    private static function changePSRZeroToPSRFour(array $psrZero): array
+    {
+        $loader =[];
+
+        foreach($psrZero as $namespace => $path) {
+
+            //Append backslashes, if needed, since psr-0 does not require this
+            if (substr($namespace, -1) !== '\\') {
+                $namespace .= '\\';
+            }
+
+            //Append a slash to the path if it does not have it
+            if (substr($path, -1) !== '/') {
+                $path .= '/';
+            }
+
+            $namespaceForPsr = str_replace('\\', '/',$namespace);
+            $path .= $namespaceForPsr . '/';
+
+            $loader[$namespace] = $path;
         }
 
         return $loader;
