@@ -58,7 +58,7 @@ tc: vendor/bin/phpunit
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014
 
 e2e_004:	## Run end-to-end tests for the fixture set 004: source code case
 e2e_004: bin/php-scoper.phar
@@ -95,6 +95,15 @@ e2e_013: bin/php-scoper.phar
 	$(PHPSCOPER) init --working-dir=build/set013 --no-interaction
 	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
 
+e2e_014:	## Run end-to-end tests for the fixture set 014: source code case with psr-0
+e2e_014: bin/php-scoper.phar
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set014 --output-dir=../../build/set014 --force --no-config --no-interaction
+	composer --working-dir=build/set014 dump-autoload
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set014/box.json.dist
+
+	php build/set014/bin/greet.phar > build/set014/output
+	diff fixtures/set014/expected-output build/set014/output
+
 tb:		## Run Blackfire profiling
 tb: vendor
 	rm -rf build
@@ -107,7 +116,6 @@ tb: vendor
 
 	rm -rf vendor
 	mv -f tmp-back vendor
-
 
 ##
 ## Rules from files
