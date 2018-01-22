@@ -173,7 +173,7 @@ JSON
     }
 
     /**
-     * @dataProvider providePSRZeroComposerFiles
+     * @dataProvider providePSR0ComposerFiles
      */
     public function test_it_prefixes_psr0_autoloaders(string $fileContent, string $expected)
     {
@@ -192,7 +192,7 @@ JSON
         $this->assertSame($expected, $actual);
     }
 
-    public function providePSRZeroComposerFiles()
+    public function providePSR0ComposerFiles()
     {
         yield [
             <<<'JSON'

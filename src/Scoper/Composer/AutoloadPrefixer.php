@@ -43,7 +43,7 @@ final class AutoloadPrefixer
         $autoload['psr-4'] = isset($autoload['psr-4']) ? $autoload['psr-4'] : [];
 
         if (isset($autoload['psr-0'])) {
-            $autoload['psr-4'] = self::mergePSRZeroAndFour($autoload['psr-0'], $autoload['psr-4']);
+            $autoload['psr-4'] = self::mergePSR0And4($autoload['psr-0'], $autoload['psr-4']);
         }
         unset($autoload['psr-0']);
 
@@ -65,28 +65,28 @@ final class AutoloadPrefixer
         return $loader;
     }
 
-    private static function mergePSRZeroAndFour(array $psrZero, array $psrFour): array
+    private static function mergePSR0And4(array $psr0, array $psr4): array
     {
-        foreach ($psrZero as $namespace => $path) {
+        foreach ($psr0 as $namespace => $path) {
             //Append backslashes, if needed, since psr-0 does not require this
             if ('\\' !== substr($namespace, -1)) {
                 $namespace .= '\\';
             }
 
-            $path = self::updatePSRZeroPath($path, $namespace);
+            $path = self::updatePSR0Path($path, $namespace);
 
-            if (!isset($psrFour[$namespace])) {
-                $psrFour[$namespace] = $path;
+            if (!isset($psr4[$namespace])) {
+                $psr4[$namespace] = $path;
 
                 continue;
             }
-            $psrFour[$namespace] = self::mergeNamespaces($namespace, $path, $psrFour);
+            $psr4[$namespace] = self::mergeNamespaces($namespace, $path, $psr4);
         }
 
-        return $psrFour;
+        return $psr4;
     }
 
-    private static function updatePSRZeroPath($path, $namespace)
+    private static function updatePSR0Path($path, $namespace)
     {
         $namespaceForPsr = str_replace('\\', '/', $namespace);
 
@@ -118,36 +118,36 @@ final class AutoloadPrefixer
      * string     |
      * or simply the namepace not existing as a psr-4 entry.
      *
-     * @param string$psrZeroNamespace
-     * @param string|array $psrZeroPath
-     * @param string|array $psrFour
+     * @param string $psr0Namespace
+     * @param string|array $psr0Path
+     * @param string|array $psr4
      *
      * @return string|array
      */
-    private static function mergeNamespaces(string $psrZeroNamespace, $psrZeroPath, $psrFour)
+    private static function mergeNamespaces(string $psr0Namespace, $psr0Path, $psr4)
     {
         // Both strings
-        if (is_string($psrFour[$psrZeroNamespace]) && is_string($psrZeroPath)) {
-            return [$psrFour[$psrZeroNamespace], $psrZeroPath];
+        if (is_string($psr4[$psr0Namespace]) && is_string($psr0Path)) {
+            return [$psr4[$psr0Namespace], $psr0Path];
         }
         //psr-4 is string, and psr-0 is array
-        if (is_string($psrFour[$psrZeroNamespace]) && is_array($psrZeroPath)) {
-            $psrZeroPath[] = $psrFour[$psrZeroNamespace];
+        if (is_string($psr4[$psr0Namespace]) && is_array($psr0Path)) {
+            $psr0Path[] = $psr4[$psr0Namespace];
 
-            return $psrZeroPath;
+            return $psr0Path;
         }
 
         //psr-4 is array and psr-0 is string
-        if (is_array($psrFour[$psrZeroNamespace]) && is_string($psrZeroPath)) {
-            $psrFour[$psrZeroNamespace][] = $psrZeroPath;
+        if (is_array($psr4[$psr0Namespace]) && is_string($psr0Path)) {
+            $psr4[$psr0Namespace][] = $psr0Path;
 
-            return $psrFour[$psrZeroNamespace];
+            return $psr4[$psr0Namespace];
         }
 
-        if (is_array($psrFour[$psrZeroNamespace]) && is_array($psrZeroPath)) {
-            return array_merge($psrFour[$psrZeroNamespace], $psrZeroPath);
+        if (is_array($psr4[$psr0Namespace]) && is_array($psr0Path)) {
+            return array_merge($psr4[$psr0Namespace], $psr0Path);
         }
 
-        return $psrZeroPath;
+        return $psr0Path;
     }
 }

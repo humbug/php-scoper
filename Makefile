@@ -160,11 +160,11 @@ vendor-bin/box/composer.lock: composer.lock
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
 
-fixtures/set015/composer.lock: fixtures/set015/composer.json
-	@echo fixtures/set005/composer.lock is not up to date.
-
 fixtures/set011/composer.lock: fixtures/set011/composer.json
 	@echo fixtures/set011/composer.lock is not up to date.
+
+fixtures/set015/composer.lock: fixtures/set015/composer.json
+	@echo fixtures/set005/composer.lock is not up to date.
 
 bin/php-scoper.phar:
 	$(MAKE) build
