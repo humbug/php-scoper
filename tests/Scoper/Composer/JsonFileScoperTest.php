@@ -355,5 +355,40 @@ JSON
 }
 JSON
         ];
+        yield 'psr zero and four get merged when both are arrays' => [
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-4": {
+            "Bar\\": [
+                "lib/",
+                "src/"
+            ]
+        },
+        "psr-0": {
+            "Bar": [
+                "build",
+                "internal/"
+            ]
+        }
+    }
+}
+JSON
+            ,
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-4": {
+            "Foo\\Bar\\": [
+                "lib\/",
+                "src\/",
+                "build\/Bar\/\/",
+                "internal\/Bar\/\/"
+            ]
+        }
+    }
+}
+JSON
+        ];
     }
 }
