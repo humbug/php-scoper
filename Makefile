@@ -58,7 +58,7 @@ tc: vendor/bin/phpunit
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015
 
 e2e_004:	## Run end-to-end tests for the fixture set 004: source code case
 e2e_004: bin/php-scoper.phar
@@ -104,6 +104,15 @@ e2e_014: bin/php-scoper.phar
 	php build/set014/bin/greet.phar > build/set014/output
 	diff fixtures/set014/expected-output build/set014/output
 
+e2e_015:	## Run end-to-end tests for the fixture set 015: third-party code case with psr-0
+e2e_015: bin/php-scoper.phar fixtures/set015/vendor
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set015 --output-dir=../../build/set015 --force --no-config --no-interaction
+	composer --working-dir=build/set015 dump-autoload
+	php -d zend.enable_gc=0 -d phar.readonly=0 $(BOX) build -c build/set015/box.json.dist
+
+	php build/set015/bin/greet.phar > build/set015/output
+	diff fixtures/set015/expected-output build/set015/output
+
 tb:		## Run Blackfire profiling
 tb: vendor
 	rm -rf build
@@ -139,6 +148,9 @@ fixtures/set005/vendor: fixtures/set005/composer.lock
 fixtures/set011/vendor: fixtures/set011/vendor
 	composer --working-dir=fixtures/set011 dump-autoload
 
+fixtures/set015/vendor: fixtures/set015/composer.lock
+	composer --working-dir=fixtures/set015 install
+
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
@@ -146,6 +158,9 @@ vendor-bin/box/composer.lock: composer.lock
 	composer install
 
 fixtures/set005/composer.lock: fixtures/set005/composer.json
+	@echo fixtures/set005/composer.lock is not up to date.
+
+fixtures/set015/composer.lock: fixtures/set015/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
 
 fixtures/set011/composer.lock: fixtures/set011/composer.json
