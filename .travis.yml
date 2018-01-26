@@ -8,9 +8,9 @@ cache:
 
 matrix:
   include:
-    - php: '7.1'
+    - php: '7.0'
       env: COVERAGE='true'
-    - php: '7.1'
+    - php: '7.0'
     - php: nightly
   allow_failures:
     - php: nightly
@@ -48,7 +48,7 @@ deploy:
   on:
     tags: true
     repo: humbug/php-scoper
-    php:  '7.1'
+    php:  '7.0'
     condition: "$COVERAGE"
 
 notifications:
