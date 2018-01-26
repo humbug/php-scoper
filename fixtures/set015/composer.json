@@ -1,0 +1,13 @@
+{
+    "bin": [
+        "bin/greet"
+    ],
+    "autoload": {
+        "psr-0": {
+            "Set015\\": "src/"
+        }
+    },
+    "require": {
+        "pimple/pimple": "3.2.3"
+    }
+}

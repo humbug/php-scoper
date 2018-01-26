@@ -171,4 +171,224 @@ JSON
 JSON
         ];
     }
+
+    /**
+     * @dataProvider providePSR0ComposerFiles
+     */
+    public function test_it_prefixes_psr0_autoloaders(string $fileContent, string $expected)
+    {
+        touch($filePath = escape_path($this->tmp.'/composer.json'));
+        file_put_contents($filePath, $fileContent);
+
+        $scoper = new JsonFileScoper(new FakeScoper());
+
+        $prefix = 'Foo';
+        $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
+        $whitelister = create_fake_whitelister();
+
+        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function providePSR0ComposerFiles()
+    {
+        yield [
+            <<<'JSON'
+{
+    "bin": ["bin/php-scoper"],
+    "autoload": {
+        "psr-0": {
+            "Humbug\\PhpScoper\\": "src/"
+        },
+        "psr-4": {
+            "BarFoo\\": [
+                "lib/",
+                "dev/"
+            ]
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "Humbug\\PhpScoper\\": "tests/"
+        },
+        "psr-4": {
+            "Bar\\": "folder\/" 
+        },
+        "files": [
+            "tests/functions.php"
+        ]
+    }
+}
+
+JSON
+            ,
+            <<<'JSON'
+{
+    "bin": [
+        "bin\/php-scoper"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Foo\\BarFoo\\": [
+                "lib\/",
+                "dev\/"
+            ],
+            "Foo\\Humbug\\PhpScoper\\": "src\/Humbug\/PhpScoper\/\/"
+        },
+        "files": [
+            "src\/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Foo\\Bar\\": "folder\/",
+            "Foo\\Humbug\\PhpScoper\\": "tests\/Humbug\/PhpScoper\/\/"
+        },
+        "files": [
+            "tests\/functions.php"
+        ]
+    }
+}
+JSON
+        ];
+        yield 'psr zero and four with the same namespace get merged' => [
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-0": {
+            "Bar\\": "src/"
+        },
+        "psr-4": {
+            "Bar\\": "lib/"
+        }
+     }
+}
+JSON
+            ,
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-4": {
+            "Foo\\Bar\\": [
+                "lib\/",
+                "src\/Bar\/\/"
+            ]
+        }
+    }
+}
+JSON
+        ];
+        yield 'psr zero and four get merged if either of them have multiple entries' => [
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-4": {
+            "Bar\\": [
+                "lib/",
+                "src/"
+            ]
+        },
+        "psr-0": {
+            "Bar\\": "test"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "Baz\\": [
+                "folder/",
+                "check/"
+            ]
+        },
+        "psr-4": {
+            "Baz\\": "loader/"
+        }
+    }
+}
+JSON
+            ,
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-4": {
+            "Foo\\Bar\\": [
+                "lib\/",
+                "src\/",
+                "test\/Bar\/\/"
+            ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Foo\\Baz\\": [
+                "folder\/Baz\/\/",
+                "check\/Baz\/\/",
+                "loader\/"
+            ]
+        }
+    }
+}
+JSON
+        ];
+        yield 'psr zero gets converted to psr4' => [
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-0": {
+            "Bar\\": "src/"
+        }
+    }
+}
+JSON
+            ,
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-4": {
+            "Foo\\Bar\\": "src\/Bar\/\/"
+        }
+    }
+}
+JSON
+        ];
+        yield 'psr zero and four get merged when both are arrays' => [
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-4": {
+            "Bar\\": [
+                "lib/",
+                "src/"
+            ]
+        },
+        "psr-0": {
+            "Bar": [
+                "build",
+                "internal/"
+            ]
+        }
+    }
+}
+JSON
+            ,
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-4": {
+            "Foo\\Bar\\": [
+                "lib\/",
+                "src\/",
+                "build\/Bar\/\/",
+                "internal\/Bar\/\/"
+            ]
+        }
+    }
+}
+JSON
+        ];
+    }
 }
