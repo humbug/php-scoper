@@ -14,7 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
+use function array_unique;
+use function array_values;
+use ArrayIterator;
+use Closure;
+use function file_get_contents;
+use function Humbug\PhpScoper\get_common_path;
+use function Humbug\PhpScoper\iterables_to_iterator;
 use InvalidArgumentException;
+use Iterator;
+use function iterator_to_array;
+use RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 final class Configuration
@@ -32,17 +43,18 @@ final class Configuration
     ];
 
     private $path;
+    private $filesWithContents;
     private $patchers;
-    private $finders;
     private $whitelist;
-    private $globalNamespaceWhitelisters;
+    private $globalNamespaceWhitelister;
 
     /**
      * @param string|null $path Absolute path to the configuration file.
+     * @param string[] $paths List of paths to append besides the one configured
      *
      * @return self
      */
-    public static function load(string $path = null): self
+    public static function load(string $path = null, array $paths = []): self
     {
         if (null === $path) {
             return new self(null, [], [], [], []);
@@ -61,35 +73,59 @@ final class Configuration
 
         self::validateConfigKeys($config);
 
-        $finders = self::retrieveFinders($config);
         $patchers = self::retrievePatchers($config);
         $whitelist = self::retrieveWhitelist($config);
-        $globalNamespace = self::retrieveGlobalNamespaceWhitelisters($config);
 
-        return new self($path, $finders, $patchers, $whitelist, $globalNamespace);
+        $globalNamespace = self::retrieveGlobalNamespaceWhitelisters($config);
+        $globalWhitelister = self::createGlobalWhitelister($globalNamespace);
+
+        $finders = self::retrieveFinders($config);
+        $filesFromPaths = self::retrieveFilesFromPaths($paths);
+
+        $filesWithContents = self::retrieveFilesWithContents(iterables_to_iterator($filesFromPaths, ...$finders));
+
+        return new self($path, $filesWithContents, $patchers, $whitelist, $globalWhitelister);
     }
 
     /**
      * @param string|null         $path            Absolute path to the configuration file loaded.
-     * @param Finder[]            $finders         List of finders which will provide the files that will be scoped.
+     * @param [string, string][]             $filesWithContents Array of tuple with the first argument being the file path and the second its contents
      * @param callable[]          $patchers        List of closures which can alter the content of the files being
      *                                             scoped.
      * @param string[]            $whitelist       List of classes that will not be scoped.
-     * @param callable[]|string[] $globalNamespace List of class names from the global namespace that should be scoped
-     *                                             or closures filtering if the class should be scoped or not.
+     * @param callable   $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
+     *                                      returning a boolean which if `true` means the class should be scoped
+     *                                      (i.e. is ignored) or scoped otherwise.
      */
     private function __construct(
         string $path = null,
-        array $finders,
+        array $filesWithContents,
         array $patchers,
         array $whitelist,
-        array $globalNamespace
+        callable $globalNamespaceWhitelisters
     ) {
         $this->path = $path;
+        $this->filesWithContents = $filesWithContents;
         $this->patchers = $patchers;
-        $this->finders = $finders;
         $this->whitelist = $whitelist;
-        $this->globalNamespaceWhitelisters = $globalNamespace;
+        $this->globalNamespaceWhitelister = $globalNamespaceWhitelisters;
+    }
+
+    public function withPaths(array $paths): self
+    {
+        $filesWithContents = self::retrieveFilesWithContents(
+            new ArrayIterator(
+                array_unique($paths)
+            )
+        );
+
+        return new self(
+            $this->path,
+            $filesWithContents,
+            $this->patchers,
+            $this->whitelist,
+            $this->globalNamespaceWhitelister
+        );
     }
 
     public function getPath(): string
@@ -97,12 +133,9 @@ final class Configuration
         return $this->path;
     }
 
-    /**
-     * @return Finder[]
-     */
-    public function getFinders(): array
+    public function getFilesWithContents(): array
     {
-        return $this->finders;
+        return $this->filesWithContents;
     }
 
     /**
@@ -121,9 +154,9 @@ final class Configuration
     /**
      * @return callable[]|string[]
      */
-    public function getGlobalNamespaceWhitelisters(): array
+    public function getGlobalNamespaceWhitelister(): array
     {
-        return $this->globalNamespaceWhitelisters;
+        return $this->globalNamespaceWhitelister;
     }
 
     private static function validateConfigKeys(array $config): void
@@ -144,41 +177,6 @@ final class Configuration
                 )
             );
         }
-    }
-
-    private static function retrieveFinders(array $config): array
-    {
-        if (false === array_key_exists(self::FINDER_KEYWORD, $config)) {
-            return [];
-        }
-
-        $finders = $config[self::FINDER_KEYWORD];
-
-        if (false === is_array($finders)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected finders to be an array of "%s", found "%s" instead.',
-                    Finder::class,
-                    gettype($finders)
-                )
-            );
-        }
-
-        foreach ($finders as $index => $finder) {
-            if ($finder instanceof Finder) {
-                continue;
-            }
-
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected finders to be an array of "%s", the "%d" element is not.',
-                    Finder::class,
-                    $index
-                )
-            );
-        }
-
-        return $finders;
     }
 
     private static function retrievePatchers(array $config): array
@@ -279,5 +277,147 @@ final class Configuration
         }
 
         return $globalNamespace;
+    }
+
+    /**
+     * @param string[]|callable[] $globalNamespaceWhitelist
+     *
+     * @return Closure
+     */
+    private static function createGlobalWhitelister(array $globalNamespaceWhitelist): Closure
+    {
+        return function (string $className) use ($globalNamespaceWhitelist): bool {
+            foreach ($globalNamespaceWhitelist as $whitelister) {
+                if (is_string($whitelister)) {
+                    if ($className === $whitelister) {
+                        return true;
+                    } else {
+                        continue;
+                    }
+                }
+
+                /** @var callable $whitelister */
+                if (true === $whitelister($className)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+    }
+
+    private static function retrieveFinders(array $config): array
+    {
+        if (false === array_key_exists(self::FINDER_KEYWORD, $config)) {
+            return [];
+        }
+
+        $finders = $config[self::FINDER_KEYWORD];
+
+        if (false === is_array($finders)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected finders to be an array of "%s", found "%s" instead.',
+                    Finder::class,
+                    gettype($finders)
+                )
+            );
+        }
+
+        foreach ($finders as $index => $finder) {
+            if ($finder instanceof Finder) {
+                continue;
+            }
+
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected finders to be an array of "%s", the "%d" element is not.',
+                    Finder::class,
+                    $index
+                )
+            );
+        }
+
+        return $finders;
+    }
+
+    /**
+     * @param string[] $paths
+     *
+     * @return iterable
+     */
+    private static function retrieveFilesFromPaths(array $paths): iterable
+    {
+        if ([] === $paths) {
+            return [];
+        }
+
+        $pathsToSearch = [];
+        $filesToAppend = [];
+
+        foreach ($paths as $path) {
+            if (false === file_exists($path)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Could not find the file "%s".',
+                        $path
+                    )
+                );
+            }
+
+            if (is_dir($path)) {
+                $pathsToSearch[] = $path;
+            } else {
+                $filesToAppend[] = $path;
+            }
+        }
+
+        $finder = new Finder();
+
+        $finder->files()
+            ->in($pathsToSearch)
+            ->append($filesToAppend)
+            ->sortByName()
+        ;
+
+        return $finder;
+    }
+
+    /**
+     * @param Iterator $files
+     *
+     * @return [string, string][] Array of tuple with the first argument being the file path and the second its contents
+     */
+    private static function retrieveFilesWithContents(Iterator $files): array
+    {
+        return array_reduce(
+            iterator_to_array($files),
+            function (array $files, SplFileInfo $fileInfo): array {
+                $file = (string) $fileInfo;
+
+                if (false === file_exists($file)) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Could not find the file "%s".',
+                            $file
+                        )
+                    );
+                }
+
+                if (false === is_readable($file)) {
+                    throw new RuntimeException(
+                        sprintf(
+                            'Could not read the file "%s".',
+                            $file
+                        )
+                    );
+                }
+
+                $files[$fileInfo->getRealPath()] = [$fileInfo->getRealPath(), file_get_contents($file)];
+
+                return $files;
+            },
+            []
+        );
     }
 }
