@@ -48,9 +48,7 @@ function create_application(): SymfonyApplication
     $app->addCommands([
         new AddPrefixCommand(
             new Filesystem(),
-            new HandleAddPrefix(
-                create_scoper()
-            )
+            create_scoper()
         ),
         new InitCommand(),
     ]);

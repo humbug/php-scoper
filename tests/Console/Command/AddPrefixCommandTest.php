@@ -14,14 +14,21 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use function chdir;
+use Closure;
+use const DIRECTORY_SEPARATOR;
+use function file_get_contents;
 use Humbug\PhpScoper\Console\Application;
-use Humbug\PhpScoper\Handler\HandleAddPrefix;
+use function Humbug\PhpScoper\create_application;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
+use function Humbug\PhpScoper\remove_dir;
+use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use function realpath;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
@@ -57,9 +64,9 @@ class AddPrefixCommandTest extends TestCase
     private $fileSystemProphecy;
 
     /**
-     * @var HandleAddPrefix|ObjectProphecy
+     * @var Scoper|ObjectProphecy
      */
-    private $handleProphecy;
+    private $scoperProphecy;
 
     /**
      * @inheritdoc
@@ -67,27 +74,39 @@ class AddPrefixCommandTest extends TestCase
     protected function setUp()
     {
         if (null !== $this->appTester) {
+            chdir($this->tmp);
+
             return;
         }
 
         $this->cwd = getcwd();
-
         $this->tmp = make_tmp_dir('scoper', __CLASS__);
 
         $this->fileSystemProphecy = $this->prophesize(Filesystem::class);
 
-        $this->handleProphecy = $this->prophesize(HandleAddPrefix::class);
+        $this->scoperProphecy = $this->prophesize(Scoper::class);
 
         $this->appTester = $this->createAppTester();
 
         chdir($this->tmp);
     }
 
+    /**
+     * @inheritdoc
+     */
+    protected function tearDown()
+    {
+        chdir($this->cwd);
+
+        remove_dir($this->tmp);
+    }
+
+
     public function test_get_help_menu()
     {
         $input = [];
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
 
         $this->appTester->run($input);
 
@@ -127,8 +146,6 @@ EOF;
         $this->assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
-
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
     public function test_get_version_menu()
@@ -137,7 +154,7 @@ EOF;
             '--version',
         ];
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
 
         $this->appTester->run($input);
 
@@ -152,8 +169,6 @@ EOF;
         $this->assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
-
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
     public function test_scope_the_given_paths()
@@ -162,44 +177,58 @@ EOF;
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
-                escape_path('/path/to/dir1'),
-                escape_path('/path/to/dir2'),
-                escape_path('/path/to/file'),
+                $root = self::FIXTURE_PATH.'/set002/original',
             ],
             '--output-dir' => $this->tmp,
             '--no-interaction',
             '--no-config' => null,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath($root)->willReturn(true);
+        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
 
-        $this->handleProphecy
-            ->__invoke(
-                'MyPrefix',
-                [
-                    escape_path('/path/to/dir1'),
-                    escape_path('/path/to/dir2'),
-                    escape_path('/path/to/file'),
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
-            )
-            ->shouldBeCalled()
-        ;
+        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            'composer/installed.json' => 'f1',
+            'file.php' => 'f2',
+            'invalid-file.php' => 'f3',
+            'scoper.inc.php' => 'f4',
+        ];
+
+        $root = realpath($root);
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    'MyPrefix',
+                    [],
+                    [],
+                    Argument::type(Closure::class)
+                )
+                ->willReturn($prefixedContents)
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+        }
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_do_not_scope_duplicated_given_paths()
@@ -208,41 +237,55 @@ EOF;
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
-                escape_path('/path/to/file'),
-                escape_path('/path/to/file'),
+                self::FIXTURE_PATH.'/set002/original/file.php',
+                self::FIXTURE_PATH.'/set002/original/file.php',
             ],
             '--output-dir' => $this->tmp,
             '--no-interaction',
             '--no-config' => null,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $root = realpath(self::FIXTURE_PATH.'/set002/original');
 
-        $this->handleProphecy
-            ->__invoke(
-                'MyPrefix',
-                [
-                    escape_path('/path/to/file'),
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
-            )
-            ->shouldBeCalled()
-        ;
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+
+        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            'file.php' => 'f1',
+        ];
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    'MyPrefix',
+                    [],
+                    [],
+                    Argument::type(Closure::class)
+                )
+                ->willReturn($prefixedContents)
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+        }
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_scope_the_given_paths_and_the_ones_found_by_the_finder()
@@ -253,9 +296,7 @@ EOF;
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
-                escape_path('/path/to/dir1'),
-                escape_path('/path/to/dir2'),
-                escape_path('/path/to/file'),
+                self::FIXTURE_PATH.'/set002/original/file.php',
             ],
             '--output-dir' => $this->tmp,
             '--no-interaction',
@@ -263,37 +304,48 @@ EOF;
 
         $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
-        $this->handleProphecy
-            ->__invoke(
-                'MyPrefix',
-                [
-                    escape_path('/path/to/dir1'),
-                    escape_path('/path/to/dir2'),
-                    escape_path('/path/to/file'),
-                    realpath(escape_path($rootPath.'/dir/file1.php')),
-                    realpath(escape_path($rootPath.'/dir/file2.php')),
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
-            )
-            ->shouldBeCalled()
-        ;
+        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            self::FIXTURE_PATH.'/set002/original/file.php' => $this->tmp.'/set002/original/file.php',
+            $rootPath.'/dir/file1.php' => $this->tmp.'/set012/dir/file1.php',
+            $rootPath.'/dir/file2.php' => $this->tmp.'/set012/dir/file2.php',
+        ];
+
+        foreach ($expectedFiles as $inputPath => $outputPath) {
+            $inputPath = realpath($inputPath);
+            $outputPath = escape_path($outputPath);
+
+            $prefixedFileContents = 'Random string';
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    'MyPrefix',
+                    [],
+                    [],
+                    Argument::type(Closure::class)
+                )
+                ->willReturn($prefixedFileContents)
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedFileContents)->shouldBeCalled();
+        }
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(5);
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_applies_a_random_prefix_when_none_given()
@@ -301,19 +353,22 @@ EOF;
         $input = [
             'add-prefix',
             'paths' => [
-                escape_path('/path/to/dir1'),
-                escape_path('/path/to/dir2'),
-                escape_path('/path/to/file'),
+                self::FIXTURE_PATH.'/set002/original',
             ],
             '--output-dir' => $this->tmp,
+            '--no-interaction',
             '--no-config' => null,
         ];
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldBeCalled();
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldBeCalled();
 
-        $this->handleProphecy
-            ->__invoke(
+        $this->scoperProphecy
+            ->scope(
+                Argument::any(),
                 Argument::that(
                     function (string $prefix): bool {
                         $this->assertRegExp(
@@ -324,116 +379,135 @@ EOF;
                         return true;
                     }
                 ),
-                [
-                    escape_path('/path/to/dir1'),
-                    escape_path('/path/to/dir2'),
-                    escape_path('/path/to/file'),
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
+                [],
+                [],
+                Argument::type(Closure::class)
             )
-            ->shouldBeCalled()
+            ->willReturn('')
         ;
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled();
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalled();
     }
 
     public function test_scope_the_current_working_directory_if_no_path_given()
     {
+        chdir($root = self::FIXTURE_PATH.'/set002/original');
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             '--output-dir' => $this->tmp,
+            '--no-interaction',
             '--no-config' => null,
         ];
 
+        $this->fileSystemProphecy->isAbsolutePath($root)->willReturn(true);
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
-        $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
 
-        $this->handleProphecy
-            ->__invoke(
-                'MyPrefix',
-                [
-                    $this->tmp,
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
-            )
-            ->shouldBeCalled()
-        ;
+        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            'composer/installed.json' => 'f1',
+            'file.php' => 'f2',
+            'invalid-file.php' => 'f3',
+            'scoper.inc.php' => 'f4',
+        ];
+
+        $root = realpath($root);
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    'MyPrefix',
+                    [],
+                    [],
+                    Argument::type(Closure::class)
+                )
+                ->willReturn($prefixedContents)
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+        }
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_relative_paths_are_relative_to_the_current_working_directory()
-    {
-        $input = [
-            'add-prefix',
-            '--prefix' => 'MyPrefix',
-            'paths' => [
-                $path0 = escape_path('/path/to/dir1'),
-                $path1 = escape_path('relative-path/to/dir2'),
-                $path2 = escape_path('relative-path/to/file'),
-            ],
-            '--output-dir' => $this->tmp,
-            '--no-config' => null,
-        ];
 
-        $this->fileSystemProphecy->isAbsolutePath($path0)->willReturn(true);
-        $this->fileSystemProphecy->isAbsolutePath($path1)->willReturn(false);
-        $this->fileSystemProphecy->isAbsolutePath($path2)->willReturn(false);
-        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
-        $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
+//    public function test_relative_paths_are_relative_to_the_current_working_directory()
+//    {
+//        $input = [
+//            'add-prefix',
+//            '--prefix' => 'MyPrefix',
+//            'paths' => [
+//                $path0 = escape_path('/path/to/dir1'),
+//                $path1 = escape_path('relative-path/to/dir2'),
+//                $path2 = escape_path('relative-path/to/file'),
+//            ],
+//            '--output-dir' => $this->tmp,
+//            '--no-config' => null,
+//        ];
+//
+//        $this->fileSystemProphecy->isAbsolutePath($path0)->willReturn(true);
+//        $this->fileSystemProphecy->isAbsolutePath($path1)->willReturn(false);
+//        $this->fileSystemProphecy->isAbsolutePath($path2)->willReturn(false);
+//        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
+//        $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
+//
+//        $this->scoperProphecy
+//            ->__invoke(
+//                'MyPrefix',
+//                [
+//                    escape_path('/path/to/dir1'),
+//                    escape_path($this->tmp.'/relative-path/to/dir2'),
+//                    escape_path($this->tmp.'/relative-path/to/file'),
+//                ],
+//                $this->tmp,
+//                Argument::type('array'),
+//                Argument::type('array'),
+//                Argument::type('array'),
+//                false,
+//                Argument::type(ConsoleLogger::class)
+//            )
+//            ->shouldBeCalled()
+//        ;
+//
+//        $this->appTester->run($input);
+//
+//        $this->assertSame(0, $this->appTester->getStatusCode());
+//
+//        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
+//        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+//
+//        $this->scoperProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+//    }
+//
 
-        $this->handleProphecy
-            ->__invoke(
-                'MyPrefix',
-                [
-                    escape_path('/path/to/dir1'),
-                    escape_path($this->tmp.'/relative-path/to/dir2'),
-                    escape_path($this->tmp.'/relative-path/to/file'),
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
-            )
-            ->shouldBeCalled()
-        ;
-
-        $this->appTester->run($input);
-
-        $this->assertSame(0, $this->appTester->getStatusCode());
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-    }
 
     public function test_prefix_can_end_by_a_backslash()
     {
@@ -441,43 +515,41 @@ EOF;
             'add-prefix',
             '--prefix' => 'MyPrefix\\',
             'paths' => [
-                escape_path('/path/to/dir1'),
-                escape_path('/path/to/dir2'),
-                escape_path('/path/to/file'),
+                self::FIXTURE_PATH.'/set002/original',
             ],
             '--output-dir' => $this->tmp,
+            '--no-interaction',
             '--no-config' => null,
         ];
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldBeCalled();
 
-        $this->handleProphecy
-            ->__invoke(
+        $this->scoperProphecy
+            ->scope(
+                Argument::any(),
                 'MyPrefix',
-                [
-                    escape_path('/path/to/dir1'),
-                    escape_path('/path/to/dir2'),
-                    escape_path('/path/to/file'),
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
+                [],
+                [],
+                Argument::type(Closure::class)
             )
-            ->shouldBeCalled()
+            ->willReturn('')
         ;
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled();
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalled();
     }
 
     public function test_prefix_can_end_by_multiple_backslashes()
@@ -486,43 +558,41 @@ EOF;
             'add-prefix',
             '--prefix' => 'MyPrefix\\\\',
             'paths' => [
-                escape_path('/path/to/dir1'),
-                escape_path('/path/to/dir2'),
-                escape_path('/path/to/file'),
+                self::FIXTURE_PATH.'/set002/original',
             ],
             '--output-dir' => $this->tmp,
+            '--no-interaction',
             '--no-config' => null,
         ];
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldBeCalled();
 
-        $this->handleProphecy
-            ->__invoke(
+        $this->scoperProphecy
+            ->scope(
+                Argument::any(),
                 'MyPrefix',
-                [
-                    escape_path('/path/to/dir1'),
-                    escape_path('/path/to/dir2'),
-                    escape_path('/path/to/file'),
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
+                [],
+                [],
+                Argument::type(Closure::class)
             )
-            ->shouldBeCalled()
+            ->willReturn('')
         ;
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalled();
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled();
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalled();
     }
 
     public function test_an_output_directory_can_be_given()
@@ -531,85 +601,117 @@ EOF;
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
-                escape_path('/path/to/dir1'),
+                $root = self::FIXTURE_PATH.'/set002/original',
             ],
             '--output-dir' => $outDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir',
+            '--no-interaction',
             '--no-config' => null,
         ];
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists($outDir)->willReturn(false);
 
-        $this->handleProphecy
-            ->__invoke(
-                'MyPrefix',
-                [
-                    escape_path('/path/to/dir1'),
-                ],
-                $outDir,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                false,
-                Argument::type(ConsoleLogger::class)
-            )
-            ->shouldBeCalled()
-        ;
+        $this->fileSystemProphecy->mkdir($outDir)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            'composer/installed.json' => 'f1',
+            'file.php' => 'f2',
+            'invalid-file.php' => 'f3',
+            'scoper.inc.php' => 'f4',
+        ];
+
+        $root = realpath($root);
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path($outDir.'/'.$expectedFile);
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    'MyPrefix',
+                    [],
+                    [],
+                    Argument::type(Closure::class)
+                )
+                ->willReturn($prefixedContents)
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+        }
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_relative_output_directory_are_made_absolute()
     {
-        chdir($this->tmp);
-
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
-                escape_path('/path/to/dir1'),
+                $root = self::FIXTURE_PATH.'/set002/original',
             ],
-            '--output-dir' => 'output-dir',
+            '--output-dir' => $outDir = 'output-dir',
+            '--no-interaction',
             '--no-config' => null,
         ];
 
-        $expectedOutputDir = $this->tmp.DIRECTORY_SEPARATOR.'output-dir';
-
-        $this->fileSystemProphecy->isAbsolutePath('output-dir')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath($outDir)->willReturn(false);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists($expectedOutputDir)->willReturn(false);
 
-        $this->handleProphecy
-            ->__invoke(
-                'MyPrefix',
-                [
-                    escape_path('/path/to/dir1'),
-                ],
-                $expectedOutputDir,
-                [],
-                [],
-                [],
-                false,
-                Argument::type(ConsoleLogger::class)
-            )
-            ->shouldBeCalled()
-        ;
+        $this->fileSystemProphecy->mkdir($this->tmp.DIRECTORY_SEPARATOR.$outDir)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            'composer/installed.json' => 'f1',
+            'file.php' => 'f2',
+            'invalid-file.php' => 'f3',
+            'scoper.inc.php' => 'f4',
+        ];
+
+        $root = realpath($root);
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path( $this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    'MyPrefix',
+                    [],
+                    [],
+                    Argument::type(Closure::class)
+                )
+                ->willReturn($prefixedContents)
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+        }
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     /**
@@ -621,175 +723,118 @@ EOF;
             'add-prefix',
             '--prefix' => $prefix,
             'paths' => [
-                escape_path('/path/to/dir1'),
-                escape_path('relative-path/to/dir2'),
-                escape_path('relative-path/to/file'),
+                $root = self::FIXTURE_PATH.'/set002/original',
             ],
+            '--no-interaction',
             '--no-config' => null,
         ];
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotBeCalled();
 
-        try {
-            $this->appTester->run($input);
-
-            $this->fail('Expected exception to be thrown.');
-        } catch (SymfonyConsoleRuntimeException $exception) {
-            $this->assertSame(
-                'Expected "prefix" argument to be a non empty string.',
-                $exception->getMessage()
-            );
-            $this->assertSame(0, $exception->getCode());
-            $this->assertNull($exception->getPrevious());
-        }
-    }
-
-    public function test_throws_an_error_when_scoping_fails()
-    {
-        $input = [
-            'add-prefix',
-            '--prefix' => 'MyPrefix',
-            'paths' => [
-                escape_path('/path/to/dir1'),
-            ],
-            '--no-config' => null,
-        ];
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists('build')->willReturn(false);
-
-        $this->handleProphecy
-            ->__invoke(Argument::cetera())
-            ->willThrow(
-                $exception = new ScopingRuntimeException('Foo')
-            )
-        ;
-
-        try {
-            $this->appTester->run($input);
-
-            $this->fail('Expected exception to be thrown.');
-        } catch (ScopingRuntimeException $caughtException) {
-            $this->assertSame($caughtException, $exception);
-        }
-
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-    }
-
-    public function test_throws_an_error_when_passing_a_non_existent_path_file()
-    {
-        $input = [
-            'add-prefix',
-            '--prefix' => 'MyPrefix',
-            '--config' => 'unknown',
-            'paths' => [
-                escape_path('/path/to/dir1'),
-            ],
-        ];
-
-        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists('build')->willReturn(false);
-
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
 
         try {
             $this->appTester->run($input);
 
             $this->fail('Expected exception to be thrown.');
         } catch (RuntimeException $exception) {
-            $patchFile = escape_path($this->tmp.'/unknown');
-
             $this->assertSame(
-                "Could not find the file \"<comment>$patchFile</comment>\".",
+                'Expected "prefix" argument to be a non empty string.',
                 $exception->getMessage()
             );
-            $this->assertSame(0, $exception->getCode());
-            $this->assertNull($exception->getPrevious());
         }
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
+
+        $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
+    }
+
+    public function test_throws_an_error_when_passing_a_non_existent_config()
+    {
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            '--config' => 'unknown',
+            '--no-interaction',
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+
+        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
+
+        try {
+            $this->appTester->run($input);
+
+            $this->fail('Expected exception to be thrown.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame(
+                sprintf(
+                    'Could not find the configuration file "<comment>%sunknown</comment>".',
+                    $this->tmp.DIRECTORY_SEPARATOR
+                ),
+                $exception->getMessage()
+            );
+        }
+
+        $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
     public function test_attempts_to_use_patch_file_in_current_directory()
     {
-        chdir(escape_path(self::FIXTURE_PATH.'/set006'));
+        chdir(escape_path($root = self::FIXTURE_PATH.'/set006'));
 
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
-            'paths' => [
-                escape_path('/path/to/dir1'),
-            ],
+            '--output-dir' => $this->tmp,
+            '--no-interaction',
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists('build')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
 
-        $patchersFound = [];
-        $this->handleProphecy
-            ->__invoke(
-                Argument::any(),
-                Argument::any(),
-                Argument::any(),
-                Argument::that(function ($arg) use (&$patchersFound) {
-                    $patchersFound = $arg;
+        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
-                    return true;
-                }),
-                Argument::any(),
-                Argument::any(),
-                false,
-                Argument::any()
-            )
-            ->shouldBeCalled();
+        $expectedFiles = [
+            'scoper.inc.php' => 'f1',
+        ];
+
+        $root = realpath($root);
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    'MyPrefix',
+                    Argument::that(function ($arg) use (&$patchersFound) {
+                        $patchersFound = $arg;
+
+                        return true;
+                    }),
+                    [],
+                    Argument::type(Closure::class)
+                )
+                ->willReturn($prefixedContents)
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+        }
 
         $this->appTester->run($input);
+
+        $this->assertSame(0, $this->appTester->getStatusCode());
 
         $this->assertCount(1, $patchersFound);
         $this->assertEquals('Hello world!', $patchersFound[0]());
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-    }
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
-    public function test_do_no_apply_any_patcher_if_default_patcher_file_not_found()
-    {
-        chdir(escape_path(self::FIXTURE_PATH.'/set007'));
-
-        $input = [
-            'add-prefix',
-            '--prefix' => 'MyPrefix',
-            'paths' => [
-                escape_path('/path/to/dir1'),
-            ],
-            '--no-config' => null,
-        ];
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists('build')->willReturn(false);
-
-        $patchersFound = [];
-        $this->handleProphecy
-            ->__invoke(
-                Argument::any(),
-                Argument::any(),
-                Argument::any(),
-                Argument::that(function ($arg) use (&$patchersFound) {
-                    $patchersFound = $arg;
-
-                    return true;
-                }),
-                Argument::any(),
-                Argument::any(),
-                false,
-                Argument::any()
-            )
-            ->shouldBeCalled();
-
-        $this->appTester->run($input);
-
-        $this->assertCount(0, $patchersFound);
-
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values()
@@ -799,73 +844,83 @@ EOF;
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
-            'paths' => [
-                escape_path('/path/to/dir1'),
-            ],
+            '--no-interaction',
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath('unknown')->willReturn(false);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists('build')->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldNotBeCalled();
+        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
 
         try {
             $this->appTester->run($input);
 
             $this->fail('Expected exception to be thrown.');
         } catch (InvalidArgumentException $exception) {
-            $patchFile = escape_path($this->cwd.'/unknown');
-
             $this->assertSame(
                 'Expected patchers to be an array of callables, the "0" element is not.',
                 $exception->getMessage()
             );
-            $this->assertSame(0, $exception->getCode());
-            $this->assertNull($exception->getPrevious());
         }
+
+        $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
     public function test_can_scope_projects_with_invalid_files()
     {
-        chdir($fixtureDir = realpath(escape_path(self::FIXTURE_PATH.'/set010')));
+        chdir(escape_path($root = self::FIXTURE_PATH.'/set010'));
 
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             '--output-dir' => $this->tmp,
-            '--stop-on-failure' => null,
-            '--no-interaction' => null,
+            '--no-interaction',
             '--no-config' => null,
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
 
-        $this->handleProphecy
-            ->__invoke(
-                'MyPrefix',
-                [
-                    $fixtureDir,
-                ],
-                $this->tmp,
-                Argument::type('array'),
-                Argument::type('array'),
-                Argument::type('array'),
-                true,
-                Argument::type(ConsoleLogger::class)
-            )
-            ->shouldBeCalled()
-        ;
+        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            'invalid-json.json' => 'f1',
+        ];
+
+        $root = realpath($root);
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+
+            $fileContents = file_get_contents($inputPath);
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    'MyPrefix',
+                    [],
+                    [],
+                    Argument::type(Closure::class)
+                )
+                ->willThrow($scopingException = new RuntimeException('Could not scope file'))
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $fileContents)->shouldBeCalled();
+        }
 
         $this->appTester->run($input);
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
+        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
-        $this->handleProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function provideEmptyPrefixes()
@@ -886,8 +941,8 @@ EOF;
         /** @var Filesystem $fileSystem */
         $fileSystem = $this->fileSystemProphecy->reveal();
 
-        /** @var HandleAddPrefix $handle */
-        $handle = $this->handleProphecy->reveal();
+        /** @var Scoper $handle */
+        $handle = $this->scoperProphecy->reveal();
 
         $application = new Application('php-scoper-test');
         $application->addCommands([

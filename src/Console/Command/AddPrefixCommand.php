@@ -19,11 +19,10 @@ use Closure;
 use function getcwd;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Console\Configuration;
-use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use function PhpScoper5a4b48304b0b4\Humbug\PhpScoper\get_common_path;
+use function Humbug\PhpScoper\get_common_path;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,6 +33,7 @@ use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
+use function var_dump;
 
 final class AddPrefixCommand extends BaseCommand
 {
@@ -187,8 +187,8 @@ final class AddPrefixCommand extends BaseCommand
         $vendorDirs = [];
         $commonPath = get_common_path(array_keys($filesWithContents));
 
-        foreach ($filesWithContents as $inputFilePath => $outputFilePath) {
-            [$inputFilePath, $inputContents] = $filesWithContents;
+        foreach ($filesWithContents as $fileWithContents) {
+            [$inputFilePath, $inputContents] = $fileWithContents;
 
             $outputFilePath = $output . str_replace($commonPath, '', $inputFilePath);
 
@@ -394,7 +394,9 @@ final class AddPrefixCommand extends BaseCommand
                 OutputStyle::VERBOSITY_DEBUG
             );
 
-            return Configuration::load(null);
+            $config = Configuration::load();
+
+            return $this->retrievePaths($input, $config);
         }
 
         $configFile = $input->getOption(self::CONFIG_FILE_OPT);
@@ -427,7 +429,7 @@ final class AddPrefixCommand extends BaseCommand
         if (false === file_exists($configFile)) {
             throw new RuntimeException(
                 sprintf(
-                    'Could not find the file "<comment>%s</comment>".',
+                    'Could not find the configuration file "<comment>%s</comment>".',
                     $configFile
                 )
             );
@@ -452,10 +454,10 @@ final class AddPrefixCommand extends BaseCommand
         $paths = $input->getArgument(self::PATH_ARG);
 
         if (0 === count($paths) && 0 === count($config->getFilesWithContents())) {
-            return $config->withPaths([getcwd()]);
+            $paths = [getcwd()];
         }
 
-        return $config;
+        return $config->withPaths($paths);
     }
 
     private function makeAbsolutePath(string $path): string

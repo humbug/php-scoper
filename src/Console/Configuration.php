@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
+use function array_merge;
 use function array_unique;
 use function array_values;
 use ArrayIterator;
@@ -57,18 +58,18 @@ final class Configuration
     public static function load(string $path = null, array $paths = []): self
     {
         if (null === $path) {
-            return new self(null, [], [], [], []);
-        }
+            $config = [];
+        } else {
+            $config = include $path;
 
-        $config = include $path;
-
-        if (false === is_array($config)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected configuration to be an array, found "%s" instead.',
-                    gettype($config)
-                )
-            );
+            if (false === is_array($config)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected configuration to be an array, found "%s" instead.',
+                        gettype($config)
+                    )
+                );
+            }
         }
 
         self::validateConfigKeys($config);
@@ -93,16 +94,16 @@ final class Configuration
      * @param callable[]          $patchers        List of closures which can alter the content of the files being
      *                                             scoped.
      * @param string[]            $whitelist       List of classes that will not be scoped.
-     * @param callable   $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
+     * @param Closure   $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
      *                                      returning a boolean which if `true` means the class should be scoped
      *                                      (i.e. is ignored) or scoped otherwise.
      */
     private function __construct(
-        string $path = null,
+        ?string $path,
         array $filesWithContents,
         array $patchers,
         array $whitelist,
-        callable $globalNamespaceWhitelisters
+        Closure $globalNamespaceWhitelisters
     ) {
         $this->path = $path;
         $this->filesWithContents = $filesWithContents;
@@ -114,14 +115,16 @@ final class Configuration
     public function withPaths(array $paths): self
     {
         $filesWithContents = self::retrieveFilesWithContents(
-            new ArrayIterator(
-                array_unique($paths)
+            iterables_to_iterator(
+                self::retrieveFilesFromPaths(
+                    array_unique($paths)
+                )
             )
         );
 
         return new self(
             $this->path,
-            $filesWithContents,
+            array_merge($this->filesWithContents, $filesWithContents),
             $this->patchers,
             $this->whitelist,
             $this->globalNamespaceWhitelister
@@ -151,10 +154,7 @@ final class Configuration
         return $this->whitelist;
     }
 
-    /**
-     * @return callable[]|string[]
-     */
-    public function getGlobalNamespaceWhitelister(): array
+    public function getGlobalNamespaceWhitelister(): Closure
     {
         return $this->globalNamespaceWhitelister;
     }
@@ -392,7 +392,7 @@ final class Configuration
     {
         return array_reduce(
             iterator_to_array($files),
-            function (array $files, SplFileInfo $fileInfo): array {
+            function (array $files, $fileInfo): array {
                 $file = (string) $fileInfo;
 
                 if (false === file_exists($file)) {
