@@ -454,55 +454,6 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-//    public function test_relative_paths_are_relative_to_the_current_working_directory()
-//    {
-//        $input = [
-//            'add-prefix',
-//            '--prefix' => 'MyPrefix',
-//            'paths' => [
-//                $path0 = escape_path('/path/to/dir1'),
-//                $path1 = escape_path('relative-path/to/dir2'),
-//                $path2 = escape_path('relative-path/to/file'),
-//            ],
-//            '--output-dir' => $this->tmp,
-//            '--no-config' => null,
-//        ];
-//
-//        $this->fileSystemProphecy->isAbsolutePath($path0)->willReturn(true);
-//        $this->fileSystemProphecy->isAbsolutePath($path1)->willReturn(false);
-//        $this->fileSystemProphecy->isAbsolutePath($path2)->willReturn(false);
-//        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
-//        $this->fileSystemProphecy->exists($this->tmp)->willReturn(false);
-//
-//        $this->scoperProphecy
-//            ->__invoke(
-//                'MyPrefix',
-//                [
-//                    escape_path('/path/to/dir1'),
-//                    escape_path($this->tmp.'/relative-path/to/dir2'),
-//                    escape_path($this->tmp.'/relative-path/to/file'),
-//                ],
-//                $this->tmp,
-//                Argument::type('array'),
-//                Argument::type('array'),
-//                Argument::type('array'),
-//                false,
-//                Argument::type(ConsoleLogger::class)
-//            )
-//            ->shouldBeCalled()
-//        ;
-//
-//        $this->appTester->run($input);
-//
-//        $this->assertSame(0, $this->appTester->getStatusCode());
-//
-//        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-//        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-//
-//        $this->scoperProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-//    }
-//
-
     public function test_prefix_can_end_by_a_backslash()
     {
         $input = [
