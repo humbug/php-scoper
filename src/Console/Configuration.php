@@ -14,19 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
-use function array_merge;
-use function array_unique;
-use function array_values;
-use ArrayIterator;
 use Closure;
-use function file_get_contents;
-use function Humbug\PhpScoper\get_common_path;
 use function Humbug\PhpScoper\iterables_to_iterator;
 use InvalidArgumentException;
 use Iterator;
-use function iterator_to_array;
 use RuntimeException;
-use SplFileInfo;
 use Symfony\Component\Finder\Finder;
 
 final class Configuration
