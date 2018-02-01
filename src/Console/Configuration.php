@@ -15,11 +15,11 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Closure;
-use function Humbug\PhpScoper\iterables_to_iterator;
 use InvalidArgumentException;
 use Iterator;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
+use function Humbug\PhpScoper\iterables_to_iterator;
 
 final class Configuration
 {
@@ -42,8 +42,8 @@ final class Configuration
     private $globalNamespaceWhitelister;
 
     /**
-     * @param string|null $path Absolute path to the configuration file.
-     * @param string[] $paths List of paths to append besides the one configured
+     * @param string|null $path  Absolute path to the configuration file.
+     * @param string[]    $paths List of paths to append besides the one configured
      *
      * @return self
      */
@@ -81,14 +81,14 @@ final class Configuration
     }
 
     /**
-     * @param string|null         $path            Absolute path to the configuration file loaded.
-     * @param [string, string][]             $filesWithContents Array of tuple with the first argument being the file path and the second its contents
-     * @param callable[]          $patchers        List of closures which can alter the content of the files being
-     *                                             scoped.
-     * @param string[]            $whitelist       List of classes that will not be scoped.
-     * @param Closure   $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
-     *                                      returning a boolean which if `true` means the class should be scoped
-     *                                      (i.e. is ignored) or scoped otherwise.
+     * @param string|null        $path                        Absolute path to the configuration file loaded.
+     * @param [string, string][] $filesWithContents           Array of tuple with the first argument being the file path and the second its contents
+     * @param callable[]         $patchers                    List of closures which can alter the content of the files being
+     *                                                        scoped.
+     * @param string[]           $whitelist                   List of classes that will not be scoped.
+     * @param Closure            $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
+     *                                                        returning a boolean which if `true` means the class should be scoped
+     *                                                        (i.e. is ignored) or scoped otherwise.
      */
     private function __construct(
         ?string $path,

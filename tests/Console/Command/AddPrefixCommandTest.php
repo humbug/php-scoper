@@ -14,27 +14,24 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use function chdir;
 use Closure;
-use const DIRECTORY_SEPARATOR;
-use function file_get_contents;
 use Humbug\PhpScoper\Console\Application;
-use function Humbug\PhpScoper\create_application;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
-use function Humbug\PhpScoper\remove_dir;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Throwable\Exception\RuntimeException as ScopingRuntimeException;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use function realpath;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Exception\RuntimeException as SymfonyConsoleRuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
+use const DIRECTORY_SEPARATOR;
+use function chdir;
+use function file_get_contents;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
+use function Humbug\PhpScoper\remove_dir;
+use function realpath;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
@@ -100,7 +97,6 @@ class AddPrefixCommandTest extends TestCase
 
         remove_dir($this->tmp);
     }
-
 
     public function test_get_help_menu()
     {
@@ -458,7 +454,6 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-
 //    public function test_relative_paths_are_relative_to_the_current_working_directory()
 //    {
 //        $input = [
@@ -507,7 +502,6 @@ EOF;
 //        $this->scoperProphecy->__invoke(Argument::cetera())->shouldHaveBeenCalledTimes(1);
 //    }
 //
-
 
     public function test_prefix_can_end_by_a_backslash()
     {
@@ -685,7 +679,7 @@ EOF;
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
             $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path( $this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
 
             $this->scoperProphecy
                 ->scope(

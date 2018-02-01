@@ -20,7 +20,6 @@ use Humbug\PhpScoper\Console\Configuration;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use function Humbug\PhpScoper\get_common_path;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,6 +30,7 @@ use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
+use function Humbug\PhpScoper\get_common_path;
 
 final class AddPrefixCommand extends BaseCommand
 {
@@ -187,7 +187,7 @@ final class AddPrefixCommand extends BaseCommand
         foreach ($filesWithContents as $fileWithContents) {
             [$inputFilePath, $inputContents] = $fileWithContents;
 
-            $outputFilePath = $output . str_replace($commonPath, '', $inputFilePath);
+            $outputFilePath = $output.str_replace($commonPath, '', $inputFilePath);
 
             if (preg_match('~((?:.*)\/vendor)\/.*~', $outputFilePath, $matches)) {
                 $vendorDirs[$matches[1]] = true;

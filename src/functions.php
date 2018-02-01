@@ -20,7 +20,6 @@ use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
 use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
-use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
@@ -199,7 +198,7 @@ function iterables_to_iterator(iterable ...$iterables): Iterator
         } elseif ($iterable instanceof IteratorAggregate) {
             $iterator->append($iterable->getIterator());
         } else {
-            /** @var Iterator $iterable */
+            /* @var Iterator $iterable */
             $iterator->append($iterable);
         }
     }
