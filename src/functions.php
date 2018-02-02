@@ -14,11 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use AppendIterator;
+use ArrayIterator;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
 use Humbug\PhpScoper\Console\Command\SelfUpdateCommand;
-use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
@@ -27,6 +28,8 @@ use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Scoper\TraverserFactory;
 use Humbug\SelfUpdate\Exception\RuntimeException as SelfUpdateRuntimeException;
 use Humbug\SelfUpdate\Updater;
+use Iterator;
+use IteratorAggregate;
 use PackageVersions\Versions;
 use PhpParser\Node;
 use PhpParser\Parser;
@@ -44,9 +47,7 @@ function create_application(): SymfonyApplication
     $app->addCommands([
         new AddPrefixCommand(
             new Filesystem(),
-            new HandleAddPrefix(
-                create_scoper()
-            )
+            create_scoper()
         ),
         new InitCommand(),
     ]);
@@ -185,4 +186,22 @@ function deep_clone($node)
     }
 
     return unserialize(serialize($node));
+}
+
+function iterables_to_iterator(iterable ...$iterables): Iterator
+{
+    $iterator = new AppendIterator();
+
+    foreach ($iterables as $iterable) {
+        if (is_array($iterable)) {
+            $iterator->append(new ArrayIterator($iterable));
+        } elseif ($iterable instanceof IteratorAggregate) {
+            $iterator->append($iterable->getIterator());
+        } else {
+            /* @var Iterator $iterable */
+            $iterator->append($iterable);
+        }
+    }
+
+    return $iterator;
 }

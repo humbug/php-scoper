@@ -14,9 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Closure;
+use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Console\Configuration;
-use Humbug\PhpScoper\Handler\HandleAddPrefix;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
+use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,6 +30,7 @@ use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
+use function Humbug\PhpScoper\get_common_path;
 
 final class AddPrefixCommand extends BaseCommand
 {
@@ -40,17 +44,17 @@ final class AddPrefixCommand extends BaseCommand
     private const NO_CONFIG_OPT = 'no-config';
 
     private $fileSystem;
-    private $handle;
+    private $scoper;
 
     /**
      * @inheritdoc
      */
-    public function __construct(Filesystem $fileSystem, HandleAddPrefix $handle)
+    public function __construct(Filesystem $fileSystem, Scoper $scoper)
     {
         parent::__construct();
 
         $this->fileSystem = $fileSystem;
-        $this->handle = $handle;
+        $this->scoper = $scoper;
     }
 
     /**
@@ -126,6 +130,7 @@ final class AddPrefixCommand extends BaseCommand
         $this->validateOutputDir($input, $io);
 
         $config = $this->retrieveConfig($input, $output, $io);
+        $output = $input->getOption(self::OUTPUT_DIR_OPT);
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
@@ -137,20 +142,20 @@ final class AddPrefixCommand extends BaseCommand
             $input->getArgument(self::PATH_ARG)
         );
 
-        $paths = $this->retrievePaths($input, $config);
-
         try {
-            $this->handle->__invoke(
+            $this->scopeFiles(
                 $input->getOption(self::PREFIX_OPT),
-                $paths,
-                $input->getOption(self::OUTPUT_DIR_OPT),
+                $config->getFilesWithContents(),
+                $output,
                 $config->getPatchers(),
                 $config->getWhitelist(),
-                $config->getGlobalNamespaceWhitelisters(),
+                $config->getGlobalNamespaceWhitelister(),
                 $input->getOption(self::STOP_ON_FAILURE_OPT),
                 $logger
             );
         } catch (Throwable $throwable) {
+            $this->fileSystem->remove($output);
+
             $logger->outputScopingEndWithFailure();
 
             throw $throwable;
@@ -159,6 +164,116 @@ final class AddPrefixCommand extends BaseCommand
         $logger->outputScopingEnd();
 
         return 0;
+    }
+
+    private function scopeFiles(
+        string $prefix,
+        array $filesWithContents,
+        string $output,
+        array $patchers,
+        array $whitelist,
+        Closure $globalNamespaceWhitelister,
+        bool $stopOnFailure,
+        ConsoleLogger $logger
+    ): void {
+        // Creates output directory if does not already exist
+        $this->fileSystem->mkdir($output);
+
+        $logger->outputFileCount(count($filesWithContents));
+
+        $vendorDirs = [];
+        $commonPath = get_common_path(array_keys($filesWithContents));
+
+        foreach ($filesWithContents as $fileWithContents) {
+            [$inputFilePath, $inputContents] = $fileWithContents;
+
+            $outputFilePath = $output.str_replace($commonPath, '', $inputFilePath);
+
+            if (preg_match('~((?:.*)\/vendor)\/.*~', $outputFilePath, $matches)) {
+                $vendorDirs[$matches[1]] = true;
+            }
+
+            $this->scopeFile(
+                $inputFilePath,
+                $inputContents,
+                $outputFilePath,
+                $prefix,
+                $patchers,
+                $whitelist,
+                $globalNamespaceWhitelister,
+                $stopOnFailure,
+                $logger
+            );
+        }
+
+        $vendorDirs = array_keys($vendorDirs);
+
+        usort(
+            $vendorDirs,
+            function ($a, $b) {
+                return strlen($b) <=> strlen($a);
+            }
+        );
+
+        $vendorDir = (0 === count($vendorDirs)) ? null : $vendorDirs[0];
+
+        if (null !== $vendorDir) {
+            $autoload = (new ScoperAutoloadGenerator($whitelist))->dump($prefix);
+
+            $this->fileSystem->dumpFile($vendorDir.'/scoper-autoload.php', $autoload);
+        }
+    }
+
+    /**
+     * @param string        $inputFilePath
+     * @param string        $outputFilePath
+     * @param string        $inputContents
+     * @param string        $prefix
+     * @param callable[]    $patchers
+     * @param string[]      $whitelist
+     * @param callable      $globalWhitelister
+     * @param bool          $stopOnFailure
+     * @param ConsoleLogger $logger
+     */
+    private function scopeFile(
+        string $inputFilePath,
+        string $inputContents,
+        string $outputFilePath,
+        string $prefix,
+        array $patchers,
+        array $whitelist,
+        callable $globalWhitelister,
+        bool $stopOnFailure,
+        ConsoleLogger $logger
+    ): void {
+        // TODO: use $inputContents instead of doing file_get_contents in the Scopers
+
+        try {
+            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers, $whitelist, $globalWhitelister);
+        } catch (Throwable $error) {
+            $exception = new ParsingException(
+                sprintf(
+                    'Could not parse the file "%s".',
+                    $inputFilePath
+                ),
+                0,
+                $error
+            );
+
+            if ($stopOnFailure) {
+                throw $exception;
+            }
+
+            $logger->outputWarnOfFailure($inputFilePath, $exception);
+
+            $scoppedContent = file_get_contents($inputFilePath);
+        }
+
+        $this->fileSystem->dumpFile($outputFilePath, $scoppedContent);
+
+        if (false === isset($exception)) {
+            $logger->outputSuccess($inputFilePath);
+        }
     }
 
     private function validatePrefix(InputInterface $input): void
@@ -276,7 +391,9 @@ final class AddPrefixCommand extends BaseCommand
                 OutputStyle::VERBOSITY_DEBUG
             );
 
-            return Configuration::load(null);
+            $config = Configuration::load();
+
+            return $this->retrievePaths($input, $config);
         }
 
         $configFile = $input->getOption(self::CONFIG_FILE_OPT);
@@ -309,7 +426,7 @@ final class AddPrefixCommand extends BaseCommand
         if (false === file_exists($configFile)) {
             throw new RuntimeException(
                 sprintf(
-                    'Could not find the file "<comment>%s</comment>".',
+                    'Could not find the configuration file "<comment>%s</comment>".',
                     $configFile
                 )
             );
@@ -323,32 +440,21 @@ final class AddPrefixCommand extends BaseCommand
             OutputStyle::VERBOSITY_DEBUG
         );
 
-        return Configuration::load($configFile);
+        $config = Configuration::load($configFile);
+
+        return $this->retrievePaths($input, $config);
     }
 
-    /**
-     * @param InputInterface $input
-     * @param Configuration  $configuration
-     *
-     * @return string[] List of absolute paths
-     */
-    private function retrievePaths(InputInterface $input, Configuration $configuration): array
+    private function retrievePaths(InputInterface $input, Configuration $config): Configuration
     {
+        // Checks if there is any path included and if note use the current working directory as the include path
         $paths = $input->getArgument(self::PATH_ARG);
 
-        $finders = $configuration->getFinders();
-
-        foreach ($finders as $finder) {
-            foreach ($finder as $file) {
-                $paths[] = $file->getRealPath();
-            }
+        if (0 === count($paths) && 0 === count($config->getFilesWithContents())) {
+            $paths = [getcwd()];
         }
 
-        if (0 === count($paths)) {
-            return [getcwd()];
-        }
-
-        return array_unique($paths);
+        return $config->withPaths($paths);
     }
 
     private function makeAbsolutePath(string $path): string

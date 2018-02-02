@@ -107,12 +107,12 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         // Skip if is already prefixed
         if ($this->prefix === $stringName->getFirst()) {
             $newStringName = $stringName;
-            // Check if the class can be prefixed: class from the global namespace
+        // Check if the class can be prefixed: class from the global namespace
         } elseif (1 === count($stringName->parts)
             && false === ($this->globalWhitelister)($stringName->toString())
         ) {
             $newStringName = $stringName;
-            // Check if the class can be prefixed: regular class
+        // Check if the class can be prefixed: regular class
         } elseif (1 < count($stringName->parts)
             && in_array($stringName->toString(), $this->whitelist)
         ) {

@@ -118,7 +118,7 @@ final class AutoloadPrefixer
      * string     |
      * or simply the namepace not existing as a psr-4 entry.
      *
-     * @param string $psr0Namespace
+     * @param string       $psr0Namespace
      * @param string|array $psr0Path
      * @param string|array $psr4
      *
