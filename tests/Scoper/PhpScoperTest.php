@@ -31,8 +31,6 @@ use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_fake_whitelister;
 use function Humbug\PhpScoper\create_parser;
 use function Humbug\PhpScoper\escape_path;
-use function Humbug\PhpScoper\make_tmp_dir;
-use function Humbug\PhpScoper\remove_dir;
 
 class PhpScoperTest extends TestCase
 {

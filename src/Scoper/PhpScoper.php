@@ -19,7 +19,7 @@ use PhpParser\Error as PhpParserError;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
 
-final class  PhpScoper implements Scoper
+final class PhpScoper implements Scoper
 {
     private const FILE_PATH_PATTERN = '/.*\.php$/';
     private const NOT_FILE_BINARY = '/\..+?$/';

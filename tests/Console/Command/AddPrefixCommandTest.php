@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Closure;
-use function file_get_contents;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Scoper;
 use InvalidArgumentException;
@@ -25,6 +24,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
+use function file_get_contents;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
