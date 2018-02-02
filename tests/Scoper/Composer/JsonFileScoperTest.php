@@ -21,9 +21,6 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_fake_whitelister;
-use function Humbug\PhpScoper\escape_path;
-use function Humbug\PhpScoper\make_tmp_dir;
-use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Composer\JsonFileScoper
@@ -31,39 +28,6 @@ use function Humbug\PhpScoper\remove_dir;
  */
 class JsonFileScoperTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $cwd;
-
-    /**
-     * @var string
-     */
-    private $tmp;
-
-    /**
-     * @inheritdoc
-     */
-    public function setUp()
-    {
-        if (null == $this->tmp) {
-            $this->cwd = getcwd();
-            $this->tmp = make_tmp_dir('scoper', __CLASS__);
-        }
-
-        chdir($this->tmp);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function tearDown()
-    {
-        chdir($this->cwd);
-
-        remove_dir($this->tmp);
-    }
-
     public function test_it_is_a_Scoper()
     {
         $this->assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
@@ -71,19 +35,17 @@ class JsonFileScoperTest extends TestCase
 
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_composer_file()
     {
-        $filePath = escape_path($this->tmp.'/file.php');
+        $filePath = 'file.php';
+        $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
-        touch($filePath);
-        file_put_contents($filePath, '');
-
         /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
+            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -93,7 +55,7 @@ class JsonFileScoperTest extends TestCase
 
         $scoper = new JsonFileScoper($decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -103,10 +65,9 @@ class JsonFileScoperTest extends TestCase
     /**
      * @dataProvider provideComposerFiles
      */
-    public function test_it_prefixes_the_composer_autoloaders(string $fileContent, string $expected)
+    public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected)
     {
-        touch($filePath = escape_path($this->tmp.'/composer.json'));
-        file_put_contents($filePath, $fileContent);
+        $filePath = 'composer.json';
 
         $scoper = new JsonFileScoper(new FakeScoper());
 
@@ -115,7 +76,7 @@ class JsonFileScoperTest extends TestCase
         $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -175,10 +136,9 @@ JSON
     /**
      * @dataProvider providePSR0ComposerFiles
      */
-    public function test_it_prefixes_psr0_autoloaders(string $fileContent, string $expected)
+    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected)
     {
-        touch($filePath = escape_path($this->tmp.'/composer.json'));
-        file_put_contents($filePath, $fileContent);
+        $filePath = 'composer.json';
 
         $scoper = new JsonFileScoper(new FakeScoper());
 
@@ -187,7 +147,7 @@ JSON
         $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }

@@ -22,6 +22,7 @@ interface Scoper
      * Scope AKA. apply the given prefix to the file in the appropriate way.
      *
      * @param string     $filePath          File to scope
+     * @param string     $contents          File contents
      * @param string     $prefix            Prefix to apply to the file
      * @param callable[] $patchers
      * @param string[]   $whitelist         List of classes to exclude from the scoping.
@@ -31,7 +32,7 @@ interface Scoper
      *
      * @throws ParsingException
      *
-     * @return string Content of the file with the prefix applied
+     * @return string Contents of the file with the prefix applied
      */
-    public function scope(string $filePath, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string;
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string;
 }

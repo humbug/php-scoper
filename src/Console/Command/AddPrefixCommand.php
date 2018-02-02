@@ -246,10 +246,8 @@ final class AddPrefixCommand extends BaseCommand
         bool $stopOnFailure,
         ConsoleLogger $logger
     ): void {
-        // TODO: use $inputContents instead of doing file_get_contents in the Scopers
-
         try {
-            $scoppedContent = $this->scoper->scope($inputFilePath, $prefix, $patchers, $whitelist, $globalWhitelister);
+            $scoppedContent = $this->scoper->scope($inputFilePath, $inputContents, $prefix, $patchers, $whitelist, $globalWhitelister);
         } catch (Throwable $error) {
             $exception = new ParsingException(
                 sprintf(

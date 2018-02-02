@@ -43,15 +43,13 @@ final class PhpScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
     {
-        if (false === $this->isPhpFile($filePath)) {
-            return $this->decoratedScoper->scope($filePath, $prefix, $patchers, $whitelist, $globalWhitelister);
+        if (false === $this->isPhpFile($filePath, $contents)) {
+            return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $globalWhitelister);
         }
 
-        $content = file_get_contents($filePath);
-
-        $statements = $this->parser->parse($content);
+        $statements = $this->parser->parse($contents);
 
         $traverser = $this->traverserFactory->create($prefix, $whitelist, $globalWhitelister);
 
@@ -62,7 +60,7 @@ final class PhpScoper implements Scoper
         return $prettyPrinter->prettyPrintFile($statements)."\n";
     }
 
-    private function isPhpFile(string $filePath): bool
+    private function isPhpFile(string $filePath, string $contents): bool
     {
         if (1 === preg_match(self::FILE_PATH_PATTERN, $filePath)) {
             return true;
@@ -72,8 +70,6 @@ final class PhpScoper implements Scoper
             return false;
         }
 
-        $content = file_get_contents($filePath);
-
-        return 1 === preg_match(self::PHP_BINARY, $content);
+        return 1 === preg_match(self::PHP_BINARY, $contents);
     }
 }

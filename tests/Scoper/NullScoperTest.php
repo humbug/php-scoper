@@ -18,48 +18,12 @@ use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_fake_whitelister;
-use function Humbug\PhpScoper\escape_path;
-use function Humbug\PhpScoper\make_tmp_dir;
-use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\NullScoper
  */
 class NullScoperTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $cwd;
-
-    /**
-     * @var string
-     */
-    private $tmp;
-
-    /**
-     * @inheritdoc
-     */
-    public function setUp()
-    {
-        if (null === $this->tmp) {
-            $this->cwd = getcwd();
-            $this->tmp = make_tmp_dir('scoper', __CLASS__);
-        }
-
-        chdir($this->tmp);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function tearDown()
-    {
-        chdir($this->cwd);
-
-        remove_dir($this->tmp);
-    }
-
     public function test_is_a_Scoper()
     {
         $this->assertTrue(is_a(NullScoper::class, Scoper::class, true));
@@ -67,11 +31,8 @@ class NullScoperTest extends TestCase
 
     public function test_returns_the_file_content_unchanged()
     {
-        $filePath = escape_path($this->tmp.'/file');
-        $content = $expected = 'File content';
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
+        $filePath = 'file';
+        $contents = $expected = 'File content';
 
         $prefix = 'Humbug';
 
@@ -83,7 +44,7 @@ class NullScoperTest extends TestCase
 
         $scoper = new NullScoper();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
