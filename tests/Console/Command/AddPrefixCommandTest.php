@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Closure;
 use Humbug\PhpScoper\Console\Application;
-use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
@@ -25,13 +24,9 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
-use const DIRECTORY_SEPARATOR;
-use function chdir;
-use function file_get_contents;
 use function Humbug\PhpScoper\escape_path;
 use function Humbug\PhpScoper\make_tmp_dir;
 use function Humbug\PhpScoper\remove_dir;
-use function realpath;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
