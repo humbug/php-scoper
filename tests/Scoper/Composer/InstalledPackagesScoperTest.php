@@ -31,39 +31,6 @@ use function Humbug\PhpScoper\remove_dir;
  */
 class InstalledPackagesScoperTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $cwd;
-
-    /**
-     * @var string
-     */
-    private $tmp;
-
-    /**
-     * @inheritdoc
-     */
-    public function setUp()
-    {
-        if (null == $this->tmp) {
-            $this->cwd = getcwd();
-            $this->tmp = make_tmp_dir('scoper', __CLASS__);
-        }
-
-        chdir($this->tmp);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function tearDown()
-    {
-        chdir($this->cwd);
-
-        remove_dir($this->tmp);
-    }
-
     public function test_it_is_a_Scoper()
     {
         $this->assertTrue(is_a(InstalledPackagesScoper::class, Scoper::class, true));
@@ -71,19 +38,17 @@ class InstalledPackagesScoperTest extends TestCase
 
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_installed_file()
     {
-        $filePath = escape_path($this->tmp.'/file.php');
+        $filePath = 'file.php';
+        $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
-        touch($filePath);
-        file_put_contents($filePath, '');
-
         /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
+            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -93,7 +58,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $scoper = new InstalledPackagesScoper($decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -103,11 +68,9 @@ class InstalledPackagesScoperTest extends TestCase
     /**
      * @dataProvider provideInstalledPackagesFiles
      */
-    public function test_it_prefixes_the_composer_autoloaders(string $fileContent, string $expected)
+    public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected)
     {
-        mkdir(escape_path($this->tmp.'/composer'));
-        touch($filePath = escape_path($this->tmp.'/composer/installed.json'));
-        file_put_contents($filePath, $fileContent);
+        $filePath = 'composer/installed.json';
 
         $scoper = new InstalledPackagesScoper(new FakeScoper());
 
@@ -116,7 +79,7 @@ class InstalledPackagesScoperTest extends TestCase
         $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }

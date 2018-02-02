@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Closure;
+use function file_get_contents;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Scoper;
 use InvalidArgumentException;
@@ -195,9 +196,12 @@ EOF;
             $inputPath = escape_path($root.'/'.$expectedFile);
             $outputPath = escape_path($this->tmp.'/'.$expectedFile);
 
+            $inputContents = file_get_contents($inputPath);
+
             $this->scoperProphecy
                 ->scope(
                     $inputPath,
+                    $inputContents,
                     'MyPrefix',
                     [],
                     [],
@@ -255,10 +259,13 @@ EOF;
             $inputPath = escape_path($root.'/'.$expectedFile);
             $outputPath = escape_path($this->tmp.'/'.$expectedFile);
 
+            $inputContents = file_get_contents($inputPath);
+
             if (null !== $prefixedContents) {
                 $this->scoperProphecy
                     ->scope(
                         $inputPath,
+                        $inputContents,
                         'MyPrefix',
                         [],
                         [],
@@ -272,6 +279,7 @@ EOF;
                 $this->scoperProphecy
                     ->scope(
                         $inputPath,
+                        $inputContents,
                         'MyPrefix',
                         [],
                         [],
@@ -280,7 +288,7 @@ EOF;
                     ->willThrow(new \RuntimeException('Scoping of the file failed'))
                 ;
 
-                $this->fileSystemProphecy->dumpFile($outputPath, file_get_contents($inputPath))->shouldBeCalled();
+                $this->fileSystemProphecy->dumpFile($outputPath, $inputContents)->shouldBeCalled();
             }
         }
 
@@ -327,9 +335,12 @@ EOF;
             $inputPath = escape_path($root.'/'.$expectedFile);
             $outputPath = escape_path($this->tmp.'/'.$expectedFile);
 
+            $inputContents = file_get_contents($inputPath);
+
             $this->scoperProphecy
                 ->scope(
                     $inputPath,
+                    $inputContents,
                     'MyPrefix',
                     [],
                     [],
@@ -385,11 +396,13 @@ EOF;
             $inputPath = realpath($inputPath);
             $outputPath = escape_path($outputPath);
 
+            $inputContents = file_get_contents($inputPath);
             $prefixedFileContents = 'Random string';
 
             $this->scoperProphecy
                 ->scope(
                     $inputPath,
+                    $inputContents,
                     'MyPrefix',
                     [],
                     [],
@@ -434,6 +447,7 @@ EOF;
 
         $this->scoperProphecy
             ->scope(
+                Argument::any(),
                 Argument::any(),
                 Argument::that(
                     function (string $prefix): bool {
@@ -497,9 +511,12 @@ EOF;
             $inputPath = escape_path($root.'/'.$expectedFile);
             $outputPath = escape_path($this->tmp.'/'.$expectedFile);
 
+            $inputContents = file_get_contents($inputPath);
+
             $this->scoperProphecy
                 ->scope(
                     $inputPath,
+                    $inputContents,
                     'MyPrefix',
                     [],
                     [],
@@ -546,6 +563,7 @@ EOF;
         $this->scoperProphecy
             ->scope(
                 Argument::any(),
+                Argument::any(),
                 'MyPrefix',
                 [],
                 [],
@@ -588,6 +606,7 @@ EOF;
 
         $this->scoperProphecy
             ->scope(
+                Argument::any(),
                 Argument::any(),
                 'MyPrefix',
                 [],
@@ -642,9 +661,12 @@ EOF;
             $inputPath = escape_path($root.'/'.$expectedFile);
             $outputPath = escape_path($outDir.'/'.$expectedFile);
 
+            $inputContents = file_get_contents($inputPath);
+
             $this->scoperProphecy
                 ->scope(
                     $inputPath,
+                    $inputContents,
                     'MyPrefix',
                     [],
                     [],
@@ -702,9 +724,12 @@ EOF;
             $inputPath = escape_path($root.'/'.$expectedFile);
             $outputPath = escape_path($this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
 
+            $inputContents = file_get_contents($inputPath);
+
             $this->scoperProphecy
                 ->scope(
                     $inputPath,
+                    $inputContents,
                     'MyPrefix',
                     [],
                     [],
@@ -822,9 +847,12 @@ EOF;
             $inputPath = escape_path($root.'/'.$expectedFile);
             $outputPath = escape_path($this->tmp.'/'.$expectedFile);
 
+            $inputContents = file_get_contents($inputPath);
+
             $this->scoperProphecy
                 ->scope(
                     $inputPath,
+                    $inputContents,
                     'MyPrefix',
                     Argument::that(function ($arg) use (&$patchersFound) {
                         $patchersFound = $arg;
@@ -914,6 +942,7 @@ EOF;
             $this->scoperProphecy
                 ->scope(
                     $inputPath,
+                    $fileContents,
                     'MyPrefix',
                     [],
                     [],

@@ -28,16 +28,16 @@ final class PatchScoper implements Scoper
     /**
      * @inheritdoc
      */
-    public function scope(string $filePath, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
     {
-        $content = $this->decoratedScoper->scope($filePath, $prefix, $patchers, $whitelist, $globalWhitelister);
+        $contents = $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $globalWhitelister);
 
         return array_reduce(
             $patchers,
-            function (string $content, callable $patcher) use ($filePath, $prefix): string {
-                return $patcher($filePath, $prefix, $content);
+            function (string $contents, callable $patcher) use ($filePath, $prefix): string {
+                return $patcher($filePath, $prefix, $contents);
             },
-            $content
+            $contents
         );
     }
 }

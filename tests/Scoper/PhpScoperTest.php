@@ -105,11 +105,6 @@ class PhpScoperTest extends TestCase
             new TraverserFactory()
         );
 
-        if (null === $this->tmp) {
-            $this->cwd = getcwd();
-            $this->tmp = make_tmp_dir('scoper', __CLASS__);
-        }
-
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
 
@@ -121,18 +116,6 @@ class PhpScoperTest extends TestCase
 
         $this->parserProphecy = $this->prophesize(Parser::class);
         $this->parser = $this->parserProphecy->reveal();
-
-        chdir($this->tmp);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function tearDown()
-    {
-        chdir($this->cwd);
-
-        remove_dir($this->tmp);
     }
 
     public function test_is_a_Scoper()
@@ -148,19 +131,16 @@ class PhpScoperTest extends TestCase
         $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
-        $content = <<<'PHP'
+        $contents = <<<'PHP'
 echo "Humbug!";
 PHP;
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
 
         $expected = <<<'PHP'
 echo "Humbug!";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -168,13 +148,14 @@ PHP;
     public function test_does_not_scope_file_if_is_not_a_PHP_file()
     {
         $filePath = 'file.yaml';
+        $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
+            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -191,7 +172,7 @@ PHP;
             $this->traverserFactory
         );
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -206,15 +187,12 @@ PHP;
         $whitelist = ['Foo'];
         $whitelister = create_fake_whitelister();
 
-        $content = <<<'PHP'
+        $contents = <<<'PHP'
 #!/usr/bin/env php
 <?php
 
 echo "Hello world";
 PHP;
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
 
         $expected = <<<'PHP'
 #!/usr/bin/env php
@@ -223,7 +201,7 @@ echo "Hello world";
 
 PHP;
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
     }
@@ -240,18 +218,15 @@ PHP;
 
         $whitelister = create_fake_whitelister();
 
-        $content = <<<'PHP'
+        $contents = <<<'PHP'
 #!/usr/bin/env bash
 <?php
 
 echo "Hello world";
 PHP;
 
-        touch($filePath);
-        file_put_contents($filePath, $content);
-
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
+            ->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -268,7 +243,7 @@ PHP;
             $this->traverserFactory
         );
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 
@@ -278,15 +253,12 @@ PHP;
     public function test_cannot_scope_an_invalid_PHP_file()
     {
         $filePath = escape_path($this->tmp.'/invalid-file.php');
-        $content = <<<'PHP'
+        $contents = <<<'PHP'
 <?php
 
 $class = ;
 
 PHP;
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
@@ -294,7 +266,7 @@ PHP;
         $whitelister = create_fake_whitelister();
 
         try {
-            $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+            $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
 
             $this->fail('Expected exception to have been thrown.');
         } catch (PhpParserError $error) {
@@ -320,7 +292,7 @@ PHP;
         $whitelister = create_fake_whitelister();
 
         $this->decoratedScoperProphecy
-            ->scope(Argument::any(), $prefix, $patchers, $whitelist, $whitelister)
+            ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist, $whitelister)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -380,11 +352,8 @@ PHP;
             $this->traverserFactory
         );
 
-        foreach ($files as $file => $content) {
-            touch($file);
-            file_put_contents($file, $content);
-
-            $scoper->scope($file, $prefix, $patchers, $whitelist, $whitelister);
+        foreach ($files as $file => $contents) {
+            $scoper->scope($file, $contents, $prefix, $patchers, $whitelist, $whitelister);
         }
 
         $this->parserProphecy->parse(Argument::cetera())->shouldHaveBeenCalledTimes(2);
@@ -396,12 +365,9 @@ PHP;
     /**
      * @dataProvider provideValidFiles
      */
-    public function test_can_scope_valid_files(string $spec, string $content, string $prefix, array $whitelist, string $expected)
+    public function test_can_scope_valid_files(string $spec, string $contents, string $prefix, array $whitelist, string $expected)
     {
         $filePath = escape_path($this->tmp.'/file.php');
-
-        touch($filePath);
-        file_put_contents($filePath, $content);
 
         $patchers = [create_fake_patcher()];
 
@@ -409,7 +375,7 @@ PHP;
             return 'AppKernel' === $className;
         };
 
-        $actual = $this->scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
 
         $titleSeparator = str_repeat(
             '=',
@@ -431,7 +397,7 @@ $spec
 $titleSeparator
 INPUT
 $titleSeparator
-$content
+$contents
 
 $titleSeparator
 EXPECTED
@@ -480,8 +446,6 @@ OUTPUT
                 );
             }
         }
-
-        return;
     }
 
     /**

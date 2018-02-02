@@ -30,16 +30,13 @@ final class JsonFileScoper implements Scoper
      *
      * {@inheritdoc}
      */
-    public function scope(string $filePath, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
     {
         if (1 !== preg_match('/composer\.json$/', $filePath)) {
-            return $this->decoratedScoper->scope($filePath, $prefix, $patchers, $whitelist, $globalWhitelister);
+            return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $globalWhitelister);
         }
 
-        $decodedJson = json_decode(
-            file_get_contents($filePath),
-            true
-        );
+        $decodedJson = json_decode($contents, true);
 
         $decodedJson = AutoloadPrefixer::prefixPackageAutoloads($decodedJson, $prefix);
 

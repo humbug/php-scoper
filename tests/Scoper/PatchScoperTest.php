@@ -53,21 +53,21 @@ class PatchScoperTest extends TestCase
     public function test_applies_the_list_of_patches_to_the_scoped_file()
     {
         $filePath = '/path/to/file.php';
-        $content = 'Original file content';
+        $contents = 'Original file content';
         $prefix = 'Humbug';
 
         $patchers = [
-            function (string $patcherFilePath, string $patcherPrefix, string $content) use ($filePath, $prefix): string {
+            function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
                 Assert::assertSame($filePath, $patcherFilePath);
                 Assert::assertSame($prefix, $patcherPrefix);
-                Assert::assertSame('Original file content', $content);
+                Assert::assertSame('Decorated scoper contents', $contents);
 
                 return 'File content after patch 1';
             },
-            function (string $patcherFilePath, string $patcherPrefix, string $content) use ($filePath, $prefix): string {
+            function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
                 Assert::assertSame($filePath, $patcherFilePath);
                 Assert::assertSame($prefix, $patcherPrefix);
-                Assert::assertSame('File content after patch 1', $content);
+                Assert::assertSame('File content after patch 1', $contents);
 
                 return 'File content after patch 2';
             },
@@ -78,15 +78,15 @@ class PatchScoperTest extends TestCase
         $whitelister = create_fake_whitelister();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $prefix, $patchers, $whitelist, $whitelister)
-            ->willReturn($content)
+            ->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister)
+            ->willReturn('Decorated scoper contents')
         ;
 
         $expected = 'File content after patch 2';
 
         $scoper = new PatchScoper($this->decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
 
         $this->assertSame($expected, $actual);
 
