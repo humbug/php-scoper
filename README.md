@@ -134,7 +134,7 @@ files should be scoped by using [Finders][symfony_finder] in the configuration:
 
 // scoper.inc.php
 
-use Symfony\Component\Finder\Finder;
+use Isolated\Symfony\Component\Finder\Finder;
 
 return [
     'finders' => [
