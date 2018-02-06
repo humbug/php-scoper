@@ -72,7 +72,7 @@ final class PhpScoper implements Scoper
         }
 
         if (1 === preg_match(self::PHP_TAG, ltrim($contents))) {
-            return false;
+            return true;
         }
 
         return 1 === preg_match(self::PHP_BINARY, $contents);
