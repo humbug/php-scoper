@@ -37,6 +37,8 @@ use PhpParser\ParserFactory;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Filesystem\Filesystem;
 
+// TODO: register this file to the list of functions if possible to be autoloaded
+
 /**
  * @private
  */
@@ -87,14 +89,14 @@ function get_version(): string
 function create_scoper(): Scoper
 {
     return new PatchScoper(
-        new JsonFileScoper(
-            new InstalledPackagesScoper(
-                new PhpScoper(
-                    create_parser(),
-                    new NullScoper(),
-                    new TraverserFactory()
+        new PhpScoper(
+            create_parser(),
+            new JsonFileScoper(
+                new InstalledPackagesScoper(
+                    new NullScoper()
                 )
-            )
+            ),
+            new TraverserFactory()
         )
     );
 }
