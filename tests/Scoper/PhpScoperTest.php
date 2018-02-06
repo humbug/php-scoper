@@ -177,6 +177,33 @@ PHP;
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
+    public function test_can_scope_a_PHP_file_with_the_wrong_extension()
+    {
+        $prefix = 'Humbug';
+        $filePath = escape_path($this->tmp.'/file');
+        $patchers = [create_fake_patcher()];
+        $whitelist = ['Foo'];
+        $whitelister = create_fake_whitelister();
+
+        $contents = <<<'PHP'
+<?php
+
+echo "Humbug!";
+
+PHP;
+
+        $expected = <<<'PHP'
+<?php
+
+echo "Humbug!";
+
+PHP;
+
+        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
+
+        $this->assertSame($expected, $actual);
+    }
+
     public function test_can_scope_PHP_binary_files()
     {
         $prefix = 'Humbug';

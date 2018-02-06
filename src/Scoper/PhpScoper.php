@@ -23,6 +23,7 @@ final class PhpScoper implements Scoper
 {
     private const FILE_PATH_PATTERN = '/.*\.php$/';
     private const NOT_FILE_BINARY = '/\..+?$/';
+    private const PHP_TAG = '/^<\?php/';
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
     private $parser;
@@ -68,6 +69,10 @@ final class PhpScoper implements Scoper
 
         if (1 === preg_match(self::NOT_FILE_BINARY, basename($filePath))) {
             return false;
+        }
+
+        if (1 === preg_match(self::PHP_TAG, ltrim($contents))) {
+            return true;
         }
 
         return 1 === preg_match(self::PHP_BINARY, $contents);
