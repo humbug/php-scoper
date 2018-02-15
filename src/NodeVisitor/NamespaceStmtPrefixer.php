@@ -40,7 +40,6 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
     private $namespaceStatements;
-    private $hasWhitelistedNode;
 
     public function __construct(string $prefix, NamespaceStmtCollection $namespaceStatements)
     {
@@ -48,38 +47,16 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
         $this->namespaceStatements = $namespaceStatements;
     }
 
-//    /**
-//     * @inheritdoc
-//     */
-//    public function beforeTraverse(array $nodes)
-//    {
-//        $this->hasWhitelistedNode = $this->hasWhitelistedNode($nodes);
-//    }
-
     /**
      * @inheritdoc
      */
     public function enterNode(Node $node): Node
     {
-        $x = '';
-
         return ($node instanceof Namespace_)
             ? $this->prefixNamespaceStmt($node)
-            : $node;
+            : $node
+        ;
     }
-//
-//    /**
-//     * @inheritdoc
-//     */
-//    public function leaveNode(Node $node)
-//    {
-//        $x = '';
-//
-//        return (
-//            0 === $this->namespaceStatements->count()
-//            && false === AppendParentNode::hasParent($node)
-//        ) ? $this->wrapNamespace($node) : $node;
-//    }
 
     private function prefixNamespaceStmt(Namespace_ $namespace): Node
     {
@@ -94,32 +71,6 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
         $this->namespaceStatements->add($namespace, $originalNamespace);
 
         return $namespace;
-    }
-
-    private function wrapNamespace(Node $node): Node
-    {
-        return new Namespace_(new Node\Name($this->prefix), [$node]);
-        if ($this->isWhitelistedNode($node)) {
-        }
-
-        // Anything else needs to be wrapped with global namespace.
-        return new Namespace_(null, [$node]);
-    }
-
-    /**
-     * @param Node[] $nodes
-     *
-     * @return bool
-     */
-    private function hasWhitelistedNode(array $nodes): bool
-    {
-        foreach ($nodes as $node) {
-            if ($this->isWhitelistedNode($node)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private function isWhitelistedNode(Node $node)
@@ -143,15 +94,5 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     private function shouldPrefixStmt(Namespace_ $namespace): bool
     {
         return null === $namespace->name || (null !== $namespace->name && $this->prefix !== $namespace->name->getFirst());
-
-        if (null !== $namespace->name && $this->prefix !== $namespace->name->getFirst()) {
-            return true;
-        }
-
-//        if (null === $namespace->name && $this->hasWhitelistedNode([$namespace])) {
-//            return true;
-//        }
-
-        return false;
     }
 }

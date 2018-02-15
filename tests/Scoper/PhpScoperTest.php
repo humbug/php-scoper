@@ -420,32 +420,6 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
-        $nonInternalReflectionProphecy = $this->prophesize(ReflectionClass::class);
-        $nonInternalReflectionProphecy->willImplement(Reflection::class);
-        $nonInternalReflectionProphecy->isInternal()->willReturn(false);
-        $nonInternalReflection = $nonInternalReflectionProphecy->reveal();
-
-        $realReflectionProphecy = $this->prophesize(ReflectionClass::class);
-        $realReflectionProphecy->willImplement(Reflection::class);
-        $realReflectionProphecy
-            ->isInternal()
-            ->will(
-                function ($args): bool {
-                    $x = '';
-                }
-            )
-        ;
-        $internalReflection = $realReflectionProphecy->reveal();
-
-        $this->classReflectorProphecy
-            ->reflect('AppKernel')
-            ->willReturn($nonInternalReflection)
-        ;
-        $this->classReflectorProphecy
-            ->reflect(Argument::any())
-            ->willReturn($internalReflection)
-        ;
-
         $astLocator = (new BetterReflection())->astLocator();
 
         $this->scoper = new PhpScoper(

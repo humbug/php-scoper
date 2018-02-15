@@ -51,24 +51,20 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     ];
 
     private $prefix;
-    private $whitelist;
     private $nameResolver;
     private $classReflector;
 
     /**
      * @param string                     $prefix
-     * @param string[]                   $whitelist
      * @param FullyQualifiedNameResolver $nameResolver
      * @param ClassReflector             $classReflector
      */
     public function __construct(
         string $prefix,
-        array $whitelist,
         FullyQualifiedNameResolver $nameResolver,
         ClassReflector $classReflector
     ) {
         $this->prefix = $prefix;
-        //$this->whitelist = $whitelist;
         $this->nameResolver = $nameResolver;
         $this->classReflector = $classReflector;
     }
