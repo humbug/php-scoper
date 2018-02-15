@@ -35,6 +35,14 @@ use PhpParser\Node;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Roave\BetterReflection\BetterReflection;
+use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\SourceLocator\Ast\Locator;
+use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\AutoloadSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\ComposerSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\EvaledCodeSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -112,8 +120,15 @@ function create_parser(): Parser
 
 function create_reflector(): Reflector
 {
+    $phpParser = create_parser();
+    $astLocator = new Locator($phpParser);
+
     return new Reflector(
-        (new BetterReflection())->classReflector()
+        new ClassReflector(
+            new MemoizingSourceLocator(
+                new PhpInternalSourceLocator($astLocator)
+            )
+        )
     );
 }
 

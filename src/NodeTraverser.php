@@ -7,9 +7,6 @@ namespace Humbug\PhpScoper;
 
 // TODO: re-organise the classes location as this no longer makes sense. Not done here to try to keep the diff humanly
 // readable.
-use function array_slice;
-use function array_splice;
-use function current;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;
