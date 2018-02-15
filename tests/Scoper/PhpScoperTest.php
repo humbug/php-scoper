@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Generator;
 use Humbug\PhpScoper\PhpParser\FakeParser;
+use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use LogicException;
 use PhpParser\Error as PhpParserError;
@@ -26,7 +27,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use ReflectionClass;
-use Reflector;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflection\Reflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
@@ -48,16 +48,6 @@ class PhpScoperTest extends TestCase
      * @var Scoper
      */
     private $scoper;
-
-    /**
-     * @var string
-     */
-    private $cwd;
-
-    /**
-     * @var string
-     */
-    private $tmp;
 
     /**
      * @var Scoper|ObjectProphecy
@@ -133,7 +123,9 @@ class PhpScoperTest extends TestCase
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
-                $this->classReflector
+                new Reflector(
+                    $this->classReflector
+                )
             )
         );
     }
@@ -146,7 +138,7 @@ class PhpScoperTest extends TestCase
     public function test_can_scope_a_PHP_file()
     {
         $prefix = 'Humbug';
-        $filePath = escape_path($this->tmp.'/file.php');
+        $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
 
@@ -206,7 +198,7 @@ PHP;
     public function test_can_scope_a_PHP_file_with_the_wrong_extension()
     {
         $prefix = 'Humbug';
-        $filePath = escape_path($this->tmp.'/file');
+        $filePath = 'file';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
 
@@ -234,7 +226,7 @@ PHP;
     public function test_can_scope_PHP_binary_files()
     {
         $prefix = 'Humbug';
-        $filePath = escape_path($this->tmp.'/hello');
+        $filePath = 'hello';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
 
@@ -263,7 +255,7 @@ PHP;
     {
         $prefix = 'Humbug';
 
-        $filePath = escape_path($this->tmp.'/hello');
+        $filePath = 'hello';
 
         $patchers = [create_fake_patcher()];
 
@@ -303,7 +295,7 @@ PHP;
 
     public function test_cannot_scope_an_invalid_PHP_file()
     {
-        $filePath = escape_path($this->tmp.'/invalid-file.php');
+        $filePath = 'invalid-file.php';
         $contents = <<<'PHP'
 <?php
 
@@ -416,7 +408,7 @@ PHP;
      */
     public function test_can_scope_valid_files(string $spec, string $contents, string $prefix, array $whitelist, string $expected)
     {
-        $filePath = escape_path($this->tmp.'/file.php');
+        $filePath = 'file.php';
 
         $patchers = [create_fake_patcher()];
 
@@ -426,11 +418,13 @@ PHP;
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
-                new ClassReflector(
-                    new AggregateSourceLocator([
-                        new StringSourceLocator($contents, $astLocator),
-                        new PhpInternalSourceLocator($astLocator),
-                    ])
+                new Reflector(
+                    new ClassReflector(
+                        new AggregateSourceLocator([
+                            new StringSourceLocator($contents, $astLocator),
+                            new PhpInternalSourceLocator($astLocator),
+                        ])
+                    )
                 )
             )
         );

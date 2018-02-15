@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor\UseStmt;
 
 use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\Reflector;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
@@ -31,18 +32,18 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
     private $whitelist;
-    private $classReflector;
+    private $reflector;
 
     /**
      * @param string         $prefix
      * @param string[]       $whitelist
-     * @param ClassReflector $classReflector
+     * @param Reflector $reflector
      */
-    public function __construct(string $prefix, array $whitelist, ClassReflector $classReflector)
+    public function __construct(string $prefix, array $whitelist, Reflector $reflector)
     {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
-        $this->classReflector = $classReflector;
+        $this->reflector = $reflector;
     }
 
     /**
@@ -74,7 +75,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         if (1 === count($use->name->parts)) {
             return
                 Use_::TYPE_NORMAL !== $useType
-                || false === $this->classReflector->reflect($use->name->getFirst())->isInternal()
+                || false === $this->reflector->isClassInternal($use->name->getFirst())
             ;
         }
 

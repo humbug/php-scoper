@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor;
 
 use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\Reflector;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -52,21 +53,21 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private $prefix;
     private $nameResolver;
-    private $classReflector;
+    private $reflector;
 
     /**
      * @param string                     $prefix
      * @param FullyQualifiedNameResolver $nameResolver
-     * @param ClassReflector             $classReflector
+     * @param Reflector             $reflector
      */
     public function __construct(
         string $prefix,
         FullyQualifiedNameResolver $nameResolver,
-        ClassReflector $classReflector
+        Reflector $reflector
     ) {
         $this->prefix = $prefix;
         $this->nameResolver = $nameResolver;
-        $this->classReflector = $classReflector;
+        $this->reflector = $reflector;
     }
 
     /**
@@ -122,7 +123,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         // Check if the class can be prefixed
         if (false === ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)) {
-            if ($this->classReflector->reflect($resolvedName->toString())->isInternal()) {
+            if ($this->reflector->isClassInternal($resolvedName->toString())) {
                 return $resolvedName;
             }
         }
@@ -141,6 +142,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $resolvedName;
         }
 
-        return FullyQualified::concat($this->prefix, $resolvedName->toString(), $resolvedName->getAttributes());
+        return FullyQualified::concat(
+            $this->prefix,
+            $resolvedName->toString(),
+            $resolvedName->getAttributes()
+        );
     }
 }

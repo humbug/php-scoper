@@ -120,6 +120,28 @@ PHP
 
     [
         'spec' => <<<'SPEC'
+Use statement of a non existent class belonging to the global scope:
+- wrap the statement in a prefixed namespace
+- do not prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use Unknown;
+
+----
+<?php
+
+namespace Humbug;
+
+use Humbug\Unknown;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
 Use statement of two-level class:
 - prefix the namespaces
 - prefix the use statement

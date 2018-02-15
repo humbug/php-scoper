@@ -97,9 +97,7 @@ function create_scoper(): Scoper
                     new NullScoper()
                 )
             ),
-            new TraverserFactory(
-                (new BetterReflection())->classReflector()
-            )
+            new TraverserFactory(create_reflector())
         )
     );
 }
@@ -110,6 +108,13 @@ function create_scoper(): Scoper
 function create_parser(): Parser
 {
     return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
+}
+
+function create_reflector(): Reflector
+{
+    return new Reflector(
+        (new BetterReflection())->classReflector()
+    );
 }
 
 /**

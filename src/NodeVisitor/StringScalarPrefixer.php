@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
+use Humbug\PhpScoper\Reflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -41,24 +42,24 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private $prefix;
     private $whitelistedFunctions;
     private $whitelist;
-    private $classReflector;
+    private $reflector;
 
     /**
      * @param string         $prefix
      * @param string[]       $whitelistedFunctions
      * @param string[]       $whitelist
-     * @param ClassReflector $classReflector
+     * @param Reflector $reflector
      */
     public function __construct(
         string $prefix,
         array $whitelistedFunctions,
         array $whitelist,
-        ClassReflector $classReflector
+        Reflector $reflector
     ) {
         $this->prefix = $prefix;
         $this->whitelistedFunctions = $whitelistedFunctions;
         $this->whitelist = $whitelist;
-        $this->classReflector = $classReflector;
+        $this->reflector = $reflector;
     }
 
     /**
@@ -105,7 +106,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             $newStringName = $stringName;
         // Check if the class can be prefixed: class from the global namespace
         } elseif (1 === count($stringName->parts)
-            && false === $this->classReflector->reflect($stringName->toString())->isInternal()
+            && false === $this->reflector->isClassInternal($stringName->toString())
         ) {
             $newStringName = $stringName;
         // Check if the class can be prefixed: regular class

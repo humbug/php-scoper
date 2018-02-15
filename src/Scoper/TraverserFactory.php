@@ -19,6 +19,7 @@ use Humbug\PhpScoper\NodeVisitor;
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\Reflector;
 use PhpParser\NodeTraverserInterface;
 use Roave\BetterReflection\Reflector\ClassReflector;
 
@@ -35,11 +36,11 @@ class TraverserFactory
         'interface_exists',
     ];
     
-    private $classReflector;
+    private $reflector;
 
-    public function __construct(ClassReflector $classReflector)
+    public function __construct(Reflector $reflector)
     {
-        $this->classReflector = $classReflector;
+        $this->reflector = $reflector;
     }
 
     /**
@@ -62,10 +63,10 @@ class TraverserFactory
         $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements));
 
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
-        $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $this->classReflector));
+        $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $this->reflector));
 
-        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $nameResolver, $this->classReflector));
-        $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, self::WHITELISTED_FUNCTIONS, $whitelist, $this->classReflector));
+        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $nameResolver, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, self::WHITELISTED_FUNCTIONS, $whitelist, $this->reflector));
 
         $traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
 

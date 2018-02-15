@@ -95,4 +95,27 @@ new \Humbug\Foo();
 
 PHP
     ],
+
+    [
+        'spec' => <<<'SPEC'
+New statement call of an unknown class belonging to the global namespace:
+- wrap everything in a prefixed namespace
+- prefix the class
+- transform the class in a FQCN call
+prefix it
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+new Unknown();
+----
+<?php
+
+namespace Humbug;
+
+new \Humbug\Unknown();
+
+PHP
+    ],
 ];
