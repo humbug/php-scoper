@@ -35,6 +35,7 @@ use PhpParser\Node;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Ast\Locator;
 use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
@@ -118,12 +119,14 @@ function create_reflector(): Reflector
     $phpParser = create_parser();
     $astLocator = new Locator($phpParser);
 
+    $sourceLocator = new MemoizingSourceLocator(
+        new PhpInternalSourceLocator($astLocator)
+    );
+    $classReflector = new ClassReflector($sourceLocator);
+
     return new Reflector(
-        new ClassReflector(
-            new MemoizingSourceLocator(
-                new PhpInternalSourceLocator($astLocator)
-            )
-        )
+        $classReflector,
+        new FunctionReflector($sourceLocator, $classReflector)
     );
 }
 

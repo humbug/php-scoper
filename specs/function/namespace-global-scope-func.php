@@ -49,7 +49,7 @@ namespace X;
 
 namespace Humbug\X;
 
-\main();
+\Humbug\main();
 
 PHP
     ,

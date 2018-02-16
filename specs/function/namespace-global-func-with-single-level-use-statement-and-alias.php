@@ -24,8 +24,7 @@ return [
         'spec' => <<<'SPEC'
 Global function call imported with a use statement in a namespace:
 - prefix the namespace
-- prefix the use statement: As it is extremely rare to use a `use function` statement for a built-in function from the
-  global scope, we can relatively safely assume it is a user-land declared function which should be prefixed.
+- prefix the use statement
 - prefix the call
 - transform the call into a FQ call
 SPEC
@@ -53,8 +52,7 @@ PHP
         'spec' => <<<'SPEC'
 Global function call imported with a use statement in a namespace:
 - prefix the namespace
-- prefix the use statement: as it is extremely rare to use a `use function` statement for a built-in function from the
-  global scope, we can relatively safely assume it is a user-land declared function which should be prefixed.
+- prefix the use statement
 - do not prefix the call: as the call is FQ, the use statement is irrelevant so the above assumption cannot apply
 SPEC
         ,
@@ -72,7 +70,7 @@ use function main as foo;
 namespace Humbug\X;
 
 use function Humbug\main as foo;
-\foo();
+\Humbug\foo();
 
 PHP
     ],

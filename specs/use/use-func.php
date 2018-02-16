@@ -23,9 +23,8 @@ return [
     [
         'spec' => <<<'SPEC'
 Use statement for a function belonging to the global namespace:
-- prefix the use statement: as it is extremely rare to use a `use function` statement for a built-in
-function from the global scope, we can relatively safely assume it is a user-land declare static-method
-which should be prefixed.
+- wrap the code in a prefixed namespace
+- prefix the use statement
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -39,6 +38,28 @@ use function foo;
 namespace Humbug;
 
 use function Humbug\foo;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Use statement for an internal function belonging to the global namespace:
+- wrap the code in a prefixed namespace
+- do not prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use function is_array;
+
+----
+<?php
+
+namespace Humbug;
+
+use function is_array;
 
 PHP
     ],

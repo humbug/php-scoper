@@ -70,10 +70,11 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         if (1 === count($use->name->parts)) {
-            return
-                Use_::TYPE_NORMAL !== $useType
-                || false === $this->reflector->isClassInternal($use->name->getFirst())
-            ;
+            if (Use_::TYPE_FUNCTION === $useType) {
+                return false === $this->reflector->isFunctionInternal($use->name->getFirst());
+            }
+
+            return Use_::TYPE_NORMAL !== $useType || false === $this->reflector->isClassInternal($use->name->getFirst());
         }
 
         return false === (
