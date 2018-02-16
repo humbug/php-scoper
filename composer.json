@@ -19,7 +19,6 @@
 
     "require": {
         "php": "^7.1",
-        "composer/semver": "^1.4",
         "nikic/php-parser": "^3.0",
         "ocramius/package-versions": "^1.1",
         "padraic/phar-updater": "^1.0",

@@ -42,7 +42,7 @@ final class Requirements extends RequirementCollection
         $requiredPhpVersion = $composerConfig['php'];
 
         $this->addRequirement(
-            Semver::satisfies(phpversion(), $requiredPhpVersion),
+            version_compare(phpversion(), $requiredPhpVersion, '>='),
             sprintf(
                 'PHP version must satisfy "%s" ("%s" installed)',
                 $requiredPhpVersion,
