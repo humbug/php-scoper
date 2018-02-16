@@ -41,6 +41,8 @@ FOO;
 ----
 <?php
 
+namespace Humbug;
+
 use const Humbug\DUMMY_CONST as FOO;
 \Humbug\DUMMY_CONST;
 
@@ -61,6 +63,8 @@ use const DUMMY_CONST as FOO;
 \FOO;
 ----
 <?php
+
+namespace Humbug;
 
 use const Humbug\DUMMY_CONST as FOO;
 \FOO;

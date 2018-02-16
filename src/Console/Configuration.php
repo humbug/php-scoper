@@ -39,7 +39,6 @@ final class Configuration
     private $filesWithContents;
     private $patchers;
     private $whitelist;
-    private $globalNamespaceWhitelister;
 
     /**
      * @param string|null $path  Absolute path to the configuration file.
@@ -69,15 +68,11 @@ final class Configuration
         $patchers = self::retrievePatchers($config);
         $whitelist = self::retrieveWhitelist($config);
 
-        $globalNamespace = self::retrieveGlobalNamespaceWhitelisters($config);
-        $globalWhitelister = self::createGlobalWhitelister($globalNamespace);
-
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
-
         $filesWithContents = self::retrieveFilesWithContents(iterables_to_iterator($filesFromPaths, ...$finders));
 
-        return new self($path, $filesWithContents, $patchers, $whitelist, $globalWhitelister);
+        return new self($path, $filesWithContents, $patchers, $whitelist);
     }
 
     /**
@@ -94,14 +89,12 @@ final class Configuration
         ?string $path,
         array $filesWithContents,
         array $patchers,
-        array $whitelist,
-        Closure $globalNamespaceWhitelisters
+        array $whitelist
     ) {
         $this->path = $path;
         $this->filesWithContents = $filesWithContents;
         $this->patchers = $patchers;
         $this->whitelist = $whitelist;
-        $this->globalNamespaceWhitelister = $globalNamespaceWhitelisters;
     }
 
     public function withPaths(array $paths): self
@@ -118,8 +111,7 @@ final class Configuration
             $this->path,
             array_merge($this->filesWithContents, $filesWithContents),
             $this->patchers,
-            $this->whitelist,
-            $this->globalNamespaceWhitelister
+            $this->whitelist
         );
     }
 
@@ -144,11 +136,6 @@ final class Configuration
     public function getWhitelist(): array
     {
         return $this->whitelist;
-    }
-
-    public function getGlobalNamespaceWhitelister(): Closure
-    {
-        return $this->globalNamespaceWhitelister;
     }
 
     private static function validateConfigKeys(array $config): void
@@ -235,67 +222,6 @@ final class Configuration
         }
 
         return $whitelist;
-    }
-
-    private static function retrieveGlobalNamespaceWhitelisters(array $config): array
-    {
-        if (false === array_key_exists(self::GLOBAL_NAMESPACE_KEYWORD, $config)) {
-            return [];
-        }
-
-        $globalNamespace = $config[self::GLOBAL_NAMESPACE_KEYWORD];
-
-        if (false === is_array($globalNamespace)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected "global_namespace" to be an array, found "%s" instead.',
-                    gettype($globalNamespace)
-                )
-            );
-        }
-
-        foreach ($globalNamespace as $index => $className) {
-            if (is_string($className) || is_callable($className)) {
-                continue;
-            }
-
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected "global_namespace" to be an array of callables or strings, the "%d" element '
-                    .'is not.',
-                    $index
-                )
-            );
-        }
-
-        return $globalNamespace;
-    }
-
-    /**
-     * @param string[]|callable[] $globalNamespaceWhitelist
-     *
-     * @return Closure
-     */
-    private static function createGlobalWhitelister(array $globalNamespaceWhitelist): Closure
-    {
-        return function (string $className) use ($globalNamespaceWhitelist): bool {
-            foreach ($globalNamespaceWhitelist as $whitelister) {
-                if (is_string($whitelister)) {
-                    if ($className === $whitelister) {
-                        return true;
-                    } else {
-                        continue;
-                    }
-                }
-
-                /** @var callable $whitelister */
-                if (true === $whitelister($className)) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
     }
 
     private static function retrieveFinders(array $config): array

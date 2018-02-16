@@ -23,6 +23,7 @@ return [
     [
         'spec' => <<<'SPEC'
 New statement call of a namespaced class:
+- prefix the namespace
 - prefix the call
 - transform the call into a FQ call
 SPEC
@@ -30,9 +31,22 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-new Foo\Bar();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    new Foo\Bar();
+}
 ----
 <?php
+
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug;
 
 new \Humbug\Foo\Bar();
 
@@ -42,15 +56,29 @@ PHP
     [
         'spec' => <<<'SPEC'
 FQ new statement call of a namespaced class:
+- prefix the namespace
 - prefix the call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-new \Foo\Bar();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    new \Foo\Bar();
+}
 ----
 <?php
+
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+namespace Humbug;
 
 new \Humbug\Foo\Bar();
 
@@ -59,8 +87,10 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-New statement call of a namespaced class which has been whitelisted:
-- do not prefix the call
+New statement call of a whitelisted namespaced class:
+- prefix the namespace
+- append the class_alias for the whitelisted class
+- prefix the call
 - transform the call into a FQ call
 SPEC
         ,
@@ -68,30 +98,61 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-new Foo\Bar();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    new Foo\Bar();
+}
 ----
 <?php
 
-new \Foo\Bar();
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+namespace Humbug;
+
+new \Humbug\Foo\Bar();
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-FQ new statement call of a namespaced class which has been whitelisted:
-- do not prefix the call
+FQ new statement call of a whitelisted namespaced class:
+- prefix the namespace
+- append the class_alias for the whitelisted class
+- prefix the call
+- transform the call into a FQ call
 SPEC
         ,
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
 
-new \Foo\Bar();
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    new \Foo\Bar();
+}
 ----
 <?php
 
-new \Foo\Bar();
+namespace Humbug\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+namespace Humbug;
+
+new \Humbug\Foo\Bar();
 
 PHP
     ],

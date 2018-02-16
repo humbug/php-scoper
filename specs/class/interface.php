@@ -20,16 +20,27 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
+    'Declaration in the global namespace: add a prefixed namespace.' => <<<'PHP'
 <?php
 
-interface A extends C, D {
+class C {}
+class D {}
+
+interface A extends C, D, Iterator {
     public function a();
 }
 ----
 <?php
 
-interface A extends C, D
+namespace Humbug;
+
+class C
+{
+}
+class D
+{
+}
+interface A extends \Humbug\C, \Humbug\D, \Iterator
 {
     public function a();
 }
@@ -42,7 +53,12 @@ PHP
 
 namespace Foo;
 
-interface A extends C, D
+use Iterator;
+
+class C {}
+class D {}
+
+interface A extends C, D, Iterator
 {
     public function a();
 }
@@ -51,7 +67,14 @@ interface A extends C, D
 
 namespace Humbug\Foo;
 
-interface A extends C, D
+use Iterator;
+class C
+{
+}
+class D
+{
+}
+interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
 {
     public function a();
 }
@@ -59,14 +82,19 @@ interface A extends C, D
 PHP
     ,
 
-    'Declaration of a whitelisted namespaced interface: append aliasing.' => [
+    'Declaration of a whitelisted interface: append aliasing.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
 
 namespace Foo;
 
-interface A extends C, D
+use Iterator;
+
+class C {}
+class D {}
+
+interface A extends C, D, Iterator
 {
     public function a();
 }
@@ -75,7 +103,14 @@ interface A extends C, D
 
 namespace Humbug\Foo;
 
-interface A extends C, D
+use Iterator;
+class C
+{
+}
+class D
+{
+}
+interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
 {
     public function a();
 }
@@ -88,6 +123,9 @@ PHP
 <?php
 
 namespace X {
+    class D {}
+    class E {}
+
     interface A extends D, E
     {
         public function a();
@@ -95,6 +133,9 @@ namespace X {
 }
 
 namespace Y {
+    class D {}
+    class E {}
+
     interface B extends D, E
     {
         public function a();
@@ -102,6 +143,9 @@ namespace Y {
 }
 
 namespace Z {
+    class D {}
+    class E {}
+
     interface C extends D, E
     {
         public function a();
@@ -112,19 +156,37 @@ namespace Z {
 
 namespace Humbug\X;
 
-interface A extends D, E
+class D
+{
+}
+class E
+{
+}
+interface A extends \Humbug\X\D, \Humbug\X\E
 {
     public function a();
 }
 namespace Humbug\Y;
 
-interface B extends D, E
+class D
+{
+}
+class E
+{
+}
+interface B extends \Humbug\Y\D, \Humbug\Y\E
 {
     public function a();
 }
 namespace Humbug\Z;
 
-interface C extends D, E
+class D
+{
+}
+class E
+{
+}
+interface C extends \Humbug\Z\D, \Humbug\Z\E
 {
     public function a();
 }

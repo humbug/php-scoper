@@ -64,6 +64,8 @@ echo (new B('yo'))->getName().PHP_EOL;
 ----
 <?php
 
+namespace Humbug;
+
 class A
 {
     protected const FOO = 'FOO';
@@ -82,7 +84,7 @@ class A
         return $this->name;
     }
 }
-class B extends \A
+class B extends \Humbug\A
 {
     const FOO = 'BAR';
     public function __construct(string $name)
@@ -91,8 +93,8 @@ class B extends \A
         parent::FOO;
     }
 }
-\B::test();
-echo (new \B('yo'))->getName() . \PHP_EOL;
+\Humbug\B::test();
+echo (new \Humbug\B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ],
@@ -138,6 +140,8 @@ namespace Foo {
 }
 
 namespace {
+    use Foo\B;
+
     B::test();
     echo (new B('yo'))->getName().PHP_EOL;
 }
@@ -145,39 +149,40 @@ namespace {
 ----
 <?php
 
-namespace Humbug\Foo {
-    class A
+namespace Humbug\Foo;
+
+class A
+{
+    protected const FOO = 'FOO';
+    private $name;
+    public function __construct(string $name)
     {
-        protected const FOO = 'FOO';
-        private $name;
-        public function __construct(string $name)
-        {
-            $this->name = $name;
-        }
-        public static function test()
-        {
-            self::FOO;
-            static::FOO;
-        }
-        public function getName() : string
-        {
-            return $this->name;
-        }
+        $this->name = $name;
     }
-    class B extends \Humbug\Foo\A
+    public static function test()
     {
-        const FOO = 'BAR';
-        public function __construct(string $name)
-        {
-            parent::__construct($name);
-            parent::FOO;
-        }
+        self::FOO;
+        static::FOO;
+    }
+    public function getName() : string
+    {
+        return $this->name;
     }
 }
-namespace {
-    \B::test();
-    echo (new \B('yo'))->getName() . \PHP_EOL;
+class B extends \Humbug\Foo\A
+{
+    const FOO = 'BAR';
+    public function __construct(string $name)
+    {
+        parent::__construct($name);
+        parent::FOO;
+    }
 }
+namespace Humbug;
+
+use Humbug\Foo\B;
+\Humbug\Foo\B::test();
+echo (new \Humbug\Foo\B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ],

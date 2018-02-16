@@ -32,18 +32,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace A;
+namespace {
+    class Foo {}
+}
 
-use Foo;
-
-new Foo();
+namespace A {
+    use Foo;
+    
+    new Foo();
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
 namespace Humbug\A;
 
-use Foo;
-new \Foo();
+use Humbug\Foo;
+new \Humbug\Foo();
 
 PHP
     ],
@@ -58,72 +67,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace A;
+namespace {
+    class Foo {}
+}
 
-use Foo;
-
-new \Foo();
+namespace A {
+    use Foo;
+    
+    new \Foo();
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
 namespace Humbug\A;
 
-use Foo;
-new \Foo();
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-New statement call of a class which has been whitelisted and belongs to the global namespace:
-- prefix the namespace
-- prefix the call: see `scope.inc.php` for the built-in global whitelisted classes
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-use AppKernel;
-
-new AppKernel();
-----
-<?php
-
-namespace Humbug\A;
-
-use Humbug\AppKernel;
-new \Humbug\AppKernel();
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class which has been whitelisted and belongs to the global namespace:
-- prefix the namespace
-- prefix the call: see `scope.inc.php` for the built-in global whitelisted classes
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-use AppKernel;
-
-new \AppKernel();
-----
-<?php
-
-namespace Humbug\A;
-
-use Humbug\AppKernel;
-new \Humbug\AppKernel();
+use Humbug\Foo;
+new \Humbug\Foo();
 
 PHP
     ],

@@ -31,6 +31,8 @@ class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 ----
 <?php
 
+namespace Humbug;
+
 \class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 \class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 \class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
@@ -52,6 +54,8 @@ class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 ----
 <?php
 
+namespace Humbug;
+
 \class_exists('Symfony\\Component\\Yaml\\Yaml');
 \class_exists('Symfony\\Component\\Yaml\\Yaml');
 \class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
@@ -69,6 +73,8 @@ class_exists('\\Symfony\\Component' . '\\Yaml\\Yaml');
 ----
 <?php
 
+namespace Humbug;
+
 \class_exists('Symfony\\Component' . '\\Yaml\\Yaml');
 \class_exists('\\Symfony\\Component' . '\\Yaml\\Yaml');
 
@@ -78,13 +84,25 @@ PHP
     'FQC constant call: transform into FQC call and prefix them' => <<<'PHP'
 <?php
 
-class_exists(Symfony\Component\Yaml\Yaml::class);
-class_exists(\Symfony\Component\Yaml\Yaml::class);
-class_exists(Humbug\Symfony\Component\Yaml\Yaml::class);
-class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+namespace Symfony\Component\Yaml {
+    class Yaml {}
+}
 
+namespace {
+    class_exists(Symfony\Component\Yaml\Yaml::class);
+    class_exists(\Symfony\Component\Yaml\Yaml::class);
+    class_exists(Humbug\Symfony\Component\Yaml\Yaml::class);
+    class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+}
 ----
 <?php
+
+namespace Humbug\Symfony\Component\Yaml;
+
+class Yaml
+{
+}
+namespace Humbug;
 
 \class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 \class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
@@ -99,16 +117,29 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-class_exists(Symfony\Component\Yaml\Yaml::class);
-class_exists(\Symfony\Component\Yaml\Yaml::class);
-class_exists(Humbug\Symfony\Component\Yaml\Yaml::class);
-class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+namespace Symfony\Component\Yaml {
+    class Yaml {}
+}
 
+namespace {
+    class_exists(Symfony\Component\Yaml\Yaml::class);
+    class_exists(\Symfony\Component\Yaml\Yaml::class);
+    class_exists(Humbug\Symfony\Component\Yaml\Yaml::class);
+    class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+}
 ----
 <?php
 
-\class_exists(\Symfony\Component\Yaml\Yaml::class);
-\class_exists(\Symfony\Component\Yaml\Yaml::class);
+namespace Humbug\Symfony\Component\Yaml;
+
+class Yaml
+{
+}
+class_alias('Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Symfony\\Component\\Yaml\\Yaml', \false);
+namespace Humbug;
+
+\class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
+\class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 \class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 \class_exists(\Humbug\Symfony\Component\Yaml\Yaml::class);
 

@@ -29,11 +29,18 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
+class Command {}
+
 Command::main();
 ----
 <?php
 
-\Command::main();
+namespace Humbug;
+
+class Command
+{
+}
+\Humbug\Command::main();
 
 PHP
     ],
@@ -47,50 +54,60 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
+class Command {}
+
 \Command::main();
 ----
 <?php
 
-\Command::main();
+namespace Humbug;
+
+class Command
+{
+}
+\Humbug\Command::main();
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Static method call statement of a class belonging to the global namespace which has been whitelisted:
-- prefix the call
+Static method call statement of an internal class :
+- do not prefix the call
 - transform the call into a FQ call
-- See `scope.inc.php` for the built-in global whitelisted classes
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-AppKernel::main();
+Closure::bind();
 ----
 <?php
 
-\Humbug\AppKernel::main();
+namespace Humbug;
+
+\Closure::bind();
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-FQ static method call statement of a class belonging to the global namespace which has been whitelisted:
-- prefix the call
-- See `scope.inc.php` for the built-in global whitelisted classes
+FQ static method call statement of an internal class :
+- do not prefix the call
+- transform the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-\AppKernel::main();
+\Closure::bind();
 ----
 <?php
 
-\Humbug\AppKernel::main();
+namespace Humbug;
+
+\Closure::bind();
 
 PHP
     ],

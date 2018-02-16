@@ -31,18 +31,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace {
+    class Foo {}
+}
 
-use Foo;
-
-Foo::MAIN_CONST;
+namespace X {
+    use Foo;
+    
+    Foo::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
 namespace Humbug\X;
 
-use Foo;
-\Foo::MAIN_CONST;
+use Humbug\Foo;
+\Humbug\Foo::MAIN_CONST;
 
 PHP
     ],
@@ -58,18 +67,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace {
+    class Command {}
+}
 
-use Command;
-
-\Command::MAIN_CONST;
+namespace X {
+    use Command;
+    
+    \Command::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Command
+{
+}
 namespace Humbug\X;
 
-use Command;
-\Command::MAIN_CONST;
+use Humbug\Command;
+\Humbug\Command::MAIN_CONST;
 
 PHP
     ],
@@ -86,16 +104,16 @@ SPEC
 
 namespace X;
 
-use AppKernel;
+use Reflector;
 
-AppKernel::MAIN_CONST;
+Reflector::MAIN_CONST;
 ----
 <?php
 
 namespace Humbug\X;
 
-use Humbug\AppKernel;
-\Humbug\AppKernel::MAIN_CONST;
+use Reflector;
+\Reflector::MAIN_CONST;
 
 PHP
     ],
@@ -112,16 +130,16 @@ SPEC
 
 namespace X;
 
-use AppKernel;
+use Reflector;
 
-\AppKernel::MAIN_CONST;
+\Reflector::MAIN_CONST;
 ----
 <?php
 
 namespace Humbug\X;
 
-use Humbug\AppKernel;
-\Humbug\AppKernel::MAIN_CONST;
+use Reflector;
+\Reflector::MAIN_CONST;
 
 PHP
     ],

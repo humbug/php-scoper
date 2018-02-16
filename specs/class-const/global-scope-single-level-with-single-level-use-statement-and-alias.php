@@ -23,12 +23,14 @@ return [
     [
         'spec' => <<<'SPEC'
 Constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace:
-- do not prefix the use statement (cf. class belonging to the global scope tests)
-- transform the call into a FQ call
+- prefix the use statement (cf. class belonging to the global scope tests)
+- prefix the constant
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
+
+class Foo {}
 
 use Foo as X;
 
@@ -36,8 +38,13 @@ X::MAIN_CONST;
 ----
 <?php
 
-use Foo as X;
-\Foo::MAIN_CONST;
+namespace Humbug;
+
+class Foo
+{
+}
+use Humbug\Foo as X;
+\Humbug\Foo::MAIN_CONST;
 
 PHP
     ],
@@ -52,14 +59,25 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
+class Foo {}
+class X {}
+
 use Foo as X;
 
 \X::MAIN_CONST;
 ----
 <?php
 
-use Foo as X;
-\X::MAIN_CONST;
+namespace Humbug;
+
+class Foo
+{
+}
+class X
+{
+}
+use Humbug\Foo as X;
+\Humbug\X::MAIN_CONST;
 
 PHP
     ],
@@ -74,14 +92,16 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use AppKernel as X;
+use Reflector as X;
 
 X::MAIN_CONST;
 ----
 <?php
 
-use Humbug\AppKernel as X;
-\Humbug\AppKernel::MAIN_CONST;
+namespace Humbug;
+
+use Reflector as X;
+\Reflector::MAIN_CONST;
 
 PHP
     ],
@@ -96,14 +116,21 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-use AppKernel as X;
+class X {}
+
+use Reflector as X;
 
 \X::MAIN_CONST;
 ----
 <?php
 
-use Humbug\AppKernel as X;
-\X::MAIN_CONST;
+namespace Humbug;
+
+class X
+{
+}
+use Reflector as X;
+\Humbug\X::MAIN_CONST;
 
 PHP
     ],

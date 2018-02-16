@@ -31,12 +31,21 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace X\Foo {
+    class Bar {}
+}
 
-Foo\Bar::main();
+namespace X {
+    Foo\Bar::main();
+}
 ----
 <?php
 
+namespace Humbug\X\Foo;
+
+class Bar
+{
+}
 namespace Humbug\X;
 
 \Humbug\X\Foo\Bar::main();
@@ -55,12 +64,21 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace Foo {
+    class Bar {}
+}
 
-\Foo\Bar::main();
+namespace X {
+    \Foo\Bar::main();
+}
 ----
 <?php
 
+namespace Humbug\Foo;
+
+class Bar
+{
+}
 namespace Humbug\X;
 
 \Humbug\Foo\Bar::main();
@@ -80,15 +98,25 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace X\Foo {
+    class Bar {}
+}
 
-Foo\Bar::main();
+namespace X {
+    Foo\Bar::main();
+}
 ----
 <?php
 
+namespace Humbug\X\Foo;
+
+class Bar
+{
+}
+class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
 namespace Humbug\X;
 
-\X\Foo\Bar::main();
+\Humbug\X\Foo\Bar::main();
 
 PHP
     ],
@@ -104,12 +132,21 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+namespace Foo {
+    class Bar {}
+}
 
-\Foo\Bar::main();
+namespace X {
+    \Foo\Bar::main();
+}
 ----
 <?php
 
+namespace Humbug\Foo;
+
+class Bar
+{
+}
 namespace Humbug\X;
 
 \Humbug\Foo\Bar::main();

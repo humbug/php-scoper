@@ -44,19 +44,6 @@ return [
         },
     ],
 
-    // By default, PHP-Scoper only prefixes code where the namespace is non-global. In other words, non-namespaced
-    // code is not prefixed. This leaves the majority of classes, functions and constants in PHP - and most extensions,
-    // untouched.
-    //
-    // This is not necessarily a desirable outcome for vendor dependencies which are also not namespaced. To ensure
-    // they are isolated, you can configure the following which can be a list of strings or callables taking a string
-    // (the class name) as an argument and return a boolean (true meaning the class is going to prefixed).
-    //
-    // For more, see https://github.com/humbug/php-scoper#global-namespace-whitelisting
-    'global_namespace_whitelist' => [
-        'AppKernel',
-    ],
-
     // PHP-Scoper's goal is to make sure that all code for a project lies in a distinct PHP namespace. However, you
     // may want to share a common API between the bundled code of your PHAR and the consumer code. For example if
     // you have a PHPUnit PHAR with isolated code, you still want the PHAR to be able to understand the

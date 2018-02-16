@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Closure;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Console\Configuration;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
@@ -149,7 +148,6 @@ final class AddPrefixCommand extends BaseCommand
                 $output,
                 $config->getPatchers(),
                 $config->getWhitelist(),
-                $config->getGlobalNamespaceWhitelister(),
                 $input->getOption(self::STOP_ON_FAILURE_OPT),
                 $logger
             );
@@ -172,7 +170,6 @@ final class AddPrefixCommand extends BaseCommand
         string $output,
         array $patchers,
         array $whitelist,
-        Closure $globalNamespaceWhitelister,
         bool $stopOnFailure,
         ConsoleLogger $logger
     ): void {
@@ -200,7 +197,6 @@ final class AddPrefixCommand extends BaseCommand
                 $prefix,
                 $patchers,
                 $whitelist,
-                $globalNamespaceWhitelister,
                 $stopOnFailure,
                 $logger
             );
@@ -231,7 +227,6 @@ final class AddPrefixCommand extends BaseCommand
      * @param string        $prefix
      * @param callable[]    $patchers
      * @param string[]      $whitelist
-     * @param callable      $globalWhitelister
      * @param bool          $stopOnFailure
      * @param ConsoleLogger $logger
      */
@@ -242,12 +237,11 @@ final class AddPrefixCommand extends BaseCommand
         string $prefix,
         array $patchers,
         array $whitelist,
-        callable $globalWhitelister,
         bool $stopOnFailure,
         ConsoleLogger $logger
     ): void {
         try {
-            $scoppedContent = $this->scoper->scope($inputFilePath, $inputContents, $prefix, $patchers, $whitelist, $globalWhitelister);
+            $scoppedContent = $this->scoper->scope($inputFilePath, $inputContents, $prefix, $patchers, $whitelist);
         } catch (Throwable $error) {
             $exception = new ParsingException(
                 sprintf(

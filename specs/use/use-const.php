@@ -23,8 +23,7 @@ return [
     [
         'spec' => <<<'SPEC'
 Constant use statement for a constant belonging to the global namespace:
-- prefix the use statement: as it is extremely rare to use a `use const` statement for a built-in const from the
-global scope, we can relatively safely assume it is a user-land declare static-method which should be prefixed.
+- prefix the use statement
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -35,7 +34,30 @@ use const FOO;
 ----
 <?php
 
+namespace Humbug;
+
 use const Humbug\FOO;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Constant use statement for an internal constant belonging to the global namespace:
+- prefix the use statement
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use const DIRECTORY_SEPARATOR;
+
+----
+<?php
+
+namespace Humbug;
+
+use const Humbug\DIRECTORY_SEPARATOR;
 
 PHP
     ],
@@ -53,6 +75,8 @@ use const Humbug\FOO;
 
 ----
 <?php
+
+namespace Humbug;
 
 use const Humbug\FOO;
 
@@ -73,6 +97,8 @@ use const Foo\BAR;
 ----
 <?php
 
+namespace Humbug;
+
 use const Humbug\Foo\BAR;
 
 PHP
@@ -91,6 +117,8 @@ use const Humbug\Foo\BAR;
 
 ----
 <?php
+
+namespace Humbug;
 
 use const Humbug\Foo\BAR;
 
@@ -111,6 +139,8 @@ use const Foo\BAR;
 
 ----
 <?php
+
+namespace Humbug;
 
 use const Humbug\Foo\BAR;
 

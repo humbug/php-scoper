@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
+    'Declaration in the global namespace: add prefixed namespace.' => <<<'PHP'
 <?php
 
 trait A {
@@ -43,6 +43,8 @@ class B {
 }
 ----
 <?php
+
+namespace Humbug;
 
 trait A
 {
@@ -122,7 +124,7 @@ class B
 PHP
     ,
 
-    'Declaration of a whitelisted namespaced trait: prefix the namespace (whitelists works only on classes).' => [
+    'Declaration of a whitelisted trait: prefix the namespace (whitelists works only on classes).' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php

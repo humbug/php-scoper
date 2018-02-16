@@ -38,6 +38,8 @@ main();
 ----
 <?php
 
+namespace Humbug;
+
 use function Humbug\main;
 \Humbug\main();
 
@@ -60,6 +62,8 @@ use function main;
 \main();
 ----
 <?php
+
+namespace Humbug;
 
 use function Humbug\main;
 \main();

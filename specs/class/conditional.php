@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
+    'Declaration in the global namespace: warp in a prefixed namespace.' => <<<'PHP'
 <?php
 
 if (true) {
@@ -28,6 +28,38 @@ if (true) {
 }
 ----
 <?php
+
+namespace Humbug;
+
+if (\true) {
+    class A
+    {
+    }
+}
+
+PHP
+    ,
+
+    [
+        'spec' => <<<'SPEC'
+Declaration of a whitelisted class in the global namespace: warp in a prefixed namespace.
+
+TODO: unsupported at the moment. The `class_alias` statement appended to support whitelisted classes are added at the
+end of a namespace statement for now. This could be supported if they are added right after the declaration statement
+instead. 
+SPEC
+        ,
+        'whitelist' => ['A'],
+        'payload' => <<<'PHP'
+<?php
+
+if (true) {
+    class A {}
+}
+----
+<?php
+
+namespace Humbug;
 
 if (\true) {
     class A
@@ -58,9 +90,9 @@ if (true) {
 }
 
 PHP
-    ,
+    ],
 
-    'Declaration of a whitelisted namespaced class: prefix each namespace, too dynamic to account for.' => [
+    'Declaration of a whitelisted class: prefix the namespace, too dynamic to account for.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php

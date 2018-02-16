@@ -44,7 +44,7 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-When resolving fully qualified class names, keep in mind that classes are case insensitive in PHP.
+Account for PHP case insentitiveness when resolving FQCNs.
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -52,6 +52,7 @@ SPEC
 
 namespace Foo {
     class X {}
+    class StdClasS {}
 }
 
 namespace {
@@ -64,17 +65,20 @@ namespace {
 ----
 <?php
 
-namespace Humbug\Foo {
-    class X
-    {
-    }
+namespace Humbug\Foo;
+
+class X
+{
 }
-namespace {
-    use Humbug\FOO\x as Y;
-    use Humbug\Foo\stdClass;
-    \var_dump(new \Humbug\FOO\x());
-    \var_dump(new \Humbug\Foo\stdClass());
+class StdClasS
+{
 }
+namespace Humbug;
+
+use Humbug\FOO\x as Y;
+use Humbug\Foo\stdClass;
+\var_dump(new \Humbug\FOO\x());
+\var_dump(new \Humbug\Foo\stdClass());
 
 PHP
     ],

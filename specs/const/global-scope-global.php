@@ -33,6 +33,8 @@ DUMMY_CONST;
 ----
 <?php
 
+namespace Humbug;
+
 \DUMMY_CONST;
 
 PHP
@@ -50,6 +52,8 @@ SPEC
 DUMMY_CONST;
 ----
 <?php
+
+namespace Humbug;
 
 \DUMMY_CONST;
 

@@ -34,6 +34,8 @@ PHPUnit\main();
 ----
 <?php
 
+namespace Humbug;
+
 \Humbug\PHPUnit\main();
 
 PHP
@@ -51,6 +53,8 @@ SPEC
 \PHPUnit\main();
 ----
 <?php
+
+namespace Humbug;
 
 \Humbug\PHPUnit\main();
 
@@ -72,6 +76,8 @@ PHPUnit\main();
 ----
 <?php
 
+namespace Humbug;
+
 \Humbug\PHPUnit\main();
 
 PHP
@@ -91,6 +97,8 @@ SPEC
 \PHPUnit\main();
 ----
 <?php
+
+namespace Humbug;
 
 \Humbug\PHPUnit\main();
 

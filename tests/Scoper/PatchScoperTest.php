@@ -19,7 +19,6 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use function Humbug\PhpScoper\create_fake_whitelister;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PatchScoper
@@ -75,10 +74,8 @@ class PatchScoperTest extends TestCase
 
         $whitelist = ['Foo'];
 
-        $whitelister = create_fake_whitelister();
-
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister)
+            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
             ->willReturn('Decorated scoper contents')
         ;
 
@@ -86,7 +83,7 @@ class PatchScoperTest extends TestCase
 
         $scoper = new PatchScoper($this->decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
 

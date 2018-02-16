@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
+    'Declaration in the global namespace: add a prefixed namespace.' => <<<'PHP'
 <?php
 
 class A {
@@ -28,6 +28,8 @@ class A {
 }
 ----
 <?php
+
+namespace Humbug;
 
 class A
 {
@@ -62,7 +64,7 @@ class A
 PHP
     ,
 
-    'Declaration of a namespaced whitelisted class: append aliasing.' => [
+    'Declaration of a whitelisted class: append aliasing.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -114,28 +116,28 @@ namespace {
 ----
 <?php
 
-namespace Humbug\Foo {
-    class A
+namespace Humbug\Foo;
+
+class A
+{
+    public function a()
     {
-        public function a()
-        {
-        }
     }
 }
-namespace Humbug\Bar {
-    class B
+namespace Humbug\Bar;
+
+class B
+{
+    public function b()
     {
-        public function b()
-        {
-        }
     }
 }
-namespace {
-    class C
+namespace Humbug;
+
+class C
+{
+    public function c()
     {
-        public function c()
-        {
-        }
     }
 }
 
@@ -197,66 +199,66 @@ namespace {
 ----
 <?php
 
-namespace Humbug\Foo {
-    class A
+namespace Humbug\Foo;
+
+class A
+{
+    public function a()
     {
-        public function a()
-        {
-        }
-    }
-    class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-    class B
-    {
-        public function b()
-        {
-        }
-    }
-    class C
-    {
-        public function c()
-        {
-        }
     }
 }
-namespace Humbug\Bar {
-    class A
+class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+class B
+{
+    public function b()
     {
-        public function a()
-        {
-        }
-    }
-    class B
-    {
-        public function b()
-        {
-        }
-    }
-    class_alias('Humbug\\Bar\\B', 'Bar\\B', \false);
-    class C
-    {
-        public function c()
-        {
-        }
     }
 }
-namespace {
-    class A
+class C
+{
+    public function c()
     {
-        public function a()
-        {
-        }
     }
-    class B
+}
+namespace Humbug\Bar;
+
+class A
+{
+    public function a()
     {
-        public function b()
-        {
-        }
     }
-    class C
+}
+class B
+{
+    public function b()
     {
-        public function c()
-        {
-        }
+    }
+}
+class_alias('Humbug\\Bar\\B', 'Bar\\B', \false);
+class C
+{
+    public function c()
+    {
+    }
+}
+namespace Humbug;
+
+class A
+{
+    public function a()
+    {
+    }
+}
+class B
+{
+    public function b()
+    {
+    }
+}
+class C
+{
+    public function c()
+    {
     }
 }
 

@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Logger\UpdateConsoleLogger;
 use Humbug\SelfUpdate\Updater;
-use PHAR;
+use Phar;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -187,6 +187,6 @@ final class SelfUpdateCommand extends Command
 
     private function getLocalPharName(): string
     {
-        return basename(PHAR::running());
+        return basename(Phar::running());
     }
 }

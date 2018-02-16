@@ -34,6 +34,8 @@ main();
 ----
 <?php
 
+namespace Humbug;
+
 \main();
 
 PHP
@@ -51,6 +53,8 @@ SPEC
 \main();
 ----
 <?php
+
+namespace Humbug;
 
 \main();
 

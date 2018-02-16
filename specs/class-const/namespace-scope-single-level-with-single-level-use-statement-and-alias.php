@@ -31,18 +31,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace A;
+namespace {
+    class Foo {}
+}
 
-use Foo as X;
-
-X::MAIN_CONST;
+namespace A {
+    use Foo as X;
+    
+    X::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
 namespace Humbug\A;
 
-use Foo as X;
-\Foo::MAIN_CONST;
+use Humbug\Foo as X;
+\Humbug\Foo::MAIN_CONST;
 
 PHP
     ],
@@ -57,18 +66,31 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace A;
+namespace {
+    class Foo {}
+    class X {}
+}
 
-use Foo as X;
-
-\X::MAIN_CONST;
+namespace A {
+    use Foo as X;
+    
+    \X::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
+class X
+{
+}
 namespace Humbug\A;
 
-use Foo as X;
-\X::MAIN_CONST;
+use Humbug\Foo as X;
+\Humbug\X::MAIN_CONST;
 
 PHP
     ],
@@ -86,7 +108,7 @@ SPEC
 
 namespace A;
 
-use AppKernel as X;
+use Reflector as X;
 
 X::MAIN_CONST;
 ----
@@ -94,8 +116,8 @@ X::MAIN_CONST;
 
 namespace Humbug\A;
 
-use Humbug\AppKernel as X;
-\Humbug\AppKernel::MAIN_CONST;
+use Reflector as X;
+\Reflector::MAIN_CONST;
 
 PHP
     ],
@@ -111,18 +133,27 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace A;
+namespace {
+    class X {}
+}
 
-use AppKernel as X;
-
-\X::MAIN_CONST;
+namespace A {
+    use Reflector as X;
+    
+    \X::MAIN_CONST;
+}
 ----
 <?php
 
+namespace Humbug;
+
+class X
+{
+}
 namespace Humbug\A;
 
-use Humbug\AppKernel as X;
-\X::MAIN_CONST;
+use Reflector as X;
+\Humbug\X::MAIN_CONST;
 
 PHP
     ],

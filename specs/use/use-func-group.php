@@ -30,6 +30,8 @@ use \A\B\{C\d, e};
 ----
 <?php
 
+namespace Humbug;
+
 use Humbug\A\b;
 use Humbug\A\B\c;
 use Humbug\A\d;

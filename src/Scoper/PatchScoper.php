@@ -28,9 +28,9 @@ final class PatchScoper implements Scoper
     /**
      * @inheritdoc
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist, callable $globalWhitelister): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist): string
     {
-        $contents = $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist, $globalWhitelister);
+        $contents = $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
         return array_reduce(
             $patchers,

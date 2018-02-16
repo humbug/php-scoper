@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use function Humbug\PhpScoper\create_fake_patcher;
-use function Humbug\PhpScoper\create_fake_whitelister;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper
@@ -40,12 +39,11 @@ class InstalledPackagesScoperTest extends TestCase
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
 
         /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
-            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister)
+            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -55,7 +53,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $scoper = new InstalledPackagesScoper($decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
 
@@ -74,9 +72,8 @@ class InstalledPackagesScoperTest extends TestCase
         $prefix = 'Foo';
         $patchers = [create_fake_patcher()];
         $whitelist = ['Foo'];
-        $whitelister = create_fake_whitelister();
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist, $whitelister);
+        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
     }

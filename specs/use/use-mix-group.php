@@ -28,6 +28,8 @@ use A\B\{C\D, function b\c, const D};
 ----
 <?php
 
+namespace Humbug;
+
 use Humbug\A\B\C\D;
 use function Humbug\A\B\b\c;
 use const Humbug\A\B\D;

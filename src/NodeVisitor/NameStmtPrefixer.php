@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor;
 
 use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\Reflector;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -25,6 +26,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -49,26 +51,22 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     ];
 
     private $prefix;
-    private $whitelist;
-    private $globalWhitelister;
     private $nameResolver;
+    private $reflector;
 
     /**
      * @param string                     $prefix
-     * @param string[]                   $whitelist
-     * @param callable                   $globalWhitelister
      * @param FullyQualifiedNameResolver $nameResolver
+     * @param Reflector                  $reflector
      */
     public function __construct(
         string $prefix,
-        array $whitelist,
-        callable $globalWhitelister,
-        FullyQualifiedNameResolver $nameResolver
+        FullyQualifiedNameResolver $nameResolver,
+        Reflector $reflector
     ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
-        $this->globalWhitelister = $globalWhitelister;
         $this->nameResolver = $nameResolver;
+        $this->reflector = $reflector;
     }
 
     /**
@@ -94,12 +92,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof New_
                 || $parentNode instanceof Class_
+                || $parentNode instanceof Interface_
             )
         ) {
             return $name;
         }
 
-        if ((
+        if (
+            (
                 $parentNode instanceof FuncCall
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof ClassConstFetch
@@ -122,13 +122,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         // Check if the class can be prefixed
         if (false === ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)) {
-            if (1 === count($resolvedName->parts)
-                && false === ($this->globalWhitelister)($resolvedName->toString())
-            ) {
-                return $resolvedName;
-            } elseif (1 < count($resolvedName->parts)
-                && in_array($resolvedName->toString(), $this->whitelist)
-            ) {
+            if ($this->reflector->isClassInternal($resolvedName->toString())) {
                 return $resolvedName;
             }
         }
@@ -147,6 +141,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $resolvedName;
         }
 
-        return FullyQualified::concat($this->prefix, $resolvedName->toString(), $resolvedName->getAttributes());
+        return FullyQualified::concat(
+            $this->prefix,
+            $resolvedName->toString(),
+            $resolvedName->getAttributes()
+        );
     }
 }

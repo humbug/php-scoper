@@ -33,12 +33,17 @@ SPEC
 
 namespace A;
 
+class Foo {}
+
 new Foo();
 ----
 <?php
 
 namespace Humbug\A;
 
+class Foo
+{
+}
 new \Humbug\A\Foo();
 
 PHP
@@ -54,39 +59,24 @@ SPEC
         'payload' => <<<'PHP'
 <?php
 
-namespace A;
+namespace {
+    class Foo {}
+}
 
-new \Foo();
+namespace A {
+    new \Foo();
+}
 ----
 <?php
 
+namespace Humbug;
+
+class Foo
+{
+}
 namespace Humbug\A;
 
-new \Foo();
-
-PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class belonging to the global namespace which has been whitelisted:
-- prefix the namespace
-- prefix the call
-- See `scope.inc.php` for the built-in global whitelisted classes
-SPEC
-        ,
-        'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-new \AppKernel();
-----
-<?php
-
-namespace Humbug\A;
-
-new \Humbug\AppKernel();
+new \Humbug\Foo();
 
 PHP
     ],

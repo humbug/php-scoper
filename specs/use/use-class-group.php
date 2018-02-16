@@ -37,6 +37,8 @@ use \A\B\{C\D as ABCD, E};
 ----
 <?php
 
+namespace Humbug;
+
 use Humbug\A\B;
 use Humbug\A\B\C;
 use Humbug\A\D;
@@ -61,6 +63,8 @@ use \Humbug\A\B\{C\D, E};
 
 ----
 <?php
+
+namespace Humbug;
 
 use Humbug\A\B;
 use Humbug\A\B\C;
@@ -91,6 +95,8 @@ use \A\B\{C\D, E};
 
 ----
 <?php
+
+namespace Humbug;
 
 use A\B;
 use A\B\C;

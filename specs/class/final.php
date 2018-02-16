@@ -20,12 +20,14 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: do not do anything.' => <<<'PHP'
+    'Declaration in the global namespace: add prefixed namespace.' => <<<'PHP'
 <?php
 
 final class A {}
 ----
 <?php
+
+namespace Humbug;
 
 final class A
 {
@@ -52,7 +54,7 @@ final class A
 PHP
     ,
 
-    'Declaration of a namespaced whitelisted final class: append aliasing.' => [
+    'Declaration of a whitelisted final class: append aliasing.' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
