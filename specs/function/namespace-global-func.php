@@ -23,7 +23,7 @@ return [
     [
         'spec' => <<<'SPEC'
 Global function call in a namespace
-- do not prefix the call as may be either be a function from the global scope or the current namespace
+- do not prefix the call: ambiguous call
 - transform the call into a FQ call
 SPEC
         ,
@@ -46,7 +46,7 @@ PHP
     [
         'spec' => <<<'SPEC'
 Global function call in a namespace
-- do not prefix the call as may be part of PHP built-in functions
+- prefix the call
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -60,7 +60,7 @@ namespace A;
 
 namespace Humbug\A;
 
-\main();
+\Humbug\main();
 
 PHP
     ],

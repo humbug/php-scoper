@@ -134,9 +134,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $resolvedName;
         }
 
-        if ($parentNode instanceof FuncCall
-            && 1 === count($resolvedName->parts)
-            && null === $resolvedValue->getUse()
+        if (
+            $parentNode instanceof FuncCall
+            && (
+                $this->reflector->isFunctionInternal($resolvedName->toString())
+                // Functions have a fallback autoloading so we cannot prefix them when the name is ambiguous
+                // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
+                || false === ($resolvedName instanceof FullyQualified)
+            )
         ) {
             return $resolvedName;
         }

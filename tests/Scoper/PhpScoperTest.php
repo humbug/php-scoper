@@ -28,6 +28,7 @@ use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
@@ -97,6 +98,16 @@ class PhpScoperTest extends TestCase
     private $classReflector;
 
     /**
+     * @var FunctionReflector|ObjectProphecy
+     */
+    private $functionReflectorProphecy;
+
+    /**
+     * @var FunctionReflector
+     */
+    private $functionReflector;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
@@ -116,12 +127,16 @@ class PhpScoperTest extends TestCase
         $this->classReflectorProphecy = $this->prophesize(ClassReflector::class);
         $this->classReflector = $this->classReflectorProphecy->reveal();
 
+        $this->functionReflectorProphecy = $this->prophesize(FunctionReflector::class);
+        $this->functionReflector = $this->functionReflectorProphecy->reveal();
+
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
                 new Reflector(
-                    $this->classReflector
+                    $this->classReflector,
+                    $this->functionReflector
                 )
             )
         );
@@ -411,17 +426,20 @@ PHP;
 
         $astLocator = (new BetterReflection())->astLocator();
 
+        $sourceLocator = new AggregateSourceLocator([
+            new StringSourceLocator($contents, $astLocator),
+            new PhpInternalSourceLocator($astLocator),
+        ]);
+
+        $classReflector = new ClassReflector($sourceLocator);
+
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
                 new Reflector(
-                    new ClassReflector(
-                        new AggregateSourceLocator([
-                            new StringSourceLocator($contents, $astLocator),
-                            new PhpInternalSourceLocator($astLocator),
-                        ])
-                    )
+                    $classReflector,
+                    new FunctionReflector($sourceLocator, $classReflector)
                 )
             )
         );

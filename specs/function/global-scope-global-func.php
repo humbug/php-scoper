@@ -23,7 +23,7 @@ return [
     [
         'spec' => <<<'SPEC'
 Global function call in the global scope
-- do not prefix the call as may be part of PHP built-in functions
+- prefix the function
 - transform the call into a FQ call
 SPEC
         ,
@@ -36,15 +36,15 @@ main();
 
 namespace Humbug;
 
-\main();
+\Humbug\main();
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Global function call in the global scope
-- do not prefix the call as may be part of PHP built-in functions
+FQ global function call in the global scope
+- prefix the call
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -56,7 +56,47 @@ SPEC
 
 namespace Humbug;
 
-\main();
+\Humbug\main();
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Global function call in the global scope of an internal function
+- do not prefix the function
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+is_array();
+----
+<?php
+
+namespace Humbug;
+
+\is_array();
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+FQ global function call in the global scope of an internal function
+- do not prefix the function
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+\is_array();
+----
+<?php
+
+namespace Humbug;
+
+\is_array();
 
 PHP
     ],
