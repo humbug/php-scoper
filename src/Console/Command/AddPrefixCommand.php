@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Closure;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Console\Configuration;
 use Humbug\PhpScoper\Logger\ConsoleLogger;

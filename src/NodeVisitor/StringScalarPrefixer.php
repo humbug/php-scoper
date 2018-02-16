@@ -22,7 +22,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
-use Roave\BetterReflection\Reflector\ClassReflector;
 
 /**
  * Prefixes the string scalar values.
@@ -45,9 +44,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private $reflector;
 
     /**
-     * @param string         $prefix
-     * @param string[]       $whitelistedFunctions
-     * @param string[]       $whitelist
+     * @param string    $prefix
+     * @param string[]  $whitelistedFunctions
+     * @param string[]  $whitelist
      * @param Reflector $reflector
      */
     public function __construct(

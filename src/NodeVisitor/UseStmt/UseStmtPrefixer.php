@@ -21,9 +21,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
-use Roave\BetterReflection\BetterReflection;
-use Roave\BetterReflection\Reflection\ReflectionClass;
-use Roave\BetterReflection\Reflector\ClassReflector;
 
 /**
  * Prefixes the use statements.
@@ -35,8 +32,8 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
     private $reflector;
 
     /**
-     * @param string         $prefix
-     * @param string[]       $whitelist
+     * @param string    $prefix
+     * @param string[]  $whitelist
      * @param Reflector $reflector
      */
     public function __construct(string $prefix, array $whitelist, Reflector $reflector)

@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
 use function Humbug\PhpScoper\create_fake_patcher;
-use function Humbug\PhpScoper\create_fake_whitelister;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\NullScoper

@@ -21,7 +21,6 @@ use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
 use PhpParser\NodeTraverserInterface;
-use Roave\BetterReflection\Reflector\ClassReflector;
 
 /**
  * @final
@@ -35,7 +34,7 @@ class TraverserFactory
         'class_exists',
         'interface_exists',
     ];
-    
+
     private $reflector;
 
     public function __construct(Reflector $reflector)

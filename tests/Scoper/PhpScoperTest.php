@@ -26,9 +26,7 @@ use PhpParser\Parser;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReflectionClass;
 use Roave\BetterReflection\BetterReflection;
-use Roave\BetterReflection\Reflection\Reflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
@@ -37,7 +35,6 @@ use Symfony\Component\Finder\Finder;
 use Throwable;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
-use function Humbug\PhpScoper\escape_path;
 
 class PhpScoperTest extends TestCase
 {

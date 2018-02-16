@@ -22,7 +22,7 @@ interface Scoper
      * Scope AKA. apply the given prefix to the file in the appropriate way.
      *
      * @param string     $filePath  File to scope
-     * @param string     $contents          File contents
+     * @param string     $contents  File contents
      * @param string     $prefix    Prefix to apply to the file
      * @param callable[] $patchers
      * @param string[]   $whitelist List of classes to exclude from the scoping.

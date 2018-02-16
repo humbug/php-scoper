@@ -28,7 +28,6 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
-use Roave\BetterReflection\Reflector\ClassReflector;
 
 /**
  * ```
@@ -58,7 +57,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     /**
      * @param string                     $prefix
      * @param FullyQualifiedNameResolver $nameResolver
-     * @param Reflector             $reflector
+     * @param Reflector                  $reflector
      */
     public function __construct(
         string $prefix,

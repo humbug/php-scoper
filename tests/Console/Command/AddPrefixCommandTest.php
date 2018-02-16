@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Closure;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Scoper;
 use InvalidArgumentException;
