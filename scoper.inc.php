@@ -65,5 +65,10 @@ return [
 
             return $content;
         },
+        function (string $filePath, string $prefix, string $content): string {
+            $finderClass = sprintf('\%s\%s', $prefix, Finder::class);
+
+            return str_replace($finderClass, '\\'.Finder::class, $content);
+        },
     ],
 ];
