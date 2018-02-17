@@ -88,8 +88,8 @@ class_alias('Humbug\\Foo\\Bar\\Poz', 'Foo\\Bar\\Poz', \false);
 namespace Humbug;
 
 use Humbug\Foo as X;
-use Foo\Bar as Y;
-use Foo\Bar\Poz as Z;
+use Humbug\Foo\Bar as Y;
+use Humbug\Foo\Bar\Poz as Z;
 \Humbug\Foo::MAIN_CONST;
 \Humbug\Foo::MAIN_CONST;
 \Humbug\Foo\Bar::MAIN_CONST;
@@ -323,8 +323,8 @@ class_alias('Humbug\\A\\Aoo\\Aoz\\Poz', 'A\\Aoo\\Aoz\\Poz', \false);
 namespace Humbug\A;
 
 use Humbug\Foo as X;
-use Foo\Bar as Y;
-use Foo\Bar\Poz as Z;
+use Humbug\Foo\Bar as Y;
+use Humbug\Foo\Bar\Poz as Z;
 \Humbug\A\Aoo::MAIN_CONST;
 \Humbug\A\Aoo\Aoz::MAIN_CONST;
 \Humbug\A\Aoo\Aoz\Poz::MAIN_CONST;

@@ -264,7 +264,7 @@ class Bar
 class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug;
 
-use Foo\Bar;
+use Humbug\Foo\Bar;
 \Humbug\Foo\Bar::main();
 
 PHP
@@ -353,7 +353,7 @@ namespace Humbug;
 class Bar
 {
 }
-use Foo\Bar;
+use Humbug\Foo\Bar;
 \Humbug\Bar::main();
 
 PHP
