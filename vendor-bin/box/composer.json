@@ -1,13 +1,6 @@
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/mikeSimonson/box2"
-        }
-    ],
     "require-dev": {
-        "kherge/box": "dev-fix-autoloader-cgr as 2.7.x-dev",
-        "symfony/console": "^2.8"
+        "humbug/box": "^3.0@dev"
     },
     "config": {
         "sort-packages": true
