@@ -20,7 +20,7 @@ use PhpParser\NodeVisitorAbstract;
 /**
  * Appends the parent node as an attribute to each node. This allows to have more context in the other visitors when
  * inspecting a node.
- * TODO: rename to ParentNodeAppender
+ * TODO: rename to ParentNodeAppender.
  */
 final class AppendParentNode extends NodeVisitorAbstract
 {

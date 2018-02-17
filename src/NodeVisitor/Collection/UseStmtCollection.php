@@ -15,12 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor\Collection;
 
 use ArrayIterator;
-use Humbug\PhpScoper\ExprAnalyzer;
 use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use IteratorAggregate;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
