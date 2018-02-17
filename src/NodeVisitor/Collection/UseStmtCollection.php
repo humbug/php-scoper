@@ -15,7 +15,11 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor\Collection;
 
 use ArrayIterator;
+use Humbug\PhpScoper\ExprAnalyzer;
+use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use IteratorAggregate;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -59,12 +63,28 @@ final class UseStmtCollection implements IteratorAggregate
     {
         $name = strtolower($node->getFirst());
 
+        $parentNode = AppendParentNode::findParent($node);
+
         $useStatements = $this->nodes[(string) $namespaceName] ?? [];
 
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
                 if ($useStatement instanceof UseUse) {
                     if ($name === strtolower($useStatement->alias)) {
+                        if (
+                            $parentNode instanceof FuncCall
+                            // When is a function, the use statement must be a `use function`. However it can also
+                            // be a class in case of the use of a partial use statement, e.g. Foo\main() in which case
+                            // the use statement is one of a class instead of a function.
+                            && 1 === count($node->parts)
+                        ) {
+                            if (Use_::TYPE_FUNCTION === $use_->type) {
+                                return $useStatement->name;
+                            }
+
+                            continue;
+                        }
+
                         // Match the alias
                         return $useStatement->name;
                     } elseif (null !== $useStatement->alias) {
