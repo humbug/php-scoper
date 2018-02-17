@@ -47,6 +47,7 @@ PHP
         'spec' => <<<'SPEC'
 FQ constant call in a namespace:
 - prefix the namespace
+- prefix the constant call
 SPEC
     ,
         'payload' => <<<'PHP'
@@ -60,7 +61,7 @@ namespace A;
 
 namespace Humbug\A;
 
-\DUMMY_CONST;
+\Humbug\DUMMY_CONST;
 
 PHP
     ],

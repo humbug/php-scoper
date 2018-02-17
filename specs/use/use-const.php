@@ -44,7 +44,7 @@ PHP
     [
         'spec' => <<<'SPEC'
 Constant use statement for an internal constant belonging to the global namespace:
-- prefix the use statement
+- do not prefix the use statement
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -57,7 +57,7 @@ use const DIRECTORY_SEPARATOR;
 
 namespace Humbug;
 
-use const Humbug\DIRECTORY_SEPARATOR;
+use const DIRECTORY_SEPARATOR;
 
 PHP
     ],
