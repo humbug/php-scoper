@@ -20,6 +20,7 @@ use PhpParser\NodeVisitorAbstract;
 /**
  * Appends the parent node as an attribute to each node. This allows to have more context in the other visitors when
  * inspecting a node.
+ * TODO: rename to ParentNodeAppender.
  */
 final class AppendParentNode extends NodeVisitorAbstract
 {
@@ -37,6 +38,14 @@ final class AppendParentNode extends NodeVisitorAbstract
         return $node->getAttribute(self::PARENT_ATTRIBUTE);
     }
 
+    public static function findParent(Node $node): ?Node
+    {
+        return $node->hasAttribute(self::PARENT_ATTRIBUTE)
+            ? $node->getAttribute(self::PARENT_ATTRIBUTE)
+            : null
+        ;
+    }
+
     /**
      * @inheritdoc
      */
@@ -52,7 +61,7 @@ final class AppendParentNode extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (!empty($this->stack)) {
+        if ([] !== $this->stack) {
             $node->setAttribute(self::PARENT_ATTRIBUTE, $this->stack[count($this->stack) - 1]);
         }
 

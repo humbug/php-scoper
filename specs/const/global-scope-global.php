@@ -81,4 +81,28 @@ namespace Humbug;
 
 PHP
     ],
+
+    [
+        'spec' => <<<'SPEC'
+Global constant call in the global scope of a constant which has a use statement for a class importing a class with the
+same name
+- do not prefix the function
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use Acme\Inf;
+
+INF;
+----
+<?php
+
+namespace Humbug;
+
+use Humbug\Acme\Inf;
+\INF;
+
+PHP
+    ],
 ];

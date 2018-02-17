@@ -15,7 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor\Collection;
 
 use ArrayIterator;
+use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use IteratorAggregate;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
@@ -59,12 +62,30 @@ final class UseStmtCollection implements IteratorAggregate
     {
         $name = strtolower($node->getFirst());
 
+        $parentNode = AppendParentNode::findParent($node);
+
         $useStatements = $this->nodes[(string) $namespaceName] ?? [];
 
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
                 if ($useStatement instanceof UseUse) {
                     if ($name === strtolower($useStatement->alias)) {
+                        if ($parentNode instanceof FuncCall && 1 === count($node->parts)) {
+                            if (Use_::TYPE_FUNCTION === $use_->type) {
+                                return $useStatement->name;
+                            }
+
+                            continue;
+                        }
+
+                        if ($parentNode instanceof ConstFetch && 1 === count($node->parts)) {
+                            if (Use_::TYPE_CONSTANT === $use_->type) {
+                                return $useStatement->name;
+                            }
+
+                            continue;
+                        }
+
                         // Match the alias
                         return $useStatement->name;
                     } elseif (null !== $useStatement->alias) {

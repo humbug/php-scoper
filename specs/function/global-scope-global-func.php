@@ -100,4 +100,28 @@ namespace Humbug;
 
 PHP
     ],
+
+    [
+        'spec' => <<<'SPEC'
+Global function call in the global scope of a function which has a use statement for a class importing a class with the
+same name
+- do not prefix the function
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+use Acme\Glob;
+
+glob();
+----
+<?php
+
+namespace Humbug;
+
+use Humbug\Acme\Glob;
+\glob();
+
+PHP
+    ],
 ];
