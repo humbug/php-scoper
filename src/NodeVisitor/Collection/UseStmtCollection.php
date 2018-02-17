@@ -18,6 +18,7 @@ use ArrayIterator;
 use Humbug\PhpScoper\ExprAnalyzer;
 use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use IteratorAggregate;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
@@ -71,14 +72,16 @@ final class UseStmtCollection implements IteratorAggregate
             foreach ($use_->uses as $useStatement) {
                 if ($useStatement instanceof UseUse) {
                     if ($name === strtolower($useStatement->alias)) {
-                        if (
-                            $parentNode instanceof FuncCall
-                            // When is a function, the use statement must be a `use function`. However it can also
-                            // be a class in case of the use of a partial use statement, e.g. Foo\main() in which case
-                            // the use statement is one of a class instead of a function.
-                            && 1 === count($node->parts)
-                        ) {
+                        if ($parentNode instanceof FuncCall && 1 === count($node->parts)) {
                             if (Use_::TYPE_FUNCTION === $use_->type) {
+                                return $useStatement->name;
+                            }
+
+                            continue;
+                        }
+
+                        if ($parentNode instanceof ConstFetch && 1 === count($node->parts)) {
+                            if (Use_::TYPE_CONSTANT === $use_->type) {
                                 return $useStatement->name;
                             }
 
