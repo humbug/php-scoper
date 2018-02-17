@@ -286,7 +286,7 @@ class Bar
 class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug;
 
-use Foo\Bar;
+use Humbug\Foo\Bar;
 new \Humbug\Foo\Bar();
 
 PHP
@@ -386,7 +386,7 @@ class Bar
 class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug;
 
-use Foo\Bar;
+use Humbug\Foo\Bar;
 new \Humbug\Bar();
 
 PHP

@@ -28,18 +28,11 @@ use PhpParser\NodeVisitorAbstract;
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
-    private $whitelist;
     private $reflector;
 
-    /**
-     * @param string    $prefix
-     * @param string[]  $whitelist
-     * @param Reflector $reflector
-     */
-    public function __construct(string $prefix, array $whitelist, Reflector $reflector)
+    public function __construct(string $prefix, Reflector $reflector)
     {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
         $this->reflector = $reflector;
     }
 
@@ -69,22 +62,15 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
             return false;
         }
 
-        if (1 === count($use->name->parts)) {
-            if (Use_::TYPE_FUNCTION === $useType) {
-                return false === $this->reflector->isFunctionInternal($use->name->getFirst());
-            }
-
-            if (Use_::TYPE_CONSTANT === $useType) {
-                return false === $this->reflector->isConstantInternal($use->name->getFirst());
-            }
-
-            return Use_::TYPE_NORMAL !== $useType || false === $this->reflector->isClassInternal($use->name->getFirst());
+        if (Use_::TYPE_FUNCTION === $useType) {
+            return false === $this->reflector->isFunctionInternal((string) $use->name);
         }
 
-        return false === (
-            Use_::TYPE_NORMAL === $useType
-            && in_array((string) $use->name, $this->whitelist)
-        );
+        if (Use_::TYPE_CONSTANT === $useType) {
+            return false === $this->reflector->isConstantInternal((string) $use->name);
+        }
+
+        return Use_::TYPE_NORMAL !== $useType || false === $this->reflector->isClassInternal((string) $use->name);
     }
 
     /**

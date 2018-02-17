@@ -56,8 +56,8 @@ class_exists('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 
 namespace Humbug;
 
-\class_exists('Symfony\\Component\\Yaml\\Yaml');
-\class_exists('Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 \class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 \class_exists('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 

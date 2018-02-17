@@ -91,17 +91,17 @@ SPEC
 
 use A\{B};
 use A\{B\C, D};
-use \A\B\{C\D, E};
+use \A\B\{C\G, E};
 
 ----
 <?php
 
 namespace Humbug;
 
-use A\B;
-use A\B\C;
+use Humbug\A\B;
+use Humbug\A\B\C;
 use Humbug\A\D;
-use Humbug\A\B\C\D;
+use Humbug\A\B\C\G;
 use Humbug\A\B\E;
 
 PHP

@@ -163,7 +163,7 @@ PHP
     [
         'spec' => <<<'SPEC'
 Use statement of two-level class which has been whitelisted:
-- prefix the use statement: only actual usage of the class will be whitelisted
+- prefix the use statement
 SPEC
         ,
         'whitelist' => ['Foo\Bar'],
@@ -177,7 +177,7 @@ use Foo\Bar as A;
 
 namespace Humbug;
 
-use Foo\Bar as A;
+use Humbug\Foo\Bar as A;
 
 PHP
     ],
