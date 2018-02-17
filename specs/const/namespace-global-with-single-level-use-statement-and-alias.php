@@ -57,6 +57,7 @@ PHP
 Constant call imported with an aliased use statement:
 - prefix the namespace
 - prefix the use statement
+- prefix the constant call
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -73,7 +74,7 @@ use const DUMMY_CONST as FOO;
 namespace Humbug\A;
 
 use const Humbug\DUMMY_CONST as FOO;
-\FOO;
+\Humbug\FOO;
 
 PHP
     ],

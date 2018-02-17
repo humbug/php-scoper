@@ -57,6 +57,7 @@ PHP
 FQ constant call imported with a use statement:
 - prefix the namespace
 - prefix the use statement
+- prefix the constant call
 SPEC
         ,
         'payload' => <<<'PHP'
@@ -73,7 +74,7 @@ use const DUMMY_CONST;
 namespace Humbug\A;
 
 use const Humbug\DUMMY_CONST;
-\DUMMY_CONST;
+\Humbug\DUMMY_CONST;
 
 PHP
     ],

@@ -128,8 +128,12 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         if ($parentNode instanceof ConstFetch
-            && 1 === count($resolvedName->parts)
-            && null === $resolvedValue->getUse()
+            && (
+                $this->reflector->isConstantInternal($resolvedName->toString())
+                // Constants have a fallback autoloading so we cannot prefix them when the name is ambiguous
+                // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
+                || false === ($resolvedName instanceof FullyQualified)
+            )
         ) {
             return $resolvedName;
         }

@@ -67,7 +67,7 @@ use const DUMMY_CONST;
 namespace Humbug;
 
 use const Humbug\DUMMY_CONST;
-\DUMMY_CONST;
+\Humbug\DUMMY_CONST;
 
 PHP
     ],

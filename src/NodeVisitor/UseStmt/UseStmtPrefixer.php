@@ -74,6 +74,10 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
                 return false === $this->reflector->isFunctionInternal($use->name->getFirst());
             }
 
+            if (Use_::TYPE_CONSTANT === $useType) {
+                return false === $this->reflector->isConstantInternal($use->name->getFirst());
+            }
+
             return Use_::TYPE_NORMAL !== $useType || false === $this->reflector->isClassInternal($use->name->getFirst());
         }
 

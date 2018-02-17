@@ -23,6 +23,7 @@ return [
     [
         'spec' => <<<'SPEC'
 Constant call in the global namespace:
+- prefix the constant
 - transforms the call into a FQ call
 SPEC
         ,
@@ -35,7 +36,28 @@ DUMMY_CONST;
 
 namespace Humbug;
 
-\DUMMY_CONST;
+\Humbug\DUMMY_CONST;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Internal constant call in the global namespace:
+- do not prefix the constant
+- transforms the call into a FQ call
+SPEC
+        ,
+        'payload' => <<<'PHP'
+<?php
+
+DIRECTORY_SEPARATOR;
+----
+<?php
+
+namespace Humbug;
+
+\DIRECTORY_SEPARATOR;
 
 PHP
     ],
@@ -43,7 +65,7 @@ PHP
     [
         'spec' => <<<'SPEC'
 FQ constant call in the global namespace:
-- do nothing
+- prefix the constant
 SPEC
     ,
         'payload' => <<<'PHP'
@@ -55,7 +77,7 @@ DUMMY_CONST;
 
 namespace Humbug;
 
-\DUMMY_CONST;
+\Humbug\DUMMY_CONST;
 
 PHP
     ],
