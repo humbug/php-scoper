@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_key_exists;
-use function array_values;
-use function get_defined_constants;
 use ReflectionException;
 use ReflectionFunction;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflector\Exception\IdentifierNotFound;
 use Roave\BetterReflection\Reflector\FunctionReflector;
+use function array_key_exists;
+use function array_values;
+use function get_defined_constants;
 use function strtoupper;
 
 final class Reflector
