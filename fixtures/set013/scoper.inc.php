@@ -44,10 +44,10 @@ return [
     //
     // For more see: https://github.com/humbug/php-scoper#patchers
     'patchers' => [
-        function (string $filePath, string $prefix, string $content): string {
+        function (string $filePath, string $prefix, string $contents): string {
             // Change the content here.
 
-            return $content;
+            return $contents;
         },
     ],
 
