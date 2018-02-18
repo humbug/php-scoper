@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor;
 
 use Humbug\PhpScoper\Reflector;
-use function is_string;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -28,8 +27,8 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeVisitorAbstract;
+use function is_string;
 use function preg_match;
-use TypeError;
 
 /**
  * Prefixes the string scalar values.
