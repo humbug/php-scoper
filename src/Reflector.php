@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper;
 
 use ReflectionException;
 use ReflectionFunction;
+use Roave\BetterReflection\Identifier\Exception\InvalidIdentifierName;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflector\Exception\IdentifierNotFound;
 use Roave\BetterReflection\Reflector\FunctionReflector;
@@ -40,7 +41,7 @@ final class Reflector
     {
         try {
             return $this->classReflector->reflect($name)->isInternal();
-        } catch (IdentifierNotFound $exception) {
+        } catch (IdentifierNotFound | InvalidIdentifierName $exception) {
             return false;
         }
     }

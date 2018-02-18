@@ -108,7 +108,8 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
                             new FullyQualified('false')
                         )
                     ),
-                ]
+                ],
+                ['whitelist_class_alias' => true]
             );
         }
 

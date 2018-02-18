@@ -17,11 +17,18 @@ namespace Humbug\PhpScoper\NodeVisitor;
 use Humbug\PhpScoper\Reflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Const_;
+use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeVisitorAbstract;
+use function is_string;
+use function preg_match;
 
 /**
  * Prefixes the string scalar values.
@@ -74,22 +81,31 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function shouldPrefixScalar(Node $node): bool
     {
-        if (false === ($node instanceof String_ && AppendParentNode::hasParent($node))) {
+        if (false === ($node instanceof String_ && AppendParentNode::hasParent($node) && is_string($node->value))
+            || 1 !== preg_match('/^\\\\*(?:\p{L}+\\\\+)++\p{L}+$/', $node->value)
+        ) {
             return false;
         }
         /** @var String_ $node */
         $parentNode = AppendParentNode::getParent($node);
 
-        if (false === ($parentNode instanceof Arg) || false === AppendParentNode::hasParent($parentNode)) {
-            return false;
+        if ($parentNode instanceof Arg
+            && null !== $funcNode = AppendParentNode::findParent($parentNode)
+        ) {
+            $funcNode = AppendParentNode::getParent($parentNode);
+
+            return
+                $funcNode instanceof FuncCall
+                && $funcNode->name instanceof Name
+                && false === $funcNode->hasAttribute('whitelist_class_alias')
+            ;
         }
 
-        $argParent = AppendParentNode::getParent($parentNode);
-
-        return
-            $argParent instanceof FuncCall
-            && $argParent->name instanceof Name
-            && in_array((string) $argParent->name, $this->whitelistedFunctions)
+        return $parentNode instanceof Assign
+            || $parentNode instanceof ArrayItem
+            || $parentNode instanceof Param
+            || $parentNode instanceof Const_
+            || $parentNode instanceof PropertyProperty
         ;
     }
 
@@ -104,7 +120,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         if ($this->prefix === $stringName->getFirst()) {
             $newStringName = $stringName;
         // Check if the class can be prefixed: class from the global namespace
-        } elseif ($this->reflector->isClassInternal($stringName->toString())
+        } elseif (
+            $this->reflector->isClassInternal($stringName->toString())
+            || 1 === count($stringName->parts)
         ) {
             $newStringName = $stringName;
         } else {
