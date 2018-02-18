@@ -283,49 +283,49 @@ namespace Humbug\Pi;
 
 use Humbug\Foo;
 use ArrayIterator;
-function foo() : \void
+function foo() : void
 {
 }
-function foo() : \bool
+function foo() : bool
 {
 }
-function foo() : ?\bool
+function foo() : ?bool
 {
 }
-function foo() : \int
+function foo() : int
 {
 }
-function foo() : ?\int
+function foo() : ?int
 {
 }
-function foo() : \float
+function foo() : float
 {
 }
-function foo() : ?\float
+function foo() : ?float
 {
 }
-function foo() : \string
+function foo() : string
 {
 }
-function foo() : ?\string
+function foo() : ?string
 {
 }
-function foo() : \array
+function foo() : array
 {
 }
-function foo() : ?\array
+function foo() : ?array
 {
 }
-function foo() : \iterable
+function foo() : iterable
 {
 }
-function foo() : ?\iterable
+function foo() : ?iterable
 {
 }
-function foo() : \callable
+function foo() : callable
 {
 }
-function foo() : ?\callable
+function foo() : ?callable
 {
 }
 function foo() : \Humbug\Foo
