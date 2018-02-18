@@ -182,7 +182,6 @@ namespace {
     use ArrayIterator;
     
     function foo(): void {}
-    function foo(): null {}
     
     function foo(): bool {}
     function foo(): ?bool {}
@@ -243,88 +242,85 @@ namespace Humbug;
 
 use Humbug\Foo;
 use ArrayIterator;
-function foo() : void
+function foo() : \void
 {
 }
-function foo() : null
+function foo() : \bool
 {
 }
-function foo() : bool
+function foo() : ?\bool
 {
 }
-function foo() : ?bool
+function foo() : \int
 {
 }
-function foo() : int
+function foo() : ?\int
 {
 }
-function foo() : ?int
+function foo() : \float
 {
 }
-function foo() : float
+function foo() : ?\float
 {
 }
-function foo() : ?float
+function foo() : \string
 {
 }
-function foo() : string
+function foo() : ?\string
 {
 }
-function foo() : ?string
+function foo() : \array
 {
 }
-function foo() : array
+function foo() : ?\array
 {
 }
-function foo() : ?array
+function foo() : \iterable
 {
 }
-function foo() : iterable
+function foo() : ?\iterable
 {
 }
-function foo() : ?iterable
+function foo() : \callable
 {
 }
-function foo() : callable
+function foo() : ?\callable
 {
 }
-function foo() : ?callable
+function foo() : \Humbug\Foo
 {
 }
-function foo() : Foo
+function foo() : \Humbug\Foo
 {
 }
-function foo() : \Foo
+function foo() : ?\Humbug\Foo
 {
 }
-function foo() : ?Foo
-{
-}
-function foo() : ?\Foo
-{
-}
-function foo() : ArrayIterator
+function foo() : ?\Humbug\Foo
 {
 }
 function foo() : \ArrayIterator
 {
 }
-function foo() : ?ArrayIterator
+function foo() : \ArrayIterator
 {
 }
 function foo() : ?\ArrayIterator
 {
 }
-function foo() : X\Y
+function foo() : ?\ArrayIterator
 {
 }
-function foo() : \X\Y
+function foo() : \Humbug\X\Y
 {
 }
-function foo() : ?X\Y
+function foo() : \Humbug\X\Y
 {
 }
-function foo() : ?\X\Y
+function foo() : ?\Humbug\X\Y
+{
+}
+function foo() : ?\Humbug\X\Y
 {
 }
 

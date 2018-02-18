@@ -24,8 +24,10 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
 
@@ -84,12 +86,23 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     {
         $parentNode = AppendParentNode::getParent($name);
 
+        if ($parentNode instanceof NullableType) {
+            if (false === AppendParentNode::hasParent($parentNode)) {
+                return $name;
+            }
+
+            $parentNode = AppendParentNode::getParent($parentNode);
+        }
+
+        $x = '';
         if (false === (
                 $parentNode instanceof ConstFetch
                 || $parentNode instanceof ClassConstFetch
                 || $parentNode instanceof Param
                 || $parentNode instanceof FuncCall
                 || $parentNode instanceof StaticCall
+                || $parentNode instanceof Function_
+                || $parentNode instanceof Function_
                 || $parentNode instanceof New_
                 || $parentNode instanceof Class_
                 || $parentNode instanceof Interface_
