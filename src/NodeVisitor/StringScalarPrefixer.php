@@ -27,6 +27,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeVisitorAbstract;
+use function preg_match;
 
 /**
  * Prefixes the string scalar values.
@@ -97,11 +98,15 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             );
         }
 
-        return $parentNode instanceof Assign
-            || $parentNode instanceof ArrayItem
-            || $parentNode instanceof Param
-            || $parentNode instanceof Const_
-            || $parentNode instanceof PropertyProperty
+        return
+            1 === preg_match('/^\\\\*(?:\p{L}+\\\\+)++\p{L}+$/', $node->value)
+            && (
+                $parentNode instanceof Assign
+                || $parentNode instanceof ArrayItem
+                || $parentNode instanceof Param
+                || $parentNode instanceof Const_
+                || $parentNode instanceof PropertyProperty
+            )
         ;
     }
 

@@ -44,6 +44,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Step 3: Build, test, and cleanup](#step-3-build-test-and-cleanup)
 - [Limitations](#limitations)
     - [PSR-0 support](#psr-0-support)
+    - [String values](#string-values)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -413,6 +414,27 @@ PHP-Scoper supports PSR-0 by transforming the configuration into a PSR-4 configu
 However support a case like above would require to scan the file structure which would
 add a significant overhead besides being more complex. As a result PHP-Scoper do not
 support the exotic case above.
+
+
+### String values
+
+PHP-Scoper tries whenever possible to prefix strings as well:
+
+```php
+class_exists('Acme\Foo');
+
+// Will be prefixed into:
+
+\class_exists('Humbug\Acme\Foo');
+```
+
+PHP-Scoper uses a regex to determine if the string is a class name that must be prefixed. But there is
+bound to have confusing cases. For example:
+
+- If you have a plain string `'Acme\Foo'` which has nothing to do with a class, PHP-Parser will not be
+  able to tell and will prefix it
+- Classes belonging to the global scope: `'Acme_Foo'`, because there is no way to know if it is a class
+  name or a random string.
 
 
 ## Contributing

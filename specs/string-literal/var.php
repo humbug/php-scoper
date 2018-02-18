@@ -28,6 +28,8 @@ $x = '\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
+$regex = '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
+
 ----
 <?php
 
@@ -37,6 +39,7 @@ $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$regex = '%if \\(defined\\(\\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
 
 PHP
     ,
