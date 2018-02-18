@@ -40,7 +40,7 @@ return [
         Finder::class,
     ],
     'patchers' => [
-        function (string $filePath, string $prefix, string $content): string {
+        function (string $filePath, string $prefix, string $contents): string {
             //
             // PHP-Parser patch
             //
@@ -49,7 +49,7 @@ return [
                 return preg_replace(
                     '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%',
                     'if (defined($name = \''.$prefix.'\\\\\\\\PhpParser\\\\\\\\Parser\\\\\\\\Tokens',
-                    $content
+                    $contents
                 );
             }
 
@@ -59,16 +59,16 @@ return [
                 return preg_replace(
                     '%rtrim\(get_class\(\$this\), \'_\'\), 15\)%',
                     sprintf('rtrim(get_class($this), \'_\'), %d)', $length),
-                    $content
+                    $contents
                 );
             }
 
-            return $content;
+            return $contents;
         },
-        function (string $filePath, string $prefix, string $content): string {
+        function (string $filePath, string $prefix, string $contents): string {
             $finderClass = sprintf('\%s\%s', $prefix, Finder::class);
 
-            return str_replace($finderClass, '\\'.Finder::class, $content);
+            return str_replace($finderClass, '\\'.Finder::class, $contents);
         },
     ],
 ];

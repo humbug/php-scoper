@@ -20,22 +20,22 @@ namespace Humbug\PhpScoper\Scoper\Composer;
 final class AutoloadPrefixer
 {
     /**
-     * @param array  $content Decoded JSON
+     * @param array  $contents Decoded JSON
      * @param string $prefix
      *
      * @return array Prefixed decoded JSON
      */
-    public static function prefixPackageAutoloads(array $content, string $prefix): array
+    public static function prefixPackageAutoloads(array $contents, string $prefix): array
     {
-        if (isset($content['autoload'])) {
-            $content['autoload'] = self::prefixAutoloads($content['autoload'], $prefix);
+        if (isset($contents['autoload'])) {
+            $contents['autoload'] = self::prefixAutoloads($contents['autoload'], $prefix);
         }
 
-        if (isset($content['autoload-dev'])) {
-            $content['autoload-dev'] = self::prefixAutoloads($content['autoload-dev'], $prefix);
+        if (isset($contents['autoload-dev'])) {
+            $contents['autoload-dev'] = self::prefixAutoloads($contents['autoload-dev'], $prefix);
         }
 
-        return $content;
+        return $contents;
     }
 
     private static function prefixAutoloads(array $autoload, string $prefix): array
