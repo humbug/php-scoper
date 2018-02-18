@@ -31,13 +31,20 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 
 - [Installation](#installation)
 - [Usage](#usage)
+    - [PHAR (preferred)](#phar-preferred)
+    - [Composer](#composer)
 - [Configuration](#configuration)
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Global Namespace Whitelisting](#global-namespace-whitelisting)
     - [Whitelist](#whitelist)
-- [Contributing](#contributing)
 - [Building A Scoped PHAR](#building-a-scoped-phar)
+    - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
+    - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
+    - [Step 3: Build, test, and cleanup](#step-3-build-test-and-cleanup)
+- [Limitations](#limitations)
+    - [PSR-0 support](#psr-0-support)
+- [Contributing](#contributing)
 - [Credits](#credits)
 
 
@@ -294,11 +301,6 @@ For whitelist to work, you then require to load `vendor/scoper-autoload.php`
 instead of the traditional `vendor/autoload.php`.
 
 
-## Contributing
-
-[Contribution Guide](CONTRIBUTING.md)
-
-
 ## Building A Scoped PHAR
 
 This is a brief run through of the basic steps encoded in PHP-Scoper's own
@@ -371,6 +373,51 @@ re-install dev dependencies removed during Step 1:
 ```bash
 composer install
 ``` 
+
+
+## Limitations
+
+### PSR-0 support
+
+With the following `composer.json` autoloading configuration:
+
+```json
+{
+    "autoload": {
+        "psr-0": {
+            "Foo": "src/"
+        }
+    }
+}
+```
+
+If following PSR-0, with the expected file structure is:
+
+```
+src/
+    Foo/
+        A.php
+        B.php
+```
+
+However this also works:
+
+```
+src/
+    Foo.php
+```
+
+This is unexpected as `Foo` is a file rather than a directory.
+
+PHP-Scoper supports PSR-0 by transforming the configuration into a PSR-4 configuration.
+However support a case like above would require to scan the file structure which would
+add a significant overhead besides being more complex. As a result PHP-Scoper do not
+support the exotic case above.
+
+
+## Contributing
+
+[Contribution Guide](CONTRIBUTING.md)
 
 
 ## Credits
