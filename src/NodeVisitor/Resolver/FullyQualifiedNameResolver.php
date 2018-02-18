@@ -18,12 +18,11 @@ use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\NameStmtPrefixer;
-use function in_array;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\ClassMethod;
+use function in_array;
 
 /**
  * Attempts to resolve the node name into a fully qualified node. Returns a valid (non fully-qualified) name node on

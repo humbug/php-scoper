@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
-use function is_string;
 use PhpParser\Node;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitorAbstract;
+use function is_string;
 
 /**
  * ```
