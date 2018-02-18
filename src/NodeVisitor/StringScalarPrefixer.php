@@ -91,11 +91,11 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         ) {
             $funcNode = AppendParentNode::getParent($parentNode);
 
-            return (
+            return
                 $funcNode instanceof FuncCall
                 && $funcNode->name instanceof Name
                 && false === $funcNode->hasAttribute('whitelist_class_alias')
-            );
+            ;
         }
 
         return

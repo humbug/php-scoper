@@ -41,5 +41,4 @@ class Foo
 
 PHP
     ,
-
 ];

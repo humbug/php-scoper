@@ -41,7 +41,7 @@ final class Reflector
     {
         try {
             return $this->classReflector->reflect($name)->isInternal();
-        } catch (IdentifierNotFound|InvalidIdentifierName $exception) {
+        } catch (IdentifierNotFound | InvalidIdentifierName $exception) {
             return false;
         }
     }
