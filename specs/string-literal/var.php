@@ -28,8 +28,6 @@ $x = '\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
-$regex = '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
-
 ----
 <?php
 
@@ -39,7 +37,23 @@ $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+
+PHP
+    ,
+
+    'Invalid FQCN strings: do not prefix them' => <<<'PHP'
+<?php
+
+$regex = '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
+$shortcuts = preg_split('{(\|)-?}', ltrim($shortcut, '-'));
+
+----
+<?php
+
+namespace Humbug;
+
 $regex = '%if \\(defined\\(\\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
+$shortcuts = \preg_split('{(\\|)-?}', \ltrim($shortcut, '-'));
 
 PHP
     ,

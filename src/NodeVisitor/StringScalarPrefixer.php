@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\NodeVisitor;
 
 use Humbug\PhpScoper\Reflector;
+use function is_string;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -28,6 +29,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeVisitorAbstract;
 use function preg_match;
+use TypeError;
 
 /**
  * Prefixes the string scalar values.
@@ -80,7 +82,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function shouldPrefixScalar(Node $node): bool
     {
-        if (false === ($node instanceof String_ && AppendParentNode::hasParent($node))) {
+        if (false === ($node instanceof String_ && AppendParentNode::hasParent($node) && is_string($node->value))
+            || 1 !== preg_match('/^\\\\*(?:\p{L}+\\\\+)++\p{L}+$/', $node->value)
+        ) {
             return false;
         }
         /** @var String_ $node */
@@ -98,15 +102,11 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             ;
         }
 
-        return
-            1 === preg_match('/^\\\\*(?:\p{L}+\\\\+)++\p{L}+$/', $node->value)
-            && (
-                $parentNode instanceof Assign
-                || $parentNode instanceof ArrayItem
-                || $parentNode instanceof Param
-                || $parentNode instanceof Const_
-                || $parentNode instanceof PropertyProperty
-            )
+        return $parentNode instanceof Assign
+            || $parentNode instanceof ArrayItem
+            || $parentNode instanceof Param
+            || $parentNode instanceof Const_
+            || $parentNode instanceof PropertyProperty
         ;
     }
 
