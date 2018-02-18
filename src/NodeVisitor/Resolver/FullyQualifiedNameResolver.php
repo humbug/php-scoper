@@ -17,10 +17,13 @@ namespace Humbug\PhpScoper\NodeVisitor\Resolver;
 use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
 use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
+use Humbug\PhpScoper\NodeVisitor\NameStmtPrefixer;
+use function in_array;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\ClassMethod;
 
 /**
  * Attempts to resolve the node name into a fully qualified node. Returns a valid (non fully-qualified) name node on
@@ -62,6 +65,10 @@ final class FullyQualifiedNameResolver
 
         if (null === $namespace) {
             return new FullyQualified($name, $name->getAttributes());
+        }
+
+        if (in_array((string) $name, NameStmtPrefixer::PHP_FUNCTION_KEYWORDS, true)) {
+            return $name;
         }
 
         $parentNode = AppendParentNode::getParent($name);

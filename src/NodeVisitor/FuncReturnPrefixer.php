@@ -14,22 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\NodeVisitor;
 
-use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
-use Humbug\PhpScoper\Reflector;
 use function is_string;
 use PhpParser\Node;
-use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
-use PhpParser\Node\Param;
-use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
-use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -52,7 +41,7 @@ final class FuncReturnPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Function_)) {
+        if (false === ($node instanceof Function_ || $node instanceof ClassMethod)) {
             return $node;
         }
 

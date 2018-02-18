@@ -93,7 +93,7 @@ class A
         self::who();
         static::who();
     }
-    public function getName() : string
+    public function getName() : \string
     {
         return $this->name;
     }
@@ -204,7 +204,7 @@ class A
         self::who();
         static::who();
     }
-    public function getName() : string
+    public function getName() : \string
     {
         return $this->name;
     }
