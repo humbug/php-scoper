@@ -14,24 +14,32 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Misc',
+        'title' => 'String literal used as a method argument',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
     ],
 
-    <<<'PHP'
+    'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
 <?php
 
-preg_split('{(\|)-?}', ltrim($shortcut, '-'));
+class Foo {
+    function foo($x = 'Symfony\\Component\\Yaml\\Yaml') {}
+}
 
 ----
 <?php
 
 namespace Humbug;
 
-\preg_split('{(\\|)-?}', \ltrim($shortcut, '-'));
+class Foo
+{
+    function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml')
+    {
+    }
+}
 
 PHP
     ,
+
 ];
