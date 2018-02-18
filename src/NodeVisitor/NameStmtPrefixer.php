@@ -24,8 +24,11 @@ use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
 
@@ -44,7 +47,7 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class NameStmtPrefixer extends NodeVisitorAbstract
 {
-    private const PHP_FUNCTION_KEYWORDS = [
+    public const PHP_FUNCTION_KEYWORDS = [
         'self',
         'static',
         'parent',
@@ -84,12 +87,22 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     {
         $parentNode = AppendParentNode::getParent($name);
 
+        if ($parentNode instanceof NullableType) {
+            if (false === AppendParentNode::hasParent($parentNode)) {
+                return $name;
+            }
+
+            $parentNode = AppendParentNode::getParent($parentNode);
+        }
+
         if (false === (
                 $parentNode instanceof ConstFetch
                 || $parentNode instanceof ClassConstFetch
                 || $parentNode instanceof Param
                 || $parentNode instanceof FuncCall
                 || $parentNode instanceof StaticCall
+                || $parentNode instanceof Function_
+                || $parentNode instanceof ClassMethod
                 || $parentNode instanceof New_
                 || $parentNode instanceof Class_
                 || $parentNode instanceof Interface_
@@ -106,8 +119,12 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof New_
                 || $parentNode instanceof Param
             )
-            && in_array((string) $name, self::PHP_FUNCTION_KEYWORDS)
+            && in_array((string) $name, self::PHP_FUNCTION_KEYWORDS, true)
         ) {
+            return $name;
+        }
+
+        if ($parentNode instanceof ConstFetch && 'null' === (string) $name) {
             return $name;
         }
 
@@ -148,6 +165,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             )
         ) {
             return $resolvedName;
+        }
+
+        if ('self' === (string) $resolvedName && $parentNode instanceof ClassMethod) {
+            return $name;
         }
 
         return FullyQualified::concat(
