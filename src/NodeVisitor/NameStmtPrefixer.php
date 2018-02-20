@@ -20,6 +20,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
@@ -108,6 +109,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof Class_
                 || $parentNode instanceof Interface_
                 || $parentNode instanceof Catch_
+                || $parentNode instanceof Instanceof_
             )
         ) {
             return $name;
