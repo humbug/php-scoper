@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\NodeVisitor;
 
 use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
+use function in_array;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -122,6 +123,8 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof ClassConstFetch
                 || $parentNode instanceof New_
                 || $parentNode instanceof Param
+                || $parentNode instanceof Catch_
+                || $parentNode instanceof Instanceof_
             )
             && in_array((string) $name, self::PHP_FUNCTION_KEYWORDS, true)
         ) {

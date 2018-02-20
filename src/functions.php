@@ -211,20 +211,11 @@ function deep_clone($node)
     return unserialize(serialize($node));
 }
 
-function iterables_to_iterator(iterable ...$iterables): Iterator
+function chain(iterable ...$iterables): Iterator
 {
-    $iterator = new AppendIterator();
-
     foreach ($iterables as $iterable) {
-        if (is_array($iterable)) {
-            $iterator->append(new ArrayIterator($iterable));
-        } elseif ($iterable instanceof IteratorAggregate) {
-            $iterator->append($iterable->getIterator());
-        } else {
-            /* @var Iterator $iterable */
-            $iterator->append($iterable);
+        foreach ($iterable as $key => $value) {
+            yield $key => $value;
         }
     }
-
-    return $iterator;
 }

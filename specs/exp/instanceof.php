@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Miscellaneous',
+        'title' => 'Instanceof expressions',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -90,6 +90,47 @@ namespace Humbug\Acme;
 
 $x = new \Humbug\Acme\Foo();
 $x instanceof \Humbug\Acme\Foo;
+
+PHP
+    ,
+
+    'Instance of with ternary' => <<<'PHP'
+<?php
+
+namespace Acme;
+
+$file = new \stdClass();
+
+$file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
+
+----
+<?php
+
+namespace Humbug\Acme;
+
+$file = new \stdClass();
+$file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
+
+PHP
+    ,
+
+    'Instance of with special keyword' => <<<'PHP'
+<?php
+
+namespace Acme;
+
+$file instanceof static;
+$file instanceof self;
+$file instanceof parent;
+
+----
+<?php
+
+namespace Humbug\Acme;
+
+$file instanceof static;
+$file instanceof self;
+$file instanceof parent;
 
 PHP
     ,
