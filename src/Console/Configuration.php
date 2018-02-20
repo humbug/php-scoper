@@ -18,8 +18,9 @@ use Closure;
 use InvalidArgumentException;
 use Iterator;
 use RuntimeException;
+use SplFileInfo;
 use Symfony\Component\Finder\Finder;
-use function Humbug\PhpScoper\iterables_to_iterator;
+use function Humbug\PhpScoper\chain;
 
 final class Configuration
 {
@@ -70,7 +71,7 @@ final class Configuration
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
-        $filesWithContents = self::retrieveFilesWithContents(iterables_to_iterator($filesFromPaths, ...$finders));
+        $filesWithContents = self::retrieveFilesWithContents(chain($filesFromPaths, ...$finders));
 
         return new self($path, $filesWithContents, $patchers, $whitelist);
     }
@@ -100,7 +101,7 @@ final class Configuration
     public function withPaths(array $paths): self
     {
         $filesWithContents = self::retrieveFilesWithContents(
-            iterables_to_iterator(
+            chain(
                 self::retrieveFilesFromPaths(
                     array_unique($paths)
                 )
@@ -310,14 +311,14 @@ final class Configuration
     {
         return array_reduce(
             iterator_to_array($files),
-            function (array $files, $fileInfo): array {
-                $file = (string) $fileInfo;
+            function (array $files, SplFileInfo $fileInfo): array {
+                $file = $fileInfo->getRealPath();
 
-                if (false === file_exists($file)) {
+                if (false === $file) {
                     throw new RuntimeException(
                         sprintf(
                             'Could not find the file "%s".',
-                            $file
+                            (string) $fileInfo
                         )
                     );
                 }

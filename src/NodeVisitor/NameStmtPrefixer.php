@@ -20,6 +20,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
@@ -32,6 +33,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
+use function in_array;
 
 /**
  * ```
@@ -108,6 +110,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof Class_
                 || $parentNode instanceof Interface_
                 || $parentNode instanceof Catch_
+                || $parentNode instanceof Instanceof_
             )
         ) {
             return $name;
@@ -120,6 +123,8 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof ClassConstFetch
                 || $parentNode instanceof New_
                 || $parentNode instanceof Param
+                || $parentNode instanceof Catch_
+                || $parentNode instanceof Instanceof_
             )
             && in_array((string) $name, self::PHP_FUNCTION_KEYWORDS, true)
         ) {

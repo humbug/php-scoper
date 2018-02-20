@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Miscellaneous',
+        'title' => 'Catch expressions',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -149,6 +149,28 @@ use Humbug\X\FooException;
 try {
     echo "foo";
 } catch (\Humbug\X\FooException|\Throwable $t) {
+}
+
+PHP
+    ,
+
+    'catch with special keywords' => <<<'PHP'
+<?php
+
+namespace Acme;
+
+try {
+    echo "foo";
+} catch (self | parent $t) {
+}
+----
+<?php
+
+namespace Humbug\Acme;
+
+try {
+    echo "foo";
+} catch (self|parent $t) {
 }
 
 PHP
