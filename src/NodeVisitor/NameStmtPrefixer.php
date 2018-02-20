@@ -26,6 +26,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
@@ -106,6 +107,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof New_
                 || $parentNode instanceof Class_
                 || $parentNode instanceof Interface_
+                || $parentNode instanceof Catch_
             )
         ) {
             return $name;
