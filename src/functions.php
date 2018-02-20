@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use AppendIterator;
-use ArrayIterator;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
@@ -29,7 +27,6 @@ use Humbug\PhpScoper\Scoper\TraverserFactory;
 use Humbug\SelfUpdate\Exception\RuntimeException as SelfUpdateRuntimeException;
 use Humbug\SelfUpdate\Updater;
 use Iterator;
-use IteratorAggregate;
 use PackageVersions\Versions;
 use PhpParser\Node;
 use PhpParser\Parser;
