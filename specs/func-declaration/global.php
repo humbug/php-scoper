@@ -73,7 +73,7 @@ namespace Humbug\X;
 class Y
 {
 }
-class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+\class_alias('Humbug\\X\\Y', 'X\\Y', \false);
 namespace Humbug;
 
 function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7)
@@ -163,7 +163,7 @@ namespace Humbug\X;
 class Y
 {
 }
-class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+\class_alias('Humbug\\X\\Y', 'X\\Y', \false);
 namespace Humbug;
 
 use Humbug\Foo;
@@ -259,7 +259,7 @@ namespace Humbug\X;
 class Y
 {
 }
-class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+\class_alias('Humbug\\X\\Y', 'X\\Y', \false);
 namespace Humbug;
 
 use Humbug\Foo;

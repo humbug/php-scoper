@@ -223,7 +223,7 @@ namespace Humbug\Foo;
 class Bar
 {
 }
-class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug;
 
 use Humbug\Foo as A;
@@ -261,7 +261,7 @@ namespace Humbug\Foo;
 class Bar
 {
 }
-class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug;
 
 use Humbug\Foo\Bar as A;
@@ -353,7 +353,7 @@ namespace Humbug\Foo;
 class Bar
 {
 }
-class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug;
 
 use Humbug\Foo\Bar as A;

@@ -85,7 +85,7 @@ class A
     {
     }
 }
-class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],
@@ -207,7 +207,7 @@ class A
     {
     }
 }
-class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 class B
 {
     public function b()
@@ -234,7 +234,7 @@ class B
     {
     }
 }
-class_alias('Humbug\\Bar\\B', 'Bar\\B', \false);
+\class_alias('Humbug\\Bar\\B', 'Bar\\B', \false);
 class C
 {
     public function c()

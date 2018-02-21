@@ -151,7 +151,7 @@ namespace Humbug\X\Foo;
 class Bar
 {
 }
-class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
+\class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
 namespace Humbug\A;
 
 use Humbug\X\Foo;

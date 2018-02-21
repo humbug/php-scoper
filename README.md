@@ -45,6 +45,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 - [Limitations](#limitations)
     - [PSR-0 support](#psr-0-support)
     - [String values](#string-values)
+    - [Native functions and constants shadowing](#native-functions-shadowing)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -435,6 +436,41 @@ bound to have confusing cases. For example:
   able to tell and will prefix it
 - Classes belonging to the global scope: `'Acme_Foo'`, because there is no way to know if it is a class
   name or a random string.
+
+
+### Native functions and constants shadowing
+
+In the following example:
+
+```php
+<?php
+
+namespace Foo;
+
+is_array([]);
+
+```
+
+No use statement is used for the function `is_array`. This means that PHP will try to load the function `\Foo\is_array`
+and if fails to do so will fallback on `\is_array` (note that PHP does so only for functions and constants: not classes).
+
+In order to bring some performance optimisation, the call will nonetheless be prefixed in `\is_array`. This *will* break
+your code if you were relying on `\Foo\is_array` instead. This however should be _extremely_ rare, so if that happens
+you have two solutions: use a [patcher](#patchers) or simpler remove any ambiguity by making use of a use statement
+(which is unneeded outside of the context of prefixing your code):
+
+```php
+<?php
+
+namespace Foo;
+
+use function Foo\is_array;
+
+is_array([]);
+
+```
+
+The situation is exactly the same for constants.
 
 
 ## Contributing

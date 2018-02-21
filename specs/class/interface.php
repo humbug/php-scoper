@@ -114,7 +114,7 @@ interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
 {
     public function a();
 }
-class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],
