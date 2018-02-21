@@ -1,0 +1,34 @@
+array(
+    0: rser_Node_Stmt_Function(
+        byRef: false
+        name: test
+        params: array(
+            0: rser_Node_Param(
+                type: null
+                byRef: false
+                variadic: false
+                name: foo
+                default: null
+            )
+        )
+        returnType: null
+        stmts: array(
+            0: rser_Node_Expr_FuncCall(
+                name: rser_Node_Name(
+                    parts: array(
+                        0: var_dump
+                    )
+                )
+                args: array(
+                    0: rser_Node_Arg(
+                        value: rser_Node_Expr_Variable(
+                            name: foo
+                        )
+                        byRef: false
+                        unpack: false
+                    )
+                )
+            )
+        )
+    )
+)
