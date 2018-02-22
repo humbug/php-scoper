@@ -199,28 +199,28 @@ composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
 vendor-bin/box/composer.lock: composer.lock
-	composer install
+	@echo fixtures/set011/composer.lock is not up to date.
 
 fixtures/set005/composer.lock: fixtures/set005/composer.json
-	composer update
+	@echo fixtures/set005/composer.lock is not up to date.
 
 fixtures/set011/composer.lock: fixtures/set011/composer.json
-	composer update
+	@echo fixtures/set011/composer.lock is not up to date.
 
 fixtures/set015/composer.lock: fixtures/set015/composer.json
-	composer update
+	@echo fixtures/set015/composer.lock is not up to date.
 
 fixtures/set016-symfony-finder/composer.lock: fixtures/set016-symfony-finder/composer.json
-	composer update
+	@echo fixtures/set016-symfony-finder/composer.lock is not up to date.
 
 fixtures/set017-symfony-di/composer.lock: fixtures/set017-symfony-di/composer.json
-	composer update
+	@echo fixtures/set017-symfony-di/composer.lock is not up to date.
 
 fixtures/set018-nikic-parser/composer.lock: fixtures/set018-nikic-parser/composer.json
-	composer update
+	@echo fixtures/set018-nikic-parser/composer.lock is not up to date.
 
 fixtures/set019-symfony-console/composer.lock: fixtures/set019-symfony-console/composer.json
-	composer update
+	@echo fixtures/set019-symfony-console/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
 	$(MAKE) build
