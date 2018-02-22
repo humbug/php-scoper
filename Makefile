@@ -149,6 +149,13 @@ e2e_019: bin/php-scoper.phar fixtures/set019-symfony-console/vendor
 	php build/set019-symfony-console/main.php > build/set019-symfony-console/output
 	diff fixtures/set019-symfony-console/expected-output build/set019-symfony-console/output
 
+e2e_020:	## Run end-to-end tests for the fixture set 020: Infection
+e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection --prefix=_Prefixed --output-dir=../../build/set020-infection --force --no-interaction --stop-on-failure
+	composer --working-dir=build/set020-infection dump-autoload
+
+	php build/set020-infection/vendor/bin/infection
+
 tb:		## Run Blackfire profiling
 tb: vendor
 	rm -rf build
@@ -199,6 +206,9 @@ fixtures/set018-nikic-parser/vendor: fixtures/set018-nikic-parser/composer.lock
 fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer.lock
 	composer --working-dir=fixtures/set019-symfony-console install
 
+fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
+	composer --working-dir=fixtures/set020-infection install
+
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
@@ -225,6 +235,9 @@ fixtures/set018-nikic-parser/composer.lock: fixtures/set018-nikic-parser/compose
 
 fixtures/set019-symfony-console/composer.lock: fixtures/set019-symfony-console/composer.json
 	@echo fixtures/set019-symfony-console/composer.lock is not up to date.
+
+fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
+	@echo fixtures/set020-infection/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
 	$(MAKE) build

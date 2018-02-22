@@ -1,0 +1,5 @@
+{
+    "require": {
+        "infection/infection": "^0.7.1"
+    }
+}
