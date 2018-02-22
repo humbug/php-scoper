@@ -57,6 +57,10 @@ tc:		## Run PHPUnit tests with test coverage
 tc: vendor/bin/phpunit
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
+tm:		## Run Infection (Mutation Testing)
+tm: vendor/bin/phpunit
+	vendor/bin/infection
+
 e2e:		## Run end-to-end tests
 e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019
 
