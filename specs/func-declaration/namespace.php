@@ -84,7 +84,7 @@ namespace Humbug\X;
 class Y
 {
 }
-class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+\class_alias('Humbug\\X\\Y', 'X\\Y', \false);
 namespace Humbug\Pi\Foo;
 
 class Bar
@@ -175,7 +175,7 @@ namespace Humbug\X;
 class Y
 {
 }
-class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+\class_alias('Humbug\\X\\Y', 'X\\Y', \false);
 namespace Humbug\Pi\X;
 
 class Y
@@ -278,7 +278,7 @@ namespace Humbug\X;
 class Y
 {
 }
-class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+\class_alias('Humbug\\X\\Y', 'X\\Y', \false);
 namespace Humbug\Pi;
 
 use Humbug\Foo;

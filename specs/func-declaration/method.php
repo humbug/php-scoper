@@ -86,7 +86,7 @@ namespace Humbug\X;
 class Y
 {
 }
-class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+\class_alias('Humbug\\X\\Y', 'X\\Y', \false);
 namespace Humbug;
 
 class Main
@@ -189,7 +189,7 @@ namespace Humbug\X;
 class Y
 {
 }
-class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+\class_alias('Humbug\\X\\Y', 'X\\Y', \false);
 namespace Humbug;
 
 use Humbug\Foo;

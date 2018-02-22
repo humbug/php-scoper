@@ -91,7 +91,7 @@ abstract class A
     }
     public abstract function b();
 }
-class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],
@@ -154,7 +154,7 @@ abstract class WA
     {
     }
 }
-class_alias('Humbug\\Foo\\WA', 'Foo\\WA', \false);
+\class_alias('Humbug\\Foo\\WA', 'Foo\\WA', \false);
 namespace Humbug\Bar;
 
 abstract class B
@@ -169,7 +169,7 @@ abstract class WB
     {
     }
 }
-class_alias('Humbug\\Bar\\WB', 'Bar\\WB', \false);
+\class_alias('Humbug\\Bar\\WB', 'Bar\\WB', \false);
 namespace Humbug;
 
 abstract class C

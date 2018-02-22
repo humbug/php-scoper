@@ -135,7 +135,7 @@ namespace Humbug\Symfony\Component\Yaml;
 class Yaml
 {
 }
-class_alias('Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Symfony\\Component\\Yaml\\Yaml', \false);
+\class_alias('Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Symfony\\Component\\Yaml\\Yaml', \false);
 namespace Humbug;
 
 \Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);

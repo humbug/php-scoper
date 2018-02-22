@@ -151,27 +151,28 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             }
         }
 
-        if ($parentNode instanceof ConstFetch
-            && (
-                $this->reflector->isConstantInternal($resolvedName->toString())
-                // Constants have a fallback autoloading so we cannot prefix them when the name is ambiguous
-                // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
-                || false === ($resolvedName instanceof FullyQualified)
-            )
-        ) {
-            return $resolvedName;
+        // Constants have a fallback autoloading so we cannot prefix them when the name is ambiguous
+        // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
+        if ($parentNode instanceof ConstFetch) {
+            if ($this->reflector->isConstantInternal($resolvedName->toString())) {
+                return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
+            }
+
+            if (false === ($resolvedName instanceof FullyQualified)) {
+                return $resolvedName;
+            }
         }
 
-        if (
-            $parentNode instanceof FuncCall
-            && (
-                $this->reflector->isFunctionInternal($resolvedName->toString())
-                // Functions have a fallback autoloading so we cannot prefix them when the name is ambiguous
-                // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
-                || false === ($resolvedName instanceof FullyQualified)
-            )
-        ) {
-            return $resolvedName;
+        // Functions have a fallback autoloading so we cannot prefix them when the name is ambiguous
+        // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
+        if ($parentNode instanceof FuncCall) {
+            if ($this->reflector->isFunctionInternal($resolvedName->toString())) {
+                return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
+            }
+
+            if (false === ($resolvedName instanceof FullyQualified)) {
+                return $resolvedName;
+            }
         }
 
         if ('self' === (string) $resolvedName && $parentNode instanceof ClassMethod) {

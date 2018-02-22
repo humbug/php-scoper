@@ -197,7 +197,7 @@ class A
     }
     public static function who()
     {
-        echo __METHOD__ . PHP_EOL;
+        echo __METHOD__ . \PHP_EOL;
     }
     public static function test()
     {
@@ -227,7 +227,7 @@ class B extends \Humbug\Foo\A
     }
     public static function who()
     {
-        echo __METHOD__ . PHP_EOL;
+        echo __METHOD__ . \PHP_EOL;
     }
 }
 namespace Humbug;

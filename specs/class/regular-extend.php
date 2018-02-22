@@ -106,7 +106,7 @@ class A
 class B extends \Humbug\Foo\A
 {
 }
-class_alias('Humbug\\Foo\\B', 'Foo\\B', \false);
+\class_alias('Humbug\\Foo\\B', 'Foo\\B', \false);
 
 PHP
         ],

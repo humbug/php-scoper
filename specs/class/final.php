@@ -70,7 +70,7 @@ namespace Humbug\Foo;
 final class A
 {
 }
-class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
         ],

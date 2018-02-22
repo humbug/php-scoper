@@ -44,21 +44,12 @@ return [
             //
             // PHP-Parser patch
             //
-
-            if ($filePath === __DIR__.'/vendor/nikic/php-parser/lib/PhpParser/Lexer.php') {
-                return preg_replace(
-                    '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%',
-                    'if (defined($name = \''.$prefix.'\\\\\\\\PhpParser\\\\\\\\Parser\\\\\\\\Tokens',
-                    $contents
-                );
-            }
-
             if ($filePath === realpath(__DIR__.'/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php')) {
                 $length = 15 + strlen($prefix) + 1;
 
                 return preg_replace(
-                    '%rtrim\(get_class\(\$this\), \'_\'\), 15\)%',
-                    sprintf('rtrim(get_class($this), \'_\'), %d)', $length),
+                    '%strpos\((.+?)\) \+ 15%',
+                    sprintf('strpos($1) + %d', $length),
                     $contents
                 );
             }

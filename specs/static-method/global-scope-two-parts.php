@@ -104,7 +104,7 @@ namespace Humbug\Foo;
 class Bar
 {
 }
-class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug;
 
 \Humbug\Foo\Bar::main();
@@ -137,7 +137,7 @@ namespace Humbug\Foo;
 class Bar
 {
 }
-class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
 namespace Humbug;
 
 \Humbug\Foo\Bar::main();
