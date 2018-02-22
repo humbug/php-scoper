@@ -212,6 +212,7 @@ JSON
 }
 JSON
         ];
+
         yield 'psr zero and four with the same namespace get merged' => [
             <<<'JSON'
 {
@@ -239,6 +240,7 @@ JSON
 }
 JSON
         ];
+
         yield 'psr zero and four get merged if either of them have multiple entries' => [
             <<<'JSON'
 {
@@ -290,6 +292,7 @@ JSON
 }
 JSON
         ];
+
         yield 'psr zero gets converted to psr4' => [
             <<<'JSON'
 {
@@ -311,6 +314,7 @@ JSON
 }
 JSON
         ];
+
         yield 'psr zero and four get merged when both are arrays' => [
             <<<'JSON'
 {
@@ -342,6 +346,27 @@ JSON
                 "internal\/Bar\/\/"
             ]
         }
+    }
+}
+JSON
+        ];
+
+        yield [
+            <<<'JSON'
+{
+    "autoload": {
+        "classmap": ["src"]
+    }
+}
+
+JSON
+            ,
+            <<<'JSON'
+{
+    "autoload": {
+        "classmap": [
+            "src"
+        ]
     }
 }
 JSON

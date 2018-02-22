@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
+use function array_key_exists;
+
 /**
  * @private
  */
@@ -40,10 +42,12 @@ final class AutoloadPrefixer
 
     private static function prefixAutoloads(array $autoload, string $prefix): array
     {
-        $autoload['psr-4'] = isset($autoload['psr-4']) ? $autoload['psr-4'] : [];
+        if (false === array_key_exists('psr-4', $autoload) && false === array_key_exists('psr-0', $autoload)) {
+            return $autoload;
+        }
 
         if (isset($autoload['psr-0'])) {
-            $autoload['psr-4'] = self::mergePSR0And4($autoload['psr-0'], $autoload['psr-4']);
+            $autoload['psr-4'] = self::mergePSR0And4($autoload['psr-0'], $autoload['psr-4'] ?? []);
         }
         unset($autoload['psr-0']);
 
