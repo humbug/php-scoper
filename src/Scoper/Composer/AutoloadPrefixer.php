@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 namespace Humbug\PhpScoper\Scoper\Composer;
+
 use function array_key_exists;
 
 /**
