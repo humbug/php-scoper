@@ -58,7 +58,7 @@ tc: vendor/bin/phpunit
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019
 
 e2e_004:	## Run end-to-end tests for the fixture set 004: source code case
 e2e_004: bin/php-scoper.phar
@@ -113,6 +113,38 @@ e2e_015: bin/php-scoper.phar fixtures/set015/vendor
 	php build/set015/bin/greet.phar > build/set015/output
 	diff fixtures/set015/expected-output build/set015/output
 
+e2e_016:	## Run end-to-end tests for the fixture set 016: Symfony Finder
+e2e_016: bin/php-scoper.phar fixtures/set016-symfony-finder/vendor
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set016-symfony-finder --output-dir=../../build/set016-symfony-finder --force --no-config --no-interaction --stop-on-failure
+	composer --working-dir=build/set016-symfony-finder dump-autoload
+
+	php build/set016-symfony-finder/main.php > build/set016-symfony-finder/output
+	diff fixtures/set016-symfony-finder/expected-output build/set016-symfony-finder/output
+
+e2e_017:	## Run end-to-end tests for the fixture set 017: Symfony DependencyInjection
+e2e_017: bin/php-scoper.phar fixtures/set017-symfony-di/vendor
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set017-symfony-di --output-dir=../../build/set017-symfony-di --force --no-config --no-interaction --stop-on-failure
+	composer --working-dir=build/set017-symfony-di dump-autoload
+
+	php build/set017-symfony-di/main.php > build/set017-symfony-di/output
+	diff fixtures/set017-symfony-di/expected-output build/set017-symfony-di/output
+
+e2e_018:	## Run end-to-end tests for the fixture set 018: nikic PHP-Parser
+e2e_018: bin/php-scoper.phar fixtures/set018-nikic-parser/vendor
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set018-nikic-parser --prefix=_Prefixed --output-dir=../../build/set018-nikic-parser --force --no-config --no-interaction --stop-on-failure
+	composer --working-dir=build/set018-nikic-parser dump-autoload
+
+	php build/set018-nikic-parser/main.php > build/set018-nikic-parser/output
+	diff fixtures/set018-nikic-parser/expected-output build/set018-nikic-parser/output
+
+e2e_019:	## Run end-to-end tests for the fixture set 019: Symfony Console
+e2e_019: bin/php-scoper.phar fixtures/set019-symfony-console/vendor
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set019-symfony-console --prefix=_Prefixed --output-dir=../../build/set019-symfony-console --force --no-config --no-interaction --stop-on-failure
+	composer --working-dir=build/set019-symfony-console dump-autoload
+
+	php build/set019-symfony-console/main.php > build/set019-symfony-console/output
+	diff fixtures/set019-symfony-console/expected-output build/set019-symfony-console/output
+
 tb:		## Run Blackfire profiling
 tb: vendor
 	rm -rf build
@@ -151,11 +183,23 @@ fixtures/set011/vendor: fixtures/set011/vendor
 fixtures/set015/vendor: fixtures/set015/composer.lock
 	composer --working-dir=fixtures/set015 install
 
+fixtures/set016-symfony-finder/vendor: fixtures/set016-symfony-finder/composer.lock
+	composer --working-dir=fixtures/set016-symfony-finder install
+
+fixtures/set017-symfony-di/vendor: fixtures/set017-symfony-di/composer.lock
+	composer --working-dir=fixtures/set017-symfony-di install
+
+fixtures/set018-nikic-parser/vendor: fixtures/set018-nikic-parser/composer.lock
+	composer --working-dir=fixtures/set018-nikic-parser install
+
+fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer.lock
+	composer --working-dir=fixtures/set019-symfony-console install
+
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
 vendor-bin/box/composer.lock: composer.lock
-	composer install
+	@echo fixtures/set011/composer.lock is not up to date.
 
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
@@ -164,7 +208,19 @@ fixtures/set011/composer.lock: fixtures/set011/composer.json
 	@echo fixtures/set011/composer.lock is not up to date.
 
 fixtures/set015/composer.lock: fixtures/set015/composer.json
-	@echo fixtures/set005/composer.lock is not up to date.
+	@echo fixtures/set015/composer.lock is not up to date.
+
+fixtures/set016-symfony-finder/composer.lock: fixtures/set016-symfony-finder/composer.json
+	@echo fixtures/set016-symfony-finder/composer.lock is not up to date.
+
+fixtures/set017-symfony-di/composer.lock: fixtures/set017-symfony-di/composer.json
+	@echo fixtures/set017-symfony-di/composer.lock is not up to date.
+
+fixtures/set018-nikic-parser/composer.lock: fixtures/set018-nikic-parser/composer.json
+	@echo fixtures/set018-nikic-parser/composer.lock is not up to date.
+
+fixtures/set019-symfony-console/composer.lock: fixtures/set019-symfony-console/composer.json
+	@echo fixtures/set019-symfony-console/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
 	$(MAKE) build
