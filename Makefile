@@ -151,7 +151,7 @@ e2e_019: bin/php-scoper.phar fixtures/set019-symfony-console/vendor
 
 e2e_020:	## Run end-to-end tests for the fixture set 020: Infection
 e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection --prefix=_Prefixed --output-dir=../../build/set020-infection --force --no-interaction --stop-on-failure
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection --output-dir=../../build/set020-infection --force --no-interaction --stop-on-failure
 	composer --working-dir=build/set020-infection dump-autoload
 
 	php build/set020-infection/vendor/infection/infection/bin/infection

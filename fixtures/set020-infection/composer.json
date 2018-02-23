@@ -1,5 +1,6 @@
 {
     "require": {
-        "infection/infection": "^0.7.1"
+        "infection/infection": "^0.7.1",
+        "nikic/php-parser": "v3.1.4"
     }
 }
