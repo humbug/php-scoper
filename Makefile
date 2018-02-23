@@ -59,7 +59,7 @@ tc: vendor/bin/phpunit
 
 tm:		## Run Infection (Mutation Testing)
 tm: vendor/bin/phpunit
-	vendor/bin/infection
+	$(MAKE) e2e_020
 
 e2e:		## Run end-to-end tests
 e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020

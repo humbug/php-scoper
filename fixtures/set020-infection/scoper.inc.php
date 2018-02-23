@@ -20,6 +20,8 @@ return [
             if ($filePath === realpath(__DIR__.'/vendor/infection/infection/app/bootstrap.php')) {
                 return str_replace($prefix.'\INFECTION_COMPOSER_INSTALL;', 'INFECTION_COMPOSER_INSTALL;', $contents);
             }
+
+            return $contents;
         },
     ],
 ];
