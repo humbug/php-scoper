@@ -154,7 +154,7 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection --prefix=_Prefixed --output-dir=../../build/set020-infection --force --no-interaction --stop-on-failure
 	composer --working-dir=build/set020-infection dump-autoload
 
-	php build/set020-infection/vendor/bin/infection
+	php build/set020-infection/vendor/infection/infection/bin/infection
 
 tb:		## Run Blackfire profiling
 tb: vendor
