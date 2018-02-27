@@ -1,6 +1,6 @@
 {
     "require": {
-        "infection/infection": "^0.7.1",
+        "infection/infection": "dev-master",
         "nikic/php-parser": "v3.1.4"
     }
 }
