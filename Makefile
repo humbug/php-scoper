@@ -18,7 +18,7 @@ help:
 
 clean:		## Clean all created artifacts
 clean:
-	git clean --exclude=.idea/ -fdx
+	git clean --exclude=.idea/ -ffdx
 
 build:		## Build the PHAR
 build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
@@ -154,7 +154,15 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection --output-dir=../../build/set020-infection --force --no-interaction --stop-on-failure
 	composer --working-dir=build/set020-infection dump-autoload
 
-	php build/set020-infection/vendor/infection/infection/bin/infection
+	# Create coverage reports to be able to run Infection without running the tests
+	php -d zend.enable_gc=0 $(PHPUNIT) --coverage-clover=clover.xml --coverage-xml=dist/infection-coverage/coverage-xml --log-junit=dist/infection-coverage/phpunit.junit.xml
+
+	php fixtures/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/expected-output
+	php build/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/output
+
+	rm clover.xml
+
+	diff build/set020-infection/expected-output build/set020-infection/output
 
 tb:		## Run Blackfire profiling
 tb: vendor
