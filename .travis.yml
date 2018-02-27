@@ -48,7 +48,6 @@ deploy:
   on:
     tags: true
     repo: humbug/php-scoper
-    php:  '7.1'
     condition: "$COVERAGE"
 
 notifications:
