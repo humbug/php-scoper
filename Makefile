@@ -135,7 +135,7 @@ e2e_017: bin/php-scoper.phar fixtures/set017-symfony-di/vendor
 
 e2e_018:	## Run end-to-end tests for the fixture set 018: nikic PHP-Parser
 e2e_018: bin/php-scoper.phar fixtures/set018-nikic-parser/vendor
-	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set018-nikic-parser --prefix=_Prefixed --output-dir=../../build/set018-nikic-parser --force --no-config --no-interaction --stop-on-failure
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set018-nikic-parser --prefix=_Prefixed --output-dir=../../build/set018-nikic-parser --force --no-interaction --stop-on-failure
 	composer --working-dir=build/set018-nikic-parser dump-autoload
 
 	php build/set018-nikic-parser/main.php > build/set018-nikic-parser/output
@@ -213,13 +213,10 @@ composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
 vendor-bin/box/composer.lock: composer.lock
-	@echo fixtures/set011/composer.lock is not up to date.
+	@echo composer.lock is not up to date.
 
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
-
-fixtures/set011/composer.lock: fixtures/set011/composer.json
-	@echo fixtures/set011/composer.lock is not up to date.
 
 fixtures/set015/composer.lock: fixtures/set015/composer.json
 	@echo fixtures/set015/composer.lock is not up to date.
