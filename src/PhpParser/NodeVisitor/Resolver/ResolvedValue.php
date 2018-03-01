@@ -16,6 +16,9 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver;
 
 use PhpParser\Node\Name;
 
+/**
+ * @private
+ */
 final class ResolvedValue
 {
     private $name;

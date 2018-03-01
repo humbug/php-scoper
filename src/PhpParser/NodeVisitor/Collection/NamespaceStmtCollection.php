@@ -25,6 +25,8 @@ use PhpParser\Node\Stmt\Namespace_;
 /**
  * Utility class collecting all the namespaces for the scoped files allowing to easily find the namespace to which
  * belongs a node.
+ *
+ * @private
  */
 final class NamespaceStmtCollection implements IteratorAggregate, Countable
 {

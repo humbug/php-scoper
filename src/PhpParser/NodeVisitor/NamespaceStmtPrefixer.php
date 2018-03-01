@@ -35,6 +35,8 @@ use function Humbug\PhpScoper\clone_node;
  * ```
  * namespace Humbug\Foo;
  * ```
+ *
+ * @private
  */
 final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {

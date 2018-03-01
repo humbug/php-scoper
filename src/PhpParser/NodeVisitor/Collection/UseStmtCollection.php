@@ -27,6 +27,8 @@ use function Humbug\PhpScoper\clone_node;
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
  * may use.
+ *
+ * @private
  */
 final class UseStmtCollection implements IteratorAggregate
 {

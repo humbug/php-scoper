@@ -23,6 +23,8 @@ use PhpParser\NodeVisitorAbstract;
 /**
  * Collects all the use statements. This allows us to resolve a class/constant/function call into a fully-qualified
  * call.
+ *
+ * @private
  */
 final class UseStmtCollector extends NodeVisitorAbstract
 {

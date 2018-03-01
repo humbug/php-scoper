@@ -24,6 +24,8 @@ use PhpParser\NodeVisitorAbstract;
 
 /**
  * Prefixes the use statements.
+ *
+ * @private
  */
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {

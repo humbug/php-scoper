@@ -27,6 +27,8 @@ use function in_array;
 /**
  * Attempts to resolve the node name into a fully qualified node. Returns a valid (non fully-qualified) name node on
  * failure.
+ *
+ * @private
  */
 final class FullyQualifiedNameResolver
 {

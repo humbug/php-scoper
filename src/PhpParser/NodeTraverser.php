@@ -24,6 +24,9 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser as PhpParserNodeTraverser;
 
+/**
+ * @private
+ */
 final class NodeTraverser extends PhpParserNodeTraverser
 {
     private $prefix;

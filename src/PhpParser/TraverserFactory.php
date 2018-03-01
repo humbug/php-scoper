@@ -23,7 +23,7 @@ use Humbug\PhpScoper\Reflector;
 use PhpParser\NodeTraverserInterface;
 
 /**
- * @final
+ * @private
  */
 class TraverserFactory
 {

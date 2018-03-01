@@ -42,6 +42,8 @@ use function preg_match;
  * ```
  * $x = 'Humbug\Foo\Bar';
  * ```
+ *
+ * @private
  */
 final class StringScalarPrefixer extends NodeVisitorAbstract
 {

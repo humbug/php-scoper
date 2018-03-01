@@ -48,6 +48,8 @@ use PhpParser\NodeVisitorAbstract;
  *
  * class_alias('Humbug\A\Foo', 'A\Foo', false);
  * ```
+ *
+ * @internal
  */
 final class WhitelistedClassAppender extends NodeVisitorAbstract
 {
