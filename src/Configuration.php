@@ -20,7 +20,6 @@ use Iterator;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
-use function Humbug\PhpScoper\chain;
 
 /**
  * @final

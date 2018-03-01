@@ -14,14 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
-use Closure;
 use Humbug\PhpScoper\Configuration as NewConfiguration;
-use InvalidArgumentException;
-use Iterator;
-use RuntimeException;
-use SplFileInfo;
-use Symfony\Component\Finder\Finder;
-use function Humbug\PhpScoper\chain;
 
 /**
  * @deprecated
