@@ -12,11 +12,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor\Collection;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
 use Countable;
-use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -25,6 +25,8 @@ use PhpParser\Node\Stmt\Namespace_;
 /**
  * Utility class collecting all the namespaces for the scoped files allowing to easily find the namespace to which
  * belongs a node.
+ *
+ * @private
  */
 final class NamespaceStmtCollection implements IteratorAggregate, Countable
 {

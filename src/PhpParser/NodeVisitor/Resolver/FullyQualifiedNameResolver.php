@@ -12,12 +12,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor\Resolver;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver;
 
-use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
-use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\NameStmtPrefixer;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NameStmtPrefixer;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
@@ -27,6 +27,8 @@ use function in_array;
 /**
  * Attempts to resolve the node name into a fully qualified node. Returns a valid (non fully-qualified) name node on
  * failure.
+ *
+ * @private
  */
 final class FullyQualifiedNameResolver
 {

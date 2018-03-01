@@ -12,14 +12,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper;
+namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\Reflector;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\TraverserFactory
+ * @covers \Humbug\PhpScoper\PhpParser\TraverserFactory
  */
 class TraverserFactoryTest extends TestCase
 {

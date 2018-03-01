@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
@@ -21,6 +21,8 @@ use PhpParser\NodeVisitorAbstract;
  * Appends the parent node as an attribute to each node. This allows to have more context in the other visitors when
  * inspecting a node.
  * TODO: rename to ParentNodeAppender.
+ *
+ * @private
  */
 final class AppendParentNode extends NodeVisitorAbstract
 {

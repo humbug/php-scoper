@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Generator;
 use Humbug\PhpScoper\PhpParser\FakeParser;
+use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use LogicException;

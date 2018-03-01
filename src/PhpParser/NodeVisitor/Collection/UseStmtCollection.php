@@ -12,10 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor\Collection;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
-use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
 use IteratorAggregate;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -27,6 +27,8 @@ use function Humbug\PhpScoper\clone_node;
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
  * may use.
+ *
+ * @private
  */
 final class UseStmtCollection implements IteratorAggregate
 {

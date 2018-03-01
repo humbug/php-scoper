@@ -12,9 +12,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
@@ -35,6 +35,8 @@ use function Humbug\PhpScoper\clone_node;
  * ```
  * namespace Humbug\Foo;
  * ```
+ *
+ * @private
  */
 final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {

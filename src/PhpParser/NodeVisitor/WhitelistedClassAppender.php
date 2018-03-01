@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -48,6 +48,8 @@ use PhpParser\NodeVisitorAbstract;
  *
  * class_alias('Humbug\A\Foo', 'A\Foo', false);
  * ```
+ *
+ * @internal
  */
 final class WhitelistedClassAppender extends NodeVisitorAbstract
 {
