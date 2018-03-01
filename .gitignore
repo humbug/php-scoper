@@ -8,6 +8,7 @@
 /fixtures/*/vendor
 /vendor/
 /vendor-bin/*/vendor/
+/vendor-bin/*/bin/
 /.travis/
 !/.travis/.gitkeep
 !/.travis/secrets.tar.enc
