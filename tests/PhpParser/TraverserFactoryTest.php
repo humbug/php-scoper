@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
