@@ -27,12 +27,14 @@ use Symfony\Component\Finder\Finder;
  */
 class Configuration
 {
+    private const PREFIX = 'prefix';
     private const FINDER_KEYWORD = 'finders';
     private const PATCHERS_KEYWORD = 'patchers';
     private const WHITELIST_KEYWORD = 'whitelist';
     private const GLOBAL_NAMESPACE_KEYWORD = 'global_namespace_whitelist';
 
     private const KEYWORDS = [
+        self::PREFIX,
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
         self::WHITELIST_KEYWORD,
@@ -40,6 +42,7 @@ class Configuration
     ];
 
     private $path;
+    private $prefix;
     private $filesWithContents;
     private $patchers;
     private $whitelist;
@@ -69,6 +72,8 @@ class Configuration
 
         self::validateConfigKeys($config);
 
+        $prefix = self::retrievePrefix($config);
+
         $patchers = self::retrievePatchers($config);
         $whitelist = self::retrieveWhitelist($config);
 
@@ -76,11 +81,12 @@ class Configuration
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
         $filesWithContents = self::retrieveFilesWithContents(chain($filesFromPaths, ...$finders));
 
-        return new self($path, $filesWithContents, $patchers, $whitelist);
+        return new self($path, $prefix, $filesWithContents, $patchers, $whitelist);
     }
 
     /**
      * @param string|null        $path                        Absolute path to the configuration file loaded.
+     * @param string|null        $prefix                      The prefix applied.
      * @param [string, string][] $filesWithContents           Array of tuple with the first argument being the file path and the second its contents
      * @param callable[]         $patchers                    List of closures which can alter the content of the files being
      *                                                        scoped.
@@ -91,11 +97,13 @@ class Configuration
      */
     private function __construct(
         ?string $path,
+        ?string $prefix,
         array $filesWithContents,
         array $patchers,
         array $whitelist
     ) {
         $this->path = $path;
+        $this->prefix = $prefix;
         $this->filesWithContents = $filesWithContents;
         $this->patchers = $patchers;
         $this->whitelist = $whitelist;
@@ -113,7 +121,21 @@ class Configuration
 
         return new self(
             $this->path,
+            $this->prefix,
             array_merge($this->filesWithContents, $filesWithContents),
+            $this->patchers,
+            $this->whitelist
+        );
+    }
+
+    public function withPrefix(?string $prefix): self
+    {
+        $prefix = self::retrievePrefix([self::PREFIX => $prefix]);
+
+        return new self(
+            $this->path,
+            $prefix,
+            $this->filesWithContents,
             $this->patchers,
             $this->whitelist
         );
@@ -122,6 +144,11 @@ class Configuration
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
     }
 
     public function getFilesWithContents(): array
@@ -160,6 +187,25 @@ class Configuration
                 )
             );
         }
+    }
+
+    /**
+     * If the prefix is set to null in the config file/argument then a random prefix is being used. However if set to
+     * empty, the configuration will use a null prefix.
+     *
+     * TL:DR; setting the prefix is a big confusing because it is not properly split in "set prefix" & prefix strategy".
+     */
+    private static function retrievePrefix(array $config): ?string
+    {
+        $prefix = array_key_exists(self::PREFIX, $config) ? $config[self::PREFIX] : null;
+
+        if (null === $prefix) {
+            return uniqid('_PhpScoper');
+        }
+
+        $prefix = trim($prefix);
+
+        return '' === $prefix ? null : $prefix;
     }
 
     private static function retrievePatchers(array $config): array
