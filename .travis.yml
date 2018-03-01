@@ -6,9 +6,6 @@ cache:
   directories:
     - $HOME/.composer/cache/files
 
-env:
-  - INFECTION_FILTER=$(git diff ${GIT_PREVIOUS_SUCCESSFUL_COMMIT:-origin/develop} $GIT_COMMIT --name-only | grep /src/ | paste -sd "," -)
-
 matrix:
   include:
     - php: '7.2'
