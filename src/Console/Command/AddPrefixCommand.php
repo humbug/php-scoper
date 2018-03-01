@@ -44,6 +44,7 @@ final class AddPrefixCommand extends BaseCommand
 
     private $fileSystem;
     private $scoper;
+    private $init = false;
 
     /**
      * @inheritdoc
@@ -393,7 +394,9 @@ final class AddPrefixCommand extends BaseCommand
         if (null === $configFile) {
             $configFile = $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT);
 
-            if (false === file_exists($configFile)) {
+            if (false === file_exists($configFile) && false === $this->init) {
+                $this->init = true;
+
                 $initCommand = $this->getApplication()->find('init');
 
                 $initInput = new StringInput('');
@@ -409,28 +412,37 @@ final class AddPrefixCommand extends BaseCommand
                     OutputStyle::VERBOSITY_DEBUG
                 );
 
-                return Configuration::load(null);
+                return self::retrieveConfig($input, $output, $io);
+            }
+
+            if ($this->init) {
+                $configFile = null;
             }
         } else {
             $configFile = $this->makeAbsolutePath($configFile);
         }
 
-        if (false === file_exists($configFile)) {
+        if (null === $configFile) {
+            $io->writeln(
+                'Loading without configuration file.',
+                OutputStyle::VERBOSITY_DEBUG
+            );
+        } elseif (false === file_exists($configFile)) {
             throw new RuntimeException(
                 sprintf(
-                    'Could not find the configuration file "<comment>%s</comment>".',
+                    'Could not find the configuration file "%s".',
                     $configFile
                 )
             );
+        } else {
+            $io->writeln(
+                sprintf(
+                    'Using the configuration file "%s".',
+                    $configFile
+                ),
+                OutputStyle::VERBOSITY_DEBUG
+            );
         }
-
-        $io->writeln(
-            sprintf(
-                'Using the configuration file "<comment>%s</comment>".',
-                $configFile
-            ),
-            OutputStyle::VERBOSITY_DEBUG
-        );
 
         $config = Configuration::load($configFile);
 
