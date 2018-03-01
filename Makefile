@@ -48,7 +48,7 @@ build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
 ##---------------------------------------------------------------------------
 
 test:		## Run all the tests
-test: tu e2e
+test: tc e2e
 
 tu:		## Run PHPUnit tests
 tu: vendor/bin/phpunit
@@ -161,8 +161,6 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
 	php fixtures/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/expected-output
 	php build/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/output
 
-	rm clover.xml
-
 	diff build/set020-infection/expected-output build/set020-infection/output
 
 tb:		## Run Blackfire profiling
@@ -257,5 +255,5 @@ bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.
 box.json:
 	cat box.json.dist | sed -E 's/\"key\": \".+\",//g' | sed -E 's/\"algorithm\": \".+\",//g' > box.json
 
-clover.xml:
+clover.xml: src
 	$(MAKE) tc

@@ -3,6 +3,7 @@
 /bin/php-scoper.phar*.pubkey
 /box.json
 /build/
+/clover.xml
 /dist/
 /fixtures/set004/scoper.inc.php
 /fixtures/*/vendor
