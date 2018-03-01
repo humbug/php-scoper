@@ -21,6 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use function var_dump;
 
 final class InitCommand extends BaseCommand
 {
@@ -81,6 +82,12 @@ final class InitCommand extends BaseCommand
         );
 
         $configFile = $this->retrieveConfig($input, $io);
+
+        if (null === $configFile) {
+            $io->writeln('Skipping configuration file generator.');
+
+            return 0;
+        }
 
         $this->fileSystem->copy(self::CONFIG_FILE_TEMPLATE, $configFile);
 

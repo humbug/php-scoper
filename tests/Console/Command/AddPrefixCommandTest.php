@@ -798,7 +798,7 @@ EOF;
         } catch (RuntimeException $exception) {
             $this->assertSame(
                 sprintf(
-                    'Could not find the configuration file "<comment>%sunknown</comment>".',
+                    'Could not find the configuration file "%sunknown".',
                     $this->tmp.DIRECTORY_SEPARATOR
                 ),
                 $exception->getMessage()
