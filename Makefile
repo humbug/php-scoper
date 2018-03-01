@@ -1,7 +1,8 @@
-BOX=vendor-bin/box/vendor/bin/box
-PHPUNIT=vendor/bin/phpunit
-PHPSCOPER=bin/php-scoper.phar
 BLACKFIRE=blackfire
+BOX=vendor-bin/box/vendor/bin/box
+COVERS_VALIDATOR=php -d zend.enable_gc=0 vendor-bin/covers-validator/bin/covers-validator
+PHPSCOPER=bin/php-scoper.phar
+PHPUNIT=vendor/bin/phpunit
 
 
 .DEFAULT_GOAL := help
@@ -54,7 +55,8 @@ tu: vendor/bin/phpunit
 	php -d zend.enable_gc=0 $(PHPUNIT)
 
 tc:		## Run PHPUnit tests with test coverage
-tc: vendor/bin/phpunit
+tc: vendor/bin/phpunit vendor-bin/covers-validator/vendor
+	$(COVERS_VALIDATOR)
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
 
 tm:		## Run Infection (Mutation Testing)
@@ -193,6 +195,9 @@ vendor/bin/phpunit: composer.lock
 vendor-bin/box/vendor: vendor-bin/box/composer.lock vendor/bamarni
 	composer bin all install
 
+vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
+	composer bin covers-validator install
+
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
 
@@ -222,6 +227,9 @@ composer.lock: composer.json
 
 vendor-bin/box/composer.lock: composer.lock
 	@echo composer.lock is not up to date.
+
+vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
+	@echo covers-validator composer.lock is not up to date
 
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.

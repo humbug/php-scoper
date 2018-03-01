@@ -12,10 +12,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\PhpParser;
 
-// TODO: re-organise the classes location as this no longer makes sense. Not done here to try to keep the diff humanly
-// readable.
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;

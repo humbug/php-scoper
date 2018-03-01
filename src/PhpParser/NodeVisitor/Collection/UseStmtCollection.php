@@ -12,10 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor\Collection;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
-use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
 use IteratorAggregate;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;

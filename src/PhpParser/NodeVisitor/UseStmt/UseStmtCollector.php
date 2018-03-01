@@ -12,10 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor\UseStmt;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
-use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeVisitorAbstract;

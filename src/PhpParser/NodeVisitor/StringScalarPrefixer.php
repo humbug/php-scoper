@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\Reflector;
 use PhpParser\Node;
@@ -46,25 +46,11 @@ use function preg_match;
 final class StringScalarPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
-    private $whitelistedFunctions;
-    private $whitelist;
     private $reflector;
 
-    /**
-     * @param string    $prefix
-     * @param string[]  $whitelistedFunctions
-     * @param string[]  $whitelist
-     * @param Reflector $reflector
-     */
-    public function __construct(
-        string $prefix,
-        array $whitelistedFunctions,
-        array $whitelist,
-        Reflector $reflector
-    ) {
+    public function __construct(string $prefix, Reflector $reflector)
+    {
         $this->prefix = $prefix;
-        $this->whitelistedFunctions = $whitelistedFunctions;
-        $this->whitelist = $whitelist;
         $this->reflector = $reflector;
     }
 
@@ -82,7 +68,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function shouldPrefixScalar(Node $node): bool
     {
         if (false === ($node instanceof String_ && AppendParentNode::hasParent($node) && is_string($node->value))
-            || 1 !== preg_match('/^\\\\*(?:\p{L}+\\\\+)++\p{L}+$/', $node->value)
+            || 1 !== preg_match('/^\\\\*(?:\p{L}+\\\\+)++\p{L}+$/u', $node->value)
         ) {
             return false;
         }
@@ -121,8 +107,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             $newStringName = $stringName;
         // Check if the class can be prefixed: class from the global namespace
         } elseif (
-            $this->reflector->isClassInternal($stringName->toString())
-            || 1 === count($stringName->parts)
+            1 === count($stringName->parts)
+            || $this->reflector->isClassInternal($stringName->toString())
         ) {
             $newStringName = $stringName;
         } else {

@@ -12,9 +12,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\NodeVisitor\UseStmt;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
-use Humbug\PhpScoper\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
 use Humbug\PhpScoper\Reflector;
 use PhpParser\Node;
 use PhpParser\Node\Name;

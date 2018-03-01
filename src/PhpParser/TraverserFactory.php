@@ -12,13 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper;
+namespace Humbug\PhpScoper\PhpParser;
 
-use Humbug\PhpScoper\NodeTraverser;
-use Humbug\PhpScoper\NodeVisitor;
-use Humbug\PhpScoper\NodeVisitor\Collection\NamespaceStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\Collection\UseStmtCollection;
-use Humbug\PhpScoper\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeTraverser;
+use Humbug\PhpScoper\PhpParser\NodeVisitor;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
 use PhpParser\NodeTraverserInterface;
 
@@ -27,14 +27,6 @@ use PhpParser\NodeTraverserInterface;
  */
 class TraverserFactory
 {
-    /**
-     * Functions for which the arguments will be prefixed.
-     */
-    public const WHITELISTED_FUNCTIONS = [
-        'class_exists',
-        'interface_exists',
-    ];
-
     private $reflector;
 
     public function __construct(Reflector $reflector)
@@ -42,12 +34,6 @@ class TraverserFactory
         $this->reflector = $reflector;
     }
 
-    /**
-     * @param string   $prefix    Prefix to apply to the files.
-     * @param string[] $whitelist List of classes to exclude from the scoping.
-     *
-     * @return NodeTraverserInterface
-     */
     public function create(string $prefix, array $whitelist): NodeTraverserInterface
     {
         $traverser = new NodeTraverser($prefix);
@@ -65,7 +51,7 @@ class TraverserFactory
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $this->reflector));
 
         $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $nameResolver, $this->reflector));
-        $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, self::WHITELISTED_FUNCTIONS, $whitelist, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $this->reflector));
 
         $traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
 
