@@ -446,7 +446,7 @@ EOF;
                 Argument::that(
                     function (string $prefix): bool {
                         $this->assertRegExp(
-                            '/^PhpScoper[a-z0-9]{13}$/',
+                            '/^\_PhpScoper[a-z0-9]{13}$/',
                             $prefix
                         );
 
@@ -742,41 +742,6 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    /**
-     * @dataProvider provideEmptyPrefixes
-     */
-    public function test_cannot_apply_an_empty_prefix(string $prefix)
-    {
-        $input = [
-            'add-prefix',
-            '--prefix' => $prefix,
-            'paths' => [
-                $root = self::FIXTURE_PATH.'/set002/original',
-            ],
-            '--no-interaction',
-            '--no-config' => null,
-        ];
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotBeCalled();
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
-
-        try {
-            $this->appTester->run($input);
-
-            $this->fail('Expected exception to be thrown.');
-        } catch (RuntimeException $exception) {
-            $this->assertSame(
-                'Expected "prefix" argument to be a non empty string.',
-                $exception->getMessage()
-            );
-        }
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
-    }
-
     public function test_throws_an_error_when_passing_a_non_existent_config()
     {
         $input = [
@@ -951,19 +916,6 @@ EOF;
         $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
-    }
-
-    public function provideEmptyPrefixes()
-    {
-        yield 'empty' => [''];
-
-        yield 'space only' => ['  '];
-
-        yield 'backslashes' => ['\\'];
-
-        yield '1 backslash' => ['\\'];
-
-        yield '2 backslashes' => ['\\\\'];
     }
 
     private function createAppTester(): ApplicationTester

@@ -138,13 +138,13 @@ final class AddPrefixCommand extends BaseCommand
         );
 
         $logger->outputScopingStart(
-            $input->getOption(self::PREFIX_OPT),
+            $config->getPrefix(),
             $input->getArgument(self::PATH_ARG)
         );
 
         try {
             $this->scopeFiles(
-                $input->getOption(self::PREFIX_OPT),
+                $config->getPrefix(),
                 $config->getFilesWithContents(),
                 $output,
                 $config->getPatchers(),
@@ -273,23 +273,8 @@ final class AddPrefixCommand extends BaseCommand
     {
         $prefix = $input->getOption(self::PREFIX_OPT);
 
-        if (null === $prefix) {
-            $prefix = uniqid('PhpScoper');
-        } else {
-            $prefix = trim($prefix);
-        }
-
-        if (1 === preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
+        if (null !== $prefix && 1 === preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
             $prefix = $matches['prefix'];
-        }
-
-        if ('' === $prefix) {
-            throw new RuntimeException(
-                sprintf(
-                    'Expected "%s" argument to be a non empty string.',
-                    self::PREFIX_OPT
-                )
-            );
         }
 
         $input->setOption(self::PREFIX_OPT, $prefix);
@@ -385,6 +370,7 @@ final class AddPrefixCommand extends BaseCommand
             );
 
             $config = Configuration::load();
+            $config = $config->withPrefix($input->getOption(self::PREFIX_OPT));
 
             return $this->retrievePaths($input, $config);
         }
@@ -445,8 +431,9 @@ final class AddPrefixCommand extends BaseCommand
         }
 
         $config = Configuration::load($configFile);
+        $config = $this->retrievePaths($input, $config);
 
-        return $this->retrievePaths($input, $config);
+        return $config->withPrefix($input->getOption(self::PREFIX_OPT));
     }
 
     private function retrievePaths(InputInterface $input, Configuration $config): Configuration
