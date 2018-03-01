@@ -30,7 +30,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 use function Humbug\PhpScoper\get_common_path;
-use function var_dump;
 
 final class AddPrefixCommand extends BaseCommand
 {
@@ -435,7 +434,7 @@ final class AddPrefixCommand extends BaseCommand
                     $configFile
                 )
             );
-        }  else {
+        } else {
             $io->writeln(
                 sprintf(
                     'Using the configuration file "%s".',
