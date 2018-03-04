@@ -60,9 +60,9 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         // Is not from the Composer namespace
-        if ('Composer' === $use->name->getFirst()) {
-            return false;
-        }
+//        if ('Composer' === $use->name->getFirst()) {
+//            return false;
+//        }
 
         if (Use_::TYPE_FUNCTION === $useType) {
             return false === $this->reflector->isFunctionInternal((string) $use->name);

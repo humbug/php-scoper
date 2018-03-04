@@ -23,6 +23,7 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
@@ -101,6 +102,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         if (false === (
                 $parentNode instanceof ConstFetch
                 || $parentNode instanceof ClassConstFetch
+                || $parentNode instanceof StaticPropertyFetch
                 || $parentNode instanceof Param
                 || $parentNode instanceof FuncCall
                 || $parentNode instanceof StaticCall
@@ -121,6 +123,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 $parentNode instanceof FuncCall
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof ClassConstFetch
+                || $parentNode instanceof StaticPropertyFetch
                 || $parentNode instanceof New_
                 || $parentNode instanceof Param
                 || $parentNode instanceof Catch_
