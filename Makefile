@@ -48,7 +48,7 @@ build: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
 ##---------------------------------------------------------------------------
 
 test:		## Run all the tests
-test: tu e2e
+test: tc e2e
 
 tu:		## Run PHPUnit tests
 tu: vendor/bin/phpunit
@@ -57,7 +57,9 @@ tu: vendor/bin/phpunit
 tc:		## Run PHPUnit tests with test coverage
 tc: vendor/bin/phpunit vendor-bin/covers-validator/vendor
 	$(COVERS_VALIDATOR)
-	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text
+	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text --coverage-clover=clover.xml --coverage-xml=dist/infection-coverage/coverage-xml --log-junit=dist/infection-coverage/phpunit.junit.xml
+
+	php -d zend.enable_gc=0 $(PHPUNIT)
 
 tm:		## Run Infection (Mutation Testing)
 tm: vendor/bin/phpunit
@@ -152,17 +154,12 @@ e2e_019: bin/php-scoper.phar fixtures/set019-symfony-console/vendor
 	diff fixtures/set019-symfony-console/expected-output build/set019-symfony-console/output
 
 e2e_020:	## Run end-to-end tests for the fixture set 020: Infection
-e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor
+e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
 	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection --output-dir=../../build/set020-infection --force --no-interaction --stop-on-failure
 	composer --working-dir=build/set020-infection dump-autoload
 
-	# Create coverage reports to be able to run Infection without running the tests
-	php -d zend.enable_gc=0 $(PHPUNIT) --coverage-clover=clover.xml --coverage-xml=dist/infection-coverage/coverage-xml --log-junit=dist/infection-coverage/phpunit.junit.xml
-
 	php fixtures/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/expected-output
 	php build/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/output
-
-	rm clover.xml
 
 	diff build/set020-infection/expected-output build/set020-infection/output
 
@@ -257,3 +254,6 @@ bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.
 
 box.json:
 	cat box.json.dist | sed -E 's/\"key\": \".+\",//g' | sed -E 's/\"algorithm\": \".+\",//g' > box.json
+
+clover.xml: src
+	$(MAKE) tc

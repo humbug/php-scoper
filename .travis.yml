@@ -34,7 +34,7 @@ script:
         make tc
         make e2e
     else
-        make tm
+        make tu
     fi
 
 deploy:
