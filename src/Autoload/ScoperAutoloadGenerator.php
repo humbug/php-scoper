@@ -31,7 +31,7 @@ final class ScoperAutoloadGenerator
         $statements = array_map(
             function (string $whitelist) use ($prefix): string {
                 return sprintf(
-                    "class_exists('%1\$s\%2\$s');\ninterface_exists('%1\$s\%2\$s');",
+                    'class_exists(\'%s\%s\');',
                     $prefix,
                     $whitelist
                 );
