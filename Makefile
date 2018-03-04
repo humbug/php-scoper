@@ -59,8 +59,6 @@ tc: vendor/bin/phpunit vendor-bin/covers-validator/vendor
 	$(COVERS_VALIDATOR)
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text --coverage-clover=clover.xml --coverage-xml=dist/infection-coverage/coverage-xml --log-junit=dist/infection-coverage/phpunit.junit.xml
 
-	php -d zend.enable_gc=0 $(PHPUNIT)
-
 tm:		## Run Infection (Mutation Testing)
 tm: vendor/bin/phpunit
 	$(MAKE) e2e_020
