@@ -23,14 +23,14 @@ return [
     'C3' => <<<'PHP'
 <?php
 
-$package = $loader->load($localConfig, 'Composer\\Package\\RootPackage', $cwd);
+$package = $loader->load($localConfig, 'Fa\\Package\\RootPackage', $cwd);
 
 ----
 <?php
 
 namespace Humbug;
 
-$package = $loader->load($localConfig, 'Humbug\\Composer\\Package\\RootPackage', $cwd);
+$package = $loader->load($localConfig, 'Humbug\\Fa\\Package\\RootPackage', $cwd);
 
 PHP
     ,

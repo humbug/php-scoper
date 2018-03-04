@@ -22,6 +22,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
@@ -87,7 +88,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                 return $funcNode->name instanceof Name && false === $funcNode->hasAttribute('whitelist_class_alias');
             }
 
-            return $funcNode instanceof MethodCall;
+            return $funcNode instanceof MethodCall || $funcNode instanceof StaticCall;
         }
 
         return $parentNode instanceof Assign
