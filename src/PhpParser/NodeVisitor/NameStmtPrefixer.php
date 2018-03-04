@@ -102,7 +102,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         if (false === (
                 $parentNode instanceof ConstFetch
                 || $parentNode instanceof ClassConstFetch
-//                || $parentNode instanceof StaticPropertyFetch
+                || $parentNode instanceof StaticPropertyFetch
                 || $parentNode instanceof Param
                 || $parentNode instanceof FuncCall
                 || $parentNode instanceof StaticCall
@@ -123,7 +123,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 $parentNode instanceof FuncCall
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof ClassConstFetch
-//                || $parentNode instanceof StaticPropertyFetch
+                || $parentNode instanceof StaticPropertyFetch
                 || $parentNode instanceof New_
                 || $parentNode instanceof Param
                 || $parentNode instanceof Catch_
