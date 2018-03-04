@@ -84,7 +84,7 @@ PHP
 //<?php
 //
 //namespace Humbug\Composer;
-//
+//é
 //use Humbug\Composer\Package\BasePackage;
 //new \Humbug\Composer\InputOption('stability', 's', \Humbug\Composer\InputOption::VALUE_REQUIRED, 'Minimum stability (empty or one of: ' . \implode(', ', \array_keys(\Humbug\Composer\Package\BasePackage::$stabilities)) . ')');
 //

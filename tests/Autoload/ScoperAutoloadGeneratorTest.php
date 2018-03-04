@@ -37,7 +37,9 @@ class ScoperAutoloadGeneratorTest extends TestCase
 $loader = require_once __DIR__.'/autoload.php'; 
 
 class_exists('Humbug\A\Foo');
+interface_exists('Humbug\A\Foo');
 class_exists('Humbug\B\Bar');
+interface_exists('Humbug\B\Bar');
 
 return $loader;
 
