@@ -36,8 +36,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 - [Configuration](#configuration)
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
-    - [Global Namespace Whitelisting](#global-namespace-whitelisting)
-    - [Whitelist](#whitelist)
+    - [Whitelist][whitelist]
 - [Building A Scoped PHAR](#building-a-scoped-phar)
     - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
     - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
@@ -46,6 +45,8 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [PSR-0 support](#psr-0-support)
     - [String values](#string-values)
     - [Native functions and constants shadowing](#native-functions-shadowing)
+    - [Composer](#composer)
+    - [Composer Plugins](#composer-plugins)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -243,35 +244,6 @@ return [
     ],
 ];
 ```
-
-### Global Namespace Whitelisting
-
-By default, PHP-Scoper only scopes (or prefixes) code where the namespace is
-non-global. In other words, non-namespaced code is not scoped. This leaves the
-majority of classes, functions and constants in PHP, and most extensions,
-untouched.
-
-This is not necessarily a desirable outcome for vendor dependencies which are
-also not namespaced. To ensure they are isolated, you can configure PHP-Scoper to
-allow their prefixing from `scoper.inc.php` using basic strings or callables:
-
-```php
-<?php declare(strict_types=1);
-
-// scoper.inc.php
-
-return [
-    'global_namespace_whitelist' => [
-        'AppKernel',
-        function ($className) {
-            return 'PHPUnit' === substr($className, 0, 6);
-        },
-    ],
-];
-```
-
-In this example, we're ensuring that the `AppKernal` class, and any
-non-namespaced PHPUnit packages are prefixed.
 
 
 ### Whitelist
@@ -473,6 +445,23 @@ is_array([]);
 The situation is exactly the same for constants.
 
 
+### Composer
+
+PHP-Scoper does not support prefixing the dumped Composer autoloader and autoloading files. This is why you have to
+manually dump the autoloader again after prefixing an application.
+
+
+### Composer Plugins
+
+Composer plugins are not supported. The issue is that for [whitelisting symbols](#whitelist) PHP-Scoper relies on the
+fact that you should load the `vendor/scoper-autoload.php` file instead of `vendor/autoload.php` to trigger the loading
+of the right classes with their class aliases. However Composer does not do that and as a result interfaces such as
+`Composer\Plugin\Capability\Capable` are prefixed but the alias is not registered. 
+
+This cannot be changed easily so for now when you are using an isolated version of Composer, you will need to use the
+`--no-plugins` option.
+
+
 ## Contributing
 
 [Contribution Guide](CONTRIBUTING.md)
@@ -493,3 +482,4 @@ now been moved under the
 [releases]: https://github.com/humbug/php-scoper/releases
 [symfony_finder]: https://symfony.com/doc/current/components/finder.html
 [releases]: https://github.com/humbug/php-scoper/releases
+[whitelist]: #whitelist

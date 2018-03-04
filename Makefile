@@ -64,7 +64,7 @@ tm: vendor/bin/phpunit
 	$(MAKE) e2e_020
 
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021
 
 e2e_004:	## Run end-to-end tests for the fixture set 004: source code case
 e2e_004: bin/php-scoper.phar
@@ -161,6 +161,16 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
 
 	diff build/set020-infection/expected-output build/set020-infection/output
 
+e2e_021:	## Run end-to-end tests for the fixture set 020: Composer
+e2e_021: bin/php-scoper.phar fixtures/set021-composer/vendor clover.xml
+	php -d zend.enable_gc=0 $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer --output-dir=../../build/set021-composer --force --no-interaction --stop-on-failure --no-config
+	composer --working-dir=build/set021-composer dump-autoload
+
+	php fixtures/set021-composer/vendor/composer/composer/bin/composer licenses --no-plugins > build/set021-composer/expected-output
+	php build/set021-composer/vendor/composer/composer/bin/composer licenses --no-plugins > build/set021-composer/output
+
+	diff build/set021-composer/expected-output build/set021-composer/output
+
 tb:		## Run Blackfire profiling
 tb: vendor
 	rm -rf build
@@ -217,6 +227,9 @@ fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer
 fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
 	composer --working-dir=fixtures/set020-infection install
 
+fixtures/set021-composer/vendor: fixtures/set021-composer/composer.lock
+	composer --working-dir=fixtures/set021-composer install
+
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
@@ -246,6 +259,9 @@ fixtures/set019-symfony-console/composer.lock: fixtures/set019-symfony-console/c
 
 fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
 	@echo fixtures/set020-infection/composer.lock is not up to date.
+
+fixtures/set021-composer/composer.lock: fixtures/set021-composer/composer.json
+	@echo fixtures/set021-composer/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
 	$(MAKE) build
