@@ -1,4 +1,6 @@
 {
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require-dev": {
         "humbug/box": "^3.0@dev"
     },

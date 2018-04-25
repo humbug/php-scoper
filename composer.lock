@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "988cb62b4c6141d1a84a1bb3e2f725e8",
+    "content-hash": "229cecb000496023ebe7f7454d1452fd",
     "packages": [
         {
             "name": "nikic/php-parser",
@@ -783,54 +783,6 @@
                 "shim"
             ],
             "time": "2017-06-14T15:44:48+00:00"
-        },
-        {
-            "name": "symfony/requirements-checker",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/requirements-checker.git",
-                "reference": "36fb25929509bdc841e7f51582d45e81e8c03949"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/requirements-checker/zipball/36fb25929509bdc841e7f51582d45e81e8c03949",
-                "reference": "36fb25929509bdc841e7f51582d45e81e8c03949",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.9"
-            },
-            "bin": [
-                "bin/requirements-checker"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Requirements\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "Check Symfony requirements and give recommendations",
-            "keywords": [
-                "configuration",
-                "distribution"
-            ],
-            "time": "2017-10-01T16:30:53+00:00"
         },
         {
             "name": "webmozart/assert",
