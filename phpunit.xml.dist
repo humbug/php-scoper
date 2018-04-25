@@ -11,7 +11,7 @@ file that was distributed with this source code.
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="tests/autoload.php"
+         bootstrap="vendor/autoload.php"
          colors="true"
 >
     <testsuites>

@@ -42,6 +42,9 @@
         }
     },
     "autoload-dev": {
+        "files": [
+            "tests/functions.php"
+        ],
         "psr-4": {
             "Humbug\\PhpScoper\\": "tests/"
         }

@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := help
 
-PHPNOGC=$(PHPNOGC)
+PHPNOGC=php -d zend.enable_gc=0
 
 .PHONY: help
 help:
