@@ -1,33 +1,14 @@
 {
-    "base-path": "build/php-scoper",
     "chmod": "0755",
-    "main": "bin/php-scoper",
-    "output": "bin/php-scoper.phar",
-    "directories": ["src"],
-    "finder": [
-        {
-            "notName": "/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/",
-            "exclude": [
-                "doc",
-                "test",
-                "test_old",
-                "tests",
-                "Tests",
-                "vendor-bin"
-            ],
-            "in": "vendor"
-        },
-        {
-            "name": "composer.json",
-            "in": "."
-        }
-    ],
+
     "algorithm": "OPENSSL",
     "key": ".travis/php-scoper-private.pem",
+
     "compression": "GZ",
+
     "compactors": [
         "Herrera\\Box\\Compactor\\Json",
+        "KevinGH\\Box\\Compactor\\PhpScoper",
         "Herrera\\Box\\Compactor\\Php"
-    ],
-    "stub": true
+    ]
 }

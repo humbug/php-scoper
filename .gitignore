@@ -1,6 +1,7 @@
 /bin/php-scoper*.phar
 /bin/php-scoper*.phar.pubkey
 /bin/php-scoper.phar*.pubkey
+/.box_dump/
 /box.json
 /build/
 /clover.xml
