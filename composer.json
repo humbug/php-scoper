@@ -21,7 +21,6 @@
         "php": "^7.1",
         "nikic/php-parser": "^3.0",
         "ocramius/package-versions": "^1.1",
-        "padraic/phar-updater": "^1.0",
         "roave/better-reflection": "^2.0",
         "symfony/console": "^3.2 || ^4.0",
         "symfony/filesystem": "^3.2 || ^4.0",
