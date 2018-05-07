@@ -31,16 +31,18 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 
 - [Installation](#installation)
 - [Usage](#usage)
-    - [PHAR (preferred)](#phar-preferred)
+    - [PHAR](#phar)
     - [Composer](#composer)
 - [Configuration](#configuration)
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelist][whitelist]
 - [Building A Scoped PHAR](#building-a-scoped-phar)
-    - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
-    - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
-    - [Step 3: Build, test, and cleanup](#step-3-build-test-and-cleanup)
+    - [With Box](#with-box)
+        - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
+        - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
+    - [Without Box](#without-box)
+- [Recommendations](#recommendations)
 - [Limitations](#limitations)
     - [PSR-0 support](#psr-0-support)
     - [String values](#string-values)
@@ -54,15 +56,10 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ## Installation
 
 
-### PHAR (preferred)
+### PHAR
 
 The preferred method of installation is to use the PHP-Scoper PHAR, which can
-be downloaded from the most recent [Github Release][releases]. Subsequent updates
-can be downloaded by running:
-
-```bash
-php-scoper.phar self-update
-```
+be downloaded from the most recent [Github Release][releases].
 
 As the PHAR is signed, you should also download the matching
 `php-scoper.phar.pubkey` to the same location. If you rename `php-scoper.phar`
@@ -277,30 +274,29 @@ instead of the traditional `vendor/autoload.php`.
 
 ## Building A Scoped PHAR
 
-This is a brief run through of the basic steps encoded in PHP-Scoper's own
-[Makefile](Makefile) and elsewhere to build a PHAR from scoped code.
+### With Box
+
+If you are using [Box](box) to build your PHAR, you can use the existing
+[PHP-Scoper integration][php-scoper-integration]. Box will take care of
+most of the things for you so you should only have to adjust the PHP-Scoper
+configuration to your needs.
 
 
-### Step 1: Configure build location and prep vendors
+### Without Box
 
-If, for example, you are using [Box](box) to build your PHAR, you
-should set the `base-path` configuration option in your `box.json` file
-to point at the directory which will host scoped code. PHP-Scoper,
-by default, creates a `build` directory relative to the current working
-directory.
+#### Step 1: Configure build location and prep vendors
 
-```js
-"base-path": "build"
-```
-
-Assuming you need no dev dependencies, run:
+Assuming you do not need any development dependencies, run:
 
 ```bash
 composer install --no-dev --prefer-dist
 ```
 
+This will allow you to save time in the scoping process by not
+processing unnecessary files.
 
-### Step 2: Run PHP-Scoper
+
+#### Step 2: Run PHP-Scoper
 
 PHP-Scoper copies code to a new location during prefixing, leaving your original
 code untouched. The default location is `./build`. You can change the default
@@ -325,28 +321,48 @@ Speaking of scoping Composer related files... The next step is to dump the
 Composer autoloader if we depend on it, so everything works as expected:
 
 ```bash
-composer dump-autoload -d build --classmap-authoritative
+composer dump-autoload --working-dir build --classmap-authoritative
 ```
 
 
-### Step 3: Build, test, and cleanup
+## Recommendations
 
-If using [Box](box), you can now move onto actually building the PHAR:
+There is 3 things to manage when dealing with isolated PHARs:
 
-```bash
-php -d phar.readonly=0 box build -vvv
-```
+- The dependencies: which dependencies are you shipping? Fine controlled ones managed
+  with a `composer.lock` or you always ship your application with up to date dependencies?
+- The PHAR format: there is some incompatibilities such as `realpath()` which will no
+  longer work for the files within the PHAR since the paths are not virtual.
+- Isolating the code: due to the dynamic nature of PHP, isolating your dependencies will
+  never be a trivial task and as a result you should have some end-to-end test to ensure
+  your isolated code is working properly. You will also likely need to configure the
+  [whitelists][whitelist] or [patchers][patchers].
 
-At this point, it's best to have some simple end-to-end tests automated to put
-the PHAR through its paces and locate any problems (see Patchers and Whitelists
-from earlier in this README). Assuming it passes testing, the PHAR is ready.
+As a result, you _should_ have end-to-end tests for your (at the minimum) your released
+PHAR.
 
-Cleanup is simply to optionally delete `./build` contents, and remember to
-re-install dev dependencies removed during Step 1:
+Since dealing with the 3 issues mentioned above at once can be tedious, it is highly
+recommended to have several tests for each steps.
 
-```bash
-composer install
-``` 
+For example you can have a test for both your non-isolated PHAR and your isolated PHAR,
+this way you will know which step is causing an issue. If the isolated PHAR is not working,
+you can try to test the isolated code directly outside the PHAR to make sure the scoping
+process is not the issue.
+
+To check if the isolated code is working correctly, you have a number of solutions:
+
+- When using PHP-Scoper directly, by default PHP-Scoper dump the files in a `build` directory.
+  Do not forget that
+  [you need to dump the Composer autoloader for the isolated code to work!](#step-2-run-php-scoper).
+- When using [Box][box], you can use its `--debug` option from the `compile` command in order to have the
+  code shipped in the PHAR dumped in the `.box` directory.
+- When using a PHAR (created by [Box][box] or any other PHAR building tool), you can use the
+  [`Phar::extractTo()`][phar-extract-to] method.
+
+Also take into consideration that bundling code in a PHAR is not guaranteed to work
+out of the box either. Indeed there is a number of things such as 
+
+For this reason, you should also h
 
 
 ## Limitations
@@ -477,9 +493,12 @@ now been moved under the
 [@webmozart]: https://twitter.com/webmozart
 [bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
 [Bernhard Schussek]: https://webmozart.io/
-[box]: https://github.com/box-project/box2
+[box]: https://github.com/humbug/box
 [humbug]: https://github.com/humbug
 [releases]: https://github.com/humbug/php-scoper/releases
 [symfony_finder]: https://symfony.com/doc/current/components/finder.html
 [releases]: https://github.com/humbug/php-scoper/releases
 [whitelist]: #whitelist
+[patchers]: #patchers
+[php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
+[phar-extract-to]: https://secure.php.net/manual/en/phar.extractto.php
