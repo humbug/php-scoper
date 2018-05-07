@@ -18,7 +18,6 @@ use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Scoper;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -26,8 +25,6 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 use function file_get_contents;
 use function Humbug\PhpScoper\escape_path;
-use function Humbug\PhpScoper\make_tmp_dir;
-use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand

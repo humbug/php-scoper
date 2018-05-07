@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Filesystem\Filesystem;
 
 abstract class FileSystemTestCase extends TestCase
 {
