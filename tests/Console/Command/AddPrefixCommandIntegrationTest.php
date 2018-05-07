@@ -14,20 +14,19 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use PHPUnit\Framework\TestCase;
+use Humbug\PhpScoper\FileSystemTestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function Humbug\PhpScoper\create_application;
-use function Humbug\PhpScoper\make_tmp_dir;
-use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @coversNothing
  *
  * @group integration
+ * @runTestsInSeparateProcesses
  */
-class AddPrefixCommandIntegrationTest extends TestCase
+class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 {
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
 
@@ -37,25 +36,11 @@ class AddPrefixCommandIntegrationTest extends TestCase
     private $appTester;
 
     /**
-     * @var string
-     */
-    private $cwd;
-
-    /**
-     * @var string
-     */
-    private $tmp;
-
-    /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
-        if (null !== $this->appTester) {
-            chdir($this->tmp);
-
-            return;
-        }
+        parent::setUp();
 
         $application = create_application();
         $application->setAutoExit(false);
@@ -63,21 +48,7 @@ class AddPrefixCommandIntegrationTest extends TestCase
 
         $this->appTester = new ApplicationTester($application);
 
-        $this->cwd = getcwd();
-        $this->tmp = make_tmp_dir('scoper', __CLASS__);
-
-        chdir($this->tmp);
         file_put_contents('scoper.inc.php', '<?php return [];');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function tearDown()
-    {
-        chdir($this->cwd);
-
-        remove_dir($this->tmp);
     }
 
     public function test_scope_the_given_paths()

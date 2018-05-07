@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Console\Application;
+use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Scoper;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -25,13 +25,12 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 use function file_get_contents;
 use function Humbug\PhpScoper\escape_path;
-use function Humbug\PhpScoper\make_tmp_dir;
-use function Humbug\PhpScoper\remove_dir;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
+ * @runTestsInSeparateProcesses
  */
-class AddPrefixCommandTest extends TestCase
+class AddPrefixCommandTest extends FileSystemTestCase
 {
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures';
 
@@ -39,16 +38,6 @@ class AddPrefixCommandTest extends TestCase
      * @var ApplicationTester
      */
     private $appTester;
-
-    /**
-     * @var string
-     */
-    private $cwd;
-
-    /**
-     * @var string
-     */
-    private $tmp;
 
     /**
      * @var Filesystem|ObjectProphecy
@@ -63,34 +52,15 @@ class AddPrefixCommandTest extends TestCase
     /**
      * @inheritdoc
      */
-    protected function setUp()
+    protected function setUp(): void
     {
-        if (null !== $this->appTester) {
-            chdir($this->tmp);
-
-            return;
-        }
-
-        $this->cwd = getcwd();
-        $this->tmp = make_tmp_dir('scoper', __CLASS__);
+        parent::setUp();
 
         $this->fileSystemProphecy = $this->prophesize(Filesystem::class);
 
         $this->scoperProphecy = $this->prophesize(Scoper::class);
 
         $this->appTester = $this->createAppTester();
-
-        chdir($this->tmp);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function tearDown()
-    {
-        chdir($this->cwd);
-
-        remove_dir($this->tmp);
     }
 
     public function test_get_help_menu()
