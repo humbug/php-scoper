@@ -18,7 +18,7 @@ clean:
 
 .PHONY: build
 build:		## Build the PHAR
-BOX=vendor-bin/box/vendor/bin/box
+BOX=vendor/bin/box
 build: bin/php-scoper.phar
 
 
