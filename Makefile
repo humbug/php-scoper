@@ -74,6 +74,7 @@ e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 e2e_011:	## Run end-to-end tests for the fixture set 011: whitelist case
 e2e_011: bin/php-scoper.phar fixtures/set011/vendor
 	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set011
+	cp -R fixtures/set011/tests/ build/set011/tests/
 
 	php build/set011/bin/greet.phar > build/set011/output
 	diff fixtures/set011/expected-output build/set011/output
