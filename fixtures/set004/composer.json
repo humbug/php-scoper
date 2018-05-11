@@ -1,6 +1,6 @@
 {
     "bin": [
-        "bin/greet"
+        "bin/greet.php"
     ],
     "autoload": {
         "psr-4": {

@@ -1,15 +1,4 @@
 {
-    "output": "build/set005/bin/greet.phar",
-    "main": "bin/greet.php",
-    "base-path": "build/set005",
-    "directories": [
-        "src",
-        "vendor"
-    ],
-    "compression": "GZ",
-    "compactors": [
-        "Herrera\\Box\\Compactor\\Json",
-        "Herrera\\Box\\Compactor\\Php"
-    ],
-    "stub": true
+    "output": "../../build/set005/bin/greet.phar",
+    "compactors": ["KevinGH\\Box\\Compactor\\PhpScoper"]
 }
