@@ -1,9 +1,4 @@
 {
-    "base-path": "build/set004",
-    "output": "build/set004/bin/greet.phar",
-    "main": "bin/greet.php",
-    "directories": [
-        "src",
-        "vendor"
-    ]
+    "output": "../../build/set004/bin/greet.phar",
+    "compactors": ["KevinGH\\Box\\Compactor\\PhpScoper"]
 }

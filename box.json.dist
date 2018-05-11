@@ -4,6 +4,10 @@
     "algorithm": "OPENSSL",
     "key": ".travis/php-scoper-private.pem",
 
+    "files": [
+        "src/scoper.inc.php.tpl"
+    ],
+
     "compression": "GZ",
 
     "compactors": [

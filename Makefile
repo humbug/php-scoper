@@ -57,9 +57,7 @@ PHPSCOPER=bin/php-scoper.phar
 .PHONY: e2e_004
 e2e_004:	## Run end-to-end tests for the fixture set 004: source code case
 e2e_004: bin/php-scoper.phar
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set004 --output-dir=../../build/set004 --force --no-config --no-interaction --stop-on-failure
-	composer --working-dir=build/set004 dump-autoload
-	$(PHPNOGC) $(BOX) compile -c build/set004/box.json.dist
+	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set004
 
 	php build/set004/bin/greet.phar > build/set004/output
 	diff fixtures/set004/expected-output build/set004/output
@@ -67,9 +65,7 @@ e2e_004: bin/php-scoper.phar
 .PHONY: e2e_005
 e2e_005:	## Run end-to-end tests for the fixture set 005: third-party code case
 e2e_005: bin/php-scoper.phar fixtures/set005/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set005 --output-dir=../../build/set005 --force --no-config --no-interaction --stop-on-failure
-	composer --working-dir=build/set005 dump-autoload
-	$(PHPNOGC) $(BOX) compile -c build/set005/box.json.dist
+	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set005
 
 	php build/set005/bin/greet.phar > build/set005/output
 	diff fixtures/set005/expected-output build/set005/output
@@ -77,10 +73,7 @@ e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 .PHONY: e2e_011
 e2e_011:	## Run end-to-end tests for the fixture set 011: whitelist case
 e2e_011: bin/php-scoper.phar fixtures/set011/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set011 --output-dir=../../build/set011 --force --no-interaction --stop-on-failure
-	cp -R fixtures/set011/tests build/set011/
-	composer --working-dir=build/set011 dump-autoload
-	$(PHPNOGC) $(BOX) compile -c build/set011/box.json.dist
+	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set011
 
 	php build/set011/bin/greet.phar > build/set011/output
 	diff fixtures/set011/expected-output build/set011/output
@@ -96,9 +89,7 @@ e2e_013: bin/php-scoper.phar
 .PHONY: e2e_014
 e2e_014:	## Run end-to-end tests for the fixture set 014: source code case with psr-0
 e2e_014: bin/php-scoper.phar
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set014 --output-dir=../../build/set014 --force --no-config --no-interaction --stop-on-failure
-	composer --working-dir=build/set014 dump-autoload
-	$(PHPNOGC) $(BOX) compile -c build/set014/box.json.dist
+	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set014
 
 	php build/set014/bin/greet.phar > build/set014/output
 	diff fixtures/set014/expected-output build/set014/output
@@ -106,9 +97,7 @@ e2e_014: bin/php-scoper.phar
 .PHONY: e2e_015
 e2e_015:	## Run end-to-end tests for the fixture set 015: third-party code case with psr-0
 e2e_015: bin/php-scoper.phar fixtures/set015/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set015 --output-dir=../../build/set015 --force --no-config --no-interaction --stop-on-failure
-	composer --working-dir=build/set015 dump-autoload
-	$(PHPNOGC) $(BOX) compile -c build/set015/box.json.dist
+	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set015
 
 	php build/set015/bin/greet.phar > build/set015/output
 	diff fixtures/set015/expected-output build/set015/output
@@ -236,7 +225,7 @@ composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
 vendor-bin/box/composer.lock: composer.lock
-	@echo composer.lock is not up to date.
+	@echo vendor-bin/box/composer.lock is not up to date.
 
 vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
 	@echo covers-validator composer.lock is not up to date
