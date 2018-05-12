@@ -182,9 +182,7 @@ final class AddPrefixCommand extends BaseCommand
         $vendorDirs = [];
         $commonPath = get_common_path(array_keys($filesWithContents));
 
-        foreach ($filesWithContents as $fileWithContents) {
-            [$inputFilePath, $inputContents] = $fileWithContents;
-
+        foreach ($filesWithContents as [$inputFilePath, $inputContents]) {
             $outputFilePath = $output.str_replace($commonPath, '', $inputFilePath);
 
             if (preg_match('~((?:.*)\/vendor)\/.*~', $outputFilePath, $matches)) {
