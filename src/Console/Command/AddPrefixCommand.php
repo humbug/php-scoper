@@ -374,7 +374,7 @@ final class AddPrefixCommand extends BaseCommand
             $config = Configuration::load();
 
             if (null !== $prefix) {
-                $config->withPrefix($prefix);
+                $config = $config->withPrefix($prefix);
             }
 
             if (null === $config->getPrefix()) {
@@ -443,7 +443,7 @@ final class AddPrefixCommand extends BaseCommand
         $config = $this->retrievePaths($input, $config);
 
         if (null !== $prefix) {
-            $config->withPrefix($prefix);
+            $config = $config->withPrefix($prefix);
         }
 
         if (null === $config->getPrefix()) {
