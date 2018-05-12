@@ -34,6 +34,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [PHAR](#phar)
     - [Composer](#composer)
 - [Configuration](#configuration)
+    - [Prefix](#prefix)
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelist][whitelist]
@@ -122,12 +123,18 @@ with a `--config` option.
 use Isolated\Symfony\Component\Finder\Finder;
 
 return [
+    'prefix' => null,
     'finders' => [],
     'patchers' => [],
-    'global_namespace_whitelist' => [],
     'whitelist' => [],
 ];
 ```
+
+
+### Prefix
+
+The prefix to be used to isolate the code. If `null` or `'''` is given, then a random
+prefix will be automatically be generated.
 
 
 ### Finders and paths

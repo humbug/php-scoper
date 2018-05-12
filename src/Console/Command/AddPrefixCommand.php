@@ -363,14 +363,23 @@ final class AddPrefixCommand extends BaseCommand
 
     private function retrieveConfig(InputInterface $input, OutputInterface $output, OutputStyle $io): Configuration
     {
+        $prefix = $input->getOption(self::PREFIX_OPT);
+
         if ($input->getOption(self::NO_CONFIG_OPT)) {
             $io->writeln(
                 'Loading without configuration file.',
-                OutputStyle::VERBOSITY_DEBUG
+                OutputInterface::VERBOSITY_DEBUG
             );
 
             $config = Configuration::load();
-            $config = $config->withPrefix($input->getOption(self::PREFIX_OPT));
+
+            if (null !== $prefix) {
+                $config = $config->withPrefix($prefix);
+            }
+
+            if (null === $config->getPrefix()) {
+                $config = $config->withPrefix($this->generateRandomPrefix());
+            }
 
             return $this->retrievePaths($input, $config);
         }
@@ -395,7 +404,7 @@ final class AddPrefixCommand extends BaseCommand
                         'Config file "<comment>%s</comment>" not found. Skipping.',
                         $configFile
                     ),
-                    OutputStyle::VERBOSITY_DEBUG
+                    OutputInterface::VERBOSITY_DEBUG
                 );
 
                 return self::retrieveConfig($input, $output, $io);
@@ -411,7 +420,7 @@ final class AddPrefixCommand extends BaseCommand
         if (null === $configFile) {
             $io->writeln(
                 'Loading without configuration file.',
-                OutputStyle::VERBOSITY_DEBUG
+                OutputInterface::VERBOSITY_DEBUG
             );
         } elseif (false === file_exists($configFile)) {
             throw new RuntimeException(
@@ -426,14 +435,22 @@ final class AddPrefixCommand extends BaseCommand
                     'Using the configuration file "%s".',
                     $configFile
                 ),
-                OutputStyle::VERBOSITY_DEBUG
+                OutputInterface::VERBOSITY_DEBUG
             );
         }
 
         $config = Configuration::load($configFile);
         $config = $this->retrievePaths($input, $config);
 
-        return $config->withPrefix($input->getOption(self::PREFIX_OPT));
+        if (null !== $prefix) {
+            $config = $config->withPrefix($prefix);
+        }
+
+        if (null === $config->getPrefix()) {
+            $config = $config->withPrefix($this->generateRandomPrefix());
+        }
+
+        return $config;
     }
 
     private function retrievePaths(InputInterface $input, Configuration $config): Configuration
@@ -455,5 +472,10 @@ final class AddPrefixCommand extends BaseCommand
         }
 
         return $path;
+    }
+
+    private function generateRandomPrefix(): string
+    {
+        return uniqid('_PhpScoper', false);
     }
 }
