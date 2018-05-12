@@ -31,14 +31,12 @@ class Configuration
     private const FINDER_KEYWORD = 'finders';
     private const PATCHERS_KEYWORD = 'patchers';
     private const WHITELIST_KEYWORD = 'whitelist';
-    private const GLOBAL_NAMESPACE_KEYWORD = 'global_namespace_whitelist';
 
     private const KEYWORDS = [
         self::PREFIX,
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
         self::WHITELIST_KEYWORD,
-        self::GLOBAL_NAMESPACE_KEYWORD,
     ];
 
     private $path;
@@ -200,7 +198,7 @@ class Configuration
         $prefix = array_key_exists(self::PREFIX, $config) ? $config[self::PREFIX] : null;
 
         if (null === $prefix) {
-            return uniqid('_PhpScoper');
+            return null;
         }
 
         $prefix = trim($prefix);
@@ -345,6 +343,13 @@ class Configuration
         $finder->files()
             ->in($pathsToSearch)
             ->append($filesToAppend)
+            ->filter(function (SplFileInfo $fileInfo): ?bool {
+                if ($fileInfo->isLink()) {
+                    return false;
+                }
+
+                return null;
+            })
             ->sortByName()
         ;
 
