@@ -71,7 +71,7 @@ final class UseStmtCollection implements IteratorAggregate
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
                 if ($useStatement instanceof UseUse) {
-                    if ($name === strtolower($useStatement->alias)) {
+                    if ($name === $useStatement->getAlias()->toLowerString()) {
                         if ($parentNode instanceof FuncCall && 1 === count($node->parts)) {
                             if (Use_::TYPE_FUNCTION === $use_->type) {
                                 return $useStatement->name;
