@@ -48,7 +48,7 @@ final class DirectionaryLocator
             function (array $dictionaries, string $className): array {
                 $class = new ReflectionClass($className);
 
-                if (false === $class->isAbstract() && $class->isSubclassOf(Dictionary::class)) {
+                if (false === $class->isAbstract() && $class->implementsInterface(Dictionary::class)) {
                     $dictionaries[] = $class->newInstanceWithoutConstructor();
                 }
 

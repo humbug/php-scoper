@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
+use function array_map;
+
 final class ScoperAutoloadGenerator
 {
     private $whitelist;
@@ -28,16 +30,7 @@ final class ScoperAutoloadGenerator
 
     public function dump(string $prefix): string
     {
-        $statements = array_map(
-            function (string $whitelist) use ($prefix): string {
-                return sprintf(
-                    'class_exists(\'%s\%s\');',
-                    $prefix,
-                    $whitelist
-                );
-            },
-            $this->whitelist
-        );
+        $statements = $this->createStatements($prefix);
 
         $statements = implode(PHP_EOL, $statements);
 
@@ -53,5 +46,22 @@ $statements
 return \$loader;
 
 PHP;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function createStatements(string $prefix): array
+    {
+        return array_map(
+            function (string $whitelistedElement) use ($prefix): string {
+                return sprintf(
+                    'class_exists(\'%s\%s\');',
+                    $prefix,
+                    $whitelistedElement
+                );
+            },
+            $this->whitelist
+        );
     }
 }
