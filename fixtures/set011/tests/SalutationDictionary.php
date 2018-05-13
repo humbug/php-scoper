@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Set011;
 
-final class SalutationDictionary extends Dictionary
+final class SalutationDictionary implements Dictionary
 {
     /**
      * @inheritdoc

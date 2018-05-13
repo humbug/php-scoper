@@ -88,7 +88,7 @@ e2e_013: bin/php-scoper.phar
 	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
 
 .PHONY: e2e_014
-e2e_014:	## Run end-to-end tests for the fixture set 014: source code case with psr-0
+e2e_014:	## Run end-to-end tests for the fixture set 014: source code case with PSR-0
 e2e_014: bin/php-scoper.phar
 	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set014
 
@@ -96,7 +96,7 @@ e2e_014: bin/php-scoper.phar
 	diff fixtures/set014/expected-output build/set014/output
 
 .PHONY: e2e_015
-e2e_015:	## Run end-to-end tests for the fixture set 015: third-party code case with psr-0
+e2e_015:	## Run end-to-end tests for the fixture set 015: third-party code case with PSR-0
 e2e_015: bin/php-scoper.phar fixtures/set015/vendor
 	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set015
 

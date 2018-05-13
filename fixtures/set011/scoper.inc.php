@@ -12,16 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Isolated\Symfony\Component\Finder\Finder;
-
 return [
-    'finders' => [
-        (new Finder())
-            ->files()
-            ->in(__DIR__)
-            ->exclude('tests')
-            ->notPath('scoper.inc.php')
-    ],
     'whitelist' => [
         \Set011\Dictionary::class,
     ],
