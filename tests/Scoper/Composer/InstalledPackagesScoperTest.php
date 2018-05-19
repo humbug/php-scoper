@@ -134,11 +134,8 @@ class InstalledPackagesScoperTest extends TestCase
             }
         ],
         "description": "Thin assertion library for input validation in business models.",
-        "keywords": [
-            "assert",
-            "assertion",
-            "validation"
-        ]
+        "keywords": [],
+        "platform": {}
     }
 ]
 
@@ -197,11 +194,8 @@ JSON
             }
         ],
         "description": "Thin assertion library for input validation in business models.",
-        "keywords": [
-            "assert",
-            "assertion",
-            "validation"
-        ]
+        "keywords": [],
+        "platform": {}
     }
 ]
 JSON

@@ -36,7 +36,7 @@ final class JsonFileScoper implements Scoper
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
-        $decodedJson = json_decode($contents, true);
+        $decodedJson = json_decode($contents);
 
         $decodedJson = AutoloadPrefixer::prefixPackageAutoloads($decodedJson, $prefix);
 
