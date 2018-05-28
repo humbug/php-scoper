@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Set011;
 
-abstract class Dictionary
+interface Dictionary
 {
     /**
      * @return string[]
      */
-    abstract public function provideWords(): array;
+    public function provideWords(): array;
 }

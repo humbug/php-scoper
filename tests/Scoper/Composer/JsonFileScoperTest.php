@@ -90,7 +90,8 @@ class JsonFileScoperTest extends TestCase
         },
         "files": [
             "src/functions.php"
-        ]
+        ],
+        "classmap": []
     },
     "autoload-dev": {
         "psr-4": {
@@ -99,7 +100,8 @@ class JsonFileScoperTest extends TestCase
         "files": [
             "tests/functions.php"
         ]
-    }
+    },
+    "config": {}
 }
 
 JSON
@@ -115,7 +117,8 @@ JSON
         },
         "files": [
             "src\/functions.php"
-        ]
+        ],
+        "classmap": []
     },
     "autoload-dev": {
         "psr-4": {
@@ -124,7 +127,8 @@ JSON
         "files": [
             "tests\/functions.php"
         ]
-    }
+    },
+    "config": {}
 }
 JSON
         ];

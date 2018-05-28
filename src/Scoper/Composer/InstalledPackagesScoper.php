@@ -38,9 +38,9 @@ final class InstalledPackagesScoper implements Scoper
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
-        $decodedJson = json_decode($contents, true);
+        $decodedJson = json_decode($contents);
 
-        $decodedJson = $this->prefixLockPackages($decodedJson, $prefix);
+        $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix);
 
         return json_encode(
             $decodedJson,

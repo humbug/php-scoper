@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use function array_key_exists;
+use stdClass;
 
 /**
  * @private
@@ -22,37 +22,40 @@ use function array_key_exists;
 final class AutoloadPrefixer
 {
     /**
-     * @param array  $contents Decoded JSON
-     * @param string $prefix
+     * @param stdClass $contents Decoded JSON
+     * @param string   $prefix
      *
      * @return array Prefixed decoded JSON
      */
-    public static function prefixPackageAutoloads(array $contents, string $prefix): array
+    public static function prefixPackageAutoloads(stdClass $contents, string $prefix): stdClass
     {
-        if (isset($contents['autoload'])) {
-            $contents['autoload'] = self::prefixAutoloads($contents['autoload'], $prefix);
+        if (isset($contents->autoload)) {
+            $contents->autoload = self::prefixAutoloads($contents->autoload, $prefix);
         }
 
-        if (isset($contents['autoload-dev'])) {
-            $contents['autoload-dev'] = self::prefixAutoloads($contents['autoload-dev'], $prefix);
+        if (isset($contents->{'autoload-dev'})) {
+            $contents->{'autoload-dev'} = self::prefixAutoloads($contents->{'autoload-dev'}, $prefix);
         }
 
         return $contents;
     }
 
-    private static function prefixAutoloads(array $autoload, string $prefix): array
+    private static function prefixAutoloads(stdClass $autoload, string $prefix): stdClass
     {
-        if (false === array_key_exists('psr-4', $autoload) && false === array_key_exists('psr-0', $autoload)) {
+        if (false === isset($autoload->{'psr-4'}) && false === isset($autoload->{'psr-0'})) {
             return $autoload;
         }
 
-        if (isset($autoload['psr-0'])) {
-            $autoload['psr-4'] = self::mergePSR0And4($autoload['psr-0'], $autoload['psr-4'] ?? []);
+        if (isset($autoload->{'psr-0'})) {
+            $autoload->{'psr-4'} = self::mergePSR0And4(
+                (array) $autoload->{'psr-0'},
+                (array) ($autoload->{'psr-4'} ?? new stdClass())
+            );
         }
-        unset($autoload['psr-0']);
+        unset($autoload->{'psr-0'});
 
-        if (isset($autoload['psr-4'])) {
-            $autoload['psr-4'] = self::prefixAutoload($autoload['psr-4'], $prefix);
+        if (isset($autoload->{'psr-4'})) {
+            $autoload->{'psr-4'} = self::prefixAutoload((array) $autoload->{'psr-4'}, $prefix);
         }
 
         return $autoload;
