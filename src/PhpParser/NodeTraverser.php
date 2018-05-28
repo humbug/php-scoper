@@ -41,7 +41,7 @@ final class NodeTraverser extends PhpParserNodeTraverser
     /**
      * @inheritdoc
      */
-    public function traverse(array $nodes)
+    public function traverse(array $nodes): array
     {
         $nodes = $this->wrapInNamespace($nodes);
         $nodes = $this->replaceGroupUseStatements($nodes);

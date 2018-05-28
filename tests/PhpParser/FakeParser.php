@@ -22,7 +22,7 @@ final class FakeParser implements Parser
     /**
      * @inheritdoc
      */
-    public function parse($code, ErrorHandler $errorHandler = null)
+    public function parse(string $code, ErrorHandler $errorHandler = null)
     {
         throw new \LogicException();
     }
