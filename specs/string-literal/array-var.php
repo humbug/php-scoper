@@ -24,10 +24,10 @@ return [
 <?php
 
 $x = [
-    'Symfony\\Component\\Yaml\\Yaml' => 'Symfony\\Component\\Yaml\\Yaml',
-    '\\Symfony\\Component\\Yaml\\Yaml' => '\\Symfony\\Component\\Yaml\\Yaml',
-    'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml',
-    '\\Humbug\\Symfony\\Component\\Yaml\\Yaml' => '\\Humbug\\Symfony\\Component\\Yaml\\Yaml',
+    'Symfony\\Component\\Yaml\\Yaml' => 'Symfony\\Component\\Yaml\\_Yaml',
+    '\\Symfony\\Component\\Yaml\\Yaml' => '\\Symfony\\Component\\Yaml\\_Yaml',
+    'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml',
+    '\\Humbug\\Symfony\\Component\\Yaml\\Yaml' => '\\Humbug\\Symfony\\Component\\Yaml\\_Yaml',
 ];
 
 ----
@@ -35,7 +35,7 @@ $x = [
 
 namespace Humbug;
 
-$x = ['Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml'];
+$x = ['Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml'];
 
 PHP
     ,
