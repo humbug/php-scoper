@@ -28,7 +28,7 @@
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.1",
-        "humbug/box": "^3.0@dev",
+        "humbug/box": "^3.0@alpha",
         "phpunit/phpunit": "^7.0"
     },
     "replace": {

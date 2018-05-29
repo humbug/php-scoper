@@ -4,12 +4,13 @@ PHPNOGC=php -d zend.enable_gc=0
 
 .PHONY: help
 help:
-	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
+	@echo "\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n"
+	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | awk 'BEGIN {FS = ":"}; {printf "\033[33m%s:\033[0m%s\n", $$1, $$2}'
 
 
-##
-## Build
-##---------------------------------------------------------------------------
+#
+# Build
+#---------------------------------------------------------------------------
 
 .PHONY: clean
 clean:		## Clean all created artifacts
@@ -22,9 +23,9 @@ BOX=vendor/bin/box
 build: bin/php-scoper.phar
 
 
-##
-## Tests
-##---------------------------------------------------------------------------
+#
+# Tests
+#---------------------------------------------------------------------------
 
 .PHONY: test
 test:		## Run all the tests
@@ -182,45 +183,59 @@ tb: vendor
 
 vendor: composer.lock
 	composer install
+	touch $@
 
 vendor/bamarni: composer.lock
 	composer install
+	touch $@
 
 vendor/bin/phpunit: composer.lock
 	composer install
+	touch $@
 
 vendor-bin/box/vendor: vendor-bin/box/composer.lock vendor/bamarni
 	composer bin all install
+	touch $@
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
 	composer bin covers-validator install
+	touch $@
 
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
+	touch $@
 
 fixtures/set011/vendor: fixtures/set011/vendor
 	composer --working-dir=fixtures/set011 dump-autoload
+	touch $@
 
 fixtures/set015/vendor: fixtures/set015/composer.lock
 	composer --working-dir=fixtures/set015 install
+	touch $@
 
 fixtures/set016-symfony-finder/vendor: fixtures/set016-symfony-finder/composer.lock
 	composer --working-dir=fixtures/set016-symfony-finder install
+	touch $@
 
 fixtures/set017-symfony-di/vendor: fixtures/set017-symfony-di/composer.lock
 	composer --working-dir=fixtures/set017-symfony-di install
+	touch $@
 
 fixtures/set018-nikic-parser/vendor: fixtures/set018-nikic-parser/composer.lock
 	composer --working-dir=fixtures/set018-nikic-parser install
+	touch $@
 
 fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer.lock
 	composer --working-dir=fixtures/set019-symfony-console install
+	touch $@
 
 fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
 	composer --working-dir=fixtures/set020-infection install
+	touch $@
 
 fixtures/set021-composer/vendor: fixtures/set021-composer/composer.lock
 	composer --working-dir=fixtures/set021-composer install
+	touch $@
 
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
@@ -257,6 +272,7 @@ fixtures/set021-composer/composer.lock: fixtures/set021-composer/composer.json
 
 bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
 	$(BOX) compile
+	touch $@
 
 box.json: box.json.dist
 	cat box.json.dist | sed -E 's/\"key\": \".+\",//g' | sed -E 's/\"algorithm\": \".+\",//g' > box.json
