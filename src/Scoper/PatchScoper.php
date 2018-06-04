@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
 
 final class PatchScoper implements Scoper
 {
@@ -28,7 +29,7 @@ final class PatchScoper implements Scoper
     /**
      * @inheritdoc
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         $contents = $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 

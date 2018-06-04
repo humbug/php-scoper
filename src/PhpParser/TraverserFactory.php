@@ -18,6 +18,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Whitelist;
 use PhpParser\NodeTraverserInterface;
 
 /**
@@ -32,7 +33,7 @@ class TraverserFactory
         $this->reflector = $reflector;
     }
 
-    public function create(string $prefix, array $whitelist): NodeTraverserInterface
+    public function create(string $prefix, Whitelist $whitelist): NodeTraverserInterface
     {
         $traverser = new NodeTraverser($prefix);
 

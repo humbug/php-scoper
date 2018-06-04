@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -72,7 +73,7 @@ class PatchScoperTest extends TestCase
             },
         ];
 
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $contents, $prefix, $patchers, $whitelist)

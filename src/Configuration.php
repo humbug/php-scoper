@@ -88,7 +88,7 @@ class Configuration
      * @param [string, string][] $filesWithContents           Array of tuple with the first argument being the file path and the second its contents
      * @param callable[]         $patchers                    List of closures which can alter the content of the files being
      *                                                        scoped.
-     * @param string[]           $whitelist                   List of classes that will not be scoped.
+     * @param Whitelist           $whitelist                   List of classes that will not be scoped.
      * @param Closure            $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
      *                                                        returning a boolean which if `true` means the class should be scoped
      *                                                        (i.e. is ignored) or scoped otherwise.
@@ -98,7 +98,7 @@ class Configuration
         ?string $prefix,
         array $filesWithContents,
         array $patchers,
-        array $whitelist
+        Whitelist $whitelist
     ) {
         $this->path = $path;
         $this->prefix = $prefix;
@@ -162,7 +162,7 @@ class Configuration
         return $this->patchers;
     }
 
-    public function getWhitelist(): array
+    public function getWhitelist(): Whitelist
     {
         return $this->whitelist;
     }
@@ -239,10 +239,10 @@ class Configuration
         return $patchers;
     }
 
-    private static function retrieveWhitelist(array $config): array
+    private static function retrieveWhitelist(array $config): Whitelist
     {
         if (false === array_key_exists(self::WHITELIST_KEYWORD, $config)) {
-            return [];
+            return Whitelist::create();
         }
 
         $whitelist = $config[self::WHITELIST_KEYWORD];
@@ -269,7 +269,7 @@ class Configuration
             );
         }
 
-        return $whitelist;
+        return Whitelist::create(...$whitelist);
     }
 
     private static function retrieveFinders(array $config): array

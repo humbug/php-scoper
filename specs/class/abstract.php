@@ -94,7 +94,35 @@ abstract class A
 \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
-        ],
+    ],
+
+    'Declaration of a whitelisted class with FQCN for the whitelist: append aliasing.' => [
+        'whitelist' => ['\Foo\A'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+abstract class A {
+    public function a() {}
+    abstract public function b();
+}
+----
+<?php
+
+namespace Humbug\Foo;
+
+abstract class A
+{
+    public function a()
+    {
+    }
+    public abstract function b();
+}
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+PHP
+    ],
 
     [
         'spec' => <<<'SPEC'
