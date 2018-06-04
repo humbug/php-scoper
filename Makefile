@@ -193,10 +193,6 @@ vendor/bin/phpunit: composer.lock
 	composer install
 	touch $@
 
-vendor-bin/box/vendor: vendor-bin/box/composer.lock vendor/bamarni
-	composer bin all install
-	touch $@
-
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
 	composer bin covers-validator install
 	touch $@
@@ -240,9 +236,6 @@ fixtures/set021-composer/vendor: fixtures/set021-composer/composer.lock
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
-vendor-bin/box/composer.lock: composer.lock
-	@echo vendor-bin/box/composer.lock is not up to date.
-
 vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
 	@echo covers-validator composer.lock is not up to date
 
@@ -270,7 +263,7 @@ fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
 fixtures/set021-composer/composer.lock: fixtures/set021-composer/composer.json
 	@echo fixtures/set021-composer/composer.lock is not up to date.
 
-bin/php-scoper.phar: bin/php-scoper src vendor vendor-bin/box/vendor scoper.inc.php box.json
+bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json
 	$(BOX) compile
 	touch $@
 
