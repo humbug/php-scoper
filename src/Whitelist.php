@@ -37,10 +37,8 @@ final class Whitelist implements Countable
                 );
             }
 
-            $lastElement = $element[strlen($element) - 1];
-
-            if ('*' === $lastElement) {
-                $namespaces[] = substr($element, 0, -1);
+            if ('\*' === substr($element, -2)) {
+                $namespaces[] = substr($element, 0, -2);
             } else {
                 $classes[] = $element;
             }
@@ -62,6 +60,17 @@ final class Whitelist implements Countable
     public function isClassWhitelisted(string $name): bool
     {
         return in_array($name, $this->classes, true);
+    }
+
+    public function isNamespaceWhitelisted(string $name): bool
+    {
+        foreach ($this->namespaces as $namespace) {
+            if (0 === strpos($name, $namespace)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

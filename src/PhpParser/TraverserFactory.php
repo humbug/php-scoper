@@ -44,12 +44,12 @@ class TraverserFactory
 
         $traverser->addVisitor(new NodeVisitor\AppendParentNode());
 
-        $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements));
+        $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $whitelist, $namespaceStatements));
 
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $this->reflector));
 
-        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $nameResolver, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $this->reflector));
 
         $traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
