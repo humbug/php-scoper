@@ -25,7 +25,7 @@ interface Scoper
      * @param string     $contents  File contents
      * @param string     $prefix    Prefix to apply to the file
      * @param callable[] $patchers
-     * @param Whitelist   $whitelist List of classes to exclude from the scoping.
+     * @param Whitelist  $whitelist List of classes to exclude from the scoping.
      *
      * @throws ParsingException
      *

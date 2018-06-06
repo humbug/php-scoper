@@ -88,7 +88,7 @@ class Configuration
      * @param [string, string][] $filesWithContents           Array of tuple with the first argument being the file path and the second its contents
      * @param callable[]         $patchers                    List of closures which can alter the content of the files being
      *                                                        scoped.
-     * @param Whitelist           $whitelist                   List of classes that will not be scoped.
+     * @param Whitelist          $whitelist                   List of classes that will not be scoped.
      * @param Closure            $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
      *                                                        returning a boolean which if `true` means the class should be scoped
      *                                                        (i.e. is ignored) or scoped otherwise.

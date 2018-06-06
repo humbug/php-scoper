@@ -167,7 +167,7 @@ final class AddPrefixCommand extends BaseCommand
     }
 
     /**
-     * @var callable[] $patchers
+     * @var callable[]
      */
     private function scopeFiles(
         string $prefix,
@@ -224,7 +224,7 @@ final class AddPrefixCommand extends BaseCommand
     }
 
     /**
-     * @param callable[]    $patchers
+     * @param callable[] $patchers
      */
     private function scopeFile(
         string $inputFilePath,
