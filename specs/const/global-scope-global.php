@@ -41,6 +41,22 @@ namespace Humbug;
 PHP
     ],
 
+    'Constant call in the global namespace which is whitelisted: add root namespace statement' => [
+        'whitelist' => ['\*'],
+        'payload' => <<<'PHP'
+<?php
+
+DUMMY_CONST;
+----
+<?php
+
+namespace {
+    \DUMMY_CONST;
+}
+
+PHP
+    ],
+
     [
         'spec' => <<<'SPEC'
 Internal constant call in the global namespace:

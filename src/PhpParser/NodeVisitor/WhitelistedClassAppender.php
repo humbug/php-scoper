@@ -88,7 +88,10 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
             }
 
             /** @var Class_ $stmt */
-            $name = FullyQualified::concat((string) $namespace->name, (string) $stmt->name);
+            $name = null === $namespace->name
+                ? new FullyQualified((string) $stmt->name, $stmt->getAttributes())
+                : FullyQualified::concat((string) $namespace->name, (string) $stmt->name)
+            ;
             $originalName = $name->slice(1);
 
             if (false === $this->whitelist->isClassWhitelisted((string) $originalName)) {

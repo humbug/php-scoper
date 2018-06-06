@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
     ],
 
-    'Declaration in the global namespace: prefix non-internal classes.' => <<<'PHP'
+    'Declaration in the global namespace: prefix non-internal classes' => <<<'PHP'
 <?php
 
 interface B {}
@@ -86,7 +86,152 @@ class A
 PHP
     ,
 
-    'Declaration in a namespace: prefix the namespace.' => <<<'PHP'
+    'Declaration in the global namespace which is whitelisted: add root namespace statement' => [
+        'whitelist' => ['\*'],
+        'payload' => <<<'PHP'
+<?php
+
+interface B {}
+interface C {}
+
+new class {
+    public function test() {}
+};
+new class extends A implements B, C, Iterator {};
+new class() {
+    public $foo;
+};
+new class($a, $b) extends A {
+    use T;
+};
+
+class A {
+    public function test() {
+        return new class($this) extends A {
+            const A = 'B';
+        };
+    }
+}
+----
+<?php
+
+namespace {
+    interface B
+    {
+    }
+    interface C
+    {
+    }
+    new class
+    {
+        public function test()
+        {
+        }
+    };
+    new class extends \A implements \B, \C, \Iterator
+    {
+    };
+    new class
+    {
+        public $foo;
+    };
+    new class($a, $b) extends \A
+    {
+        use T;
+    };
+    class A
+    {
+        public function test()
+        {
+            return new class($this) extends \A
+            {
+                const A = 'B';
+            };
+        }
+    }
+}
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Declaration in the global namespace with some whitelisted classes:
+- add prefixed namespace
+- prefix the classes
+- append the class alias statements for the whitelisted class declarations
+SPEC
+        ,
+        'whitelist' => ['A', 'C'],
+        'payload' => <<<'PHP'
+<?php
+
+interface B {}
+interface C {}
+
+new class {
+    public function test() {}
+};
+new class extends A implements B, C, Iterator {};
+new class() {
+    public $foo;
+};
+new class($a, $b) extends A {
+    use T;
+};
+
+class A {
+    public function test() {
+        return new class($this) extends A {
+            const A = 'B';
+        };
+    }
+}
+----
+<?php
+
+namespace Humbug;
+
+interface B
+{
+}
+interface C
+{
+}
+\class_alias('Humbug\\C', 'C', \false);
+new class
+{
+    public function test()
+    {
+    }
+};
+new class extends \Humbug\A implements \Humbug\B, \Humbug\C, \Iterator
+{
+};
+new class
+{
+    public $foo;
+};
+new class($a, $b) extends \Humbug\A
+{
+    use T;
+};
+class A
+{
+    public function test()
+    {
+        return new class($this) extends \Humbug\A
+        {
+            const A = 'B';
+        };
+    }
+}
+\class_alias('Humbug\\A', 'A', \false);
+
+PHP
+    ],
+
+    'Declaration in a namespace: prefix the namespace' => <<<'PHP'
 <?php
 
 namespace Foo;

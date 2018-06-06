@@ -81,6 +81,29 @@ $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 PHP
     ],
 
+    'FQCN string argument on classes belonging to a whitelisted namespace: transform into a FQCN' => [
+        'whitelist' => ['Symfony\Component\*'],
+        'payload' => <<<'PHP'
+<?php
+
+$x = 'Symfony\\Component\\Yaml\\Yaml';
+$x = '\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+
+----
+<?php
+
+namespace Humbug;
+
+$x = 'Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Yaml';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+
+PHP
+    ],
+
     'FQCN string argument formed by concatenated strings: do nothing' => <<<'PHP'
 <?php
 
