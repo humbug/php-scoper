@@ -38,7 +38,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelist][whitelist]
-        - [Class Whitelisting](#class-whitelisting)
+        - [Class & Constant Whitelisting](#class-constant-whitelisting)
         - [Namespace Whitelisting](#namespace-whitelisting)
 - [Building A Scoped PHAR](#building-a-scoped-phar)
     - [With Box](#with-box)
@@ -261,9 +261,9 @@ a PHPUnit PHAR with isolated code, you still want the PHAR to be able to
 understand the `PHPUnit\Framework\TestCase` class.
 
 
-### Class whitelisting
+### Class & Constant whitelisting
 
-You can whitelist classes and interfaces like so:
+You can whitelist classes, interfaces and constants like so like so:
 
 ```php
 <?php declare(strict_types=1);
@@ -273,15 +273,26 @@ You can whitelist classes and interfaces like so:
 return [
     'whitelist' => [
         'PHPUnit\Framework\TestCase',
+        'PHPUNIT_VERSION',
     ],
 ];
 ```
 
-Note that only classes are whitelisted, this does not affect constants,
-functions or traits. This whitelisting will actually not prevent the
-scoping to operate, i.e. the class or interface will still be prefixed,
-but a `class_alias()` statement will be registered pointing the prefixed
-class to the non-prefixed one.
+This will _not_ work on traits or functions.
+
+The class aliasing mechanism is done like follows:
+- Prefix the class or interface as usual
+- Append a `class_alias()` statement at the end of the class/interface declaration to link the prefixed symbol to the
+  non prefixed one
+- Append a `class_exists()` statement right after the autoloader is registered to trigger the loading of the method
+  which will ensure the `class_alias()` statement is executed
+
+It is done this way to ensure prefixed and whitelisted classes can co-exist together without breaking the autoloading.
+
+The constant aliasing mechanism is done by transforming the constant declaration into a `define()` statement when this
+is not already the case. Note that there is a difference here since `define()` defines a constant at runtime whereas
+`const` defines it at compile time. You have a more details post regarding the differences
+[here](https://stackoverflow.com/a/3193704/3902761)
 
 
 ### Namespace whitelisting
