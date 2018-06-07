@@ -311,7 +311,7 @@ Note this works as well for the global namespace:
 
 return [
     'whitelist' => [
-        '\*',
+        '*',
     ],
 ];
 ```

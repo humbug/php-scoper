@@ -73,9 +73,13 @@ class WhitelistTest extends TestCase
 
         yield [['Acme\Foo'], ['Acme\Foo'], []];
 
+        yield [['\Acme\Foo'], ['Acme\Foo'], []];
+
         yield [['Acme\Foo\*'], [], ['Acme\Foo']];
 
         yield [['\*'], [], ['']];
+
+        yield [['*'], [], ['']];
 
         yield [['Acme\Foo', 'Acme\Foo\*', '\*'], ['Acme\Foo'], ['Acme\Foo', '']];
     }
