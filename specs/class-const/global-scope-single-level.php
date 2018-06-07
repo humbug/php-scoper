@@ -46,6 +46,27 @@ class Command
 PHP
     ],
 
+    'Constant call on a class belonging to the global namespace which is whitelisted: add root namespace statement' => [
+        'whitelist' => ['\*'],
+        'payload' => <<<'PHP'
+<?php
+
+class Command {}
+
+Command::MAIN_CONST;
+----
+<?php
+
+namespace {
+    class Command
+    {
+    }
+    \Command::MAIN_CONST;
+}
+
+PHP
+    ],
+
     [
         'spec' => <<<'SPEC'
 FQ constant call on a class belonging to the global namespace:

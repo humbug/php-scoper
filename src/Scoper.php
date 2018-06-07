@@ -25,11 +25,11 @@ interface Scoper
      * @param string     $contents  File contents
      * @param string     $prefix    Prefix to apply to the file
      * @param callable[] $patchers
-     * @param string[]   $whitelist List of classes to exclude from the scoping.
+     * @param Whitelist  $whitelist List of classes to exclude from the scoping.
      *
      * @throws ParsingException
      *
      * @return string Contents of the file with the prefix applied
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist): string;
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string;
 }

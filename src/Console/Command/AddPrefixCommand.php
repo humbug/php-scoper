@@ -19,6 +19,7 @@ use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
+use Humbug\PhpScoper\Whitelist;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -165,12 +166,15 @@ final class AddPrefixCommand extends BaseCommand
         return 0;
     }
 
+    /**
+     * @var callable[]
+     */
     private function scopeFiles(
         string $prefix,
         array $filesWithContents,
         string $output,
         array $patchers,
-        array $whitelist,
+        Whitelist $whitelist,
         bool $stopOnFailure,
         ConsoleLogger $logger
     ): void {
@@ -220,14 +224,7 @@ final class AddPrefixCommand extends BaseCommand
     }
 
     /**
-     * @param string        $inputFilePath
-     * @param string        $outputFilePath
-     * @param string        $inputContents
-     * @param string        $prefix
-     * @param callable[]    $patchers
-     * @param string[]      $whitelist
-     * @param bool          $stopOnFailure
-     * @param ConsoleLogger $logger
+     * @param callable[] $patchers
      */
     private function scopeFile(
         string $inputFilePath,
@@ -235,7 +232,7 @@ final class AddPrefixCommand extends BaseCommand
         string $outputFilePath,
         string $prefix,
         array $patchers,
-        array $whitelist,
+        Whitelist $whitelist,
         bool $stopOnFailure,
         ConsoleLogger $logger
     ): void {

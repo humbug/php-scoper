@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 
@@ -27,7 +28,7 @@ class TraverserFactoryTest extends TestCase
     {
         $prefix = 'Humbug';
 
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $classReflector = new Reflector(
             (new BetterReflection())->classReflector(),

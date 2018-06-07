@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
@@ -58,20 +59,18 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     ];
 
     private $prefix;
+    private $whitelist;
     private $nameResolver;
     private $reflector;
 
-    /**
-     * @param string                     $prefix
-     * @param FullyQualifiedNameResolver $nameResolver
-     * @param Reflector                  $reflector
-     */
     public function __construct(
         string $prefix,
+        Whitelist $whitelist,
         FullyQualifiedNameResolver $nameResolver,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
+        $this->whitelist = $whitelist;
         $this->nameResolver = $nameResolver;
         $this->reflector = $reflector;
     }
@@ -144,6 +143,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         // Skip if is already prefixed
         if ($this->prefix === $resolvedName->getFirst()) {
+            return $resolvedName;
+        }
+
+        // Skip if the node namespace is whitelisted
+        if ($this->whitelist->isNamespaceWhitelisted((string) $resolvedName)) {
             return $resolvedName;
         }
 

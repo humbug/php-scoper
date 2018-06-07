@@ -18,6 +18,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Whitelist;
 use PhpParser\NodeTraverserInterface;
 
 /**
@@ -32,7 +33,7 @@ class TraverserFactory
         $this->reflector = $reflector;
     }
 
-    public function create(string $prefix, array $whitelist): NodeTraverserInterface
+    public function create(string $prefix, Whitelist $whitelist): NodeTraverserInterface
     {
         $traverser = new NodeTraverser($prefix);
 
@@ -43,13 +44,13 @@ class TraverserFactory
 
         $traverser->addVisitor(new NodeVisitor\AppendParentNode());
 
-        $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $namespaceStatements));
+        $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $whitelist, $namespaceStatements));
 
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
-        $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $this->reflector));
 
-        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $nameResolver, $this->reflector));
-        $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $this->reflector));
 
         $traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
 

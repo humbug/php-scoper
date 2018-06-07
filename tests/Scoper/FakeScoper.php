@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
 use LogicException;
 
 final class FakeScoper implements Scoper
@@ -22,7 +23,7 @@ final class FakeScoper implements Scoper
     /**
      * @inheritdoc
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         throw new LogicException();
     }

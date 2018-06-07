@@ -62,7 +62,7 @@ try {
 PHP
     ,
 
-    'Catch an custom exception class' => <<<'PHP'
+    'Catch a custom exception class' => <<<'PHP'
 <?php
 
 try {
@@ -82,7 +82,51 @@ try {
 PHP
     ,
 
-    'Catch an custom exception class in a namespace' => <<<'PHP'
+    'Catch a whitelisted custom exception class' => [
+        'whitelist' => ['FooException'],
+        'payload' => <<<'PHP'
+<?php
+
+try {
+    echo "foo";
+} catch (FooException $t) {
+}
+----
+<?php
+
+namespace Humbug;
+
+try {
+    echo "foo";
+} catch (\Humbug\FooException $t) {
+}
+
+PHP
+    ],
+
+    'Catch a custom exception class which belongs to the whitelisted root namespace' => [
+        'whitelist' => ['\*'],
+        'payload' => <<<'PHP'
+<?php
+
+try {
+    echo "foo";
+} catch (FooException $t) {
+}
+----
+<?php
+
+namespace {
+    try {
+        echo "foo";
+    } catch (\FooException $t) {
+    }
+}
+
+PHP
+    ],
+
+    'Catch a custom exception class in a namespace' => <<<'PHP'
 <?php
 
 namespace Acme;
@@ -103,6 +147,54 @@ try {
 
 PHP
     ,
+
+    'Catch a whitelisted custom exception class in a namespace' => [
+        'whitelist' => ['Acme\FooException'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Acme;
+
+try {
+    echo "foo";
+} catch (FooException $t) {
+}
+----
+<?php
+
+namespace Humbug\Acme;
+
+try {
+    echo "foo";
+} catch (\Humbug\Acme\FooException $t) {
+}
+
+PHP
+    ],
+
+    'Catch a custom exception class in a whitelisted namespace' => [
+        'whitelist' => ['Acme\*'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Acme;
+
+try {
+    echo "foo";
+} catch (FooException $t) {
+}
+----
+<?php
+
+namespace Acme;
+
+try {
+    echo "foo";
+} catch (\Acme\FooException $t) {
+}
+
+PHP
+    ],
 
     'Catch an custom exception class in a namespace imported with a use statement' => <<<'PHP'
 <?php

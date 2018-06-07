@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\FakeScoper;
+use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -38,7 +39,7 @@ class InstalledPackagesScoperTest extends TestCase
         $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -71,7 +72,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $prefix = 'Foo';
         $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 

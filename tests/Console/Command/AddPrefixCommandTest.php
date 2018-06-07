@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -173,7 +174,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    []
+                    Whitelist::create()
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -236,7 +237,7 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         [],
-                        []
+                        Whitelist::create()
                     )
                     ->willReturn($prefixedContents)
                 ;
@@ -249,7 +250,7 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         [],
-                        []
+                        Whitelist::create()
                     )
                     ->willThrow(new \RuntimeException('Scoping of the file failed'))
                 ;
@@ -309,7 +310,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    []
+                    Whitelist::create()
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -370,7 +371,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    []
+                    Whitelist::create()
                 )
                 ->willReturn($prefixedFileContents)
             ;
@@ -424,7 +425,7 @@ EOF;
                     }
                 ),
                 [],
-                []
+                Whitelist::create()
             )
             ->willReturn('')
         ;
@@ -482,7 +483,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    []
+                    Whitelist::create()
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -528,7 +529,7 @@ EOF;
                 Argument::any(),
                 'MyPrefix',
                 [],
-                []
+                Whitelist::create()
             )
             ->willReturn('')
         ;
@@ -571,7 +572,7 @@ EOF;
                 Argument::any(),
                 'MyPrefix',
                 [],
-                []
+                Whitelist::create()
             )
             ->willReturn('')
         ;
@@ -629,7 +630,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    []
+                    Whitelist::create()
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -691,7 +692,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    []
+                    Whitelist::create()
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -782,7 +783,7 @@ EOF;
 
                         return true;
                     }),
-                    []
+                    Whitelist::create()
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -867,7 +868,7 @@ EOF;
                     $fileContents,
                     'MyPrefix',
                     [],
-                    []
+                    Whitelist::create()
                 )
                 ->willThrow($scopingException = new RuntimeException('Could not scope file'))
             ;

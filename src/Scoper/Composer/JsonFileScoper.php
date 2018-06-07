@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
 
 final class JsonFileScoper implements Scoper
 {
@@ -30,7 +31,7 @@ final class JsonFileScoper implements Scoper
      *
      * {@inheritdoc}
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         if (1 !== preg_match('/composer\.json$/', $filePath)) {
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);

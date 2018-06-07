@@ -123,6 +123,74 @@ PHP
 
     [
         'spec' => <<<'SPEC'
+Constant call on a namespaced class belonging to a whitelisted namespace:
+- prefix the namespace
+- prefix the class
+- transforms the call into a FQ call to avoid autoloading issues
+SPEC
+        ,
+        'whitelist' => ['X\PHPUnit\*'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace X\PHPUnit {
+    class Command {}
+}
+
+namespace X {
+    PHPUnit\Command::MAIN_CONST;
+}
+----
+<?php
+
+namespace X\PHPUnit;
+
+class Command
+{
+}
+namespace Humbug\X;
+
+\X\PHPUnit\Command::MAIN_CONST;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Constant call on a namespaced class belonging to a whitelisted namespace (2):
+- prefix the namespace
+- prefix the class
+- transforms the call into a FQ call to avoid autoloading issues
+SPEC
+        ,
+        'whitelist' => ['\*'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace X\PHPUnit {
+    class Command {}
+}
+
+namespace X {
+    PHPUnit\Command::MAIN_CONST;
+}
+----
+<?php
+
+namespace X\PHPUnit;
+
+class Command
+{
+}
+namespace X;
+
+\X\PHPUnit\Command::MAIN_CONST;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
 FQ constant call on a whitelisted namespaced class:
 - prefix the namespace
 - do not prefix the class

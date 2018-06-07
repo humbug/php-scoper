@@ -19,6 +19,7 @@ use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
 use LogicException;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Name;
@@ -153,7 +154,7 @@ class PhpScoperTest extends TestCase
         $prefix = 'Humbug';
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $contents = <<<'PHP'
 <?php
@@ -181,7 +182,7 @@ PHP;
         $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
@@ -213,7 +214,7 @@ PHP;
         $prefix = 'Humbug';
         $filePath = 'file';
         $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $contents = <<<'PHP'
 <?php
@@ -241,7 +242,7 @@ PHP;
         $prefix = 'Humbug';
         $filePath = 'hello';
         $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $contents = <<<'PHP'
 #!/usr/bin/env php
@@ -272,7 +273,7 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $contents = <<<'PHP'
 #!/usr/bin/env bash
@@ -318,7 +319,7 @@ PHP;
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         try {
             $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
@@ -343,7 +344,7 @@ PHP;
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = ['Foo'];
+        $whitelist = Whitelist::create('Foo');
 
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist)
@@ -419,7 +420,7 @@ PHP;
     /**
      * @dataProvider provideValidFiles
      */
-    public function test_can_scope_valid_files(string $spec, string $contents, string $prefix, array $whitelist, string $expected)
+    public function test_can_scope_valid_files(string $spec, string $contents, string $prefix, Whitelist $whitelist, string $expected)
     {
         $filePath = 'file.php';
 
@@ -541,7 +542,7 @@ OUTPUT
             $spec,
             $payloadParts[0],   // Input
             $fixtureSet['prefix'] ?? $meta['prefix'],
-            $fixtureSet['whitelist'] ?? $meta['whitelist'],
+            Whitelist::create(...($fixtureSet['whitelist'] ?? $meta['whitelist'])),
             $payloadParts[1],   // Expected output
         ];
     }

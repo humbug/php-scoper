@@ -142,6 +142,94 @@ PHP
 
     [
         'spec' => <<<'SPEC'
+Use statement of a whitelisted class belonging to the global scope:
+- wrap the statement in a prefixed namespace
+- prefix the use statement
+- append a class alias statement after the class declaration
+SPEC
+        ,
+        'whitelist' => ['Foo'],
+        'payload' => <<<'PHP'
+<?php
+
+class Foo {}
+
+use Foo;
+
+----
+<?php
+
+namespace Humbug;
+
+class Foo
+{
+}
+\class_alias('Humbug\\Foo', 'Foo', \false);
+use Humbug\Foo;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Use statement of a class belonging to the global scope which has been whitelisted:
+- wrap the statement in a prefixed namespace
+- prefix the use statement
+- append a class alias statement after the class declaration
+SPEC
+        ,
+        'whitelist' => ['\*'],
+        'payload' => <<<'PHP'
+<?php
+
+class Foo {}
+
+use Foo;
+
+----
+<?php
+
+namespace {
+    class Foo
+    {
+    }
+    use Foo;
+}
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Use statement of a whitelisted class belonging to the global scope which has been whitelisted:
+- wrap the statement in a prefixed namespace
+- prefix the use statement
+- append a class alias statement after the class declaration
+SPEC
+        ,
+        'whitelist' => ['Foo', '\*'],
+        'payload' => <<<'PHP'
+<?php
+
+class Foo {}
+
+use Foo;
+
+----
+<?php
+
+namespace {
+    class Foo
+    {
+    }
+    use Foo;
+}
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
 Use statement of two-level class:
 - prefix the namespaces
 - prefix the use statement
@@ -238,6 +326,74 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo\Bar;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Use statement of two-level class belonging to a whitelisted namespace:
+- prefix the namespaces
+- prefix the use statement
+SPEC
+        ,
+        'whitelist' => ['Foo\*'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Foo\Bar;
+}
+
+----
+<?php
+
+namespace Foo;
+
+class Bar
+{
+}
+namespace Humbug;
+
+use Foo\Bar;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Use statement of whitelisted two-level class belonging to a whitelisted namespace:
+- prefix the namespaces
+- prefix the use statement
+SPEC
+        ,
+        'whitelist' => ['Foo', 'Foo\*'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo {
+    class Bar {}
+}
+
+namespace {
+    use Foo\Bar;
+}
+
+----
+<?php
+
+namespace Foo;
+
+class Bar
+{
+}
+namespace Humbug;
+
+use Foo\Bar;
 
 PHP
     ],

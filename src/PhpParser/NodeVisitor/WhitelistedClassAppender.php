@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ConstFetch;
@@ -56,12 +57,9 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
 {
     private $whitelist;
 
-    /**
-     * @param string[] $whitelists
-     */
-    public function __construct(array $whitelists)
+    public function __construct(Whitelist $whitelist)
     {
-        $this->whitelist = $whitelists;
+        $this->whitelist = $whitelist;
     }
 
     /**
@@ -90,10 +88,13 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
             }
 
             /** @var Class_ $stmt */
-            $name = FullyQualified::concat((string) $namespace->name, (string) $stmt->name);
+            $name = null === $namespace->name
+                ? new FullyQualified((string) $stmt->name, $stmt->getAttributes())
+                : FullyQualified::concat((string) $namespace->name, (string) $stmt->name)
+            ;
             $originalName = $name->slice(1);
 
-            if (false === in_array((string) $originalName, $this->whitelist, true)) {
+            if (false === $this->whitelist->isClassWhitelisted((string) $originalName)) {
                 continue;
             }
 

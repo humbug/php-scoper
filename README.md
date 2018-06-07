@@ -38,6 +38,8 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelist][whitelist]
+        - [Class Whitelisting](#class-whitelisting)
+        - [Namespace Whitelisting](#namespace-whitelisting)
 - [Building A Scoped PHAR](#building-a-scoped-phar)
     - [With Box](#with-box)
         - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
@@ -258,7 +260,10 @@ the bundled code of your PHAR and the consumer code. For example if you have
 a PHPUnit PHAR with isolated code, you still want the PHAR to be able to
 understand the `PHPUnit\Framework\TestCase` class.
 
-A way to achieve this is by specifying a list of classes to not prefix:
+
+### Class whitelisting
+
+You can whitelist classes and interfaces like so:
 
 ```php
 <?php declare(strict_types=1);
@@ -272,11 +277,44 @@ return [
 ];
 ```
 
-Note that only classes are whitelisted, this does not affect constants
-or functions.
+Note that only classes are whitelisted, this does not affect constants,
+functions or traits. This whitelisting will actually not prevent the
+scoping to operate, i.e. the class or interface will still be prefixed,
+but a `class_alias()` statement will be registered pointing the prefixed
+class to the non-prefixed one.
 
-For whitelist to work, you then require to load `vendor/scoper-autoload.php`
-instead of the traditional `vendor/autoload.php`.
+
+### Namespace whitelisting
+
+If you want to be more generic and whitelist a whole namespace, you can
+do it so like this:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+return [
+    'whitelist' => [
+        'PHPUnit\Framework\*',
+    ],
+];
+```
+
+Now anything under the `PHPUnit\Framework` namespace will not be prefixed.
+Note this works as well for the global namespace:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+return [
+    'whitelist' => [
+        '*',
+    ],
+];
+```
 
 
 ## Building A Scoped PHAR

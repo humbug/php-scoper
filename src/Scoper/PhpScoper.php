@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -45,7 +46,7 @@ final class PhpScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, array $whitelist): string
+    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         if (false === $this->isPhpFile($filePath, $contents)) {
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);

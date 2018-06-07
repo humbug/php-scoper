@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -50,11 +51,13 @@ use function preg_match;
 final class StringScalarPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
+    private $whitelist;
     private $reflector;
 
-    public function __construct(string $prefix, Reflector $reflector)
+    public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
     {
         $this->prefix = $prefix;
+        $this->whitelist = $whitelist;
         $this->reflector = $reflector;
     }
 
@@ -109,10 +112,12 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         // Skip if is already prefixed
         if ($this->prefix === $stringName->getFirst()) {
             $newStringName = $stringName;
-        // Check if the class can be prefixed: class from the global namespace
+        // Check if the class can be prefixed: class not from the global namespace or which the namespace is not
+        // whitelisted
         } elseif (
             1 === count($stringName->parts)
             || $this->reflector->isClassInternal($stringName->toString())
+            || $this->whitelist->isNamespaceWhitelisted((string) $stringName)
         ) {
             $newStringName = $stringName;
         } else {
