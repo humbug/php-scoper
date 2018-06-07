@@ -265,6 +265,33 @@ abstract class A
 PHP
     ],
 
+    'Declaration of a class belonging to a whitelisted namespace' => [
+        'whitelist' => ['\*'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+abstract class A {
+    public function a() {}
+    abstract public function b();
+}
+----
+<?php
+
+namespace Foo;
+
+abstract class A
+{
+    public function a()
+    {
+    }
+    public abstract function b();
+}
+
+PHP
+    ],
+
     'Multiple declarations in different namespaces with whitelisted classes: prefix each namespace' => [
         'whitelist' => ['Foo\WA', 'Bar\WB', 'WC'],
         'payload' => <<<'PHP'
