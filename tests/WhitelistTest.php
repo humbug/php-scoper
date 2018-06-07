@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use PHPUnit\Framework\TestCase;
-use Reflection;
 use ReflectionClass;
 
 /**
@@ -63,6 +62,16 @@ class WhitelistTest extends TestCase
     public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $class, bool $expected)
     {
         $actual = $whitelist->isNamespaceWhitelisted($class);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @dataProvider provideWhitelistToConvert
+     */
+    public function test_it_can_be_converted_back_into_an_array(Whitelist $whitelist, array $expected)
+    {
+        $actual = $whitelist->toArray();
 
         $this->assertSame($expected, $actual);
     }
@@ -159,6 +168,54 @@ class WhitelistTest extends TestCase
             Whitelist::create('\*'),
             'Acme\Foo',
             true,
+        ];
+    }
+
+    public function provideWhitelistToConvert()
+    {
+        yield [
+            Whitelist::create(),
+            [],
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo'),
+            ['Acme\Foo'],
+        ];
+
+        yield [
+            Whitelist::create('\Acme\Foo'),
+            ['Acme\Foo'],
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo\*'),
+            ['Acme\Foo\*'],
+        ];
+
+        yield [
+            Whitelist::create('\Acme\Foo\*'),
+            ['Acme\Foo\*'],
+        ];
+
+        yield [
+            Whitelist::create('*'),
+            ['*'],
+        ];
+
+        yield [
+            Whitelist::create('\*'),
+            ['*'],
+        ];
+
+        yield [
+            Whitelist::create('Acme', 'Acme\Foo', 'Acme\Foo\*', '*'),
+            ['Acme', 'Acme\Foo', 'Acme\Foo\*', '*'],
+        ];
+
+        yield [
+            Whitelist::create('Acme', 'Acme'),
+            ['Acme'],
         ];
     }
 }

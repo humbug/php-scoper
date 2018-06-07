@@ -22,7 +22,8 @@ return [
 
     [
         'spec' => <<<'SPEC'
-Constant call on an imported single-level namespace
+Constant call on an imported single-level namespace:
+- add prefixed namespace
 - do not prefix the use statement (see tests related to single-level classes)
 - prefix the constant call
 - transform the call into a FQ call
@@ -94,7 +95,7 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-Constant call on an imported single-level namespace
+Whitelisted constant call on an imported single-level namespace
 - do not prefix the use statement (see tests related to single-level classes)
 - prefix the constant call: the whitelist only works on classes
 - transform the call into a FQ call
@@ -127,11 +128,11 @@ class Foo
 }
 namespace Humbug\Foo;
 
-const DUMMY_CONST = '';
+\define('Foo\\DUMMY_CONST', '');
 namespace Humbug;
 
 use Humbug\Foo;
-\Humbug\Foo\DUMMY_CONST;
+\Foo\DUMMY_CONST;
 
 PHP
     ],

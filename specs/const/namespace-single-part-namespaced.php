@@ -69,7 +69,7 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-Namespaced constant call on a whitelisted constant
+Whitelisted namespaced constant call on a whitelisted constant
 - prefix the namespace
 - prefix the call: the whitelist only works for classes
 SPEC
@@ -87,6 +87,30 @@ PHPUnit\DUMMY_CONST;
 namespace Humbug\A;
 
 \Humbug\A\PHPUnit\DUMMY_CONST;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Whitelisted FQ namespaced constant call on a whitelisted constant
+- prefix the namespace
+- prefix the call: the whitelist only works for classes
+SPEC
+        ,
+        'whitelist' => ['PHPUnit\DUMMY_CONST'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace A;
+
+\PHPUnit\DUMMY_CONST;
+----
+<?php
+
+namespace Humbug\A;
+
+\PHPUnit\DUMMY_CONST;
 
 PHP
     ],

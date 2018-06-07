@@ -78,4 +78,30 @@ use const Humbug\DUMMY_CONST as FOO;
 
 PHP
     ],
+
+    [
+        'spec' => <<<'SPEC'
+Whitelisted constant call imported with an aliased use statement:
+- prefix the namespace
+SPEC
+        ,
+        'whitelist' => ['DUMMY_CONST'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace A;
+
+use const DUMMY_CONST as FOO;
+
+\FOO;
+----
+<?php
+
+namespace Humbug\A;
+
+use const DUMMY_CONST as FOO;
+\Humbug\FOO;
+
+PHP
+    ],
 ];

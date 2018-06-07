@@ -45,6 +45,30 @@ PHP
 
     [
         'spec' => <<<'SPEC'
+Whitelisted constant call in a namespace:
+- prefix the namespace
+- do nothing: the constant can either belong to the same namespace or the global namespace
+SPEC
+        ,
+        'whitelist' => ['DUMMY_CONST'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace A;
+
+DUMMY_CONST;
+----
+<?php
+
+namespace Humbug\A;
+
+DUMMY_CONST;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
 FQ constant call in a namespace:
 - prefix the namespace
 - prefix the constant call
@@ -62,6 +86,30 @@ namespace A;
 namespace Humbug\A;
 
 \Humbug\DUMMY_CONST;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Whitelisted FQ constant call in a namespace:
+- prefix the namespace
+- prefix the constant call
+SPEC
+    ,
+        'whitelist' => ['DUMMY_CONST'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace A;
+
+\DUMMY_CONST;
+----
+<?php
+
+namespace Humbug\A;
+
+\DUMMY_CONST;
 
 PHP
     ],

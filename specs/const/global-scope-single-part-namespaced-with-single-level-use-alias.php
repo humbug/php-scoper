@@ -107,9 +107,8 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-Constant call on an imported single-level namespace
+Whitelisted onstant call on an imported single-level namespace
 - do not prefix the use statement (see tests related to single-level classes)
-- prefix the constant call: the whitelist only works on classes
 - transform the call into a FQ call
 SPEC
         ,
@@ -140,11 +139,11 @@ class Foo
 }
 namespace Humbug\Foo;
 
-const DUMMY_CONST = '';
+\define('Foo\\DUMMY_CONST', '');
 namespace Humbug;
 
 use Humbug\Foo as A;
-\Humbug\Foo\DUMMY_CONST;
+\Foo\DUMMY_CONST;
 
 PHP
     ],

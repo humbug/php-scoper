@@ -53,6 +53,7 @@ class TraverserFactory
         $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $this->reflector));
 
         $traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
+        $traverser->addVisitor(new NodeVisitor\ConstStmtReplacer($whitelist, $nameResolver));
 
         return $traverser;
     }

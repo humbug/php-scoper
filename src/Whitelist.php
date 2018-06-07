@@ -16,6 +16,9 @@ namespace Humbug\PhpScoper;
 
 use Countable;
 use InvalidArgumentException;
+use function array_map;
+use function array_merge;
+use function array_unique;
 use function count;
 use function in_array;
 use function sprintf;
@@ -55,7 +58,10 @@ final class Whitelist implements Countable
             }
         }
 
-        return new self($classes, $namespaces);
+        return new self(
+            array_unique($classes),
+            array_unique($namespaces)
+        );
     }
 
     /**
@@ -90,5 +96,17 @@ final class Whitelist implements Countable
     public function count(): int
     {
         return count($this->classes) + count($this->namespaces);
+    }
+
+    public function toArray(): array
+    {
+        $namespaces = array_map(
+            function (string $namespace): string {
+                return '' === $namespace ? '*' : $namespace.'\*';
+            },
+            $this->namespaces
+        );
+
+        return array_merge($this->classes, $namespaces);
     }
 }

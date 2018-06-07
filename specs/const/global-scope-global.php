@@ -41,6 +41,28 @@ namespace Humbug;
 PHP
     ],
 
+    [
+        'spec' => <<<'SPEC'
+Whitelisted constant call in the global namespace:
+- add prefixed namespace
+- transforms the call into a FQ call
+SPEC
+        ,
+        'whitelist' => ['DUMMY_CONST'],
+        'payload' => <<<'PHP'
+<?php
+
+DUMMY_CONST;
+----
+<?php
+
+namespace Humbug;
+
+\DUMMY_CONST;
+
+PHP
+    ],
+
     'Constant call in the global namespace which is whitelisted: add root namespace statement' => [
         'whitelist' => ['\*'],
         'payload' => <<<'PHP'

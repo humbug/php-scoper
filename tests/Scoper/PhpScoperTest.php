@@ -38,6 +38,8 @@ use Symfony\Component\Finder\Finder;
 use Throwable;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
+use function implode;
+use function sprintf;
 
 class PhpScoperTest extends TestCase
 {
@@ -448,6 +450,11 @@ PHP;
 
         $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
+        $formatedWhitelist = 0 === count($whitelist)
+            ? '[]'
+            : sprintf('[%s]', implode(', ', $whitelist->toArray()))
+        ;
+
         $titleSeparator = str_repeat(
             '=',
             min(
@@ -467,6 +474,7 @@ $spec
 
 $titleSeparator
 INPUT
+whitelist: $formatedWhitelist
 $titleSeparator
 $contents
 
@@ -496,6 +504,8 @@ OUTPUT
         } else {
             $files = (new Finder())->files()->in(self::SPECS_PATH);
         }
+
+        $files->sortByName();
 
         foreach ($files as $file) {
             try {
