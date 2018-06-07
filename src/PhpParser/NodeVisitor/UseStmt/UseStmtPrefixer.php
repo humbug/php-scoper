@@ -72,7 +72,10 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         if (Use_::TYPE_CONSTANT === $useType) {
-            return false === $this->reflector->isConstantInternal((string) $use->name);
+            return (
+                false === $this->whitelist->isClassWhitelisted((string) $use->name)
+                && false === $this->reflector->isConstantInternal((string) $use->name)
+            );
         }
 
         return Use_::TYPE_NORMAL !== $useType || false === $this->reflector->isClassInternal((string) $use->name);

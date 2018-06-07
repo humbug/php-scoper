@@ -125,12 +125,7 @@ use const Humbug\Foo\BAR;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a namespaced constant which has been whitelisted:
-- prefix the use statement: whitelist is only for classes
-SPEC
-        ,
+    'Constant use statement for a namespaced constant which has been whitelisted: do nothing' => [
         'whitelist' => ['Foo\BAR'],
         'payload' => <<<'PHP'
 <?php
@@ -142,7 +137,7 @@ use const Foo\BAR;
 
 namespace Humbug;
 
-use const Humbug\Foo\BAR;
+use const Foo\BAR;
 
 PHP
     ],

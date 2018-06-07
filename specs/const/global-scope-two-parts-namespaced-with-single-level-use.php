@@ -81,9 +81,9 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-Namespaced constant call with namespace partially imported
+Whitelisted namespaced constant call with namespace partially imported
+- add prefixed namespace
 - do not prefix the use statement (cf. tests related to global classes)
-- prefix the call
 - transform the call in a FQ call
 SPEC
         ,
@@ -105,7 +105,7 @@ class Foo
 {
 }
 use Humbug\Foo;
-\Humbug\Foo\Bar\DUMMY_CONST;
+\Foo\Bar\DUMMY_CONST;
 
 PHP
     ],

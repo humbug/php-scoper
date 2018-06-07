@@ -64,10 +64,10 @@ PHP
     [
         'spec' => <<<'SPEC'
 Namespaced constant call on a whitelisted constant
-- prefix the call: the whitelist only works for classes
+- add prefixed namespace
 SPEC
         ,
-        'whitelist' => ['PHPUnit\DUMMY_CONST'],
+        'whitelist' => ['PHPUnit\Command\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 
@@ -77,7 +77,7 @@ PHPUnit\Command\DUMMY_CONST;
 
 namespace Humbug;
 
-\Humbug\PHPUnit\Command\DUMMY_CONST;
+\PHPUnit\Command\DUMMY_CONST;
 
 PHP
     ],

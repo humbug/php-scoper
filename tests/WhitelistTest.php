@@ -67,6 +67,16 @@ class WhitelistTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * @dataProvider provideWhitelistToConvert
+     */
+    public function test_it_can_be_converted_back_into_an_array(Whitelist $whitelist, array $expected)
+    {
+        $actual = $whitelist->toArray();
+
+        $this->assertSame($expected, $actual);
+    }
+
     public function provideWhitelists()
     {
         yield [[], [], []];
@@ -159,6 +169,54 @@ class WhitelistTest extends TestCase
             Whitelist::create('\*'),
             'Acme\Foo',
             true,
+        ];
+    }
+
+    public function provideWhitelistToConvert()
+    {
+        yield [
+            Whitelist::create(),
+            [],
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo'),
+            ['Acme\Foo'],
+        ];
+
+        yield [
+            Whitelist::create('\Acme\Foo'),
+            ['Acme\Foo'],
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo\*'),
+            ['Acme\Foo\*'],
+        ];
+
+        yield [
+            Whitelist::create('\Acme\Foo\*'),
+            ['Acme\Foo\*'],
+        ];
+
+        yield [
+            Whitelist::create('*'),
+            ['*'],
+        ];
+
+        yield [
+            Whitelist::create('\*'),
+            ['*'],
+        ];
+
+        yield [
+            Whitelist::create('Acme', 'Acme\Foo', 'Acme\Foo\*', '*'),
+            ['Acme', 'Acme\Foo', 'Acme\Foo\*', '*'],
+        ];
+
+        yield [
+            Whitelist::create('Acme', 'Acme'),
+            ['Acme'],
         ];
     }
 }

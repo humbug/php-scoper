@@ -158,13 +158,17 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             }
         }
 
-        // Constants have a fallback autoloading so we cannot prefix them when the name is ambiguous
-        // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
         if ($parentNode instanceof ConstFetch) {
+            if ($this->whitelist->isClassWhitelisted($resolvedName->toString())) {
+                return $resolvedName;
+            }
+
             if ($this->reflector->isConstantInternal($resolvedName->toString())) {
                 return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
             }
 
+            // Constants have a fallback autoloading so we cannot prefix them when the name is ambiguous
+            // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
             if (false === ($resolvedName instanceof FullyQualified)) {
                 return $resolvedName;
             }

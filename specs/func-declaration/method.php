@@ -27,7 +27,7 @@ Method declarations:
 - prefix the appropriate classes
 SPEC
         ,
-        'whitelist' => ['X\Y'],
+        'whitelist' => ['X\Y', 'BAR_CONST'],
         'payload' => <<<'PHP'
 <?php
 
@@ -45,6 +45,9 @@ namespace X {
 
 namespace {
     class Main {
+        const FOO_CONST = 'foo';
+        const BAR_CONST = 'bar';
+    
         function foo(
             Foo $arg0,
             \Foo $arg1,
@@ -53,7 +56,9 @@ namespace {
             ArrayIterator $arg4,
             \ArrayIterator $arg5,
             X\Y $arg6,
-            \X\Y $arg7
+            \X\Y $arg7,
+            string $foo = self::FOO_CONST,
+            string $bar = self::BAR_CONST
         ) {}
 
         static function foo(
@@ -64,7 +69,9 @@ namespace {
             ArrayIterator $arg4,
             \ArrayIterator $arg5,
             X\Y $arg6,
-            \X\Y $arg7
+            \X\Y $arg7,
+            string $foo = self::FOO_CONST,
+            string $bar = self::BAR_CONST
         ) {}
     }
 }
@@ -91,10 +98,12 @@ namespace Humbug;
 
 class Main
 {
-    function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7)
+    const FOO_CONST = 'foo';
+    const BAR_CONST = 'bar';
+    function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = self::FOO_CONST, string $bar = self::BAR_CONST)
     {
     }
-    static function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7)
+    static function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = self::FOO_CONST, string $bar = self::BAR_CONST)
     {
     }
 }

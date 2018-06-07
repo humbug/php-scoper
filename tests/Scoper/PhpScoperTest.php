@@ -20,6 +20,7 @@ use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use function implode;
 use LogicException;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Name;
@@ -34,6 +35,7 @@ use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
+use function sprintf;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 use function Humbug\PhpScoper\create_fake_patcher;
@@ -448,6 +450,11 @@ PHP;
 
         $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
+        $formatedWhitelist = 0 === count($whitelist)
+            ? '[]'
+            : sprintf('[%s]', implode(', ', $whitelist->toArray()))
+        ;
+
         $titleSeparator = str_repeat(
             '=',
             min(
@@ -467,6 +474,7 @@ $spec
 
 $titleSeparator
 INPUT
+whitelist: $formatedWhitelist
 $titleSeparator
 $contents
 
@@ -496,6 +504,8 @@ OUTPUT
         } else {
             $files = (new Finder())->files()->in(self::SPECS_PATH);
         }
+
+        $files->sortByName();
 
         foreach ($files as $file) {
             try {
