@@ -14,12 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Countable;
+use InvalidArgumentException;
 use function array_map;
 use function array_merge;
 use function array_unique;
-use Countable;
-use function implode;
-use InvalidArgumentException;
 use function count;
 use function in_array;
 use function sprintf;

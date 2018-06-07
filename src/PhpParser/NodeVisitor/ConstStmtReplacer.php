@@ -14,31 +14,19 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use function get_class;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
-use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
-use InvalidArgumentException;
 use PhpParser\Node;
-use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\ArrayItem;
-use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeVisitorAbstract;
-use function is_string;
-use function preg_match;
 
 /**
- * Replaces const declaration by define
+ * Replaces const declaration by define.
  *
  * ```
  * const DUMMY_CONST = 'foo';
@@ -96,7 +84,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                 new FullyQualified('define'),
                 [
                     new String_((string) $resolvedConstantName),
-                    $constant->value
+                    $constant->value,
                 ]
             )
         );

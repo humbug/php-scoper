@@ -20,7 +20,6 @@ use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
-use function implode;
 use LogicException;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Name;
@@ -35,11 +34,12 @@ use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
-use function sprintf;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
+use function implode;
+use function sprintf;
 
 class PhpScoperTest extends TestCase
 {
