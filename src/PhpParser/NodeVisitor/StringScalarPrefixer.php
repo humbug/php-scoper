@@ -117,7 +117,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         } elseif (
             1 === count($stringName->parts)
             || $this->reflector->isClassInternal($stringName->toString())
-            || $this->whitelist->isNamespaceWhitelisted((string) $stringName->slice(0, -1))
+            || $this->whitelist->isNamespaceWhitelisted((string) $stringName)
         ) {
             $newStringName = $stringName;
         } else {

@@ -147,7 +147,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         // Skip if the node namespace is whitelisted
-        if ($this->whitelist->isNamespaceWhitelisted((string) $resolvedName->slice(0, -1))) {
+        if ($this->whitelist->isNamespaceWhitelisted((string) $resolvedName)) {
             return $resolvedName;
         }
 
