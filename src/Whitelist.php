@@ -76,7 +76,7 @@ final class Whitelist implements Countable
     public function isNamespaceWhitelisted(string $name): bool
     {
         foreach ($this->namespaces as $namespace) {
-            if (('' === $namespace && '' === $name) || 0 === strpos($name, $namespace)) {
+            if ('' === $namespace || 0 === strpos($name, $namespace)) {
                 return true;
             }
         }

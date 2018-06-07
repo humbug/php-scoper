@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
@@ -30,12 +31,14 @@ use PhpParser\NodeVisitorAbstract;
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
     private $prefix;
+    private $whitelist;
     private $reflector;
 
-    public function __construct(string $prefix, Reflector $reflector)
+    public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
     {
         $this->prefix = $prefix;
         $this->reflector = $reflector;
+        $this->whitelist = $whitelist;
     }
 
     /**
@@ -56,6 +59,11 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
 
         // If is already from the prefix namespace
         if ($this->prefix === $use->name->getFirst()) {
+            return false;
+        }
+
+        // If is whitelisted
+        if ($this->whitelist->isNamespaceWhitelisted((string) $use->name)) {
             return false;
         }
 

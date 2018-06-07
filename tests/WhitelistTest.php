@@ -12,8 +12,149 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use PHPUnit\Framework\TestCase;
+namespace Humbug\PhpScoper;
 
+use PHPUnit\Framework\TestCase;
+use Reflection;
+use ReflectionClass;
+
+/**
+ * @covers \Humbug\PhpScoper\Whitelist
+ */
 class WhitelistTest extends TestCase
 {
+    /**
+     * @dataProvider provideWhitelists
+     */
+    public function test_it_can_be_created_from_a_list_of_strings(
+        array $whitelist,
+        array $expectedClasses,
+        array $expectedNamespaces
+    ) {
+        $whitelistObject = Whitelist::create(...$whitelist);
+
+        $whitelistReflection = new ReflectionClass(Whitelist::class);
+
+        $whitelistClassReflection = $whitelistReflection->getProperty('classes');
+        $whitelistClassReflection->setAccessible(true);
+        $actualClasses = $whitelistClassReflection->getValue($whitelistObject);
+
+        $whitelistNamespaceReflection = $whitelistReflection->getProperty('namespaces');
+        $whitelistNamespaceReflection->setAccessible(true);
+        $actualNamespaces = $whitelistNamespaceReflection->getValue($whitelistObject);
+
+        $this->assertSame($expectedClasses, $actualClasses);
+        $this->assertSame($expectedNamespaces, $actualNamespaces);
+    }
+
+    /**
+     * @dataProvider provideClassWhitelists
+     */
+    public function test_it_can_tell_if_a_class_is_whitelisted(Whitelist $whitelist, string $class, bool $expected)
+    {
+        $actual = $whitelist->isClassWhitelisted($class);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @dataProvider provideNamespaceWhitelists
+     */
+    public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $class, bool $expected)
+    {
+        $actual = $whitelist->isNamespaceWhitelisted($class);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    public function provideWhitelists()
+    {
+        yield [[], [], []];
+
+        yield [['Acme\Foo'], ['Acme\Foo'], []];
+
+        yield [['Acme\Foo\*'], [], ['Acme\Foo']];
+
+        yield [['\*'], [], ['']];
+
+        yield [['Acme\Foo', 'Acme\Foo\*', '\*'], ['Acme\Foo'], ['Acme\Foo', '']];
+    }
+
+    public function provideClassWhitelists()
+    {
+        yield [
+            Whitelist::create(),
+            'Acme\Foo',
+            false,
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo'),
+            'Acme\Foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo'),
+            'Acme\Foo\Bar',
+            false,
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo'),
+            'Acme',
+            false,
+        ];
+
+        yield [
+            Whitelist::create('Acme'),
+            'Acme',
+            true,
+        ];
+
+        yield [
+            Whitelist::create('Acme\*'),
+            'Acme',
+            false,
+        ];
+    }
+
+    public function provideNamespaceWhitelists()
+    {
+        yield [
+            Whitelist::create(),
+            'Acme\Foo',
+            false,
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo\*'),
+            'Acme\Foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create('Acme\*'),
+            'Acme\Foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create('Acme\Foo\*'),
+            'Acme\Foo\Bar',
+            true,
+        ];
+
+        yield [
+            Whitelist::create('\*'),
+            'Acme',
+            true,
+        ];
+
+        yield [
+            Whitelist::create('\*'),
+            'Acme\Foo',
+            true,
+        ];
+    }
 }

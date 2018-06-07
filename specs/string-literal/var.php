@@ -23,6 +23,10 @@ return [
     'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
 <?php
 
+$x = 'Yaml';
+$x = '\\Yaml';
+$x = 'Closure';
+$x = '\\Closure';
 $x = 'Symfony\\Component\\Yaml\\Yaml';
 $x = '\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
@@ -33,6 +37,10 @@ $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 namespace Humbug;
 
+$x = 'Yaml';
+$x = '\\Yaml';
+$x = 'Closure';
+$x = '\\Closure';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
