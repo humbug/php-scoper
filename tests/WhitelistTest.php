@@ -34,9 +34,7 @@ class WhitelistTest extends TestCase
 
         $whitelistReflection = new ReflectionClass(Whitelist::class);
 
-        $whitelistClassReflection = $whitelistReflection->getProperty('classes');
-        $whitelistClassReflection->setAccessible(true);
-        $actualClasses = $whitelistClassReflection->getValue($whitelistObject);
+        $actualClasses = $whitelistObject->getClassWhitelistArray();
 
         $whitelistNamespaceReflection = $whitelistReflection->getProperty('namespaces');
         $whitelistNamespaceReflection->setAccessible(true);

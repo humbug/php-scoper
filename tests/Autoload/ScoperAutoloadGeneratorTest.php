@@ -14,16 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
+use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 
 class ScoperAutoloadGeneratorTest extends TestCase
 {
     public function test_generate_the_autoload()
     {
-        $whitelist = [
-            'A\Foo',
-            'B\Bar',
-        ];
+        $whitelist = Whitelist::create('A\Foo', 'B\Bar');
 
         $prefix = 'Humbug';
 

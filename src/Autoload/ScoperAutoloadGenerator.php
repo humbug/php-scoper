@@ -15,15 +15,13 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Autoload;
 
 use function array_map;
+use Humbug\PhpScoper\Whitelist;
 
 final class ScoperAutoloadGenerator
 {
     private $whitelist;
 
-    /**
-     * @param string[] $whitelist
-     */
-    public function __construct(array $whitelist)
+    public function __construct(Whitelist $whitelist)
     {
         $this->whitelist = $whitelist;
     }
@@ -61,7 +59,7 @@ PHP;
                     $whitelistedElement
                 );
             },
-            $this->whitelist
+            $this->whitelist->getClassWhitelistArray()
         );
     }
 }
