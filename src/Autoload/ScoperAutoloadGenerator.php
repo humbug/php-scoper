@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use function array_map;
 use Humbug\PhpScoper\Whitelist;
+use function array_map;
 
 final class ScoperAutoloadGenerator
 {
