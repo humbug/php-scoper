@@ -288,6 +288,9 @@ The class aliasing mechanism is done like follows:
   which will ensure the `class_alias()` statement is executed
 
 It is done this way to ensure prefixed and whitelisted classes can co-exist together without breaking the autoloading.
+The `class_exists()` statements are dumped in `vendor/scoper-autoload.php`, do not forget to include this file in favour
+of `vendor/autoload.php`. This part is however sorted out by [Box][box] if you are using it with the
+[`PhpScoper` compactor][php-scoper-integration]. 
 
 The constant aliasing mechanism is done by transforming the constant declaration into a `define()` statement when this
 is not already the case. Note that there is a difference here since `define()` defines a constant at runtime whereas

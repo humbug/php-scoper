@@ -79,6 +79,14 @@ final class Whitelist implements Countable
         return in_array($name, $this->classes, true);
     }
 
+    /**
+     * @return string[]
+     */
+    public function getClassWhitelistArray(): array
+    {
+        return $this->classes;
+    }
+
     public function isNamespaceWhitelisted(string $name): bool
     {
         foreach ($this->namespaces as $namespace) {
