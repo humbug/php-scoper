@@ -17,6 +17,12 @@ use Isolated\Symfony\Component\Finder\Finder as IsolatedFinder;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
 
+if (PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg') {
+    echo PHP_EOL.'PHP-Scoper may only be invoked from a command line'.\PHP_EOL;
+
+    exit(1);
+}
+
 $findAutoload = function () {
     if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {
         // Is installed via composer
