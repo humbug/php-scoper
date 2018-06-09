@@ -18,7 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => true,
+        'whitelist-global-constants' => false,
     ],
 
     [
@@ -85,6 +85,30 @@ namespace Humbug;
 const FOO_CONST = 'foo';
 \define('BAR_CONST', 'foo');
 function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = \Humbug\FOO_CONST, string $bar = \BAR_CONST)
+{
+}
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+Function declaration in the global namespace:
+- prefix the namespace statements
+- prefix the appropriate classes
+SPEC
+        ,
+        'whitelist-global-constants' => true,
+        'payload' => <<<'PHP'
+<?php
+
+function foo(string $foo = FOO_CONST) {}
+----
+<?php
+
+namespace Humbug;
+
+function foo(string $foo = \FOO_CONST)
 {
 }
 

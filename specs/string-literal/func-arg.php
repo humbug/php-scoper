@@ -57,8 +57,8 @@ foo('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
 
 namespace Humbug;
 
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Symfony\\Component\\Yaml\\Yaml');
 \Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 \Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 

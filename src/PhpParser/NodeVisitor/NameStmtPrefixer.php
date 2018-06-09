@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use function count;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
@@ -171,6 +172,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
             if (false === ($resolvedName instanceof FullyQualified)) {
                 return $resolvedName;
+            }
+
+            if (count($resolvedName->parts) === 1 && $this->whitelist->whitelistGlobalConstants()) {
+                return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
             }
         }
 

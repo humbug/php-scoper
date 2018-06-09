@@ -82,8 +82,8 @@ $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 namespace Humbug;
 
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 

@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global constant usage in the global scope',
+        'title' => 'Global constant usage in the global scope with the global constants whitelisted',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => false,
+        'whitelist-global-constants' => true,
     ],
 
     [
@@ -37,7 +37,7 @@ DUMMY_CONST;
 
 namespace Humbug;
 
-\Humbug\DUMMY_CONST;
+\DUMMY_CONST;
 
 PHP
     ],
@@ -116,7 +116,7 @@ DUMMY_CONST;
 
 namespace Humbug;
 
-\Humbug\DUMMY_CONST;
+\DUMMY_CONST;
 
 PHP
     ],

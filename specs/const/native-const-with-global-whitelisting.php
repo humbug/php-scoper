@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Native constant calls',
+        'title' => 'Native constant calls with the global constants whitelisted',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => false,
+        'whitelist-global-constants' => true,
     ],
 
     'Internal function in a namespace: make the call into a FQ call' => <<<'PHP'

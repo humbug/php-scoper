@@ -450,10 +450,12 @@ PHP;
 
         $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $formatedWhitelist = 0 === count($whitelist)
+        $formattedWhitelist = 0 === count($whitelist)
             ? '[]'
             : sprintf('[%s]', implode(', ', $whitelist->toArray()))
         ;
+
+        $formattedWhitelistGlobalConstants = $whitelist->whitelistGlobalConstants() ? 'true' : 'false';
 
         $titleSeparator = str_repeat(
             '=',
@@ -474,7 +476,8 @@ $spec
 
 $titleSeparator
 INPUT
-whitelist: $formatedWhitelist
+whitelist: $formattedWhitelist
+whitelist global constants: $formattedWhitelistGlobalConstants
 $titleSeparator
 $contents
 
