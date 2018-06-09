@@ -28,7 +28,7 @@ class TraverserFactoryTest extends TestCase
     {
         $prefix = 'Humbug';
 
-        $whitelist = Whitelist::create('Foo');
+        $whitelist = Whitelist::create(true, 'Foo');
 
         $classReflector = new Reflector(
             (new BetterReflection())->classReflector(),

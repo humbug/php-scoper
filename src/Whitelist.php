@@ -29,8 +29,9 @@ final class Whitelist implements Countable
 {
     private $classes;
     private $namespaces;
+    private $whitelistGlobalConstants;
 
-    public static function create(string ...$elements): self
+    public static function create(bool $whitelistGlobalConstants, string ...$elements): self
     {
         $classes = [];
         $namespaces = [];
@@ -59,6 +60,7 @@ final class Whitelist implements Countable
         }
 
         return new self(
+            $whitelistGlobalConstants,
             array_unique($classes),
             array_unique($namespaces)
         );
@@ -68,10 +70,16 @@ final class Whitelist implements Countable
      * @param string[] $classes
      * @param string[] $namespaces
      */
-    private function __construct(array $classes, array $namespaces)
+    private function __construct(bool $whitelistGlobalConstants, array $classes, array $namespaces)
     {
+        $this->whitelistGlobalConstants = $whitelistGlobalConstants;
         $this->classes = $classes;
         $this->namespaces = $namespaces;
+    }
+
+    public function whitelistGlobalConstants(): bool
+    {
+        return $this->whitelistGlobalConstants;
     }
 
     public function isClassWhitelisted(string $name): bool

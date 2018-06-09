@@ -18,6 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
+        'whitelist-global-constants' => true,
     ],
 
     'Declaration in the global namespace: warp in a prefixed namespace.' => <<<'PHP'

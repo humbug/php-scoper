@@ -18,6 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
+        'whitelist-global-constants' => true,
     ],
 
     'some statements made directly in the global namespace: wrap them in a namespace statement' => <<<'PHP'

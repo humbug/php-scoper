@@ -18,6 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
+        'whitelist-global-constants' => true,
     ],
 
     // As it is extremely rare to use a `use const` statement for a built-in constant from the

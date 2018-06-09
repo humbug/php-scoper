@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper;
 
 use Closure;
 use InvalidArgumentException;
+use function is_bool;
 use Iterator;
 use RuntimeException;
 use SplFileInfo;
@@ -31,6 +32,7 @@ class Configuration
     private const FINDER_KEYWORD = 'finders';
     private const PATCHERS_KEYWORD = 'patchers';
     private const WHITELIST_KEYWORD = 'whitelist';
+    private const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
 
     private const KEYWORDS = [
         self::PREFIX,
@@ -242,34 +244,50 @@ class Configuration
     private static function retrieveWhitelist(array $config): Whitelist
     {
         if (false === array_key_exists(self::WHITELIST_KEYWORD, $config)) {
-            return Whitelist::create();
-        }
+            $whitelist = [];
+        } else {
+            $whitelist = $config[self::WHITELIST_KEYWORD];
 
-        $whitelist = $config[self::WHITELIST_KEYWORD];
-
-        if (false === is_array($whitelist)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected whitelist to be an array of strings, found "%s" instead.',
-                    gettype($whitelist)
-                )
-            );
-        }
-
-        foreach ($whitelist as $index => $className) {
-            if (is_string($className)) {
-                continue;
+            if (false === is_array($whitelist)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected whitelist to be an array of strings, found "%s" instead.',
+                        gettype($whitelist)
+                    )
+                );
             }
 
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected whitelist to be an array of string, the "%d" element is not.',
-                    $index
-                )
-            );
+            foreach ($whitelist as $index => $className) {
+                if (is_string($className)) {
+                    continue;
+                }
+
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected whitelist to be an array of string, the "%d" element is not.',
+                        $index
+                    )
+                );
+            }
         }
 
-        return Whitelist::create(...$whitelist);
+        if (false === array_key_exists(self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD, $config)) {
+            $whitelistGlobalConstants = true;
+        } else {
+            $whitelistGlobalConstants = $config[self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD];
+
+            if (false === is_bool($whitelistGlobalConstants)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected %s to be a boolean, found "%s" instead.',
+                        self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
+                        gettype($whitelist)
+                    )
+                );
+            }
+        }
+
+        return Whitelist::create($whitelistGlobalConstants, ...$whitelist);
     }
 
     private static function retrieveFinders(array $config): array
