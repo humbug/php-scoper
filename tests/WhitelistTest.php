@@ -44,7 +44,6 @@ class WhitelistTest extends TestCase
         $this->assertSame($expectedClasses, $actualClasses);
         $this->assertSame($expectedNamespaces, $actualNamespaces);
 
-
         $whitelistObject = Whitelist::create(false, ...$whitelist);
 
         $this->assertFalse($whitelistObject->whitelistGlobalConstants());

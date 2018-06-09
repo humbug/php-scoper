@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use function count;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
@@ -36,6 +35,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
+use function count;
 use function in_array;
 
 /**
@@ -174,7 +174,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 return $resolvedName;
             }
 
-            if (count($resolvedName->parts) === 1 && $this->whitelist->whitelistGlobalConstants()) {
+            if (1 === count($resolvedName->parts) && $this->whitelist->whitelistGlobalConstants()) {
                 return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
             }
         }

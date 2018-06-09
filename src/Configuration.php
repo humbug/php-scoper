@@ -16,11 +16,11 @@ namespace Humbug\PhpScoper;
 
 use Closure;
 use InvalidArgumentException;
-use function is_bool;
 use Iterator;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
+use function is_bool;
 
 /**
  * @final
