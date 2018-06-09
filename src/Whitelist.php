@@ -61,9 +61,7 @@ final class Whitelist implements Countable
             $original[] = $element;
 
             if ('\*' === substr($element, -2)) {
-                $namespace = strtolower(substr($element, 0, -2));
-
-                $namespaces[] = $namespace;
+                $namespaces[] = strtolower(substr($element, 0, -2));
             } elseif ('*' === $element) {
                 $namespaces[] = '';
             } else {
@@ -124,7 +122,7 @@ final class Whitelist implements Countable
         return array_filter(
             $this->original,
             function (string $name): bool {
-                return '' !== $name && '\*' !== substr($name, -2);
+                return '*' !== $name && '\*' !== substr($name, -2);
             }
         );
     }

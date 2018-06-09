@@ -92,7 +92,7 @@ class WhitelistTest extends TestCase
     {
         yield [[], [], [], []];
 
-        yield [['Acme\Foo'], [], ['acme\foo'], ['acme\Foo']];
+        yield [['Acme\Foo'], [], ['Acme\Foo'], ['acme\Foo']];
 
         yield [['Acme\Foo\*'], ['acme\foo'], [], []];
 
@@ -103,7 +103,7 @@ class WhitelistTest extends TestCase
         yield [
             ['Acme\Foo', 'Acme\Foo\*', '\*'],
             ['acme\foo', ''],
-            ['acme\foo'],
+            ['Acme\Foo'],
             ['acme\Foo'],
         ];
     }
