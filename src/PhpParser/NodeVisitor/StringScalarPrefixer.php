@@ -109,6 +109,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             $string->getAttributes()
         );
 
+        $isConstantNode = $this->isConstantNode($string);
+
         // Skip if is already prefixed
         if ($this->prefix === $stringName->getFirst()) {
             $newStringName = $stringName;
@@ -117,7 +119,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         } elseif (
             1 === count($stringName->parts)
             || $this->reflector->isClassInternal($stringName->toString())
-            || $this->whitelist->isClassWhitelisted((string) $stringName)
+            || (false === $isConstantNode && $this->whitelist->isClassWhitelisted((string) $stringName))
+            || ($isConstantNode && $this->whitelist->isConstantWhitelisted((string) $stringName))
             || $this->whitelist->isNamespaceWhitelisted((string) $stringName)
         ) {
             $newStringName = $stringName;
@@ -126,5 +129,24 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         return new String_($newStringName->toString(), $string->getAttributes());
+    }
+
+    private function isConstantNode(String_ $node): bool
+    {
+        $parent = AppendParentNode::getParent($node);
+
+        if (false === ($parent instanceof Arg)) {
+            return false;
+        }
+
+        /** @var Arg $parent */
+        $argParent = AppendParentNode::getParent($parent);
+
+        if (false === ($argParent instanceof FuncCall)) {
+            return false;
+        }
+
+        /* @var FuncCall $argParent */
+        return 'define' === (string) $argParent->name;
     }
 }

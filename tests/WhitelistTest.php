@@ -27,8 +27,9 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_be_created_from_a_list_of_strings(
         array $whitelist,
+        array $expectedNamespaces,
         array $expectedClasses,
-        array $expectedNamespaces
+        array $expectedConstants
     ) {
         $whitelistObject = Whitelist::create(true, ...$whitelist);
 
@@ -40,15 +41,21 @@ class WhitelistTest extends TestCase
         $whitelistNamespaceReflection->setAccessible(true);
         $actualNamespaces = $whitelistNamespaceReflection->getValue($whitelistObject);
 
+        $whitelistConstantReflection = $whitelistReflection->getProperty('constants');
+        $whitelistConstantReflection->setAccessible(true);
+        $actualConstants = $whitelistConstantReflection->getValue($whitelistObject);
+
         $this->assertTrue($whitelistObject->whitelistGlobalConstants());
-        $this->assertSame($expectedClasses, $actualClasses);
         $this->assertSame($expectedNamespaces, $actualNamespaces);
+        $this->assertSame($expectedClasses, $actualClasses);
+        $this->assertSame($expectedConstants, $actualConstants);
 
         $whitelistObject = Whitelist::create(false, ...$whitelist);
 
         $this->assertFalse($whitelistObject->whitelistGlobalConstants());
         $this->assertSame($expectedClasses, $actualClasses);
         $this->assertSame($expectedNamespaces, $actualNamespaces);
+        $this->assertSame($expectedConstants, $actualConstants);
     }
 
     /**
@@ -83,19 +90,22 @@ class WhitelistTest extends TestCase
 
     public function provideWhitelists()
     {
-        yield [[], [], []];
+        yield [[], [], [], []];
 
-        yield [['Acme\Foo'], ['Acme\Foo'], []];
+        yield [['Acme\Foo'], [], ['Acme\Foo'], ['acme\Foo']];
 
-        yield [['\Acme\Foo'], ['Acme\Foo'], []];
+        yield [['Acme\Foo\*'], ['acme\foo'], [], []];
 
-        yield [['Acme\Foo\*'], [], ['Acme\Foo']];
+        yield [['\*'], [''], [], []];
 
-        yield [['\*'], [], ['']];
+        yield [['*'], [''], [], []];
 
-        yield [['*'], [], ['']];
-
-        yield [['Acme\Foo', 'Acme\Foo\*', '\*'], ['Acme\Foo'], ['Acme\Foo', '']];
+        yield [
+            ['Acme\Foo', 'Acme\Foo\*', '\*'],
+            ['acme\foo', ''],
+            ['Acme\Foo'],
+            ['acme\Foo'],
+        ];
     }
 
     public function provideClassWhitelists()
@@ -152,14 +162,32 @@ class WhitelistTest extends TestCase
         ];
 
         yield [
+            Whitelist::create(true, 'Acme\Foo\*'),
+            'acme\foo',
+            true,
+        ];
+
+        yield [
             Whitelist::create(true, 'Acme\*'),
             'Acme\Foo',
             true,
         ];
 
         yield [
+            Whitelist::create(true, 'Acme\*'),
+            'acme\foo',
+            true,
+        ];
+
+        yield [
             Whitelist::create(true, 'Acme\Foo\*'),
             'Acme\Foo\Bar',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, 'Acme\Foo\*'),
+            'acme\foo\bar',
             true,
         ];
 
@@ -171,7 +199,19 @@ class WhitelistTest extends TestCase
 
         yield [
             Whitelist::create(true, '\*'),
+            'acme',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, '\*'),
             'Acme\Foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, '\*'),
+            'acme\foo',
             true,
         ];
     }

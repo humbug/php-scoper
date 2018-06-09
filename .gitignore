@@ -7,7 +7,8 @@
 /clover.xml
 /dist/
 /fixtures/set004/scoper.inc.php
-/fixtures/*/vendor
+/fixtures/*/.box_dump/
+/fixtures/*/vendor/
 /vendor/
 /vendor-bin/*/vendor/
 /vendor-bin/*/bin/
