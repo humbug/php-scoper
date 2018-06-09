@@ -160,7 +160,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         if ($parentNode instanceof ConstFetch) {
-            if ($this->whitelist->isClassWhitelisted($resolvedName->toString())) {
+            if ($this->whitelist->isConstantWhitelisted($resolvedName->toString())) {
                 return $resolvedName;
             }
 
