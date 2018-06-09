@@ -14,15 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_filter;
-use function array_pop;
 use Countable;
-use function explode;
-use function implode;
 use InvalidArgumentException;
+use function array_filter;
 use function array_map;
+use function array_pop;
 use function array_unique;
 use function count;
+use function explode;
+use function implode;
 use function in_array;
 use function sprintf;
 use function strtolower;

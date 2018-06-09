@@ -146,7 +146,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return false;
         }
 
-        /** @var FuncCall $argParent */
+        /* @var FuncCall $argParent */
         return 'define' === (string) $argParent->name;
     }
 }
