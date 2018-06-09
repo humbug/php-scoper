@@ -36,11 +36,11 @@ use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 use Symfony\Component\Finder\Finder;
 use Throwable;
+use UnexpectedValueException;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 use function implode;
 use function sprintf;
-use UnexpectedValueException;
 
 class PhpScoperTest extends TestCase
 {
@@ -461,6 +461,7 @@ PHP;
             }
 
             $this->assertTrue(true);
+
             return;
         }
 

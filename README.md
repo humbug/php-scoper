@@ -51,6 +51,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [PSR-0 support](#psr-0-support)
     - [String values](#string-values)
     - [Native functions and constants shadowing](#native-functions-shadowing)
+    - [Grouped constants whitelisting](#grouped-constants-whitelisting)
     - [Composer](#composer)
     - [Composer Plugins](#composer-plugins)
 - [Contributing](#contributing)
@@ -541,6 +542,23 @@ is_array([]);
 ```
 
 The situation is exactly the same for constants.
+
+
+### Grouped constants whitelisting
+
+When a grouped constant declaration like the following is given:
+
+```php
+const X = 'foo', Y = 'bar';
+```
+
+PHP-Scoper will not be able to whitelist either `X` or `Y`. The statement
+above should be replaced by multiple constant statements:
+
+```php
+const X = 'foo';
+const Y = 'bar';
+```
 
 
 ### Composer
