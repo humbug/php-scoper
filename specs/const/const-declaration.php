@@ -26,6 +26,7 @@ return [
 <?php
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 define('BAR_CONST', foo());
 define('Acme\BAR_CONST', foo());
 define(FOO_CONST, foo());
@@ -37,6 +38,7 @@ define(\Acme\BAR_CONST, foo());
 namespace Humbug;
 
 const FOO_CONST = \Humbug\foo();
+const X = 'x', Y = '';
 \define('BAR_CONST', \Humbug\foo());
 \define('Humbug\\Acme\\BAR_CONST', \Humbug\foo());
 \define(\Humbug\FOO_CONST, \Humbug\foo());
@@ -52,6 +54,7 @@ PHP
 <?php
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 define('BAR_CONST', foo());
 define('Acme\BAR_CONST', foo());
 define(FOO_CONST, foo());
@@ -62,6 +65,7 @@ define(\Acme\BAR_CONST, foo());
 
 namespace {
     const FOO_CONST = \foo();
+    const X = 'x', Y = '';
     \define('BAR_CONST', \foo());
     \define('Acme\\BAR_CONST', \foo());
     \define(\FOO_CONST, \foo());
@@ -78,6 +82,7 @@ PHP
 <?php
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 define('BAR_CONST', foo());
 define('Acme\BAR_CONST', foo());
 define(FOO_CONST, foo());
@@ -89,12 +94,23 @@ define(\Acme\BAR_CONST, foo());
 namespace Humbug;
 
 \define('FOO_CONST', \Humbug\foo());
+const X = 'x', Y = '';
 \define('BAR_CONST', \Humbug\foo());
 \define('Acme\\BAR_CONST', \Humbug\foo());
 \define(\FOO_CONST, \Humbug\foo());
 \define(\FOO_CONST, \Humbug\foo());
 \define(\Acme\BAR_CONST, \Humbug\foo());
 
+PHP
+    ],
+
+    'Whitelisted grouped constants declaration in the global namespace' => [
+        'whitelist' => ['X'],
+        'payload' => <<<'PHP'
+<?php
+
+const X = 'x', Y = '';
+----
 PHP
     ],
 
@@ -105,6 +121,7 @@ PHP
 namespace Acme;
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 define('BAR_CONST', foo());
 define('Acme\BAR_CONST', foo());
 define(FOO_CONST, foo());
@@ -116,6 +133,7 @@ define(\Acme\FOO_CONST, foo());
 namespace Humbug\Acme;
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 \define('BAR_CONST', foo());
 \define('Humbug\\Acme\\BAR_CONST', foo());
 \define(FOO_CONST, foo());
@@ -133,6 +151,7 @@ PHP
 namespace Acme;
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 define('BAR_CONST', foo());
 define('Acme\BAR_CONST', foo());
 define(FOO_CONST, foo());
@@ -144,6 +163,7 @@ define(\Acme\BAR_CONST, foo());
 namespace Acme;
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 \define('BAR_CONST', foo());
 \define('Acme\\BAR_CONST', foo());
 \define(FOO_CONST, foo());
@@ -161,6 +181,7 @@ PHP
 namespace Acme;
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 define('BAR_CONST', foo());
 define('Acme\BAR_CONST', foo());
 define(FOO_CONST, foo());
@@ -172,6 +193,7 @@ define(\Acme\BAR_CONST, foo());
 namespace Humbug\Acme;
 
 const FOO_CONST = foo();
+const X = 'x', Y = '';
 \define('BAR_CONST', foo());
 \define('Acme\\BAR_CONST', foo());
 \define(FOO_CONST, foo());
