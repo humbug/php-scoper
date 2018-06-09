@@ -20,10 +20,11 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitorAbstract;
+use UnexpectedValueException;
+use function count;
 
 /**
  * Replaces const declaration by define.
@@ -62,31 +63,38 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
             return $node;
         }
 
-        // TODO: check this: when can Node\Stmt\Const_ be empty or have more than one constant
-        /** @var Node\Const_ $constant */
-        $constant = current($node->consts);
+        foreach ($node->consts as $constant) {
+            /** @var Node\Const_ $constant */
+            $resolvedConstantName = $this->nameResolver->resolveName(
+                new Name(
+                    (string) $constant->name,
+                    $node->getAttributes()
+                )
+            )->getName();
 
-        $resolvedConstantName = $this->nameResolver->resolveName(
-            new Name(
-                (string) $constant->name,
-                $node->getAttributes()  // Take the parent node attribute since no "parent" attribute is recorded in
-                                        // Node\Const_
-                                        // TODO: check with nikic if this is expected
-            )
-        )->getName();
+            if (false === $this->whitelist->isClassWhitelisted((string) $resolvedConstantName)) {
+                continue;
+            }
 
-        if (false === $this->whitelist->isClassWhitelisted((string) $resolvedConstantName)) {
-            return $node;
+            if (count($node->consts) > 1) {
+                throw new UnexpectedValueException(
+                    'Whitelisting a constant declared in a grouped constant statement (e.g. `const FOO = '
+                    .'\'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant '
+                    .'declaration statements'
+                );
+            }
+
+            return new Expression(
+                new FuncCall(
+                    new FullyQualified('define'),
+                    [
+                        new String_((string) $resolvedConstantName),
+                        $constant->value,
+                    ]
+                )
+            );
         }
 
-        return new Expression(
-            new FuncCall(
-                new FullyQualified('define'),
-                [
-                    new String_((string) $resolvedConstantName),
-                    $constant->value,
-                ]
-            )
-        );
+        return $node;
     }
 }

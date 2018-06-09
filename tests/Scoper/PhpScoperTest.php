@@ -36,6 +36,7 @@ use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 use Symfony\Component\Finder\Finder;
 use Throwable;
+use UnexpectedValueException;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 use function implode;
@@ -422,7 +423,7 @@ PHP;
     /**
      * @dataProvider provideValidFiles
      */
-    public function test_can_scope_valid_files(string $spec, string $contents, string $prefix, Whitelist $whitelist, string $expected)
+    public function test_can_scope_valid_files(string $spec, string $contents, string $prefix, Whitelist $whitelist, ?string $expected)
     {
         $filePath = 'file.php';
 
@@ -448,7 +449,21 @@ PHP;
             )
         );
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        try {
+            $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+
+            if (null === $expected) {
+                $this->fail('Expected exception to be thrown.');
+            }
+        } catch (UnexpectedValueException $exception) {
+            if (null !== $expected) {
+                throw $exception;
+            }
+
+            $this->assertTrue(true);
+
+            return;
+        }
 
         $formattedWhitelist = 0 === count($whitelist)
             ? '[]'
@@ -559,7 +574,7 @@ OUTPUT
                 $fixtureSet['whitelist-global-constants'] ?? $meta['whitelist-global-constants'],
                 ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
             ),
-            $payloadParts[1],   // Expected output
+            '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output
         ];
     }
 }
