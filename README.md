@@ -38,9 +38,10 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelist][whitelist]
-        - [Class & Constant Whitelisting](#class-constant-whitelisting)
-        - [Namespace Whitelisting](#namespace-whitelisting)
-- [Building A Scoped PHAR](#building-a-scoped-phar)
+        - [Constants from the global namespace whitelisting](#constants-from-the-global-namespace-whitelisting)
+        - [Classes & Constants whitelisting](#classes-constants-whitelisting)
+        - [Namespaces whitelisting](#namespaces-whitelisting)
+- [Building a scoped PHAR](#building-a-scoped-phar)
     - [With Box](#with-box)
         - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
         - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
@@ -125,10 +126,11 @@ with a `--config` option.
 use Isolated\Symfony\Component\Finder\Finder;
 
 return [
-    'prefix' => null,
-    'finders' => [],
-    'patchers' => [],
-    'whitelist' => [],
+    'prefix' => null,                       // string|null
+    'finders' => [],                        // Finder[]
+    'patchers' => [],                       // callable[]
+    'whitelist' => [],                      // string[]
+    'whitelist-global-constants' => true,   // bool
 ];
 ```
 
@@ -261,7 +263,24 @@ a PHPUnit PHAR with isolated code, you still want the PHAR to be able to
 understand the `PHPUnit\Framework\TestCase` class.
 
 
-### Class & Constant whitelisting
+### Constants from the global namespace whitelisting
+
+By default, PHP-Scoper will not prefix the user defined constants belonging to
+the global namespace. You can however change that setting for them to be
+prefixed as usual unless explicitely whitelisted:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+return [
+    'whitelist-global-constants' => false,
+];
+```
+
+
+### Classes & Constants whitelisting
 
 You can whitelist classes, interfaces and constants like so like so:
 
@@ -282,23 +301,27 @@ This will _not_ work on traits or functions.
 
 The class aliasing mechanism is done like follows:
 - Prefix the class or interface as usual
-- Append a `class_alias()` statement at the end of the class/interface declaration to link the prefixed symbol to the
-  non prefixed one
-- Append a `class_exists()` statement right after the autoloader is registered to trigger the loading of the method
-  which will ensure the `class_alias()` statement is executed
+- Append a `class_alias()` statement at the end of the class/interface
+  declaration to link the prefixed symbol to the non prefixed one
+- Append a `class_exists()` statement right after the autoloader is
+  registered to trigger the loading of the method which will ensure the
+  `class_alias()` statement is executed
 
-It is done this way to ensure prefixed and whitelisted classes can co-exist together without breaking the autoloading.
-The `class_exists()` statements are dumped in `vendor/scoper-autoload.php`, do not forget to include this file in favour
-of `vendor/autoload.php`. This part is however sorted out by [Box][box] if you are using it with the
-[`PhpScoper` compactor][php-scoper-integration]. 
+It is done this way to ensure prefixed and whitelisted classes can co-exist
+together without breaking the autoloading. The `class_exists()` statements are
+dumped in `vendor/scoper-autoload.php`, do not forget to include this file in
+favour of `vendor/autoload.php`. This part is however sorted out by [Box][box]
+if you are using it with the [`PhpScoper` compactor][php-scoper-integration]. 
 
-The constant aliasing mechanism is done by transforming the constant declaration into a `define()` statement when this
-is not already the case. Note that there is a difference here since `define()` defines a constant at runtime whereas
-`const` defines it at compile time. You have a more details post regarding the differences
+The constant aliasing mechanism is done by transforming the constant
+declaration into a `define()` statement when this is not already the case.
+Note that there is a difference here since `define()` defines a constant at
+runtime whereas `const` defines it at compile time. You have a more details
+post regarding the differences
 [here](https://stackoverflow.com/a/3193704/3902761)
 
 
-### Namespace whitelisting
+### Namespaces whitelisting
 
 If you want to be more generic and whitelist a whole namespace, you can
 do it so like this:
@@ -331,7 +354,7 @@ return [
 ```
 
 
-## Building A Scoped PHAR
+## Building a Scoped PHAR
 
 ### With Box
 

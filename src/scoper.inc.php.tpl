@@ -57,6 +57,13 @@ return [
     //
     // Fore more see https://github.com/humbug/php-scoper#whitelist
     'whitelist' => [
-        'PHPUnit\Framework\TestCase',
+        // 'PHPUnit\Framework\TestCase',   // A specific class
+        // 'PHPUnit\Framework\*',          // The whole namespace
+        // '*',                            // Everything
     ],
+
+    // If `true` then the user defined constants belonging to the global namespace will not be prefixed.
+    //
+    // For more see https://github.com/humbug/php-scoper#constants-from-the-global-namespace-whitelisting
+    'whitelist-global-constants' => true,
 ];
