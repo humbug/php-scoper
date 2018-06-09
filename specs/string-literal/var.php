@@ -18,6 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
+        'whitelist-global-constants' => true,
     ],
 
     'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
@@ -81,8 +82,8 @@ $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 namespace Humbug;
 
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 

@@ -35,6 +35,7 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
+use function count;
 use function in_array;
 
 /**
@@ -171,6 +172,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
             if (false === ($resolvedName instanceof FullyQualified)) {
                 return $resolvedName;
+            }
+
+            if (1 === count($resolvedName->parts) && $this->whitelist->whitelistGlobalConstants()) {
+                return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
             }
         }
 

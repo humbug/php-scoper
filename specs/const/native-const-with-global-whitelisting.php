@@ -14,37 +14,46 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Namespace declarations with braces',
+        'title' => 'Native constant calls with the global constants whitelisted',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
     ],
 
-    'One level namespace: prefix it' => <<<'PHP'
+    'Internal function in a namespace: make the call into a FQ call' => <<<'PHP'
 <?php
 
-namespace Foo;
+namespace Acme;
+
+$x = DIRECTORY_SEPARATOR;
 
 ----
 <?php
 
-namespace Humbug\Foo;
+namespace Humbug\Acme;
 
+$x = \DIRECTORY_SEPARATOR;
 
 PHP
     ,
 
-    'Two levels namespace: prefix it' => <<<'PHP'
+    'Namespaced function having the same name as an internal function: prefix & make the call into a FQ call' => <<<'PHP'
 <?php
 
-namespace Foo\Bar;
+namespace Acme;
+
+use const Acme\DIRECTORY_SEPARATOR;
+
+$x = DIRECTORY_SEPARATOR;
 
 ----
 <?php
 
-namespace Humbug\Foo\Bar;
+namespace Humbug\Acme;
 
+use const Humbug\Acme\DIRECTORY_SEPARATOR;
+$x = \Humbug\Acme\DIRECTORY_SEPARATOR;
 
 PHP
     ,

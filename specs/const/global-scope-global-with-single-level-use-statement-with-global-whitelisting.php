@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global function call imported with an aliased use statement in a namespace',
+        'title' => 'Global constant imported with a use statement used in the global scope with the global constants whitelisted',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -23,55 +23,73 @@ return [
 
     [
         'spec' => <<<'SPEC'
-Global function call imported with a use statement in a namespace:
-- prefix the namespace
+Constant call imported with a use statement:
 - prefix the use statement
 - prefix the call
-- transform the call into a FQ call
+- transforms the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+use const DUMMY_CONST;
 
-use function main as foo;
-
-foo();
+DUMMY_CONST;
 ----
 <?php
 
-namespace Humbug\X;
+namespace Humbug;
 
-use function Humbug\main as foo;
-\Humbug\main();
+use const Humbug\DUMMY_CONST;
+\DUMMY_CONST;
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Global function call imported with a use statement in a namespace:
-- prefix the namespace
+Whitelisted constant call imported with a use statement:
+- add prefixed namespace
+- transforms the call into a FQ call
+SPEC
+        ,
+        'whitelist' => ['DUMMY_CONST'],
+        'payload' => <<<'PHP'
+<?php
+
+use const DUMMY_CONST;
+
+DUMMY_CONST;
+----
+<?php
+
+namespace Humbug;
+
+use const DUMMY_CONST;
+\DUMMY_CONST;
+
+PHP
+    ],
+
+    [
+        'spec' => <<<'SPEC'
+FQ constant call imported with a use statement:
 - prefix the use statement
-- do not prefix the call: as the call is FQ, the use statement is irrelevant so the above assumption cannot apply
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-namespace X;
+use const DUMMY_CONST;
 
-use function main as foo;
-
-\foo();
+\DUMMY_CONST;
 ----
 <?php
 
-namespace Humbug\X;
+namespace Humbug;
 
-use function Humbug\main as foo;
-\Humbug\foo();
+use const Humbug\DUMMY_CONST;
+\DUMMY_CONST;
 
 PHP
     ],

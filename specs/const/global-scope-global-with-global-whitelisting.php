@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Use statements for constants',
+        'title' => 'Global constant usage in the global scope with the global constants whitelisted',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -23,122 +23,124 @@ return [
 
     [
         'spec' => <<<'SPEC'
-Constant use statement for a constant belonging to the global namespace:
-- prefix the use statement
+Constant call in the global namespace:
+- prefix the constant
+- transforms the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use const FOO;
-
+DUMMY_CONST;
 ----
 <?php
 
 namespace Humbug;
 
-use const Humbug\FOO;
+\DUMMY_CONST;
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Constant use statement for an internal constant belonging to the global namespace:
-- do not prefix the use statement
+Whitelisted constant call in the global namespace:
+- add prefixed namespace
+- transforms the call into a FQ call
 SPEC
         ,
+        'whitelist' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 
-use const DIRECTORY_SEPARATOR;
-
+DUMMY_CONST;
 ----
 <?php
 
 namespace Humbug;
 
-use const DIRECTORY_SEPARATOR;
+\DUMMY_CONST;
+
+PHP
+    ],
+
+    'Constant call in the global namespace which is whitelisted: add root namespace statement' => [
+        'whitelist' => ['\*'],
+        'payload' => <<<'PHP'
+<?php
+
+DUMMY_CONST;
+----
+<?php
+
+namespace {
+    \DUMMY_CONST;
+}
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Constant use statement for a constant belonging to the global namespace and which has already been prefixed:
-- do nothing
+Internal constant call in the global namespace:
+- do not prefix the constant
+- transforms the call into a FQ call
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use const Humbug\FOO;
-
+DIRECTORY_SEPARATOR;
 ----
 <?php
 
 namespace Humbug;
 
-use const Humbug\FOO;
+\DIRECTORY_SEPARATOR;
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Constant use statement for a namespaced constant:
-- prefix the use statement
+FQ constant call in the global namespace:
+- prefix the constant
 SPEC
-        ,
+    ,
         'payload' => <<<'PHP'
 <?php
 
-use const Foo\BAR;
-
+DUMMY_CONST;
 ----
 <?php
 
 namespace Humbug;
 
-use const Humbug\Foo\BAR;
+\DUMMY_CONST;
 
 PHP
     ],
 
     [
         'spec' => <<<'SPEC'
-Constant use statement for a namespaced constant which has already been prefixed:
-- do nothing
+Global constant call in the global scope of a constant which has a use statement for a class importing a class with the
+same name
+- do not prefix the function
 SPEC
         ,
         'payload' => <<<'PHP'
 <?php
 
-use const Humbug\Foo\BAR;
+use Acme\Inf;
 
+INF;
 ----
 <?php
 
 namespace Humbug;
 
-use const Humbug\Foo\BAR;
-
-PHP
-    ],
-
-    'Constant use statement for a namespaced constant which has been whitelisted: do nothing' => [
-        'whitelist' => ['Foo\BAR'],
-        'payload' => <<<'PHP'
-<?php
-
-use const Foo\BAR;
-
-----
-<?php
-
-namespace Humbug;
-
-use const Foo\BAR;
+use Humbug\Acme\Inf;
+\INF;
 
 PHP
     ],

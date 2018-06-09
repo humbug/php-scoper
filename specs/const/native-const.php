@@ -18,6 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
+        'whitelist-global-constants' => false,
     ],
 
     'Internal function in a namespace: make the call into a FQ call' => <<<'PHP'
