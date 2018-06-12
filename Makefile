@@ -252,8 +252,8 @@ fixtures/set021-composer/vendor: fixtures/set021-composer/composer.lock
 	composer --working-dir=fixtures/set021-composer install
 	touch $@
 
-fixtures/set022/vendor: fixtures/set022/composer.lock
-	composer --working-dir=fixtures/set022 install
+fixtures/set022/vendor: fixtures/set022/composer.json
+	composer --working-dir=fixtures/set022 update
 	touch $@
 
 fixtures/set023/vendor: fixtures/set023/composer.lock
@@ -289,9 +289,6 @@ fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
 
 fixtures/set021-composer/composer.lock: fixtures/set021-composer/composer.json
 	@echo fixtures/set021-composer/composer.lock is not up to date.
-
-fixtures/set022/composer.lock: fixtures/set022/composer.json
-	@echo fixtures/set022/composer.lock is not up to date.
 
 fixtures/set023/composer.lock: fixtures/set023/composer.json
 	@echo fixtures/set023/composer.lock is not up to date.
