@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
+use Humbug\PhpScoper\Whitelist;
 use stdClass;
 
 /**
@@ -27,20 +28,20 @@ final class AutoloadPrefixer
      *
      * @return array Prefixed decoded JSON
      */
-    public static function prefixPackageAutoloads(stdClass $contents, string $prefix): stdClass
+    public static function prefixPackageAutoloads(stdClass $contents, string $prefix, Whitelist $whitelist): stdClass
     {
         if (isset($contents->autoload)) {
-            $contents->autoload = self::prefixAutoloads($contents->autoload, $prefix);
+            $contents->autoload = self::prefixAutoloads($contents->autoload, $prefix, $whitelist);
         }
 
         if (isset($contents->{'autoload-dev'})) {
-            $contents->{'autoload-dev'} = self::prefixAutoloads($contents->{'autoload-dev'}, $prefix);
+            $contents->{'autoload-dev'} = self::prefixAutoloads($contents->{'autoload-dev'}, $prefix, $whitelist);
         }
 
         return $contents;
     }
 
-    private static function prefixAutoloads(stdClass $autoload, string $prefix): stdClass
+    private static function prefixAutoloads(stdClass $autoload, string $prefix, Whitelist $whitelist): stdClass
     {
         if (false === isset($autoload->{'psr-4'}) && false === isset($autoload->{'psr-0'})) {
             return $autoload;
@@ -55,18 +56,23 @@ final class AutoloadPrefixer
         unset($autoload->{'psr-0'});
 
         if (isset($autoload->{'psr-4'})) {
-            $autoload->{'psr-4'} = self::prefixAutoload((array) $autoload->{'psr-4'}, $prefix);
+            $autoload->{'psr-4'} = self::prefixAutoload((array) $autoload->{'psr-4'}, $prefix, $whitelist);
         }
 
         return $autoload;
     }
 
-    private static function prefixAutoload(array $autoload, string $prefix): array
+    private static function prefixAutoload(array $autoload, string $prefix, Whitelist $whitelist): array
     {
         $loader = [];
 
         foreach ($autoload as $namespace => $paths) {
-            $loader[sprintf('%s\\%s', $prefix, $namespace)] = $paths;
+            $newNamespace = $whitelist->isNamespaceWhitelisted($namespace)
+                ? $namespace
+                : sprintf('%s\\%s', $prefix, $namespace)
+            ;
+
+            $loader[$newNamespace] = $paths;
         }
 
         return $loader;
