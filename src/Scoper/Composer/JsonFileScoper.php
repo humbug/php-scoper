@@ -39,7 +39,7 @@ final class JsonFileScoper implements Scoper
 
         $decodedJson = json_decode($contents);
 
-        $decodedJson = AutoloadPrefixer::prefixPackageAutoloads($decodedJson, $prefix);
+        $decodedJson = AutoloadPrefixer::prefixPackageAutoloads($decodedJson, $prefix, $whitelist);
 
         return json_encode(
             $decodedJson,

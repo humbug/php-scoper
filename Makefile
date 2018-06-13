@@ -51,7 +51,7 @@ tm: vendor/bin/phpunit
 
 .PHONY: e2e
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -162,6 +162,26 @@ e2e_021: bin/php-scoper.phar fixtures/set021-composer/vendor clover.xml
 
 	diff build/set021-composer/expected-output build/set021-composer/output
 
+.PHONY: e2e_022
+e2e_022:	## Run end-to-end tests for the fixture set 022: whitelist the project code with namespace whitelisting
+e2e_022: bin/php-scoper.phar fixtures/set022/vendor
+	$(PHPNOGC) $(BOX) compile --working-dir fixtures/set022
+	cp -R fixtures/set022/tests/ build/set022/tests/
+
+	php build/set022/bin/greet.phar > build/set022/output
+
+	diff fixtures/set022/expected-output build/set022/output
+
+.PHONY: e2e_023
+e2e_023:	## Run end-to-end tests for the fixture set 023: Whitelisting a whole third-party component with namespace whitelisting
+e2e_023: bin/php-scoper.phar fixtures/set023/vendor
+	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set023 --output-dir=../../build/set023 --force --no-interaction --stop-on-failure
+	composer --working-dir=build/set023 dump-autoload
+
+	php build/set023/main.php > build/set023/output
+	diff fixtures/set023/expected-output build/set023/output
+
+
 .PHONY: tb
 BLACKFIRE=blackfire
 tb:		## Run Blackfire profiling
@@ -233,6 +253,14 @@ fixtures/set021-composer/vendor: fixtures/set021-composer/composer.lock
 	composer --working-dir=fixtures/set021-composer install
 	touch $@
 
+fixtures/set022/vendor: fixtures/set022/composer.json
+	composer --working-dir=fixtures/set022 update
+	touch $@
+
+fixtures/set023/vendor: fixtures/set023/composer.lock
+	composer --working-dir=fixtures/set023 install
+	touch $@
+
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
@@ -262,6 +290,9 @@ fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
 
 fixtures/set021-composer/composer.lock: fixtures/set021-composer/composer.json
 	@echo fixtures/set021-composer/composer.lock is not up to date.
+
+fixtures/set023/composer.lock: fixtures/set023/composer.json
+	@echo fixtures/set023/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json
 	$(BOX) compile

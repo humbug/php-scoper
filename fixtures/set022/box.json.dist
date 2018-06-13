@@ -1,0 +1,4 @@
+{
+    "output": "../../build/set022/bin/greet.phar",
+    "compactors": ["KevinGH\\Box\\Compactor\\PhpScoper"]
+}

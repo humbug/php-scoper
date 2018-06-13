@@ -41,7 +41,7 @@ final class InstalledPackagesScoper implements Scoper
 
         $decodedJson = json_decode($contents);
 
-        $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix);
+        $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix, $whitelist);
 
         return json_encode(
             $decodedJson,
@@ -49,10 +49,10 @@ final class InstalledPackagesScoper implements Scoper
         );
     }
 
-    private function prefixLockPackages(array $packages, string $prefix): array
+    private function prefixLockPackages(array $packages, string $prefix, Whitelist $whitelist): array
     {
         foreach ($packages as $index => $package) {
-            $packages[$index] = AutoloadPrefixer::prefixPackageAutoloads($package, $prefix);
+            $packages[$index] = AutoloadPrefixer::prefixPackageAutoloads($package, $prefix, $whitelist);
         }
 
         return $packages;
