@@ -51,7 +51,8 @@ tm: vendor/bin/phpunit
 
 .PHONY: e2e
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023
+#e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023
+e2e: e2e_022 e2e_023
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -169,6 +170,10 @@ e2e_022: bin/php-scoper.phar fixtures/set022/vendor
 	cp -R fixtures/set022/tests/ build/set022/tests/
 
 	php build/set022/bin/greet.phar > build/set022/output
+
+	# TODO: tmp
+	cat build/set022/output
+
 	diff fixtures/set022/expected-output build/set022/output
 
 .PHONY: e2e_023
