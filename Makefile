@@ -29,7 +29,8 @@ build: bin/php-scoper.phar
 
 .PHONY: test
 test:		## Run all the tests
-test: tc e2e
+#test: tc e2e
+test: e2e_023
 
 .PHONY: tu
 PHPUNIT=vendor/bin/phpunit
@@ -183,6 +184,10 @@ e2e_023: bin/php-scoper.phar fixtures/set023/vendor
 	composer --working-dir=build/set023 dump-autoload
 
 	php build/set023/main.php > build/set023/output
+
+	# TODO: tmp
+	cat build/set023/output
+
 	diff fixtures/set023/expected-output build/set023/output
 
 
