@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use function array_key_exists;
+use function count;
+use function explode;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use function in_array;
@@ -98,6 +100,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         /** @var String_ $node */
         $parentNode = AppendParentNode::getParent($node);
 
+        // The string scalar either has a class form or a simple string which can either be a symbol from the global
+        // namespace or a completely unrelated string.
+
         if ($parentNode instanceof Arg
             && null !== $funcNode = AppendParentNode::findParent($parentNode)
         ) {
@@ -130,11 +135,18 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         if (false === ($parentNode instanceof ArrayItem)) {
             return $parentNode instanceof Assign
-                || $parentNode instanceof ArrayItem
                 || $parentNode instanceof Param
                 || $parentNode instanceof Const_
                 || $parentNode instanceof PropertyProperty
             ;
+        }
+
+        // ArrayItem can lead to two results: either the string is used for `spl_autoload_register()`, e.g.
+        // `spl_autoload_register(['Swift', 'autoload'])` in which case the string `'Swift'` is guaranteed to be class
+        // name, or something else in which case a string like `'Swift'` can be anything and cannot be prefixed.
+
+        if (count(explode('\\', $node->value)) > 1) {
+            return true;
         }
 
         $arrayItemNode = $parentNode;
