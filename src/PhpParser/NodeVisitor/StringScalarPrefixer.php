@@ -117,6 +117,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                         || (
                             'function_exists' !== (string) $funcNode->name
                             && false === $this->reflector->isClassInternal($node->value)
+                            && false === $this->whitelist->isClassWhitelisted($node->value)
                         )
                     );
                 }
@@ -167,7 +168,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             if (array_key_exists(0, $arrayNode->items) && $arrayItemNode === $arrayNode->items[0]) {
                 $isSpecialFunction = true;
 
-                return false === $this->reflector->isClassInternal($node->value);
+                return (
+                    false === $this->whitelist->isClassWhitelisted($node->value)
+                    && false === $this->reflector->isClassInternal($node->value)
+                );
             }
 
             return false;
