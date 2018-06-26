@@ -39,9 +39,9 @@ $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 namespace Humbug;
 
 $x = 'Yaml';
-$x = '\\Yaml';
+$x = 'Yaml';
 $x = 'Closure';
-$x = '\\Closure';
+$x = 'Closure';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
