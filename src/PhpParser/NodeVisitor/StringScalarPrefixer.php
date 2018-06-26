@@ -14,13 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use function array_key_exists;
-use function count;
-use function explode;
-use function Humbug\PhpScoper\is_stringable;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
-use function in_array;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -36,10 +31,13 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeVisitorAbstract;
+use function array_key_exists;
+use function count;
+use function Humbug\PhpScoper\is_stringable;
+use function in_array;
 use function is_string;
 use function preg_match;
 use function strpos;
-use Throwable;
 
 /**
  * Prefixes the string scalar values.
@@ -120,7 +118,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                 ) {
                     $isSpecialFunction = true;
 
-                    return (
+                    return
                         (
                             'function_exists' === $functionName
                             && false === $this->reflector->isFunctionInternal($node->value)
@@ -130,7 +128,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                             && false === $this->reflector->isClassInternal($node->value)
                             && false === $this->whitelist->isClassWhitelisted($node->value)
                         )
-                    );
+                    ;
                 }
 
                 return $functionNode->name instanceof Name && false === $functionNode->hasAttribute('whitelist_class_alias');
@@ -184,7 +182,6 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         /** @var FuncCall $functionNode */
-
         if (is_stringable($functionNode->name)) {
             $functionName = (string) $functionNode->name;
         } else {
@@ -197,10 +194,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         ) {
             $isSpecialFunction = true;
 
-            return (
+            return
                 false === $this->whitelist->isClassWhitelisted($node->value)
                 && false === $this->reflector->isClassInternal($node->value)
-            );
+            ;
         }
 
         return false;

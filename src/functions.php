@@ -23,10 +23,7 @@ use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
-use function is_object;
-use function is_string;
 use Iterator;
-use function method_exists;
 use PackageVersions\Versions;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
@@ -40,6 +37,9 @@ use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Filesystem\Filesystem;
+use function is_object;
+use function is_string;
+use function method_exists;
 
 // TODO: register this file to the list of functions if possible to be autoloaded
 
@@ -207,11 +207,11 @@ function chain(iterable ...$iterables): Iterator
 
 function is_stringable($value): bool
 {
-    return (
+    return
         null === $value
         || is_string($value)
         || $value instanceof Name
         || $value instanceof Identifier
         || (is_object($value) && method_exists($value, '__toString'))
-    );
+    ;
 }
