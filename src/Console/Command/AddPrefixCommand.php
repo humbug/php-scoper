@@ -238,14 +238,14 @@ final class AddPrefixCommand extends BaseCommand
     ): void {
         try {
             $scoppedContent = $this->scoper->scope($inputFilePath, $inputContents, $prefix, $patchers, $whitelist);
-        } catch (Throwable $error) {
+        } catch (Throwable $throwable) {
             $exception = new ParsingException(
                 sprintf(
                     'Could not parse the file "%s".',
                     $inputFilePath
                 ),
                 0,
-                $error
+                $throwable
             );
 
             if ($stopOnFailure) {

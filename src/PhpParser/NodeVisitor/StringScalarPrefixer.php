@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use function array_key_exists;
 use function count;
 use function explode;
+use function Humbug\PhpScoper\is_stringable;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use function in_array;
@@ -38,6 +39,7 @@ use PhpParser\NodeVisitorAbstract;
 use function is_string;
 use function preg_match;
 use function strpos;
+use Throwable;
 
 /**
  * Prefixes the string scalar values.
@@ -97,6 +99,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         ) {
             return false;
         }
+
         /** @var String_ $node */
         $parentNode = AppendParentNode::getParent($node);
 
@@ -104,33 +107,36 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         // namespace or a completely unrelated string.
 
         if ($parentNode instanceof Arg
-            && null !== $funcNode = AppendParentNode::findParent($parentNode)
+            && null !== $functionNode = AppendParentNode::findParent($parentNode)
         ) {
-            $funcNode = AppendParentNode::getParent($parentNode);
+            $functionNode = AppendParentNode::getParent($parentNode);
 
-            if ($funcNode instanceof FuncCall) {
+            if ($functionNode instanceof FuncCall) {
+                $functionName = is_stringable($functionNode->name) ? (string) $functionNode->name : null;
+
                 if (false === strpos((string) $node->value, '\\')
-                    && in_array((string) $funcNode->name, self::SPECIAL_FUNCTION_NAMES, true)
+                    && null !== $functionName
+                    && in_array($functionName, self::SPECIAL_FUNCTION_NAMES, true)
                 ) {
                     $isSpecialFunction = true;
 
                     return (
                         (
-                            'function_exists' === (string) $funcNode->name
+                            'function_exists' === $functionName
                             && false === $this->reflector->isFunctionInternal($node->value)
                         )
                         || (
-                            'function_exists' !== (string) $funcNode->name
+                            'function_exists' !== $functionName
                             && false === $this->reflector->isClassInternal($node->value)
                             && false === $this->whitelist->isClassWhitelisted($node->value)
                         )
                     );
                 }
 
-                return $funcNode->name instanceof Name && false === $funcNode->hasAttribute('whitelist_class_alias');
+                return $functionNode->name instanceof Name && false === $functionNode->hasAttribute('whitelist_class_alias');
             }
 
-            return $funcNode instanceof MethodCall || $funcNode instanceof StaticCall;
+            return $functionNode instanceof MethodCall || $functionNode instanceof StaticCall;
         }
 
         if (false === ($parentNode instanceof ArrayItem)) {
@@ -145,7 +151,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         // `spl_autoload_register(['Swift', 'autoload'])` in which case the string `'Swift'` is guaranteed to be class
         // name, or something else in which case a string like `'Swift'` can be anything and cannot be prefixed.
 
-        if (count(explode('\\', $node->value)) > 1) {
+        if (substr_count($node->value, '\\') + 1 > 1) {
             return true;
         }
 
@@ -161,32 +167,40 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return false;
         }
 
+        /** @var Array_ $arrayNode */
         $arrayNode = $parentNode;
         $parentNode = AppendParentNode::getParent($parentNode);
 
         if (false === ($parentNode instanceof Arg)
-            || null === $funcNode = AppendParentNode::findParent($parentNode)
+            || null === $functionNode = AppendParentNode::findParent($parentNode)
         ) {
             return false;
         }
 
-        $funcNode = AppendParentNode::getParent($parentNode);
+        $functionNode = AppendParentNode::getParent($parentNode);
 
-        if (false === ($funcNode instanceof FuncCall)) {
+        if (false === ($functionNode instanceof FuncCall)) {
             return false;
         }
 
-        if ('spl_autoload_register' === (string) $funcNode->name) {
-            if (array_key_exists(0, $arrayNode->items) && $arrayItemNode === $arrayNode->items[0]) {
-                $isSpecialFunction = true;
+        /** @var FuncCall $functionNode */
 
-                return (
-                    false === $this->whitelist->isClassWhitelisted($node->value)
-                    && false === $this->reflector->isClassInternal($node->value)
-                );
-            }
-
+        if (is_stringable($functionNode->name)) {
+            $functionName = (string) $functionNode->name;
+        } else {
             return false;
+        }
+
+        if ('spl_autoload_register' === $functionName
+            && array_key_exists(0, $arrayNode->items)
+            && $arrayItemNode === $arrayNode->items[0]
+        ) {
+            $isSpecialFunction = true;
+
+            return (
+                false === $this->whitelist->isClassWhitelisted($node->value)
+                && false === $this->reflector->isClassInternal($node->value)
+            );
         }
 
         return false;

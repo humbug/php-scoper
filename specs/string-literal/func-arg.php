@@ -78,6 +78,9 @@ class_alias('Humbug\Swift', 'Mailer');
 class_alias('\Humbug\Swift', 'Mailer');
 class_alias('DateTime', 'DateTimeInterface');
 
+($this->colorize)('fg-green', '✔');
+($this->colorize)(['Soft', 'autoload']);
+
 ----
 <?php
 
@@ -127,6 +130,8 @@ namespace Humbug;
 \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
 \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
 \class_alias('DateTime', 'DateTimeInterface');
+($this->colorize)('fg-green', '✔');
+($this->colorize)(['Soft', 'autoload']);
 
 PHP
     ,

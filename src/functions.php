@@ -23,9 +23,14 @@ use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use function is_object;
+use function is_string;
 use Iterator;
+use function method_exists;
 use PackageVersions\Versions;
 use PhpParser\Node;
+use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Roave\BetterReflection\Reflector\ClassReflector;
@@ -198,4 +203,15 @@ function chain(iterable ...$iterables): Iterator
             yield $key => $value;
         }
     }
+}
+
+function is_stringable($value): bool
+{
+    return (
+        null === $value
+        || is_string($value)
+        || $value instanceof Name
+        || $value instanceof Identifier
+        || (is_object($value) && method_exists($value, '__toString'))
+    );
 }
