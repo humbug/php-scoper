@@ -354,6 +354,22 @@ return [
 ];
 ```
 
+Note that this may lead to autoloading issues. Indeed if you have the following package:
+
+```json
+{
+    "autoload": {
+        "psr-4": {
+            "PHPUnit\\": "src"
+        }
+    }
+}
+```
+
+And whitelist the namespace `PHPUnit\Framework\*`, then the autoloading for this package
+will be faulty and will not work. For this to work, the whole package `PHPUnit\*` would
+need to be whitelisted.
+
 
 ## Building a Scoped PHAR
 
