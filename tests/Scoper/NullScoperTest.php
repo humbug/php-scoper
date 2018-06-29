@@ -38,7 +38,7 @@ class NullScoperTest extends TestCase
 
         $patchers = [create_fake_patcher()];
 
-        $whitelist = Whitelist::create(true, 'Foo');
+        $whitelist = Whitelist::create(true, true,'Foo');
 
         $scoper = new NullScoper();
 

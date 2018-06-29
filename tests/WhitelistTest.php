@@ -31,7 +31,7 @@ class WhitelistTest extends TestCase
         array $expectedClasses,
         array $expectedConstants
     ) {
-        $whitelistObject = Whitelist::create(true, ...$whitelist);
+        $whitelistObject = Whitelist::create(true,true, ...$whitelist);
 
         $whitelistReflection = new ReflectionClass(Whitelist::class);
 
@@ -50,7 +50,7 @@ class WhitelistTest extends TestCase
         $this->assertSame($expectedClasses, $actualClasses);
         $this->assertSame($expectedConstants, $actualConstants);
 
-        $whitelistObject = Whitelist::create(false, ...$whitelist);
+        $whitelistObject = Whitelist::create(false, false, ...$whitelist);
 
         $this->assertFalse($whitelistObject->whitelistGlobalConstants());
         $this->assertSame($expectedClasses, $actualClasses);
@@ -111,37 +111,37 @@ class WhitelistTest extends TestCase
     public function provideClassWhitelists()
     {
         yield [
-            Whitelist::create(true),
+            Whitelist::create(true, true),
             'Acme\Foo',
             false,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo'),
+            Whitelist::create(true, true,'Acme\Foo'),
             'Acme\Foo',
             true,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo'),
+            Whitelist::create(true, true,'Acme\Foo'),
             'Acme\Foo\Bar',
             false,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo'),
+            Whitelist::create(true, true,'Acme\Foo'),
             'Acme',
             false,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme'),
+            Whitelist::create(true, true,'Acme'),
             'Acme',
             true,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\*'),
+            Whitelist::create(true, true,'Acme\*'),
             'Acme',
             false,
         ];
@@ -150,67 +150,67 @@ class WhitelistTest extends TestCase
     public function provideNamespaceWhitelists()
     {
         yield [
-            Whitelist::create(true),
+            Whitelist::create(true, true),
             'Acme\Foo',
             false,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo\*'),
+            Whitelist::create(true, true,'Acme\Foo\*'),
             'Acme\Foo',
             true,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo\*'),
+            Whitelist::create(true, true,'Acme\Foo\*'),
             'acme\foo',
             true,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\*'),
+            Whitelist::create(true, true,'Acme\*'),
             'Acme\Foo',
             true,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\*'),
+            Whitelist::create(true, true,'Acme\*'),
             'acme\foo',
             true,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo\*'),
+            Whitelist::create(true, true,'Acme\Foo\*'),
             'Acme\Foo\Bar',
             true,
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo\*'),
+            Whitelist::create(true, true,'Acme\Foo\*'),
             'acme\foo\bar',
             true,
         ];
 
         yield [
-            Whitelist::create(true, '\*'),
+            Whitelist::create(true, true,'\*'),
             'Acme',
             true,
         ];
 
         yield [
-            Whitelist::create(true, '\*'),
+            Whitelist::create(true, true,'\*'),
             'acme',
             true,
         ];
 
         yield [
-            Whitelist::create(true, '\*'),
+            Whitelist::create(true, true,'\*'),
             'Acme\Foo',
             true,
         ];
 
         yield [
-            Whitelist::create(true, '\*'),
+            Whitelist::create(true, true,'\*'),
             'acme\foo',
             true,
         ];
@@ -219,47 +219,47 @@ class WhitelistTest extends TestCase
     public function provideWhitelistToConvert()
     {
         yield [
-            Whitelist::create(true),
+            Whitelist::create(true, true),
             [],
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo'),
+            Whitelist::create(true, true,'Acme\Foo'),
             ['Acme\Foo'],
         ];
 
         yield [
-            Whitelist::create(true, '\Acme\Foo'),
+            Whitelist::create(true, true,'\Acme\Foo'),
             ['Acme\Foo'],
         ];
 
         yield [
-            Whitelist::create(true, 'Acme\Foo\*'),
+            Whitelist::create(true, true,'Acme\Foo\*'),
             ['Acme\Foo\*'],
         ];
 
         yield [
-            Whitelist::create(true, '\Acme\Foo\*'),
+            Whitelist::create(true, true,'\Acme\Foo\*'),
             ['Acme\Foo\*'],
         ];
 
         yield [
-            Whitelist::create(true, '*'),
+            Whitelist::create(true, true,'*'),
             ['*'],
         ];
 
         yield [
-            Whitelist::create(true, '\*'),
+            Whitelist::create(true, true,'\*'),
             ['*'],
         ];
 
         yield [
-            Whitelist::create(true, 'Acme', 'Acme\Foo', 'Acme\Foo\*', '*'),
+            Whitelist::create(true, true,'Acme', 'Acme\Foo', 'Acme\Foo\*', '*'),
             ['Acme', 'Acme\Foo', 'Acme\Foo\*', '*'],
         ];
 
         yield [
-            Whitelist::create(true, 'Acme', 'Acme'),
+            Whitelist::create(true, true,'Acme', 'Acme'),
             ['Acme'],
         ];
     }

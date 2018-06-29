@@ -157,7 +157,7 @@ class PhpScoperTest extends TestCase
         $prefix = 'Humbug';
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, 'Foo');
+        $whitelist = Whitelist::create(true, true,'Foo');
 
         $contents = <<<'PHP'
 <?php
@@ -185,7 +185,7 @@ PHP;
         $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, 'Foo');
+        $whitelist = Whitelist::create(true, true,'Foo');
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
@@ -217,7 +217,7 @@ PHP;
         $prefix = 'Humbug';
         $filePath = 'file';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, 'Foo');
+        $whitelist = Whitelist::create(true, true, 'Foo');
 
         $contents = <<<'PHP'
 <?php
@@ -245,7 +245,7 @@ PHP;
         $prefix = 'Humbug';
         $filePath = 'hello';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, 'Foo');
+        $whitelist = Whitelist::create(true, true, 'Foo');
 
         $contents = <<<'PHP'
 #!/usr/bin/env php
@@ -276,7 +276,7 @@ PHP;
 
         $patchers = [create_fake_patcher()];
 
-        $whitelist = Whitelist::create(true, 'Foo');
+        $whitelist = Whitelist::create(true, true, 'Foo');
 
         $contents = <<<'PHP'
 #!/usr/bin/env bash
@@ -322,7 +322,7 @@ PHP;
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, 'Foo');
+        $whitelist = Whitelist::create(true, true, 'Foo');
 
         try {
             $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
@@ -347,7 +347,7 @@ PHP;
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, 'Foo');
+        $whitelist = Whitelist::create(true, true, 'Foo');
 
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist)
@@ -579,6 +579,7 @@ OUTPUT
             $fixtureSet['prefix'] ?? $meta['prefix'],
             Whitelist::create(
                 $fixtureSet['whitelist-global-constants'] ?? $meta['whitelist-global-constants'],
+                $fixtureSet['whitelist-global-functions'] ?? $meta['whitelist-global-functions'],
                 ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
             ),
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output

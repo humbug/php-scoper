@@ -21,7 +21,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
 {
     public function test_generate_the_autoload()
     {
-        $whitelist = Whitelist::create(true, 'A\Foo', 'B\Bar');
+        $whitelist = Whitelist::create(true, true,'A\Foo', 'B\Bar');
 
         $prefix = 'Humbug';
 

@@ -33,12 +33,14 @@ class Configuration
     private const PATCHERS_KEYWORD = 'patchers';
     private const WHITELIST_KEYWORD = 'whitelist';
     private const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
+    private const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
 
     private const KEYWORDS = [
         self::PREFIX,
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
         self::WHITELIST_KEYWORD,
+        self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
     ];
 
     private $path;
@@ -287,7 +289,23 @@ class Configuration
             }
         }
 
-        return Whitelist::create($whitelistGlobalConstants, ...$whitelist);
+        if (false === array_key_exists(self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
+            $whitelistGlobalFunctions = true;
+        } else {
+            $whitelistGlobalFunctions = $config[self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD];
+
+            if (false === is_bool($whitelistGlobalFunctions)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected %s to be a boolean, found "%s" instead.',
+                        self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+                        gettype($whitelist)
+                    )
+                );
+            }
+        }
+
+        return Whitelist::create($whitelistGlobalConstants, $whitelistGlobalFunctions, ...$whitelist);
     }
 
     private static function retrieveFinders(array $config): array

@@ -19,6 +19,7 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
+        'whitelist-global-functions' => true,
     ],
 
     'some statements made directly in the global namespace: wrap them in a namespace statement' => <<<'PHP'

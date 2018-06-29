@@ -37,7 +37,7 @@ final class Whitelist implements Countable
     private $namespaces;
     private $whitelistGlobalConstants;
 
-    public static function create(bool $whitelistGlobalConstants, string ...$elements): self
+    public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions,string ...$elements): self
     {
         $classes = [];
         $constants = [];

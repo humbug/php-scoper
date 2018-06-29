@@ -20,6 +20,7 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
+        'whitelist-global-functions' => true,
     ],
 
     [
