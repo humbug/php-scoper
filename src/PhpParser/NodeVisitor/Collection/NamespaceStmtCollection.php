@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
 use IteratorAggregate;

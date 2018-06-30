@@ -14,8 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UserGlobalFunctionCollection;
 use Humbug\PhpScoper\Whitelist;
 use function array_map;
+use function iterator_to_array;
+use const PHP_EOL;
+use PhpParser\Node\Name\FullyQualified;
+use function sprintf;
 
 final class ScoperAutoloadGenerator
 {
@@ -28,9 +33,8 @@ final class ScoperAutoloadGenerator
 
     public function dump(string $prefix): string
     {
-        $statements = $this->createStatements($prefix);
-
-        $statements = implode(PHP_EOL, $statements);
+        $statements = implode(PHP_EOL, $this->createClassAliasStatements($prefix)).PHP_EOL;
+        $statements .= implode(PHP_EOL, $this->createFunctionAliasStatements($this->whitelist->getUserGlobalFunctions()));
 
         return <<<PHP
 <?php
@@ -49,7 +53,7 @@ PHP;
     /**
      * @return string[]
      */
-    public function createStatements(string $prefix): array
+    public function createClassAliasStatements(string $prefix): array
     {
         return array_map(
             function (string $whitelistedElement) use ($prefix): string {
@@ -60,6 +64,36 @@ PHP;
                 );
             },
             $this->whitelist->getClassWhitelistArray()
+        );
+    }
+
+    /**
+     * @return string[]
+     */
+    public function createFunctionAliasStatements(UserGlobalFunctionCollection $userGlobalFunctions): array
+    {
+        return array_map(
+            function (array $node): string {
+                /**
+                 * @var FullyQualified $original
+                 * @var FullyQualified $alias
+                 */
+                [$original, $alias] = $node;
+
+                return sprintf(
+                    <<<'PHP'
+if (!function_exists('%1$s')) {
+    function %1$s() {
+        return \%2$s(func_get_args());
+    }
+}
+PHP
+                    ,
+                    $original->toString(),
+                    $alias->toString()
+                );
+            },
+            iterator_to_array($userGlobalFunctions)
         );
     }
 }
