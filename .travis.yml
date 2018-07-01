@@ -29,7 +29,6 @@ install:
   - composer install --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
 
 script:
-  - ["$(ls _specs)" ] || echo "Empty"
   - |
     if [ "$COVERAGE" == "true" ]; then
         make tc
