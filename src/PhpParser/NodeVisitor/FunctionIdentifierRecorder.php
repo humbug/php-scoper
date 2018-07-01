@@ -26,7 +26,7 @@ use PhpParser\NodeVisitorAbstract;
 use function count;
 
 /**
- * @TODO
+ * Records the user functions registered in the global namespace.
  *
  * @private
  */
