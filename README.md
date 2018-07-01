@@ -39,7 +39,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Patchers](#patchers)
     - [Whitelist][whitelist]
         - [Constants from the global namespace whitelisting](#constants-from-the-global-namespace-whitelisting)
-        - [Classes & Constants whitelisting](#classes-constants-whitelisting)
+        - [Classes & Constants whitelisting](#classes--constants-whitelisting)
         - [Namespaces whitelisting](#namespaces-whitelisting)
 - [Building a scoped PHAR](#building-a-scoped-phar)
     - [With Box](#with-box)
