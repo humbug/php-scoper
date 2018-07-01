@@ -157,7 +157,7 @@ class PhpScoperTest extends TestCase
         $prefix = 'Humbug';
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true,'Foo');
+        $whitelist = Whitelist::create(true, true, 'Foo');
 
         $contents = <<<'PHP'
 <?php
@@ -185,7 +185,7 @@ PHP;
         $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true,'Foo');
+        $whitelist = Whitelist::create(true, true, 'Foo');
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)

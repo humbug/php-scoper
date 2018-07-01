@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UserGlobalFunctionCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -62,7 +61,6 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         /** @var Identifier $node */
-
         $resolvedValue = $this->nameResolver->resolveName(
             new Name(
                 $node->name,
@@ -78,7 +76,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return $node;
         }
 
-        /** @var FullyQualified $resolvedName */
+        /* @var FullyQualified $resolvedName */
 
         $this->whitelist->recordUserGlobalFunction(
             $resolvedName,

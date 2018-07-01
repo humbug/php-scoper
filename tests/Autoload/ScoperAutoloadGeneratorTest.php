@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UserGlobalFunctionCollection;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
@@ -52,7 +51,7 @@ PHP
         ];
 
         yield [
-            Whitelist::create(true, true,'A\Foo', 'B\Bar'),
+            Whitelist::create(true, true, 'A\Foo', 'B\Bar'),
             <<<'PHP'
 <?php
 
@@ -113,7 +112,7 @@ PHP
 
         yield [
             (function () {
-                $whitelist = Whitelist::create(true, true,'A\Foo', 'B\Bar');
+                $whitelist = Whitelist::create(true, true, 'A\Foo', 'B\Bar');
 
                 $whitelist->recordUserGlobalFunction(
                     new FullyQualified('foo'),

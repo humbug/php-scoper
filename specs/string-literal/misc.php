@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'PHP heredoc as argument' =>  <<<'PHP'
+    'PHP heredoc as argument' => <<<'PHP'
 <?php
 
 declare(strict_types=1);

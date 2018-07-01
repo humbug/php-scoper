@@ -72,7 +72,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $prefix = 'Foo';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true,'Foo');
+        $whitelist = Whitelist::create(true, true, 'Foo');
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 

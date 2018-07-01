@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper;
 use Countable;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UserGlobalFunctionCollection;
 use InvalidArgumentException;
+use PhpParser\Node\Name\FullyQualified;
 use function array_filter;
 use function array_map;
 use function array_pop;
@@ -25,7 +26,6 @@ use function count;
 use function explode;
 use function implode;
 use function in_array;
-use PhpParser\Node\Name\FullyQualified;
 use function sprintf;
 use function strtolower;
 use function substr;
@@ -41,7 +41,7 @@ final class Whitelist implements Countable
     private $whitelistGlobalFunctions;
     private $userGlobalFunctions;
 
-    public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions,string ...$elements): self
+    public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions, string ...$elements): self
     {
         $classes = [];
         $constants = [];

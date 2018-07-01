@@ -14,14 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use function array_shift;
-use function array_unshift;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UserGlobalFunctionCollection;
 use Humbug\PhpScoper\Whitelist;
-use function array_map;
-use function iterator_to_array;
-use const PHP_EOL;
 use PhpParser\Node\Name\FullyQualified;
+use const PHP_EOL;
+use function array_map;
+use function array_unshift;
+use function iterator_to_array;
 use function sprintf;
 use function str_replace;
 
@@ -102,7 +101,7 @@ EOF
         $statements = array_map(
             function (array $node): string {
                 /**
-                 * @var FullyQualified $original
+                 * @var FullyQualified
                  * @var FullyQualified $alias
                  */
                 [$original, $alias] = $node;
