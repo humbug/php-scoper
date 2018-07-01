@@ -29,6 +29,7 @@ install:
   - composer install --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
 
 script:
+  - set -euf
   - ./.travis/check_empty_specs
   - |
     if [ "$COVERAGE" == "true" ]; then
