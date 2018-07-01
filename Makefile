@@ -42,7 +42,12 @@ COVERS_VALIDATOR=$(PHPNOGC) vendor-bin/covers-validator/bin/covers-validator
 tc:		## Run PHPUnit tests with test coverage
 tc: vendor/bin/phpunit vendor-bin/covers-validator/vendor
 	$(COVERS_VALIDATOR)
-	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text --coverage-clover=clover.xml --coverage-xml=dist/infection-coverage/coverage-xml --log-junit=dist/infection-coverage/phpunit.junit.xml
+	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) \
+		--coverage-html=dist/coverage \
+		--coverage-text \
+		--coverage-clover=clover.xml \
+		--coverage-xml=dist/infection-coverage/coverage-xml \
+		--log-junit=dist/infection-coverage/phpunit.junit.xml
 
 .PHONY: tm
 tm:		## Run Infection (Mutation Testing)
@@ -51,7 +56,22 @@ tm: vendor/bin/phpunit
 
 .PHONY: e2e
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023
+e2e: bin/php-scoper.phar
+	parallel $(MAKE) ::: e2e_004 \
+		e2e_005 \
+		e2e_011 \
+		e2e_013 \
+		e2e_014 \
+		e2e_015 \
+		e2e_016 \
+		e2e_017 \
+		e2e_018 \
+		e2e_019 \
+		e2e_020 \
+		e2e_021 \
+		e2e_022 \
+		e2e_023	\
+		e2e_024
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -107,7 +127,13 @@ e2e_015: bin/php-scoper.phar fixtures/set015/vendor
 .PHONY: e2e_016
 e2e_016:	## Run end-to-end tests for the fixture set 016 — Symfony Finder
 e2e_016: bin/php-scoper.phar fixtures/set016-symfony-finder/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set016-symfony-finder --output-dir=../../build/set016-symfony-finder --force --no-config --no-interaction --stop-on-failure
+	$(PHPNOGC) $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set016-symfony-finder \
+		--output-dir=../../build/set016-symfony-finder \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
 	composer --working-dir=build/set016-symfony-finder dump-autoload
 
 	php build/set016-symfony-finder/main.php > build/set016-symfony-finder/output
@@ -116,7 +142,13 @@ e2e_016: bin/php-scoper.phar fixtures/set016-symfony-finder/vendor
 .PHONY: e2e_017
 e2e_017:	## Run end-to-end tests for the fixture set 017 — Symfony DependencyInjection
 e2e_017: bin/php-scoper.phar fixtures/set017-symfony-di/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set017-symfony-di --output-dir=../../build/set017-symfony-di --force --no-config --no-interaction --stop-on-failure
+	$(PHPNOGC) $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set017-symfony-di \
+		--output-dir=../../build/set017-symfony-di \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
 	composer --working-dir=build/set017-symfony-di dump-autoload
 
 	php build/set017-symfony-di/main.php > build/set017-symfony-di/output
@@ -125,7 +157,13 @@ e2e_017: bin/php-scoper.phar fixtures/set017-symfony-di/vendor
 .PHONY: e2e_018
 e2e_018:	## Run end-to-end tests for the fixture set 018 — Nikic PHP-Parser
 e2e_018: bin/php-scoper.phar fixtures/set018-nikic-parser/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set018-nikic-parser --prefix=_Prefixed --output-dir=../../build/set018-nikic-parser --force --no-interaction --stop-on-failure
+	$(PHPNOGC) $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set018-nikic-parser \
+		--prefix=_Prefixed \
+		--output-dir=../../build/set018-nikic-parser \
+		--force \
+		--no-interaction \
+		--stop-on-failure
 	composer --working-dir=build/set018-nikic-parser dump-autoload
 
 	php build/set018-nikic-parser/main.php > build/set018-nikic-parser/output
@@ -134,7 +172,13 @@ e2e_018: bin/php-scoper.phar fixtures/set018-nikic-parser/vendor
 .PHONY: e2e_019
 e2e_019:	## Run end-to-end tests for the fixture set 019 — Symfony Console
 e2e_019: bin/php-scoper.phar fixtures/set019-symfony-console/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set019-symfony-console --prefix=_Prefixed --output-dir=../../build/set019-symfony-console --force --no-config --no-interaction --stop-on-failure
+	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set019-symfony-console \
+		--prefix=_Prefixed \
+		--output-dir=../../build/set019-symfony-console \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
 	composer --working-dir=build/set019-symfony-console dump-autoload
 
 	php build/set019-symfony-console/main.php > build/set019-symfony-console/output
@@ -143,7 +187,11 @@ e2e_019: bin/php-scoper.phar fixtures/set019-symfony-console/vendor
 .PHONY: e2e_020
 e2e_020:	## Run end-to-end tests for the fixture set 020 — Infection
 e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection --output-dir=../../build/set020-infection --force --no-interaction --stop-on-failure
+	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection \
+		--output-dir=../../build/set020-infection \
+		--force \
+		--no-interaction \
+		--stop-on-failure
 	composer --working-dir=build/set020-infection dump-autoload
 
 	php fixtures/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/expected-output
@@ -154,7 +202,12 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
 .PHONY: e2e_021
 e2e_021:	## Run end-to-end tests for the fixture set 020 — Composer
 e2e_021: bin/php-scoper.phar fixtures/set021-composer/vendor clover.xml
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer --output-dir=../../build/set021-composer --force --no-interaction --stop-on-failure --no-config
+	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer \
+		--output-dir=../../build/set021-composer \
+		--force \
+		--no-interaction \
+		--stop-on-failure \
+		--no-config
 	composer --working-dir=build/set021-composer dump-autoload
 
 	php fixtures/set021-composer/vendor/composer/composer/bin/composer licenses --no-plugins > build/set021-composer/expected-output
@@ -175,7 +228,11 @@ e2e_022: bin/php-scoper.phar fixtures/set022/vendor
 .PHONY: e2e_023
 e2e_023:	## Run end-to-end tests for the fixture set 023 — Whitelisting a whole third-party component with namespace whitelisting
 e2e_023: bin/php-scoper.phar fixtures/set023/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set023 --output-dir=../../build/set023 --force --no-interaction --stop-on-failure
+	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set023 \
+		--output-dir=../../build/set023 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
 	composer --working-dir=build/set023 dump-autoload
 
 	php build/set023/main.php > build/set023/output
@@ -184,7 +241,13 @@ e2e_023: bin/php-scoper.phar fixtures/set023/vendor
 .PHONY: e2e_024
 e2e_024:	## Run end-to-end tests for the fixture set 024 — Whitelisting user functions registered in the global namespace
 e2e_024: bin/php-scoper.phar fixtures/set024/vendor
-	$(PHPNOGC) $(PHPSCOPER) add-prefix --working-dir=fixtures/set024 --output-dir=../../build/set024 --force --no-interaction --stop-on-failure --no-config
+	$(PHPNOGC) $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set024 \
+		--output-dir=../../build/set024 \
+		--force \
+		--no-interaction \
+		--stop-on-failure \
+		--no-config
 	composer --working-dir=build/set024 dump-autoload
 
 	php build/set024/main.php > build/set024/output
