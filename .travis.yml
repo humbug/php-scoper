@@ -32,6 +32,8 @@ script:
   - |
     set -e
     if [ ./.travis/check_empty_specs ]; then
+        exit 0
+    else
         exit 1
     fi
     set +e
