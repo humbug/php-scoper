@@ -511,15 +511,22 @@ OUTPUT
         );
     }
 
+    /**
+     * This test is to ensure no file is left in _specs for the CI. It is fine otherwise for this test to fail locally
+     * when developing something.
+     */
+    public function test_it_uses_the_right_specs_directory()
+    {
+        $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
+
+        $this->assertCount(0, $files);
+    }
+
     public function provideValidFiles()
     {
-        if (file_exists(self::SECONDARY_SPECS_PATH)) {
-            $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
+        $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
 
-            if (0 === count($files)) {
-                $files = (new Finder())->files()->in(self::SPECS_PATH);
-            }
-        } else {
+        if (0 === count($files)) {
             $files = (new Finder())->files()->in(self::SPECS_PATH);
         }
 
