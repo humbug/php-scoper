@@ -93,7 +93,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function shouldPrefixScalar(Node $node, bool &$isSpecialFunction): bool
     {
         if (false === ($node instanceof String_ && AppendParentNode::hasParent($node) && is_string($node->value))
-            || 1 !== preg_match('/^((\\\\)?[\p{L}_]+)|((\\\\)?(?:[\p{L}_]+\\\\+)+[\p{L}_]+)$/u', $node->value)
+            || 1 !== preg_match('/^((\\\\)?[\p{L}_]+)$|((\\\\)?(?:[\p{L}_]+\\\\+)+[\p{L}_]+)$/u', $node->value)
         ) {
             return false;
         }
