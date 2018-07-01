@@ -19,6 +19,7 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
+        'whitelist-global-functions' => true,
     ],
 
     'Internal function in a namespace: make the call into a FQ call' => <<<'PHP'

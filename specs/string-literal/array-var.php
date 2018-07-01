@@ -19,6 +19,7 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
+        'whitelist-global-functions' => true,
     ],
 
     'String argument: transform into a FQCN and prefix it' => <<<'PHP'

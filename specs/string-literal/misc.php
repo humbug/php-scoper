@@ -19,9 +19,10 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
+        'whitelist-global-functions' => true,
     ],
 
-    'PHP heredoc as argument' =>  <<<'PHP'
+    'PHP heredoc as argument' => <<<'PHP'
 <?php
 
 declare(strict_types=1);

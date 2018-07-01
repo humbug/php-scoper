@@ -19,6 +19,7 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => false,
+        'whitelist-global-functions' => true,
     ],
 
     // As it is extremely rare to use a `use const` statement for a built-in constant from the

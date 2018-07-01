@@ -15,7 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Countable;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UserGlobalFunctionCollection;
 use InvalidArgumentException;
+use PhpParser\Node\Name\FullyQualified;
 use function array_filter;
 use function array_map;
 use function array_pop;
@@ -36,8 +38,10 @@ final class Whitelist implements Countable
     private $constants;
     private $namespaces;
     private $whitelistGlobalConstants;
+    private $whitelistGlobalFunctions;
+    private $userGlobalFunctions;
 
-    public static function create(bool $whitelistGlobalConstants, string ...$elements): self
+    public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions, string ...$elements): self
     {
         $classes = [];
         $constants = [];
@@ -72,6 +76,7 @@ final class Whitelist implements Countable
 
         return new self(
             $whitelistGlobalConstants,
+            $whitelistGlobalFunctions,
             array_unique($original),
             array_unique($classes),
             array_unique($constants),
@@ -87,21 +92,40 @@ final class Whitelist implements Countable
      */
     private function __construct(
         bool $whitelistGlobalConstants,
+        bool $whitelistGlobalFunctions,
         array $original,
         array $classes,
         array $constants,
         array $namespaces
     ) {
         $this->whitelistGlobalConstants = $whitelistGlobalConstants;
+        $this->whitelistGlobalFunctions = $whitelistGlobalFunctions;
         $this->original = $original;
         $this->classes = $classes;
         $this->constants = $constants;
         $this->namespaces = $namespaces;
+        $this->userGlobalFunctions = new UserGlobalFunctionCollection();
+    }
+
+    public function recordUserGlobalFunction(FullyQualified $original, FullyQualified $alias): void
+    {
+        $this->userGlobalFunctions->add($original, $alias);
+    }
+
+    public function getUserGlobalFunctions(): UserGlobalFunctionCollection
+    {
+        return $this->userGlobalFunctions;
     }
 
     public function whitelistGlobalConstants(): bool
     {
         return $this->whitelistGlobalConstants;
+    }
+
+    public function whitelistGlobalFunctions(): bool
+    {
+        // TODO: check that nothing is appended/collected if everything is being whitelisted; avoid the collection in this case to avoid performance issues
+        return $this->whitelistGlobalFunctions;
     }
 
     public function isClassWhitelisted(string $name): bool
