@@ -44,16 +44,16 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
         - [Namespaces whitelisting](#namespaces-whitelisting)
 - [Building a scoped PHAR](#building-a-scoped-phar)
     - [With Box](#with-box)
+    - [Without Box](#without-box)
         - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
         - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
-    - [Without Box](#without-box)
 - [Recommendations](#recommendations)
 - [Limitations](#limitations)
     - [PSR-0 support](#psr-0-support)
     - [String values](#string-values)
-    - [Native functions and constants shadowing](#native-functions-shadowing)
+    - [Native functions and constants shadowing](#native-functions-and-constants-shadowing)
     - [Grouped constants whitelisting](#grouped-constants-whitelisting)
-    - [Composer](#composer)
+    - [Composer](#composer-autoloader)
     - [Composer Plugins](#composer-plugins)
 - [Contributing](#contributing)
 - [Credits](#credits)
@@ -354,7 +354,7 @@ if (!function_exists('dd')) {
 
 The file will be scoped as usual in order to avoid any autoloading issue:
 
-```
+```php
 <?php
 
 namespace PhpScoperPrefix;
@@ -579,13 +579,22 @@ class_exists('Acme\Foo');
 \class_exists('Humbug\Acme\Foo');
 ```
 
-PHP-Scoper uses a regex to determine if the string is a class name that must be prefixed. But there is
-bound to have confusing cases. For example:
+PHP-Scoper uses a regex to determine if the string is a class name that must be
+prefixed. But there is bound to have confusing cases. For example:
 
-- If you have a plain string `'Acme\Foo'` which has nothing to do with a class, PHP-Parser will not be
-  able to tell and will prefix it
-- Classes belonging to the global scope: `'Acme_Foo'`, because there is no way to know if it is a class
-  name or a random string.
+- If you have a plain string `'Acme\Foo'` which has nothing to do with a class,
+  PHP-Parser will not be able to tell and will prefix it
+- Classes belonging to the global scope: `'Foo'` or `'Acme_Foo'`, because there
+  is no way to know if it is a class name or a random string except for a
+  handful of methods:
+  
+- `is_a()`
+- `is_subclass_of()`
+- `interface_exists()`
+- `class_exists()`
+- `trait_exists()`
+- `function_exists()`
+- `class_alias()`
 
 
 ### Native functions and constants shadowing
@@ -640,10 +649,12 @@ const Y = 'bar';
 ```
 
 
-### Composer
+### Composer Autoloader
 
 PHP-Scoper does not support prefixing the dumped Composer autoloader and autoloading files. This is why you have to
 manually dump the autoloader again after prefixing an application.
+
+Note: when using Box, Box is able to take care of that step for you.
 
 
 ### Composer Plugins
