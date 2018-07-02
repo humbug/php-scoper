@@ -37,7 +37,7 @@ script:
   - |
     if [ "$COVERAGE" == "true" ]; then
         make tc
-        make e2e
+        travis_wait make e2e
     else
         make tu
     fi
