@@ -22,6 +22,66 @@ return [
         'whitelist-global-functions' => true,
     ],
 
+    'Simple function declaration' => <<<'PHP'
+<?php
+
+namespace Acme;
+
+function foo() {}
+
+----
+<?php
+
+namespace Humbug\Acme;
+
+function foo()
+{
+}
+
+PHP
+    ,
+
+    'Simple whitelisted function' => [
+        'whitelist' => ['Acme\foo'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Acme;
+
+function foo() {}
+
+----
+<?php
+
+namespace Humbug\Acme;
+
+function foo()
+{
+}
+
+PHP
+    ],
+
+    'Simple whitelisted function with global functions non whitelisted' => [
+        'whitelist-global-functions' => false,
+        'whitelist' => ['foo'],
+        'payload' => <<<'PHP'
+<?php
+
+function foo() {}
+
+----
+<?php
+
+namespace Humbug;
+
+function foo()
+{
+}
+
+PHP
+    ],
+
     [
         'spec' => <<<'SPEC'
 Function declaration in a namespace:

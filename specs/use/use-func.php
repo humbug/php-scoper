@@ -131,8 +131,7 @@ PHP
 
     [
         'spec' => <<<'SPEC'
-Use statement for a namespaced function which has been whitelisted:
-- prefix the use statement: the whitelist only works for classes
+Use statement for a namespaced function which has been whitelisted
 SPEC
         ,
         'whitelist' => ['Foo\bar'],

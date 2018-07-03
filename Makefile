@@ -56,7 +56,7 @@ tm: bin/phpunit
 
 .PHONY: e2e
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -238,6 +238,20 @@ e2e_024: bin/php-scoper.phar fixtures/set024/vendor
 	php build/set024/main.php > build/set024/output
 	diff fixtures/set024/expected-output build/set024/output
 
+.PHONY: e2e_025
+e2e_025:	## Run end-to-end tests for the fixture set 025 — Whitelisting a vendor function
+e2e_025: bin/php-scoper.phar fixtures/set025/vendor
+	$(PHPNOGC) $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set025 \
+		--output-dir=../../build/set025 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set025 dump-autoload
+
+	php build/set025/main.php > build/set025/output
+	diff fixtures/set025/expected-output build/set025/output
+
 
 .PHONY: tb
 BLACKFIRE=blackfire
@@ -357,6 +371,9 @@ fixtures/set023/composer.lock: fixtures/set023/composer.json
 
 fixtures/set024/composer.lock: fixtures/set024/composer.json
 	@echo fixtures/set024/composer.lock is not up to date.
+
+fixtures/set025/composer.lock: fixtures/set025/composer.json
+	@echo fixtures/set025/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json
 	$(BOX) compile

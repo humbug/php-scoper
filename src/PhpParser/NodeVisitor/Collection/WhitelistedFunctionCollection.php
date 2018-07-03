@@ -20,7 +20,7 @@ use IteratorAggregate;
 use PhpParser\Node\Name\FullyQualified;
 use function count;
 
-final class UserGlobalFunctionCollection implements IteratorAggregate, Countable
+final class WhitelistedFunctionCollection implements IteratorAggregate, Countable
 {
     /**
      * @var FullyQualified[][]
