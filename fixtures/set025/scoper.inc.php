@@ -14,6 +14,6 @@ declare(strict_types=1);
 
 return [
     'whitelist' => [
-        'iter\RANGE',   // Use a case mismatch on purpose: function references should be case insensitive
+        'iter\RANG*',   // Use a case mismatch on purpose: function references should be case insensitive
     ],
 ];
