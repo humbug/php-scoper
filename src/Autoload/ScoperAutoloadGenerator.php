@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use function count;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\WhitelistedFunctionCollection;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
 use const PHP_EOL;
 use function array_map;
 use function array_unshift;
+use function count;
 use function iterator_to_array;
 use function sprintf;
 use function str_repeat;
@@ -130,12 +130,11 @@ EOF
     private function createFunctionAliasStatements(
         WhitelistedFunctionCollection $whitelistedFunctions,
         bool $hasNamespacedFunctions
-    ): array
-    {
+    ): array {
         $statements = array_map(
             function (array $node) use ($hasNamespacedFunctions): string {
                 /**
-                 * @var FullyQualified $original
+                 * @var FullyQualified
                  * @var FullyQualified $alias
                  */
                 [$original, $alias] = $node;
@@ -196,7 +195,7 @@ EOF
     {
         foreach ($functions as [$original, $alias]) {
             /**
-             * @var FullyQualified $original
+             * @var FullyQualified
              * @var FullyQualified $alias
              */
             if (count($original->parts) > 1) {

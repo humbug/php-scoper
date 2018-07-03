@@ -71,7 +71,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         if ($resolvedName instanceof FullyQualified
             && (
-                (count($resolvedName->parts) === 1 && $this->whitelist->whitelistGlobalFunctions())
+                (1 === count($resolvedName->parts) && $this->whitelist->whitelistGlobalFunctions())
                 || $this->whitelist->isClassWhitelisted((string) $resolvedName)
             )
         ) {
