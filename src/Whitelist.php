@@ -14,20 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_flip;
-use function array_key_exists;
-use Countable;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\WhitelistedFunctionCollection;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
 use function array_filter;
+use function array_flip;
+use function array_key_exists;
 use function array_map;
 use function array_pop;
 use function array_unique;
 use function count;
 use function explode;
 use function implode;
-use function in_array;
 use function preg_match;
 use function sprintf;
 use function str_replace;
