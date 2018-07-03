@@ -2,11 +2,6 @@ language: php
 
 sudo: false
 
-addons:
-  apt:
-    packages:
-      - parallel
-
 cache:
   directories:
     - $HOME/.composer/cache/files
@@ -37,7 +32,7 @@ script:
   - |
     if [ "$COVERAGE" == "true" ]; then
         make tc
-        travis_wait make e2e
+        make e2e
     else
         make tu
     fi
