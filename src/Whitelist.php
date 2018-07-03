@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Countable;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UserGlobalFunctionCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\WhitelistedFunctionCollection;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
 use function array_filter;
@@ -39,7 +39,7 @@ final class Whitelist implements Countable
     private $namespaces;
     private $whitelistGlobalConstants;
     private $whitelistGlobalFunctions;
-    private $userGlobalFunctions;
+    private $whitelistedFunctions;
 
     public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions, string ...$elements): self
     {
@@ -104,17 +104,17 @@ final class Whitelist implements Countable
         $this->classes = $classes;
         $this->constants = $constants;
         $this->namespaces = $namespaces;
-        $this->userGlobalFunctions = new UserGlobalFunctionCollection();
+        $this->whitelistedFunctions = new WhitelistedFunctionCollection();
     }
 
-    public function recordUserGlobalFunction(FullyQualified $original, FullyQualified $alias): void
+    public function recordWhitelistedFunction(FullyQualified $original, FullyQualified $alias): void
     {
-        $this->userGlobalFunctions->add($original, $alias);
+        $this->whitelistedFunctions->add($original, $alias);
     }
 
-    public function getUserGlobalFunctions(): UserGlobalFunctionCollection
+    public function getWhitelistedFunctions(): WhitelistedFunctionCollection
     {
-        return $this->userGlobalFunctions;
+        return $this->whitelistedFunctions;
     }
 
     public function whitelistGlobalConstants(): bool
