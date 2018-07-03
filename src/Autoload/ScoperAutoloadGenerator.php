@@ -148,7 +148,7 @@ EOF
 namespace %s{
     if (!function_exists('%s')) {
         function %s() {
-            return \%s(func_get_args());
+            return \%s(...func_get_args());
         }
     }
 }
