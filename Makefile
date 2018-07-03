@@ -252,6 +252,20 @@ e2e_025: bin/php-scoper.phar fixtures/set025/vendor
 	php build/set025/main.php > build/set025/output
 	diff fixtures/set025/expected-output build/set025/output
 
+.PHONY: e2e_026
+e2e_026:	## Run end-to-end tests for the fixture set 026 — Whitelisting classes and functions with pattern matching
+e2e_026: bin/php-scoper.phar fixtures/set026/vendor
+	$(PHPNOGC) $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set026 \
+		--output-dir=../../build/set026 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set026 dump-autoload
+
+	php build/set026/main.php > build/set026/output
+	diff fixtures/set026/expected-output build/set026/output
+
 
 .PHONY: tb
 BLACKFIRE=blackfire
@@ -334,6 +348,14 @@ fixtures/set023/vendor: fixtures/set023/composer.lock
 
 fixtures/set024/vendor: fixtures/set024/composer.lock
 	composer --working-dir=fixtures/set024 install
+	touch $@
+
+fixtures/set025/vendor: fixtures/set025/composer.lock
+	composer --working-dir=fixtures/set025 install
+	touch $@
+
+fixtures/set026/vendor:
+	composer --working-dir=fixtures/set026 update
 	touch $@
 
 composer.lock: composer.json

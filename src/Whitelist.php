@@ -46,7 +46,6 @@ final class Whitelist
     private $whitelistGlobalConstants;
     private $whitelistGlobalFunctions;
     private $whitelistedFunctions;
-    private $whitelistedClasses = [];
 
     public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions, string ...$elements): self
     {
@@ -179,11 +178,6 @@ final class Whitelist
         }
 
         return false;
-    }
-
-    public function recordWhitelistedClass(FullyQualified $original, FullyQualified $alias): void
-    {
-        $this->whitelistedClasses[$original->toString()] = [$original, $alias];
     }
 
     public function isConstantWhitelisted(string $name): bool
