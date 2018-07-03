@@ -19,7 +19,7 @@ clean:
 
 .PHONY: build
 build:		## Build the PHAR
-BOX=vendor/bin/box
+BOX=bin/box
 build: bin/php-scoper.phar
 
 
@@ -32,21 +32,21 @@ test:		## Run all the tests
 test: tc e2e
 
 .PHONY: tu
-PHPUNIT=vendor/bin/phpunit
+PHPUNIT=bin/phpunit
 tu:		## Run PHPUnit tests
-tu: vendor/bin/phpunit
+tu: bin/phpunit
 	$(PHPNOGC) $(PHPUNIT)
 
 .PHONY: tc
 COVERS_VALIDATOR=$(PHPNOGC) vendor-bin/covers-validator/bin/covers-validator
 tc:		## Run PHPUnit tests with test coverage
-tc: vendor/bin/phpunit vendor-bin/covers-validator/vendor
+tc: bin/phpunit vendor-bin/covers-validator/vendor
 	$(COVERS_VALIDATOR)
 	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) --coverage-html=dist/coverage --coverage-text --coverage-clover=clover.xml --coverage-xml=dist/infection-coverage/coverage-xml --log-junit=dist/infection-coverage/phpunit.junit.xml
 
 .PHONY: tm
 tm:		## Run Infection (Mutation Testing)
-tm: vendor/bin/phpunit
+tm: bin/phpunit
 	$(MAKE) e2e_020
 
 .PHONY: e2e
@@ -218,7 +218,7 @@ vendor/bamarni: composer.lock
 	composer install
 	touch $@
 
-vendor/bin/phpunit: composer.lock
+bin/phpunit: composer.lock
 	composer install
 	touch $@
 
