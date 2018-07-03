@@ -14,23 +14,23 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use PHPUnit\Framework\TestCase;
 use function array_filter;
 use function array_map;
 use function array_unique;
 use function array_values;
 use function explode;
 use function file_get_contents;
-use PHPUnit\Framework\TestCase;
 use function preg_match;
 use function preg_match_all;
-use ReflectionClass;
 
 /**
  * @coversNothing
  */
 class MakefileE2ETest extends TestCase
 {
-    public function test_the_e2e_test_executes_all_the_e2e_subsets() {
+    public function test_the_e2e_test_executes_all_the_e2e_subsets()
+    {
         $contents = file_get_contents(__DIR__.'/../Makefile');
 
         $e2e = $this->retrieveE2EStep($contents);
