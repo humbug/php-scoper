@@ -29,20 +29,20 @@ use function preg_match_all;
  */
 class MakefileE2ETest extends TestCase
 {
-    public function test_the_e2e_test_executes_all_the_e2e_subsets()
+    public function test_the_e2e_test_executes_all_the_e2e_sub_rules()
     {
         $contents = file_get_contents(__DIR__.'/../Makefile');
 
-        $e2e = $this->retrieveE2EStep($contents);
-        $sube2e = $this->retrieveE2ESubSteps($contents);
+        $mainE2ERule = $this->retrieveE2ERule($contents);
+        $e2eSubRules = $this->retrieveSubE2ERules($contents);
 
-        $this->assertSame($sube2e, $e2e);
+        $this->assertSame($e2eSubRules, $mainE2ERule);
     }
 
     /**
      * @return string[]
      */
-    private function retrieveE2EStep(string $makefileContents): array
+    private function retrieveE2ERule(string $makefileContents): array
     {
         if (1 !== preg_match(
             '/e2e:(?<steps>[\p{L}\d_ ]+)/u',
@@ -66,7 +66,7 @@ class MakefileE2ETest extends TestCase
     /**
      * @return string[]
      */
-    private function retrieveE2ESubSteps(string $makefileContents): array
+    private function retrieveSubE2ERules(string $makefileContents): array
     {
         if (1 !== preg_match_all(
             '/(?<step>e2e_\d+):/u',

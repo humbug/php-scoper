@@ -69,23 +69,17 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         );
         $resolvedName = $resolvedValue->getName();
 
-        if (false === ($resolvedName instanceof FullyQualified)
-            || (count($resolvedName->parts) === 1 && false === $this->whitelist->whitelistGlobalFunctions())
-            || false === $this->whitelist->isClassWhitelisted((string) $resolvedName)
+        if ($resolvedName instanceof FullyQualified
+            && (
+                (count($resolvedName->parts) === 1 && $this->whitelist->whitelistGlobalFunctions())
+                || $this->whitelist->isClassWhitelisted((string) $resolvedName)
+            )
         ) {
-            return $node;
+            $this->whitelist->recordWhitelistedFunction(
+                $resolvedName,
+                FullyQualified::concat($this->prefix, $resolvedName)
+            );
         }
-
-        if (false === ($resolvedName instanceof FullyQualified)) {
-            return $node;
-        }
-
-        /* @var FullyQualified $resolvedName */
-
-        $this->whitelist->recordWhitelistedFunction(
-            $resolvedName,
-            FullyQualified::concat($this->prefix, $resolvedName)
-        );
 
         return $node;
     }
