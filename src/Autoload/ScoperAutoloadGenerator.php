@@ -110,7 +110,7 @@ EOF
                     <<<'PHP'
 if (!function_exists('%1$s')) {
     function %1$s() {
-        return \%2$s(func_get_args());
+        return \%2$s(...func_get_args());
     }
 }
 PHP

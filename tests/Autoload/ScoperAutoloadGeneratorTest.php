@@ -96,12 +96,12 @@ $loader = require_once __DIR__.'/autoload.php';
 // https://github.com/humbug/php-scoper/blob/master/README.md#global-user-functions
 if (!function_exists('foo')) {
     function foo() {
-        return \Humbug\foo(func_get_args());
+        return \Humbug\foo(...func_get_args());
     }
 }
 if (!function_exists('bar')) {
     function bar() {
-        return \Humbug\bar(func_get_args());
+        return \Humbug\bar(...func_get_args());
     }
 }
 
@@ -142,12 +142,12 @@ class_exists('Humbug\B\Bar');
 // https://github.com/humbug/php-scoper/blob/master/README.md#global-user-functions
 if (!function_exists('foo')) {
     function foo() {
-        return \Humbug\foo(func_get_args());
+        return \Humbug\foo(...func_get_args());
     }
 }
 if (!function_exists('bar')) {
     function bar() {
-        return \Humbug\bar(func_get_args());
+        return \Humbug\bar(...func_get_args());
     }
 }
 

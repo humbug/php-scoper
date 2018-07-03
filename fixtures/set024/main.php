@@ -12,4 +12,4 @@ if (file_exists($autoload = __DIR__ . '/vendor/scoper-autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 }
 
-dump('yo');
+dump('foo', 'bar');
