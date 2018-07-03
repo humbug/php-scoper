@@ -60,7 +60,7 @@ PHP
 $loader = require_once __DIR__.'/autoload.php';
 
 // Aliases for the whitelisted classes. For more information see:
-// https://github.com/humbug/php-scoper/blob/master/README.md#classes--constants-whitelisting
+// https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
 class_exists('Humbug\A\Foo');
 class_exists('Humbug\B\Bar');
 
@@ -93,7 +93,7 @@ PHP
 $loader = require_once __DIR__.'/autoload.php';
 
 // Functions whitelisting. For more information see:
-// https://github.com/humbug/php-scoper/blob/master/README.md#global-user-functions
+// https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
 if (!function_exists('foo')) {
     function foo() {
         return \Humbug\foo(...func_get_args());
@@ -141,7 +141,7 @@ namespace {
 }
 
 // Functions whitelisting. For more information see:
-// https://github.com/humbug/php-scoper/blob/master/README.md#global-user-functions
+// https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
 namespace Acme {
     if (!function_exists('Acme\foo')) {
         function foo() {
@@ -212,14 +212,14 @@ namespace {
 }
 
 // Aliases for the whitelisted classes. For more information see:
-// https://github.com/humbug/php-scoper/blob/master/README.md#classes--constants-whitelisting
+// https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
 namespace {
     class_exists('Humbug\A\Foo');
     class_exists('Humbug\B\Bar');
 }
 
 // Functions whitelisting. For more information see:
-// https://github.com/humbug/php-scoper/blob/master/README.md#global-user-functions
+// https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
 namespace {
     if (!function_exists('foo')) {
         function foo() {

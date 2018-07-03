@@ -117,7 +117,7 @@ PHP;
             $statements,
             <<<'EOF'
 // Aliases for the whitelisted classes. For more information see:
-// https://github.com/humbug/php-scoper/blob/master/README.md#classes--constants-whitelisting
+// https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
 EOF
         );
 
@@ -185,7 +185,7 @@ PHP
             $statements,
             <<<'EOF'
 // Functions whitelisting. For more information see:
-// https://github.com/humbug/php-scoper/blob/master/README.md#global-user-functions
+// https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
 EOF
         );
 
