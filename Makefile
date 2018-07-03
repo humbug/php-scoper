@@ -372,6 +372,9 @@ fixtures/set023/composer.lock: fixtures/set023/composer.json
 fixtures/set024/composer.lock: fixtures/set024/composer.json
 	@echo fixtures/set024/composer.lock is not up to date.
 
+fixtures/set025/composer.lock: fixtures/set025/composer.json
+	@echo fixtures/set025/composer.lock is not up to date.
+
 bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json
 	$(BOX) compile
 	touch $@
