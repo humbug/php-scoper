@@ -48,7 +48,7 @@ tm: bin/phpunit
 
 .PHONY: e2e
 e2e:		## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -267,6 +267,22 @@ e2e_026: bin/php-scoper.phar fixtures/set026/vendor
 	diff fixtures/set026/expected-output build/set026/output
 
 
+.PHONY: e2e_027
+e2e_027:	## Run end-to-end tests for the fixture set 027 — Laravel
+e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
+	php $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set027-laravel \
+		--output-dir=../../build/set027-laravel \
+		--no-config \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set027-laravel dump-autoload
+
+	php build/set027-laravel/artisan -V > build/set027-laravel/output
+	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
+
+
 .PHONY: tb
 BLACKFIRE=blackfire
 tb:		## Run Blackfire profiling
@@ -352,6 +368,10 @@ fixtures/set026/vendor:
 	composer --working-dir=fixtures/set026 update
 	touch $@
 
+fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
+	composer --working-dir=fixtures/set027 install
+	touch $@
+
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
@@ -390,6 +410,9 @@ fixtures/set024/composer.lock: fixtures/set024/composer.json
 
 fixtures/set025/composer.lock: fixtures/set025/composer.json
 	@echo fixtures/set025/composer.lock is not up to date.
+
+fixtures/set027-laravel/composer.lock: fixtures/set027-laravel/composer.json
+	@echo fixtures/set027-laravel/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json
 	$(BOX) compile
