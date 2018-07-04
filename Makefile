@@ -38,16 +38,8 @@ tu: bin/phpunit
 	$(PHPNOGC) $(PHPUNIT)
 
 .PHONY: tc
-COVERS_VALIDATOR=$(PHPNOGC) vendor-bin/covers-validator/bin/covers-validator
 tc:		## Run PHPUnit tests with test coverage
-tc: bin/phpunit vendor-bin/covers-validator/vendor
-	$(COVERS_VALIDATOR)
-	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) \
-		--coverage-html=dist/coverage \
-		--coverage-text \
-		--coverage-clover=clover.xml \
-		--coverage-xml=dist/infection-coverage/coverage-xml \
-		--log-junit=dist/infection-coverage/phpunit.junit.xml
+tc: bin/phpunit vendor-bin/covers-validator/vendor clover.xml
 
 .PHONY: tm
 tm:		## Run Infection (Mutation Testing)
@@ -179,8 +171,13 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
 		--stop-on-failure
 	composer --working-dir=build/set020-infection dump-autoload
 
-	php fixtures/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/expected-output
-	php build/set020-infection/vendor/infection/infection/bin/infection --coverage=dist/infection-coverage > build/set020-infection/output
+	# Remove travis_wait locally to test this step. Maybe a stub could be loaded to not fail locally in the future.
+	travis_wait php fixtures/set020-infection/vendor/infection/infection/bin/infection \
+		--coverage=dist/infection-coverage \
+		> build/set020-infection/expected-output
+	php build/set020-infection/vendor/infection/infection/bin/infection \
+		--coverage=dist/infection-coverage \
+		> build/set020-infection/output
 
 	diff build/set020-infection/expected-output build/set020-infection/output
 
@@ -195,8 +192,12 @@ e2e_021: bin/php-scoper.phar fixtures/set021-composer/vendor clover.xml
 		--no-config
 	composer --working-dir=build/set021-composer dump-autoload
 
-	php fixtures/set021-composer/vendor/composer/composer/bin/composer licenses --no-plugins > build/set021-composer/expected-output
-	php build/set021-composer/vendor/composer/composer/bin/composer licenses --no-plugins > build/set021-composer/output
+	php fixtures/set021-composer/vendor/composer/composer/bin/composer licenses \
+		--no-plugins \
+		> build/set021-composer/expected-output
+	php build/set021-composer/vendor/composer/composer/bin/composer licenses \
+		--no-plugins \
+		> build/set021-composer/output
 
 	diff build/set021-composer/expected-output build/set021-composer/output
 
@@ -404,5 +405,12 @@ bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json
 box.json: box.json.dist
 	cat box.json.dist | sed -E 's/\"key\": \".+\",//g' | sed -E 's/\"algorithm\": \".+\",//g' > box.json
 
+COVERS_VALIDATOR=$(PHPNOGC) vendor-bin/covers-validator/bin/covers-validator
 clover.xml: src
-	$(MAKE) tc
+	$(COVERS_VALIDATOR)
+	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) \
+		--coverage-html=dist/coverage \
+		--coverage-text \
+		--coverage-clover=clover.xml \
+		--coverage-xml=dist/infection-coverage/coverage-xml \
+		--log-junit=dist/infection-coverage/phpunit.junit.xml
