@@ -1,0 +1,13 @@
+build:
+    environment:
+        variables:
+            COMPOSER_ROOT_VERSION: '0.8.99'
+
+build:
+    tests:
+        override:
+            -
+                command: 'phpdbg -qrr -d zend.enable_gc=0 bin/phpunit --coverage-clover=coverage.clover'
+                coverage:
+                    file: 'coverage.clover'
+                    format: 'clover'
