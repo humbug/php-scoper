@@ -144,8 +144,8 @@ return [
 
 ### Prefix
 
-The prefix to be used to isolate the code. If `null` or `'''` is given, then a random
-prefix will be automatically be generated.
+The prefix to be used to isolate the code. If `null` or `''` (empty string) is given,
+then a random prefix will be automatically be generated.
 
 
 ### Finders and paths
