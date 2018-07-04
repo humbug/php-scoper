@@ -171,8 +171,7 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
 		--stop-on-failure
 	composer --working-dir=build/set020-infection dump-autoload
 
-	# Remove travis_wait locally to test this step. Maybe a stub could be loaded to not fail locally in the future.
-	travis_wait php fixtures/set020-infection/vendor/infection/infection/bin/infection \
+	php fixtures/set020-infection/vendor/infection/infection/bin/infection \
 		--coverage=dist/infection-coverage \
 		> build/set020-infection/expected-output
 	php build/set020-infection/vendor/infection/infection/bin/infection \
