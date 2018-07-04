@@ -195,7 +195,7 @@ EOF
     {
         foreach ($functions as [$original, $alias]) {
             /*
-             * @var FullyQualified
+             * @var FullyQualified $original
              * @var FullyQualified $alias
              */
             if (count($original->parts) > 1) {
