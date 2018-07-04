@@ -64,6 +64,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'trait_exists',
         'function_exists',
         'class_alias',
+        'define',
     ];
 
     private $prefix;
@@ -131,7 +132,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                     ;
                 }
 
-                return $functionNode->name instanceof Name && false === $functionNode->hasAttribute('whitelist_class_alias');
+                return null !== $functionName && false === $functionNode->hasAttribute('whitelist_class_alias');
             }
 
             return $functionNode instanceof MethodCall || $functionNode instanceof StaticCall;
@@ -215,7 +216,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         // Skip if is already prefixed
         if ($this->prefix === $stringName->getFirst()) {
             $newStringName = $stringName;
-        } elseif ($isSpecialFunction) {
+        } elseif ($isSpecialFunction && false === $isConstantNode) {
             $newStringName = FullyQualified::concat($this->prefix, $stringName->toString(), $stringName->getAttributes());
         // Check if the class can be prefixed: class not from the global namespace or which the namespace is not
         // whitelisted

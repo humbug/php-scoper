@@ -465,7 +465,7 @@ PHP;
             return;
         }
 
-        $formattedWhitelist = 0 === count($whitelist)
+        $formattedWhitelist = 0 === count($whitelist->toArray())
             ? '[]'
             : sprintf('[%s]', implode(', ', $whitelist->toArray()))
         ;

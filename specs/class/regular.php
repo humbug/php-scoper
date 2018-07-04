@@ -71,7 +71,7 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-namespace Humbug\Foo;
+namespace Foo;
 
 class A {
     public function a() {}
@@ -90,7 +90,55 @@ class A
 \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
-        ],
+    ],
+
+    'Declaration of a whitelisted class whitelisted with a pattern.' => [
+        'whitelist' => ['Foo\A*'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+class A {
+    public function a() {}
+}
+
+class AA {}
+
+class B {}
+
+namespace Foo\A;
+
+class B {}
+
+----
+<?php
+
+namespace Humbug\Foo;
+
+class A
+{
+    public function a()
+    {
+    }
+}
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+class AA
+{
+}
+\class_alias('Humbug\\Foo\\AA', 'Foo\\AA', \false);
+class B
+{
+}
+namespace Humbug\Foo\A;
+
+class B
+{
+}
+\class_alias('Humbug\\Foo\\A\\B', 'Foo\\A\\B', \false);
+
+PHP
+    ],
 
     'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
 <?php

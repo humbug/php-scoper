@@ -49,7 +49,7 @@ const X = 'x', Y = '';
 PHP
     ],
 
-    'Constants declaration in the global namespace which is whitelisted' => [
+    'Constant declarations in the global namespace which is whitelisted' => [
         'whitelist' => ['*'],
         'payload' => <<<'PHP'
 <?php
@@ -77,18 +77,22 @@ namespace {
 PHP
     ],
 
-    'Whitelisted constants declaration in the global namespace' => [
-        'whitelist' => ['FOO_CONST', 'BAR_CONST', 'Acme\BAR_CONST'],
+    'Whitelisted constant declarations in the global namespace' => [
+        'whitelist' => ['FOO_CONST', 'BAR_CONST', 'Acme\BAR_CONST', 'BAZ*', 'Emca\BAZ*'],
         'payload' => <<<'PHP'
 <?php
 
 const FOO_CONST = foo();
 const X = 'x', Y = '';
 define('BAR_CONST', foo());
+define('BAP_CONST', foo());
 define('Acme\BAR_CONST', foo());
 define(FOO_CONST, foo());
 define(\FOO_CONST, foo());
 define(\Acme\BAR_CONST, foo());
+
+define('BAZ', 'baz');
+define('Emca\BAZ', 'baz');
 ----
 <?php
 
@@ -97,10 +101,13 @@ namespace Humbug;
 \define('FOO_CONST', \Humbug\foo());
 const X = 'x', Y = '';
 \define('BAR_CONST', \Humbug\foo());
+\define('BAP_CONST', \Humbug\foo());
 \define('Acme\\BAR_CONST', \Humbug\foo());
 \define(\FOO_CONST, \Humbug\foo());
 \define(\FOO_CONST, \Humbug\foo());
 \define(\Acme\BAR_CONST, \Humbug\foo());
+\define('BAZ', 'baz');
+\define('Emca\\BAZ', 'baz');
 
 PHP
     ],

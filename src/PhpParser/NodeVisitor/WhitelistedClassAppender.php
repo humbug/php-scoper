@@ -74,7 +74,7 @@ final class WhitelistedClassAppender extends NodeVisitorAbstract
 
     private function appendToNamespaceStmt(Namespace_ $namespace): Namespace_
     {
-        if (0 === count($this->whitelist)) {
+        if (false === $this->whitelist->hasWhitelistStatements()) {
             return $namespace;
         }
 

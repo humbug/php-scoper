@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use function array_flip;
 
 /**
  * @covers \Humbug\PhpScoper\Whitelist
@@ -48,14 +49,14 @@ class WhitelistTest extends TestCase
         $this->assertTrue($whitelistObject->whitelistGlobalConstants());
         $this->assertSame($expectedNamespaces, $actualNamespaces);
         $this->assertSame($expectedClasses, $actualClasses);
-        $this->assertSame($expectedConstants, $actualConstants);
+        $this->assertSame(array_flip($expectedConstants), $actualConstants);
 
         $whitelistObject = Whitelist::create(false, false, ...$whitelist);
 
         $this->assertFalse($whitelistObject->whitelistGlobalConstants());
         $this->assertSame($expectedClasses, $actualClasses);
         $this->assertSame($expectedNamespaces, $actualNamespaces);
-        $this->assertSame($expectedConstants, $actualConstants);
+        $this->assertSame(array_flip($expectedConstants), $actualConstants);
     }
 
     /**
