@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use function count;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
@@ -24,9 +25,9 @@ use PhpParser\NodeVisitorAbstract;
  *
  * @private
  */
-final class AppendParentNode extends NodeVisitorAbstract
+final class ParentNodeAppender extends NodeVisitorAbstract
 {
-    private const PARENT_ATTRIBUTE = 'parent';
+    public const PARENT_ATTRIBUTE = 'parent';
 
     private $stack;
 

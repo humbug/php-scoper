@@ -42,7 +42,7 @@ class TraverserFactory
 
         $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
 
-        $traverser->addVisitor(new NodeVisitor\AppendParentNode());
+        $traverser->addVisitor(new NodeVisitor\ParentNodeAppender());
 
         $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $whitelist, $namespaceStatements));
 
@@ -53,7 +53,7 @@ class TraverserFactory
         $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $this->reflector));
 
-        $traverser->addVisitor(new NodeVisitor\WhitelistedClassAppender($whitelist));
+        $traverser->addVisitor(new NodeVisitor\ClassAliasStmtAppender($prefix, $whitelist, $nameResolver));
         $traverser->addVisitor(new NodeVisitor\ConstStmtReplacer($whitelist, $nameResolver));
 
         return $traverser;

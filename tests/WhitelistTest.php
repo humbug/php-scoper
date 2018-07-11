@@ -64,7 +64,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_class_is_whitelisted(Whitelist $whitelist, string $class, bool $expected)
     {
-        $actual = $whitelist->isClassWhitelisted($class);
+        $actual = $whitelist->isSymbolWhitelisted($class);
 
         $this->assertSame($expected, $actual);
     }
@@ -74,7 +74,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $class, bool $expected)
     {
-        $actual = $whitelist->isNamespaceWhitelisted($class);
+        $actual = $whitelist->belongsToWhitelistedNamespace($class);
 
         $this->assertSame($expected, $actual);
     }

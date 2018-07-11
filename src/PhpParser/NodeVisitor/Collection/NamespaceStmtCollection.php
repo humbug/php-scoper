@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
 use Countable;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -86,11 +86,11 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
 
     private function getNodeNamespace(Node $node): ?Name
     {
-        if (false === AppendParentNode::hasParent($node)) {
+        if (false === ParentNodeAppender::hasParent($node)) {
             return null;
         }
 
-        $parentNode = AppendParentNode::getParent($node);
+        $parentNode = ParentNodeAppender::getParent($node);
 
         if ($parentNode instanceof Namespace_) {
             return $this->mapping[(string) $parentNode->name];

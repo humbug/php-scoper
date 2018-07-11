@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Countable;
+use function func_get_args;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\WhitelistedFunctionCollection;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
@@ -34,16 +36,19 @@ use function strtolower;
 use function substr;
 use function trim;
 
-final class Whitelist
+final class Whitelist implements Countable
 {
     private $original;
     private $classes;
     private $constants;
     private $namespaces;
     private $patterns;
+
     private $whitelistGlobalConstants;
     private $whitelistGlobalFunctions;
-    private $whitelistedFunctions;
+
+    private $whitelistedFunctions = [];
+    private $whitelistedClasses = [];
 
     public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions, string ...$elements): self
     {
@@ -140,15 +145,32 @@ final class Whitelist
         $this->constants = $constants;
         $this->namespaces = $namespaces;
         $this->patterns = $patterns;
-        $this->whitelistedFunctions = new WhitelistedFunctionCollection();
+    }
+
+    public function belongsToWhitelistedNamespace(string $name): bool
+    {
+        $name = strtolower($name);
+
+        foreach ($this->namespaces as $namespace) {
+            if ('' === $namespace || 0 === strpos($name, $namespace)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function whitelistGlobalFunctions(): bool
+    {
+        return $this->whitelistGlobalFunctions;
     }
 
     public function recordWhitelistedFunction(FullyQualified $original, FullyQualified $alias): void
     {
-        $this->whitelistedFunctions->add($original, $alias);
+        $this->whitelistedFunctions[] = [(string) $original, (string) $alias];
     }
 
-    public function getWhitelistedFunctions(): WhitelistedFunctionCollection
+    public function getWhitelistedFunctions(): array
     {
         return $this->whitelistedFunctions;
     }
@@ -158,12 +180,22 @@ final class Whitelist
         return $this->whitelistGlobalConstants;
     }
 
-    public function whitelistGlobalFunctions(): bool
+    public function whitelistGlobalClasses(): bool
     {
         return $this->whitelistGlobalFunctions;
     }
 
-    public function isClassWhitelisted(string $name): bool
+    public function recordWhitelistedClass(FullyQualified $original, FullyQualified $alias): void
+    {
+        $this->whitelistedClasses[] = [(string) $original, (string) $alias];
+    }
+
+    public function getWhitelistedClasses(): array
+    {
+        return $this->whitelistedClasses;
+    }
+
+    public function isSymbolWhitelisted(string $name): bool
     {
         if (array_key_exists(strtolower($name), $this->classes)) {
             return true;
@@ -178,55 +210,30 @@ final class Whitelist
         return false;
     }
 
-    public function isConstantWhitelisted(string $name): bool
-    {
-        if (array_key_exists(self::lowerConstantName($name), $this->constants)) {
-            return true;
-        }
-
-        foreach ($this->patterns as $pattern) {
-            if (1 === preg_match($pattern, $name)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getClassWhitelistArray(): array
-    {
-        return array_filter(
-            $this->original,
-            function (string $name): bool {
-                return '*' !== $name && '\*' !== substr($name, -2);
-            }
-        );
-    }
-
-    public function isNamespaceWhitelisted(string $name): bool
-    {
-        $name = strtolower($name);
-
-        foreach ($this->namespaces as $namespace) {
-            if ('' === $namespace || 0 === strpos($name, $namespace)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
+//    /**
+//     * @return string[]
+//     */
+//    public function getClassWhitelistArray(): array
+//    {
+//        return array_filter(
+//            $this->original,
+//            function (string $name): bool {
+//                return '*' !== $name && '\*' !== substr($name, -2);
+//            }
+//        );
+//    }
 
     public function toArray(): array
     {
         return $this->original;
     }
 
-    public function hasWhitelistStatements(): bool
+    /**
+     * {@inheritdoc}
+     */
+    public function count(): int
     {
-        return count($this->classes) + count($this->whitelistedFunctions) + count($this->patterns) > 0;
+        return count($this->whitelistedFunctions) + count($this->whitelistedClasses);
     }
 
     private static function lowerConstantName(string $name): string

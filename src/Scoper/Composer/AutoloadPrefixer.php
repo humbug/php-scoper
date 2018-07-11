@@ -67,7 +67,7 @@ final class AutoloadPrefixer
         $loader = [];
 
         foreach ($autoload as $namespace => $paths) {
-            $newNamespace = $whitelist->isNamespaceWhitelisted($namespace)
+            $newNamespace = $whitelist->belongsToWhitelistedNamespace($namespace)
                 ? $namespace
                 : sprintf('%s\\%s', $prefix, $namespace)
             ;

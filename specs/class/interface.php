@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Declaration in the global namespace: add a prefixed namespace.' => <<<'PHP'
+    'Declaration in the global namespace' => <<<'PHP'
 <?php
 
 class C {}
@@ -50,7 +50,7 @@ interface A extends \Humbug\C, \Humbug\D, \Iterator
 PHP
     ,
 
-    'Declaration in a namespace: prefix the namespace.' => <<<'PHP'
+    'Declaration in a namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -84,7 +84,7 @@ interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
 PHP
     ,
 
-    'Declaration of a whitelisted interface: append aliasing.' => [
+    'Declaration of a whitelisted interface' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -121,7 +121,7 @@ interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
 PHP
         ],
 
-    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
+    'Multiple declarations in different namespaces' => <<<'PHP'
 <?php
 
 namespace X {

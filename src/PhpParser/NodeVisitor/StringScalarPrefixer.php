@@ -93,22 +93,22 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function shouldPrefixScalar(Node $node, bool &$isSpecialFunction): bool
     {
-        if (false === ($node instanceof String_ && AppendParentNode::hasParent($node) && is_string($node->value))
+        if (false === ($node instanceof String_ && ParentNodeAppender::hasParent($node) && is_string($node->value))
             || 1 !== preg_match('/^((\\\\)?[\p{L}_]+)$|((\\\\)?(?:[\p{L}_]+\\\\+)+[\p{L}_]+)$/u', $node->value)
         ) {
             return false;
         }
 
         /** @var String_ $node */
-        $parentNode = AppendParentNode::getParent($node);
+        $parentNode = ParentNodeAppender::getParent($node);
 
         // The string scalar either has a class form or a simple string which can either be a symbol from the global
         // namespace or a completely unrelated string.
 
         if ($parentNode instanceof Arg
-            && null !== $functionNode = AppendParentNode::findParent($parentNode)
+            && null !== $functionNode = ParentNodeAppender::findParent($parentNode)
         ) {
-            $functionNode = AppendParentNode::getParent($parentNode);
+            $functionNode = ParentNodeAppender::getParent($parentNode);
 
             if ($functionNode instanceof FuncCall) {
                 $functionName = is_stringable($functionNode->name) ? (string) $functionNode->name : null;
@@ -127,7 +127,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                         || (
                             'function_exists' !== $functionName
                             && false === $this->reflector->isClassInternal($node->value)
-                            && false === $this->whitelist->isClassWhitelisted($node->value)
+                            && false === $this->whitelist->isSymbolWhitelisted($node->value)
                         )
                     ;
                 }
@@ -156,27 +156,27 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $arrayItemNode = $parentNode;
 
-        if (false === AppendParentNode::hasParent($parentNode)) {
+        if (false === ParentNodeAppender::hasParent($parentNode)) {
             return false;
         }
 
-        $parentNode = AppendParentNode::getParent($parentNode);
+        $parentNode = ParentNodeAppender::getParent($parentNode);
 
-        if (false === ($parentNode instanceof Array_) || false === AppendParentNode::hasParent($parentNode)) {
+        if (false === ($parentNode instanceof Array_) || false === ParentNodeAppender::hasParent($parentNode)) {
             return false;
         }
 
         /** @var Array_ $arrayNode */
         $arrayNode = $parentNode;
-        $parentNode = AppendParentNode::getParent($parentNode);
+        $parentNode = ParentNodeAppender::getParent($parentNode);
 
         if (false === ($parentNode instanceof Arg)
-            || null === $functionNode = AppendParentNode::findParent($parentNode)
+            || null === $functionNode = ParentNodeAppender::findParent($parentNode)
         ) {
             return false;
         }
 
-        $functionNode = AppendParentNode::getParent($parentNode);
+        $functionNode = ParentNodeAppender::getParent($parentNode);
 
         if (false === ($functionNode instanceof FuncCall)) {
             return false;
@@ -196,7 +196,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             $isSpecialFunction = true;
 
             return
-                false === $this->whitelist->isClassWhitelisted($node->value)
+                false === $this->whitelist->isSymbolWhitelisted($node->value)
                 && false === $this->reflector->isClassInternal($node->value)
             ;
         }
@@ -223,9 +223,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         } elseif (
             1 === count($stringName->parts)
             || $this->reflector->isClassInternal($stringName->toString())
-            || (false === $isConstantNode && $this->whitelist->isClassWhitelisted((string) $stringName))
-            || ($isConstantNode && $this->whitelist->isConstantWhitelisted((string) $stringName))
-            || $this->whitelist->isNamespaceWhitelisted((string) $stringName)
+            || (false === $isConstantNode && $this->whitelist->isSymbolWhitelisted((string) $stringName))
+            || ($isConstantNode && $this->whitelist->isSymbolWhitelisted((string) $stringName))
+            || $this->whitelist->belongsToWhitelistedNamespace((string) $stringName)
         ) {
             $newStringName = $stringName;
         } else {
@@ -237,14 +237,14 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function isConstantNode(String_ $node): bool
     {
-        $parent = AppendParentNode::getParent($node);
+        $parent = ParentNodeAppender::getParent($node);
 
         if (false === ($parent instanceof Arg)) {
             return false;
         }
 
         /** @var Arg $parent */
-        $argParent = AppendParentNode::getParent($parent);
+        $argParent = ParentNodeAppender::getParent($parent);
 
         if (false === ($argParent instanceof FuncCall)) {
             return false;

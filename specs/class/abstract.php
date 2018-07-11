@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Declaration in the global namespace: add prefixed namespace' => <<<'PHP'
+    'Declaration in the global namespace' => <<<'PHP'
 <?php
 
 abstract class A {
@@ -45,7 +45,7 @@ abstract class A
 PHP
     ,
 
-    'Declaration in the global namespace with the global namespace whitelisted: add root namespace statement' => [
+    'Declaration in the global namespace with the global namespace which is namespaced whitelisted' => [
         'whitelist' => ['\*'],
         'payload' => <<<'PHP'
 <?php
@@ -70,13 +70,7 @@ namespace {
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Declaration of a whitelisted class in the global namespace:
-- add prefixed namespace
-- append class alias statement to the class declaration
-SPEC
-        ,
+    'Declaration of a whitelisted class in the global namespace' => [
         'whitelist' => ['A'],
         'payload' => <<<'PHP'
 <?php
@@ -102,7 +96,7 @@ abstract class A
 PHP
     ],
 
-    'Declaration of a whitelisted class in the global namespace which is whitelisted: add empty namespace statement' => [
+    'Declaration of a whitelisted class in the global namespace which is whitelisted' => [
         'whitelist' => ['A', '\*'],
         'payload' => <<<'PHP'
 <?php
@@ -127,7 +121,7 @@ namespace {
 PHP
     ],
 
-    'Declaration in a namespace: prefix the namespace' => <<<'PHP'
+    'Declaration in a namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -152,39 +146,7 @@ abstract class A
 PHP
     ,
 
-    [
-        'spec' => <<<'SPEC'
-Declaration of a whitelisted class in the global namespace:
-- add prefixed namespace
-- append class alias statement to the class declaration
-SPEC
-        ,
-        'whitelist' => ['A'],
-        'payload' => <<<'PHP'
-<?php
-
-abstract class A {
-    public function a() {}
-    abstract public function b();
-}
-----
-<?php
-
-namespace Humbug;
-
-abstract class A
-{
-    public function a()
-    {
-    }
-    public abstract function b();
-}
-\class_alias('Humbug\\A', 'A', \false);
-
-PHP
-    ],
-
-    'Declaration in a whitelisted namespace: do nothing' => [
+    'Declaration in a whitelisted namespace' => [
         'whitelist' => ['Foo\*'],
         'payload' => <<<'PHP'
 <?php
@@ -211,7 +173,7 @@ abstract class A
 PHP
     ],
 
-    'Declaration of a whitelisted class: append aliasing' => [
+    'Declaration of a whitelisted class in a namespace' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -239,7 +201,7 @@ abstract class A
 PHP
     ],
 
-    'Declaration of a whitelisted class with FQCN for the whitelist: append aliasing' => [
+    'Declaration of a whitelisted class in a namespace with FQCNfor the whitelist' => [
         'whitelist' => ['\Foo\A'],
         'payload' => <<<'PHP'
 <?php

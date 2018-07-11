@@ -15,11 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
+use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function Humbug\PhpScoper\clone_node;
@@ -64,7 +67,11 @@ final class UseStmtCollection implements IteratorAggregate
     {
         $name = strtolower($node->getFirst());
 
-        $parentNode = AppendParentNode::findParent($node);
+        $parentNode = ParentNodeAppender::findParent($node);
+
+        if ($parentNode instanceof ClassLike) {
+            return null;
+        }
 
         $useStatements = $this->nodes[(string) $namespaceName] ?? [];
 
@@ -90,7 +97,9 @@ final class UseStmtCollection implements IteratorAggregate
 
                         // Match the alias
                         return $useStatement->name;
-                    } elseif (null !== $useStatement->alias) {
+                    }
+
+                    if (null !== $useStatement->alias) {
                         continue;
                     }
                 }

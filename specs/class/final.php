@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Declaration in the global namespace: add prefixed namespace.' => <<<'PHP'
+    'Declaration in the global namespace' => <<<'PHP'
 <?php
 
 final class A {}
@@ -38,7 +38,7 @@ final class A
 PHP
     ,
 
-    'Declaration in a namespace: prefix the namespace.' => <<<'PHP'
+    'Declaration in a namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -56,7 +56,7 @@ final class A
 PHP
     ,
 
-    'Declaration of a whitelisted final class: append aliasing.' => [
+    'Declaration of a whitelisted final class' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -77,7 +77,7 @@ final class A
 PHP
         ],
 
-    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
+    'Multiple declarations in different namespaces' => <<<'PHP'
 <?php
 
 namespace X {

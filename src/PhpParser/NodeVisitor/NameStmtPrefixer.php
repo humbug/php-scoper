@@ -81,7 +81,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        return ($node instanceof Name && AppendParentNode::hasParent($node))
+        return ($node instanceof Name && ParentNodeAppender::hasParent($node))
             ? $this->prefixName($node)
             : $node
         ;
@@ -89,14 +89,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private function prefixName(Name $name): Node
     {
-        $parentNode = AppendParentNode::getParent($name);
+        $parentNode = ParentNodeAppender::getParent($name);
 
         if ($parentNode instanceof NullableType) {
-            if (false === AppendParentNode::hasParent($parentNode)) {
+            if (false === ParentNodeAppender::hasParent($parentNode)) {
                 return $name;
             }
 
-            $parentNode = AppendParentNode::getParent($parentNode);
+            $parentNode = ParentNodeAppender::getParent($parentNode);
         }
 
         if (false === (
@@ -148,19 +148,19 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         // Skip if the node namespace is whitelisted
-        if ($this->whitelist->isNamespaceWhitelisted((string) $resolvedName)) {
+        if ($this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)) {
             return $resolvedName;
         }
 
         // Check if the class can be prefixed
-        if (false === ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)) {
-            if ($this->reflector->isClassInternal($resolvedName->toString())) {
-                return $resolvedName;
-            }
+        if (false === ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)
+            && $this->reflector->isClassInternal($resolvedName->toString())
+        ) {
+            return $resolvedName;
         }
 
         if ($parentNode instanceof ConstFetch) {
-            if ($this->whitelist->isConstantWhitelisted($resolvedName->toString())) {
+            if ($this->whitelist->isSymbolWhitelisted($resolvedName->toString())) {
                 return $resolvedName;
             }
 

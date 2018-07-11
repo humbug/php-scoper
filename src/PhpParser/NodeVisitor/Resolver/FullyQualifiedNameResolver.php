@@ -14,12 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NameStmtPrefixer;
+use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use function in_array;
@@ -41,10 +43,17 @@ final class FullyQualifiedNameResolver
         $this->useStatements = $useStatements;
     }
 
-    public function resolveName(Name $node): ResolvedValue
+    /**
+     * @param Name|Identifier
+     */
+    public function resolveName(Node $node): ResolvedValue
     {
         if ($node instanceof FullyQualified) {
             return new ResolvedValue($node, null, null);
+        }
+
+        if ($node instanceof Identifier) {
+            $node = new Name($node->name, $node->getAttributes());
         }
 
         $namespaceName = $this->namespaceStatements->findNamespaceForNode($node);
@@ -72,7 +81,7 @@ final class FullyQualifiedNameResolver
             return $name;
         }
 
-        $parentNode = AppendParentNode::getParent($name);
+        $parentNode = ParentNodeAppender::getParent($name);
 
         if (
             ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)

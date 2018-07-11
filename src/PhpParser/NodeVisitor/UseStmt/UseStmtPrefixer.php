@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -63,7 +63,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         // If is whitelisted
-        if ($this->whitelist->isNamespaceWhitelisted((string) $use->name)) {
+        if ($this->whitelist->belongsToWhitelistedNamespace((string) $use->name)) {
             return false;
         }
 
@@ -73,7 +73,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
 
         if (Use_::TYPE_CONSTANT === $useType) {
             return
-                false === $this->whitelist->isClassWhitelisted((string) $use->name)
+                false === $this->whitelist->isSymbolWhitelisted((string) $use->name)
                 && false === $this->reflector->isConstantInternal((string) $use->name)
             ;
         }
@@ -92,7 +92,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
     {
         if (Use_::TYPE_UNKNOWN === $use->type) {
             /** @var Use_ $parentNode */
-            $parentNode = AppendParentNode::getParent($use);
+            $parentNode = ParentNodeAppender::getParent($use);
 
             return $parentNode->type;
         }

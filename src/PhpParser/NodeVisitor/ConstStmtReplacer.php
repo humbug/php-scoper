@@ -72,7 +72,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                 )
             )->getName();
 
-            if (false === $this->whitelist->isConstantWhitelisted((string) $resolvedConstantName)) {
+            if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName)) {
                 continue;
             }
 

@@ -270,32 +270,26 @@ e2e_026: bin/php-scoper.phar fixtures/set026/vendor
 .PHONY: tb
 BLACKFIRE=blackfire
 tb:		## Run Blackfire profiling
-tb: vendor
-	rm -rf build
-	rm -rf vendor-bin/*/vendor
-
-	mv -f vendor tmp-back
-	composer install --no-dev --prefer-dist --classmap-authoritative
-
-	$(BLACKFIRE) --new-reference run $(PHPNOGC) bin/php-scoper add-prefix --output-dir=build/php-scoper --force --quiet
-
-	rm -rf vendor
-	mv -f tmp-back vendor
+tb: bin/php-scoper.phar  vendor
+	$(BLACKFIRE) --new-reference run $(PHPNOGC) bin/php-scoper.phar add-prefix --output-dir=build/php-scoper --force --quiet
 
 #
 # Rules from files
 #---------------------------------------------------------------------------
 
 vendor: composer.lock
-	composer install
+	export COMPOSER_ROOT_VERSION='0.8.99'; composer install
+	unset "COMPOSER_ROOT_VERSION"
 	touch $@
 
 vendor/bamarni: composer.lock
-	composer install
+	export COMPOSER_ROOT_VERSION='0.8.99'; composer install
+	unset "COMPOSER_ROOT_VERSION"
 	touch $@
 
 bin/phpunit: composer.lock
-	composer install
+	export COMPOSER_ROOT_VERSION='0.8.99'; composer install
+	unset "COMPOSER_ROOT_VERSION"
 	touch $@
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni

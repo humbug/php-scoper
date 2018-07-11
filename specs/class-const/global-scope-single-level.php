@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a class belonging to the global namespace:
-- do not prefix the class (cf. class belonging to the global scope tests)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'Constant call on a class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -69,13 +63,7 @@ namespace {
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a class belonging to the global namespace:
-- do not prefix the class (cf. class belonging to the global scope tests)
-- do not touch the call
-SPEC
-        ,
+    'FQ constant call on a class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -95,13 +83,7 @@ class Command
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a whitelisted class belonging to the global namespace:
-- prefix the class (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'Constant call on a whitelisted class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -116,13 +98,7 @@ namespace Humbug;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a whitelisted class belonging to the global namespace:
-- prefix the class (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ constant call on a whitelisted class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 

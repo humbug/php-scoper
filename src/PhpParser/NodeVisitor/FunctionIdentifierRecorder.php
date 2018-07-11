@@ -50,11 +50,11 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Identifier) || false === AppendParentNode::hasParent($node)) {
+        if (false === ($node instanceof Identifier) || false === ParentNodeAppender::hasParent($node)) {
             return $node;
         }
 
-        $parent = AppendParentNode::getParent($node);
+        $parent = ParentNodeAppender::getParent($node);
 
         if (false === ($parent instanceof Function_)) {
             return $node;
@@ -72,7 +72,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         if ($resolvedName instanceof FullyQualified
             && (
                 (1 === count($resolvedName->parts) && $this->whitelist->whitelistGlobalFunctions())
-                || $this->whitelist->isClassWhitelisted((string) $resolvedName)
+                || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
             )
         ) {
             $this->whitelist->recordWhitelistedFunction(

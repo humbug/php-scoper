@@ -98,7 +98,7 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
     private function shouldPrefixStmt(Namespace_ $namespace): bool
     {
-        if ($this->whitelist->isNamespaceWhitelisted((string) $namespace->name)) {
+        if ($this->whitelist->belongsToWhitelistedNamespace((string) $namespace->name)) {
             return false;
         }
 
