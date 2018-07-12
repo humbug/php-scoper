@@ -160,9 +160,15 @@ final class Whitelist implements Countable
         return false;
     }
 
+    // TODO: check if really necessary
     public function whitelistGlobalFunctions(): bool
     {
         return $this->whitelistGlobalFunctions;
+    }
+
+    public function isGlobalWhitelistedFunction(string $functionName): bool
+    {
+        return $this->whitelistGlobalFunctions && false === strpos($functionName, '\\');
     }
 
     public function recordWhitelistedFunction(FullyQualified $original, FullyQualified $alias): void
@@ -195,9 +201,22 @@ final class Whitelist implements Countable
         return $this->whitelistedClasses;
     }
 
-    public function isSymbolWhitelisted(string $name): bool
+    /**
+     * Tells if a given symbol is whitelisted. Note however that it does not account for when:
+     *
+     * - The symbol belongs to the global namespace and the symbols of the global namespace of this type are whitelisted
+     * - Belongs to a whitelisted namespace
+     *
+     * @param bool $constant Unlike other symbols, constants _can_ be case insensitive but 99% are not so we leave out
+     *                       the case where they are not case sensitive.
+     */
+    public function isSymbolWhitelisted(string $name, bool $constant = false): bool
     {
-        if (array_key_exists(strtolower($name), $this->classes)) {
+        if (false === $constant && array_key_exists(strtolower($name), $this->classes)) {
+            return true;
+        }
+
+        if ($constant && array_key_exists(self::lowerConstantName($name), $this->constants)) {
             return true;
         }
 
@@ -209,19 +228,6 @@ final class Whitelist implements Countable
 
         return false;
     }
-
-//    /**
-//     * @return string[]
-//     */
-//    public function getClassWhitelistArray(): array
-//    {
-//        return array_filter(
-//            $this->original,
-//            function (string $name): bool {
-//                return '*' !== $name && '\*' !== substr($name, -2);
-//            }
-//        );
-//    }
 
     public function toArray(): array
     {
@@ -236,6 +242,10 @@ final class Whitelist implements Countable
         return count($this->whitelistedFunctions) + count($this->whitelistedClasses);
     }
 
+    /**
+     * Transforms the constant FQ name "Acme\Foo\X" to "acme\foo\X" since the namespace remains case insensitive for
+     * constants regardless of whether or not constants actually are case insensitive.
+     */
     private static function lowerConstantName(string $name): string
     {
         $parts = explode('\\', $name);

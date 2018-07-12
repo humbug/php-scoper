@@ -53,7 +53,10 @@ final class FullyQualifiedNameResolver
         }
 
         if ($node instanceof Identifier) {
-            $node = new Name($node->name, $node->getAttributes());
+            $attributes = $node->getAttributes();
+            $attributes['original_node'] = $node;
+
+            $node = new Name($node->name, $attributes);
         }
 
         $namespaceName = $this->namespaceStatements->findNamespaceForNode($node);

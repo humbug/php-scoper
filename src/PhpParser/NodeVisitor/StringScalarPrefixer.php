@@ -224,7 +224,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             1 === count($stringName->parts)
             || $this->reflector->isClassInternal($stringName->toString())
             || (false === $isConstantNode && $this->whitelist->isSymbolWhitelisted((string) $stringName))
-            || ($isConstantNode && $this->whitelist->isSymbolWhitelisted((string) $stringName))
+            || ($isConstantNode && $this->whitelist->isSymbolWhitelisted((string) $stringName, true))
             || $this->whitelist->belongsToWhitelistedNamespace((string) $stringName)
         ) {
             $newStringName = $stringName;

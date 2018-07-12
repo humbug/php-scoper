@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Class declaration',
+        'title' => 'Whitelist case sensitiveness',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],

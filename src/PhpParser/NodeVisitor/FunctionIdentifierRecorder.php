@@ -18,14 +18,12 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitorAbstract;
-use function count;
 
 /**
- * Records the user functions registered in the global namespace.
+ * Records the user functions registered in the global namespace which have been whitelisted.
  *
  * @private
  */
@@ -61,19 +59,16 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         /** @var Identifier $node */
-        $resolvedValue = $this->nameResolver->resolveName(
-            new Name(
-                $node->name,
-                $node->getAttributes()
-            )
-        );
-        $resolvedName = $resolvedValue->getName();
+        $resolvedName = $this->nameResolver->resolveName($node)->getName();
 
-        if ($resolvedName instanceof FullyQualified
-            && (
-                (1 === count($resolvedName->parts) && $this->whitelist->whitelistGlobalFunctions())
-                || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
-            )
+        if (false === ($resolvedName instanceof FullyQualified)) {
+            return $node;
+        }
+
+        /** @var FullyQualified $resolvedName */
+
+        if ($this->whitelist->isGlobalWhitelistedFunction((string) $resolvedName)
+            || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
         ) {
             $this->whitelist->recordWhitelistedFunction(
                 $resolvedName,
