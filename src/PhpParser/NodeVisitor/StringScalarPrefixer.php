@@ -14,11 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use function array_shift;
-use function array_values;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
-use function implode;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -26,23 +23,21 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeVisitorAbstract;
 use function array_key_exists;
-use function count;
+use function array_shift;
+use function array_values;
 use function Humbug\PhpScoper\is_stringable;
+use function implode;
 use function in_array;
 use function is_string;
 use function preg_match;
 use function strlen;
 use function strpos;
-use function substr;
 
 /**
  * Prefixes the string scalar values when appropriate.
@@ -88,10 +83,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        $isSpecialFunction = false;
-
         return $node instanceof String_
-            ? $this->prefixStringScalar($node, $isSpecialFunction)
+            ? $this->prefixStringScalar($node)
             : $node
         ;
     }

@@ -15,11 +15,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Countable;
-use function func_get_args;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\WhitelistedFunctionCollection;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
-use function array_filter;
 use function array_flip;
 use function array_key_exists;
 use function array_map;
