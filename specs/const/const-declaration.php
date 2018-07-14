@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global constant usage in the global scope',
+        'title' => 'Global constant declaration in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -40,7 +40,7 @@ namespace Humbug;
 
 const FOO_CONST = \Humbug\foo();
 const X = 'x', Y = '';
-\define('BAR_CONST', \Humbug\foo());
+\define('Humbug\\BAR_CONST', \Humbug\foo());
 \define('Humbug\\Acme\\BAR_CONST', \Humbug\foo());
 \define(\Humbug\FOO_CONST, \Humbug\foo());
 \define(\Humbug\FOO_CONST, \Humbug\foo());
@@ -101,7 +101,7 @@ namespace Humbug;
 \define('FOO_CONST', \Humbug\foo());
 const X = 'x', Y = '';
 \define('BAR_CONST', \Humbug\foo());
-\define('BAP_CONST', \Humbug\foo());
+\define('Humbug\\BAP_CONST', \Humbug\foo());
 \define('Acme\\BAR_CONST', \Humbug\foo());
 \define(\FOO_CONST, \Humbug\foo());
 \define(\FOO_CONST, \Humbug\foo());
@@ -142,7 +142,7 @@ namespace Humbug\Acme;
 
 const FOO_CONST = foo();
 const X = 'x', Y = '';
-\define('BAR_CONST', foo());
+\define('Humbug\\BAR_CONST', foo());
 \define('Humbug\\Acme\\BAR_CONST', foo());
 \define(FOO_CONST, foo());
 \define(\Humbug\FOO_CONST, foo());
@@ -172,7 +172,7 @@ namespace Acme;
 
 const FOO_CONST = foo();
 const X = 'x', Y = '';
-\define('BAR_CONST', foo());
+\define('Humbug\\BAR_CONST', foo());
 \define('Acme\\BAR_CONST', foo());
 \define(FOO_CONST, foo());
 \define(\Humbug\FOO_CONST, foo());
@@ -202,7 +202,7 @@ namespace Humbug\Acme;
 
 const FOO_CONST = foo();
 const X = 'x', Y = '';
-\define('BAR_CONST', foo());
+\define('Humbug\\BAR_CONST', foo());
 \define('Acme\\BAR_CONST', foo());
 \define(FOO_CONST, foo());
 \define(\Humbug\FOO_CONST, foo());

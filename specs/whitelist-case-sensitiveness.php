@@ -57,6 +57,7 @@ namespace Acme;
 
 const FOO = 'foo';
 define('Acme\BAR', 'bar');
+echo \Acme\BAR;
 ----
 <?php
 
@@ -64,6 +65,7 @@ namespace Humbug\Acme;
 
 const FOO = 'foo';
 \define('Humbug\\Acme\\BAR', 'bar');
+echo \Humbug\Acme\BAR;
 
 PHP
     ],

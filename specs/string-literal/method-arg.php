@@ -29,7 +29,7 @@ class Foo {
     function foo($x = 'Symfony\\Component\\Yaml\\Yaml') {}
 }
 
-(new X())->foo('Symfony\\Component\\Yaml\\Yaml');
+(new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 
 ----
 <?php

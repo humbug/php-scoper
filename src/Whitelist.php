@@ -151,6 +151,10 @@ final class Whitelist implements Countable
     {
         $name = strtolower($name);
 
+        if (0 === strpos($name, '\\')) {
+            $name = substr($name, 1);
+        }
+
         foreach ($this->namespaces as $namespace) {
             if ('' === $namespace || 0 === strpos($name, $namespace)) {
                 return true;
@@ -186,9 +190,19 @@ final class Whitelist implements Countable
         return $this->whitelistGlobalConstants;
     }
 
+    public function isGlobalWhitelistedConstant(string $constantName): bool
+    {
+        return $this->whitelistGlobalConstants && false === strpos($constantName, '\\');
+    }
+
     public function whitelistGlobalClasses(): bool
     {
         return $this->whitelistGlobalFunctions;
+    }
+
+    public function isGlobalWhitelistedClass(string $className): bool
+    {
+        return false;
     }
 
     public function recordWhitelistedClass(FullyQualified $original, FullyQualified $alias): void
