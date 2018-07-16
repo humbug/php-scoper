@@ -22,14 +22,18 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
+    'FQCN string argument' => <<<'PHP'
 <?php
 
 class Foo {
-    function foo($x = 'Symfony\\Component\\Yaml\\Yaml') {}
+    function foo($x = 'Symfony\\Component\\Yaml\\Yaml', $y = 'Foo') {}
 }
 
-(new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+(new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
+
+$x = new X();
+
+$x->foo()('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
 
 ----
 <?php
@@ -38,23 +42,25 @@ namespace Humbug;
 
 class Foo
 {
-    function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml')
+    function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo')
     {
     }
 }
-(new \Humbug\X())->foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+(new \Humbug\X())->foo('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
+$x = new \Humbug\X();
+$x->foo()('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
 
 PHP
     ,
 
-    'FQCN string argument with a static method: transform into a FQCN and prefix it' => <<<'PHP'
+    'FQCN string argument with a static method' => <<<'PHP'
 <?php
 
 class Foo {
-    static function foo($x = 'Symfony\\Component\\Yaml\\Yaml') {}
+    static function foo($x = 'Symfony\\Component\\Yaml\\Yaml', $y = 'Foo') {}
 }
 
-X::foo('Symfony\\Component\\Yaml\\Yaml');
+X::foo('Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
 
 ----
 <?php
@@ -63,11 +69,11 @@ namespace Humbug;
 
 class Foo
 {
-    static function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml')
+    static function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo')
     {
     }
 }
-\Humbug\X::foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\X::foo('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
 
 PHP
     ,

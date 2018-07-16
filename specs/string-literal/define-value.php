@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
+    'FQCN string argument' => <<<'PHP'
 <?php
 
 define('X', 'Symfony\\Component\\Yaml\\Yaml');

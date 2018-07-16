@@ -22,9 +22,13 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
+    'FQCN string argument' => <<<'PHP'
 <?php
 
+const X = 'Yaml';
+const X = '\\Yaml';
+const X = 'Closure';
+const X = '\\Closure';
 const X = 'Symfony\\Component\\Yaml\\Yaml';
 const X = '\\Symfony\\Component\\Yaml\\Yaml';
 const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
@@ -35,6 +39,10 @@ const X = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 namespace Humbug;
 
+const X = 'Yaml';
+const X = '\\Yaml';
+const X = 'Closure';
+const X = '\\Closure';
 const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
@@ -42,4 +50,136 @@ const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 PHP
     ,
+
+    'FQCN string argument on whitelisted class' => [
+        'whitelist' => ['Symfony\Component\Yaml\Yaml'],
+        'payload' => <<<'PHP'
+<?php
+
+const X = 'Symfony\\Component\\Yaml\\Yamll';
+const X = 'Symfony\\Component\\Yaml\\Yaml';
+const X = '\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+
+----
+<?php
+
+namespace Humbug;
+
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yamll';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+
+PHP
+    ],
+
+    'FQCN string argument on classes belonging to a whitelisted namespace' => [
+        'whitelist' => ['Symfony\Component\*'],
+        'payload' => <<<'PHP'
+<?php
+
+const X = 'Symfony\\Yaml';
+const X = 'Symfony\\Component\\Yaml\\Yaml';
+const X = '\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+
+----
+<?php
+
+namespace Humbug;
+
+const X = 'Humbug\\Symfony\\Yaml';
+const X = 'Symfony\\Component\\Yaml\\Yaml';
+const X = '\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+
+PHP
+    ],
+
+    'FQCN string argument formed by concatenated strings' => <<<'PHP'
+<?php
+
+const X = 'Symfony\\Component' . '\\Yaml\\Yaml';
+const X = '\\Symfony\\Component' . '\\Yaml\\Yaml';
+
+----
+<?php
+
+namespace Humbug;
+
+const X = 'Symfony\\Component' . '\\Yaml\\Yaml';
+const X = '\\Symfony\\Component' . '\\Yaml\\Yaml';
+
+PHP
+    ,
+
+    'FQC constant call' => <<<'PHP'
+<?php
+
+namespace Symfony\Component\Yaml {
+    class Yaml {}
+}
+
+namespace {
+    const X = Symfony\Component\Yaml\Yaml::class;
+    const X = \Symfony\Component\Yaml\Yaml::class;
+    const X = Humbug\Symfony\Component\Yaml\Yaml::class;
+    const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+}
+----
+<?php
+
+namespace Humbug\Symfony\Component\Yaml;
+
+class Yaml
+{
+}
+namespace Humbug;
+
+const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+
+PHP
+    ,
+
+    'FQC constant call on whitelisted class' => [
+        'whitelist' => ['Symfony\Component\Yaml\Yaml'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Symfony\Component\Yaml {
+    class Yaml {}
+}
+
+namespace {
+    const X = Symfony\Component\Yaml\Yaml::class;
+    const X = \Symfony\Component\Yaml\Yaml::class;
+    const X = Humbug\Symfony\Component\Yaml\Yaml::class;
+    const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+}
+----
+<?php
+
+namespace Humbug\Symfony\Component\Yaml;
+
+class Yaml
+{
+}
+\class_alias('Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Symfony\\Component\\Yaml\\Yaml', \false);
+namespace Humbug;
+
+const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+
+PHP
+    ],
 ];

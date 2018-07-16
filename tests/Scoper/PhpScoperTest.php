@@ -471,6 +471,7 @@ PHP;
         ;
 
         $formattedWhitelistGlobalConstants = $whitelist->whitelistGlobalConstants() ? 'true' : 'false';
+        $formattedWhitelistGlobalFunctions = $whitelist->whitelistGlobalFunctions() ? 'true' : 'false';
 
         $titleSeparator = str_repeat(
             '=',
@@ -493,6 +494,7 @@ $titleSeparator
 INPUT
 whitelist: $formattedWhitelist
 whitelist global constants: $formattedWhitelistGlobalConstants
+whitelist global functions: $formattedWhitelistGlobalFunctions
 $titleSeparator
 $contents
 

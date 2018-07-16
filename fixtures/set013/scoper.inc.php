@@ -5,12 +5,8 @@ declare(strict_types=1);
 use Isolated\Symfony\Component\Finder\Finder;
 
 return [
-    'global_namespace_whitelist' => [
-        'AppKernel',
-        function (string $className): bool {
-            return 'PHPUnit' === substr($className, 0, 6);
-        },
-    ],
+    // The prefix configuration. If a non null value will be used, a random prefix will be generated.
+    'prefix' => null,
 
     // By default when running php-scoper add-prefix, it will prefix all relevant code found in the current working
     // directory. You can however define which files should be scoped by defining a collection of Finders in the
@@ -45,23 +41,10 @@ return [
     // For more see: https://github.com/humbug/php-scoper#patchers
     'patchers' => [
         function (string $filePath, string $prefix, string $contents): string {
-            // Change the content here.
+            // Change the contents here.
 
             return $contents;
         },
-    ],
-
-    // By default, PHP-Scoper only prefixes code where the namespace is non-global. In other words, non-namespaced
-    // code is not prefixed. This leaves the majority of classes, functions and constants in PHP - and most extensions,
-    // untouched.
-    //
-    // This is not necessarily a desirable outcome for vendor dependencies which are also not namespaced. To ensure
-    // they are isolated, you can configure the following which can be a list of strings or callables taking a string
-    // (the class name) as an argument and return a boolean (true meaning the class is going to prefixed).
-    //
-    // For more, see https://github.com/humbug/php-scoper#global-namespace-whitelisting
-    'global_namespace_whitelist' => [
-        'AppKernel',
     ],
 
     // PHP-Scoper's goal is to make sure that all code for a project lies in a distinct PHP namespace. However, you
@@ -74,6 +57,18 @@ return [
     //
     // Fore more see https://github.com/humbug/php-scoper#whitelist
     'whitelist' => [
-        'PHPUnit\Framework\TestCase',
+        // 'PHPUnit\Framework\TestCase',   // A specific class
+        // 'PHPUnit\Framework\*',          // The whole namespace
+        // '*',                            // Everything
     ],
+
+    // If `true` then the user defined constants belonging to the global namespace will not be prefixed.
+    //
+    // For more see https://github.com/humbug/php-scoper#constants-from-the-global-namespace-whitelisting
+    'whitelist-global-constants' => true,
+
+    // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
+    //
+    // For more see https://github.com/humbug/php-scoper#global-user-functions
+    'whitelist-global-functions' => true,
 ];

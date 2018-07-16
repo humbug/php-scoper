@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use function array_values;
 use Countable;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
@@ -26,6 +27,7 @@ use function count;
 use function explode;
 use function implode;
 use function preg_match;
+use const SORT_REGULAR;
 use function sprintf;
 use function str_replace;
 use function strpos;
@@ -36,7 +38,7 @@ use function trim;
 final class Whitelist implements Countable
 {
     private $original;
-    private $classes;
+    private $symbols;
     private $constants;
     private $namespaces;
     private $patterns;
@@ -49,7 +51,7 @@ final class Whitelist implements Countable
 
     public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions, string ...$elements): self
     {
-        $classes = [];
+        $symbols = [];
         $constants = [];
         $namespaces = [];
         $patterns = [];
@@ -79,21 +81,19 @@ final class Whitelist implements Countable
                 self::assertValidPattern($element);
 
                 $patterns[] = sprintf(
-                    '/^%s$/ui',
-                    strtolower(
+                    '/^%s$/u',
+                    str_replace(
+                        '\\',
+                        '\\\\',
                         str_replace(
-                            '\\',
-                            '\\\\',
-                            str_replace(
-                                '*',
-                                '.*',
-                                $element
-                            )
+                            '*',
+                            '.*',
+                            $element
                         )
                     )
                 );
             } else {
-                $classes[] = strtolower($element);
+                $symbols[] = strtolower($element);
                 $constants[] = self::lowerConstantName($element);
             }
         }
@@ -102,7 +102,7 @@ final class Whitelist implements Countable
             $whitelistGlobalConstants,
             $whitelistGlobalFunctions,
             array_unique($original),
-            array_flip($classes),
+            array_flip($symbols),
             array_flip($constants),
             array_unique($patterns),
             array_unique($namespaces)
@@ -130,7 +130,7 @@ final class Whitelist implements Countable
         bool $whitelistGlobalConstants,
         bool $whitelistGlobalFunctions,
         array $original,
-        array $classes,
+        array $symbols,
         array $constants,
         array $patterns,
         array $namespaces
@@ -138,7 +138,7 @@ final class Whitelist implements Countable
         $this->whitelistGlobalConstants = $whitelistGlobalConstants;
         $this->whitelistGlobalFunctions = $whitelistGlobalFunctions;
         $this->original = $original;
-        $this->classes = $classes;
+        $this->symbols = $symbols;
         $this->constants = $constants;
         $this->namespaces = $namespaces;
         $this->patterns = $patterns;
@@ -161,7 +161,9 @@ final class Whitelist implements Countable
         return false;
     }
 
-    // TODO: check if really necessary
+    /**
+     * @internal
+     */
     public function whitelistGlobalFunctions(): bool
     {
         return $this->whitelistGlobalFunctions;
@@ -179,9 +181,17 @@ final class Whitelist implements Countable
 
     public function getWhitelistedFunctions(): array
     {
-        return $this->whitelistedFunctions;
+        return array_values(
+            array_unique(
+                $this->whitelistedFunctions,
+                SORT_REGULAR
+            )
+        );
     }
 
+    /**
+     * @internal
+     */
     public function whitelistGlobalConstants(): bool
     {
         return $this->whitelistGlobalConstants;
@@ -192,6 +202,9 @@ final class Whitelist implements Countable
         return $this->whitelistGlobalConstants && false === strpos($constantName, '\\');
     }
 
+    /**
+     * @internal
+     */
     public function whitelistGlobalClasses(): bool
     {
         return $this->whitelistGlobalFunctions;
@@ -223,7 +236,7 @@ final class Whitelist implements Countable
      */
     public function isSymbolWhitelisted(string $name, bool $constant = false): bool
     {
-        if (false === $constant && array_key_exists(strtolower($name), $this->classes)) {
+        if (false === $constant && array_key_exists(strtolower($name), $this->symbols)) {
             return true;
         }
 
@@ -232,12 +245,28 @@ final class Whitelist implements Countable
         }
 
         foreach ($this->patterns as $pattern) {
+            $pattern = false === $constant ? $pattern.'i' : $pattern;
+
             if (1 === preg_match($pattern, $name)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @return string[]
+     * @deprecated To be replaced by getWhitelistedClasses
+     */
+    public function getClassWhitelistArray(): array
+    {
+        return array_filter(
+            $this->original,
+            function (string $name): bool {
+                return '*' !== $name && '\*' !== substr($name, -2);
+            }
+        );
     }
 
     public function toArray(): array
