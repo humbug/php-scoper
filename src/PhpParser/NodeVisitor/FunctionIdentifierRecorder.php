@@ -66,7 +66,6 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         /** @var FullyQualified $resolvedName */
-
         if ($this->whitelist->isGlobalWhitelistedFunction((string) $resolvedName)
             || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
         ) {

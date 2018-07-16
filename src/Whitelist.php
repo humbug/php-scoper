@@ -14,20 +14,20 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_values;
 use Countable;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
+use const SORT_REGULAR;
 use function array_flip;
 use function array_key_exists;
 use function array_map;
 use function array_pop;
 use function array_unique;
+use function array_values;
 use function count;
 use function explode;
 use function implode;
 use function preg_match;
-use const SORT_REGULAR;
 use function sprintf;
 use function str_replace;
 use function strpos;
@@ -226,7 +226,7 @@ final class Whitelist implements Countable
     }
 
     /**
-     * Tells if a given symbol is whitelisted. Note however that it does not account for when:
+     * Tells if a given symbol is whitelisted. Note however that it does not account for when:.
      *
      * - The symbol belongs to the global namespace and the symbols of the global namespace of this type are whitelisted
      * - Belongs to a whitelisted namespace
@@ -257,6 +257,7 @@ final class Whitelist implements Countable
 
     /**
      * @return string[]
+     *
      * @deprecated To be replaced by getWhitelistedClasses
      */
     public function getClassWhitelistArray(): array

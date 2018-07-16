@@ -204,37 +204,37 @@ class WhitelistTest extends TestCase
         yield [
             Whitelist::create(true, true),
             'PHP_SCOPER_VERSION',
-            true
+            true,
         ];
 
         yield [
             Whitelist::create(false, true),
             'PHP_SCOPER_VERSION',
-            false
+            false,
         ];
 
         yield [
             Whitelist::create(true, true),
             'Humbug\PHP_SCOPER_VERSION',
-            false
+            false,
         ];
 
         yield [
             Whitelist::create(false, true),
             'Humbug\PHP_SCOPER_VERSION',
-            false
+            false,
         ];
 
         yield [
             Whitelist::create(true, true),
             'Humbug\PHP_SCOPER_VERSION',
-            false
+            false,
         ];
 
         yield [
             Whitelist::create(false, true, 'PHP_SCOPER_VERSION'),
             'PHP_SCOPER_VERSION',
-            false
+            false,
         ];
     }
 
@@ -243,7 +243,7 @@ class WhitelistTest extends TestCase
         yield [
             Whitelist::create(true, true, 'PHP_SCOPER_VERSION'),
             'Foo',
-            false
+            false,
         ];
     }
 
@@ -252,25 +252,25 @@ class WhitelistTest extends TestCase
         yield [
             Whitelist::create(true, true, 'PHP_SCOPER_VERSION'),
             'foo',
-            true
+            true,
         ];
 
         yield [
             Whitelist::create(true, false, 'PHP_SCOPER_VERSION'),
             'foo',
-            false
+            false,
         ];
 
         yield [
             Whitelist::create(true, true, 'PHP_SCOPER_VERSION'),
             'Acme\foo',
-            false
+            false,
         ];
 
         yield [
             Whitelist::create(true, false, 'PHP_SCOPER_VERSION'),
             'Acme\foo',
-            false
+            false,
         ];
     }
 

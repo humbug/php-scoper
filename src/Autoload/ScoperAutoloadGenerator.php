@@ -14,17 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\WhitelistedFunctionCollection;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
+use const PHP_EOL;
 use function array_map;
 use function array_unshift;
-use function count;
-use function iterator_to_array;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
-use const PHP_EOL;
 use function strpos;
 
 final class ScoperAutoloadGenerator
@@ -133,7 +130,7 @@ EOF
         $statements = array_map(
             function (array $node) use ($hasNamespacedFunctions): string {
                 /**
-                 * @var string $original
+                 * @var string
                  * @var string $alias
                  */
                 [$original, $alias] = $node;
@@ -197,7 +194,7 @@ EOF
     {
         foreach ($functions as [$original, $alias]) {
             /**
-             * @var string $original
+             * @var string
              * @var string $alias
              */
             if (false !== strpos($original, '\\')) {

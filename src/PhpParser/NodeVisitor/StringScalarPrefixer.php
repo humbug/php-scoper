@@ -36,9 +36,7 @@ use function implode;
 use function in_array;
 use function is_string;
 use function preg_match;
-use function strlen;
 use function strpos;
-use UnexpectedValueException;
 
 /**
  * Prefixes the string scalar values when appropriate.

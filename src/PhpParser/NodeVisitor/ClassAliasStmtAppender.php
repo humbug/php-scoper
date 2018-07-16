@@ -105,7 +105,6 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             return $stmts;
         }
         /** @var Class_|Interface_ $stmt */
-
         if (null === $stmt->name) {
             return $stmts;
         }
@@ -118,7 +117,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         ) {
             return $stmts;
         }
-        /** @var FullyQualified $originalName */
+        /* @var FullyQualified $originalName */
 
         $stmts[] = $this->createAliasStmt($originalName, $stmt);
 
