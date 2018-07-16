@@ -21,13 +21,14 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Const_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitorAbstract;
 use UnexpectedValueException;
 use function count;
 
 /**
- * Replaces const declaration by define.
+ * Replaces const declaration by define when the constant is whitelisted.
  *
  * ```
  * const DUMMY_CONST = 'foo';
@@ -55,11 +56,11 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
     /**
      * {@inheritdoc}
      *
-     * @param Node\Stmt\Const_ $node
+     * @param Const_ $node
      */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Node\Stmt\Const_)) {
+        if (false === ($node instanceof Const_)) {
             return $node;
         }
 
@@ -72,7 +73,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                 )
             )->getName();
 
-            if (false === $this->whitelist->isConstantWhitelisted((string) $resolvedConstantName)) {
+            if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName, true)) {
                 continue;
             }
 

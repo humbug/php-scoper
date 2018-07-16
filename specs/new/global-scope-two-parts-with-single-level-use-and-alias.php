@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a namespaced class partially imported with an aliased use statement:
-- prefix the namespaces, use statement and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a namespaced class partially imported with an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -66,13 +60,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a namespaced class imported with an aliased use statement:
-- prefix the namespaces, use statement and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a namespaced class imported with an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -110,13 +98,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a namespaced class with an aliased use statement:
-- prefix the namespaces, use statement and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ new statement call of a namespaced class with an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -154,13 +136,7 @@ new \Humbug\A\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class with an aliased use statement:
-- prefix the namespaces, use statement and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ new statement call of a class with an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -198,14 +174,7 @@ new \Humbug\A();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a whitelisted namespaced class partially imported with an aliased use statement:
-- prefix each namespace and the call
-- append the class_alias statement to the whitelisted class
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a whitelisted namespaced class partially imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -245,14 +214,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a whitelisted namespaced class imported with an aliased use statement:
-- prefix the namespaces, use statement and the call
-- append the class_alias statement to the whitelisted class
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a whitelisted namespaced class imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

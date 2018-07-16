@@ -14,15 +14,16 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\WhitelistedFunctionCollection;
+use Countable;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
-use function array_filter;
+use const SORT_REGULAR;
 use function array_flip;
 use function array_key_exists;
 use function array_map;
 use function array_pop;
 use function array_unique;
+use function array_values;
 use function count;
 use function explode;
 use function implode;
@@ -34,20 +35,23 @@ use function strtolower;
 use function substr;
 use function trim;
 
-final class Whitelist
+final class Whitelist implements Countable
 {
     private $original;
-    private $classes;
+    private $symbols;
     private $constants;
     private $namespaces;
     private $patterns;
+
     private $whitelistGlobalConstants;
     private $whitelistGlobalFunctions;
-    private $whitelistedFunctions;
+
+    private $whitelistedFunctions = [];
+    private $whitelistedClasses = [];
 
     public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions, string ...$elements): self
     {
-        $classes = [];
+        $symbols = [];
         $constants = [];
         $namespaces = [];
         $patterns = [];
@@ -77,21 +81,19 @@ final class Whitelist
                 self::assertValidPattern($element);
 
                 $patterns[] = sprintf(
-                    '/^%s$/ui',
-                    strtolower(
+                    '/^%s$/u',
+                    str_replace(
+                        '\\',
+                        '\\\\',
                         str_replace(
-                            '\\',
-                            '\\\\',
-                            str_replace(
-                                '*',
-                                '.*',
-                                $element
-                            )
+                            '*',
+                            '.*',
+                            $element
                         )
                     )
                 );
             } else {
-                $classes[] = strtolower($element);
+                $symbols[] = strtolower($element);
                 $constants[] = self::lowerConstantName($element);
             }
         }
@@ -100,7 +102,7 @@ final class Whitelist
             $whitelistGlobalConstants,
             $whitelistGlobalFunctions,
             array_unique($original),
-            array_flip($classes),
+            array_flip($symbols),
             array_flip($constants),
             array_unique($patterns),
             array_unique($namespaces)
@@ -128,7 +130,7 @@ final class Whitelist
         bool $whitelistGlobalConstants,
         bool $whitelistGlobalFunctions,
         array $original,
-        array $classes,
+        array $symbols,
         array $constants,
         array $patterns,
         array $namespaces
@@ -136,41 +138,22 @@ final class Whitelist
         $this->whitelistGlobalConstants = $whitelistGlobalConstants;
         $this->whitelistGlobalFunctions = $whitelistGlobalFunctions;
         $this->original = $original;
-        $this->classes = $classes;
+        $this->symbols = $symbols;
         $this->constants = $constants;
         $this->namespaces = $namespaces;
         $this->patterns = $patterns;
-        $this->whitelistedFunctions = new WhitelistedFunctionCollection();
     }
 
-    public function recordWhitelistedFunction(FullyQualified $original, FullyQualified $alias): void
+    public function belongsToWhitelistedNamespace(string $name): bool
     {
-        $this->whitelistedFunctions->add($original, $alias);
-    }
+        $name = strtolower($name);
 
-    public function getWhitelistedFunctions(): WhitelistedFunctionCollection
-    {
-        return $this->whitelistedFunctions;
-    }
-
-    public function whitelistGlobalConstants(): bool
-    {
-        return $this->whitelistGlobalConstants;
-    }
-
-    public function whitelistGlobalFunctions(): bool
-    {
-        return $this->whitelistGlobalFunctions;
-    }
-
-    public function isClassWhitelisted(string $name): bool
-    {
-        if (array_key_exists(strtolower($name), $this->classes)) {
-            return true;
+        if (0 === strpos($name, '\\')) {
+            $name = substr($name, 1);
         }
 
-        foreach ($this->patterns as $pattern) {
-            if (1 === preg_match($pattern, $name)) {
+        foreach ($this->namespaces as $namespace) {
+            if ('' === $namespace || 0 === strpos($name, $namespace)) {
                 return true;
             }
         }
@@ -178,13 +161,92 @@ final class Whitelist
         return false;
     }
 
-    public function isConstantWhitelisted(string $name): bool
+    /**
+     * @internal
+     */
+    public function whitelistGlobalFunctions(): bool
     {
-        if (array_key_exists(self::lowerConstantName($name), $this->constants)) {
+        return $this->whitelistGlobalFunctions;
+    }
+
+    public function isGlobalWhitelistedFunction(string $functionName): bool
+    {
+        return $this->whitelistGlobalFunctions && false === strpos($functionName, '\\');
+    }
+
+    public function recordWhitelistedFunction(FullyQualified $original, FullyQualified $alias): void
+    {
+        $this->whitelistedFunctions[] = [(string) $original, (string) $alias];
+    }
+
+    public function getWhitelistedFunctions(): array
+    {
+        return array_values(
+            array_unique(
+                $this->whitelistedFunctions,
+                SORT_REGULAR
+            )
+        );
+    }
+
+    /**
+     * @internal
+     */
+    public function whitelistGlobalConstants(): bool
+    {
+        return $this->whitelistGlobalConstants;
+    }
+
+    public function isGlobalWhitelistedConstant(string $constantName): bool
+    {
+        return $this->whitelistGlobalConstants && false === strpos($constantName, '\\');
+    }
+
+    /**
+     * @internal
+     */
+    public function whitelistGlobalClasses(): bool
+    {
+        return $this->whitelistGlobalFunctions;
+    }
+
+    public function isGlobalWhitelistedClass(string $className): bool
+    {
+        return false;
+    }
+
+    public function recordWhitelistedClass(FullyQualified $original, FullyQualified $alias): void
+    {
+        $this->whitelistedClasses[] = [(string) $original, (string) $alias];
+    }
+
+    public function getWhitelistedClasses(): array
+    {
+        return $this->whitelistedClasses;
+    }
+
+    /**
+     * Tells if a given symbol is whitelisted. Note however that it does not account for when:.
+     *
+     * - The symbol belongs to the global namespace and the symbols of the global namespace of this type are whitelisted
+     * - Belongs to a whitelisted namespace
+     *
+     * @param bool $constant Unlike other symbols, constants _can_ be case insensitive but 99% are not so we leave out
+     *                       the case where they are not case sensitive.
+     */
+    public function isSymbolWhitelisted(string $name, bool $constant = false): bool
+    {
+        if (false === $constant && array_key_exists(strtolower($name), $this->symbols)) {
+            return true;
+        }
+
+        if ($constant && array_key_exists(self::lowerConstantName($name), $this->constants)) {
             return true;
         }
 
         foreach ($this->patterns as $pattern) {
+            $pattern = false === $constant ? $pattern.'i' : $pattern;
+
             if (1 === preg_match($pattern, $name)) {
                 return true;
             }
@@ -195,6 +257,8 @@ final class Whitelist
 
     /**
      * @return string[]
+     *
+     * @deprecated To be replaced by getWhitelistedClasses
      */
     public function getClassWhitelistArray(): array
     {
@@ -206,29 +270,23 @@ final class Whitelist
         );
     }
 
-    public function isNamespaceWhitelisted(string $name): bool
-    {
-        $name = strtolower($name);
-
-        foreach ($this->namespaces as $namespace) {
-            if ('' === $namespace || 0 === strpos($name, $namespace)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public function toArray(): array
     {
         return $this->original;
     }
 
-    public function hasWhitelistStatements(): bool
+    /**
+     * {@inheritdoc}
+     */
+    public function count(): int
     {
-        return count($this->classes) + count($this->whitelistedFunctions) + count($this->patterns) > 0;
+        return count($this->whitelistedFunctions) + count($this->whitelistedClasses);
     }
 
+    /**
+     * Transforms the constant FQ name "Acme\Foo\X" to "acme\foo\X" since the namespace remains case insensitive for
+     * constants regardless of whether or not constants actually are case insensitive.
+     */
     private static function lowerConstantName(string $name): string
     {
         $parts = explode('\\', $name);

@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace:
-- prefix the use statement (cf. class belonging to the global scope tests)
-- prefix the constant
-SPEC
-        ,
+    'Constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -51,13 +45,7 @@ use Humbug\Foo as X;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace:
-- do not prefix the class (cf. class belonging to the global scope tests)
-- do nothing
-SPEC
-        ,
+    'FQ constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -84,13 +72,7 @@ use Humbug\Foo as X;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a whitelisted class which is imported via an aliased use statement and which belongs to the global namespace:
-- prefix the use statement (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
-- transform the call into a FQ call
-SPEC
-        ,
+    'Constant call on a whitelisted class which is imported via an aliased use statement and which belongs to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -108,13 +90,7 @@ use Reflector as X;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a whitelisted class which is imported via an aliased use statement and which belongs to the global namespace:
-- prefix the use statement (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
-- do nothing
-SPEC
-        ,
+    'FQ constant call on a whitelisted class which is imported via an aliased use statement and which belongs to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 

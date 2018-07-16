@@ -14,17 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\WhitelistedFunctionCollection;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
 use const PHP_EOL;
 use function array_map;
 use function array_unshift;
-use function count;
-use function iterator_to_array;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
+use function strpos;
 
 final class ScoperAutoloadGenerator
 {
@@ -127,17 +125,18 @@ EOF
     /**
      * @return string[]
      */
-    private function createFunctionAliasStatements(
-        WhitelistedFunctionCollection $whitelistedFunctions,
-        bool $hasNamespacedFunctions
-    ): array {
+    private function createFunctionAliasStatements(array $whitelistedFunctions, bool $hasNamespacedFunctions): array
+    {
         $statements = array_map(
             function (array $node) use ($hasNamespacedFunctions): string {
                 /**
-                 * @var FullyQualified
-                 * @var FullyQualified $alias
+                 * @var string
+                 * @var string $alias
                  */
                 [$original, $alias] = $node;
+
+                $original = new FullyQualified($original);
+                $alias = new FullyQualified($alias);
 
                 if ($hasNamespacedFunctions) {
                     $namespace = $original->slice(0, -1);
@@ -169,11 +168,11 @@ if (!function_exists('%1$s')) {
 }
 PHP
                     ,
-                    $original->toString(),
-                    $alias->toString()
+                    $original,
+                    $alias
                 );
             },
-            iterator_to_array($whitelistedFunctions)
+            $whitelistedFunctions
         );
 
         if ([] === $statements) {
@@ -191,14 +190,14 @@ EOF
         return $statements;
     }
 
-    private function hasNamespacedFunctions(WhitelistedFunctionCollection $functions): bool
+    private function hasNamespacedFunctions(array $functions): bool
     {
         foreach ($functions as [$original, $alias]) {
-            /*
-             * @var FullyQualified $original
-             * @var FullyQualified $alias
+            /**
+             * @var string
+             * @var string $alias
              */
-            if (count($original->parts) > 1) {
+            if (false !== strpos($original, '\\')) {
                 return true;
             }
         }

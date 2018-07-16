@@ -88,7 +88,7 @@ class A
 PHP
     ,
 
-    'Declaration in the global namespace which is whitelisted: add root namespace statement' => [
+    'Declaration in the global namespace which is whitelisted' => [
         'whitelist' => ['\*'],
         'payload' => <<<'PHP'
 <?php
@@ -156,14 +156,7 @@ namespace {
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Declaration in the global namespace with some whitelisted classes:
-- add prefixed namespace
-- prefix the classes
-- append the class alias statements for the whitelisted class declarations
-SPEC
-        ,
+    'Declaration in the global namespace with some whitelisted classes' => [
         'whitelist' => ['A', 'C'],
         'payload' => <<<'PHP'
 <?php
@@ -304,7 +297,7 @@ class A
 PHP
     ,
 
-    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
+    'Multiple declarations in different namespaces' => <<<'PHP'
 <?php
 
 namespace {

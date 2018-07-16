@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Declaration in the global namespace: prefix only non-internal classes.' => <<<'PHP'
+    'Declaration in the global namespace' => <<<'PHP'
 <?php
 
 class A {
@@ -49,7 +49,7 @@ class B extends \Humbug\A implements \Iterator
 PHP
     ,
 
-    'Declaration in a namespace: prefix the namespace.' => <<<'PHP'
+    'Declaration in a namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -81,7 +81,7 @@ class B extends \Humbug\Foo\A implements \Iterator
 PHP
     ,
 
-    'Declaration of a whitelisted class: append aliasing.' => [
+    'Declaration of a whitelisted class' => [
         'whitelist' => ['Foo\B'],
         'payload' => <<<'PHP'
 <?php
@@ -113,7 +113,7 @@ class B extends \Humbug\Foo\A
 PHP
         ],
 
-    'Declaration in a different namespace imported via a use statement: prefix the namespace.' => <<<'PHP'
+    'Declaration in a different namespace imported via a use statement' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -149,7 +149,7 @@ class B extends \Humbug\Foo\A
 PHP
     ,
 
-    'Declaration in a different namespace imported via a FQ call: prefix the namespace.' => <<<'PHP'
+    'Declaration in a different namespace imported via a FQ call' => <<<'PHP'
 <?php
 
 namespace Foo;

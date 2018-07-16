@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a namespaced class:
-- prefix the namespace
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a namespaced class' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -55,13 +48,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a namespaced class:
-- prefix the namespace
-- prefix the call
-SPEC
-        ,
+    'FQ new statement call of a namespaced class' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -87,15 +74,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a whitelisted namespaced class:
-- prefix the namespace
-- append the class_alias for the whitelisted class
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a whitelisted namespaced class' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -123,15 +102,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a whitelisted namespaced class:
-- prefix the namespace
-- append the class_alias for the whitelisted class
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ new statement call of a whitelisted namespaced class' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

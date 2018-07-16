@@ -23,24 +23,23 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\NodeVisitorAbstract;
 use function array_key_exists;
-use function count;
+use function array_shift;
+use function array_values;
 use function Humbug\PhpScoper\is_stringable;
+use function implode;
 use function in_array;
 use function is_string;
 use function preg_match;
 use function strpos;
 
 /**
- * Prefixes the string scalar values.
+ * Prefixes the string scalar values when appropriate.
  *
  * ```
  * $x = 'Foo\Bar';
@@ -83,174 +82,211 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        $isSpecialFunction = false;
-
-        return ($this->shouldPrefixScalar($node, $isSpecialFunction))
-            ? $this->prefixStringScalar($node, $isSpecialFunction)
+        return $node instanceof String_
+            ? $this->prefixStringScalar($node)
             : $node
         ;
     }
 
-    private function shouldPrefixScalar(Node $node, bool &$isSpecialFunction): bool
+    private function prefixStringScalar(String_ $string): String_
     {
-        if (false === ($node instanceof String_ && AppendParentNode::hasParent($node) && is_string($node->value))
-            || 1 !== preg_match('/^((\\\\)?[\p{L}_]+)$|((\\\\)?(?:[\p{L}_]+\\\\+)+[\p{L}_]+)$/u', $node->value)
+        if (false === (ParentNodeAppender::hasParent($string) && is_string($string->value))
+            || 1 !== preg_match('/^((\\\\)?[\p{L}_]+)$|((\\\\)?(?:[\p{L}_]+\\\\+)+[\p{L}_]+)$/u', $string->value)
         ) {
-            return false;
+            return $string;
         }
 
-        /** @var String_ $node */
-        $parentNode = AppendParentNode::getParent($node);
+        if ($this->whitelist->belongsToWhitelistedNamespace($string->value)) {
+            return $string;
+        }
+
+        // From this point either the symbol belongs to the global namespace or the symbol belongs to the symbol
+        // namespace is whitelisted
+
+        $parentNode = ParentNodeAppender::getParent($string);
 
         // The string scalar either has a class form or a simple string which can either be a symbol from the global
         // namespace or a completely unrelated string.
 
-        if ($parentNode instanceof Arg
-            && null !== $functionNode = AppendParentNode::findParent($parentNode)
-        ) {
-            $functionNode = AppendParentNode::getParent($parentNode);
-
-            if ($functionNode instanceof FuncCall) {
-                $functionName = is_stringable($functionNode->name) ? (string) $functionNode->name : null;
-
-                if (false === strpos((string) $node->value, '\\')
-                    && null !== $functionName
-                    && in_array($functionName, self::SPECIAL_FUNCTION_NAMES, true)
-                ) {
-                    $isSpecialFunction = true;
-
-                    return
-                        (
-                            'function_exists' === $functionName
-                            && false === $this->reflector->isFunctionInternal($node->value)
-                        )
-                        || (
-                            'function_exists' !== $functionName
-                            && false === $this->reflector->isClassInternal($node->value)
-                            && false === $this->whitelist->isClassWhitelisted($node->value)
-                        )
-                    ;
-                }
-
-                return null !== $functionName && false === $functionNode->hasAttribute('whitelist_class_alias');
-            }
-
-            return $functionNode instanceof MethodCall || $functionNode instanceof StaticCall;
+        if ($parentNode instanceof Arg) {
+            return $this->prefixStringArg($string, $parentNode);
         }
 
-        if (false === ($parentNode instanceof ArrayItem)) {
-            return $parentNode instanceof Assign
+        if ($parentNode instanceof ArrayItem) {
+            return $this->prefixArrayItemString($string, $parentNode);
+        }
+
+        if (false === (
+                $parentNode instanceof Assign
                 || $parentNode instanceof Param
                 || $parentNode instanceof Const_
                 || $parentNode instanceof PropertyProperty
+            )
+        ) {
+            return $string;
+        }
+
+        // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
+        return $this->belongsToTheGlobalNamespace($string)
+            ? $string
+            : $this->createPrefixedString($string)
+        ;
+    }
+
+    private function prefixStringArg(String_ $string, Arg $parentNode): String_
+    {
+        $functionNode = ParentNodeAppender::getParent($parentNode);
+
+        if (false === ($functionNode instanceof FuncCall)) {
+            // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
+            return $this->belongsToTheGlobalNamespace($string)
+                ? $string
+                : $this->createPrefixedString($string)
+            ;
+        }
+        /** @var FuncCall $functionNode */
+
+        // In the case of a function call, we allow to prefix strings which could be classes belonging to the global
+        // namespace in some cases
+        $functionName = is_stringable($functionNode->name) ? (string) $functionNode->name : null;
+
+        if (false === in_array($functionName, self::SPECIAL_FUNCTION_NAMES, true)) {
+            return $this->belongsToTheGlobalNamespace($string)
+                ? $string
+                : $this->createPrefixedString($string)
             ;
         }
 
+        if ('function_exists' === $functionName) {
+            return $this->reflector->isFunctionInternal($string->value)
+                ? $string
+                : $this->createPrefixedString($string)
+            ;
+        }
+
+        $isConstantNode = $this->isConstantNode($string);
+
+        if (false === $isConstantNode) {
+            if ('define' === $functionName
+                && $this->belongsToTheGlobalNamespace($string)
+            ) {
+                return $string;
+            }
+
+            return $this->reflector->isClassInternal($string->value)
+                ? $string
+                : $this->createPrefixedString($string)
+            ;
+        }
+
+        return ($this->whitelist->isSymbolWhitelisted($string->value, true)
+                || $this->whitelist->isGlobalWhitelistedConstant($string->value)
+            )
+            ? $string
+            : $this->createPrefixedString($string)
+        ;
+    }
+
+    private function prefixArrayItemString(String_ $string, ArrayItem $parentNode): String_
+    {
         // ArrayItem can lead to two results: either the string is used for `spl_autoload_register()`, e.g.
         // `spl_autoload_register(['Swift', 'autoload'])` in which case the string `'Swift'` is guaranteed to be class
         // name, or something else in which case a string like `'Swift'` can be anything and cannot be prefixed.
 
-        if (substr_count($node->value, '\\') + 1 > 1) {
-            return true;
-        }
-
         $arrayItemNode = $parentNode;
 
-        if (false === AppendParentNode::hasParent($parentNode)) {
-            return false;
-        }
-
-        $parentNode = AppendParentNode::getParent($parentNode);
-
-        if (false === ($parentNode instanceof Array_) || false === AppendParentNode::hasParent($parentNode)) {
-            return false;
-        }
+        $parentNode = ParentNodeAppender::getParent($parentNode);
 
         /** @var Array_ $arrayNode */
         $arrayNode = $parentNode;
-        $parentNode = AppendParentNode::getParent($parentNode);
+        $parentNode = ParentNodeAppender::getParent($parentNode);
 
         if (false === ($parentNode instanceof Arg)
-            || null === $functionNode = AppendParentNode::findParent($parentNode)
+            || null === $functionNode = ParentNodeAppender::findParent($parentNode)
         ) {
-            return false;
-        }
-
-        $functionNode = AppendParentNode::getParent($parentNode);
-
-        if (false === ($functionNode instanceof FuncCall)) {
-            return false;
-        }
-
-        /** @var FuncCall $functionNode */
-        if (is_stringable($functionNode->name)) {
-            $functionName = (string) $functionNode->name;
-        } else {
-            return false;
-        }
-
-        if ('spl_autoload_register' === $functionName
-            && array_key_exists(0, $arrayNode->items)
-            && $arrayItemNode === $arrayNode->items[0]
-        ) {
-            $isSpecialFunction = true;
-
-            return
-                false === $this->whitelist->isClassWhitelisted($node->value)
-                && false === $this->reflector->isClassInternal($node->value)
+            // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
+            return $this->belongsToTheGlobalNamespace($string)
+                ? $string
+                : $this->createPrefixedString($string)
             ;
         }
 
-        return false;
-    }
+        $functionNode = ParentNodeAppender::getParent($parentNode);
 
-    private function prefixStringScalar(String_ $string, bool $isSpecialFunction): Node
-    {
-        $stringName = new Name(
-            preg_replace('/^\\\\(.+)$/', '$1', $string->value),
-            $string->getAttributes()
-        );
-
-        $isConstantNode = $this->isConstantNode($string);
-
-        // Skip if is already prefixed
-        if ($this->prefix === $stringName->getFirst()) {
-            $newStringName = $stringName;
-        } elseif ($isSpecialFunction && false === $isConstantNode) {
-            $newStringName = FullyQualified::concat($this->prefix, $stringName->toString(), $stringName->getAttributes());
-        // Check if the class can be prefixed: class not from the global namespace or which the namespace is not
-        // whitelisted
-        } elseif (
-            1 === count($stringName->parts)
-            || $this->reflector->isClassInternal($stringName->toString())
-            || (false === $isConstantNode && $this->whitelist->isClassWhitelisted((string) $stringName))
-            || ($isConstantNode && $this->whitelist->isConstantWhitelisted((string) $stringName))
-            || $this->whitelist->isNamespaceWhitelisted((string) $stringName)
-        ) {
-            $newStringName = $stringName;
-        } else {
-            $newStringName = FullyQualified::concat($this->prefix, $stringName->toString(), $stringName->getAttributes());
+        if (false === ($functionNode instanceof FuncCall)) {
+            // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
+            return $this->belongsToTheGlobalNamespace($string)
+                ? $string
+                : $this->createPrefixedString($string)
+            ;
         }
 
-        return new String_($newStringName->toString(), $string->getAttributes());
+        /** @var FuncCall $functionNode */
+        if (false === is_stringable($functionNode->name)) {
+            return $string;
+        }
+
+        $functionName = (string) $functionNode->name;
+
+        return ('spl_autoload_register' === $functionName
+                && array_key_exists(0, $arrayNode->items)
+                && $arrayItemNode === $arrayNode->items[0]
+                && false === $this->reflector->isClassInternal($string->value)
+            )
+            ? $this->createPrefixedString($string)
+            : $string
+        ;
     }
 
     private function isConstantNode(String_ $node): bool
     {
-        $parent = AppendParentNode::getParent($node);
+        $parent = ParentNodeAppender::getParent($node);
 
         if (false === ($parent instanceof Arg)) {
             return false;
         }
 
         /** @var Arg $parent */
-        $argParent = AppendParentNode::getParent($parent);
+        $argParent = ParentNodeAppender::getParent($parent);
 
         if (false === ($argParent instanceof FuncCall)) {
             return false;
         }
 
         /* @var FuncCall $argParent */
-        return 'define' === (string) $argParent->name;
+        if ('define' !== (string) $argParent->name) {
+            return false;
+        }
+
+        return $parent === $argParent->args[0];
+    }
+
+    private function createPrefixedString(String_ $previous): String_
+    {
+        $previousValueParts = array_values(
+            array_filter(
+                explode('\\', $previous->value)
+            )
+        );
+
+        if ($this->prefix === $previousValueParts[0]) {
+            array_shift($previousValueParts);
+        }
+
+        $previousValue = implode('\\', $previousValueParts);
+
+        $string = new String_(
+            (string) FullyQualified::concat($this->prefix, $previousValue),
+            $previous->getAttributes()
+        );
+
+        $string->setAttribute(ParentNodeAppender::PARENT_ATTRIBUTE, $string);
+
+        return $string;
+    }
+
+    private function belongsToTheGlobalNamespace(String_ $string): bool
+    {
+        return '' === $string->value || 0 === (int) strpos($string->value, '\\', 1);
     }
 }

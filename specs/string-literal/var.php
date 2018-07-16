@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
+    'FQCN string argument' => <<<'PHP'
 <?php
 
 $x = 'Yaml';
@@ -40,9 +40,9 @@ $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 namespace Humbug;
 
 $x = 'Yaml';
-$x = 'Yaml';
+$x = '\\Yaml';
 $x = 'Closure';
-$x = 'Closure';
+$x = '\\Closure';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
@@ -51,7 +51,7 @@ $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 PHP
     ,
 
-    'Invalid FQCN strings: do not prefix them' => <<<'PHP'
+    'Invalid FQCN strings' => <<<'PHP'
 <?php
 
 $regex = '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
@@ -68,11 +68,12 @@ $shortcuts = \preg_split('{(\\|)-?}', \ltrim($shortcut, '-'));
 PHP
     ,
 
-    'FQCN string argument on whitelisted class: transform into a FQCN' => [
+    'FQCN string argument on whitelisted class' => [
         'whitelist' => ['Symfony\Component\Yaml\Yaml'],
         'payload' => <<<'PHP'
 <?php
 
+$x = 'Symfony\\Component\\Yaml\\Yamll';
 $x = 'Symfony\\Component\\Yaml\\Yaml';
 $x = '\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
@@ -83,19 +84,21 @@ $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 namespace Humbug;
 
-$x = 'Symfony\\Component\\Yaml\\Yaml';
-$x = 'Symfony\\Component\\Yaml\\Yaml';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Yamll';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 PHP
     ],
 
-    'FQCN string argument on classes belonging to a whitelisted namespace: transform into a FQCN' => [
+    'FQCN string argument on classes belonging to a whitelisted namespace' => [
         'whitelist' => ['Symfony\Component\*'],
         'payload' => <<<'PHP'
 <?php
 
+$x = 'Symfony\\Yaml';
 $x = 'Symfony\\Component\\Yaml\\Yaml';
 $x = '\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
@@ -106,15 +109,16 @@ $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 namespace Humbug;
 
+$x = 'Humbug\\Symfony\\Yaml';
 $x = 'Symfony\\Component\\Yaml\\Yaml';
-$x = 'Symfony\\Component\\Yaml\\Yaml';
+$x = '\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
 
 PHP
     ],
 
-    'FQCN string argument formed by concatenated strings: do nothing' => <<<'PHP'
+    'FQCN string argument formed by concatenated strings' => <<<'PHP'
 <?php
 
 $x = 'Symfony\\Component' . '\\Yaml\\Yaml';
@@ -131,7 +135,7 @@ $x = '\\Symfony\\Component' . '\\Yaml\\Yaml';
 PHP
     ,
 
-    'FQC constant call: transform into FQC call and prefix them' => <<<'PHP'
+    'FQC constant call' => <<<'PHP'
 <?php
 
 namespace Symfony\Component\Yaml {
@@ -162,7 +166,7 @@ $x = \Humbug\Symfony\Component\Yaml\Yaml::class;
 PHP
     ,
 
-    'FQC constant call on whitelisted class: transform into FQC call' => [
+    'FQC constant call on whitelisted class' => [
         'whitelist' => ['Symfony\Component\Yaml\Yaml'],
         'payload' => <<<'PHP'
 <?php

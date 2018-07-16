@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class partially imported with an aliased use statement:
-- prefix the namespace
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'Constant call on a namespaced class partially imported with an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -67,14 +60,7 @@ use Humbug\Foo as X;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class imported with an aliased use statement:
-- prefix the namespace
-- prefix the use statement
-- transform the call into a FQ call
-SPEC
-        ,
+    'Constant call on a namespaced class imported with an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -103,13 +89,7 @@ use Humbug\Foo\Bar as X;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a namespaced class imported with an aliased use statement:
-- prefix the namespace
-- prefix the class only (not the use statement, cf. tests related to classes from the global scope)
-SPEC
-        ,
+    'FQ constant call on a namespaced class imported with an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -147,14 +127,7 @@ use Humbug\Foo as X;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ Constant call on a whitelisted namespaced class partially imported with an aliased use statement:
-- prefix the namespace
-- do not prefix the class neither the use statement
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ Constant call on a whitelisted namespaced class partially imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

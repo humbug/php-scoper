@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
+use function count;
 
 /**
  * Appends the parent node as an attribute to each node. This allows to have more context in the other visitors when
@@ -24,9 +25,9 @@ use PhpParser\NodeVisitorAbstract;
  *
  * @private
  */
-final class AppendParentNode extends NodeVisitorAbstract
+final class ParentNodeAppender extends NodeVisitorAbstract
 {
-    private const PARENT_ATTRIBUTE = 'parent';
+    public const PARENT_ATTRIBUTE = 'parent';
 
     private $stack;
 

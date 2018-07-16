@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class partially imported with a use statement:
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'Constant call on a namespaced class partially imported with a use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -66,13 +60,7 @@ use Humbug\Foo;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class imported with a use statement:
-- prefix the use statement
-- transform the call into a FQ call
-SPEC
-        ,
+    'Constant call on a namespaced class imported with a use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -110,13 +98,7 @@ use Humbug\Foo\Bar;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a namespaced class imported with a use statement:
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ constant call on a namespaced class imported with a use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -154,13 +136,7 @@ use Humbug\Foo;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ Constant call on a whitelisted namespaced class partially imported with a use statement:
-- do not prefix the class neither the use statement
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ Constant call on a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -200,13 +176,7 @@ use Humbug\Foo;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a whitelisted namespaced class imported with a use statement:
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ constant call on a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

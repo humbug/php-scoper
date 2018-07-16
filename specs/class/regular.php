@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Declaration in the global namespace: add a prefixed namespace.' => <<<'PHP'
+    'Declaration in the global namespace' => <<<'PHP'
 <?php
 
 class A {
@@ -43,7 +43,7 @@ class A
 PHP
     ,
 
-    'Declaration in a namespace: prefix the namespace.' => <<<'PHP'
+    'Declaration in a namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -66,7 +66,7 @@ class A
 PHP
     ,
 
-    'Declaration of a whitelisted class: append aliasing.' => [
+    'Declaration of a whitelisted class' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -92,7 +92,7 @@ class A
 PHP
     ],
 
-    'Declaration of a whitelisted class whitelisted with a pattern.' => [
+    'Declaration of a whitelisted class whitelisted with a pattern' => [
         'whitelist' => ['Foo\A*'],
         'payload' => <<<'PHP'
 <?php
@@ -140,7 +140,7 @@ class B
 PHP
     ],
 
-    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
+    'Multiple declarations in different namespaces' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -194,7 +194,7 @@ class C
 PHP
     ,
 
-    'Multiple declarations in different namespaces with whitelisted class: prefix namespaces and append aliasing' => [
+    'Multiple declarations in different namespaces with whitelisted class' => [
         'whitelist' => [
             'Foo\A',
             'Bar\B',

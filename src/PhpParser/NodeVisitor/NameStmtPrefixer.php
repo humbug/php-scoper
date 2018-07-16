@@ -35,10 +35,11 @@ use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
-use function count;
 use function in_array;
 
 /**
+ * Prefixes names when appropriate.
+ *
  * ```
  * new Foo\Bar();
  * ```.
@@ -81,7 +82,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        return ($node instanceof Name && AppendParentNode::hasParent($node))
+        return ($node instanceof Name && ParentNodeAppender::hasParent($node))
             ? $this->prefixName($node)
             : $node
         ;
@@ -89,14 +90,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private function prefixName(Name $name): Node
     {
-        $parentNode = AppendParentNode::getParent($name);
+        $parentNode = ParentNodeAppender::getParent($name);
 
         if ($parentNode instanceof NullableType) {
-            if (false === AppendParentNode::hasParent($parentNode)) {
+            if (false === ParentNodeAppender::hasParent($parentNode)) {
                 return $name;
             }
 
-            $parentNode = AppendParentNode::getParent($parentNode);
+            $parentNode = ParentNodeAppender::getParent($parentNode);
         }
 
         if (false === (
@@ -142,25 +143,21 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         $resolvedName = $resolvedValue->getName();
 
-        // Skip if is already prefixed
-        if ($this->prefix === $resolvedName->getFirst()) {
-            return $resolvedName;
-        }
-
-        // Skip if the node namespace is whitelisted
-        if ($this->whitelist->isNamespaceWhitelisted((string) $resolvedName)) {
+        if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
+            || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
+        ) {
             return $resolvedName;
         }
 
         // Check if the class can be prefixed
-        if (false === ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)) {
-            if ($this->reflector->isClassInternal($resolvedName->toString())) {
-                return $resolvedName;
-            }
+        if (false === ($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)
+            && $this->reflector->isClassInternal($resolvedName->toString())
+        ) {
+            return $resolvedName;
         }
 
         if ($parentNode instanceof ConstFetch) {
-            if ($this->whitelist->isConstantWhitelisted($resolvedName->toString())) {
+            if ($this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true)) {
                 return $resolvedName;
             }
 
@@ -168,15 +165,18 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
             }
 
-            // Constants have a fallback autoloading so we cannot prefix them when the name is ambiguous
+            // Constants have an autoloading fallback so we cannot prefix them when the name is ambiguous
             // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
             if (false === ($resolvedName instanceof FullyQualified)) {
                 return $resolvedName;
             }
 
-            if (1 === count($resolvedName->parts) && $this->whitelist->whitelistGlobalConstants()) {
+            if ($this->whitelist->isGlobalWhitelistedConstant((string) $resolvedName)) {
+                // Unlike classes & functions, whitelisted are not prefixed with aliases registered in scoper-autoload.php
                 return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
             }
+
+            // Continue
         }
 
         // Functions have a fallback autoloading so we cannot prefix them when the name is ambiguous

@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a namespaced class partially imported with a use statement:
-- prefix the namespaces and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a namespaced class partially imported with a use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -66,13 +60,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a whitelisted namespaced class partially imported with a use statement:
-- prefix the namespaces and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -112,13 +100,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a namespaced class partially imported with a use statement:
-- prefix the namespaces and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ new statement call of a namespaced class partially imported with a use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -156,13 +138,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a whitelisted namespaced class partially imported with a use statement:
-- prefix the namespaces and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ new statement call of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -202,13 +178,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a namespaced class imported with a use statement:
-- prefix the namespaces and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a namespaced class imported with a use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -246,15 +216,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a whitelisted namespaced class imported with a use statement:
-- prefix the namespaces and the call
-- do not prefix the use statement of the whitelisted class
-- append the class_alias statement to the class
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -294,13 +256,7 @@ new \Humbug\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a namespaced class imported with a use statement:
-- prefix the namespaces and the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ new statement call of a namespaced class imported with a use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -342,15 +298,7 @@ new \Humbug\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a whitelisted namespaced class imported with a use statement:
-- prefix the namespaces and the call
-- do not prefix the use statement of the whitelisted class
-- append the class_alias statement to the class
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ new statement call of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

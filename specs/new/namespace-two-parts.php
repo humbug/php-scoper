@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a class:
-- prefix the namespace
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a class' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -55,14 +48,7 @@ new \Humbug\X\Foo\Bar();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class:
-- prefix the namespace
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ new statement call of a class' => [
         'payload' => <<<'PHP'
 <?php
 

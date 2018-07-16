@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a class belonging to the global namespace imported via a use statement:
-- do not touch the use statement (see tests related to the use statements of a class belonging to the global scope)
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a class belonging to the global namespace imported via a use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -57,12 +51,7 @@ new \Humbug\Foo();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class belonging to the global namespace imported via a use statement:
-- do not touch the use statement (see tests related to the use statements of a class belonging to the global scope)
-SPEC
-        ,
+    'FQ new statement call of a class belonging to the global namespace imported via a use statement' => [
         'payload' => <<<'PHP'
 <?php
 

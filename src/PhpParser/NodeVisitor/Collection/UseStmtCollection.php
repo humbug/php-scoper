@@ -15,11 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\AppendParentNode;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function Humbug\PhpScoper\clone_node;
@@ -64,35 +65,49 @@ final class UseStmtCollection implements IteratorAggregate
     {
         $name = strtolower($node->getFirst());
 
-        $parentNode = AppendParentNode::findParent($node);
+        $parentNode = ParentNodeAppender::findParent($node);
+
+        if ($parentNode instanceof ClassLike
+            && $node->hasAttribute('original_node')
+            && $node->getAttribute('original_node') === $parentNode->name
+        ) {
+            // The current node can either be the class like name or one of its elements, e.g. extends or implements.
+            // In the first case, the node was original an Identifier.
+
+            return null;
+        }
 
         $useStatements = $this->nodes[(string) $namespaceName] ?? [];
 
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
-                if ($useStatement instanceof UseUse) {
-                    if ($name === $useStatement->getAlias()->toLowerString()) {
-                        if ($parentNode instanceof FuncCall && 1 === count($node->parts)) {
-                            if (Use_::TYPE_FUNCTION === $use_->type) {
-                                return $useStatement->name;
-                            }
+                if (false === ($useStatement instanceof UseUse)) {
+                    continue;
+                }
 
-                            continue;
+                if ($name === $useStatement->getAlias()->toLowerString()) {
+                    if ($parentNode instanceof FuncCall && 1 === count($node->parts)) {
+                        if (Use_::TYPE_FUNCTION === $use_->type) {
+                            return $useStatement->name;
                         }
 
-                        if ($parentNode instanceof ConstFetch && 1 === count($node->parts)) {
-                            if (Use_::TYPE_CONSTANT === $use_->type) {
-                                return $useStatement->name;
-                            }
-
-                            continue;
-                        }
-
-                        // Match the alias
-                        return $useStatement->name;
-                    } elseif (null !== $useStatement->alias) {
                         continue;
                     }
+
+                    if ($parentNode instanceof ConstFetch && 1 === count($node->parts)) {
+                        if (Use_::TYPE_CONSTANT === $use_->type) {
+                            return $useStatement->name;
+                        }
+
+                        continue;
+                    }
+
+                    // Match the alias
+                    return $useStatement->name;
+                }
+
+                if (null !== $useStatement->alias) {
+                    continue;
                 }
             }
         }

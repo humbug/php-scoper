@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a class belonging to the global namespace:
-- wrap everything in a prefixed namespace
-- prefix the class
-- transform the class in a FQCN call
-prefix it
-SPEC
-        ,
+    'New statement call of a class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -50,14 +42,7 @@ new \Humbug\Foo();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a class belonging to the global namespace:
-- wrap everything in a prefixed namespace
-- do not prefix the class
-- transform the class in a FQCN call
-SPEC
-        ,
+    'New statement call of a class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -72,13 +57,7 @@ new \ArrayIterator([]);
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class belonging to the global namespace:
-- wrap everything in a prefixed namespace
-- prefix the class
-SPEC
-        ,
+    'FQ new statement call of a class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -98,15 +77,7 @@ new \Humbug\Foo();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of an unknown class belonging to the global namespace:
-- wrap everything in a prefixed namespace
-- prefix the class
-- transform the class in a FQCN call
-prefix it
-SPEC
-        ,
+    'New statement call of an unknown class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 

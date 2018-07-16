@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Declaration in the global namespace: warp in a prefixed namespace.' => <<<'PHP'
+    'Declaration in the global namespace' => <<<'PHP'
 <?php
 
 if (true) {
@@ -42,15 +42,7 @@ if (\true) {
 PHP
     ,
 
-    [
-        'spec' => <<<'SPEC'
-Declaration of a whitelisted class in the global namespace: warp in a prefixed namespace.
-
-TODO: unsupported at the moment. The `class_alias` statement appended to support whitelisted classes are added at the
-end of a namespace statement for now. This could be supported if they are added right after the declaration statement
-instead. 
-SPEC
-        ,
+    'Declaration of a whitelisted class in the global namespace' => [
         'whitelist' => ['A'],
         'payload' => <<<'PHP'
 <?php
@@ -72,7 +64,7 @@ if (\true) {
 PHP
     ,
 
-    'Declaration in a namespace: prefix each namespace.' => <<<'PHP'
+    'Declaration in a namespace: prefix each namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -94,7 +86,7 @@ if (\true) {
 PHP
     ],
 
-    'Declaration of a whitelisted class: prefix the namespace, too dynamic to account for.' => [
+    'Declaration of a whitelisted class' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -118,7 +110,7 @@ if (\true) {
 PHP
         ],
 
-    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
+    'Multiple declarations in different namespaces' => <<<'PHP'
 <?php
 
 namespace X {

@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Declaration in the global namespace: add prefixed namespace.' => <<<'PHP'
+    'Declaration in the global namespace' => <<<'PHP'
 <?php
 
 trait A {
@@ -73,7 +73,7 @@ class B
 PHP
     ,
 
-    'Declaration in a namespace: prefix the namespace.' => <<<'PHP'
+    'Declaration in a namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -126,7 +126,7 @@ class B
 PHP
     ,
 
-    'Declaration of a whitelisted trait: prefix the namespace (whitelists works only on classes).' => [
+    'Declaration of a whitelisted trait' => [
         'whitelist' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
@@ -181,7 +181,7 @@ class B
 PHP
         ],
 
-    'Multiple declarations in different namespaces: prefix each namespace.' => <<<'PHP'
+    'Multiple declarations in different namespaces' => <<<'PHP'
 <?php
 
 namespace X {

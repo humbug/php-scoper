@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a class belonging to the global namespace imported via an aliased use statement:
-- prefix the namespace, use and new statements
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a class belonging to the global namespace imported via an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -57,14 +51,7 @@ new \Humbug\Foo();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of a class belonging to the global namespace imported via an aliased use statement; the call is made
-using the original class instead of the alias
-- prefix the namespace, use and new statements
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of a class belonging to the global namespace imported via an aliased use statement; the call is made using the original class instead of the alias' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -93,12 +80,7 @@ new \Humbug\Foo();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class belonging to the global namespace imported via an aliased use statement:
-- prefix the namespace, use and new statements
-SPEC
-        ,
+    'FQ new statement call of a class belonging to the global namespace imported via an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -131,13 +113,7 @@ new \Humbug\X();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ new statement call of a class belonging to the global namespace imported via an aliased use statement; the new
-statement uses the class directly instead of the alias
-- prefix the namespace, use and new statements
-SPEC
-        ,
+    'FQ new statement call of a class belonging to the global namespace imported via an aliased use statement; the new statement uses the class directly instead of the alias' => [
         'payload' => <<<'PHP'
 <?php
 
@@ -170,14 +146,7 @@ new \Humbug\X();
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-New statement call of an internal class imported with an aliased use statement:
-- wrap the call in a prefixed namespace
-- do not prefix the use and new statement 
-- transform the call into a FQ call
-SPEC
-        ,
+    'New statement call of an internal class imported with an aliased use statement' => [
         'payload' => <<<'PHP'
 <?php
 

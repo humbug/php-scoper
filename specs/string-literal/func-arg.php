@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'FQCN string argument: transform into a FQCN and prefix it' => <<<'PHP'
+    'FQCN string argument' => <<<'PHP'
 <?php
 
 foo('Symfony\\Component\\Yaml\\Yaml');
@@ -137,8 +137,146 @@ namespace Humbug;
 PHP
     ,
 
-    'FQCN string argument on whitelisted class: transform into a FQCN' => [
+    'FQCN string argument on whitelisted class' => [
         'whitelist' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        'payload' => <<<'PHP'
+<?php
+
+foo('Symfony\\Component\\Yaml\\Yaml');
+foo('\\Symfony\\Component\\Yaml\\Yaml');
+foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+foo('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+
+foo('DateTime');
+foo('Swift');
+foo(['DateTime', 'autoload']);
+foo(['Swift', 'autoload']);
+
+(function($x = 'Symfony\\Component\\Yaml\\Yaml') {})();
+(function($x = '\\Symfony\\Component\\Yaml\\Yaml') {})();
+(function($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {})();
+(function($x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml') {})();
+
+(function($x = 'DateTime') {})();
+(function($x = 'Swift') {})();
+(function($x = ['DateTime', 'autoload']) {})();
+(function($x = ['Swift', 'autoload']) {})();
+
+spl_autoload_register(['Swift', 'autoload']);
+spl_autoload_register(['Humbug\\Swift', 'autoload']);
+spl_autoload_register(['\\Humbug\\Swift', 'autoload']);
+spl_autoload_register(['DateTime', 'autoload']);
+
+is_a($swift, 'Swift');
+is_a($swift, 'Humbug\\Swift');
+is_a($swift, '\\Humbug\\Swift');
+is_a($swift, 'DateTime');
+
+is_subclass_of($swift, 'Swift');
+is_subclass_of($swift, 'Humbug\Swift');
+is_subclass_of($swift, '\Humbug\Swift');
+is_subclass_of($swift, 'DateTime');
+is_subclass_of('Mailer', 'Swift');
+is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
+is_subclass_of('\Humbug\Mailer', '\Humbug\Swift');
+is_subclass_of('Mailer', 'DateTime');
+
+interface_exists('Swift');
+interface_exists('Humbug\Swift');
+interface_exists('\Humbug\Swift');
+interface_exists('DateTime');
+
+class_exists('Swift');
+class_exists('Humbug\Swift');
+class_exists('\Humbug\Swift');
+class_exists('DateTime');
+
+trait_exists('Swift');
+trait_exists('Humbug\Swift');
+trait_exists('\Humbug\Swift');
+trait_exists('DateTime');
+
+function_exists('dump');
+function_exists('Humbug\dump');
+function_exists('\Humbug\dump');
+function_exists('var_dump');
+
+class_alias('Swift', 'Mailer');
+class_alias('Humbug\Swift', 'Mailer');
+class_alias('\Humbug\Swift', 'Mailer');
+class_alias('DateTime', 'DateTimeInterface');
+
+----
+<?php
+
+namespace Humbug;
+
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('DateTime');
+\Humbug\foo('Swift');
+\Humbug\foo(['DateTime', 'autoload']);
+\Humbug\foo(['Swift', 'autoload']);
+(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {
+})();
+(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {
+})();
+(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {
+})();
+(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {
+})();
+(function ($x = 'DateTime') {
+})();
+(function ($x = 'Swift') {
+})();
+(function ($x = ['DateTime', 'autoload']) {
+})();
+(function ($x = ['Swift', 'autoload']) {
+})();
+\spl_autoload_register(['Humbug\\Swift', 'autoload']);
+\spl_autoload_register(['Humbug\\Swift', 'autoload']);
+\spl_autoload_register(['Humbug\\Swift', 'autoload']);
+\spl_autoload_register(['DateTime', 'autoload']);
+\is_a($swift, 'Humbug\\Swift');
+\is_a($swift, 'Humbug\\Swift');
+\is_a($swift, 'Humbug\\Swift');
+\is_a($swift, 'DateTime');
+\is_subclass_of($swift, 'Humbug\\Swift');
+\is_subclass_of($swift, 'Humbug\\Swift');
+\is_subclass_of($swift, 'Humbug\\Swift');
+\is_subclass_of($swift, 'DateTime');
+\is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
+\is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
+\is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
+\is_subclass_of('Humbug\\Mailer', 'DateTime');
+\interface_exists('Humbug\\Swift');
+\interface_exists('Humbug\\Swift');
+\interface_exists('Humbug\\Swift');
+\interface_exists('DateTime');
+\class_exists('Humbug\\Swift');
+\class_exists('Humbug\\Swift');
+\class_exists('Humbug\\Swift');
+\class_exists('DateTime');
+\trait_exists('Humbug\\Swift');
+\trait_exists('Humbug\\Swift');
+\trait_exists('Humbug\\Swift');
+\trait_exists('DateTime');
+\function_exists('Humbug\\dump');
+\function_exists('Humbug\\dump');
+\function_exists('Humbug\\dump');
+\function_exists('var_dump');
+\class_alias('Humbug\\Swift', 'Humbug\\Mailer');
+\class_alias('Humbug\\Swift', 'Humbug\\Mailer');
+\class_alias('Humbug\\Swift', 'Humbug\\Mailer');
+\class_alias('DateTime', 'DateTimeInterface');
+
+PHP
+    ],
+
+    'FQCN string argument with global functions not whitelisted' => [
+        'whitelist-global-functions' => false,
         'payload' => <<<'PHP'
 <?php
 
@@ -196,44 +334,47 @@ class_alias('Humbug\Swift', 'Mailer');
 class_alias('\Humbug\Swift', 'Mailer');
 class_alias('DateTime', 'DateTimeInterface');
 
+($this->colorize)('fg-green', '✔');
+($this->colorize)(['Soft', 'autoload']);
+
 ----
 <?php
 
 namespace Humbug;
 
-\Humbug\foo('Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 \Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 \Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
 \Humbug\foo('DateTime');
 \Humbug\foo('Swift');
 \Humbug\foo(['DateTime', 'autoload']);
 \Humbug\foo(['Swift', 'autoload']);
-\spl_autoload_register(['Swift', 'autoload']);
+\spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['DateTime', 'autoload']);
-\is_a($swift, 'Swift');
+\is_a($swift, 'Humbug\\Swift');
 \is_a($swift, 'Humbug\\Swift');
 \is_a($swift, 'Humbug\\Swift');
 \is_a($swift, 'DateTime');
-\is_subclass_of($swift, 'Swift');
+\is_subclass_of($swift, 'Humbug\\Swift');
 \is_subclass_of($swift, 'Humbug\\Swift');
 \is_subclass_of($swift, 'Humbug\\Swift');
 \is_subclass_of($swift, 'DateTime');
-\is_subclass_of('Humbug\\Mailer', 'Swift');
+\is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
 \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
 \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
 \is_subclass_of('Humbug\\Mailer', 'DateTime');
-\interface_exists('Swift');
+\interface_exists('Humbug\\Swift');
 \interface_exists('Humbug\\Swift');
 \interface_exists('Humbug\\Swift');
 \interface_exists('DateTime');
-\class_exists('Swift');
+\class_exists('Humbug\\Swift');
 \class_exists('Humbug\\Swift');
 \class_exists('Humbug\\Swift');
 \class_exists('DateTime');
-\trait_exists('Swift');
+\trait_exists('Humbug\\Swift');
 \trait_exists('Humbug\\Swift');
 \trait_exists('Humbug\\Swift');
 \trait_exists('DateTime');
@@ -241,15 +382,17 @@ namespace Humbug;
 \function_exists('Humbug\\dump');
 \function_exists('Humbug\\dump');
 \function_exists('var_dump');
-\class_alias('Swift', 'Humbug\\Mailer');
+\class_alias('Humbug\\Swift', 'Humbug\\Mailer');
 \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
 \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
 \class_alias('DateTime', 'DateTimeInterface');
+($this->colorize)('fg-green', '✔');
+($this->colorize)(['Soft', 'autoload']);
 
 PHP
     ],
 
-    'FQCN string argument formed by concatenated strings: do nothing' => <<<'PHP'
+    'FQCN string argument formed by concatenated strings' => <<<'PHP'
 <?php
 
 foo('Symfony\\Component' . '\\Yaml\\Yaml');
@@ -287,7 +430,7 @@ namespace Humbug;
 PHP
     ,
 
-    'FQC constant call: transform into FQC call and prefix them' => <<<'PHP'
+    'FQC constant call' => <<<'PHP'
 <?php
 
 namespace Symfony\Component\Yaml {
@@ -382,7 +525,7 @@ namespace Humbug;
 PHP
     ,
 
-    'FQC constant call on whitelisted class: transform into FQC call' => [
+    'FQC constant call on whitelisted class' => [
         'whitelist' => ['Symfony\Component\Yaml\Yaml'],
         'payload' => <<<'PHP'
 <?php
