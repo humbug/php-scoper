@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Empty file: do nothing' => <<<'PHP'
+    'Empty file' => <<<'PHP'
 <?php
 
 ----
@@ -33,7 +33,7 @@ return [
 PHP
     ,
 
-    'Empty php file with a declare statement: do nothing' => <<<'PHP'
+    'Empty php file with a declare statement' => <<<'PHP'
 <?php declare(strict_types=1);
 
 ----

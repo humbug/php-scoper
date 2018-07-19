@@ -107,7 +107,7 @@ use const Humbug\Foo\BAR as A;
 PHP
     ],
 
-    'Constant use statement for a namespaced constant which has been whitelisted: do nothing' => [
+    'Constant use statement for a namespaced constant which has been whitelisted' => [
         'whitelist' => ['Foo\BAR'],
         'payload' => <<<'PHP'
 <?php

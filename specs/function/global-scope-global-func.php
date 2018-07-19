@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Global function call in the global scope
-- prefix the function
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global function call in the global scope' => <<<'PHP'
 <?php
 
 main();
@@ -41,15 +34,9 @@ namespace Humbug;
 \Humbug\main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ global function call in the global scope
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ global function call in the global scope' => <<<'PHP'
 <?php
 
 \main();
@@ -61,15 +48,9 @@ namespace Humbug;
 \Humbug\main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Global function call in the global scope of an internal function
-- do not prefix the function
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global function call in the global scope of an internal function' => <<<'PHP'
 <?php
 
 is_array();
@@ -81,15 +62,9 @@ namespace Humbug;
 \is_array();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ global function call in the global scope of an internal function
-- do not prefix the function
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ global function call in the global scope of an internal function' => <<<'PHP'
 <?php
 
 \is_array();
@@ -101,16 +76,9 @@ namespace Humbug;
 \is_array();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Global function call in the global scope of a function which has a use statement for a class importing a class with the
-same name
-- do not prefix the function
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global function call in the global scope of a function which has a use statement for a class importing a class with the same name' => <<<'PHP'
 <?php
 
 use Acme\Glob;
@@ -125,5 +93,5 @@ use Humbug\Acme\Glob;
 \glob();
 
 PHP
-    ],
+    ,
 ];

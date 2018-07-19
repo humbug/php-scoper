@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on an imported single-level namespace
-- do not prefix the use statement (see tests related to single-level classes)
-- prefix the constant call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on an imported single-level namespace' => <<<'PHP'
 <?php
 
 namespace {
@@ -63,16 +55,9 @@ use Humbug\Foo as A;
 \Humbug\Foo\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on an imported single-level namespace
-- do not prefix the use statement (see tests related to single-level classes)
-- prefix the constant call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call on an imported single-level namespace' => <<<'PHP'
 <?php
 
 namespace {
@@ -105,15 +90,9 @@ use Humbug\Foo as A;
 \Humbug\A\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted onstant call on an imported single-level namespace
-- do not prefix the use statement (see tests related to single-level classes)
-- transform the call into a FQ call
-SPEC
-        ,
+    'Whitelisted constant call on an imported single-level namespace' => [
         'whitelist' => ['Foo\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php

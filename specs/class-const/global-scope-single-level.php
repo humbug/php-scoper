@@ -42,7 +42,7 @@ class Command
 PHP
     ],
 
-    'Constant call on a class belonging to the global namespace which is whitelisted: add root namespace statement' => [
+    'Constant call on a class belonging to the global namespace which is whitelisted' => [
         'whitelist' => ['\*'],
         'payload' => <<<'PHP'
 <?php

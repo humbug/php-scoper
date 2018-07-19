@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Namespaced function call
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Namespaced function call' => <<<'PHP'
 <?php
 
 PHPUnit\main();
@@ -41,15 +34,9 @@ namespace Humbug;
 \Humbug\PHPUnit\main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ namespaced function call
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ namespaced function call' => <<<'PHP'
 <?php
 
 \PHPUnit\main();
@@ -61,15 +48,9 @@ namespace Humbug;
 \Humbug\PHPUnit\main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted namespaced function call
-- prefix the call: whitelists only works on classes
-- transform the call into a FQ call
-SPEC
-        ,
+    'Whitelisted namespaced function call' => [
         'whitelist' => ['PHPUnit\main'],
         'payload' => <<<'PHP'
 <?php
@@ -85,13 +66,7 @@ namespace Humbug;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ whitelisted namespaced function call
-- prefix the call: whitelists only works on classes
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ whitelisted namespaced function call' => [
         'whitelist' => ['PHPUnit\main'],
         'payload' => <<<'PHP'
 <?php

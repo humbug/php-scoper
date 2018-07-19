@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class partially imported with a use statement:
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a namespaced class partially imported with a use statement' => <<<'PHP'
 <?php
 
 namespace {
@@ -64,16 +57,9 @@ use Humbug\Foo;
 \Humbug\Foo\Bar::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class imported with a use statement:
-- prefix the use statement
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a namespaced class imported with a use statement' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -108,16 +94,9 @@ use Humbug\Foo\Bar;
 \Humbug\Foo\Bar\X::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a namespaced class imported with a use statement:
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call on a namespaced class imported with a use statement' =>  <<<'PHP'
 <?php
 
 namespace {
@@ -152,15 +131,9 @@ use Humbug\Foo;
 \Humbug\Foo\Bar::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ Constant call on a whitelisted namespaced class partially imported with a use statement:
-- do not prefix the class neither the use statement
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ Constant call on a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -200,13 +173,7 @@ use Humbug\Foo;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a whitelisted namespaced class imported with a use statement:
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ constant call on a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

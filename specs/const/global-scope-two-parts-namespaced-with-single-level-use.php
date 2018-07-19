@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Namespaced constant call with namespace partially imported
-- do not prefix the use statement (cf. tests related to global classes)
-- prefix the call
-- transform the call in a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Namespaced constant call with namespace partially imported' => <<<'PHP'
 <?php
 
 class Foo {}
@@ -50,16 +42,9 @@ use Humbug\Foo;
 \Humbug\Foo\Bar\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ namespaced constant call with namespace partially imported
-- do not prefix the use statement (cf. tests related to global classes)
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ namespaced constant call with namespace partially imported' => <<<'PHP'
 <?php
 
 class Foo {}
@@ -79,16 +64,9 @@ use Humbug\Foo;
 \Humbug\Foo\Bar\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted namespaced constant call with namespace partially imported
-- add prefixed namespace
-- do not prefix the use statement (cf. tests related to global classes)
-- transform the call in a FQ call
-SPEC
-        ,
+    'Whitelisted namespaced constant call with namespace partially imported' => [
         'whitelist' => ['Foo\Bar\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php

@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Namespaced function call imported with a partial use statement in the global scope
-- do not prefix the use statement: see tests related to classes from the global namespace
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
 <?php
 
 class Foo {}
@@ -50,16 +42,9 @@ use Humbug\Foo;
 \Humbug\Foo\main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ namespaced function call imported with a partial use statement in the global scope
-- do not prefix the use statement: see tests related to classes from the global namespace
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
 <?php
 
 class Foo {}
@@ -79,16 +64,9 @@ use Humbug\Foo;
 \Humbug\Foo\main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted namespaced function call imported with a partial use statement in the global scope
-- do not prefix the use statement: see tests related to classes from the global namespace
-- prefix the call: whitelists only works on classes
-- transform the call into a FQ call
-SPEC
-        ,
+    'Whitelisted namespaced function call imported with a partial use statement in the global scope' => [
         'whitelist' => ['Foo\main'],
         'payload' => <<<'PHP'
 <?php
