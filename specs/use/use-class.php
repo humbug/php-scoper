@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of a class belonging to the global scope:
-- wrap the statement in a prefixed namespace
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of a class belonging to the global scope' => <<<'PHP'
 <?php
 
 class Foo {}
@@ -47,16 +40,9 @@ class Foo
 use Humbug\Foo;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ use statement of a class belonging to the global scope:
-- wrap the statement in a prefixed namespace
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ use statement of a class belonging to the global scope' => <<<'PHP'
 <?php
 
 class Foo {}
@@ -74,16 +60,9 @@ class Foo
 use Humbug\Foo;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of an internal class belonging to the global scope:
-- wrap the statement in a prefixed namespace
-- do not prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of an internal class belonging to the global scope' => <<<'PHP'
 <?php
 
 use ArrayIterator;
@@ -96,16 +75,9 @@ namespace Humbug;
 use ArrayIterator;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of an internal class belonging to the global scope:
-- wrap the statement in a prefixed namespace
-- do not prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of an internal class belonging to the global scope' => <<<'PHP'
 <?php
 
 use \ArrayIterator;
@@ -118,16 +90,9 @@ namespace Humbug;
 use ArrayIterator;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of a non existent class belonging to the global scope:
-- wrap the statement in a prefixed namespace
-- do not prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of a non existent class belonging to the global scope' => <<<'PHP'
 <?php
 
 use Unknown;
@@ -140,16 +105,9 @@ namespace Humbug;
 use Humbug\Unknown;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of a whitelisted class belonging to the global scope:
-- wrap the statement in a prefixed namespace
-- prefix the use statement
-- append a class alias statement after the class declaration
-SPEC
-        ,
+    'Use statement of a whitelisted class belonging to the global scope' => [
         'whitelist' => ['Foo'],
         'payload' => <<<'PHP'
 <?php
@@ -172,14 +130,7 @@ use Humbug\Foo;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of a class belonging to the global scope which has been whitelisted:
-- wrap the statement in a prefixed namespace
-- prefix the use statement
-- append a class alias statement after the class declaration
-SPEC
-        ,
+    'Use statement of a class belonging to the global scope which has been whitelisted' => [
         'whitelist' => ['\*'],
         'payload' => <<<'PHP'
 <?php
@@ -201,14 +152,7 @@ namespace {
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of a whitelisted class belonging to the global scope which has been whitelisted:
-- wrap the statement in a prefixed namespace
-- prefix the use statement
-- append a class alias statement after the class declaration
-SPEC
-        ,
+    'Use statement of a whitelisted class belonging to the global scope which has been whitelisted' => [
         'whitelist' => ['Foo', '\*'],
         'payload' => <<<'PHP'
 <?php
@@ -230,14 +174,7 @@ namespace {
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of two-level class:
-- prefix the namespaces
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of two-level class' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -261,16 +198,9 @@ namespace Humbug;
 use Humbug\Foo\Bar;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Already prefixed use statement of two-level class:
-- prefix the namespaces
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Already prefixed use statement of two-level class' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -294,16 +224,9 @@ namespace Humbug;
 use Humbug\Foo\Bar;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of two-level class which has been whitelisted:
-- prefix the namespaces
-- append the class_alias statement to the whitelisted class
-- do not prefix the use statement
-SPEC
-        ,
+    'Use statement of two-level class which has been whitelisted' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -332,13 +255,7 @@ use Humbug\Foo\Bar;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of two-level class belonging to a whitelisted namespace:
-- prefix the namespaces
-- prefix the use statement
-SPEC
-        ,
+    'Use statement of two-level class belonging to a whitelisted namespace' => [
         'whitelist' => ['Foo\*'],
         'payload' => <<<'PHP'
 <?php
@@ -366,13 +283,7 @@ use Foo\Bar;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of whitelisted two-level class belonging to a whitelisted namespace:
-- prefix the namespaces
-- prefix the use statement
-SPEC
-        ,
+    'Use statement of whitelisted two-level class belonging to a whitelisted namespace' => [
         'whitelist' => ['Foo', 'Foo\*'],
         'payload' => <<<'PHP'
 <?php

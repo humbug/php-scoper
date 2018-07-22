@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a class belonging to the global namespace or the current namespace:
-- prefix the namespace
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a class belonging to the global namespace or the current namespace' => <<<'PHP'
 <?php
 
 namespace X;
@@ -48,16 +41,9 @@ class Command
 \Humbug\X\Command::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a class belonging to the global namespace or the current namespace:
-- prefix the namespace
-- do not touch the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call on a class belonging to the global namespace or the current namespace' => <<<'PHP'
 <?php
 
 namespace {
@@ -80,16 +66,9 @@ namespace Humbug\X;
 \Humbug\Command::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a whitelisted class belonging to the global namespace:
-- prefix the namespace
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a whitelisted class belonging to the global namespace' => <<<'PHP'
 <?php
 
 namespace X;
@@ -106,5 +85,5 @@ use Reflector;
 \Reflector::$mainStaticProp;
 
 PHP
-    ],
+    ,
 ];

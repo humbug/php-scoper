@@ -82,13 +82,7 @@ function foo()
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declaration in a namespace:
-- prefix the namespace statements
-- prefix the appropriate classes
-SPEC
-        ,
+    'Function declaration in a namespace' => [
         'whitelist' => ['X\Y'],
         'payload' => <<<'PHP'
 <?php
@@ -172,13 +166,7 @@ function foo(\Humbug\Pi\Foo $arg0 = null, \Humbug\Foo $arg1, \Humbug\Pi\Foo\Bar 
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declaration in a namespace:
-- prefix the namespace statements
-- prefix the appropriate classes
-SPEC
-        ,
+    'Function declaration in a namespace with whitelisted classes' => [
         'whitelist' => ['X\Y'],
         'payload' => <<<'PHP'
 <?php
@@ -262,14 +250,7 @@ function foo(\Humbug\Pi\Foo $arg0 = null, \Humbug\Foo $arg1, \Humbug\Pi\Foo\Bar 
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declaration in a namespace with use statements:
-- prefix namespace statements
-- prefix the appropriate classes
-- append the class_alias statement to the whitelisted class
-SPEC
-        ,
+    'Function declaration in a namespace with use statements' => [
         'whitelist' => ['X\Y'],
         'payload' => <<<'PHP'
 <?php
@@ -345,13 +326,7 @@ function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbu
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declaration in a whitelisted namespace:
-- prefix the namespace statements
-- prefix the appropriate classes
-SPEC
-        ,
+    'Function declaration in a whitelisted namespace' => [
         'whitelist' => ['Pi\*'],
         'payload' => <<<'PHP'
 <?php
@@ -434,14 +409,7 @@ function foo(\Pi\Foo $arg0 = null, \Humbug\Foo $arg1, \Pi\Foo\Bar $arg2, \Humbug
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declarations with return types in a namespace with use statements:
-- prefix namespace statements
-- prefix the appropriate classes
-- append the class_alias statement to the whitelisted class
-SPEC
-        ,
+    'Function declarations with return types in a namespace with use statements' => [
         'whitelist' => ['X\Y'],
         'payload' => <<<'PHP'
 <?php

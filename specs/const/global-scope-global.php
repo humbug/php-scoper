@@ -36,7 +36,9 @@ namespace Humbug;
 PHP
     ,
 
-    'Whitelisted constant call in the global namespace' => <<<'PHP'
+    'Whitelisted constant call in the global namespace' => [
+        'whitelist' => ['DUMMY_CONST'],
+        'payload' => <<<'PHP'
 <?php
 
 DUMMY_CONST;
@@ -48,7 +50,7 @@ namespace Humbug;
 \DUMMY_CONST;
 
 PHP
-    ,
+    ],
 
     'Constant call in the global namespace which is whitelisted' => [
         'whitelist' => ['\*'],

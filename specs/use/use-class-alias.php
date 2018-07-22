@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of a class belonging to the global scope:
-- wrap everything in a prefixed namespace
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of a class belonging to the global scope' => <<<'PHP'
 <?php
 
 class Foo {}
@@ -47,16 +40,9 @@ class Foo
 use Humbug\Foo as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ use statement of a class belonging to the global scope:
-- wrap everything in a prefixed namespace
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ use statement of a class belonging to the global scope' => <<<'PHP'
 <?php
 
 class Foo {}
@@ -74,16 +60,9 @@ class Foo
 use Humbug\Foo as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of an internal class belonging to the global scope:
-- wrap everything in a prefixed namespace
-- do not prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of an internal class belonging to the global scope' => <<<'PHP'
 <?php
 
 use ArrayIterator as A;
@@ -96,16 +75,9 @@ namespace Humbug;
 use ArrayIterator as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ use statement of an internal class belonging to the global scope:
-- wrap everything in a prefixed namespace
-- do not prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ use statement of an internal class belonging to the global scope' => <<<'PHP'
 <?php
 
 use \ArrayIterator as A;
@@ -118,15 +90,9 @@ namespace Humbug;
 use ArrayIterator as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of two-level class:
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of two-level class' => <<<'PHP'
 <?php
 
 use Foo\Bar as A;
@@ -139,15 +105,9 @@ namespace Humbug;
 use Humbug\Foo\Bar as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of two-level class which has been already prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement of two-level class which has been already prefixed' => <<<'PHP'
 <?php
 
 use Humbug\Foo\Bar as A;
@@ -160,14 +120,9 @@ namespace Humbug;
 use Humbug\Foo\Bar as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement of two-level class which has been whitelisted:
-- prefix the use statement
-SPEC
-        ,
+    'Use statement of two-level class which has been whitelisted' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

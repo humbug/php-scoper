@@ -44,12 +44,7 @@ declare (strict_types=1);
 PHP
     ,
 
-    [
-        'spec' => <<<'SPEC'
-Account for PHP case insentitiveness when resolving FQCNs.
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Account for PHP case insentitiveness when resolving FQCNs' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -83,5 +78,5 @@ use Humbug\Foo\stdClass;
 \var_dump(new \Humbug\Foo\stdClass());
 
 PHP
-    ],
+    ,
 ];

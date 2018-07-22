@@ -22,16 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a class via a use statement:
-- prefix the namespace
-- prefix the use statement
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Static method call statement of a class via a use statement' => <<<'PHP'
 <?php
 
 namespace X {
@@ -66,18 +57,9 @@ use Humbug\X\Foo;
 \Humbug\X\Foo\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a class via a use statement:
-- prefix the namespace
-- prefix the use statement
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a class via a use statement' => <<<'PHP'
 <?php
 
 namespace X {
@@ -112,17 +94,9 @@ use Humbug\X\Foo;
 \Humbug\Foo\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a whitelisted class via a use statement:
-- prefix the namespace
-- prefix the use statement
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'Static method call statement of a whitelisted class via a use statement' => [
         'whitelist' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -162,15 +136,7 @@ use Humbug\X\Foo;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a non-whitelisted class via a use statement:
-- prefix the namespace
-- prefix the use statement
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ static method call statement of a non-whitelisted class via a use statement' => [
         'whitelist' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class partially imported with an aliased use statement:
-- prefix the namespace
-- prefix the class only (not the use statement)
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a namespaced class partially imported with an aliased use statement' => <<<'PHP'
 <?php
 
 namespace {
@@ -65,17 +57,9 @@ use Humbug\Foo as X;
 \Humbug\Foo\Bar::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class imported with an aliased use statement:
-- prefix the namespace
-- prefix the use statement
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a namespaced class imported with an aliased use statement' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -101,16 +85,9 @@ use Humbug\Foo\Bar as X;
 \Humbug\Foo\Bar::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a namespaced class imported with an aliased use statement:
-- prefix the namespace
-- prefix the class only (not the use statement, cf. tests related to classes from the global scope)
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call on a namespaced class imported with an aliased use statement' => <<<'PHP'
 <?php
 
 namespace {
@@ -145,16 +122,9 @@ use Humbug\Foo as X;
 \Humbug\X\Bar::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ Constant call on a whitelisted namespaced class partially imported with an aliased use statement:
-- prefix the namespace
-- do not prefix the class neither the use statement
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ Constant call on a whitelisted namespaced class partially imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

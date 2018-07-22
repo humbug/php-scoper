@@ -22,16 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Global function call imported with a use statement in a namespace:
-- prefix the namespace
-- prefix the use statement
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global function call imported with a use statement in a namespace' => <<<'PHP'
 <?php
 
 namespace X;
@@ -48,17 +39,9 @@ use function Humbug\main as foo;
 \Humbug\main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Global function call imported with a use statement in a namespace:
-- prefix the namespace
-- prefix the use statement
-- do not prefix the call: as the call is FQ, the use statement is irrelevant so the above assumption cannot apply
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global function call imported with a use statement in a namespace' => <<<'PHP'
 <?php
 
 namespace X;
@@ -75,5 +58,5 @@ use function Humbug\main as foo;
 \Humbug\foo();
 
 PHP
-    ],
+    ,
 ];

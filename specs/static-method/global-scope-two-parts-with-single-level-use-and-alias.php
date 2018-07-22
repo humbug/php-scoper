@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a namespaced class partially imported with an aliased use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Static method call statement of a namespaced class partially imported with an aliased use statement' => <<<'PHP'
 <?php
 
 namespace {
@@ -65,17 +57,9 @@ use Humbug\Foo as A;
 \Humbug\Foo\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a namespaced class imported with an aliased use statement:
-- prefix the use statement
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Static method call statement of a namespaced class imported with an aliased use statement' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -101,16 +85,9 @@ use Humbug\Foo\Bar as A;
 \Humbug\Foo\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a namespaced class partially imported with an aliased use statement:
-- do not touch the use statement: see tests for the use statements and classes of the global namespace as to why
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a namespaced class partially imported with an aliased use statement' => <<<'PHP'
 <?php
 
 namespace {
@@ -145,16 +122,9 @@ use Humbug\Foo as A;
 \Humbug\A\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a namespaced class imported with an aliased use statement:
-- prefix the use statement
-- do not touch the call: see tests for the use statements and classes of the global namespace as to why
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a namespaced class imported with an aliased use statement' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -185,16 +155,9 @@ use Humbug\Foo\Bar as A;
 \Humbug\A::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a whitelisted namespaced class partially imported with an aliased use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'Static method call statement of a whitelisted namespaced class partially imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -234,14 +197,7 @@ use Humbug\Foo as A;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a whitelisted namespaced class imported with an aliased use statement:
-- prefix the use statement
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'Static method call statement of a whitelisted namespaced class imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -272,13 +228,7 @@ use Humbug\Foo\Bar as A;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a whitelisted namespaced class partially imported with an aliased use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- prefix the call: as the call is FQ the use statement is ignored
-SPEC
-        ,
+    'FQ static method call statement of a whitelisted namespaced class partially imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -317,14 +267,7 @@ use Humbug\Foo as A;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a whitelisted namespaced class imported with an aliased use statement:
-- prefix the use statement
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ static method call statement of a whitelisted namespaced class imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

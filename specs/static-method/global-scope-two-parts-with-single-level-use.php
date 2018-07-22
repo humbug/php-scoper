@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a namespaced class partially imported with a use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Static method call statement of a namespaced class partially imported with a use statement' => <<<'PHP'
 <?php
 
 namespace {
@@ -65,17 +57,9 @@ use Humbug\Foo;
 \Humbug\Foo\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a namespaced class imported with a use statement:
-- prefix the use statement
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Static method call statement of a namespaced class imported with a use statement' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -101,16 +85,9 @@ use Humbug\Foo\Bar;
 \Humbug\Foo\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a namespaced class partially imported with a use statement:
-- do not touch the use statement: see tests for the use statements and classes of the global namespace as to why
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a namespaced class partially imported with a use statement' => <<<'PHP'
 <?php
 
 namespace {
@@ -145,16 +122,9 @@ use Humbug\Foo;
 \Humbug\Foo\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a namespaced class imported with a use statement:
-- prefix the use statement
-- do not touch the call: see tests for the use statements and classes of the global namespace as to why
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a namespaced class imported with a use statement' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -185,16 +155,9 @@ use Humbug\Foo\Bar;
 \Humbug\Bar::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a whitelisted namespaced class partially imported with a use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'Static method call statement of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -234,14 +197,7 @@ use Humbug\Foo;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a whitelisted namespaced class imported with a use statement:
-- prefix the use statement
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'Static method call statement of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -272,13 +228,7 @@ use Humbug\Foo\Bar;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a whitelisted namespaced class partially imported with a use statement:
-- do not touch the use statement: see tests for the use statements as to why
-- do not prefix the call
-SPEC
-        ,
+    'FQ static method call statement of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
@@ -318,14 +268,7 @@ use Humbug\Foo;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a whitelisted namespaced class imported with a use statement:
-- prefix the use statement
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
+    'FQ static method call statement of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php

@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a function belonging to the global namespace:
-- prefix the use statement: as it is extremely rare to use a `use function` statement for a built-in
-function from the global scope, we can relatively safely assume it is a user-land declare static-method
-which should be prefixed.
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for a function belonging to the global namespace' => <<<'PHP'
 <?php
 
 use function foo as greet;
@@ -43,15 +35,9 @@ namespace Humbug;
 use function Humbug\foo as greet;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a function belonging to the global namespace which has already been prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for a function belonging to the global namespace which has already been prefixed' => <<<'PHP'
 <?php
 
 use function Humbug\foo as greet;
@@ -64,15 +50,9 @@ namespace Humbug;
 use function Humbug\foo as greet;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a namespaced function:
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for a namespaced function' => <<<'PHP'
 <?php
 
 use function Foo\bar as greet;
@@ -85,15 +65,9 @@ namespace Humbug;
 use function Humbug\Foo\bar as greet;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a namespaced function which has already been prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for a namespaced function which has already been prefixed' => <<<'PHP'
 <?php
 
 use function Humbug\Foo\bar as greet;
@@ -106,14 +80,9 @@ namespace Humbug;
 use function Humbug\Foo\bar as greet;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a namespaced function which has been whitelisted:
-- prefix the use statement: the whitelist only works for classes
-SPEC
-        ,
+    'Use statement for a namespaced function which has been whitelisted' => [
         'whitelist' => ['Foo\bar'],
         'payload' => <<<'PHP'
 <?php

@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Namespaced constant call
-- prefix the namespace
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Namespaced constant call' => <<<'PHP'
 <?php
 
 namespace A;
@@ -44,16 +36,9 @@ namespace Humbug\A;
 \Humbug\A\PHPUnit\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ namespaced constant call
-- prefix the namespace
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ namespaced constant call' => <<<'PHP'
 <?php
 
 namespace A;
@@ -67,15 +52,9 @@ namespace Humbug\A;
 \Humbug\PHPUnit\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted namespaced constant call on a whitelisted constant
-- prefix the namespace
-- prefix the call: the whitelist only works for classes
-SPEC
-        ,
+    'Whitelisted namespaced constant call on a whitelisted constant' => [
         'whitelist' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
@@ -93,13 +72,7 @@ namespace Humbug\A;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted FQ namespaced constant call on a whitelisted constant
-- prefix the namespace
-- prefix the call: the whitelist only works for classes
-SPEC
-        ,
+    'Whitelisted FQ namespaced constant call on a whitelisted constant' => [
         'whitelist' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php

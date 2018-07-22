@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a constant belonging to the global namespace:
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for a constant belonging to the global namespace' => <<<'PHP'
 <?php
 
 use const FOO;
@@ -41,15 +35,9 @@ namespace Humbug;
 use const Humbug\FOO;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for an internal constant belonging to the global namespace:
-- do not prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for an internal constant belonging to the global namespace' => <<<'PHP'
 <?php
 
 use const DIRECTORY_SEPARATOR;
@@ -62,15 +50,9 @@ namespace Humbug;
 use const DIRECTORY_SEPARATOR;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a constant belonging to the global namespace and which has already been prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for a constant belonging to the global namespace and which has already been prefixed' => <<<'PHP'
 <?php
 
 use const Humbug\FOO;
@@ -83,15 +65,9 @@ namespace Humbug;
 use const Humbug\FOO;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a namespaced constant:
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for a namespaced constant' => <<<'PHP'
 <?php
 
 use const Foo\BAR;
@@ -104,15 +80,9 @@ namespace Humbug;
 use const Humbug\Foo\BAR;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a namespaced constant which has already been prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for a namespaced constant which has already been prefixed' => <<<'PHP'
 <?php
 
 use const Humbug\Foo\BAR;
@@ -125,7 +95,7 @@ namespace Humbug;
 use const Humbug\Foo\BAR;
 
 PHP
-    ],
+    ,
 
     'Constant use statement for a namespaced constant which has been whitelisted' => [
         'whitelist' => ['Foo\BAR'],

@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a namespaced class:
-- prefix the namespace
-- prefix the class
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a namespaced class' => <<<'PHP'
 <?php
 
 namespace X\PHPUnit {
@@ -53,17 +45,9 @@ namespace Humbug\X;
 \Humbug\X\PHPUnit\Command::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a namespaced class:
-- prefix the namespace
-- prefix the class
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call on a namespaced class' => <<<'PHP'
 <?php
 
 namespace PHPUnit {
@@ -86,16 +70,9 @@ namespace Humbug\X;
 \Humbug\PHPUnit\Command::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a whitelisted namespaced class:
-- prefix the namespace
-- do not prefix the class
-- transform the call into a FQ call
-SPEC
-        ,
+    'Constant call on a whitelisted namespaced class' => [
         'whitelist' => ['X\PHPUnit\Command'],
         'payload' => <<<'PHP'
 <?php
@@ -123,14 +100,7 @@ namespace Humbug\X;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a whitelisted namespaced class:
-- prefix the namespace
-- do not prefix the class
-- transforms the call into a FQ call to avoid autoloading issues
-SPEC
-        ,
+    'FQ constant call on a whitelisted namespaced class' => [
         'whitelist' => ['PHPUnit\Command'],
         'payload' => <<<'PHP'
 <?php

@@ -39,7 +39,9 @@ use const Humbug\DUMMY_CONST as FOO;
 PHP
     ,
 
-    'Whitelisted constant call imported with an aliased use statement' => <<<'PHP'
+    'Whitelisted constant call imported with an aliased use statement' => [
+        'whitelist' => ['DUMMY_CONST'],
+        'payload' => <<<'PHP'
 <?php
 
 use const DUMMY_CONST as FOO;
@@ -54,9 +56,9 @@ use const DUMMY_CONST as FOO;
 \DUMMY_CONST;
 
 PHP
-    ,
+    ],
 
-    'Constant call imported with an aliased use statement' => <<<'PHP'
+    'Constant FQ call imported with an aliased use statement' => <<<'PHP'
 <?php
 
 use const DUMMY_CONST as FOO;

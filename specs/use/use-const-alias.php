@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a constant belonging to the global namespace:
-- prefix the use statement: as it is extremely rare to use a `use const` statement for a built-in const from the
-global scope, we can relatively safely assume it is a user-land declare static-method which should be prefixed.
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for a constant belonging to the global namespace' => <<<'PHP'
 <?php
 
 use const FOO as A;
@@ -42,15 +35,9 @@ namespace Humbug;
 use const Humbug\FOO as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a constant belonging to the global namespace and which has already been prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for a constant belonging to the global namespace and which has already been prefixed' => <<<'PHP'
 <?php
 
 use const Humbug\FOO as A;
@@ -63,15 +50,9 @@ namespace Humbug;
 use const Humbug\FOO as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a namespaced constant:
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for a namespaced constant' => <<<'PHP'
 <?php
 
 use const Foo\BAR as A;
@@ -84,15 +65,9 @@ namespace Humbug;
 use const Humbug\Foo\BAR as A;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant use statement for a namespaced constant which has already been prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant use statement for a namespaced constant which has already been prefixed' => <<<'PHP'
 <?php
 
 use const Humbug\Foo\BAR as A;
@@ -105,7 +80,7 @@ namespace Humbug;
 use const Humbug\Foo\BAR as A;
 
 PHP
-    ],
+    ,
 
     'Constant use statement for a namespaced constant which has been whitelisted' => [
         'whitelist' => ['Foo\BAR'],

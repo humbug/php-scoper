@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a class:
-- prefix the namespace
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Static method call statement of a class' => <<<'PHP'
 <?php
 
 namespace A;
@@ -49,16 +41,9 @@ class Foo
 \Humbug\A\Foo::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a class belonging to the global namespace:
-- prefix the namespace
-- do not prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a class belonging to the global namespace' => <<<'PHP'
 <?php
 
 namespace {
@@ -81,17 +66,9 @@ namespace Humbug\A;
 \Humbug\Foo::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a class belonging to the global namespace which has been whitelisted:
-- prefix the namespace
-- prefix the call
-- See `scope.inc.php` for the built-in global whitelisted classes
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a class belonging to the global namespace which has been whitelisted' => <<<'PHP'
 <?php
 
 namespace A;
@@ -105,5 +82,5 @@ namespace Humbug\A;
 \Closure::bind();
 
 PHP
-    ],
+    ,
 ];

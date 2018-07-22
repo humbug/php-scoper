@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a function belonging to the global namespace:
-- wrap the code in a prefixed namespace
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for a function belonging to the global namespace' => <<<'PHP'
 <?php
 
 use function foo;
@@ -42,16 +35,9 @@ namespace Humbug;
 use function Humbug\foo;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for an internal function belonging to the global namespace:
-- wrap the code in a prefixed namespace
-- do not prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for an internal function belonging to the global namespace' => <<<'PHP'
 <?php
 
 use function is_array;
@@ -64,15 +50,9 @@ namespace Humbug;
 use function is_array;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a function belonging to the global namespace which has already been prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for a function belonging to the global namespace which has already been prefixed' => <<<'PHP'
 <?php
 
 use function Humbug\foo;
@@ -85,15 +65,9 @@ namespace Humbug;
 use function Humbug\foo;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a namespaced function:
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for a namespaced function' => <<<'PHP'
 <?php
 
 use function Foo\bar;
@@ -106,15 +80,9 @@ namespace Humbug;
 use function Humbug\Foo\bar;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a namespaced function which has already been prefixed:
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Use statement for a namespaced function which has already been prefixed' => <<<'PHP'
 <?php
 
 use function Humbug\Foo\bar;
@@ -127,13 +95,9 @@ namespace Humbug;
 use function Humbug\Foo\bar;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Use statement for a namespaced function which has been whitelisted
-SPEC
-        ,
+    'Use statement for a namespaced function which has been whitelisted' => [
         'whitelist' => ['Foo\bar'],
         'payload' => <<<'PHP'
 <?php

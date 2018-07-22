@@ -22,12 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Usage for classes in the global scope.
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Usage for classes in the global scope' => <<<'PHP'
 <?php
 
 class A {
@@ -99,14 +94,9 @@ class B extends \Humbug\A
 echo (new \Humbug\B('yo'))->getName() . \PHP_EOL;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Usage for classes in a namespaced.
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Usage for classes in a namespaced' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -187,5 +177,5 @@ use Humbug\Foo\B;
 echo (new \Humbug\Foo\B('yo'))->getName() . \PHP_EOL;
 
 PHP
-    ],
+    ,
 ];

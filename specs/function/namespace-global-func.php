@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Global function call in a namespace
-- do not prefix the call: ambiguous call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global function call in a namespace' => <<<'PHP'
 <?php
 
 namespace A;
@@ -43,15 +36,9 @@ namespace Humbug\A;
 main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Global function call in a namespace
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global FQ function call in a namespace' => <<<'PHP'
 <?php
 
 namespace A;
@@ -65,5 +52,5 @@ namespace Humbug\A;
 \Humbug\main();
 
 PHP
-    ],
+    ,
 ];
