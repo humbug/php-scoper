@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call in a namespace:
-- prefix the namespace
-- do nothing: the constant can either belong to the same namespace or the global namespace
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call in a namespace' => <<<'PHP'
 <?php
 
 namespace A;
@@ -43,15 +36,9 @@ namespace Humbug\A;
 DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted constant call in a namespace:
-- prefix the namespace
-- do nothing: the constant can either belong to the same namespace or the global namespace
-SPEC
-        ,
+    'Whitelisted constant call in a namespace' => [
         'whitelist' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
@@ -69,14 +56,7 @@ DUMMY_CONST;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call in a namespace:
-- prefix the namespace
-- prefix the constant call
-SPEC
-    ,
-        'payload' => <<<'PHP'
+    'FQ constant call in a namespace' => <<<'PHP'
 <?php
 
 namespace A;
@@ -90,15 +70,9 @@ namespace Humbug\A;
 \DUMMY_CONST;
 
 PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-Whitelisted FQ constant call in a namespace:
-- prefix the namespace
-- prefix the constant call
-SPEC
     ,
+
+    'Whitelisted FQ constant call in a namespace' => [
         'whitelist' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php

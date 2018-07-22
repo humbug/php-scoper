@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'some statements made directly in the global namespace: wrap them in a namespace statement' => <<<'PHP'
+    'Some statements made directly in the global namespace' => <<<'PHP'
 <?php declare(strict_types=1);
 
 /*
@@ -66,7 +66,7 @@ if (\false) {
 PHP
     ,
 
-    'some statements made directly in the global namespace with a shebang: wrap them in a namespace statement' => <<<'PHP'
+    'Some statements made directly in the global namespace with a shebang' => <<<'PHP'
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 

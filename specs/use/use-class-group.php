@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Multiple group use statement:
-- transform grouped statements into simple statements
-- prefix each of them
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Multiple group use statement' => <<<'PHP'
 <?php
 
 use A\{B};
@@ -48,15 +41,9 @@ use Humbug\A\B\C\D as ABCD;
 use Humbug\A\B\E;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Multiple group use statement which are already prefixed:
-- transform grouped statements into simple statements
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Multiple group use statement which are already prefixed' => <<<'PHP'
 <?php
 
 use Humbug\A\{B};
@@ -75,15 +62,9 @@ use Humbug\A\B\C\D;
 use Humbug\A\B\E;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Multiple group use statement with whitelisted classes:
-- transform grouped statements into simple statements
-- prefix each of them: only actual usages will be whitelisted, not the use statements
-SPEC
-        ,
+    'Multiple group use statement with whitelisted classes' => [
         'whitelist' => [
             'A\B',
             'A\B\C',

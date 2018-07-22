@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call imported with a use statement:
-- prefix the use statement
-- prefix the call
-- transforms the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call imported with a use statement' => <<<'PHP'
 <?php
 
 use const DUMMY_CONST;
@@ -45,15 +37,9 @@ use const Humbug\DUMMY_CONST;
 \Humbug\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted constant call imported with a use statement:
-- add prefixed namespace
-- transforms the call into a FQ call
-SPEC
-        ,
+    'Whitelisted constant call imported with a use statement' => [
         'whitelist' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
@@ -72,13 +58,7 @@ use const DUMMY_CONST;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call imported with a use statement:
-- prefix the use statement
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call imported with a use statement' => <<<'PHP'
 <?php
 
 use const DUMMY_CONST;
@@ -93,5 +73,5 @@ use const Humbug\DUMMY_CONST;
 \Humbug\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 ];

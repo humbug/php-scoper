@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Global function call imported with a use statement in the global scope
-- prefix the use statement
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global function call imported with a use statement in the global scope' => <<<'PHP'
 <?php
 
 use function main as foo;
@@ -45,16 +37,9 @@ use function Humbug\main as foo;
 \Humbug\main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Global function call imported with a use statement in the global scope
-- prefix the use statement
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global function call imported with a use statement in the global scope' => <<<'PHP'
 <?php
 
 use function main as foo;
@@ -69,5 +54,5 @@ use function Humbug\main as foo;
 \Humbug\foo();
 
 PHP
-    ],
+    ,
 ];

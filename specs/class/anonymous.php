@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Declaration in the global namespace: prefix non-internal classes' => <<<'PHP'
+    'Declaration in the global namespace' => <<<'PHP'
 <?php
 
 interface B {}
@@ -226,7 +226,7 @@ class A
 PHP
     ],
 
-    'Declaration in a namespace: prefix the namespace' => <<<'PHP'
+    'Declaration in a namespace' => <<<'PHP'
 <?php
 
 namespace Foo;

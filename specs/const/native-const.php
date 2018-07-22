@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Internal function in a namespace: make the call into a FQ call' => <<<'PHP'
+    'Internal function in a namespace' => <<<'PHP'
 <?php
 
 namespace Acme;
@@ -39,7 +39,7 @@ $x = \DIRECTORY_SEPARATOR;
 PHP
     ,
 
-    'Namespaced function having the same name as an internal function: prefix & make the call into a FQ call' => <<<'PHP'
+    'Namespaced function having the same name as an internal function' => <<<'PHP'
 <?php
 
 namespace Acme;

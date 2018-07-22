@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Different kind of whitelisted class constant calls in the global scope:
-- prefix the whitelisted classes and append their class aliases
-- transforms the call into a FQ
-- resolve the aliases
-SPEC
-        ,
+    'Different kind of whitelisted class constant calls in the global scope' => [
         'whitelist' => ['Foo\Bar', 'Foo\Bar\Poz'],
         'payload' => <<<'PHP'
 <?php
@@ -105,15 +98,7 @@ use Humbug\Foo\Bar\Poz as Z;
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Different kind of class constant calls in the global scope:
-- prefix the whitelisted classes and append their class aliases
-- transforms the call into a FQ
-- resolve the aliases
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Different kind of class constant calls in the global scope' => <<<'PHP'
 <?php
 
 namespace {
@@ -182,16 +167,9 @@ use Humbug\Foo\Bar\Poz as Z;
 \Humbug\Foo\Bar\Poz::MAIN_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Different kind of class constant calls in a namespace:
-- prefix the whitelisted classes and append their class aliases
-- transforms the call into a FQ
-- resolve the aliases
-SPEC
-        ,
+    'Different kind of class constant calls in a namespace' => [
         'whitelist' => [
             'Foo\Bar',
             'Foo\Bar\Poz',

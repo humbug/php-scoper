@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'Root namespace: prefix the namespace' => <<<'PHP'
+    'Root namespace' => <<<'PHP'
 <?php
 
 namespace {
@@ -39,7 +39,7 @@ $x = 'root';
 PHP
     ,
 
-    'One level: prefix the namespace' => <<<'PHP'
+    'One level' => <<<'PHP'
 <?php
 
 namespace Foo {
@@ -54,7 +54,7 @@ namespace Humbug\Foo;
 PHP
     ,
 
-    'One level whitelisted namespace: prefix the namespace (whitelist works only on classes)' => [
+    'One level whitelisted namespace' => [
         'whitelist' => ['Foo'],
         'payload' => <<<'PHP'
 <?php
@@ -71,7 +71,7 @@ namespace Humbug\Foo;
 PHP
     ],
 
-    'Already prefixed one-level namespace: do nothing' => <<<'PHP'
+    'Already prefixed one-level namespace' => <<<'PHP'
 <?php
 
 namespace Humbug\Foo {
@@ -86,7 +86,7 @@ namespace Humbug\Foo;
 PHP
     ,
 
-    'Two levels namespace: prefix it' => <<<'PHP'
+    'Two levels namespace' => <<<'PHP'
 <?php
 
 namespace Foo\Bar {
@@ -101,7 +101,7 @@ namespace Humbug\Foo\Bar;
 PHP
     ,
 
-    'Two levels whitelisted namespace: prefix it (whitelist only works on classes)' => [
+    'Two levels whitelisted namespace' => [
         'whitelist' => ['Foo'],
         'payload' => <<<'PHP'
 <?php
@@ -118,7 +118,7 @@ namespace Humbug\Foo\Bar;
 PHP
     ],
 
-    'Already prefixed two levels namespace: do nothing' => <<<'PHP'
+    'Already prefixed two levels namespace' => <<<'PHP'
 <?php
 
 namespace Humbug\Foo\Bar;

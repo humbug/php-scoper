@@ -256,7 +256,7 @@ abstract class A
 PHP
     ],
 
-    'Multiple declarations in different namespaces with whitelisted classes: prefix each namespace' => [
+    'Multiple declarations in different namespaces with whitelisted classes' => [
         'whitelist' => ['Foo\WA', 'Bar\WB', 'WC'],
         'payload' => <<<'PHP'
 <?php

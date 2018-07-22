@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Namespaced constant call
-- prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Namespaced constant call' => <<<'PHP'
 <?php
 
 PHPUnit\Command\DUMMY_CONST;
@@ -41,15 +34,9 @@ namespace Humbug;
 \Humbug\PHPUnit\Command\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ namespaced constant call
-- prefix the call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ namespaced constant call' => <<<'PHP'
 <?php
 
 \PHPUnit\Command\DUMMY_CONST;
@@ -61,14 +48,9 @@ namespace Humbug;
 \Humbug\PHPUnit\Command\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Namespaced constant call on a whitelisted constant
-- add prefixed namespace
-SPEC
-        ,
+    'Namespaced constant call on a whitelisted constant' => [
         'whitelist' => ['PHPUnit\Command\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php

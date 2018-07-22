@@ -78,13 +78,7 @@ function foo()
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declaration in the global namespace:
-- prefix the namespace statements
-- prefix the appropriate classes
-SPEC
-        ,
+    'Function declaration in the global namespace' => [
         'whitelist' => ['X\Y', 'BAR_CONST'],
         'payload' => <<<'PHP'
 <?php
@@ -148,13 +142,7 @@ function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbu
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declaration in the global namespace:
-- prefix the namespace statements
-- prefix the appropriate classes
-SPEC
-        ,
+    'Function declaration in the global namespace with globally whitelisted constants' => [
         'whitelist-global-constants' => true,
         'payload' => <<<'PHP'
 <?php
@@ -172,14 +160,7 @@ function foo(string $foo = \FOO_CONST)
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declaration in the global namespace with use statements:
-- prefix namespace statements
-- prefix the appropriate classes
-- append the class_alias statement to the whitelisted class
-SPEC
-        ,
+    'Function declaration in the global namespace with use statements' => [
         'whitelist' => ['X\Y'],
         'payload' => <<<'PHP'
 <?php
@@ -264,14 +245,7 @@ function foo(string $arg0, ?string $arg1, ?string $arg2 = null, \Humbug\Foo $arg
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Function declarations with return types in the global namespace with use statements:
-- prefix namespace statements
-- prefix the appropriate classes
-- append the class_alias statement to the whitelisted class
-SPEC
-        ,
+    'Function declarations with return types in the global namespace with use statements' => [
         'whitelist' => ['X\Y'],
         'payload' => <<<'PHP'
 <?php

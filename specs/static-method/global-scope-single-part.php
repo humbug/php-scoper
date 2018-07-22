@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of a class belonging to the global namespace:
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Static method call statement of a class belonging to the global namespace' => <<<'PHP'
 <?php
 
 class Command {}
@@ -45,15 +39,9 @@ class Command
 \Humbug\Command::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of a class belonging to the global namespace:
-- do not prefix the call as can be part of the global namespace
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a class belonging to the global namespace' => <<<'PHP'
 <?php
 
 class Command {}
@@ -70,16 +58,9 @@ class Command
 \Humbug\Command::main();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Static method call statement of an internal class :
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Static method call statement of an internal class' => <<<'PHP'
 <?php
 
 Closure::bind();
@@ -91,16 +72,9 @@ namespace Humbug;
 \Closure::bind();
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ static method call statement of an internal class :
-- do not prefix the call
-- transform the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of an internal class' => <<<'PHP'
 <?php
 
 \Closure::bind();
@@ -112,5 +86,5 @@ namespace Humbug;
 \Closure::bind();
 
 PHP
-    ],
+    ,
 ];

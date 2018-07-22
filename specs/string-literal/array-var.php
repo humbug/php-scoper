@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'String argument: transform into a FQCN and prefix it' => <<<'PHP'
+    'String argument' => <<<'PHP'
 <?php
 
 $x = [

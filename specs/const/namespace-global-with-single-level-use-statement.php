@@ -22,20 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    // As it is extremely rare to use a `use const` statement for a built-in constant from the
-    // global scope, we can relatively safely assume it is a user-land declared constant which should
-    // be prefixed.
-
-    [
-        'spec' => <<<'SPEC'
-Constant call imported with a use statement:
-- prefix the namespace
-- prefix the use statement
-- prefix the call
-- transforms the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call imported with a use statement' => <<<'PHP'
 <?php
 
 namespace A;
@@ -52,17 +39,9 @@ use const Humbug\DUMMY_CONST;
 \Humbug\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call imported with a use statement:
-- prefix the namespace
-- prefix the use statement
-- prefix the constant call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call imported with a use statement' => <<<'PHP'
 <?php
 
 namespace A;
@@ -79,14 +58,9 @@ use const Humbug\DUMMY_CONST;
 \Humbug\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted FQ constant call imported with a use statement:
-- prefix the namespace
-SPEC
-        ,
+    'Whitelisted FQ constant call imported with a use statement' => [
         'whitelist' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php

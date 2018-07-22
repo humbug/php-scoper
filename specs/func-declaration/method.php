@@ -22,13 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Method declarations:
-- prefix the namespace statements
-- prefix the appropriate classes
-SPEC
-        ,
+    'Method declarations' => [
         'whitelist' => ['X\Y', 'BAR_CONST'],
         'payload' => <<<'PHP'
 <?php
@@ -113,14 +107,7 @@ class Main
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Method declarations with return types:
-- prefix namespace statements
-- prefix the appropriate classes
-- append the class_alias statement to the whitelisted class
-SPEC
-        ,
+    'Method declarations with return types' => [
         'whitelist' => ['X\Y'],
         'payload' => <<<'PHP'
 <?php

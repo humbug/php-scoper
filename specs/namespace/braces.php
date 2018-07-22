@@ -22,7 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    'One level namespace: prefix it' => <<<'PHP'
+    'One level namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -36,7 +36,7 @@ namespace Humbug\Foo;
 PHP
     ,
 
-    'Two levels namespace: prefix it' => <<<'PHP'
+    'Two levels namespace' => <<<'PHP'
 <?php
 
 namespace Foo\Bar;

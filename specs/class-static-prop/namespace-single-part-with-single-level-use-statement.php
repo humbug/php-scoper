@@ -22,15 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a class which is imported via a use statement and which belongs to the global namespace:
-- prefix the namespace
-- do not prefix the use statement (cf. class belonging to the global scope tests)
-- transforms the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
 <?php
 
 namespace {
@@ -56,17 +48,9 @@ use Humbug\Foo;
 \Humbug\Foo::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a class which is imported via a use statement and which belongs to the global namespace:
-- prefix the namespace
-- do not prefix the use statement (cf. class belonging to the global scope tests)
-- do nothing
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
 <?php
 
 namespace {
@@ -92,16 +76,9 @@ use Humbug\Command;
 \Humbug\Command::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Constant call on a whitelisted class which is imported via a use statement and which belongs to the global namespace:
-- prefix the namespace
-- transform the call in a FQ call (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call on a whitelisted class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
 <?php
 
 namespace X;
@@ -118,16 +95,9 @@ use Reflector;
 \Reflector::$mainStaticProp;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-FQ constant call on a whitelisted class which is imported via a use statement and which belongs to the global namespace:
-- prefix the namespace
-- prefix the class (cf. class belonging to the global scope tests and `scope.inc.php` for the built-in global whitelisted classes)
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'FQ constant call on a whitelisted class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
 <?php
 
 namespace X;
@@ -144,5 +114,5 @@ use Reflector;
 \Reflector::$mainStaticProp;
 
 PHP
-    ],
+    ,
 ];

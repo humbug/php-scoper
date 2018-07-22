@@ -22,14 +22,7 @@ return [
         'whitelist-global-functions' => true,
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Constant call in the global namespace:
-- prefix the constant
-- transforms the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Constant call in the global namespace' => <<<'PHP'
 <?php
 
 DUMMY_CONST;
@@ -41,15 +34,9 @@ namespace Humbug;
 \Humbug\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Whitelisted constant call in the global namespace:
-- add prefixed namespace
-- transforms the call into a FQ call
-SPEC
-        ,
+    'Whitelisted constant call in the global namespace' => [
         'whitelist' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
@@ -65,7 +52,7 @@ namespace Humbug;
 PHP
     ],
 
-    'Constant call in the global namespace which is whitelisted: add root namespace statement' => [
+    'Constant call in the global namespace which is whitelisted' => [
         'whitelist' => ['\*'],
         'payload' => <<<'PHP'
 <?php
@@ -81,14 +68,7 @@ namespace {
 PHP
     ],
 
-    [
-        'spec' => <<<'SPEC'
-Internal constant call in the global namespace:
-- do not prefix the constant
-- transforms the call into a FQ call
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Internal constant call in the global namespace' => <<<'PHP'
 <?php
 
 DIRECTORY_SEPARATOR;
@@ -100,15 +80,9 @@ namespace Humbug;
 \DIRECTORY_SEPARATOR;
 
 PHP
-    ],
-
-    [
-        'spec' => <<<'SPEC'
-FQ constant call in the global namespace:
-- prefix the constant
-SPEC
     ,
-        'payload' => <<<'PHP'
+
+    'FQ constant call in the global namespace' => <<<'PHP'
 <?php
 
 DUMMY_CONST;
@@ -120,16 +94,9 @@ namespace Humbug;
 \Humbug\DUMMY_CONST;
 
 PHP
-    ],
+    ,
 
-    [
-        'spec' => <<<'SPEC'
-Global constant call in the global scope of a constant which has a use statement for a class importing a class with the
-same name
-- do not prefix the function
-SPEC
-        ,
-        'payload' => <<<'PHP'
+    'Global constant call in the global scope of a constant which has a use statement for a class importing a class with the same name' => <<<'PHP'
 <?php
 
 use Acme\Inf;
@@ -144,5 +111,5 @@ use Humbug\Acme\Inf;
 \INF;
 
 PHP
-    ],
+    ,
 ];
