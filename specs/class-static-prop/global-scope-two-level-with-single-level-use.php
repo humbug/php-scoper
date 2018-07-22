@@ -96,7 +96,7 @@ use Humbug\Foo\Bar;
 PHP
     ,
 
-    'FQ constant call on a namespaced class imported with a use statement' =>  <<<'PHP'
+    'FQ constant call on a namespaced class imported with a use statement' => <<<'PHP'
 <?php
 
 namespace {
