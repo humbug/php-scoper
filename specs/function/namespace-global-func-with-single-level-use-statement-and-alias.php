@@ -20,6 +20,8 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => true,
         'whitelist-global-functions' => true,
+        'registered-classes' => [],
+        'registered-functions' => [],
     ],
 
     'Global function call imported with a use statement in a namespace' => <<<'PHP'
@@ -41,7 +43,7 @@ use function Humbug\main as foo;
 PHP
     ,
 
-    'Global function call imported with a use statement in a namespace' => <<<'PHP'
+    'Global FQ function call imported with a use statement in a namespace' => <<<'PHP'
 <?php
 
 namespace X;

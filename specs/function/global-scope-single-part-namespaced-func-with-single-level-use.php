@@ -20,6 +20,8 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => true,
         'whitelist-global-functions' => true,
+        'registered-classes' => [],
+        'registered-functions' => [],
     ],
 
     'Namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'

@@ -35,7 +35,7 @@ final class ScoperAutoloadGenerator
 
     public function dump(string $prefix): string
     {
-        $whitelistedFunctions = $this->whitelist->getWhitelistedFunctions();
+        $whitelistedFunctions = $this->whitelist->getRecordedWhitelistedFunctions();
 
         $hasNamespacedFunctions = $this->hasNamespacedFunctions($whitelistedFunctions);
 
