@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use function array_diff;
+use function array_keys;
 use function array_map;
 use function current;
 use Generator;
@@ -22,6 +24,7 @@ use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use function is_array;
 use LogicException;
 use const PHP_EOL;
 use PhpParser\Error as PhpParserError;
@@ -49,6 +52,26 @@ class PhpScoperSpecTest extends TestCase
 {
     private const SPECS_PATH = __DIR__.'/../../specs';
     private const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
+
+    private const SPECS_META_KEYS = [
+        'title',
+        'prefix',
+        'whitelist',
+        'whitelist-global-constants',
+        'whitelist-global-functions',
+        'registered-classes',
+        'registered-functions',
+    ];
+
+    private const SPECS_SPEC_KEYS = [
+        'prefix',
+        'whitelist',
+        'whitelist-global-constants',
+        'whitelist-global-functions',
+        'registered-classes',
+        'registered-functions',
+        'payload',
+    ];
 
     /**
      * This test is to ensure no file is left in _specs for the CI. It is fine otherwise for this test to fail locally
@@ -195,6 +218,32 @@ class PhpScoperSpecTest extends TestCase
         $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
 
         $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
+
+        $this->assertSame(
+            [],
+            $diff = array_diff(
+                array_keys($meta),
+                self::SPECS_META_KEYS
+            ),
+            sprintf(
+                'Expected the keys found in the meta section to be known keys, unknown keys: "%s"',
+                implode('", "', $diff)
+            )
+        );
+
+        if (is_array($fixtureSet)) {
+            $this->assertSame(
+                [],
+                $diff = array_diff(
+                    array_keys($fixtureSet),
+                    self::SPECS_SPEC_KEYS
+                ),
+                sprintf(
+                    'Expected the keys found in the spec section to be known keys, unknown keys: "%s"',
+                    implode('", "', $diff)
+                )
+            );
+        }
 
         yield [
             $spec,

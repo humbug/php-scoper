@@ -64,9 +64,9 @@ if (\true) {
 }
 
 PHP
-    ,
+    ],
 
-    'Declaration in a namespace: prefix each namespace' => <<<'PHP'
+    'Declaration in a namespace' => <<<'PHP'
 <?php
 
 namespace Foo;
@@ -86,7 +86,7 @@ if (\true) {
 }
 
 PHP
-    ],
+    ,
 
     'Declaration of a whitelisted class' => [
         'whitelist' => ['Foo\A'],
@@ -110,7 +110,7 @@ if (\true) {
 }
 
 PHP
-        ],
+    ],
 
     'Multiple declarations in different namespaces' => <<<'PHP'
 <?php

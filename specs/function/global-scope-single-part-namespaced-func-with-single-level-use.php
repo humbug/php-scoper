@@ -70,6 +70,9 @@ PHP
 
     'Whitelisted namespaced function call imported with a partial use statement in the global scope' => [
         'whitelist' => ['Foo\main'],
+        'registered-functions' => [
+            ['Foo\main', 'Humbug\Foo\main'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
