@@ -14,26 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function array_diff;
-use function array_keys;
-use function array_map;
-use function current;
 use Generator;
-use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
-use function is_array;
-use LogicException;
-use const PHP_EOL;
-use PhpParser\Error as PhpParserError;
-use PhpParser\Node\Name;
-use PhpParser\NodeTraverserInterface;
-use PhpParser\Parser;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\Prophecy\ObjectProphecy;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflector\FunctionReflector;
@@ -43,9 +29,15 @@ use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 use UnexpectedValueException;
+use const PHP_EOL;
+use function array_diff;
+use function array_keys;
+use function array_map;
+use function current;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 use function implode;
+use function is_array;
 use function sprintf;
 
 class PhpScoperSpecTest extends TestCase
@@ -272,8 +264,7 @@ class PhpScoperSpecTest extends TestCase
         ?string $actual,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions
-    ): string
-    {
+    ): string {
         $formattedWhitelist = $this->formatSimpleList($whitelist->toArray());
 
         $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->whitelistGlobalConstants());

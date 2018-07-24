@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
-use function count;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
@@ -27,6 +26,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use function count;
 use function Humbug\PhpScoper\clone_node;
 
 /**
@@ -140,7 +140,7 @@ final class UseStmtCollection implements IteratorAggregate
         if (false === ($parentNode instanceof Function_)) {
             return false;
         }
-        /** @var Function_ $parentNode */
+        /* @var Function_ $parentNode */
 
         return $node instanceof NamedIdentifier && $node->getOriginalNode() === $parentNode->name;
     }
