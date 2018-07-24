@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Generator;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
@@ -28,25 +27,13 @@ use PhpParser\Parser;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflector\FunctionReflector;
-use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
-use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
-use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
-use Symfony\Component\Finder\Finder;
-use Throwable;
-use UnexpectedValueException;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
-use function implode;
-use function sprintf;
 
 class PhpScoperTest extends TestCase
 {
-    private const SPECS_PATH = __DIR__.'/../../specs';
-    private const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
-
     /**
      * @var Scoper
      */
@@ -418,173 +405,5 @@ PHP;
         $this->traverserFactoryProphecy->create(Argument::cetera())->shouldHaveBeenCalledTimes(2);
         $firstTraverserProphecy->traverse(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $secondTraverserProphecy->traverse(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-    }
-
-    /**
-     * @dataProvider provideValidFiles
-     */
-    public function test_can_scope_valid_files(string $spec, string $contents, string $prefix, Whitelist $whitelist, ?string $expected)
-    {
-        $filePath = 'file.php';
-
-        $patchers = [create_fake_patcher()];
-
-        $astLocator = (new BetterReflection())->astLocator();
-
-        $sourceLocator = new AggregateSourceLocator([
-            new StringSourceLocator($contents, $astLocator),
-            new PhpInternalSourceLocator($astLocator),
-        ]);
-
-        $classReflector = new ClassReflector($sourceLocator);
-
-        $this->scoper = new PhpScoper(
-            create_parser(),
-            new FakeScoper(),
-            new TraverserFactory(
-                new Reflector(
-                    $classReflector,
-                    new FunctionReflector($sourceLocator, $classReflector)
-                )
-            )
-        );
-
-        try {
-            $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
-
-            if (null === $expected) {
-                $this->fail('Expected exception to be thrown.');
-            }
-        } catch (UnexpectedValueException $exception) {
-            if (null !== $expected) {
-                throw $exception;
-            }
-
-            $this->assertTrue(true);
-
-            return;
-        }
-
-        $formattedWhitelist = 0 === count($whitelist->toArray())
-            ? '[]'
-            : sprintf('[%s]', implode(', ', $whitelist->toArray()))
-        ;
-
-        $formattedWhitelistGlobalConstants = $whitelist->whitelistGlobalConstants() ? 'true' : 'false';
-        $formattedWhitelistGlobalFunctions = $whitelist->whitelistGlobalFunctions() ? 'true' : 'false';
-
-        $titleSeparator = str_repeat(
-            '=',
-            min(
-                strlen($spec),
-                80
-            )
-        );
-
-        $this->assertSame(
-            $expected,
-            $actual,
-            <<<OUTPUT
-$titleSeparator
-SPECIFICATION
-$titleSeparator
-$spec
-
-$titleSeparator
-INPUT
-whitelist: $formattedWhitelist
-whitelist global constants: $formattedWhitelistGlobalConstants
-whitelist global functions: $formattedWhitelistGlobalFunctions
-$titleSeparator
-$contents
-
-$titleSeparator
-EXPECTED
-$titleSeparator
-$expected
-
-$titleSeparator
-ACTUAL
-$titleSeparator
-$actual
-
--------------------------------------------------------------------------------
-OUTPUT
-        );
-    }
-
-    /**
-     * This test is to ensure no file is left in _specs for the CI. It is fine otherwise for this test to fail locally
-     * when developing something.
-     */
-    public function test_it_uses_the_right_specs_directory()
-    {
-        $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
-
-        $this->assertCount(0, $files);
-    }
-
-    public function provideValidFiles()
-    {
-        $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
-
-        if (0 === count($files)) {
-            $files = (new Finder())->files()->in(self::SPECS_PATH);
-        }
-
-        $files->sortByName();
-
-        foreach ($files as $file) {
-            try {
-                $fixtures = include $file;
-
-                $meta = $fixtures['meta'];
-                unset($fixtures['meta']);
-
-                foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield $this->parseSpecFile($meta, $fixtureTitle, $fixtureSet)->current();
-                }
-            } catch (Throwable $throwable) {
-                $this->fail(
-                    sprintf(
-                        'An error occurred while parsing the file "%s": %s',
-                        $file,
-                        $throwable->getMessage()
-                    )
-                );
-            }
-        }
-    }
-
-    /**
-     * @param array        $meta
-     * @param string|int   $fixtureTitle
-     * @param string|array $fixtureSet
-     *
-     * @return Generator
-     */
-    private function parseSpecFile(array $meta, $fixtureTitle, $fixtureSet): Generator
-    {
-        $spec = sprintf(
-            '[%s] %s',
-            $meta['title'],
-            isset($fixtureSet['spec']) ? $fixtureSet['spec'] : $fixtureTitle
-        );
-
-        $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
-
-        $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
-
-        yield [
-            $spec,
-            $payloadParts[0],   // Input
-            $fixtureSet['prefix'] ?? $meta['prefix'],
-            Whitelist::create(
-                $fixtureSet['whitelist-global-constants'] ?? $meta['whitelist-global-constants'],
-                $fixtureSet['whitelist-global-functions'] ?? $meta['whitelist-global-functions'],
-                ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
-            ),
-            '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output
-        ];
     }
 }

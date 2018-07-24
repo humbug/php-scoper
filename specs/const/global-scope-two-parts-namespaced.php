@@ -20,6 +20,8 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => false,
         'whitelist-global-functions' => true,
+        'registered-classes' => [],
+        'registered-functions' => [],
     ],
 
     'Namespaced constant call' => <<<'PHP'

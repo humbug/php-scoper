@@ -20,9 +20,15 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => false,
         'whitelist-global-functions' => true,
+        'registered-classes' => [],
+        'registered-functions' => [],
     ],
 
-    'Simple function declaration' => <<<'PHP'
+    'Simple function declaration' => [
+        'registered-functions' => [
+            ['foo', 'Humbug\foo'],
+        ],
+        'payload' => <<<'PHP'
 <?php
 
 function foo() {}
@@ -37,10 +43,13 @@ function foo()
 }
 
 PHP
-    ,
+    ],
 
     'Simple whitelisted function' => [
         'whitelist' => ['foo'],
+        'registered-functions' => [
+            ['foo', 'Humbug\foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -61,6 +70,9 @@ PHP
     'Simple whitelisted function with global functions non whitelisted' => [
         'whitelist-global-functions' => false,
         'whitelist' => ['foo'],
+        'registered-functions' => [
+            ['foo', 'Humbug\foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -80,6 +92,9 @@ PHP
 
     'Function declaration in the global namespace' => [
         'whitelist' => ['X\Y', 'BAR_CONST'],
+        'registered-functions' => [
+            ['foo', 'Humbug\foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -144,6 +159,9 @@ PHP
 
     'Function declaration in the global namespace with globally whitelisted constants' => [
         'whitelist-global-constants' => true,
+        'registered-functions' => [
+            ['foo', 'Humbug\foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -162,6 +180,9 @@ PHP
 
     'Function declaration in the global namespace with use statements' => [
         'whitelist' => ['X\Y'],
+        'registered-functions' => [
+            ['foo', 'Humbug\foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -247,6 +268,9 @@ PHP
 
     'Function declarations with return types in the global namespace with use statements' => [
         'whitelist' => ['X\Y'],
+        'registered-functions' => [
+            ['foo', 'Humbug\foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

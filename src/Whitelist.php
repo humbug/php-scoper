@@ -179,7 +179,7 @@ final class Whitelist implements Countable
         $this->whitelistedFunctions[] = [(string) $original, (string) $alias];
     }
 
-    public function getWhitelistedFunctions(): array
+    public function getRecordedWhitelistedFunctions(): array
     {
         return array_values(
             array_unique(
@@ -220,7 +220,7 @@ final class Whitelist implements Countable
         $this->whitelistedClasses[] = [(string) $original, (string) $alias];
     }
 
-    public function getWhitelistedClasses(): array
+    public function getRecordedWhitelistedClasses(): array
     {
         return $this->whitelistedClasses;
     }

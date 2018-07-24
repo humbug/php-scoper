@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver;
 
+use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NameStmtPrefixer;
@@ -53,10 +54,7 @@ final class FullyQualifiedNameResolver
         }
 
         if ($node instanceof Identifier) {
-            $attributes = $node->getAttributes();
-            $attributes['original_node'] = $node;
-
-            $node = new Name($node->name, $attributes);
+            $node = NamedIdentifier::create($node);
         }
 
         $namespaceName = $this->namespaceStatements->findNamespaceForNode($node);

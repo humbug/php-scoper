@@ -20,6 +20,8 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => false,
         'whitelist-global-functions' => true,
+        'registered-classes' => [],
+        'registered-functions' => [],
     ],
 
     'Internal function in a namespace' => <<<'PHP'

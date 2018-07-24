@@ -20,6 +20,8 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => true,
         'whitelist-global-functions' => true,
+        'registered-classes' => [],
+        'registered-functions' => [],
     ],
 
     'New statement call of a class belonging to the global namespace' => [
@@ -42,7 +44,7 @@ new \Humbug\Foo();
 PHP
     ],
 
-    'New statement call of a class belonging to the global namespace' => [
+    'New statement call of an internal class belonging to the global namespace' => [
         'payload' => <<<'PHP'
 <?php
 

@@ -20,6 +20,8 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => false,
         'whitelist-global-functions' => true,
+        'registered-classes' => [],
+        'registered-functions' => [],
     ],
 
     'Constants declaration in the global namespace' => [

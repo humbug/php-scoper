@@ -15,14 +15,18 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
 use ArrayIterator;
+use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
+use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassLike;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use function count;
 use function Humbug\PhpScoper\clone_node;
 
 /**
@@ -68,8 +72,8 @@ final class UseStmtCollection implements IteratorAggregate
         $parentNode = ParentNodeAppender::findParent($node);
 
         if ($parentNode instanceof ClassLike
-            && $node->hasAttribute('original_node')
-            && $node->getAttribute('original_node') === $parentNode->name
+            && $node instanceof NamedIdentifier
+            && $node->getOriginalNode() === $parentNode->name
         ) {
             // The current node can either be the class like name or one of its elements, e.g. extends or implements.
             // In the first case, the node was original an Identifier.
@@ -86,7 +90,7 @@ final class UseStmtCollection implements IteratorAggregate
                 }
 
                 if ($name === $useStatement->getAlias()->toLowerString()) {
-                    if ($parentNode instanceof FuncCall && 1 === count($node->parts)) {
+                    if ($this->isFunctionName($node, $parentNode)) {
                         if (Use_::TYPE_FUNCTION === $use_->type) {
                             return $useStatement->name;
                         }
@@ -121,5 +125,23 @@ final class UseStmtCollection implements IteratorAggregate
     public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);
+    }
+
+    private function isFunctionName(Name $node, ?Node $parentNode): bool
+    {
+        if (null === $parentNode || 1 !== count($node->parts)) {
+            return false;
+        }
+
+        if ($parentNode instanceof FuncCall) {
+            return true;
+        }
+
+        if (false === ($parentNode instanceof Function_)) {
+            return false;
+        }
+        /* @var Function_ $parentNode */
+
+        return $node instanceof NamedIdentifier && $node->getOriginalNode() === $parentNode->name;
     }
 }

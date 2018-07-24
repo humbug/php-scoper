@@ -118,7 +118,7 @@ class WhitelistTest extends TestCase
                 ['Acme\foo', 'Humbug\Acme\foo'],
                 ['Acme\bar', 'Humbug\Acme\bar'],
             ],
-            $whitelist->getWhitelistedFunctions()
+            $whitelist->getRecordedWhitelistedFunctions()
         );
     }
 
@@ -145,7 +145,7 @@ class WhitelistTest extends TestCase
                 ['Acme\foo', 'Humbug\Acme\foo'],
                 ['Acme\bar', 'Humbug\Acme\bar'],
             ],
-            $whitelist->getWhitelistedFunctions()
+            $whitelist->getRecordedWhitelistedFunctions()
         );
     }
 

@@ -20,6 +20,8 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => true,
         'whitelist-global-functions' => true,
+        'registered-classes' => [],
+        'registered-functions' => [],
     ],
 
     'Simple function declaration' => <<<'PHP'
@@ -43,6 +45,9 @@ PHP
 
     'Simple whitelisted function' => [
         'whitelist' => ['Acme\foo'],
+        'registered-functions' => [
+            ['Acme\foo', 'Humbug\Acme\foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -54,26 +59,6 @@ function foo() {}
 <?php
 
 namespace Humbug\Acme;
-
-function foo()
-{
-}
-
-PHP
-    ],
-
-    'Simple whitelisted function with global functions non whitelisted' => [
-        'whitelist-global-functions' => false,
-        'whitelist' => ['foo'],
-        'payload' => <<<'PHP'
-<?php
-
-function foo() {}
-
-----
-<?php
-
-namespace Humbug;
 
 function foo()
 {

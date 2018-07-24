@@ -54,7 +54,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $parent = ParentNodeAppender::getParent($node);
 
-        if (false === ($parent instanceof Function_)) {
+        if (false === ($parent instanceof Function_) || $node === $parent->returnType) {
             return $node;
         }
 
