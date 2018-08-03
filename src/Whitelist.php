@@ -55,8 +55,7 @@ final class Whitelist implements Countable
         bool $whitelistGlobalClasses,
         bool $whitelistGlobalFunctions,
         string ...$elements
-    ): self
-    {
+    ): self {
         $symbols = [];
         $constants = [];
         $namespaces = [];
