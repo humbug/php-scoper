@@ -44,13 +44,18 @@ final class Whitelist implements Countable
     private $patterns;
 
     private $whitelistGlobalConstants;
+    private $whitelistGlobalClasses;
     private $whitelistGlobalFunctions;
 
     private $whitelistedFunctions = [];
     private $whitelistedClasses = [];
 
-    public static function create(bool $whitelistGlobalConstants, bool $whitelistGlobalFunctions, string ...$elements): self
-    {
+    public static function create(
+        bool $whitelistGlobalConstants,
+        bool $whitelistGlobalClasses,
+        bool $whitelistGlobalFunctions,
+        string ...$elements
+    ): self {
         $symbols = [];
         $constants = [];
         $namespaces = [];
@@ -100,6 +105,7 @@ final class Whitelist implements Countable
 
         return new self(
             $whitelistGlobalConstants,
+            $whitelistGlobalClasses,
             $whitelistGlobalFunctions,
             array_unique($original),
             array_flip($symbols),
@@ -128,6 +134,7 @@ final class Whitelist implements Countable
      */
     private function __construct(
         bool $whitelistGlobalConstants,
+        bool $whitelistGlobalClasses,
         bool $whitelistGlobalFunctions,
         array $original,
         array $symbols,
@@ -136,6 +143,7 @@ final class Whitelist implements Countable
         array $namespaces
     ) {
         $this->whitelistGlobalConstants = $whitelistGlobalConstants;
+        $this->whitelistGlobalClasses = $whitelistGlobalClasses;
         $this->whitelistGlobalFunctions = $whitelistGlobalFunctions;
         $this->original = $original;
         $this->symbols = $symbols;
@@ -207,12 +215,12 @@ final class Whitelist implements Countable
      */
     public function whitelistGlobalClasses(): bool
     {
-        return $this->whitelistGlobalFunctions;
+        return $this->whitelistGlobalClasses;
     }
 
     public function isGlobalWhitelistedClass(string $className): bool
     {
-        return false;
+        return $this->whitelistGlobalClasses && false === strpos($className, '\\');
     }
 
     public function recordWhitelistedClass(FullyQualified $original, FullyQualified $alias): void

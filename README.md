@@ -137,6 +137,7 @@ return [
     'patchers' => [],                       // callable[]
     'whitelist' => [],                      // string[]
     'whitelist-global-constants' => true,   // bool
+    'whitelist-global-classes' => true,     // bool
     'whitelist-global-functions' => true,   // bool
 ];
 ```
@@ -270,11 +271,11 @@ a PHPUnit PHAR with isolated code, you still want the PHAR to be able to
 understand the `PHPUnit\Framework\TestCase` class.
 
 
-### Constants & functions from the global namespace
+### Constants & Classes & functions from the global namespace
 
-By default, PHP-Scoper will not prefix the user defined constants and functions
-belonging to the global namespace. You can however change that setting for them
-to be prefixed as usual unless explicitly whitelisted:
+By default, PHP-Scoper will prefix the user defined constants, classes and
+functions belonging to the global namespace. You can however change that
+setting for them to be prefixed as usual unless explicitly whitelisted:
 
 ```php
 <?php declare(strict_types=1);
@@ -283,6 +284,7 @@ to be prefixed as usual unless explicitly whitelisted:
 
 return [
     'whitelist-global-constants' => false,
+    'whitelist-global-classes' => false,
     'whitelist-global-functions' => false,
 ];
 ```

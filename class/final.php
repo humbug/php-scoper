@@ -19,6 +19,7 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
+        'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
         'registered-classes' => [],
         'registered-functions' => [],
@@ -40,6 +41,27 @@ final class A
 PHP
     ,
 
+    'Declaration in the global namespace with global classes whitelisted' => [
+        'whitelist-global-classes' => true,
+        'registered-classes' => [
+            ['A', 'Humbug\A'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+final class A {}
+----
+<?php
+
+namespace Humbug;
+
+final class A
+{
+}
+
+PHP
+    ],
+
     'Declaration in a namespace' => <<<'PHP'
 <?php
 
@@ -57,6 +79,26 @@ final class A
 
 PHP
     ,
+
+    'Declaration in a namespace with global classes whitelisted' => [
+        'whitelist-global-classes' => true,
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+final class A {}
+----
+<?php
+
+namespace Humbug\Foo;
+
+final class A
+{
+}
+
+PHP
+    ],
 
     'Declaration of a whitelisted final class' => [
         'whitelist' => ['Foo\A'],

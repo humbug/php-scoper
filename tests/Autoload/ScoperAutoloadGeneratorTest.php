@@ -37,7 +37,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
     public function provideWhitelists()
     {
         yield [
-            Whitelist::create(true, true),
+            Whitelist::create(true, true, true),
             <<<'PHP'
 <?php
 
@@ -51,7 +51,7 @@ PHP
         ];
 
         yield [
-            Whitelist::create(true, true, 'A\Foo', 'B\Bar'),
+            Whitelist::create(true, true, true, 'A\Foo', 'B\Bar'),
             <<<'PHP'
 <?php
 
@@ -71,7 +71,7 @@ PHP
 
         yield [
             (function () {
-                $whitelist = Whitelist::create(true, true);
+                $whitelist = Whitelist::create(true, true, true);
 
                 $whitelist->recordWhitelistedFunction(
                     new FullyQualified('foo'),
@@ -112,7 +112,7 @@ PHP
 
         yield [
             (function () {
-                $whitelist = Whitelist::create(true, true);
+                $whitelist = Whitelist::create(true, true, true);
 
                 $whitelist->recordWhitelistedFunction(
                     new FullyQualified('Acme\foo'),
@@ -173,7 +173,7 @@ PHP
 
         yield [
             (function () {
-                $whitelist = Whitelist::create(true, true, 'A\Foo', 'B\Bar');
+                $whitelist = Whitelist::create(true, true, true, 'A\Foo', 'B\Bar');
 
                 $whitelist->recordWhitelistedFunction(
                     new FullyQualified('foo'),
