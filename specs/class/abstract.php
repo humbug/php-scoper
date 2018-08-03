@@ -74,6 +74,9 @@ PHP
 
     'Declaration of a whitelisted class in the global namespace' => [
         'whitelist' => ['A'],
+        'registered-classes' => [
+            ['A', 'Humbug\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -100,6 +103,9 @@ PHP
 
     'Declaration of a whitelisted class in the global namespace which is whitelisted' => [
         'whitelist' => ['A', '\*'],
+        'registered-classes' => [
+            ['A', 'Humbug\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -177,6 +183,9 @@ PHP
 
     'Declaration of a whitelisted class in a namespace' => [
         'whitelist' => ['Foo\A'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -203,8 +212,64 @@ abstract class A
 PHP
     ],
 
-    'Declaration of a whitelisted class in a namespace with FQCNfor the whitelist' => [
+    'Declaration of a namespaced class whitelisted with a pattern' => [
+        'whitelist' => ['Foo\A*'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+            ['Foo\AA', 'Humbug\Foo\AA'],
+            ['Foo\A\B', 'Humbug\Foo\A\B'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+abstract class A {
+    public function a() {}
+}
+
+abstract class AA {}
+
+abstract class B {}
+
+namespace Foo\A;
+
+abstract class B {}
+
+----
+<?php
+
+namespace Humbug\Foo;
+
+abstract class A
+{
+    public function a()
+    {
+    }
+}
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+abstract class AA
+{
+}
+\class_alias('Humbug\\Foo\\AA', 'Foo\\AA', \false);
+abstract class B
+{
+}
+namespace Humbug\Foo\A;
+
+abstract class B
+{
+}
+\class_alias('Humbug\\Foo\\A\\B', 'Foo\\A\\B', \false);
+
+PHP
+    ],
+
+    'Declaration of a whitelisted class in a namespace with FQCN for the whitelist' => [
         'whitelist' => ['\Foo\A'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -260,6 +325,11 @@ PHP
 
     'Multiple declarations in different namespaces with whitelisted classes' => [
         'whitelist' => ['Foo\WA', 'Bar\WB', 'WC'],
+        'registered-classes' => [
+            ['Foo\WA', 'Humbug\Foo\WA'],
+            ['Bar\WB', 'Humbug\Bar\WB'],
+            ['WC', 'Humbug\WC'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

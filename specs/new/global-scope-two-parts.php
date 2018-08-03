@@ -78,6 +78,9 @@ PHP
 
     'New statement call of a whitelisted namespaced class' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -106,6 +109,9 @@ PHP
 
     'FQ new statement call of a whitelisted namespaced class' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

@@ -19,15 +19,17 @@ use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Records the user functions registered in the global namespace which have been whitelisted or whitelisted functions.
+ * Records the user functions registered in the global namespace which have been whitelisted.
  *
  * @private
  */
-final class FunctionIdentifierRecorder extends NodeVisitorAbstract
+final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
     private $prefix;
     private $nameResolver;
@@ -54,7 +56,12 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $parent = ParentNodeAppender::getParent($node);
 
-        if (false === ($parent instanceof Function_) || $node === $parent->returnType) {
+        if (false === ($parent instanceof ClassLike) || $parent instanceof Trait_) {
+            return $node;
+        }
+        /** @var ClassLike $parent */
+
+        if (null === $parent->name) {
             return $node;
         }
 
@@ -66,10 +73,10 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         /** @var FullyQualified $resolvedName */
-        if ($this->whitelist->isGlobalWhitelistedFunction((string) $resolvedName)
+        if ($this->whitelist->isGlobalWhitelistedClass((string) $resolvedName)
             || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
         ) {
-            $this->whitelist->recordWhitelistedFunction(
+            $this->whitelist->recordWhitelistedClass(
                 $resolvedName,
                 FullyQualified::concat($this->prefix, $resolvedName)
             );

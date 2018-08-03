@@ -100,6 +100,9 @@ PHP
 
     'Static method call statement of a whitelisted class via a use statement' => [
         'whitelist' => ['X\Foo\Bar'],
+        'registered-classes' => [
+            ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

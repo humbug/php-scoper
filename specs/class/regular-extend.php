@@ -85,6 +85,9 @@ PHP
 
     'Declaration of a whitelisted class' => [
         'whitelist' => ['Foo\B'],
+        'registered-classes' => [
+            ['Foo\B', 'Humbug\Foo\B'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

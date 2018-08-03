@@ -170,6 +170,9 @@ PHP
 
     'FQC constant call on whitelisted class' => [
         'whitelist' => ['Symfony\Component\Yaml\Yaml'],
+        'registered-classes' => [
+            ['Symfony\Component\Yaml\Yaml', 'Humbug\Symfony\Component\Yaml\Yaml'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

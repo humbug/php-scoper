@@ -92,6 +92,9 @@ PHP
 
     'Function declaration in the global namespace' => [
         'whitelist' => ['X\Y', 'BAR_CONST'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'registered-functions' => [
             ['foo', 'Humbug\foo'],
         ],
@@ -180,6 +183,9 @@ PHP
 
     'Function declaration in the global namespace with use statements' => [
         'whitelist' => ['X\Y'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'registered-functions' => [
             ['foo', 'Humbug\foo'],
         ],
@@ -268,6 +274,9 @@ PHP
 
     'Function declarations with return types in the global namespace with use statements' => [
         'whitelist' => ['X\Y'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'registered-functions' => [
             ['foo', 'Humbug\foo'],
         ],

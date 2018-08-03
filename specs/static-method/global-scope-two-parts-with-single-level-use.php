@@ -161,6 +161,9 @@ PHP
 
     'Static method call statement of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -201,6 +204,9 @@ PHP
 
     'Static method call statement of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -232,6 +238,9 @@ PHP
 
     'FQ static method call statement of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -272,6 +281,9 @@ PHP
 
     'FQ static method call statement of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

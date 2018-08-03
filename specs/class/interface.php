@@ -88,6 +88,9 @@ PHP
 
     'Declaration of a whitelisted interface' => [
         'whitelist' => ['Foo\A'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -121,7 +124,60 @@ interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
 \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
 PHP
+    ],
+
+    'Declaration of a whitelisted interface whitelisted with a pattern' => [
+        'whitelist' => ['Foo\A*'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+            ['Foo\AA', 'Humbug\Foo\AA'],
+            ['Foo\A\B', 'Humbug\Foo\A\B'],
         ],
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+interface A {
+    public function a() {}
+}
+
+interface AA {}
+
+interface B {}
+
+namespace Foo\A;
+
+interface B {}
+
+----
+<?php
+
+namespace Humbug\Foo;
+
+interface A
+{
+    public function a()
+    {
+    }
+}
+\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+interface AA
+{
+}
+\class_alias('Humbug\\Foo\\AA', 'Foo\\AA', \false);
+interface B
+{
+}
+namespace Humbug\Foo\A;
+
+interface B
+{
+}
+\class_alias('Humbug\\Foo\\A\\B', 'Foo\\A\\B', \false);
+
+PHP
+    ],
 
     'Multiple declarations in different namespaces' => <<<'PHP'
 <?php

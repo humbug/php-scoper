@@ -70,6 +70,9 @@ PHP
 
     'Declaration of a whitelisted class' => [
         'whitelist' => ['Foo\A'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -96,6 +99,11 @@ PHP
 
     'Declaration of a whitelisted class whitelisted with a pattern' => [
         'whitelist' => ['Foo\A*'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+            ['Foo\AA', 'Humbug\Foo\AA'],
+            ['Foo\A\B', 'Humbug\Foo\A\B'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -200,6 +208,10 @@ PHP
         'whitelist' => [
             'Foo\A',
             'Bar\B',
+        ],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+            ['Bar\B', 'Humbug\Bar\B'],
         ],
         'payload' => <<<'PHP'
 <?php

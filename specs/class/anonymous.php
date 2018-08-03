@@ -160,6 +160,10 @@ PHP
 
     'Declaration in the global namespace with some whitelisted classes' => [
         'whitelist' => ['A', 'C'],
+        'registered-classes' => [
+            ['A', 'Humbug\A'],
+            ['C', 'Humbug\C'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

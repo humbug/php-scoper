@@ -26,6 +26,10 @@ return [
 
     'Different kind of whitelisted class constant calls in the global scope' => [
         'whitelist' => ['Foo\Bar', 'Foo\Bar\Poz'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+            ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -183,6 +187,17 @@ PHP
             'A\Aoo\Aoz',
             'A\Aoz',
             'A\Aoo\Aoz\Poz',
+        ],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+            ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
+
+            ['A\Foo', 'Humbug\A\Foo'],
+            ['A\Foo\Bar', 'Humbug\A\Foo\Bar'],
+            ['A\Foo\Bar\Poz', 'Humbug\A\Foo\Bar\Poz'],
+            ['A\Aoo', 'Humbug\A\Aoo'],
+            ['A\Aoo\Aoz', 'Humbug\A\Aoo\Aoz'],
+            ['A\Aoo\Aoz\Poz', 'Humbug\A\Aoo\Aoz\Poz'],
         ],
         'payload' => <<<'PHP'
 <?php

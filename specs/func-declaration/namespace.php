@@ -69,6 +69,9 @@ PHP
 
     'Function declaration in a namespace' => [
         'whitelist' => ['X\Y'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -153,6 +156,9 @@ PHP
 
     'Function declaration in a namespace with whitelisted classes' => [
         'whitelist' => ['X\Y'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -237,6 +243,9 @@ PHP
 
     'Function declaration in a namespace with use statements' => [
         'whitelist' => ['X\Y'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -396,6 +405,9 @@ PHP
 
     'Function declarations with return types in a namespace with use statements' => [
         'whitelist' => ['X\Y'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
