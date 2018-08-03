@@ -23,7 +23,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Records the user functions registered in the global namespace which have been whitelisted or whitelisted functions.
+ * Records the user functions registered in the global namespace which have been whitelisted and whitelisted functions.
  *
  * @private
  */

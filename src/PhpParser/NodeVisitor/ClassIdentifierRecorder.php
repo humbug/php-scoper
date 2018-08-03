@@ -25,7 +25,7 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Records the user functions registered in the global namespace which have been whitelisted.
+ * Records the user classes registered in the global namespace which have been whitelisted and whitelisted classes.
  *
  * @private
  */
