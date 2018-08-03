@@ -64,6 +64,9 @@ PHP
 
     'New statement call of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -142,6 +145,9 @@ PHP
 
     'FQ new statement call of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -220,6 +226,9 @@ PHP
 
     'New statement call of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -302,6 +311,9 @@ PHP
 
     'FQ new statement call of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

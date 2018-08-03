@@ -26,6 +26,9 @@ return [
 
     'Method declarations' => [
         'whitelist' => ['X\Y', 'BAR_CONST'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -111,6 +114,9 @@ PHP
 
     'Method declarations with return types' => [
         'whitelist' => ['X\Y'],
+        'registered-classes' => [
+            ['X\Y', 'Humbug\X\Y'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

@@ -46,6 +46,9 @@ PHP
 
     'Declaration of a whitelisted class in the global namespace' => [
         'whitelist' => ['A'],
+        'registered-classes' => [
+            ['A', 'Humbug\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -90,6 +93,9 @@ PHP
 
     'Declaration of a whitelisted class' => [
         'whitelist' => ['Foo\A'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

@@ -26,6 +26,9 @@ return [
 
     'Class whitelists are case insensitive' => [
         'whitelist' => ['acme\foo'],
+        'registered-classes' => [
+            ['Acme\Foo', 'Humbug\Acme\Foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

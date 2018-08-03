@@ -60,6 +60,9 @@ PHP
 
     'Declaration of a whitelisted final class' => [
         'whitelist' => ['Foo\A'],
+        'registered-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

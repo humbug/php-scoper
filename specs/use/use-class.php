@@ -111,6 +111,9 @@ PHP
 
     'Use statement of a whitelisted class belonging to the global scope' => [
         'whitelist' => ['Foo'],
+        'registered-classes' => [
+            ['Foo', 'Humbug\Foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -156,6 +159,9 @@ PHP
 
     'Use statement of a whitelisted class belonging to the global scope which has been whitelisted' => [
         'whitelist' => ['Foo', '\*'],
+        'registered-classes' => [
+            ['Foo', 'Humbug\Foo'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -230,6 +236,9 @@ PHP
 
     'Use statement of two-level class which has been whitelisted' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

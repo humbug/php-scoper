@@ -27,18 +27,21 @@ use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 use UnexpectedValueException;
 use const PHP_EOL;
 use function array_diff;
 use function array_keys;
 use function array_map;
+use function basename;
 use function current;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 use function implode;
 use function is_array;
 use function sprintf;
+use function usort;
 
 class PhpScoperSpecTest extends TestCase
 {
@@ -80,6 +83,7 @@ class PhpScoperSpecTest extends TestCase
      * @dataProvider provideValidFiles
      */
     public function test_can_scope_valid_files(
+        string $file,
         string $spec,
         string $contents,
         string $prefix,
@@ -111,6 +115,7 @@ class PhpScoperSpecTest extends TestCase
         }
 
         $specMessage = $this->createSpecMessage(
+            $file,
             $spec,
             $contents,
             $whitelist,
@@ -120,34 +125,33 @@ class PhpScoperSpecTest extends TestCase
             $expectedRegisteredFunctions
         );
 
-        $this->assertSame(
-            $expected,
-            $actual,
-            $specMessage
-        );
-        $this->assertSame(
-            $whitelist->getRecordedWhitelistedClasses(),
-            $expectedRegisteredClasses,
-            $specMessage
-        );
-        $this->assertSame(
-            $whitelist->getRecordedWhitelistedFunctions(),
-            $expectedRegisteredFunctions,
-            $specMessage
-        );
+        $this->assertSame($expected, $actual, $specMessage);
+
+        $actualRecordedWhitelistedClasses = $whitelist->getRecordedWhitelistedClasses();
+
+        $this->assertSameRecordedSymbols($actualRecordedWhitelistedClasses, $expectedRegisteredClasses, $specMessage);
+
+        $actualRecordedWhitelistedFunctions = $whitelist->getRecordedWhitelistedFunctions();
+
+        $this->assertSameRecordedSymbols($actualRecordedWhitelistedFunctions, $expectedRegisteredFunctions, $specMessage);
     }
 
     public function provideValidFiles()
     {
-        $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
+        $sourceDir = self::SECONDARY_SPECS_PATH;
+
+        $files = (new Finder())->files()->in($sourceDir);
 
         if (0 === count($files)) {
-            $files = (new Finder())->files()->in(self::SPECS_PATH);
+            $sourceDir = self::SPECS_PATH;
+
+            $files = (new Finder())->files()->in($sourceDir);
         }
 
         $files->sortByName();
 
         foreach ($files as $file) {
+            /* @var SplFileInfo $file */
             try {
                 $fixtures = include $file;
 
@@ -155,7 +159,12 @@ class PhpScoperSpecTest extends TestCase
                 unset($fixtures['meta']);
 
                 foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield $this->parseSpecFile($meta, $fixtureTitle, $fixtureSet)->current();
+                    yield $this->parseSpecFile(
+                        basename($sourceDir).'/'.$file->getRelativePathname(),
+                        $meta,
+                        $fixtureTitle,
+                        $fixtureSet
+                    )->current();
                 }
             } catch (Throwable $throwable) {
                 $this->fail(
@@ -193,13 +202,10 @@ class PhpScoperSpecTest extends TestCase
     }
 
     /**
-     * @param array        $meta
      * @param string|int   $fixtureTitle
      * @param string|array $fixtureSet
-     *
-     * @return Generator
      */
-    private function parseSpecFile(array $meta, $fixtureTitle, $fixtureSet): Generator
+    private function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): Generator
     {
         $spec = sprintf(
             '[%s] %s',
@@ -238,6 +244,7 @@ class PhpScoperSpecTest extends TestCase
         }
 
         yield [
+            $file,
             $spec,
             $payloadParts[0],   // Input
             $fixtureSet['prefix'] ?? $meta['prefix'],
@@ -257,6 +264,7 @@ class PhpScoperSpecTest extends TestCase
      * @param string[][] $expectedRegisteredFunctions
      */
     private function createSpecMessage(
+        string $file,
         string $spec,
         string $contents,
         Whitelist $whitelist,
@@ -292,6 +300,7 @@ $titleSeparator
 SPECIFICATION
 $titleSeparator
 $spec
+$file
 
 $titleSeparator
 INPUT
@@ -382,5 +391,26 @@ OUTPUT
     private function convertBoolToString(bool $bool): string
     {
         return true === $bool ? 'true' : 'false';
+    }
+
+    /**
+     * @param string[][] $expected
+     * @param string[][] $actual
+     */
+    private function assertSameRecordedSymbols(array $expected, array $actual, string $message): void
+    {
+        $sort = function (array $a, array $b): int {
+            /*
+             * @var string[] $a
+             * @var string[] $b
+             */
+
+            return $a[0] <=> $b[0];
+        };
+
+        usort($expected, $sort);
+        usort($actual, $sort);
+
+        $this->assertSame($expected, $actual, $message);
     }
 }

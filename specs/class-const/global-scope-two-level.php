@@ -78,6 +78,9 @@ PHP
 
     'Constant call on a whitelisted namespaced class' => [
         'whitelist' => ['PHPUnit\Command'],
+        'registered-classes' => [
+            ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -106,6 +109,9 @@ PHP
 
     'FQ constant call on a whitelisted namespaced class' => [
         'whitelist' => ['PHPUnit\Command'],
+        'registered-classes' => [
+            ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

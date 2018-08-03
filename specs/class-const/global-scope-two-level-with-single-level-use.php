@@ -140,6 +140,9 @@ PHP
 
     'FQ Constant call on a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -180,6 +183,9 @@ PHP
 
     'FQ constant call on a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

@@ -71,6 +71,9 @@ PHP
 
     'Static method call statement of a namespaced class which has been whitelisted' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
@@ -99,6 +102,9 @@ PHP
 
     'FQ static method call statement of a namespaced class which has been whitelisted' => [
         'whitelist' => ['Foo\Bar'],
+        'registered-classes' => [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
         'payload' => <<<'PHP'
 <?php
 
