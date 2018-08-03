@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
+use function array_map;
 use Humbug\PhpScoper\Whitelist;
 use stdClass;
 
@@ -36,6 +37,10 @@ final class AutoloadPrefixer
 
         if (isset($contents->{'autoload-dev'})) {
             $contents->{'autoload-dev'} = self::prefixAutoloads($contents->{'autoload-dev'}, $prefix, $whitelist);
+        }
+
+        if (isset($contents->extra, $contents->extra->laravel, $contents->extra->laravel->providers)) {
+            $contents->extra->laravel->providers = self::prefixLaravelProviders($contents->extra->laravel->providers, $prefix, $whitelist);
         }
 
         return $contents;
@@ -61,6 +66,7 @@ final class AutoloadPrefixer
 
         return $autoload;
     }
+
 
     private static function prefixAutoload(array $autoload, string $prefix, Whitelist $whitelist): array
     {
@@ -162,5 +168,18 @@ final class AutoloadPrefixer
         }
 
         return $psr0Path;
+    }
+
+    private static function prefixLaravelProviders(array $providers, string $prefix, Whitelist $whitelist): array
+    {
+        return array_map(
+            function (string $provider) use ($prefix, $whitelist): string {
+                return $whitelist->belongsToWhitelistedNamespace($provider)
+                    ? $provider
+                    : sprintf('%s\\%s', $prefix, $provider)
+                ;
+            },
+            $providers
+        );
     }
 }

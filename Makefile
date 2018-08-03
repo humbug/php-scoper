@@ -277,7 +277,7 @@ e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
 		--force \
 		--no-interaction \
 		--stop-on-failure
-	composer --working-dir=build/set027-laravel dump-autoload
+	composer --working-dir=build/set027-laravel dump-autoload --no-dev
 
 	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
@@ -369,7 +369,7 @@ fixtures/set026/vendor:
 	touch $@
 
 fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
-	composer --working-dir=fixtures/set027 install
+	composer --working-dir=fixtures/set027-laravel install --no-dev
 	touch $@
 
 composer.lock: composer.json

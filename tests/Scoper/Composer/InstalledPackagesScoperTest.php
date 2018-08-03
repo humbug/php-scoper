@@ -201,5 +201,130 @@ JSON
 ]
 JSON
         ];
+
+        yield [
+            <<<'JSON'
+[
+    {
+        "name": "fideloper\/proxy",
+        "version": "4.0.0",
+        "version_normalized": "4.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/fideloper\/TrustedProxy.git",
+            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/fideloper\/TrustedProxy\/zipball\/cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate\/contracts": "~5.0",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "illuminate\/http": "~5.6",
+            "mockery\/mockery": "~1.0",
+            "phpunit\/phpunit": "^6.0"
+        },
+        "time": "2018-02-07T20:20:57+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Fideloper\\Proxy\\TrustedProxyServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Fideloper\\Proxy\\": "src\/"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Chris Fidao",
+                "email": "fideloper@gmail.com"
+            }
+        ],
+        "description": "Set trusted proxies for Laravel",
+        "keywords": [
+            "load balancing",
+            "proxy",
+            "trusted proxy"
+        ]
+    }
+]
+
+JSON
+            ,
+            <<<'JSON'
+[
+    {
+        "name": "fideloper\/proxy",
+        "version": "4.0.0",
+        "version_normalized": "4.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https:\/\/github.com\/fideloper\/TrustedProxy.git",
+            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https:\/\/api.github.com\/repos\/fideloper\/TrustedProxy\/zipball\/cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate\/contracts": "~5.0",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "illuminate\/http": "~5.6",
+            "mockery\/mockery": "~1.0",
+            "phpunit\/phpunit": "^6.0"
+        },
+        "time": "2018-02-07T20:20:57+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Foo\\Fideloper\\Proxy\\TrustedProxyServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Foo\\Fideloper\\Proxy\\": "src\/"
+            }
+        },
+        "notification-url": "https:\/\/packagist.org\/downloads\/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Chris Fidao",
+                "email": "fideloper@gmail.com"
+            }
+        ],
+        "description": "Set trusted proxies for Laravel",
+        "keywords": [
+            "load balancing",
+            "proxy",
+            "trusted proxy"
+        ]
+    }
+]
+JSON
+        ];
     }
 }
