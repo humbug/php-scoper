@@ -53,6 +53,7 @@ class PhpScoperSpecTest extends TestCase
         'prefix',
         'whitelist',
         'whitelist-global-constants',
+        'whitelist-global-classes',
         'whitelist-global-functions',
         'registered-classes',
         'registered-functions',
@@ -62,6 +63,7 @@ class PhpScoperSpecTest extends TestCase
         'prefix',
         'whitelist',
         'whitelist-global-constants',
+        'whitelist-global-classes',
         'whitelist-global-functions',
         'registered-classes',
         'registered-functions',
@@ -250,6 +252,7 @@ class PhpScoperSpecTest extends TestCase
             $fixtureSet['prefix'] ?? $meta['prefix'],
             Whitelist::create(
                 $fixtureSet['whitelist-global-constants'] ?? $meta['whitelist-global-constants'],
+                $fixtureSet['whitelist-global-classes'] ?? $meta['whitelist-global-classes'],
                 $fixtureSet['whitelist-global-functions'] ?? $meta['whitelist-global-functions'],
                 ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
             ),

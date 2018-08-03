@@ -19,6 +19,7 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
+        'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
         'registered-classes' => [],
         'registered-functions' => [],

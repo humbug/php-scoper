@@ -174,7 +174,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    Whitelist::create(true, true)
+                    Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -237,7 +237,7 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         [],
-                        Whitelist::create(true, true)
+                        Whitelist::create(true, true, true)
                     )
                     ->willReturn($prefixedContents)
                 ;
@@ -250,7 +250,7 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         [],
-                        Whitelist::create(true, true)
+                        Whitelist::create(true, true, true)
                     )
                     ->willThrow(new \RuntimeException('Scoping of the file failed'))
                 ;
@@ -310,7 +310,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    Whitelist::create(true, true)
+                    Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -371,7 +371,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    Whitelist::create(true, true)
+                    Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedFileContents)
             ;
@@ -425,7 +425,7 @@ EOF;
                     }
                 ),
                 [],
-                Whitelist::create(true, true)
+                Whitelist::create(true, true, true)
             )
             ->willReturn('')
         ;
@@ -483,7 +483,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    Whitelist::create(true, true)
+                    Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -529,7 +529,7 @@ EOF;
                 Argument::any(),
                 'MyPrefix',
                 [],
-                Whitelist::create(true, true)
+                Whitelist::create(true, true, true)
             )
             ->willReturn('')
         ;
@@ -572,7 +572,7 @@ EOF;
                 Argument::any(),
                 'MyPrefix',
                 [],
-                Whitelist::create(true, true)
+                Whitelist::create(true, true, true)
             )
             ->willReturn('')
         ;
@@ -630,7 +630,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    Whitelist::create(true, true)
+                    Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -692,7 +692,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     [],
-                    Whitelist::create(true, true)
+                    Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -783,7 +783,7 @@ EOF;
 
                         return true;
                     }),
-                    Whitelist::create(true, true)
+                    Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -868,7 +868,7 @@ EOF;
                     $fileContents,
                     'MyPrefix',
                     [],
-                    Whitelist::create(true, true)
+                    Whitelist::create(true, true, true)
                 )
                 ->willThrow($scopingException = new RuntimeException('Could not scope file'))
             ;

@@ -33,6 +33,7 @@ class Configuration
     private const PATCHERS_KEYWORD = 'patchers';
     private const WHITELIST_KEYWORD = 'whitelist';
     private const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
+    private const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'whitelist-global-classes';
     private const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
 
     private const KEYWORDS = [
@@ -283,7 +284,23 @@ class Configuration
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
                         self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-                        gettype($whitelist)
+                        gettype($whitelistGlobalConstants)
+                    )
+                );
+            }
+        }
+
+        if (false === array_key_exists(self::WHITELIST_GLOBAL_CLASSES_KEYWORD, $config)) {
+            $whitelistGlobalClasses = true;
+        } else {
+            $whitelistGlobalClasses = $config[self::WHITELIST_GLOBAL_CLASSES_KEYWORD];
+
+            if (false === is_bool($whitelistGlobalClasses)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected %s to be a boolean, found "%s" instead.',
+                        self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
+                        gettype($whitelistGlobalClasses)
                     )
                 );
             }
@@ -299,13 +316,13 @@ class Configuration
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
                         self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
-                        gettype($whitelist)
+                        gettype($whitelistGlobalFunctions)
                     )
                 );
             }
         }
 
-        return Whitelist::create($whitelistGlobalConstants, $whitelistGlobalFunctions, ...$whitelist);
+        return Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, $whitelistGlobalFunctions, ...$whitelist);
     }
 
     private static function retrieveFinders(array $config): array
