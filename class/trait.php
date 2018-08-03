@@ -76,6 +76,62 @@ class B
 PHP
     ,
 
+    'Declaration in the global namespace with global classes whitelisted' => [
+        'whitelist-global-classes' => true,
+        'registered-classes' => [
+            ['B', 'Humbug\B'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+trait A {
+    public function a() {}
+}
+
+class B {
+    use C;
+    use D {
+        a as protected b;
+        c as d;
+        e as private;
+    }
+    use E, F, G {
+        E::a insteadof F, G;
+        E::b as protected c;
+        E::d as e;
+        E::f as private;
+    }
+}
+----
+<?php
+
+namespace Humbug;
+
+trait A
+{
+    public function a()
+    {
+    }
+}
+class B
+{
+    use C;
+    use D {
+        a as protected b;
+        c as d;
+        e as private;
+    }
+    use E, F, G {
+        E::a insteadof F, G;
+        E::b as protected c;
+        E::d as e;
+        E::f as private;
+    }
+}
+
+PHP
+    ],
+
     'Declaration in a namespace' => <<<'PHP'
 <?php
 

@@ -48,6 +48,35 @@ abstract class A
 PHP
     ,
 
+    'Declaration in the global namespace with global classes whitelisted' => [
+        'whitelist-global-classes' => true,
+        'registered-classes' => [
+            ['A', 'Humbug\A'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+abstract class A {
+    public function a() {}
+    abstract public function b();
+}
+----
+<?php
+
+namespace Humbug;
+
+abstract class A
+{
+    public function a()
+    {
+    }
+    public abstract function b();
+}
+
+PHP
+        ,
+    ],
+
     'Declaration in the global namespace with the global namespace which is namespaced whitelisted' => [
         'whitelist' => ['\*'],
         'payload' => <<<'PHP'
@@ -154,6 +183,34 @@ abstract class A
 
 PHP
     ,
+
+    'Declaration in a namespace with global classes whitelisted' => [
+        'whitelist-global-classes' => true,
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+abstract class A {
+    public function a() {}
+    abstract public function b();
+}
+----
+<?php
+
+namespace Humbug\Foo;
+
+abstract class A
+{
+    public function a()
+    {
+    }
+    public abstract function b();
+}
+
+PHP
+        ,
+    ],
 
     'Declaration in a whitelisted namespace' => [
         'whitelist' => ['Foo\*'],

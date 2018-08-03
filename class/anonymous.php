@@ -91,6 +91,80 @@ class A
 PHP
     ,
 
+    'Declaration in the global namespace with global classes whitelisted' => [
+        'whitelist-global-classes' => true,
+        'registered-classes' => [
+            ['A', 'Humbug\A'],
+            ['B', 'Humbug\B'],
+            ['C', 'Humbug\C'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+interface B {}
+interface C {}
+
+new class {
+    public function test() {}
+};
+new class extends A implements B, C, Iterator {};
+new class() {
+    public $foo;
+};
+new class($a, $b) extends A {
+    use T;
+};
+
+class A {
+    public function test() {
+        return new class($this) extends A {
+            const A = 'B';
+        };
+    }
+}
+----
+<?php
+
+namespace Humbug;
+
+interface B
+{
+}
+interface C
+{
+}
+new class
+{
+    public function test()
+    {
+    }
+};
+new class extends \Humbug\A implements \Humbug\B, \Humbug\C, \Iterator
+{
+};
+new class
+{
+    public $foo;
+};
+new class($a, $b) extends \Humbug\A
+{
+    use T;
+};
+class A
+{
+    public function test()
+    {
+        return new class($this) extends \Humbug\A
+        {
+            const A = 'B';
+        };
+    }
+}
+
+PHP
+        ,
+    ],
+
     'Declaration in the global namespace which is whitelisted' => [
         'whitelist' => ['\*'],
         'payload' => <<<'PHP'

@@ -53,6 +53,41 @@ interface A extends \Humbug\C, \Humbug\D, \Iterator
 PHP
     ,
 
+    'Declaration in the global namespace with global classes whitelisted' => [
+        'whitelist-global-classes' => true,
+        'registered-classes' => [
+            ['A', 'Humbug\A'],
+            ['C', 'Humbug\C'],
+            ['D', 'Humbug\D'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+class C {}
+class D {}
+
+interface A extends C, D, Iterator {
+    public function a();
+}
+----
+<?php
+
+namespace Humbug;
+
+class C
+{
+}
+class D
+{
+}
+interface A extends \Humbug\C, \Humbug\D, \Iterator
+{
+    public function a();
+}
+
+PHP
+    ],
+
     'Declaration in a namespace' => <<<'PHP'
 <?php
 
@@ -86,6 +121,42 @@ interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
 
 PHP
     ,
+
+    'Declaration in a namespace with global classes whitelisted' => [
+        'whitelist-global-classes' => true,
+        'payload' => <<<'PHP'
+<?php
+
+namespace Foo;
+
+use Iterator;
+
+class C {}
+class D {}
+
+interface A extends C, D, Iterator
+{
+    public function a();
+}
+----
+<?php
+
+namespace Humbug\Foo;
+
+use Iterator;
+class C
+{
+}
+class D
+{
+}
+interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
+{
+    public function a();
+}
+
+PHP
+    ],
 
     'Declaration of a whitelisted interface' => [
         'whitelist' => ['Foo\A'],
