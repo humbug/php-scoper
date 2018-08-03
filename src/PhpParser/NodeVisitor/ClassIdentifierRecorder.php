@@ -20,7 +20,6 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitorAbstract;
 
@@ -60,7 +59,6 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             return $node;
         }
         /** @var ClassLike $parent */
-
         if (null === $parent->name) {
             return $node;
         }

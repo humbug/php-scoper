@@ -14,14 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function basename;
-use function dirname;
 use Generator;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
-use function ksort;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
@@ -37,6 +34,7 @@ use const PHP_EOL;
 use function array_diff;
 use function array_keys;
 use function array_map;
+use function basename;
 use function current;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
@@ -153,7 +151,7 @@ class PhpScoperSpecTest extends TestCase
         $files->sortByName();
 
         foreach ($files as $file) {
-            /** @var SplFileInfo $file */
+            /* @var SplFileInfo $file */
             try {
                 $fixtures = include $file;
 
@@ -402,7 +400,7 @@ OUTPUT
     private function assertSameRecordedSymbols(array $expected, array $actual, string $message): void
     {
         $sort = function (array $a, array $b): int {
-            /**
+            /*
              * @var string[] $a
              * @var string[] $b
              */
