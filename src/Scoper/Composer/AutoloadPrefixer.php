@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use function array_map;
 use Humbug\PhpScoper\Whitelist;
 use stdClass;
+use function array_map;
 
 /**
  * @private
@@ -66,7 +66,6 @@ final class AutoloadPrefixer
 
         return $autoload;
     }
-
 
     private static function prefixAutoload(array $autoload, string $prefix, Whitelist $whitelist): array
     {
