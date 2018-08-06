@@ -19,7 +19,7 @@ matrix:
 before_install:
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - phpenv config-rm xdebug.ini || true
-  - export COMPOSER_ROOT_VERSION=0.8.99
+  - export COMPOSER_ROOT_VERSION=0.9.99
   - |
     if [ 'false' == "$TRAVIS_PULL_REQUEST" ]; then
       cp box.json.dist box.json
