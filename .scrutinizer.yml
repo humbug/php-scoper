@@ -3,7 +3,6 @@ build:
         variables:
             COMPOSER_ROOT_VERSION: '0.9.99'
 
-build:
     tests:
         override:
             -
