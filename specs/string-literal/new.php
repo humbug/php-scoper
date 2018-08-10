@@ -32,10 +32,10 @@ new X('Yaml', ['Yaml']);
 new X('\\Yaml', ['\\Yaml']);
 new X('Closure', ['Closure']);
 new X('\\Closure', ['\\Closure']);
-new X('Symfony\\Component\\Yaml\\Yaml', ['Symfony\\Component\\Yaml\\Yaml']);
-new X('\\Symfony\\Component\\Yaml\\Yaml', ['\\Symfony\\Component\\Yaml\\Yaml']);
-new X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new X('\\Humbug\\Symfony\\Component\\Yaml\\Yaml', ['\\Humbug\\Symfony\\Component\\Yaml\\Yaml']);
+new X('Symfony\\Component\\Yaml\\Ya_1', ['Symfony\\Component\\Yaml\\Ya_1']);
+new X('\\Symfony\\Component\\Yaml\\Ya_1', ['\\Symfony\\Component\\Yaml\\Ya_1']);
+new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new X('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['\\Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
 
 ----
 <?php
@@ -46,10 +46,10 @@ new \Humbug\X('Yaml', ['Yaml']);
 new \Humbug\X('\\Yaml', ['\\Yaml']);
 new \Humbug\X('Closure', ['Closure']);
 new \Humbug\X('\\Closure', ['\\Closure']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
 
 PHP
     ,
@@ -59,22 +59,22 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-new X('Symfony\\Component\\Yaml\\Yamll', ['Symfony\\Component\\Yaml\\Yamll']);
-new X('Symfony\\Component\\Yaml\\Yaml', ['Symfony\\Component\\Yaml\\Yaml']);
-new X('\\Symfony\\Component\\Yaml\\Yaml', ['\\Symfony\\Component\\Yaml\\Yaml']);
-new X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new X('\\Humbug\\Symfony\\Component\\Yaml\\Yaml', ['\\Humbug\\Symfony\\Component\\Yaml\\Yaml']);
+new X('Symfony\\Component\\Yaml\\Ya_1l', ['Symfony\\Component\\Yaml\\Ya_1l']);
+new X('Symfony\\Component\\Yaml\\Ya_1', ['Symfony\\Component\\Yaml\\Ya_1']);
+new X('\\Symfony\\Component\\Yaml\\Ya_1', ['\\Symfony\\Component\\Yaml\\Ya_1']);
+new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new X('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['\\Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
 
 ----
 <?php
 
 namespace Humbug;
 
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yamll', ['Humbug\\Symfony\\Component\\Yaml\\Yamll']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1l', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1l']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
 
 PHP
     ],
@@ -85,10 +85,10 @@ PHP
 <?php
 
 new X('Symfony\\Yaml', ['Symfony\\Yaml']);
-new X('Symfony\\Component\\Yaml\\Yaml', ['Symfony\\Component\\Yaml\\Yaml']);
-new X('\\Symfony\\Component\\Yaml\\Yaml', ['\\Symfony\\Component\\Yaml\\Yaml']);
-new X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new X('\\Humbug\\Symfony\\Component\\Yaml\\Yaml', ['\\Humbug\\Symfony\\Component\\Yaml\\Yaml']);
+new X('Symfony\\Component\\Yaml\\Ya_1', ['Symfony\\Component\\Yaml\\Ya_1']);
+new X('\\Symfony\\Component\\Yaml\\Ya_1', ['\\Symfony\\Component\\Yaml\\Ya_1']);
+new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new X('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['\\Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
 
 ----
 <?php
@@ -96,10 +96,10 @@ new X('\\Humbug\\Symfony\\Component\\Yaml\\Yaml', ['\\Humbug\\Symfony\\Component
 namespace Humbug;
 
 new \Humbug\X('Humbug\\Symfony\\Yaml', ['Humbug\\Symfony\\Yaml']);
-new \Humbug\X('Symfony\\Component\\Yaml\\Yaml', ['Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('\\Symfony\\Component\\Yaml\\Yaml', ['\\Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
-new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Yaml', ['Humbug\\Symfony\\Component\\Yaml\\Yaml']);
+new \Humbug\X('Symfony\\Component\\Yaml\\Ya_1', ['Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('\\Symfony\\Component\\Yaml\\Ya_1', ['\\Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+new \Humbug\X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
 
 PHP
     ],
@@ -107,16 +107,16 @@ PHP
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
 <?php
 
-new X('Symfony\\Component' . '\\Yaml\\Yaml', ['Symfony\\Component' . '\\Yaml\\Yaml']);
-new X('\\Symfony\\Component' . '\\Yaml\\Yaml', ['\\Symfony\\Component' . '\\Yaml\\Yaml']);
+new X('Symfony\\Component' . '\\Yaml\\Ya_1', ['Symfony\\Component' . '\\Yaml\\Ya_1']);
+new X('\\Symfony\\Component' . '\\Yaml\\Ya_1', ['\\Symfony\\Component' . '\\Yaml\\Ya_1']);
 
 ----
 <?php
 
 namespace Humbug;
 
-new \Humbug\X('Symfony\\Component' . '\\Yaml\\Yaml', ['Symfony\\Component' . '\\Yaml\\Yaml']);
-new \Humbug\X('\\Symfony\\Component' . '\\Yaml\\Yaml', ['\\Symfony\\Component' . '\\Yaml\\Yaml']);
+new \Humbug\X('Symfony\\Component' . '\\Yaml\\Ya_1', ['Symfony\\Component' . '\\Yaml\\Ya_1']);
+new \Humbug\X('\\Symfony\\Component' . '\\Yaml\\Ya_1', ['\\Symfony\\Component' . '\\Yaml\\Ya_1']);
 
 PHP
     ,
@@ -153,38 +153,38 @@ PHP
     ,
 
     'FQC constant call on whitelisted class' => [
-        'whitelist' => ['Symfony\Component\Yaml\Yaml'],
+        'whitelist' => ['Symfony\Component\Yaml\Ya_1'],
         'registered-classes' => [
-            ['Symfony\Component\Yaml\Yaml', 'Humbug\Symfony\Component\Yaml\Yaml'],
+            ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'
 <?php
 
 namespace Symfony\Component\Yaml {
-    class Yaml {}
+    class Ya_1 {}
 }
 
 namespace {
-    new X(Symfony\Component\Yaml\Yaml::class, [Symfony\Component\Yaml\Yaml::class]);
-    new X(\Symfony\Component\Yaml\Yaml::class, [\Symfony\Component\Yaml\Yaml::class]);
-    new X(Humbug\Symfony\Component\Yaml\Yaml::class, [Humbug\Symfony\Component\Yaml\Yaml::class]);
-    new X(\Humbug\Symfony\Component\Yaml\Yaml::class, [\Humbug\Symfony\Component\Yaml\Yaml::class]);
+    new X(Symfony\Component\Yaml\Ya_1::class, [Symfony\Component\Yaml\Ya_1::class]);
+    new X(\Symfony\Component\Yaml\Ya_1::class, [\Symfony\Component\Yaml\Ya_1::class]);
+    new X(Humbug\Symfony\Component\Yaml\Ya_1::class, [Humbug\Symfony\Component\Yaml\Ya_1::class]);
+    new X(\Humbug\Symfony\Component\Yaml\Ya_1::class, [\Humbug\Symfony\Component\Yaml\Ya_1::class]);
 }
 ----
 <?php
 
 namespace Humbug\Symfony\Component\Yaml;
 
-class Yaml
+class Ya_1
 {
 }
-\class_alias('Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Symfony\\Component\\Yaml\\Yaml', \false);
+\class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
 namespace Humbug;
 
-new \Humbug\X(\Humbug\Symfony\Component\Yaml\Yaml::class, [\Humbug\Symfony\Component\Yaml\Yaml::class]);
-new \Humbug\X(\Humbug\Symfony\Component\Yaml\Yaml::class, [\Humbug\Symfony\Component\Yaml\Yaml::class]);
-new \Humbug\X(\Humbug\Symfony\Component\Yaml\Yaml::class, [\Humbug\Symfony\Component\Yaml\Yaml::class]);
-new \Humbug\X(\Humbug\Symfony\Component\Yaml\Yaml::class, [\Humbug\Symfony\Component\Yaml\Yaml::class]);
+new \Humbug\X(\Humbug\Symfony\Component\Yaml\Ya_1::class, [\Humbug\Symfony\Component\Yaml\Ya_1::class]);
+new \Humbug\X(\Humbug\Symfony\Component\Yaml\Ya_1::class, [\Humbug\Symfony\Component\Yaml\Ya_1::class]);
+new \Humbug\X(\Humbug\Symfony\Component\Yaml\Ya_1::class, [\Humbug\Symfony\Component\Yaml\Ya_1::class]);
+new \Humbug\X(\Humbug\Symfony\Component\Yaml\Ya_1::class, [\Humbug\Symfony\Component\Yaml\Ya_1::class]);
 
 PHP
     ],

@@ -30,10 +30,10 @@ return [
 
 class Foo {
     const X = [
-        'Symfony\\Component\\Yaml\\Yaml' => 'Symfony\\Component\\Yaml\\Yaml',
-        '\\Symfony\\Component\\Yaml\\Yaml' => '\\Symfony\\Component\\Yaml\\Yaml',
-        'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml',
-        '\\Humbug\\Symfony\\Component\\Yaml\\Yaml' => '\\Humbug\\Symfony\\Component\\Yaml\\Yaml',
+        'Symfony\\Component\\Yaml\\Ya_1' => 'Symfony\\Component\\Yaml\\Ya_1',
+        '\\Symfony\\Component\\Yaml\\Ya_1' => '\\Symfony\\Component\\Yaml\\Ya_1',
+        'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1',
+        '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1' => '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1',
     ];
 }
 
@@ -44,7 +44,7 @@ namespace Humbug;
 
 class Foo
 {
-    const X = ['Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\Yaml'];
+    const X = ['Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1'];
 }
 
 PHP

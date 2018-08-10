@@ -29,10 +29,10 @@ return [
 <?php
 
 class Foo {
-    var $x = 'Symfony\\Component\\Yaml\\Yaml';
-    var $x = '\\Symfony\\Component\\Yaml\\Yaml';
-    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-    var $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+    var $x = 'Symfony\\Component\\Yaml\\Ya_1';
+    var $x = '\\Symfony\\Component\\Yaml\\Ya_1';
+    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    var $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 }
 
 ----
@@ -42,10 +42,10 @@ namespace Humbug;
 
 class Foo
 {
-    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 }
 
 PHP

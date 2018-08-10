@@ -32,10 +32,10 @@ const X = 'Yaml';
 const X = '\\Yaml';
 const X = 'Closure';
 const X = '\\Closure';
-const X = 'Symfony\\Component\\Yaml\\Yaml';
-const X = '\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Symfony\\Component\\Yaml\\Ya_1';
+const X = '\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 ----
 <?php
@@ -46,10 +46,10 @@ const X = 'Yaml';
 const X = '\\Yaml';
 const X = 'Closure';
 const X = '\\Closure';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 PHP
     ,
@@ -59,22 +59,22 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-const X = 'Symfony\\Component\\Yaml\\Yamll';
-const X = 'Symfony\\Component\\Yaml\\Yaml';
-const X = '\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Symfony\\Component\\Yaml\\Ya_1l';
+const X = 'Symfony\\Component\\Yaml\\Ya_1';
+const X = '\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 ----
 <?php
 
 namespace Humbug;
 
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yamll';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1l';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 PHP
     ],
@@ -85,10 +85,10 @@ PHP
 <?php
 
 const X = 'Symfony\\Yaml';
-const X = 'Symfony\\Component\\Yaml\\Yaml';
-const X = '\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Symfony\\Component\\Yaml\\Ya_1';
+const X = '\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 ----
 <?php
@@ -96,10 +96,10 @@ const X = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 namespace Humbug;
 
 const X = 'Humbug\\Symfony\\Yaml';
-const X = 'Symfony\\Component\\Yaml\\Yaml';
-const X = '\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-const X = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+const X = 'Symfony\\Component\\Yaml\\Ya_1';
+const X = '\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 PHP
     ],
@@ -107,16 +107,16 @@ PHP
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
 <?php
 
-const X = 'Symfony\\Component' . '\\Yaml\\Yaml';
-const X = '\\Symfony\\Component' . '\\Yaml\\Yaml';
+const X = 'Symfony\\Component' . '\\Yaml\\Ya_1';
+const X = '\\Symfony\\Component' . '\\Yaml\\Ya_1';
 
 ----
 <?php
 
 namespace Humbug;
 
-const X = 'Symfony\\Component' . '\\Yaml\\Yaml';
-const X = '\\Symfony\\Component' . '\\Yaml\\Yaml';
+const X = 'Symfony\\Component' . '\\Yaml\\Ya_1';
+const X = '\\Symfony\\Component' . '\\Yaml\\Ya_1';
 
 PHP
     ,
@@ -153,38 +153,38 @@ PHP
     ,
 
     'FQC constant call on whitelisted class' => [
-        'whitelist' => ['Symfony\Component\Yaml\Yaml'],
+        'whitelist' => ['Symfony\Component\Yaml\Ya_1'],
         'registered-classes' => [
-            ['Symfony\Component\Yaml\Yaml', 'Humbug\Symfony\Component\Yaml\Yaml'],
+            ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'
 <?php
 
 namespace Symfony\Component\Yaml {
-    class Yaml {}
+    class Ya_1 {}
 }
 
 namespace {
-    const X = Symfony\Component\Yaml\Yaml::class;
-    const X = \Symfony\Component\Yaml\Yaml::class;
-    const X = Humbug\Symfony\Component\Yaml\Yaml::class;
-    const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+    const X = Symfony\Component\Yaml\Ya_1::class;
+    const X = \Symfony\Component\Yaml\Ya_1::class;
+    const X = Humbug\Symfony\Component\Yaml\Ya_1::class;
+    const X = \Humbug\Symfony\Component\Yaml\Ya_1::class;
 }
 ----
 <?php
 
 namespace Humbug\Symfony\Component\Yaml;
 
-class Yaml
+class Ya_1
 {
 }
-\class_alias('Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Symfony\\Component\\Yaml\\Yaml', \false);
+\class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
 namespace Humbug;
 
-const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
-const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
-const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
-const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+const X = \Humbug\Symfony\Component\Yaml\Ya_1::class;
+const X = \Humbug\Symfony\Component\Yaml\Ya_1::class;
+const X = \Humbug\Symfony\Component\Yaml\Ya_1::class;
+const X = \Humbug\Symfony\Component\Yaml\Ya_1::class;
 
 PHP
     ],

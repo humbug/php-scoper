@@ -29,10 +29,10 @@ return [
 <?php
 
 $x = [
-    'Symfony\\Component\\Yaml\\Yaml' => 'Symfony\\Component\\Yaml\\_Yaml',
-    '\\Symfony\\Component\\Yaml\\Yaml' => '\\Symfony\\Component\\Yaml\\_Yaml',
-    'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml',
-    '\\Humbug\\Symfony\\Component\\Yaml\\Yaml' => '\\Humbug\\Symfony\\Component\\Yaml\\_Yaml',
+    'Symfony\\Component\\Yaml\\Ya_1' => 'Symfony\\Component\\Yaml\\Ya_1',
+    '\\Symfony\\Component\\Yaml\\Ya_1' => '\\Symfony\\Component\\Yaml\\Ya_1',
+    'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1',
+    '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1' => '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1',
     'Closure',
     'usedAttributes',
     'FOO',
@@ -40,10 +40,10 @@ $x = [
 ];
 
 (new X)->foo()([
-    'Symfony\\Component\\Yaml\\Yaml' => 'Symfony\\Component\\Yaml\\_Yaml',
-    '\\Symfony\\Component\\Yaml\\Yaml' => '\\Symfony\\Component\\Yaml\\_Yaml',
-    'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml',
-    '\\Humbug\\Symfony\\Component\\Yaml\\Yaml' => '\\Humbug\\Symfony\\Component\\Yaml\\_Yaml',
+    'Symfony\\Component\\Yaml\\Ya_1' => 'Symfony\\Component\\Yaml\\Ya_1',
+    '\\Symfony\\Component\\Yaml\\Ya_1' => '\\Symfony\\Component\\Yaml\\Ya_1',
+    'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1',
+    '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1' => '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1',
     'Closure',
     'usedAttributes',
     'FOO',
@@ -55,8 +55,8 @@ $x = [
 
 namespace Humbug;
 
-$x = ['Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml', 'Closure', 'usedAttributes', 'FOO', 'PHP_EOL'];
-(new \Humbug\X())->foo()(['Symfony\\Component\\Yaml\\Yaml' => 'Symfony\\Component\\Yaml\\_Yaml', '\\Symfony\\Component\\Yaml\\Yaml' => '\\Symfony\\Component\\Yaml\\_Yaml', 'Humbug\\Symfony\\Component\\Yaml\\Yaml' => 'Humbug\\Symfony\\Component\\Yaml\\_Yaml', '\\Humbug\\Symfony\\Component\\Yaml\\Yaml' => '\\Humbug\\Symfony\\Component\\Yaml\\_Yaml', 'Closure', 'usedAttributes', 'FOO', 'PHP_EOL']);
+$x = ['Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Closure', 'usedAttributes', 'FOO', 'PHP_EOL'];
+(new \Humbug\X())->foo()(['Symfony\\Component\\Yaml\\Ya_1' => 'Symfony\\Component\\Yaml\\Ya_1', '\\Symfony\\Component\\Yaml\\Ya_1' => '\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1' => '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Closure', 'usedAttributes', 'FOO', 'PHP_EOL']);
 
 PHP
     ,

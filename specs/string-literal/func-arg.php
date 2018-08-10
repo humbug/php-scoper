@@ -28,10 +28,10 @@ return [
     'FQCN string argument' => <<<'PHP'
 <?php
 
-foo('Symfony\\Component\\Yaml\\Yaml');
-foo('\\Symfony\\Component\\Yaml\\Yaml');
-foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-foo('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+foo('Symfony\\Component\\Yaml\\Ya_1');
+foo('\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 
 foo('DateTime');
 foo('Swift');
@@ -90,10 +90,10 @@ class_alias('DateTime', 'DateTimeInterface');
 
 namespace Humbug;
 
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 \Humbug\foo('DateTime');
 \Humbug\foo('Swift');
 \Humbug\foo(['DateTime', 'autoload']);
@@ -145,20 +145,20 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-foo('Symfony\\Component\\Yaml\\Yaml');
-foo('\\Symfony\\Component\\Yaml\\Yaml');
-foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-foo('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+foo('Symfony\\Component\\Yaml\\Ya_1');
+foo('\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 
 foo('DateTime');
 foo('Swift');
 foo(['DateTime', 'autoload']);
 foo(['Swift', 'autoload']);
 
-(function($x = 'Symfony\\Component\\Yaml\\Yaml') {})();
-(function($x = '\\Symfony\\Component\\Yaml\\Yaml') {})();
-(function($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {})();
-(function($x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml') {})();
+(function($x = 'Symfony\\Component\\Yaml\\Ya_1') {})();
+(function($x = '\\Symfony\\Component\\Yaml\\Ya_1') {})();
+(function($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {})();
+(function($x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1') {})();
 
 (function($x = 'DateTime') {})();
 (function($x = 'Swift') {})();
@@ -214,21 +214,21 @@ class_alias('DateTime', 'DateTimeInterface');
 
 namespace Humbug;
 
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 \Humbug\foo('DateTime');
 \Humbug\foo('Swift');
 \Humbug\foo(['DateTime', 'autoload']);
 \Humbug\foo(['Swift', 'autoload']);
-(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {
+(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
 })();
-(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {
+(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
 })();
-(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {
+(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
 })();
-(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml') {
+(function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
 })();
 (function ($x = 'DateTime') {
 })();
@@ -283,10 +283,10 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-foo('Symfony\\Component\\Yaml\\Yaml');
-foo('\\Symfony\\Component\\Yaml\\Yaml');
-foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-foo('\\Humbug\\Symfony\\Component\\Yaml\\Yaml');
+foo('Symfony\\Component\\Yaml\\Ya_1');
+foo('\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 
 foo('DateTime');
 foo('Swift');
@@ -345,10 +345,10 @@ class_alias('DateTime', 'DateTimeInterface');
 
 namespace Humbug;
 
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Yaml');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 \Humbug\foo('DateTime');
 \Humbug\foo('Swift');
 \Humbug\foo(['DateTime', 'autoload']);
@@ -398,8 +398,8 @@ PHP
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
 <?php
 
-foo('Symfony\\Component' . '\\Yaml\\Yaml');
-foo('\\Symfony\\Component' . '\\Yaml\\Yaml');
+foo('Symfony\\Component' . '\\Yaml\\Ya_1');
+foo('\\Symfony\\Component' . '\\Yaml\\Ya_1');
 
 foo('Swift'.'');
 spl_autoload_register(['Swift'.'', 'autoload']);
@@ -417,8 +417,8 @@ class_alias('Swift'.'', 'Mailer'.'');
 
 namespace Humbug;
 
-\Humbug\foo('Symfony\\Component' . '\\Yaml\\Yaml');
-\Humbug\foo('\\Symfony\\Component' . '\\Yaml\\Yaml');
+\Humbug\foo('Symfony\\Component' . '\\Yaml\\Ya_1');
+\Humbug\foo('\\Symfony\\Component' . '\\Yaml\\Ya_1');
 \Humbug\foo('Swift' . '');
 \spl_autoload_register(['Swift' . '', 'autoload']);
 \is_a($swift, 'Swift' . '');
@@ -529,38 +529,38 @@ PHP
     ,
 
     'FQC constant call on whitelisted class' => [
-        'whitelist' => ['Symfony\Component\Yaml\Yaml'],
+        'whitelist' => ['Symfony\Component\Yaml\Ya_1'],
         'registered-classes' => [
-            ['Symfony\Component\Yaml\Yaml', 'Humbug\Symfony\Component\Yaml\Yaml'],
+            ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'
 <?php
 
 namespace Symfony\Component\Yaml {
-    class Yaml {}
+    class Ya_1 {}
 }
 
 namespace {
-    foo(Symfony\Component\Yaml\Yaml::class);
-    foo(\Symfony\Component\Yaml\Yaml::class);
-    foo(Humbug\Symfony\Component\Yaml\Yaml::class);
-    foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
+    foo(Symfony\Component\Yaml\Ya_1::class);
+    foo(\Symfony\Component\Yaml\Ya_1::class);
+    foo(Humbug\Symfony\Component\Yaml\Ya_1::class);
+    foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
 }
 ----
 <?php
 
 namespace Humbug\Symfony\Component\Yaml;
 
-class Yaml
+class Ya_1
 {
 }
-\class_alias('Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Symfony\\Component\\Yaml\\Yaml', \false);
+\class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
 namespace Humbug;
 
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
+\Humbug\foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
+\Humbug\foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
+\Humbug\foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
+\Humbug\foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
 
 PHP
     ],
