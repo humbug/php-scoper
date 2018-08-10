@@ -15,7 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Closure;
+use Humbug\PhpScoper\Console\ApplicationFactory;
 use LogicException;
+use PhpParser\Parser;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
@@ -71,4 +73,17 @@ function create_fake_patcher(): Closure
     return function () {
         throw new LogicException('Did not expect to be called');
     };
+}
+
+/**
+ * @private
+ */
+function create_parser(): Parser
+{
+    return (new class extends ApplicationFactory {
+        public static function createParser(): Parser
+        {
+            return parent::createParser();
+        }
+    })::createParser();
 }

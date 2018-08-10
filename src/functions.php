@@ -14,7 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use function array_map;
+use function count;
 use Humbug\PhpScoper\Console\Application;
+use Humbug\PhpScoper\Console\ApplicationFactory;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
@@ -23,6 +26,8 @@ use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use function is_array;
+use function is_scalar;
 use Iterator;
 use PackageVersions\Versions;
 use PhpParser\Node;
@@ -35,88 +40,36 @@ use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Ast\Locator;
 use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
+use function serialize;
+use function strlen;
+use function strpos;
+use function substr;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Filesystem\Filesystem;
 use function is_object;
 use function is_string;
 use function method_exists;
+use function unserialize;
 
-// TODO: register this file to the list of functions if possible to be autoloaded
-
-/**
- * @private
- */
-function create_application(): SymfonyApplication
+function create_application(): Application
 {
-    $app = new Application('PHP Scoper', get_version());
-
-    $app->addCommands([
-        new AddPrefixCommand(
-            new Filesystem(),
-            create_scoper()
-        ),
-        new InitCommand(),
-    ]);
-
-    return $app;
+    return (new ApplicationFactory())->create();
 }
 
-/**
- * @private
- */
-function get_version(): string
-{
-    if ('phar:' === substr(__FILE__, 0, 5)) {
-        return '@git_version_placeholder@';
-    }
-
-    $rawVersion = Versions::getVersion('humbug/php-scoper');
-
-    [$prettyVersion, $commitHash] = explode('@', $rawVersion);
-
-    return (1 === preg_match('/9{7}/', $prettyVersion)) ? $commitHash : $prettyVersion;
-}
 
 /**
  * @private
+ * @deprecated Will be removed in future releases.
  */
 function create_scoper(): Scoper
 {
-    return new PatchScoper(
-        new PhpScoper(
-            create_parser(),
-            new JsonFileScoper(
-                new InstalledPackagesScoper(
-                    new NullScoper()
-                )
-            ),
-            new TraverserFactory(create_reflector())
-        )
-    );
-}
+    return (new class extends ApplicationFactory {
+        public static function createScoper(): Scoper
+        {
+            return parent::createScoper();
+        }
 
-/**
- * @private
- */
-function create_parser(): Parser
-{
-    return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
-}
-
-function create_reflector(): Reflector
-{
-    $phpParser = create_parser();
-    $astLocator = new Locator($phpParser);
-
-    $sourceLocator = new MemoizingSourceLocator(
-        new PhpInternalSourceLocator($astLocator)
-    );
-    $classReflector = new ClassReflector($sourceLocator);
-
-    return new Reflector(
-        $classReflector,
-        new FunctionReflector($sourceLocator, $classReflector)
-    );
+    })::createScoper();
 }
 
 /**
@@ -140,7 +93,7 @@ function get_common_path(array $paths): string
         foreach ($paths as $path) {
             if (substr($path, $lastOffset, $dirLen) !== $dir) {
                 if (0 < strlen($common) && DIRECTORY_SEPARATOR === $common[strlen($common) - 1]) {
-                    $common = substr($common, 0, strlen($common) - 1);
+                    $common = substr($common, 0, -1);
                 }
 
                 return $common;
@@ -154,7 +107,7 @@ function get_common_path(array $paths): string
     $common = substr($common, 0, -1);
 
     if (0 < strlen($common) && DIRECTORY_SEPARATOR === $common[strlen($common) - 1]) {
-        $common = substr($common, 0, strlen($common) - 1);
+        $common = substr($common, 0, -1);
     }
 
     return $common;
