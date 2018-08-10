@@ -8,6 +8,7 @@
 /fixtures/set004/scoper.inc.php
 /fixtures/*/.box_dump/
 /fixtures/*/vendor/
+.phpunit*
 /vendor/
 /vendor-bin/*/vendor/
 /vendor-bin/*/bin/
