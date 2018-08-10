@@ -38,12 +38,12 @@ class ApplicationFactory
 {
     public function create(): Application
     {
-        $app = new Application('PHP Scoper', self::getVersion());
+        $app = new Application('PHP Scoper', static::getVersion());
 
         $app->addCommands([
             new AddPrefixCommand(
                 new Filesystem(),
-                self::createScoper()
+                static::createScoper()
             ),
             new InitCommand(),
         ]);
@@ -68,13 +68,13 @@ class ApplicationFactory
     {
         return new PatchScoper(
             new PhpScoper(
-                self::createParser(),
+                static::createParser(),
                 new JsonFileScoper(
                     new InstalledPackagesScoper(
                         new NullScoper()
                     )
                 ),
-                new TraverserFactory(self::createReflector())
+                new TraverserFactory(static::createReflector())
             )
         );
     }
@@ -86,7 +86,7 @@ class ApplicationFactory
 
     protected static function createReflector(): Reflector
     {
-        $phpParser = self::createParser();
+        $phpParser = static::createParser();
         $astLocator = new Locator($phpParser);
 
         $sourceLocator = new MemoizingSourceLocator(
