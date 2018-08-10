@@ -29,10 +29,10 @@ return [
 <?php
 
 class Foo {
-    const X = 'Symfony\\Component\\Yaml\\Ya_ml';
-    const X = '\\Symfony\\Component\\Yaml\\Ya_ml';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_ml';
-    const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_ml';
+    const X = 'Symfony\\Component\\Yaml\\Ya_1';
+    const X = '\\Symfony\\Component\\Yaml\\Ya_1';
+    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
     
     const X = 'HelloWorld';
 }
@@ -44,10 +44,10 @@ namespace Humbug;
 
 class Foo
 {
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_ml';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_ml';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_ml';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_ml';
+    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
     const X = 'HelloWorld';
 }
 

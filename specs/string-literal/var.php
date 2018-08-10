@@ -32,10 +32,10 @@ $x = 'Yaml';
 $x = '\\Yaml';
 $x = 'Closure';
 $x = '\\Closure';
-$x = 'Symfony\\Component\\Yaml\\Yaml';
-$x = '\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Ya_1';
+$x = '\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 ----
 <?php
@@ -46,10 +46,10 @@ $x = 'Yaml';
 $x = '\\Yaml';
 $x = 'Closure';
 $x = '\\Closure';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 PHP
     ,
@@ -76,22 +76,22 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-$x = 'Symfony\\Component\\Yaml\\Yamll';
-$x = 'Symfony\\Component\\Yaml\\Yaml';
-$x = '\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Ya_1l';
+$x = 'Symfony\\Component\\Yaml\\Ya_1';
+$x = '\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 ----
 <?php
 
 namespace Humbug;
 
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yamll';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1l';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 PHP
     ],
@@ -102,10 +102,10 @@ PHP
 <?php
 
 $x = 'Symfony\\Yaml';
-$x = 'Symfony\\Component\\Yaml\\Yaml';
-$x = '\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Ya_1';
+$x = '\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 ----
 <?php
@@ -113,10 +113,10 @@ $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
 namespace Humbug;
 
 $x = 'Humbug\\Symfony\\Yaml';
-$x = 'Symfony\\Component\\Yaml\\Yaml';
-$x = '\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-$x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+$x = 'Symfony\\Component\\Yaml\\Ya_1';
+$x = '\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+$x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
 PHP
     ],
@@ -124,16 +124,16 @@ PHP
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
 <?php
 
-$x = 'Symfony\\Component' . '\\Yaml\\Yaml';
-$x = '\\Symfony\\Component' . '\\Yaml\\Yaml';
+$x = 'Symfony\\Component' . '\\Yaml\\Ya_1';
+$x = '\\Symfony\\Component' . '\\Yaml\\Ya_1';
 
 ----
 <?php
 
 namespace Humbug;
 
-$x = 'Symfony\\Component' . '\\Yaml\\Yaml';
-$x = '\\Symfony\\Component' . '\\Yaml\\Yaml';
+$x = 'Symfony\\Component' . '\\Yaml\\Ya_1';
+$x = '\\Symfony\\Component' . '\\Yaml\\Ya_1';
 
 PHP
     ,
@@ -170,38 +170,38 @@ PHP
     ,
 
     'FQC constant call on whitelisted class' => [
-        'whitelist' => ['Symfony\Component\Yaml\Yaml'],
+        'whitelist' => ['Symfony\Component\Yaml\Ya_1'],
         'registered-classes' => [
-            ['Symfony\Component\Yaml\Yaml', 'Humbug\Symfony\Component\Yaml\Yaml'],
+            ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'
 <?php
 
 namespace Symfony\Component\Yaml {
-    class Yaml {}
+    class Ya_1 {}
 }
 
 namespace {
-    $x = Symfony\Component\Yaml\Yaml::class;
-    $x = \Symfony\Component\Yaml\Yaml::class;
-    $x = Humbug\Symfony\Component\Yaml\Yaml::class;
-    $x = \Humbug\Symfony\Component\Yaml\Yaml::class;
+    $x = Symfony\Component\Yaml\Ya_1::class;
+    $x = \Symfony\Component\Yaml\Ya_1::class;
+    $x = Humbug\Symfony\Component\Yaml\Ya_1::class;
+    $x = \Humbug\Symfony\Component\Yaml\Ya_1::class;
 }
 ----
 <?php
 
 namespace Humbug\Symfony\Component\Yaml;
 
-class Yaml
+class Ya_1
 {
 }
-\class_alias('Humbug\\Symfony\\Component\\Yaml\\Yaml', 'Symfony\\Component\\Yaml\\Yaml', \false);
+\class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
 namespace Humbug;
 
-$x = \Humbug\Symfony\Component\Yaml\Yaml::class;
-$x = \Humbug\Symfony\Component\Yaml\Yaml::class;
-$x = \Humbug\Symfony\Component\Yaml\Yaml::class;
-$x = \Humbug\Symfony\Component\Yaml\Yaml::class;
+$x = \Humbug\Symfony\Component\Yaml\Ya_1::class;
+$x = \Humbug\Symfony\Component\Yaml\Ya_1::class;
+$x = \Humbug\Symfony\Component\Yaml\Ya_1::class;
+$x = \Humbug\Symfony\Component\Yaml\Ya_1::class;
 
 PHP
     ],

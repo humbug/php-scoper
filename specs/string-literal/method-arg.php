@@ -29,14 +29,14 @@ return [
 <?php
 
 class Foo {
-    function foo($x = 'Symfony\\Component\\Yaml\\Yaml', $y = 'Foo') {}
+    function foo($x = 'Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo') {}
 }
 
-(new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
+(new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
 
 $x = new X();
 
-$x->foo()('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
+$x->foo()('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
 
 ----
 <?php
@@ -45,13 +45,13 @@ namespace Humbug;
 
 class Foo
 {
-    function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo')
+    function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo')
     {
     }
 }
-(new \Humbug\X())->foo('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
+(new \Humbug\X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
 $x = new \Humbug\X();
-$x->foo()('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
+$x->foo()('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
 
 PHP
     ,
@@ -60,10 +60,10 @@ PHP
 <?php
 
 class Foo {
-    static function foo($x = 'Symfony\\Component\\Yaml\\Yaml', $y = 'Foo') {}
+    static function foo($x = 'Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo') {}
 }
 
-X::foo('Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
+X::foo('Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
 
 ----
 <?php
@@ -72,11 +72,11 @@ namespace Humbug;
 
 class Foo
 {
-    static function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo')
+    static function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo')
     {
     }
 }
-\Humbug\X::foo('Humbug\\Symfony\\Component\\Yaml\\Yaml', $y = 'Foo');
+\Humbug\X::foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
 
 PHP
     ,

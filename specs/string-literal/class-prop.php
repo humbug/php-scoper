@@ -29,10 +29,10 @@ return [
 <?php
 
 class Foo {
-    private $x = 'Symfony\\Component\\Yaml\\Yaml';
-    private $x = '\\Symfony\\Component\\Yaml\\Yaml';
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-    private $x = '\\Humbug\\Symfony\\Component\\Yaml\\Yaml';
+    private $x = 'Symfony\\Component\\Yaml\\Ya_1';
+    private $x = '\\Symfony\\Component\\Yaml\\Ya_1';
+    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    private $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 }
 
 ----
@@ -42,10 +42,10 @@ namespace Humbug;
 
 class Foo
 {
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Yaml';
+    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 }
 
 PHP
