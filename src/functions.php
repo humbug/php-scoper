@@ -14,41 +14,24 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_map;
-use function count;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ApplicationFactory;
-use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
-use Humbug\PhpScoper\Console\Command\InitCommand;
-use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
-use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
-use Humbug\PhpScoper\Scoper\NullScoper;
-use Humbug\PhpScoper\Scoper\PatchScoper;
-use Humbug\PhpScoper\Scoper\PhpScoper;
-use function is_array;
-use function is_scalar;
 use Iterator;
-use PackageVersions\Versions;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Parser;
-use PhpParser\ParserFactory;
-use Roave\BetterReflection\Reflector\ClassReflector;
-use Roave\BetterReflection\Reflector\FunctionReflector;
-use Roave\BetterReflection\SourceLocator\Ast\Locator;
-use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
-use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
+use function array_map;
+use function count;
+use function is_array;
+use function is_object;
+use function is_scalar;
+use function is_string;
+use function method_exists;
 use function serialize;
 use function strlen;
 use function strpos;
 use function substr;
-use Symfony\Component\Console\Application as SymfonyApplication;
-use Symfony\Component\Filesystem\Filesystem;
-use function is_object;
-use function is_string;
-use function method_exists;
 use function unserialize;
 
 function create_application(): Application
@@ -56,19 +39,18 @@ function create_application(): Application
     return (new ApplicationFactory())->create();
 }
 
-
 /**
  * @private
+ *
  * @deprecated Will be removed in future releases.
  */
 function create_scoper(): Scoper
 {
-    return (new class extends ApplicationFactory {
+    return (new class() extends ApplicationFactory {
         public static function createScoper(): Scoper
         {
             return parent::createScoper();
         }
-
     })::createScoper();
 }
 

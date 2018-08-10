@@ -80,7 +80,7 @@ function create_fake_patcher(): Closure
  */
 function create_parser(): Parser
 {
-    return (new class extends ApplicationFactory {
+    return (new class() extends ApplicationFactory {
         public static function createParser(): Parser
         {
             return parent::createParser();
