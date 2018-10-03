@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\ConfigurableScoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Whitelist;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -30,6 +31,7 @@ use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
+use function count;
 use function Humbug\PhpScoper\get_common_path;
 
 final class AddPrefixCommand extends BaseCommand
@@ -55,7 +57,7 @@ final class AddPrefixCommand extends BaseCommand
         parent::__construct();
 
         $this->fileSystem = $fileSystem;
-        $this->scoper = $scoper;
+        $this->scoper = new ConfigurableScoper($scoper);
     }
 
     /**
@@ -132,6 +134,10 @@ final class AddPrefixCommand extends BaseCommand
 
         $config = $this->retrieveConfig($input, $output, $io);
         $output = $input->getOption(self::OUTPUT_DIR_OPT);
+
+        if ([] !== $config->getWhitelistedFiles()) {
+            $this->scoper = $this->scoper->withWhitelistedFiles(...$config->getWhitelistedFiles());
+        }
 
         $logger = new ConsoleLogger(
             $this->getApplication(),

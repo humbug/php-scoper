@@ -20,7 +20,13 @@ use Iterator;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
+use const DIRECTORY_SEPARATOR;
+use function dirname;
+use function gettype;
+use function is_array;
 use function is_bool;
+use function is_string;
+use function realpath;
 
 /**
  * @final
@@ -28,7 +34,8 @@ use function is_bool;
  */
 class Configuration
 {
-    private const PREFIX = 'prefix';
+    private const PREFIX_KEYWORD = 'prefix';
+    private const WHITELISTED_FILES_KEYWORD = 'files-whitelist';
     private const FINDER_KEYWORD = 'finders';
     private const PATCHERS_KEYWORD = 'patchers';
     private const WHITELIST_KEYWORD = 'whitelist';
@@ -37,10 +44,13 @@ class Configuration
     private const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
 
     private const KEYWORDS = [
-        self::PREFIX,
+        self::PREFIX_KEYWORD,
+        self::WHITELISTED_FILES_KEYWORD,
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
         self::WHITELIST_KEYWORD,
+        self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
+        self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
         self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
     ];
 
@@ -49,6 +59,7 @@ class Configuration
     private $filesWithContents;
     private $patchers;
     private $whitelist;
+    private $whitelistedFiles;
 
     /**
      * @param string|null $path  Absolute path to the configuration file.
@@ -77,6 +88,8 @@ class Configuration
 
         $prefix = self::retrievePrefix($config);
 
+        $whitelistedFiles = null === $path ? [] : self::retrieveWhitelistedFiles(dirname($path), $config);
+
         $patchers = self::retrievePatchers($config);
         $whitelist = self::retrieveWhitelist($config);
 
@@ -84,7 +97,7 @@ class Configuration
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
         $filesWithContents = self::retrieveFilesWithContents(chain($filesFromPaths, ...$finders));
 
-        return new self($path, $prefix, $filesWithContents, $patchers, $whitelist);
+        return new self($path, $prefix, $filesWithContents, $patchers, $whitelist, $whitelistedFiles);
     }
 
     /**
@@ -97,19 +110,22 @@ class Configuration
      * @param Closure            $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
      *                                                        returning a boolean which if `true` means the class should be scoped
      *                                                        (i.e. is ignored) or scoped otherwise.
+     * @param string[]           $whitelistedFiles            List of absolute paths of files to completely ignore
      */
     private function __construct(
         ?string $path,
         ?string $prefix,
         array $filesWithContents,
         array $patchers,
-        Whitelist $whitelist
+        Whitelist $whitelist,
+        array $whitelistedFiles
     ) {
         $this->path = $path;
         $this->prefix = $prefix;
         $this->filesWithContents = $filesWithContents;
         $this->patchers = $patchers;
         $this->whitelist = $whitelist;
+        $this->whitelistedFiles = $whitelistedFiles;
     }
 
     public function withPaths(array $paths): self
@@ -127,20 +143,22 @@ class Configuration
             $this->prefix,
             array_merge($this->filesWithContents, $filesWithContents),
             $this->patchers,
-            $this->whitelist
+            $this->whitelist,
+            $this->whitelistedFiles
         );
     }
 
     public function withPrefix(?string $prefix): self
     {
-        $prefix = self::retrievePrefix([self::PREFIX => $prefix]);
+        $prefix = self::retrievePrefix([self::PREFIX_KEYWORD => $prefix]);
 
         return new self(
             $this->path,
             $prefix,
             $this->filesWithContents,
             $this->patchers,
-            $this->whitelist
+            $this->whitelist,
+            $this->whitelistedFiles
         );
     }
 
@@ -172,6 +190,14 @@ class Configuration
         return $this->whitelist;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getWhitelistedFiles(): array
+    {
+        return $this->whitelistedFiles;
+    }
+
     private static function validateConfigKeys(array $config): void
     {
         array_map(
@@ -200,7 +226,7 @@ class Configuration
      */
     private static function retrievePrefix(array $config): ?string
     {
-        $prefix = array_key_exists(self::PREFIX, $config) ? $config[self::PREFIX] : null;
+        $prefix = array_key_exists(self::PREFIX_KEYWORD, $config) ? $config[self::PREFIX_KEYWORD] : null;
 
         if (null === $prefix) {
             return null;
@@ -323,6 +349,46 @@ class Configuration
         }
 
         return Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, $whitelistGlobalFunctions, ...$whitelist);
+    }
+
+    /**
+     * @return string[] Absolute paths
+     */
+    private static function retrieveWhitelistedFiles(string $dirPath, array $config): array
+    {
+        if (false === array_key_exists(self::WHITELISTED_FILES_KEYWORD, $config)) {
+            return [];
+        }
+
+        $whitelistedFiles = $config[self::WHITELIST_KEYWORD];
+
+        if (false === is_array($whitelistedFiles)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected whitelisted files to be an array of strings, found "%s" instead.',
+                    gettype($whitelistedFiles)
+                )
+            );
+        }
+
+        foreach ($whitelistedFiles as $index => $file) {
+            if (is_string($file)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected whitelisted files to be an array of string, the "%d" element is not.',
+                        $index
+                    )
+                );
+            }
+
+            if ('' !== $file && DIRECTORY_SEPARATOR !== $file[0]) {
+                $file = $dirPath.DIRECTORY_SEPARATOR.$file;
+            }
+
+            $whitelistedFiles[$index] = realpath($file);
+        }
+
+        return array_filter($whitelistedFiles);
     }
 
     private static function retrieveFinders(array $config): array

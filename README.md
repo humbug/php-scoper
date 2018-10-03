@@ -37,6 +37,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Prefix](#prefix)
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
+    - [Whitelisted files](#whitelisted-files)
     - [Whitelist][whitelist]
         - [Constants & functions from the global namespace](#constants--functions-from-the-global-namespace)
         - [Symbols](#symbols)
@@ -135,6 +136,7 @@ return [
     'prefix' => null,                       // string|null
     'finders' => [],                        // Finder[]
     'patchers' => [],                       // callable[]
+    'whitelisted-files' => [],              // string[]
     'whitelist' => [],                      // string[]
     'whitelist-global-constants' => true,   // bool
     'whitelist-global-classes' => true,     // bool
@@ -260,6 +262,12 @@ return [
     ],
 ];
 ```
+
+
+### Whitelisted files
+
+For the files listed in `whitelisted-files`, their content will be left
+untouched during the scoping process.
 
 
 ### Whitelist
