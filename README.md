@@ -37,6 +37,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Prefix](#prefix)
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
+    - [Whitelisted files](#whitelisted-files)
     - [Whitelist][whitelist]
         - [Constants & functions from the global namespace](#constants--functions-from-the-global-namespace)
         - [Symbols](#symbols)
