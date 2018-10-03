@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function array_flip;
-use function array_key_exists;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use function array_flip;
+use function array_key_exists;
 
 final class FileWhitelistScoper implements Scoper
 {

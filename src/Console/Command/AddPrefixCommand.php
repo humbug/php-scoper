@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use function count;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
@@ -32,6 +31,7 @@ use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
+use function count;
 use function Humbug\PhpScoper\get_common_path;
 
 final class AddPrefixCommand extends BaseCommand

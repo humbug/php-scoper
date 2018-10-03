@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;

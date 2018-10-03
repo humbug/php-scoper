@@ -15,18 +15,18 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Closure;
-use const DIRECTORY_SEPARATOR;
-use function dirname;
-use function gettype;
 use InvalidArgumentException;
-use function is_array;
-use function is_string;
 use Iterator;
-use function realpath;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Finder\Finder;
+use const DIRECTORY_SEPARATOR;
+use function dirname;
+use function gettype;
+use function is_array;
 use function is_bool;
+use function is_string;
+use function realpath;
 
 /**
  * @final
