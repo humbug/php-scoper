@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
+use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;

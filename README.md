@@ -135,6 +135,7 @@ return [
     'prefix' => null,                       // string|null
     'finders' => [],                        // Finder[]
     'patchers' => [],                       // callable[]
+    'whitelisted-files' => [],              // string[]
     'whitelist' => [],                      // string[]
     'whitelist-global-constants' => true,   // bool
     'whitelist-global-classes' => true,     // bool
@@ -260,6 +261,12 @@ return [
     ],
 ];
 ```
+
+
+### Whitelisted files
+
+For the files listed in `whitelisted-files`, their content will be left
+untouched during the scoping process.
 
 
 ### Whitelist

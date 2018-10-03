@@ -14,10 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use function count;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Whitelist;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -132,6 +134,13 @@ final class AddPrefixCommand extends BaseCommand
 
         $config = $this->retrieveConfig($input, $output, $io);
         $output = $input->getOption(self::OUTPUT_DIR_OPT);
+
+        if ([] !== $config->getWhitelistedFiles()) {
+            $this->scoper = new FileWhitelistScoper(
+                $this->scoper,
+                ...$config->getWhitelistedFiles()
+            );
+        }
 
         $logger = new ConsoleLogger(
             $this->getApplication(),
