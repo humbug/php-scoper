@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Logger\ConsoleLogger;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\ConfigurableScoper;
 use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Whitelist;
@@ -57,7 +58,7 @@ final class AddPrefixCommand extends BaseCommand
         parent::__construct();
 
         $this->fileSystem = $fileSystem;
-        $this->scoper = $scoper;
+        $this->scoper = new ConfigurableScoper($scoper);
     }
 
     /**
@@ -136,10 +137,7 @@ final class AddPrefixCommand extends BaseCommand
         $output = $input->getOption(self::OUTPUT_DIR_OPT);
 
         if ([] !== $config->getWhitelistedFiles()) {
-            $this->scoper = new FileWhitelistScoper(
-                $this->scoper,
-                ...$config->getWhitelistedFiles()
-            );
+            $this->scoper = $this->scoper->withWhitelistedFiles(...$config->getWhitelistedFiles());
         }
 
         $logger = new ConsoleLogger(
