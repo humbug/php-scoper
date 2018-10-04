@@ -39,7 +39,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Patchers](#patchers)
     - [Whitelisted files](#whitelisted-files)
     - [Whitelist][whitelist]
-        - [Constants & functions from the global namespace](#constants--functions-from-the-global-namespace)
+        - [Constants & functions from the global namespace](#constants--classes--functions-from-the-global-namespace)
         - [Symbols](#symbols)
             - [Caveats](#caveats)
             - [Implementation insights](#implementation-insights)
