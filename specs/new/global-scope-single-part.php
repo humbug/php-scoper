@@ -29,17 +29,12 @@ return [
         'payload' => <<<'PHP'
 <?php
 
-class Foo {}
-
 new Foo();
 ----
 <?php
 
 namespace Humbug;
 
-class Foo
-{
-}
 new \Humbug\Foo();
 
 PHP
@@ -64,17 +59,12 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-class Foo {}
-
 new \Foo();
 ----
 <?php
 
 namespace Humbug;
 
-class Foo
-{
-}
 new \Humbug\Foo();
 
 PHP
