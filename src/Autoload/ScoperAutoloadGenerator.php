@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use function array_column;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
 use const PHP_EOL;
+use function array_column;
 use function array_map;
 use function array_unshift;
 use function sprintf;
