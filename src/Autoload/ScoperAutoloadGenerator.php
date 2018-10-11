@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Autoload;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
 use const PHP_EOL;
+use function array_column;
 use function array_map;
 use function array_unshift;
 use function sprintf;
@@ -39,8 +40,22 @@ final class ScoperAutoloadGenerator
 
         $hasNamespacedFunctions = $this->hasNamespacedFunctions($whitelistedFunctions);
 
-        $statements = implode(PHP_EOL, $this->createClassAliasStatements($prefix, $hasNamespacedFunctions)).PHP_EOL.PHP_EOL;
-        $statements .= implode(PHP_EOL, $this->createFunctionAliasStatements($whitelistedFunctions, $hasNamespacedFunctions));
+        $statements = implode(
+            PHP_EOL,
+            $this->createClassAliasStatements(
+                $this->whitelist->getRecordedWhitelistedClasses(),
+                $hasNamespacedFunctions)
+            )
+            .PHP_EOL
+            .PHP_EOL
+        ;
+        $statements .= implode(
+            PHP_EOL,
+            $this->createFunctionAliasStatements(
+                $whitelistedFunctions,
+                $hasNamespacedFunctions
+            )
+        );
 
         if ($hasNamespacedFunctions) {
             $dump = <<<PHP
@@ -82,17 +97,19 @@ PHP;
     /**
      * @return string[]
      */
-    private function createClassAliasStatements(string $prefix, bool $hasNamespacedFunctions): array
+    private function createClassAliasStatements(array $whitelistedClasses, bool $hasNamespacedFunctions): array
     {
         $statements = array_map(
-            function (string $whitelistedElement) use ($prefix): string {
+            function (string $prefixedClass): string {
                 return sprintf(
-                    'class_exists(\'%s\%s\');',
-                    $prefix,
-                    $whitelistedElement
+                    'class_exists(\'%s\');',
+                    $prefixedClass
                 );
             },
-            $this->whitelist->getClassWhitelistArray()
+            array_column(
+                $whitelistedClasses,
+                1
+            )
         );
 
         if ([] === $statements) {

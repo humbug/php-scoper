@@ -55,7 +55,7 @@ PHPSCOPER=bin/php-scoper.phar
 .PHONY: e2e_004
 e2e_004:	## Run end-to-end tests for the fixture set 004 — Source code case
 e2e_004: bin/php-scoper.phar
-	$(PHPBIN) $(BOX) compile --working-dir fixtures/set004
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set004
 
 	php build/set004/bin/greet.phar > build/set004/output
 	diff fixtures/set004/expected-output build/set004/output
@@ -63,7 +63,7 @@ e2e_004: bin/php-scoper.phar
 .PHONY: e2e_005
 e2e_005:	## Run end-to-end tests for the fixture set 005 — Third-party code case
 e2e_005: bin/php-scoper.phar fixtures/set005/vendor
-	$(PHPBIN) $(BOX) compile --working-dir fixtures/set005
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set005
 
 	php build/set005/bin/greet.phar > build/set005/output
 	diff fixtures/set005/expected-output build/set005/output
@@ -71,7 +71,7 @@ e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 .PHONY: e2e_011
 e2e_011:	## Run end-to-end tests for the fixture set 011 — Whitelist case
 e2e_011: bin/php-scoper.phar fixtures/set011/vendor
-	$(PHPBIN) $(BOX) compile --working-dir fixtures/set011
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set011
 	cp -R fixtures/set011/tests/ build/set011/tests/
 
 	php build/set011/bin/greet.phar > build/set011/output
@@ -88,7 +88,7 @@ e2e_013: bin/php-scoper.phar
 .PHONY: e2e_014
 e2e_014:	## Run end-to-end tests for the fixture set 014 — Source code case with PSR-0
 e2e_014: bin/php-scoper.phar
-	$(PHPBIN) $(BOX) compile --working-dir fixtures/set014
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set014
 
 	php build/set014/bin/greet.phar > build/set014/output
 	diff fixtures/set014/expected-output build/set014/output
@@ -96,7 +96,7 @@ e2e_014: bin/php-scoper.phar
 .PHONY: e2e_015
 e2e_015:	## Run end-to-end tests for the fixture set 015 — Third-party code case with PSR-0
 e2e_015: bin/php-scoper.phar fixtures/set015/vendor
-	$(PHPBIN) $(BOX) compile --working-dir fixtures/set015
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set015
 
 	php build/set015/bin/greet.phar > build/set015/output
 	diff fixtures/set015/expected-output build/set015/output
@@ -205,7 +205,7 @@ e2e_021: bin/php-scoper.phar fixtures/set021-composer/vendor
 .PHONY: e2e_022
 e2e_022:	## Run end-to-end tests for the fixture set 022 — Whitelist the project code with namespace whitelisting
 e2e_022: bin/php-scoper.phar fixtures/set022/vendor
-	$(PHPBIN) $(BOX) compile --working-dir fixtures/set022
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set022
 	cp -R fixtures/set022/tests/ build/set022/tests/
 
 	php build/set022/bin/greet.phar > build/set022/output
@@ -318,7 +318,7 @@ fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
 	touch $@
 
-fixtures/set011/vendor: fixtures/set011/vendor
+fixtures/set011/vendor:
 	composer --working-dir=fixtures/set011 dump-autoload
 	touch $@
 

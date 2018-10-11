@@ -19,14 +19,21 @@ use InvalidArgumentException;
 use Iterator;
 use RuntimeException;
 use SplFileInfo;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use const DIRECTORY_SEPARATOR;
 use function dirname;
+use function file_exists;
 use function gettype;
+use function in_array;
 use function is_array;
 use function is_bool;
+use function is_file;
+use function is_link;
 use function is_string;
+use function readlink;
 use function realpath;
+use function sprintf;
 
 /**
  * @final
@@ -72,6 +79,36 @@ class Configuration
         if (null === $path) {
             $config = [];
         } else {
+            if (false === (new Filesystem())->isAbsolutePath($path)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected the path of the configuration file to load to be an absolute path, got "%s" '
+                        .'instead',
+                        $path
+                    )
+                );
+            }
+
+            if (false === file_exists($path)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected the path of the configuration file to exists but the file "%s" could not be '
+                        .'found',
+                        $path
+                    )
+                );
+            }
+
+            if (false === is_file($path) && false === (is_link($path) && is_file(readlink($path)))) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected the path of the configuration file to be a file but "%s" appears to be a '
+                        .'directory.',
+                        $path
+                    )
+                );
+            }
+
             $config = include $path;
 
             if (false === is_array($config)) {
@@ -162,7 +199,7 @@ class Configuration
         );
     }
 
-    public function getPath(): string
+    public function getPath(): ?string
     {
         return $this->path;
     }
@@ -208,7 +245,7 @@ class Configuration
 
     private static function validateConfigKey(string $key): void
     {
-        if (false === in_array($key, self::KEYWORDS)) {
+        if (false === in_array($key, self::KEYWORDS, true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Invalid configuration key value "%s" found.',
@@ -360,7 +397,7 @@ class Configuration
             return [];
         }
 
-        $whitelistedFiles = $config[self::WHITELIST_KEYWORD];
+        $whitelistedFiles = $config[self::WHITELISTED_FILES_KEYWORD];
 
         if (false === is_array($whitelistedFiles)) {
             throw new InvalidArgumentException(
@@ -372,7 +409,7 @@ class Configuration
         }
 
         foreach ($whitelistedFiles as $index => $file) {
-            if (is_string($file)) {
+            if (false === is_string($file)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected whitelisted files to be an array of string, the "%d" element is not.',
@@ -381,7 +418,7 @@ class Configuration
                 );
             }
 
-            if ('' !== $file && DIRECTORY_SEPARATOR !== $file[0]) {
+            if (false === (new Filesystem())->isAbsolutePath($file)) {
                 $file = $dirPath.DIRECTORY_SEPARATOR.$file;
             }
 
