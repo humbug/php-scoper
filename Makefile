@@ -167,16 +167,18 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
 	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection \
 		--output-dir=../../build/set020-infection \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set020-infection dump-autoload
 
 	php fixtures/set020-infection/vendor/infection/infection/bin/infection \
 		--coverage=dist/infection-coverage \
 		> build/set020-infection/expected-output
+	sed 's/Time.*//' build/set020-infection/expected-output > build/set020-infection/expected-output
+
 	php build/set020-infection/vendor/infection/infection/bin/infection \
 		--coverage=dist/infection-coverage \
 		> build/set020-infection/output
+	sed 's/Time.*//' build/set020-infection/output > build/set020-infection/output
 
 	diff build/set020-infection/expected-output build/set020-infection/output
 
