@@ -1,6 +1,4 @@
 {
-    "chmod": "0755",
-
     "algorithm": "OPENSSL",
     "key": ".travis/php-scoper-private.pem",
 
