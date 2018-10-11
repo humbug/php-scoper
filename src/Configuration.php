@@ -15,16 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Closure;
-use function file_exists;
-use function in_array;
 use InvalidArgumentException;
-use function is_file;
-use function is_link;
 use Iterator;
-use function readlink;
 use RuntimeException;
 use SplFileInfo;
-use function sprintf;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use const DIRECTORY_SEPARATOR;
@@ -39,7 +33,7 @@ use function is_link;
 use function is_string;
 use function readlink;
 use function realpath;
-use function var_dump;
+use function sprintf;
 
 /**
  * @final
