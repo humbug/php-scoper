@@ -14,7 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
+use PackageVersions\Versions;
 use Symfony\Component\Console\Application as SymfonyApplication;
+use function trim;
 
 final class Application extends SymfonyApplication
 {
@@ -30,15 +32,38 @@ final class Application extends SymfonyApplication
 
 ASCII;
 
+    private $releaseDate;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(string $name = 'Box', string $version = null, string $releaseDate = '@release-date@')
+    {
+        if (null === $version) {
+            $rawVersion = Versions::getVersion('humbug/php-scoper');
+
+            [$prettyVersion, $commitHash] = explode('@', $rawVersion);
+
+            $version = $prettyVersion.'@'.substr($commitHash, 0, 7);
+        }
+
+        $this->releaseDate = false === strpos($releaseDate, '@') ? $releaseDate : '';
+
+        parent::__construct($name, $version);
+    }
+
     /**
      * @inheritdoc
      */
     public function getLongVersion(): string
     {
-        return sprintf(
-            '<info>%s</info> version <comment>%s</comment>',
-            $this->getName(),
-            $this->getVersion()
+        return trim(
+            sprintf(
+                '<info>%s</info> version <comment>%s</comment> %s',
+                $this->getName(),
+                $this->getVersion(),
+                $this->releaseDate
+            )
         );
     }
 

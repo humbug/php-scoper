@@ -19,6 +19,7 @@ use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
+use function preg_replace;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -103,6 +104,7 @@ Available commands:
 EOF;
 
         $actual = $this->appTester->getDisplay(true);
+        $actual = preg_replace('/php-scoper-test version .*/', 'php-scoper-test version UNKNOWN', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
@@ -126,6 +128,7 @@ php-scoper-test version UNKNOWN
 EOF;
 
         $actual = $this->appTester->getDisplay(true);
+        $actual = preg_replace('/php-scoper-test version .*/', 'php-scoper-test version UNKNOWN', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
