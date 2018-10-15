@@ -30,7 +30,15 @@ final class ConfigurableScoper implements Scoper
     {
         $self = clone $this;
 
-        return [] === $whitelistedFiles ? $self : new self(new FileWhitelistScoper($self));
+        return [] === $whitelistedFiles 
+            ? $self 
+            : new self(
+                new FileWhitelistScoper(
+                    $self, 
+                    ...$whitelistedFiles
+                )
+            )
+        ;
     }
 
     /**
