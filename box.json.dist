@@ -1,11 +1,20 @@
 {
-    "algorithm": "OPENSSL",
-    "key": ".travis/php-scoper-private.pem",
+    "banner": [
+        "This file is part of the humbug/php-scoper package.",
+        "",
+        "Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,",
+        "                   Pádraic Brady <padraic.brady@gmail.com>",
+        "                   Bernhard Schussek <bschussek@gmail.com>",
+        "",
+        "This source file is subject to the MIT license that is bundled",
+        "with this source code in the file LICENSE."
+    ],
 
     "files": [
         "src/scoper.inc.php.tpl"
     ],
     "git": "git_version_placeholder",
+    "datetime": "release-date",
 
     "compression": "GZ",
 

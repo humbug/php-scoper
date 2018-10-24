@@ -416,12 +416,9 @@ fixtures/set025/composer.lock: fixtures/set025/composer.json
 fixtures/set027-laravel/composer.lock: fixtures/set027-laravel/composer.json
 	@echo fixtures/set027-laravel/composer.lock is not up to date.
 
-bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json
+bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json.dist
 	$(BOX) compile
 	touch $@
-
-box.json: box.json.dist
-	cat box.json.dist | sed -E 's/\"key\": \".+\",//g' | sed -E 's/\"algorithm\": \".+\",//g' > box.json
 
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
 clover.xml: src

@@ -31,6 +31,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 
 - [Installation](#installation)
 - [Usage](#usage)
+    - [Phive](#phive)
     - [PHAR](#phar)
     - [Composer](#composer)
 - [Configuration](#configuration)
@@ -67,15 +68,26 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ## Installation
 
 
+### Phive
+
+
+You can install Box with [Phive][phive]
+
+```bash
+$ phive install humbug/php-scoper --force-accept-unsigned
+```
+
+To upgrade `php-scoper` use the following command:
+
+```bash
+$ phive update humbug/php-scoper --force-accept-unsigned
+```
+
+
 ### PHAR
 
 The preferred method of installation is to use the PHP-Scoper PHAR, which can
 be downloaded from the most recent [Github Release][releases].
-
-As the PHAR is signed, you should also download the matching
-`php-scoper.phar.pubkey` to the same location. If you rename `php-scoper.phar`
-to `php-scoper`, you should also rename `php-scoper.phar.pubkey` to
-`php-scoper.pubkey`.
 
 
 ### Composer
@@ -764,3 +776,4 @@ now been moved under the
 [patchers]: #patchers
 [php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
 [phar-extract-to]: https://secure.php.net/manual/en/phar.extractto.php
+[phive]: https://github.com/phar-io/phive

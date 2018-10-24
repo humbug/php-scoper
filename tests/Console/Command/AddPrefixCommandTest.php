@@ -26,6 +26,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 use function file_get_contents;
 use function Humbug\PhpScoper\escape_path;
+use function preg_replace;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
@@ -103,6 +104,7 @@ Available commands:
 EOF;
 
         $actual = $this->appTester->getDisplay(true);
+        $actual = preg_replace('/php-scoper-test version .*/', 'php-scoper-test version UNKNOWN', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
@@ -126,6 +128,7 @@ php-scoper-test version UNKNOWN
 EOF;
 
         $actual = $this->appTester->getDisplay(true);
+        $actual = preg_replace('/php-scoper-test version .*/', 'php-scoper-test version UNKNOWN', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
