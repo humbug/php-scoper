@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Error;
 use Generator;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
@@ -113,7 +114,15 @@ class PhpScoperSpecTest extends TestCase
 
             return;
         } catch (Throwable $throwable) {
-            $this->fail('Could not parse the spec: '.$spec);
+            throw new Error(
+                sprintf(
+                    'Could not parse the spec %s: %s',
+                    $spec,
+                    $throwable->getMessage()
+                ),
+                0,
+                $throwable
+            );
         }
 
         $specMessage = $this->createSpecMessage(

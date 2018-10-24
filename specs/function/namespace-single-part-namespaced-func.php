@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
+        'whitelist-global-functions' => false,
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -59,6 +59,7 @@ PHP
 
     'Whitelisted namespaced function call' => [
         'whitelist' => ['PHPUnit\X\main'],
+        // No function registered to the whitelist here since no FQ could be resolved
         'payload' => <<<'PHP'
 <?php
 
@@ -77,6 +78,9 @@ PHP
 
     'FQ whitelisted namespaced function call' => [
         'whitelist' => ['PHPUnit\main'],
+        'registered-functions' => [
+            ['PHPUnit\main', 'Humbug\PHPUnit\main'],
+        ],
         'payload' => <<<'PHP'
 <?php
 

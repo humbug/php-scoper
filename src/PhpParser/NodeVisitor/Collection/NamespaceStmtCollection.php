@@ -67,6 +67,17 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return $this->getNodeNamespace($node);
     }
 
+    public function findNamespaceByName(string $name): ?Name
+    {
+        foreach ($this->nodes as $node) {
+            if ((string) $node->name === $name) {
+                return $node->name;
+            }
+        }
+
+        return null;
+    }
+
     public function getCurrentNamespaceName(): ?Name
     {
         if (0 === count($this->nodes)) {
