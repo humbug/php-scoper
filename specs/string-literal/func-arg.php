@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => true,
+        'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
+        'whitelist-global-functions' => false,
         'registered-classes' => [],
         'registered-functions' => [],
     ],

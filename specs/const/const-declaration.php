@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
+        'whitelist-global-functions' => false,
         'registered-classes' => [],
         'registered-functions' => [],
     ],

@@ -20,7 +20,7 @@ return [
         'whitelist' => [],
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
+        'whitelist-global-functions' => false,
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -42,6 +42,28 @@ use function Humbug\main as foo;
 PHP
     ,
 
+    'Global function call imported with a use statement in the global scope with global functions whitelisted' => [
+        'whitelist-global-functions' => true,
+        'registered-functions' => [
+            ['main', 'Humbug\main'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+use function main as foo;
+
+foo();
+----
+<?php
+
+namespace Humbug;
+
+use function Humbug\main as foo;
+\Humbug\main();
+
+PHP
+    ],
+
     'Global FQ function call imported with a use statement in the global scope' => <<<'PHP'
 <?php
 
@@ -58,4 +80,26 @@ use function Humbug\main as foo;
 
 PHP
     ,
+
+    'Global FQ function call imported with a use statement in the global scope with global functions whitelisted' => [
+        'whitelist-global-functions' => true,
+        'registered-functions' => [
+            ['foo', 'Humbug\foo'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+use function main as foo;
+
+\foo();
+----
+<?php
+
+namespace Humbug;
+
+use function Humbug\main as foo;
+\Humbug\foo();
+
+PHP
+    ],
 ];

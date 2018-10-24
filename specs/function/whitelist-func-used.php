@@ -14,21 +14,19 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global function call imported with a use statement in the global scope',
+        'title' => 'Whitelisting functions which are never declared',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => true,
+        'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => false,
         'registered-classes' => [],
         'registered-functions' => [],
     ],
 
-    'Global function call imported with a use statement in the global scope' => <<<'PHP'
+    'Non whitelisted global function call' => <<<'PHP'
 <?php
-
-use function main;
 
 main();
 ----
@@ -36,52 +34,31 @@ main();
 
 namespace Humbug;
 
-use function Humbug\main;
 \Humbug\main();
 
 PHP
     ,
 
-    'Global function call imported with a use statement in the global scope with global functions whitelisted' => [
-        'whitelist-global-functions' => true,
+    'Whitelisted global function call' => [
+        'whitelist' => ['main'],
         'registered-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
 <?php
 
-use function main;
-
 main();
 ----
 <?php
 
 namespace Humbug;
 
-use function Humbug\main;
 \Humbug\main();
 
 PHP
     ],
 
-    'Global FQ function call imported with a use statement in the global scope' => <<<'PHP'
-<?php
-
-use function main;
-
-\main();
-----
-<?php
-
-namespace Humbug;
-
-use function Humbug\main;
-\Humbug\main();
-
-PHP
-    ,
-
-    'Global FQ function call imported with a use statement in the global scope with global functions whitelisted' => [
+    'Global function call with whitelisted global functions' => [
         'whitelist-global-functions' => true,
         'registered-functions' => [
             ['main', 'Humbug\main'],
@@ -89,16 +66,46 @@ PHP
         'payload' => <<<'PHP'
 <?php
 
-use function main;
-
-\main();
+main();
 ----
 <?php
 
 namespace Humbug;
 
-use function Humbug\main;
 \Humbug\main();
+
+PHP
+    ],
+
+    'Global function call with non-whitelisted global functions' => <<<'PHP'
+<?php
+
+main();
+----
+<?php
+
+namespace Humbug;
+
+\Humbug\main();
+
+PHP
+    ,
+
+    'Whitelisted namespaced function call' => [
+        'whitelist' => ['Acme\main'],
+        'registered-functions' => [],   // Nothing registered here since the FQ could not be resolved
+        'payload' => <<<'PHP'
+<?php
+
+namespace Acme;
+
+main();
+----
+<?php
+
+namespace Humbug\Acme;
+
+main();
 
 PHP
     ],

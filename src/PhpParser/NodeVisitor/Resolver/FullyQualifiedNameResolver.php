@@ -19,6 +19,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NameStmtPrefixer;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use function ltrim;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -26,6 +27,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use function in_array;
+use PhpParser\Node\Scalar\String_;
 
 /**
  * Attempts to resolve the node name into a fully qualified node. Returns a valid (non fully-qualified) name node on
@@ -51,6 +53,10 @@ final class FullyQualifiedNameResolver
     {
         if ($node instanceof FullyQualified) {
             return new ResolvedValue($node, null, null);
+        }
+
+        if ($node instanceof String_) {
+            return $this->resolveStringName($node);
         }
 
         if ($node instanceof Identifier) {
@@ -93,5 +99,23 @@ final class FullyQualifiedNameResolver
         }
 
         return FullyQualified::concat($namespace, $name, $name->getAttributes());
+    }
+
+    private function resolveStringName(String_ $node): ResolvedValue
+    {
+        $name = new FullyQualified(ltrim($node->value, '\\'));
+
+        $deducedNamespaceName = $name->slice(0, -1);
+        $namespaceName = null;
+
+        if (null !== $deducedNamespaceName) {
+            $namespaceName = $this->namespaceStatements->findNamespaceByName($deducedNamespaceName->toString());
+        }
+
+        return new ResolvedValue(
+            $name,
+            $namespaceName,
+            null
+        );
     }
 }
