@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use function func_get_args;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
@@ -49,7 +50,7 @@ final class PhpScoper implements Scoper
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         if (false === $this->isPhpFile($filePath, $contents)) {
-            return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+            return $this->decoratedScoper->scope(...func_get_args());
         }
 
         return $this->scopePhp($contents, $prefix, $whitelist);

@@ -16,30 +16,37 @@ namespace Humbug\PhpScoper\Scoper;
 
 use function func_get_args;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\Symfony\PhpScoper as SymfonyPhpScoper;
+use Humbug\PhpScoper\Scoper\Symfony\XmlScoper as SymfonyXmlScoper;
+use Humbug\PhpScoper\Scoper\Symfony\YamlScoper as SymfonyYamlScoper;
 use Humbug\PhpScoper\Whitelist;
+use PhpParser\Error as PhpParserError;
 
-final class PatchScoper implements Scoper
+/**
+ * Scopes the Symfony configuration related files.
+ */
+final class SymfonyScoper implements Scoper
 {
     private $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
-        $this->decoratedScoper = $decoratedScoper;
+        $this->decoratedScoper = new SymfonyPhpScoper(
+            new SymfonyXmlScoper(
+                new SymfonyYamlScoper($decoratedScoper)
+            )
+        );
     }
 
     /**
-     * @inheritdoc
+     * Scopes PHP files.
+     *
+     * {@inheritdoc}
+     *
+     * @throws PhpParserError
      */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
-        $contents = $this->decoratedScoper->scope(...func_get_args());
-
-        return array_reduce(
-            $patchers,
-            static function (string $contents, callable $patcher) use ($filePath, $prefix): string {
-                return $patcher($filePath, $prefix, $contents);
-            },
-            $contents
-        );
+        return $this->decoratedScoper->scope(...func_get_args());
     }
 }

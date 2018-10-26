@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use function func_get_args;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use function array_flip;
@@ -39,6 +40,6 @@ final class FileWhitelistScoper implements Scoper
             return $contents;
         }
 
-        return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        return $this->decoratedScoper->scope(...func_get_args());
     }
 }
