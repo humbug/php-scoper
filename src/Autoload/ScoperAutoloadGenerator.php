@@ -157,12 +157,13 @@ EOF
 
                 if ($hasNamespacedFunctions) {
                     $namespace = $original->slice(0, -1);
+                    $functionName = null === $namespace ? $original->toString() : $original->slice(1)->toString();
 
                     return sprintf(
                         <<<'PHP'
 namespace %s{
     if (!function_exists('%s')) {
-        function %s() {
+        function %s(%s) {
             return \%s(...func_get_args());
         }
     }
@@ -171,7 +172,8 @@ PHP
                         ,
                         null === $namespace ? '' : $namespace->toString().' ',
                         $original->toString(),
-                        null === $namespace ? $original->toString() : $original->slice(1)->toString(),
+                        $functionName,
+                        '__autoload' === $functionName ? '$className' : '',
                         $alias->toString()
                     );
                 }
@@ -179,13 +181,14 @@ PHP
                 return sprintf(
                     <<<'PHP'
 if (!function_exists('%1$s')) {
-    function %1$s() {
-        return \%2$s(...func_get_args());
+    function %1$s(%2$s) {
+        return \%3$s(...func_get_args());
     }
 }
 PHP
                     ,
                     $original,
+                    '__autoload' === (string) $original ? '$className' : '',
                     $alias
                 );
             },
