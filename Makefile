@@ -62,7 +62,7 @@ tm: bin/phpunit
 
 .PHONY: e2e
 e2e:	## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -299,6 +299,23 @@ e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
 
 
+.PHONY: e2e_028
+e2e_028:	## Run end-to-end tests for the fixture set 028 — Symfony
+e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
+	php $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set028-symfony \
+		--output-dir=../../build/set028-symfony \
+		--no-config \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	APP_ENV=dev composer --working-dir=build/set028-symfony dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set028-symfony/bin/console -V > fixtures/set028-symfony/expected-output
+
+	APP_ENV=dev php build/set028-symfony/bin/console -V > build/set028-symfony/output
+	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
+
+
 .PHONY: tb
 BLACKFIRE=blackfire
 tb:	## Run Blackfire profiling
@@ -396,6 +413,10 @@ fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
 	composer --working-dir=fixtures/set027-laravel install --no-dev
 	touch $@
 
+fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
+	composer --working-dir=fixtures/set028-symfony install --no-dev
+	touch $@
+
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
@@ -443,6 +464,9 @@ fixtures/set025/composer.lock: fixtures/set025/composer.json
 
 fixtures/set027-laravel/composer.lock: fixtures/set027-laravel/composer.json
 	@echo fixtures/set027-laravel/composer.lock is not up to date.
+
+fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
+	@echo fixtures/set028-symfony/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json.dist
 	$(BOX) compile
