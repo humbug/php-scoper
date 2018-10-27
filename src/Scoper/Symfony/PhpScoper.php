@@ -23,7 +23,7 @@ use function func_get_args;
  */
 final class PhpScoper implements Scoper
 {
-    private const FILE_PATH_PATTERN = '/.*\.ya?ml$/i';
+    private const FILE_PATH_PATTERN = '/TODO/i';
 
     private $decoratedScoper;
 
