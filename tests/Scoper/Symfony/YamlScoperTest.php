@@ -36,7 +36,7 @@ class YamlScoperTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
@@ -44,7 +44,7 @@ class YamlScoperTest extends TestCase
         $this->scoper = new YamlScoper($this->decoratedScoper);
     }
 
-    public function test_it_is_a_Scoper()
+    public function test_it_is_a_Scoper(): void
     {
         $this->assertTrue(is_a(YamlScoper::class, Scoper::class, true));
     }
@@ -52,7 +52,7 @@ class YamlScoperTest extends TestCase
     /**
      * @dataProvider provideYamlFilesExtensions
      */
-    public function test_it_can_scope_Yaml_files(string $file, bool $scoped)
+    public function test_it_can_scope_Yaml_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
@@ -78,7 +78,7 @@ class YamlScoperTest extends TestCase
     /**
      * @dataProvider provideYamlFiles
      */
-    public function test_it_scopes_Yaml_files(string $contents, string $expected)
+    public function test_it_scopes_Yaml_files(string $contents, string $expected): void
     {
         $prefix = 'Humbug';
         $file = 'file.yaml';
@@ -100,6 +100,7 @@ class YamlScoperTest extends TestCase
         yield ['file.YML', true];
         yield ['file.yam', false];
         yield ['file.aml', false];
+        yield ['file', false];
     }
 
     public function provideYamlFiles(): Generator

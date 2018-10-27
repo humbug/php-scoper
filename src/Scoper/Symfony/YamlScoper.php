@@ -77,7 +77,6 @@ final class YamlScoper implements Scoper
         return $contents;
     }
 
-
     private function replaceClasses(array $classes, array $separators, string $prefix, string $contents): string
     {
         if ([] === $classes) {
