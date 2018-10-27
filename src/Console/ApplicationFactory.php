@@ -24,6 +24,7 @@ use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use PackageVersions\Versions;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -71,7 +72,9 @@ class ApplicationFactory
                 static::createParser(),
                 new JsonFileScoper(
                     new InstalledPackagesScoper(
-                        new NullScoper()
+                        new SymfonyScoper(
+                            new NullScoper()
+                        )
                     )
                 ),
                 new TraverserFactory(static::createReflector())
