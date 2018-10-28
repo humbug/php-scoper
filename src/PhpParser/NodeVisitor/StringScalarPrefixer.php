@@ -23,6 +23,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
@@ -148,7 +149,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         // In the case of a function call, we allow to prefix strings which could be classes belonging to the global
         // namespace in some cases
-        $functionName = is_stringable($functionNode->name) ? (string) $functionNode->name : null;
+        $functionName = $functionNode->name instanceof Name? (string) $functionNode->name : null;
 
         if (false === in_array($functionName, self::SPECIAL_FUNCTION_NAMES, true)) {
             return $this->belongsToTheGlobalNamespace($string)
@@ -222,7 +223,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         /** @var FuncCall $functionNode */
-        if (false === is_stringable($functionNode->name)) {
+        if (false === ($functionNode->name instanceof Name)) {
             return $string;
         }
 
@@ -254,7 +255,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         /* @var FuncCall $argParent */
-        if ('define' !== (string) $argParent->name) {
+        if (false === ($argParent->name instanceof Name) || 'define' !== (string) $argParent->name) {
             return false;
         }
 

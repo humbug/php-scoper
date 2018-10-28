@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use function array_key_exists;
 use Closure;
 use InvalidArgumentException;
 use Iterator;
@@ -140,11 +141,10 @@ class Configuration
     /**
      * @param string|null        $path                        Absolute path to the configuration file loaded.
      * @param string|null        $prefix                      The prefix applied.
-     * @param [string, string][] $filesWithContents           Array of tuple with the first argument being the file path and the second its contents
+     * @param string[][] $filesWithContents           Array of tuple with the first argument being the file path and the second its contents
      * @param callable[]         $patchers                    List of closures which can alter the content of the files being
      *                                                        scoped.
      * @param Whitelist          $whitelist                   List of classes that will not be scoped.
-     * @param Closure            $globalNamespaceWhitelisters Closure taking a class name from the global namespace as an argument and
      *                                                        returning a boolean which if `true` means the class should be scoped
      *                                                        (i.e. is ignored) or scoped otherwise.
      * @param string[]           $whitelistedFiles            List of absolute paths of files to completely ignore
@@ -238,7 +238,7 @@ class Configuration
     private static function validateConfigKeys(array $config): void
     {
         array_map(
-            ['self', 'validateConfigKey'],
+            self::class.'::validateConfigKey',
             array_keys($config)
         );
     }
@@ -263,7 +263,7 @@ class Configuration
      */
     private static function retrievePrefix(array $config): ?string
     {
-        $prefix = array_key_exists(self::PREFIX_KEYWORD, $config) ? $config[self::PREFIX_KEYWORD] : null;
+        $prefix = $config[self::PREFIX_KEYWORD] ?? null;
 
         if (null === $prefix) {
             return null;
@@ -515,7 +515,7 @@ class Configuration
     /**
      * @param Iterator $files
      *
-     * @return [string, string][] Array of tuple with the first argument being the file path and the second its contents
+     * @return string[][] Array of tuple with the first argument being the file path and the second its contents
      */
     private static function retrieveFilesWithContents(Iterator $files): array
     {

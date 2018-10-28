@@ -15,9 +15,11 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Whitelist;
+use function is_string;
 use stdClass;
 use function array_map;
 use function is_array;
+use function str_replace;
 
 /**
  * @private
@@ -28,16 +30,16 @@ final class AutoloadPrefixer
      * @param stdClass $contents Decoded JSON
      * @param string   $prefix
      *
-     * @return array Prefixed decoded JSON
+     * @return stdClass Prefixed decoded JSON
      */
-    public static function prefixPackageAutoloads(stdClass $contents, string $prefix, Whitelist $whitelist): stdClass
+    public static function prefixPackageAutoloadStatements(stdClass $contents, string $prefix, Whitelist $whitelist): stdClass
     {
         if (isset($contents->autoload)) {
-            $contents->autoload = self::prefixAutoloads($contents->autoload, $prefix, $whitelist);
+            $contents->autoload = self::prefixAutoloadStatements($contents->autoload, $prefix, $whitelist);
         }
 
         if (isset($contents->{'autoload-dev'})) {
-            $contents->{'autoload-dev'} = self::prefixAutoloads($contents->{'autoload-dev'}, $prefix, $whitelist);
+            $contents->{'autoload-dev'} = self::prefixAutoloadStatements($contents->{'autoload-dev'}, $prefix, $whitelist);
         }
 
         if (isset($contents->extra, $contents->extra->laravel, $contents->extra->laravel->providers)) {
@@ -47,7 +49,7 @@ final class AutoloadPrefixer
         return $contents;
     }
 
-    private static function prefixAutoloads(stdClass $autoload, string $prefix, Whitelist $whitelist): stdClass
+    private static function prefixAutoloadStatements(stdClass $autoload, string $prefix, Whitelist $whitelist): stdClass
     {
         if (false === isset($autoload->{'psr-4'}) && false === isset($autoload->{'psr-0'})) {
             return $autoload;
@@ -84,6 +86,12 @@ final class AutoloadPrefixer
         return $loader;
     }
 
+    /**
+     * @param (string|string[])[] $psr0
+     * @param (string|string[])[] $psr4
+     *
+     * @return (string|string[])[]
+     */
     private static function mergePSR0And4(array $psr0, array $psr4): array
     {
         foreach ($psr0 as $namespace => $path) {
@@ -92,14 +100,14 @@ final class AutoloadPrefixer
                 $namespace .= '\\';
             }
 
-            $path = self::updatePSR0Path($path, $namespace);
+            $path = self::updatePSR0Path($path, (string) $namespace);
 
             if (!isset($psr4[$namespace])) {
                 $psr4[$namespace] = $path;
 
                 continue;
             }
-            $psr4[$namespace] = self::mergeNamespaces($namespace, $path, $psr4);
+            $psr4[$namespace] = self::mergeNamespaces((string) $namespace, $path, $psr4);
         }
 
         return $psr4;
@@ -144,25 +152,26 @@ final class AutoloadPrefixer
      * or simply the namespace not existing as a psr-4 entry.
      *
      * @param string       $psr0Namespace
-     * @param string|array $psr0Path
-     * @param string|array $psr4
+     * @param string|string[] $psr0Path
+     * @param (string|string[])[] $psr4
      *
-     * @return string|array
+     * @return string|string[]
      */
-    private static function mergeNamespaces(string $psr0Namespace, $psr0Path, $psr4)
+    private static function mergeNamespaces(string $psr0Namespace, $psr0Path, array $psr4)
     {
         // Both strings
         if (is_string($psr4[$psr0Namespace]) && is_string($psr0Path)) {
             return [$psr4[$psr0Namespace], $psr0Path];
         }
-        //psr-4 is string, and psr-0 is array
+
+        // PSR-4 is string, and PSR-0 is array
         if (is_string($psr4[$psr0Namespace]) && is_array($psr0Path)) {
             $psr0Path[] = $psr4[$psr0Namespace];
 
             return $psr0Path;
         }
 
-        //psr-4 is array and psr-0 is string
+        // Psr-4 is array and psr-0 is string
         if (is_array($psr4[$psr0Namespace]) && is_string($psr0Path)) {
             $psr4[$psr0Namespace][] = $psr0Path;
 
