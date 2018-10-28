@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use LogicException;
 use PhpParser\ErrorHandler;
 use PhpParser\Parser;
-use LogicException;
 
 final class FakeParser implements Parser
 {

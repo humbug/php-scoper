@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Whitelist;
-use function is_array;
 use stdClass;
 use function array_map;
+use function is_array;
 
 /**
  * @private

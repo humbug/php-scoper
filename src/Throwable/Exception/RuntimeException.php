@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 namespace Humbug\PhpScoper\Throwable\Exception;
+
 use RuntimeException;
 
 class RuntimeException extends RuntimeException
