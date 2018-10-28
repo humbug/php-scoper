@@ -118,7 +118,7 @@ final class Whitelist implements Countable
     private static function assertValidPattern(string $element): void
     {
         if (1 !== preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'Invalid whitelist pattern "%s".',
                     $element
@@ -272,7 +272,7 @@ final class Whitelist implements Countable
     {
         return array_filter(
             $this->original,
-            function (string $name): bool {
+            static function (string $name): bool {
                 return '*' !== $name && '\*' !== substr($name, -2);
             }
         );

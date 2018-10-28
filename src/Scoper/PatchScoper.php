@@ -35,7 +35,7 @@ final class PatchScoper implements Scoper
 
         return array_reduce(
             $patchers,
-            function (string $contents, callable $patcher) use ($filePath, $prefix): string {
+            static function (string $contents, callable $patcher) use ($filePath, $prefix): string {
                 return $patcher($filePath, $prefix, $contents);
             },
             $contents

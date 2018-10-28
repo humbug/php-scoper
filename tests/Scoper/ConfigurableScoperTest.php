@@ -44,12 +44,12 @@ class ConfigurableScoperTest extends TestCase
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
-    public function test_is_a_Scoper()
+    public function test_is_a_Scoper(): void
     {
         $this->assertTrue(is_a(ConfigurableScoper::class, Scoper::class, true));
     }
 
-    public function test_it_scopes_the_files_with_the_decorated_scoper()
+    public function test_it_scopes_the_files_with_the_decorated_scoper(): void
     {
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
@@ -71,7 +71,7 @@ class ConfigurableScoperTest extends TestCase
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
-    public function test_it_can_create_a_scoper_allowing_to_whitelist_specific_files()
+    public function test_it_can_create_a_scoper_allowing_to_whitelist_specific_files(): void
     {
         $whitelistedFiles = [
             '/path/to/whitelisted-file-1',

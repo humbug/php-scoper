@@ -24,7 +24,7 @@ use Roave\BetterReflection\BetterReflection;
  */
 class TraverserFactoryTest extends TestCase
 {
-    public function test_creates_a_new_traverser_at_each_call()
+    public function test_creates_a_new_traverser_at_each_call(): void
     {
         $prefix = 'Humbug';
 

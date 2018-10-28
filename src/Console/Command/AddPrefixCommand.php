@@ -215,7 +215,7 @@ final class AddPrefixCommand extends BaseCommand
 
         usort(
             $vendorDirs,
-            function ($a, $b) {
+            static function ($a, $b) {
                 return strlen($b) <=> strlen($a);
             }
         );
@@ -287,7 +287,7 @@ final class AddPrefixCommand extends BaseCommand
         $fileSystem = $this->fileSystem;
 
         $paths = array_map(
-            function (string $path) use ($cwd, $fileSystem) {
+            static function (string $path) use ($cwd, $fileSystem) {
                 if (false === $fileSystem->isAbsolutePath($path)) {
                     return $cwd.DIRECTORY_SEPARATOR.$path;
                 }

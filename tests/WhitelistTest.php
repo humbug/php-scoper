@@ -33,7 +33,7 @@ class WhitelistTest extends TestCase
         array $expectedNamespaces,
         array $expectedSymbols,
         array $expectedConstants
-    ) {
+    ): void {
         $whitelistObject = Whitelist::create(true, true, true, ...$whitelist);
 
         $whitelistReflection = new ReflectionClass(Whitelist::class);
@@ -70,7 +70,7 @@ class WhitelistTest extends TestCase
     /**
      * @dataProvider provideGlobalConstantNames
      */
-    public function test_it_can_tell_if_a_constant_is_a_whitelisted_global_constant(Whitelist $whitelist, string $constant, bool $expected)
+    public function test_it_can_tell_if_a_constant_is_a_whitelisted_global_constant(Whitelist $whitelist, string $constant, bool $expected): void
     {
         $actual = $whitelist->isGlobalWhitelistedConstant($constant);
 
@@ -80,7 +80,7 @@ class WhitelistTest extends TestCase
     /**
      * @dataProvider provideGlobalClassNames
      */
-    public function test_it_can_tell_if_a_class_is_a_whitelisted_global_class(Whitelist $whitelist, string $constant, bool $expected)
+    public function test_it_can_tell_if_a_class_is_a_whitelisted_global_class(Whitelist $whitelist, string $constant, bool $expected): void
     {
         $actual = $whitelist->isGlobalWhitelistedClass($constant);
 
@@ -90,14 +90,14 @@ class WhitelistTest extends TestCase
     /**
      * @dataProvider provideGlobalFunctionNames
      */
-    public function test_it_can_tell_if_a_function_is_a_whitelisted_global_function(Whitelist $whitelist, string $constant, bool $expected)
+    public function test_it_can_tell_if_a_function_is_a_whitelisted_global_function(Whitelist $whitelist, string $constant, bool $expected): void
     {
         $actual = $whitelist->isGlobalWhitelistedFunction($constant);
 
         $this->assertSame($expected, $actual);
     }
 
-    public function test_it_can_record_whitelisted_functions()
+    public function test_it_can_record_whitelisted_functions(): void
     {
         $whitelist = Whitelist::create(true, true, true);
 
@@ -123,7 +123,7 @@ class WhitelistTest extends TestCase
         );
     }
 
-    public function test_it_can_record_whitelisted_classes()
+    public function test_it_can_record_whitelisted_classes(): void
     {
         $this->markTestSkipped('TODO');
         $whitelist = Whitelist::create(true, true, true);
@@ -153,7 +153,7 @@ class WhitelistTest extends TestCase
     /**
      * @dataProvider provideSymbolNames
      */
-    public function test_it_can_tell_if_a_symbol_is_whitelisted(Whitelist $whitelist, string $symbol, bool $caseSensitive, bool $expected)
+    public function test_it_can_tell_if_a_symbol_is_whitelisted(Whitelist $whitelist, string $symbol, bool $caseSensitive, bool $expected): void
     {
         $actual = $whitelist->isSymbolWhitelisted($symbol, $caseSensitive);
 
@@ -163,7 +163,7 @@ class WhitelistTest extends TestCase
     /**
      * @dataProvider provideNamespaceWhitelists
      */
-    public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $class, bool $expected)
+    public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $class, bool $expected): void
     {
         $actual = $whitelist->belongsToWhitelistedNamespace($class);
 
@@ -173,7 +173,7 @@ class WhitelistTest extends TestCase
     /**
      * @dataProvider provideWhitelistToConvert
      */
-    public function test_it_can_be_converted_back_into_an_array(Whitelist $whitelist, array $expected)
+    public function test_it_can_be_converted_back_into_an_array(Whitelist $whitelist, array $expected): void
     {
         $actual = $whitelist->toArray();
 

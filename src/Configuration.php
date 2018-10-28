@@ -499,7 +499,7 @@ class Configuration
         $finder->files()
             ->in($pathsToSearch)
             ->append($filesToAppend)
-            ->filter(function (SplFileInfo $fileInfo): ?bool {
+            ->filter(static function (SplFileInfo $fileInfo): ?bool {
                 if ($fileInfo->isLink()) {
                     return false;
                 }
@@ -521,7 +521,7 @@ class Configuration
     {
         return array_reduce(
             iterator_to_array($files),
-            function (array $files, SplFileInfo $fileInfo): array {
+            static function (array $files, SplFileInfo $fileInfo): array {
                 $file = $fileInfo->getRealPath();
 
                 if (false === $file) {

@@ -29,7 +29,7 @@ use function preg_match_all;
  */
 class MakefileE2ETest extends TestCase
 {
-    public function test_the_e2e_test_executes_all_the_e2e_sub_rules()
+    public function test_the_e2e_test_executes_all_the_e2e_sub_rules(): void
     {
         $contents = file_get_contents(__DIR__.'/../Makefile');
 

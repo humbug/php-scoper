@@ -100,7 +100,7 @@ PHP;
     private function createClassAliasStatements(array $whitelistedClasses, bool $hasNamespacedFunctions): array
     {
         $statements = array_map(
-            function (string $prefixedClass): string {
+            static function (string $prefixedClass): string {
                 return sprintf(
                     'class_exists(\'%s\');',
                     $prefixedClass
@@ -118,7 +118,7 @@ PHP;
 
         if ($hasNamespacedFunctions) {
             $statements = array_map(
-                function (string $statement): string {
+                static function (string $statement): string {
                     return str_repeat(' ', 4).$statement;
                 },
                 $statements
@@ -145,7 +145,7 @@ EOF
     private function createFunctionAliasStatements(array $whitelistedFunctions, bool $hasNamespacedFunctions): array
     {
         $statements = array_map(
-            function (array $node) use ($hasNamespacedFunctions): string {
+            static function (array $node) use ($hasNamespacedFunctions): string {
                 /**
                  * @var string
                  * @var string $alias

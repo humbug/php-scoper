@@ -57,7 +57,7 @@ function escape_path(string $path): string
 }
 
 //TODO: https://github.com/humbug/php-scoper/pull/19/files#r118838268
-function remove_dir(string $path)
+function remove_dir(string $path): void
 {
     $path = escape_path($path);
 
@@ -70,7 +70,7 @@ function remove_dir(string $path)
 
 function create_fake_patcher(): Closure
 {
-    return function () {
+    return static function (): void {
         throw new LogicException('Did not expect to be called');
     };
 }

@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
@@ -65,7 +66,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
         $this->appTester = $this->createAppTester();
     }
 
-    public function test_get_help_menu()
+    public function test_get_help_menu(): void
     {
         $input = [];
 
@@ -112,7 +113,7 @@ EOF;
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
-    public function test_get_version_menu()
+    public function test_get_version_menu(): void
     {
         $input = [
             '--version',
@@ -136,7 +137,7 @@ EOF;
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
-    public function test_scope_the_given_paths()
+    public function test_scope_the_given_paths(): void
     {
         $input = [
             'add-prefix',
@@ -198,7 +199,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_let_the_file_unchanged_when_cannot_scope_a_file()
+    public function test_let_the_file_unchanged_when_cannot_scope_a_file(): void
     {
         $input = [
             'add-prefix',
@@ -255,7 +256,7 @@ EOF;
                         [],
                         Whitelist::create(true, true, true)
                     )
-                    ->willThrow(new \RuntimeException('Scoping of the file failed'))
+                    ->willThrow(new RootRuntimeException('Scoping of the file failed'))
                 ;
 
                 $this->fileSystemProphecy->dumpFile($outputPath, $inputContents)->shouldBeCalled();
@@ -275,7 +276,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_do_not_scope_duplicated_given_paths()
+    public function test_do_not_scope_duplicated_given_paths(): void
     {
         $input = [
             'add-prefix',
@@ -334,7 +335,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_scope_the_given_paths_and_the_ones_found_by_the_finder()
+    public function test_scope_the_given_paths_and_the_ones_found_by_the_finder(): void
     {
         chdir($rootPath = escape_path(self::FIXTURE_PATH.'/set012'));
 
@@ -395,7 +396,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_applies_a_random_prefix_when_none_given()
+    public function test_applies_a_random_prefix_when_none_given(): void
     {
         $input = [
             'add-prefix',
@@ -446,7 +447,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalled();
     }
 
-    public function test_scope_the_current_working_directory_if_no_path_given()
+    public function test_scope_the_current_working_directory_if_no_path_given(): void
     {
         chdir($root = self::FIXTURE_PATH.'/set002/original');
 
@@ -507,7 +508,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_prefix_can_end_by_a_backslash()
+    public function test_prefix_can_end_by_a_backslash(): void
     {
         $input = [
             'add-prefix',
@@ -550,7 +551,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalled();
     }
 
-    public function test_prefix_can_end_by_multiple_backslashes()
+    public function test_prefix_can_end_by_multiple_backslashes(): void
     {
         $input = [
             'add-prefix',
@@ -593,7 +594,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalled();
     }
 
-    public function test_an_output_directory_can_be_given()
+    public function test_an_output_directory_can_be_given(): void
     {
         $input = [
             'add-prefix',
@@ -654,7 +655,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_relative_output_directory_are_made_absolute()
+    public function test_relative_output_directory_are_made_absolute(): void
     {
         $input = [
             'add-prefix',
@@ -716,7 +717,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_throws_an_error_when_passing_a_non_existent_config()
+    public function test_throws_an_error_when_passing_a_non_existent_config(): void
     {
         $input = [
             'add-prefix',
@@ -747,7 +748,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
-    public function test_attempts_to_use_patch_file_in_current_directory()
+    public function test_attempts_to_use_patch_file_in_current_directory(): void
     {
         chdir(escape_path($root = self::FIXTURE_PATH.'/set006'));
 
@@ -781,7 +782,7 @@ EOF;
                     $inputPath,
                     $inputContents,
                     'MyPrefix',
-                    Argument::that(function ($arg) use (&$patchersFound) {
+                    Argument::that(static function ($arg) use (&$patchersFound) {
                         $patchersFound = $arg;
 
                         return true;
@@ -806,7 +807,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values()
+    public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values(): void
     {
         chdir(escape_path(self::FIXTURE_PATH.'/set009'));
 
@@ -835,7 +836,7 @@ EOF;
         $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
-    public function test_can_scope_projects_with_invalid_files()
+    public function test_can_scope_projects_with_invalid_files(): void
     {
         chdir(escape_path($root = self::FIXTURE_PATH.'/set010'));
 
