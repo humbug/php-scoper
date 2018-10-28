@@ -13,12 +13,20 @@ help:
 #---------------------------------------------------------------------------
 
 .PHONY: clean
-clean:		## Clean all created artifacts
+clean:	## Clean all created artifacts
 clean:
 	git clean --exclude=.idea/ -ffdx
 
+.PHONY: cs
+CODE_SNIFFER=vendor-bin/code-sniffer/vendor/bin/phpcs
+CODE_SNIFFER_FIX=vendor-bin/code-sniffer/vendor/bin/phpcbf
+cs:	## Fixes CS
+cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
+	$(PHPNOGC) $(CODE_SNIFFER_FIX) || true
+	$(PHPNOGC) $(PHP_CS_FIXER) fix
+
 .PHONY: build
-build:		## Build the PHAR
+build:	## Build the PHAR
 BOX=bin/box
 build: bin/php-scoper.phar
 
@@ -28,26 +36,26 @@ build: bin/php-scoper.phar
 #---------------------------------------------------------------------------
 
 .PHONY: test
-test:		## Run all the tests
+test:	## Run all the tests
 test: tc e2e
 
 .PHONY: tu
 PHPUNIT=bin/phpunit
-tu:		## Run PHPUnit tests
+tu:	## Run PHPUnit tests
 tu: bin/phpunit
 	$(PHPBIN) $(PHPUNIT)
 
 .PHONY: tc
-tc:		## Run PHPUnit tests with test coverage
+tc:	## Run PHPUnit tests with test coverage
 tc: bin/phpunit vendor-bin/covers-validator/vendor clover.xml
 
 .PHONY: tm
-tm:		## Run Infection (Mutation Testing)
+tm:	## Run Infection (Mutation Testing)
 tm: bin/phpunit
 	$(MAKE) e2e_020
 
 .PHONY: e2e
-e2e:		## Run end-to-end tests
+e2e:	## Run end-to-end tests
 e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027
 
 PHPSCOPER=bin/php-scoper.phar
@@ -287,7 +295,7 @@ e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
 
 .PHONY: tb
 BLACKFIRE=blackfire
-tb:		## Run Blackfire profiling
+tb:	## Run Blackfire profiling
 tb: bin/php-scoper.phar  vendor
 	$(BLACKFIRE) --new-reference run $(PHPBIN) bin/php-scoper.phar add-prefix --output-dir=build/php-scoper --force --quiet
 
@@ -312,6 +320,10 @@ bin/phpunit: composer.lock
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
 	composer bin covers-validator install
+	touch $@
+
+vendor-bin/code-sniffer/vendor: vendor-bin/code-sniffer/composer.lock vendor/bamarni
+	composer bin code-sniffer install
 	touch $@
 
 fixtures/set005/vendor: fixtures/set005/composer.lock
@@ -429,3 +441,11 @@ clover.xml: src
 		--coverage-clover=clover.xml \
 		--coverage-xml=dist/infection-coverage/coverage-xml \
 		--log-junit=dist/infection-coverage/phpunit.junit.xml
+
+$(CODE_SNIFFER): vendor-bin/code-sniffer/vendor
+	composer bin code-sniffer install
+	touch $@
+
+$(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
+	composer bin code-sniffer install
+	touch $@
