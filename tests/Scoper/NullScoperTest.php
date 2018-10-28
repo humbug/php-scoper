@@ -24,12 +24,12 @@ use function Humbug\PhpScoper\create_fake_patcher;
  */
 class NullScoperTest extends TestCase
 {
-    public function test_is_a_Scoper()
+    public function test_is_a_Scoper(): void
     {
         $this->assertTrue(is_a(NullScoper::class, Scoper::class, true));
     }
 
-    public function test_returns_the_file_content_unchanged()
+    public function test_returns_the_file_content_unchanged(): void
     {
         $filePath = 'file';
         $contents = $expected = 'File content';

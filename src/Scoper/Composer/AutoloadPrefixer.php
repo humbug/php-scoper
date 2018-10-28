@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Whitelist;
+use function is_array;
 use stdClass;
 use function array_map;
 
@@ -104,11 +105,16 @@ final class AutoloadPrefixer
         return $psr4;
     }
 
-    private static function updatePSR0Path($path, $namespace)
+    /**
+     * @param string|string[] $path
+     *
+     * @return string|string[]
+     */
+    private static function updatePSR0Path($path, string $namespace)
     {
         $namespaceForPsr = str_replace('\\', '/', $namespace);
 
-        if (!is_array($path)) {
+        if (false === is_array($path)) {
             if ('/' !== substr($path, -1)) {
                 $path .= '/';
             }
@@ -117,6 +123,7 @@ final class AutoloadPrefixer
 
             return $path;
         }
+
         foreach ($path as $key => $item) {
             if ('/' !== substr($item, -1)) {
                 $item .= '/';
@@ -134,7 +141,7 @@ final class AutoloadPrefixer
      *       PSR0 | PSR4
      * array      |
      * string     |
-     * or simply the namepace not existing as a psr-4 entry.
+     * or simply the namespace not existing as a psr-4 entry.
      *
      * @param string       $psr0Namespace
      * @param string|array $psr0Path
@@ -172,7 +179,7 @@ final class AutoloadPrefixer
     private static function prefixLaravelProviders(array $providers, string $prefix, Whitelist $whitelist): array
     {
         return array_map(
-            function (string $provider) use ($prefix, $whitelist): string {
+            static function (string $provider) use ($prefix, $whitelist): string {
                 return $whitelist->belongsToWhitelistedNamespace($provider)
                     ? $provider
                     : sprintf('%s\\%s', $prefix, $provider)

@@ -46,7 +46,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
      * @param Namespace_ $node         New namespace, may have been prefixed.
      * @param Namespace_ $originalName Original unchanged namespace.
      */
-    public function add(Namespace_ $node, Namespace_ $originalName)
+    public function add(Namespace_ $node, Namespace_ $originalName): void
     {
         $this->nodes[] = $originalName;
 

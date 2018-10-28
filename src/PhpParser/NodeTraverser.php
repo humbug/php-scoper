@@ -149,7 +149,7 @@ final class NodeTraverser extends PhpParserNodeTraverser
     private function createUses_(GroupUse $node): array
     {
         return array_map(
-            function (UseUse $use) use ($node): Use_ {
+            static function (UseUse $use) use ($node): Use_ {
                 $newUse = new UseUse(
                     Name::concat($node->prefix, $use->name, $use->name->getAttributes()),
                     $use->alias,

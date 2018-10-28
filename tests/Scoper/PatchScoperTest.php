@@ -45,26 +45,26 @@ class PatchScoperTest extends TestCase
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
-    public function test_is_a_Scoper()
+    public function test_is_a_Scoper(): void
     {
         $this->assertTrue(is_a(PatchScoper::class, Scoper::class, true));
     }
 
-    public function test_applies_the_list_of_patches_to_the_scoped_file()
+    public function test_applies_the_list_of_patches_to_the_scoped_file(): void
     {
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
         $prefix = 'Humbug';
 
         $patchers = [
-            function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
+            static function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
                 Assert::assertSame($filePath, $patcherFilePath);
                 Assert::assertSame($prefix, $patcherPrefix);
                 Assert::assertSame('Decorated scoper contents', $contents);
 
                 return 'File content after patch 1';
             },
-            function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
+            static function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
                 Assert::assertSame($filePath, $patcherFilePath);
                 Assert::assertSame($prefix, $patcherPrefix);
                 Assert::assertSame('File content after patch 1', $contents);

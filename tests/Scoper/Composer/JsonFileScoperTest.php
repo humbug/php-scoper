@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
+use Generator;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Whitelist;
@@ -28,12 +29,12 @@ use function Humbug\PhpScoper\create_fake_patcher;
  */
 class JsonFileScoperTest extends TestCase
 {
-    public function test_it_is_a_Scoper()
+    public function test_it_is_a_Scoper(): void
     {
         $this->assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
     }
 
-    public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_composer_file()
+    public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_composer_file(): void
     {
         $filePath = 'file.php';
         $fileContents = '';
@@ -64,7 +65,7 @@ class JsonFileScoperTest extends TestCase
     /**
      * @dataProvider provideComposerFiles
      */
-    public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected)
+    public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
     {
         $filePath = 'composer.json';
 
@@ -79,7 +80,7 @@ class JsonFileScoperTest extends TestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function provideComposerFiles()
+    public function provideComposerFiles(): Generator
     {
         yield [
             <<<'JSON'
@@ -138,7 +139,7 @@ JSON
     /**
      * @dataProvider providePSR0ComposerFiles
      */
-    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected)
+    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
     {
         $filePath = 'composer.json';
 
@@ -153,7 +154,7 @@ JSON
         $this->assertSame($expected, $actual);
     }
 
-    public function providePSR0ComposerFiles()
+    public function providePSR0ComposerFiles(): Generator
     {
         yield [
             <<<'JSON'

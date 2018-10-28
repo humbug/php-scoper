@@ -134,12 +134,12 @@ class PhpScoperTest extends TestCase
         );
     }
 
-    public function test_is_a_Scoper()
+    public function test_is_a_Scoper(): void
     {
         $this->assertTrue(is_a(PhpScoper::class, Scoper::class, true));
     }
 
-    public function test_can_scope_a_PHP_file()
+    public function test_can_scope_a_PHP_file(): void
     {
         $prefix = 'Humbug';
         $filePath = 'file.php';
@@ -166,7 +166,7 @@ PHP;
         $this->assertSame($expected, $actual);
     }
 
-    public function test_does_not_scope_file_if_is_not_a_PHP_file()
+    public function test_does_not_scope_file_if_is_not_a_PHP_file(): void
     {
         $filePath = 'file.yaml';
         $fileContents = '';
@@ -199,7 +199,7 @@ PHP;
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
-    public function test_can_scope_a_PHP_file_with_the_wrong_extension()
+    public function test_can_scope_a_PHP_file_with_the_wrong_extension(): void
     {
         $prefix = 'Humbug';
         $filePath = 'file';
@@ -227,7 +227,7 @@ PHP;
         $this->assertSame($expected, $actual);
     }
 
-    public function test_can_scope_PHP_binary_files()
+    public function test_can_scope_PHP_binary_files(): void
     {
         $prefix = 'Humbug';
         $filePath = 'hello';
@@ -255,7 +255,7 @@ PHP;
         $this->assertSame($expected, $actual);
     }
 
-    public function test_does_not_scope_a_non_PHP_binary_files()
+    public function test_does_not_scope_a_non_PHP_binary_files(): void
     {
         $prefix = 'Humbug';
 
@@ -297,7 +297,7 @@ PHP;
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
 
-    public function test_cannot_scope_an_invalid_PHP_file()
+    public function test_cannot_scope_an_invalid_PHP_file(): void
     {
         $filePath = 'invalid-file.php';
         $contents = <<<'PHP'
@@ -325,7 +325,7 @@ PHP;
         }
     }
 
-    public function test_creates_a_new_traverser_for_each_file()
+    public function test_creates_a_new_traverser_for_each_file(): void
     {
         $files = [
             'file1.php' => 'file1',
@@ -369,7 +369,7 @@ PHP;
         $i = 0;
         $this->traverserFactoryProphecy
             ->create($prefix, $whitelist, Argument::that(
-                function (...$args) use (&$i): bool {
+                static function (...$args) use (&$i): bool {
                     ++$i;
 
                     return 1 === $i;
@@ -379,7 +379,7 @@ PHP;
         ;
         $this->traverserFactoryProphecy
             ->create($prefix, $whitelist, Argument::that(
-                function (...$args) use (&$i): bool {
+                static function (...$args) use (&$i): bool {
                     ++$i;
 
                     return 4 === $i;

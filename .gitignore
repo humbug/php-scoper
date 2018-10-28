@@ -12,6 +12,5 @@
 /vendor/
 /vendor-bin/*/vendor/
 /vendor-bin/*/bin/
-/.travis/
-!/.travis/.gitkeep
-!/.travis/secrets.tar.enc
+/.phpcs-cache
+/phpcs.xml

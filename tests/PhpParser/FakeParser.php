@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser;
 
 use PhpParser\ErrorHandler;
 use PhpParser\Parser;
+use LogicException;
 
 final class FakeParser implements Parser
 {
@@ -24,6 +25,6 @@ final class FakeParser implements Parser
      */
     public function parse(string $code, ErrorHandler $errorHandler = null)
     {
-        throw new \LogicException();
+        throw new LogicException();
     }
 }

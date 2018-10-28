@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Generator;
 use PHPUnit\Framework\TestCase;
 
 class FunctionsTest extends TestCase
@@ -21,14 +22,14 @@ class FunctionsTest extends TestCase
     /**
      * @dataProvider providePaths
      */
-    public function test_get_the_common_path(array $paths, string $expected)
+    public function test_get_the_common_path(array $paths, string $expected): void
     {
         $actual = get_common_path($paths);
 
         $this->assertSame($expected, $actual);
     }
 
-    public function providePaths()
+    public function providePaths(): Generator
     {
         yield [
             [],

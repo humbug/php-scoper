@@ -75,7 +75,7 @@ class PhpScoperSpecTest extends TestCase
      * This test is to ensure no file is left in _specs for the CI. It is fine otherwise for this test to fail locally
      * when developing something.
      */
-    public function test_it_uses_the_right_specs_directory()
+    public function test_it_uses_the_right_specs_directory(): void
     {
         $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
 
@@ -94,7 +94,7 @@ class PhpScoperSpecTest extends TestCase
         ?string $expected,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions
-    ) {
+    ): void {
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
         $scoper = $this->createScoper($contents);
@@ -147,7 +147,7 @@ class PhpScoperSpecTest extends TestCase
         $this->assertSameRecordedSymbols($actualRecordedWhitelistedFunctions, $expectedRegisteredFunctions, $specMessage);
     }
 
-    public function provideValidFiles()
+    public function provideValidFiles(): Generator
     {
         $sourceDir = self::SECONDARY_SPECS_PATH;
 
@@ -361,7 +361,7 @@ OUTPUT
             implode(
                 PHP_EOL,
                 array_map(
-                    function (string $string): string {
+                    static function (string $string): string {
                         return '  - '.$string;
                     },
                     $strings
@@ -391,7 +391,7 @@ OUTPUT
             implode(
                 PHP_EOL,
                 array_map(
-                    function (array $stringTuple): string {
+                    static function (array $stringTuple): string {
                         return sprintf('  - %s => %s', ...$stringTuple);
                     },
                     $stringTuples
@@ -411,7 +411,7 @@ OUTPUT
      */
     private function assertSameRecordedSymbols(array $expected, array $actual, string $message): void
     {
-        $sort = function (array $a, array $b): int {
+        $sort = static function (array $a, array $b): int {
             /*
              * @var string[] $a
              * @var string[] $b

@@ -51,7 +51,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
         file_put_contents('scoper.inc.php', '<?php return [];');
     }
 
-    public function test_scope_the_given_paths()
+    public function test_scope_the_given_paths(): void
     {
         $input = [
             'add-prefix',
@@ -71,7 +71,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
         $this->assertFilesAreSame(self::FIXTURE_PATH.'/../scoped', $this->tmp);
     }
 
-    public function test_scope_in_quiet_mode()
+    public function test_scope_in_quiet_mode(): void
     {
         $input = [
             'add-prefix',
@@ -93,7 +93,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
         $this->assertSame(0, $this->appTester->getStatusCode());
     }
 
-    public function test_scope_in_normal_mode()
+    public function test_scope_in_normal_mode(): void
     {
         $input = [
             'add-prefix',
@@ -138,7 +138,7 @@ EOF;
         $this->assertSame(0, $this->appTester->getStatusCode());
     }
 
-    public function test_scope_in_verbose_mode()
+    public function test_scope_in_verbose_mode(): void
     {
         $input = [
             'add-prefix',
@@ -184,7 +184,7 @@ EOF;
         $this->assertSame(0, $this->appTester->getStatusCode());
     }
 
-    public function test_scope_in_very_verbose_mode()
+    public function test_scope_in_very_verbose_mode(): void
     {
         $input = [
             'add-prefix',
@@ -258,7 +258,7 @@ EOF;
         $this->assertSame(0, $this->appTester->getStatusCode());
     }
 
-    private function getNormalizeDisplay(string $display)
+    private function getNormalizeDisplay(string $display): string
     {
         $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmp, '/path/to', $display);
@@ -283,7 +283,7 @@ EOF;
         return implode("\n", $lines);
     }
 
-    private function assertFilesAreSame(string $expectedDir, string $actualDir)
+    private function assertFilesAreSame(string $expectedDir, string $actualDir): void
     {
         $expected = $this->collectFiles($expectedDir);
 
@@ -304,7 +304,7 @@ EOF;
 
         return array_reduce(
             iterator_to_array($files),
-            function (array $collectedFiles, SplFileInfo $file) use ($dir): array {
+            static function (array $collectedFiles, SplFileInfo $file) use ($dir): array {
                 $path = str_replace($dir, '', $file->getRealPath());
 
                 $collectedFiles[$path] = file_get_contents($file->getRealPath());

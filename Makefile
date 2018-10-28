@@ -23,7 +23,7 @@ CODE_SNIFFER_FIX=vendor-bin/code-sniffer/vendor/bin/phpcbf
 cs:	## Fixes CS
 cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
 	$(PHPNOGC) $(CODE_SNIFFER_FIX) || true
-	$(PHPNOGC) $(PHP_CS_FIXER) fix
+	$(PHPNOGC) $(CODE_SNIFFER)
 
 .PHONY: build
 build:	## Build the PHAR
