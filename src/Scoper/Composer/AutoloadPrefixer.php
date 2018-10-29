@@ -15,10 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Whitelist;
-use function is_string;
 use stdClass;
 use function array_map;
 use function is_array;
+use function is_string;
 use function str_replace;
 
 /**
@@ -151,8 +151,8 @@ final class AutoloadPrefixer
      * string     |
      * or simply the namespace not existing as a psr-4 entry.
      *
-     * @param string       $psr0Namespace
-     * @param string|string[] $psr0Path
+     * @param string              $psr0Namespace
+     * @param string|string[]     $psr0Path
      * @param (string|string[])[] $psr4
      *
      * @return string|string[]

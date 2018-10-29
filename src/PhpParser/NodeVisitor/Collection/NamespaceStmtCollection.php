@@ -38,7 +38,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
 
     /**
      * @var (Name|null)[] Associative array with the potentially prefixed namespace names as keys and their original name
-     *                  as value.
+     *                    as value.
      */
     private $mapping = [];
 

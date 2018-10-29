@@ -32,7 +32,6 @@ use PhpParser\NodeVisitorAbstract;
 use function array_key_exists;
 use function array_shift;
 use function array_values;
-use function Humbug\PhpScoper\is_stringable;
 use function implode;
 use function in_array;
 use function is_string;
@@ -149,7 +148,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         // In the case of a function call, we allow to prefix strings which could be classes belonging to the global
         // namespace in some cases
-        $functionName = $functionNode->name instanceof Name? (string) $functionNode->name : null;
+        $functionName = $functionNode->name instanceof Name ? (string) $functionNode->name : null;
 
         if (false === in_array($functionName, self::SPECIAL_FUNCTION_NAMES, true)) {
             return $this->belongsToTheGlobalNamespace($string)

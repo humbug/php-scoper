@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use function array_slice;
-use function array_values;
-use function count;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;
@@ -26,6 +23,9 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser as PhpParserNodeTraverser;
+use function array_slice;
+use function array_values;
+use function count;
 
 /**
  * @private

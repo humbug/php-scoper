@@ -13,14 +13,13 @@ declare(strict_types=1);
  */
 
 namespace Humbug\PhpScoper {
-
+    use Exception;
+    use JsonException;
     use function class_exists;
     use function error_clear_last;
-    use Exception;
-    use function json_last_error;
-    use JsonException;
     use function json_decode as original_json_decode;
     use function json_encode as original_json_encode;
+    use function json_last_error;
     use function json_last_error_msg as original_json_last_error_msg;
 
     /**
@@ -47,7 +46,7 @@ namespace Humbug\PhpScoper {
 
         $result = original_json_encode($value, $options, $depth);
 
-        if ($result === false) {
+        if (false === $result) {
             throw create_json_exception();
         }
 
@@ -65,6 +64,8 @@ namespace Humbug\PhpScoper {
 
 namespace {
     if (false === class_exists(JsonException::class, false)) {
-        class JsonException extends Exception {}
+        class JsonException extends Exception
+        {
+        }
     }
 }
