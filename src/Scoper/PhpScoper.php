@@ -52,9 +52,14 @@ final class PhpScoper implements Scoper
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
-        $statements = $this->parser->parse($contents);
+        return $this->scopePhp($contents, $prefix, $whitelist);
+    }
 
-        $traverser = $this->traverserFactory->create($prefix, $whitelist);
+    public function scopePhp(string $php, string $prefix, Whitelist $whitelist): string
+    {
+        $statements = $this->parser->parse($php);
+
+        $traverser = $this->traverserFactory->create($this, $prefix, $whitelist);
 
         $statements = $traverser->traverse($statements);
 
