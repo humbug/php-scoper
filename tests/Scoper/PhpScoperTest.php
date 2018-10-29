@@ -368,7 +368,7 @@ PHP;
 
         $i = 0;
         $this->traverserFactoryProphecy
-            ->create($prefix, $whitelist, Argument::that(
+            ->create(Argument::type(PhpScoper::class), $prefix, $whitelist, Argument::that(
                 static function (...$args) use (&$i): bool {
                     ++$i;
 
@@ -378,7 +378,7 @@ PHP;
             ->willReturn($firstTraverser)
         ;
         $this->traverserFactoryProphecy
-            ->create($prefix, $whitelist, Argument::that(
+            ->create(Argument::type(PhpScoper::class), $prefix, $whitelist, Argument::that(
                 static function (...$args) use (&$i): bool {
                     ++$i;
 
