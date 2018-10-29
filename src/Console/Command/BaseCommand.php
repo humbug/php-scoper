@@ -40,6 +40,7 @@ abstract class BaseCommand extends Command
 
     final public function changeWorkingDirectory(InputInterface $input): void
     {
+        /** @var string|null $workingDir */
         $workingDir = $input->getOption(self::WORKING_DIR_OPT);
 
         if (null === $workingDir) {

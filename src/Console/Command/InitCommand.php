@@ -104,6 +104,7 @@ final class InitCommand extends BaseCommand
 
     private function retrieveConfig(InputInterface $input, OutputStyle $io): ?string
     {
+        /** @var string|null $configFile */
         $configFile = $input->getOption(self::CONFIG_FILE_OPT);
 
         $configFile = (null === $configFile)

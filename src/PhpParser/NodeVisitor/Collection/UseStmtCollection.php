@@ -85,7 +85,7 @@ final class UseStmtCollection implements IteratorAggregate
 
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
-                if (false === ($useStatement instanceof UseUse)) {
+                if (!($useStatement instanceof UseUse)) {
                     continue;
                 }
 

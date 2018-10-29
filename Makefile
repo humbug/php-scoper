@@ -25,6 +25,12 @@ cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
 	$(PHPNOGC) $(CODE_SNIFFER_FIX) || true
 	$(PHPNOGC) $(CODE_SNIFFER)
 
+.PHONY: phpstan
+PHPSTAN=vendor-bin/phpstan/vendor/bin/phpstan
+phpstan:	## Runs PHPStan
+phpstan: $(PHPSTAN)
+	$(PHPNOGC) $(PHPSTAN) analyze src -l6
+
 .PHONY: build
 build:	## Build the PHAR
 BOX=bin/box
@@ -326,6 +332,10 @@ vendor-bin/code-sniffer/vendor: vendor-bin/code-sniffer/composer.lock vendor/bam
 	composer bin code-sniffer install
 	touch $@
 
+vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock vendor/bamarni
+	composer bin phpstan install
+	touch $@
+
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
 	touch $@
@@ -392,6 +402,12 @@ composer.lock: composer.json
 vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
 	@echo covers-validator composer.lock is not up to date
 
+vendor-bin/code-sniffer/composer.lock: vendor-bin/code-sniffer/composer.json
+	@echo code-sniffer composer.lock is not up to date
+
+vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
+	@echo phpstan composer.lock is not up to date
+
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
 
@@ -448,4 +464,8 @@ $(CODE_SNIFFER): vendor-bin/code-sniffer/vendor
 
 $(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
+	touch $@
+
+$(PHPSTAN): vendor-bin/phpstan/vendor
+	composer bin phpstan install
 	touch $@

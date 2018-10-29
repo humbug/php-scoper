@@ -47,7 +47,7 @@ final class FullyQualifiedNameResolver
     }
 
     /**
-     * @param Name|Identifier
+     * @param Name|String_|Identifier $node
      */
     public function resolveName(Node $node): ResolvedValue
     {

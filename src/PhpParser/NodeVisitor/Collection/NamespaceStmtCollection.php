@@ -37,8 +37,8 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     private $nodes = [];
 
     /**
-     * @var Name|null[] Associative array with the potentially prefixed namespace names as keys and their original name
-     *                  as value.
+     * @var (Name|null)[] Associative array with the potentially prefixed namespace names as keys and their original name
+     *                    as value.
      */
     private $mapping = [];
 
@@ -80,11 +80,9 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
 
     public function getCurrentNamespaceName(): ?Name
     {
-        if (0 === count($this->nodes)) {
-            return null;
-        }
+        $lastNode = end($this->nodes);
 
-        return end($this->nodes)->name;
+        return false === $lastNode ? null : $lastNode->name;
     }
 
     /**

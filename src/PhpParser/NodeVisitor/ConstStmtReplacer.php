@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
+use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -89,8 +90,10 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                 new FuncCall(
                     new FullyQualified('define'),
                     [
-                        new String_((string) $resolvedConstantName),
-                        $constant->value,
+                        new Arg(
+                            new String_((string) $resolvedConstantName)
+                        ),
+                        new Arg($constant->value),
                     ]
                 )
             );

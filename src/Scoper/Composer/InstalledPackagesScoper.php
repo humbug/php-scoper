@@ -16,6 +16,8 @@ namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use function Humbug\PhpScoper\json_decode;
+use function Humbug\PhpScoper\json_encode;
 
 final class InstalledPackagesScoper implements Scoper
 {
@@ -52,7 +54,7 @@ final class InstalledPackagesScoper implements Scoper
     private function prefixLockPackages(array $packages, string $prefix, Whitelist $whitelist): array
     {
         foreach ($packages as $index => $package) {
-            $packages[$index] = AutoloadPrefixer::prefixPackageAutoloads($package, $prefix, $whitelist);
+            $packages[$index] = AutoloadPrefixer::prefixPackageAutoloadStatements($package, $prefix, $whitelist);
         }
 
         return $packages;

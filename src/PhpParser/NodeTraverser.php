@@ -23,6 +23,9 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser as PhpParserNodeTraverser;
+use function array_slice;
+use function array_values;
+use function count;
 
 /**
  * @private
@@ -84,6 +87,13 @@ final class NodeTraverser extends PhpParserNodeTraverser
      */
     private function wrapInNamespace(array $nodes): array
     {
+        if ([] === $nodes) {
+            return $nodes;
+        }
+
+        $nodes = array_values($nodes);
+
+        $firstRealStatementIndex = 0;
         $realStatements = [];
 
         foreach ($nodes as $i => $node) {

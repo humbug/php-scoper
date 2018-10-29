@@ -16,6 +16,12 @@ namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use LogicException;
+use stdClass;
+use function gettype;
+use function Humbug\PhpScoper\json_decode;
+use function Humbug\PhpScoper\json_encode;
+use function sprintf;
 
 final class JsonFileScoper implements Scoper
 {
@@ -39,7 +45,16 @@ final class JsonFileScoper implements Scoper
 
         $decodedJson = json_decode($contents);
 
-        $decodedJson = AutoloadPrefixer::prefixPackageAutoloads($decodedJson, $prefix, $whitelist);
+        if (false === ($decodedJson instanceof stdClass)) {
+            throw new LogicException(
+                sprintf(
+                    'Expected the decoded JSON to be an stdClass instance, got "%s" instead',
+                    gettype($decodedJson)
+                )
+            );
+        }
+
+        $decodedJson = AutoloadPrefixer::prefixPackageAutoloadStatements($decodedJson, $prefix, $whitelist);
 
         return json_encode(
             $decodedJson,
