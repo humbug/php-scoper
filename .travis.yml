@@ -27,10 +27,11 @@ install:
 script:
   - |
     if [ "$COVERAGE" == "true" ]; then
-        make tc
-        travis_wait 30 make e2e
+      make tc
+      travis_wait 30 make e2e
     else
-        make tu
+      make tu
+      make phpstan
     fi
 
 deploy:
