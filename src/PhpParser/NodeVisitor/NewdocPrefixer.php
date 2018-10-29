@@ -16,11 +16,11 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Whitelist;
-use function ltrim;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
+use function ltrim;
 use function strpos;
 use function substr;
 
