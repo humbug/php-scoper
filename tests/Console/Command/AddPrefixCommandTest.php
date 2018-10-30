@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\FileSystemTestCase;
+use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
@@ -176,7 +177,7 @@ EOF;
                     $inputPath,
                     $inputContents,
                     'MyPrefix',
-                    [],
+                    Argument::any(),
                     Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
@@ -239,7 +240,7 @@ EOF;
                         $inputPath,
                         $inputContents,
                         'MyPrefix',
-                        [],
+                        Argument::any(),
                         Whitelist::create(true, true, true)
                     )
                     ->willReturn($prefixedContents)
@@ -252,7 +253,7 @@ EOF;
                         $inputPath,
                         $inputContents,
                         'MyPrefix',
-                        [],
+                        Argument::any(),
                         Whitelist::create(true, true, true)
                     )
                     ->willThrow(new RootRuntimeException('Scoping of the file failed'))
@@ -312,7 +313,7 @@ EOF;
                     $inputPath,
                     $inputContents,
                     'MyPrefix',
-                    [],
+                    Argument::any(),
                     Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
@@ -373,7 +374,7 @@ EOF;
                     $inputPath,
                     $inputContents,
                     'MyPrefix',
-                    [],
+                    Argument::any(),
                     Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedFileContents)
@@ -427,7 +428,7 @@ EOF;
                         return true;
                     }
                 ),
-                [],
+                Argument::any(),
                 Whitelist::create(true, true, true)
             )
             ->willReturn('')
@@ -485,7 +486,7 @@ EOF;
                     $inputPath,
                     $inputContents,
                     'MyPrefix',
-                    [],
+                    Argument::any(),
                     Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
@@ -531,7 +532,7 @@ EOF;
                 Argument::any(),
                 Argument::any(),
                 'MyPrefix',
-                [],
+                Argument::any(),
                 Whitelist::create(true, true, true)
             )
             ->willReturn('')
@@ -574,7 +575,7 @@ EOF;
                 Argument::any(),
                 Argument::any(),
                 'MyPrefix',
-                [],
+                Argument::any(),
                 Whitelist::create(true, true, true)
             )
             ->willReturn('')
@@ -632,7 +633,7 @@ EOF;
                     $inputPath,
                     $inputContents,
                     'MyPrefix',
-                    [],
+                    Argument::any(),
                     Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
@@ -694,7 +695,7 @@ EOF;
                     $inputPath,
                     $inputContents,
                     'MyPrefix',
-                    [],
+                    Argument::any(),
                     Whitelist::create(true, true, true)
                 )
                 ->willReturn($prefixedContents)
@@ -798,8 +799,9 @@ EOF;
 
         $this->assertSame(0, $this->appTester->getStatusCode());
 
-        $this->assertCount(1, $patchersFound);
-        $this->assertEquals('Hello world!', $patchersFound[0]());
+        $this->assertCount(2, $patchersFound);
+        $this->assertEquals(new SymfonyPatcher(), $patchersFound[0]);
+        $this->assertEquals('Hello world!', $patchersFound[1]());
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
@@ -870,7 +872,7 @@ EOF;
                     $inputPath,
                     $fileContents,
                     'MyPrefix',
-                    [],
+                    Argument::any(),
                     Whitelist::create(true, true, true)
                 )
                 ->willThrow($scopingException = new RuntimeException('Could not scope file'))
