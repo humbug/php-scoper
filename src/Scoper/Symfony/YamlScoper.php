@@ -17,12 +17,14 @@ namespace Humbug\PhpScoper\Scoper\Symfony;
 use function array_filter;
 use function array_map;
 use function array_unique;
+use function count;
 use function explode;
 use const Humbug\PhpScoper\CLASS_NAME_PATTERN;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use function func_get_args;
 use function implode;
+use PhpParser\Node\Name\FullyQualified;
 use function preg_match_all;
 use function preg_replace;
 use const PREG_UNMATCHED_AS_NULL;
@@ -64,20 +66,32 @@ final class YamlScoper implements Scoper
             array_filter($matches['singleClass']),
             array_filter($matches['singleSeparator']),
             $prefix,
-            $contents
+            $contents,
+            $whitelist
         );
 
         $contents = $this->replaceClasses(
             array_filter($matches['class']),
             array_filter($matches['separator']),
             $prefix,
-            $contents
+            $contents,
+            $whitelist
         );
 
         return $contents;
     }
 
-    private function replaceClasses(array $classes, array $separators, string $prefix, string $contents): string
+    /**
+     * @param string[] $classes
+     * @param string[] $separators
+     */
+    private function replaceClasses(
+        array $classes,
+        array $separators,
+        string $prefix,
+        string $contents,
+        Whitelist $whitelist
+    ): string
     {
         if ([] === $classes) {
             return $contents;
@@ -91,7 +105,19 @@ final class YamlScoper implements Scoper
             $stringToScope = substr($contents, 0, $offset);
             $contents = substr($contents, $offset);
 
-            $scopedContents .= str_replace($class, $prefix.$separators[$index].$class, $stringToScope);
+            $prefixedClass = $prefix.$separators[$index].$class;
+
+            $scopedContents .= $whitelist->belongsToWhitelistedNamespace($class)
+                ? $stringToScope
+                : str_replace($class, $prefixedClass, $stringToScope)
+            ;
+
+            if ($whitelist->isSymbolWhitelisted($class) || $whitelist->isGlobalWhitelistedClass($class)) {
+                $whitelist->recordWhitelistedClass(
+                    new FullyQualified($class),
+                    new FullyQualified($prefixedClass)
+                );
+            }
         }
 
         $scopedContents .= $contents;
