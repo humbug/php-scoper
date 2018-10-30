@@ -16,13 +16,11 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\StringScoperPrefixer;
 use PhpParser\Node;
+use PhpParser\Node\Expr\Eval_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
-use function ltrim;
-use function strpos;
-use function substr;
 
-final class NewdocPrefixer extends NodeVisitorAbstract
+final class EvalPrefixer extends NodeVisitorAbstract
 {
     use StringScoperPrefixer;
 
@@ -31,22 +29,10 @@ final class NewdocPrefixer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if ($node instanceof String_ && $this->isPhpNowdoc($node)) {
+        if ($node instanceof String_ && ParentNodeAppender::findParent($node) instanceof Eval_) {
             $this->scopeStringValue($node);
         }
 
         return $node;
-    }
-
-    private function isPhpNowdoc(String_ $node): bool
-    {
-        if (String_::KIND_NOWDOC !== $node->getAttribute('kind')) {
-            return false;
-        }
-
-        return 0 === strpos(
-            substr(ltrim($node->value), 0, 5),
-            '<?php'
-        );
     }
 }

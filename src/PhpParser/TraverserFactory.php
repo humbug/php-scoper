@@ -55,6 +55,7 @@ class TraverserFactory
         $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\NewdocPrefixer($scoper, $prefix, $whitelist));
+        $traverser->addVisitor(new NodeVisitor\EvalPrefixer($scoper, $prefix, $whitelist));
 
         $traverser->addVisitor(new NodeVisitor\ClassAliasStmtAppender($prefix, $whitelist, $nameResolver));
         $traverser->addVisitor(new NodeVisitor\ConstStmtReplacer($whitelist, $nameResolver));
