@@ -300,9 +300,6 @@ e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
 .PHONY: e2e_028
 e2e_028:	## Run end-to-end tests for the fixture set 028 — Symfony
 e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
-	APP_ENV=dev composer --working-dir=fixtures/set028-symfony dump-autoload --no-dev
-	APP_ENV=dev php fixtures/set028-symfony/bin/console -V > fixtures/set028-symfony/expected-output
-
 	php $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set028-symfony \
 		--output-dir=../../build/set028-symfony \
@@ -310,6 +307,9 @@ e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
 		--force \
 		--no-interaction \
 		--stop-on-failure
+
+	APP_ENV=dev composer --working-dir=fixtures/set028-symfony dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set028-symfony/bin/console -V > fixtures/set028-symfony/expected-output
 
 	APP_ENV=dev composer --working-dir=build/set028-symfony dump-autoload --no-dev
 	APP_ENV=dev php build/set028-symfony/bin/console -V > build/set028-symfony/output
@@ -414,7 +414,7 @@ fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
 	touch $@
 
 fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
-	composer --working-dir=fixtures/set028-symfony install --no-dev
+	composer --working-dir=fixtures/set028-symfony install --no-dev --no-scripts
 	touch $@
 
 composer.lock: composer.json
