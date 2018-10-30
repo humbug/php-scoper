@@ -14,22 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
-use function array_filter;
-use function array_map;
-use function array_unique;
-use function count;
-use function explode;
-use const Humbug\PhpScoper\CLASS_NAME_PATTERN;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
-use function func_get_args;
-use function implode;
 use PhpParser\Node\Name\FullyQualified;
+use function array_filter;
+use function func_get_args;
 use function preg_match_all;
-use function preg_replace;
-use const PREG_UNMATCHED_AS_NULL;
-use const SORT_STRING;
-use function sprintf;
 use function str_replace;
 use function strlen;
 use function strpos;
@@ -91,8 +81,7 @@ final class YamlScoper implements Scoper
         string $prefix,
         string $contents,
         Whitelist $whitelist
-    ): string
-    {
+    ): string {
         if ([] === $classes) {
             return $contents;
         }

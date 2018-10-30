@@ -2,16 +2,25 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
 use Generator;
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Scoper\Symfony\XmlScoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use function Humbug\PhpScoper\create_fake_patcher;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Symfony\XmlScoper

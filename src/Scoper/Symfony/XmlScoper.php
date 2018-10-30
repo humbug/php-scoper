@@ -16,8 +16,8 @@ namespace Humbug\PhpScoper\Scoper\Symfony;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
-use function func_get_args;
 use PhpParser\Node\Name\FullyQualified;
+use function func_get_args;
 use function preg_match_all;
 use function str_replace;
 use function strlen;
@@ -103,8 +103,7 @@ final class XmlScoper implements Scoper
         string $prefix,
         string $contents,
         Whitelist $whitelist
-    ): string
-    {
+    ): string {
         if ([] === $classes) {
             return $contents;
         }
