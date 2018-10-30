@@ -6,7 +6,7 @@ build:
     tests:
         override:
             -
-                command: 'phpdbg -qrr -d zend.enable_gc=0 bin/phpunit --coverage-clover=coverage.clover'
+                command: 'phpdbg -qrr bin/phpunit --coverage-clover=coverage.clover --exclude-group=integration'
                 coverage:
                     file: 'coverage.clover'
                     format: 'clover'

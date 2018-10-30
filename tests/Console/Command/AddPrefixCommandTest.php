@@ -31,7 +31,6 @@ use function preg_replace;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
- * @runTestsInSeparateProcesses
  */
 class AddPrefixCommandTest extends FileSystemTestCase
 {
