@@ -15,16 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\StringScoperPrefixer;
-use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Whitelist;
-use PhpParser\Error as PhpParserError;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Eval_;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
-use function ltrim;
-use function strpos;
-use function substr;
 
 final class EvalPrefixer extends NodeVisitorAbstract
 {

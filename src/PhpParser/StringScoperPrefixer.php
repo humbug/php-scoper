@@ -17,12 +17,7 @@ namespace Humbug\PhpScoper\PhpParser;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
-use PhpParser\Node;
-use PhpParser\Node\Expr\Eval_;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\NodeVisitorAbstract;
-use function ltrim;
-use function strpos;
 use function substr;
 
 trait StringScoperPrefixer
