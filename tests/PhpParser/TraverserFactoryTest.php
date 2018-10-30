@@ -15,8 +15,11 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Scoper\FakeScoper;
+use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use Roave\BetterReflection\BetterReflection;
 
 /**
@@ -37,8 +40,14 @@ class TraverserFactoryTest extends TestCase
 
         $traverserFactory = new TraverserFactory($classReflector);
 
-        $firstTraverser = $traverserFactory->create($prefix, $whitelist);
-        $secondTraverser = $traverserFactory->create($prefix, $whitelist);
+        $phpScoper = new PhpScoper(
+            new FakeParser(),
+            new FakeScoper(),
+            (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor()
+        );
+
+        $firstTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);
+        $secondTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);
 
         $this->assertNotSame($firstTraverser, $secondTraverser);
     }
