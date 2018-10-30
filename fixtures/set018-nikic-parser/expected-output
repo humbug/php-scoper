@@ -1,31 +1,40 @@
 array(
-    0: Stmt_Function(
-        byRef: false
-        name: test
-        params: array(
-            0: Param(
-                type: null
-                byRef: false
-                variadic: false
-                name: foo
-                default: null
+    0: Stmt_Namespace(
+        name: Name(
+            parts: array(
+                0: _Prefixed
             )
         )
-        returnType: null
         stmts: array(
-            0: Expr_FuncCall(
-                name: Name(
-                    parts: array(
-                        0: var_dump
+            0: Stmt_Function(
+                byRef: false
+                name: test
+                params: array(
+                    0: Param(
+                        type: null
+                        byRef: false
+                        variadic: false
+                        name: foo
+                        default: null
                     )
                 )
-                args: array(
-                    0: Arg(
-                        value: Expr_Variable(
-                            name: foo
+                returnType: null
+                stmts: array(
+                    0: Expr_FuncCall(
+                        name: Name_FullyQualified(
+                            parts: array(
+                                0: var_dump
+                            )
                         )
-                        byRef: false
-                        unpack: false
+                        args: array(
+                            0: Arg(
+                                value: Expr_Variable(
+                                    name: foo
+                                )
+                                byRef: false
+                                unpack: false
+                            )
+                        )
                     )
                 )
             )
