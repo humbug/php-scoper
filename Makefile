@@ -282,7 +282,6 @@ e2e_026: bin/php-scoper.phar fixtures/set026/vendor
 	php build/set026/main.php > build/set026/output
 	diff fixtures/set026/expected-output build/set026/output
 
-
 .PHONY: e2e_027
 e2e_027:	## Run end-to-end tests for the fixture set 027 — Laravel
 e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
@@ -298,10 +297,12 @@ e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
 	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
 
-
 .PHONY: e2e_028
 e2e_028:	## Run end-to-end tests for the fixture set 028 — Symfony
 e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
+	APP_ENV=dev composer --working-dir=fixtures/set028-symfony dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set028-symfony/bin/console -V > fixtures/set028-symfony/expected-output
+
 	php $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set028-symfony \
 		--output-dir=../../build/set028-symfony \
@@ -309,12 +310,11 @@ e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
 		--force \
 		--no-interaction \
 		--stop-on-failure
+
 	APP_ENV=dev composer --working-dir=build/set028-symfony dump-autoload --no-dev
-	APP_ENV=dev php fixtures/set028-symfony/bin/console -V > fixtures/set028-symfony/expected-output
-
 	APP_ENV=dev php build/set028-symfony/bin/console -V > build/set028-symfony/output
-	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
 
+	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
 
 .PHONY: tb
 BLACKFIRE=blackfire

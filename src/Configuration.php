@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use function array_unshift;
+use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use Iterator;
 use RuntimeException;
@@ -128,6 +130,9 @@ class Configuration
         $whitelistedFiles = null === $path ? [] : self::retrieveWhitelistedFiles(dirname($path), $config);
 
         $patchers = self::retrievePatchers($config);
+
+        array_unshift($patchers, new SymfonyPatcher());
+
         $whitelist = self::retrieveWhitelist($config);
 
         $finders = self::retrieveFinders($config);
