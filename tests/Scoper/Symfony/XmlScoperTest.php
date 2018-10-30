@@ -83,11 +83,13 @@ class XmlScoperTest extends TestCase
         $prefix = 'Humbug';
         $file = 'file.xml';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
 
         $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
 
         $this->assertSame($expected, $actual);
+
+        $this->assertSame($expectedClasses, $whitelist->getRecordedWhitelistedClasses());
+        $this->assertSame([], $whitelist->getRecordedWhitelistedFunctions());
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(0);
     }
@@ -385,6 +387,126 @@ XML
     <services>
         <service id="Humbug\App\Twig\AppExtension" public="false">
             <tag name="twig.extension" property="Humbug\App\Twig\AppExtension" />
+        </service>
+    </services>
+</container>
+XML
+            ,
+            [],
+        ];
+
+        yield [
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Acme\Foo" />
+        <service class="Acme\Bar" />
+    </services>
+</container>
+XML
+            ,
+            Whitelist::create(true, true, true, 'Acme\Foo'),
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Humbug\Acme\Foo" />
+        <service class="Humbug\Acme\Bar" />
+    </services>
+</container>
+XML
+            ,
+            [
+                ['Acme\Foo', 'Humbug\Acme\Foo'],
+            ],
+        ];
+
+        yield [
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Foo">
+            <argument id="Acme\Baz" />
+        </service>
+        <service class="Closure" />
+    </services>
+</container>
+XML
+            ,
+            Whitelist::create(true, true, true),
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Foo">
+            <argument id="Humbug\Acme\Baz" />
+        </service>
+        <service class="Closure" />
+    </services>
+</container>
+XML
+            ,
+            [], // Whitelisting global classes in the service definitions is not supported at the moment. Provide a PR
+                // if you are willing to add support for it.
+        ];
+
+        yield [
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Acme\Foo">
+            <argument id="Acme\Bar" />
+        </service>
+        <service id="Emca\Foo">
+            <argument id="Emca\Bar" />
+        </service>
+    </services>
+</container>
+XML
+            ,
+            Whitelist::create(true, true, true, 'Acme\*'),
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Acme\Foo">
+            <argument id="Acme\Bar" />
+        </service>
+        <service id="Humbug\Emca\Foo">
+            <argument id="Humbug\Emca\Bar" />
         </service>
     </services>
 </container>

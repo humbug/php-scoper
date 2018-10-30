@@ -31,10 +31,8 @@ final class SymfonyScoper implements Scoper
 
     public function __construct(Scoper $decoratedScoper)
     {
-        $this->decoratedScoper = new SymfonyPhpScoper(
-            new SymfonyXmlScoper(
-                new SymfonyYamlScoper($decoratedScoper)
-            )
+        $this->decoratedScoper = new SymfonyXmlScoper(
+            new SymfonyYamlScoper($decoratedScoper)
         );
     }
 

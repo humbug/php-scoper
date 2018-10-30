@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Scoper\Symfony;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use function func_get_args;
+use PhpParser\Node\Name\FullyQualified;
 use function preg_match_all;
 use function str_replace;
 use function strlen;
@@ -46,13 +47,13 @@ final class XmlScoper implements Scoper
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
-        $contents = $this->scopeClasses($contents, $prefix);
-        $contents = $this->scopeNamespaces($contents, $prefix);
+        $contents = $this->scopeClasses($contents, $prefix, $whitelist);
+        $contents = $this->scopeNamespaces($contents, $prefix, $whitelist);
 
         return $contents;
     }
 
-    private function scopeClasses(string $contents, string $prefix): string
+    private function scopeClasses(string $contents, string $prefix, Whitelist $whitelist): string
     {
         if (1 > preg_match_all('/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?){1})):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u', $contents, $matches)) {
             return $contents;
@@ -62,20 +63,22 @@ final class XmlScoper implements Scoper
             array_filter($matches['singleClass']),
             array_filter($matches['singleSeparator']),
             $prefix,
-            $contents
+            $contents,
+            $whitelist
         );
 
         $contents = $this->replaceClasses(
             array_filter($matches['class']),
             array_filter($matches['separator']),
             $prefix,
-            $contents
+            $contents,
+            $whitelist
         );
 
         return $contents;
     }
 
-    private function scopeNamespaces(string $contents, string $prefix): string
+    private function scopeNamespaces(string $contents, string $prefix, Whitelist $whitelist): string
     {
         if (1 > preg_match_all('/\<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?){1})))"/', $contents, $matches)) {
             return $contents;
@@ -85,11 +88,22 @@ final class XmlScoper implements Scoper
             array_filter($matches['namespace']),
             array_filter($matches['separator']),
             $prefix,
-            $contents
+            $contents,
+            $whitelist
         );
     }
 
-    private function replaceClasses(array $classes, array $separators, string $prefix, string $contents): string
+    /**
+     * @param string[] $classes
+     * @param string[] $separators
+     */
+    private function replaceClasses(
+        array $classes,
+        array $separators,
+        string $prefix,
+        string $contents,
+        Whitelist $whitelist
+    ): string
     {
         if ([] === $classes) {
             return $contents;
@@ -103,7 +117,19 @@ final class XmlScoper implements Scoper
             $stringToScope = substr($contents, 0, $offset);
             $contents = substr($contents, $offset);
 
-            $scopedContents .= str_replace($class, $prefix.$separators[$index].$class, $stringToScope);
+            $prefixedClass = $prefix.$separators[$index].$class;
+
+            $scopedContents .= $whitelist->belongsToWhitelistedNamespace($class)
+                ? $stringToScope
+                : str_replace($class, $prefixedClass, $stringToScope)
+            ;
+
+            if ($whitelist->isSymbolWhitelisted($class) || $whitelist->isGlobalWhitelistedClass($class)) {
+                $whitelist->recordWhitelistedClass(
+                    new FullyQualified($class),
+                    new FullyQualified($prefixedClass)
+                );
+            }
         }
 
         $scopedContents .= $contents;
