@@ -78,7 +78,7 @@ class XmlScoperTest extends TestCase
     /**
      * @dataProvider provideXmlFiles
      */
-    public function test_it_scopes_XML_files(string $contents, string $expected): void
+    public function test_it_scopes_XML_files(string $contents, Whitelist $whitelist, string $expected, array $expectedClasses): void
     {
         $prefix = 'Humbug';
         $file = 'file.xml';
@@ -103,7 +103,12 @@ class XmlScoperTest extends TestCase
 
     public function provideXmlFiles(): Generator
     {
-        yield ['', ''];
+        yield [
+            '',
+            Whitelist::create(true, true, true),
+            '',
+            [],
+        ];
 
         yield [
             <<<'XML'
@@ -167,6 +172,7 @@ class XmlScoperTest extends TestCase
 
 XML
             ,
+            Whitelist::create(true, true, true),
             <<<'XML'
 <?xml version="1.0" ?>
 
@@ -227,6 +233,8 @@ XML
 </container>
 
 XML
+            ,
+            [],
         ];
 
         yield [
@@ -248,6 +256,7 @@ XML
 </container>
 XML
             ,
+            Whitelist::create(true, true, true),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -265,6 +274,123 @@ XML
     </services>
 </container>
 XML
+            ,
+            [],
+        ];
+
+        yield [
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="App\Mail\PhpMailer" public="false" />
+
+        <service id="app.mailer" alias="App\Mail\PhpMailer" />
+    </services>
+</container>
+XML
+            ,
+            Whitelist::create(true, true, true),
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Humbug\App\Mail\PhpMailer" public="false" />
+
+        <service id="app.mailer" alias="Humbug\App\Mail\PhpMailer" />
+    </services>
+</container>
+XML
+            ,
+            [],
+        ];
+
+        yield [
+            <<<'XML'
+<!-- app/config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="foo" class="App\Foo">
+            <argument type="service">
+                <service class="App\AnonymousBar" />
+            </argument>
+        </service>
+    </services>
+</container>
+XML
+            ,
+            Whitelist::create(true, true, true),
+            <<<'XML'
+<!-- app/config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="foo" class="Humbug\App\Foo">
+            <argument type="service">
+                <service class="Humbug\App\AnonymousBar" />
+            </argument>
+        </service>
+    </services>
+</container>
+XML
+            ,
+            [],
+        ];
+
+        yield [
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="App\Twig\AppExtension" public="false">
+            <tag name="twig.extension" property="App\Twig\AppExtension" />
+        </service>
+    </services>
+</container>
+XML
+            ,
+            Whitelist::create(true, true, true),
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="Humbug\App\Twig\AppExtension" public="false">
+            <tag name="twig.extension" property="Humbug\App\Twig\AppExtension" />
+        </service>
+    </services>
+</container>
+XML
+            ,
+            [],
         ];
     }
 }
