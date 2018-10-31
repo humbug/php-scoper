@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use Iterator;
 use RuntimeException;
@@ -22,6 +23,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use const DIRECTORY_SEPARATOR;
 use function array_key_exists;
+use function array_unshift;
 use function dirname;
 use function file_exists;
 use function gettype;
@@ -128,6 +130,9 @@ class Configuration
         $whitelistedFiles = null === $path ? [] : self::retrieveWhitelistedFiles(dirname($path), $config);
 
         $patchers = self::retrievePatchers($config);
+
+        array_unshift($patchers, new SymfonyPatcher());
+
         $whitelist = self::retrieveWhitelist($config);
 
         $finders = self::retrieveFinders($config);

@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use function func_get_args;
 
 final class PatchScoper implements Scoper
 {
@@ -31,7 +32,7 @@ final class PatchScoper implements Scoper
      */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
-        $contents = $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $contents = $this->decoratedScoper->scope(...func_get_args());
 
         return array_reduce(
             $patchers,

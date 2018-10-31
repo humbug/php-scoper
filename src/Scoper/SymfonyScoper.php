@@ -15,35 +15,32 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\Symfony\XmlScoper as SymfonyXmlScoper;
+use Humbug\PhpScoper\Scoper\Symfony\YamlScoper as SymfonyYamlScoper;
 use Humbug\PhpScoper\Whitelist;
+use PhpParser\Error as PhpParserError;
 use function func_get_args;
 
-final class ConfigurableScoper implements Scoper
+/**
+ * Scopes the Symfony configuration related files.
+ */
+final class SymfonyScoper implements Scoper
 {
     private $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
-        $this->decoratedScoper = $decoratedScoper;
-    }
-
-    public function withWhitelistedFiles(string ...$whitelistedFiles): self
-    {
-        $self = clone $this;
-
-        return [] === $whitelistedFiles
-            ? $self
-            : new self(
-                new FileWhitelistScoper(
-                    $self,
-                    ...$whitelistedFiles
-                )
-            )
-        ;
+        $this->decoratedScoper = new SymfonyXmlScoper(
+            new SymfonyYamlScoper($decoratedScoper)
+        );
     }
 
     /**
-     * @inheritdoc
+     * Scopes PHP files.
+     *
+     * {@inheritdoc}
+     *
+     * @throws PhpParserError
      */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {

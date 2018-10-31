@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+use function func_get_args;
 
 final class PhpScoper implements Scoper
 {
@@ -49,7 +50,7 @@ final class PhpScoper implements Scoper
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         if (false === $this->isPhpFile($filePath, $contents)) {
-            return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+            return $this->decoratedScoper->scope(...func_get_args());
         }
 
         return $this->scopePhp($contents, $prefix, $whitelist);

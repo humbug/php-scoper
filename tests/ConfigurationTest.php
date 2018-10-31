@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use function KevinGH\Box\FileSystem\dump_file;
 
@@ -34,7 +35,7 @@ class ConfigurationTest extends FileSystemTestCase
         $this->assertNull($configuration->getPath());
         $this->assertNull($configuration->getPrefix());
         $this->assertSame([], $configuration->getFilesWithContents());
-        $this->assertSame([], $configuration->getPatchers());
+        $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
     }
 
     public function test_it_cannot_create_a_configuration_with_an_invalid_key(): void
@@ -91,6 +92,6 @@ PHP
         $this->assertSame($this->tmp.'/scoper.inc.php', $configuration->getPath());
         $this->assertSame('MyPrefix', $configuration->getPrefix());
         $this->assertSame([], $configuration->getFilesWithContents());
-        $this->assertSame([], $configuration->getPatchers());
+        $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
     }
 }
