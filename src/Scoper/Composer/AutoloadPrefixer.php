@@ -15,11 +15,11 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Whitelist;
-use function rtrim;
 use stdClass;
 use function array_map;
 use function is_array;
 use function is_string;
+use function rtrim;
 use function str_replace;
 use function strpos;
 
@@ -104,7 +104,7 @@ final class AutoloadPrefixer
     /**
      * @param (string|string[])[] $psr0
      * @param (string|string[])[] $psr4
-     * @param string[] $classMap
+     * @param string[]            $classMap
      *
      * @return (string|string[])[]
      */
