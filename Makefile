@@ -319,7 +319,7 @@ e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
 .PHONY: e2e_029
 e2e_029:	## Run end-to-end tests for the fixture set 029 — EasyRdf
 e2e_029: bin/php-scoper fixtures/set029-easy-rdf/vendor
-	php bin/php-scoper add-prefix \
+	php $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set029-easy-rdf \
 		--output-dir=../../build/set029-easy-rdf \
 		--no-config \
