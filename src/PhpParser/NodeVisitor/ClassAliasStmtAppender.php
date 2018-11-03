@@ -111,10 +111,16 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
 
         $originalName = $this->nameResolver->resolveName($stmt->name)->getName();
 
+        dump(PHP_EOL, (string) $originalName);
+
         if (false === ($originalName instanceof FullyQualified)
             || $this->whitelist->belongsToWhitelistedNamespace((string) $originalName)
-            || false === $this->whitelist->isSymbolWhitelisted((string) $originalName)
+            || (
+                false === $this->whitelist->isSymbolWhitelisted((string) $originalName)
+                && false === $this->whitelist->isGlobalWhitelistedClass((string) $originalName)
+            )
         ) {
+            dump('no alias');
             return $stmts;
         }
         /* @var FullyQualified $originalName */

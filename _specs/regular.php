@@ -25,26 +25,26 @@ return [
         'registered-functions' => [],
     ],
 
-    'Declaration in the global namespace' => <<<'PHP'
-<?php
-
-class A {
-    public function a() {}
-}
-----
-<?php
-
-namespace Humbug;
-
-class A
-{
-    public function a()
-    {
-    }
-}
-
-PHP
-    ,
+//    'Declaration in the global namespace' => <<<'PHP'
+//<?php
+//
+//class A {
+//    public function a() {}
+//}
+//----
+//<?php
+//
+//namespace Humbug;
+//
+//class A
+//{
+//    public function a()
+//    {
+//    }
+//}
+//
+//PHP
+//    ,
 
     'Declaration in the global namespace with global classes whitelisted' => [
         'whitelist-global-classes' => true,

@@ -62,7 +62,7 @@ tm: bin/phpunit
 
 .PHONY: e2e
 e2e:	## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -316,6 +316,24 @@ e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
 
 	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
 
+.PHONY: e2e_029
+e2e_029:	## Run end-to-end tests for the fixture set 029 — EasyRdf
+e2e_029: bin/php-scoper fixtures/set029-easy-rdf/vendor
+	php bin/php-scoper add-prefix \
+		--working-dir=fixtures/set029-easy-rdf \
+		--output-dir=../../build/set029-easy-rdf \
+		--no-config \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set029-easy-rdf/main.php > fixtures/set029-easy-rdf/expected-output
+
+	composer --working-dir=build/set029-easy-rdf dump-autoload --no-dev
+	php build/set029-easy-rdf/main.php > build/set029-easy-rdf/output
+
+	diff fixtures/set029-easy-rdf/expected-output build/set029-easy-rdf/output
+
 .PHONY: tb
 BLACKFIRE=blackfire
 tb:	## Run Blackfire profiling
@@ -417,6 +435,10 @@ fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
 	composer --working-dir=fixtures/set028-symfony install --no-dev --no-scripts
 	touch $@
 
+fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
+	composer --working-dir=fixtures/set029-easy-rdf install --no-dev
+	touch $@
+
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
@@ -467,6 +489,9 @@ fixtures/set027-laravel/composer.lock: fixtures/set027-laravel/composer.json
 
 fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
 	@echo fixtures/set028-symfony/composer.lock is not up to date.
+
+fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
+	@echo fixtures/set029-easy-rdf/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json.dist
 	$(BOX) compile
