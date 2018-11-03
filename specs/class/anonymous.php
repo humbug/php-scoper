@@ -130,9 +130,11 @@ namespace Humbug;
 interface B
 {
 }
+\class_alias('Humbug\\B', 'B', \false);
 interface C
 {
 }
+\class_alias('Humbug\\C', 'C', \false);
 new class
 {
     public function test()
@@ -160,6 +162,7 @@ class A
         };
     }
 }
+\class_alias('Humbug\\A', 'A', \false);
 
 PHP
         ,

@@ -113,7 +113,10 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
 
         if (false === ($originalName instanceof FullyQualified)
             || $this->whitelist->belongsToWhitelistedNamespace((string) $originalName)
-            || false === $this->whitelist->isSymbolWhitelisted((string) $originalName)
+            || (
+                false === $this->whitelist->isSymbolWhitelisted((string) $originalName)
+                && false === $this->whitelist->isGlobalWhitelistedClass((string) $originalName)
+            )
         ) {
             return $stmts;
         }

@@ -77,13 +77,16 @@ namespace Humbug;
 class C
 {
 }
+\class_alias('Humbug\\C', 'C', \false);
 class D
 {
 }
+\class_alias('Humbug\\D', 'D', \false);
 interface A extends \Humbug\C, \Humbug\D, \Iterator
 {
     public function a();
 }
+\class_alias('Humbug\\A', 'A', \false);
 
 PHP
     ],

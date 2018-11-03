@@ -19,7 +19,9 @@ use stdClass;
 use function array_map;
 use function is_array;
 use function is_string;
+use function rtrim;
 use function str_replace;
+use function strpos;
 
 /**
  * @private
@@ -56,10 +58,23 @@ final class AutoloadPrefixer
         }
 
         if (isset($autoload->{'psr-0'})) {
-            $autoload->{'psr-4'} = self::mergePSR0And4(
+            [$psr4, $classMap] = self::transformPsr0ToPsr4AndClassmap(
                 (array) $autoload->{'psr-0'},
-                (array) ($autoload->{'psr-4'} ?? new stdClass())
+                (array) ($autoload->{'psr-4'} ?? new stdClass()),
+                (array) ($autoload->{'classmap'} ?? new stdClass())
             );
+
+            if ([] === $psr4) {
+                unset($autoload->{'psr-4'});
+            } else {
+                $autoload->{'psr-4'} = $psr4;
+            }
+
+            if ([] === $classMap) {
+                unset($autoload->{'classmap'});
+            } else {
+                $autoload->{'classmap'} = $classMap;
+            }
         }
         unset($autoload->{'psr-0'});
 
@@ -87,12 +102,11 @@ final class AutoloadPrefixer
     }
 
     /**
-     * @param (string|string[])[] $psr0
-     * @param (string|string[])[] $psr4
-     *
-     * @return (string|string[])[]
+     * @param array<string, (string|string[])> $psr0
+     * @param (string|string[])[]              $psr4
+     * @param string[]                         $classMap
      */
-    private static function mergePSR0And4(array $psr0, array $psr4): array
+    private static function transformPsr0ToPsr4AndClassmap(array $psr0, array $psr4, array $classMap): array
     {
         foreach ($psr0 as $namespace => $path) {
             //Append backslashes, if needed, since psr-0 does not require this
@@ -100,17 +114,24 @@ final class AutoloadPrefixer
                 $namespace .= '\\';
             }
 
-            $path = self::updatePSR0Path($path, (string) $namespace);
+            if (false !== strpos($namespace, '_')) {
+                $classMap[] = $path;
+
+                continue;
+            }
+
+            $path = self::updatePSR0Path($path, $namespace);
 
             if (!isset($psr4[$namespace])) {
                 $psr4[$namespace] = $path;
 
                 continue;
             }
-            $psr4[$namespace] = self::mergeNamespaces((string) $namespace, $path, $psr4);
+
+            $psr4[$namespace] = self::mergeNamespaces($namespace, $path, $psr4);
         }
 
-        return $psr4;
+        return [$psr4, $classMap];
     }
 
     /**
@@ -120,7 +141,10 @@ final class AutoloadPrefixer
      */
     private static function updatePSR0Path($path, string $namespace)
     {
-        $namespaceForPsr = str_replace('\\', '/', $namespace);
+        $namespaceForPsr = rtrim(
+            str_replace('\\', '/', $namespace),
+            '/'
+        );
 
         if (false === is_array($path)) {
             if ('/' !== substr($path, -1)) {

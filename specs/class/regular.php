@@ -68,6 +68,7 @@ class A
     {
     }
 }
+\class_alias('Humbug\\A', 'A', \false);
 
 PHP
     ],

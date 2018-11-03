@@ -72,6 +72,7 @@ abstract class A
     }
     public abstract function b();
 }
+\class_alias('Humbug\\A', 'A', \false);
 
 PHP
         ,

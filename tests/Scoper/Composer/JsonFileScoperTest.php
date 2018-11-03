@@ -179,7 +179,7 @@ JSON
             "Humbug\\PhpScoper\\": "tests/"
         },
         "psr-4": {
-            "Bar\\": "folder\/" 
+            "Bar\\": "folder\/"
         },
         "files": [
             "tests/functions.php"
@@ -200,7 +200,7 @@ JSON
                 "lib\/",
                 "dev\/"
             ],
-            "Foo\\Humbug\\PhpScoper\\": "src\/Humbug\/PhpScoper\/\/"
+            "Foo\\Humbug\\PhpScoper\\": "src\/Humbug\/PhpScoper\/"
         },
         "files": [
             "src\/functions.php"
@@ -209,7 +209,7 @@ JSON
     "autoload-dev": {
         "psr-4": {
             "Foo\\Bar\\": "folder\/",
-            "Foo\\Humbug\\PhpScoper\\": "tests\/Humbug\/PhpScoper\/\/"
+            "Foo\\Humbug\\PhpScoper\\": "tests\/Humbug\/PhpScoper\/"
         },
         "files": [
             "tests\/functions.php"
@@ -219,7 +219,7 @@ JSON
 JSON
         ];
 
-        yield 'psr zero and four with the same namespace get merged' => [
+        yield 'PSR-0 and four with the same namespace get merged' => [
             <<<'JSON'
 {
     "autoload": {
@@ -239,7 +239,7 @@ JSON
         "psr-4": {
             "Foo\\Bar\\": [
                 "lib\/",
-                "src\/Bar\/\/"
+                "src\/Bar\/"
             ]
         }
     }
@@ -247,7 +247,7 @@ JSON
 JSON
         ];
 
-        yield 'psr zero and four get merged if either of them have multiple entries' => [
+        yield 'PSR-0 and four get merged if either of them have multiple entries' => [
             <<<'JSON'
 {
     "autoload": {
@@ -282,15 +282,15 @@ JSON
             "Foo\\Bar\\": [
                 "lib\/",
                 "src\/",
-                "test\/Bar\/\/"
+                "test\/Bar\/"
             ]
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Foo\\Baz\\": [
-                "folder\/Baz\/\/",
-                "check\/Baz\/\/",
+                "folder\/Baz\/",
+                "check\/Baz\/",
                 "loader\/"
             ]
         }
@@ -299,7 +299,7 @@ JSON
 JSON
         ];
 
-        yield 'psr zero gets converted to psr4' => [
+        yield 'PSR-0 gets converted to PSR-4' => [
             <<<'JSON'
 {
     "autoload": {
@@ -314,14 +314,14 @@ JSON
 {
     "autoload": {
         "psr-4": {
-            "Foo\\Bar\\": "src\/Bar\/\/"
+            "Foo\\Bar\\": "src\/Bar\/"
         }
     }
 }
 JSON
         ];
 
-        yield 'psr zero and four get merged when both are arrays' => [
+        yield 'PSR-0 and four get merged when both are arrays' => [
             <<<'JSON'
 {
     "autoload": {
@@ -348,10 +348,56 @@ JSON
             "Foo\\Bar\\": [
                 "lib\/",
                 "src\/",
-                "build\/Bar\/\/",
-                "internal\/Bar\/\/"
+                "build\/Bar\/",
+                "internal\/Bar\/"
             ]
         }
+    }
+}
+JSON
+        ];
+
+        yield 'PSR-0 with underscores gets converted to classmap' => [
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-0": {
+            "EasyRdf_": "lib"
+        }
+    }
+}
+
+JSON
+            ,
+            <<<'JSON'
+{
+    "autoload": {
+        "classmap": [
+            "lib"
+        ]
+    }
+}
+JSON
+        ];
+
+        yield [
+            <<<'JSON'
+{
+    "autoload": {
+        "psr-0": {
+            "EasyRdf_": "lib/"
+        }
+    }
+}
+
+JSON
+            ,
+            <<<'JSON'
+{
+    "autoload": {
+        "classmap": [
+            "lib\/"
+        ]
     }
 }
 JSON
