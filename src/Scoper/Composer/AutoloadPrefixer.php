@@ -102,11 +102,9 @@ final class AutoloadPrefixer
     }
 
     /**
-     * @param (string|string[])[] $psr0
-     * @param (string|string[])[] $psr4
-     * @param string[]            $classMap
-     *
-     * @return (string|string[])[]
+     * @param array<string, (string|string[])> $psr0
+     * @param (string|string[])[]              $psr4
+     * @param string[]                         $classMap
      */
     private static function transformPsr0ToPsr4AndClassmap(array $psr0, array $psr4, array $classMap): array
     {
@@ -122,7 +120,7 @@ final class AutoloadPrefixer
                 continue;
             }
 
-            $path = self::updatePSR0Path($path, (string) $namespace);
+            $path = self::updatePSR0Path($path, $namespace);
 
             if (!isset($psr4[$namespace])) {
                 $psr4[$namespace] = $path;
@@ -130,7 +128,7 @@ final class AutoloadPrefixer
                 continue;
             }
 
-            $psr4[$namespace] = self::mergeNamespaces((string) $namespace, $path, $psr4);
+            $psr4[$namespace] = self::mergeNamespaces($namespace, $path, $psr4);
         }
 
         return [$psr4, $classMap];
