@@ -128,6 +128,7 @@ class B
         E::f as private;
     }
 }
+\class_alias('Humbug\\B', 'B', \false);
 
 PHP
     ],
