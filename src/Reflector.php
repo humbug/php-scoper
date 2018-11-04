@@ -69,8 +69,6 @@ final class Reflector
         'utf8_encode' => true,
     ];
 
-    private const KNOWN_INTERNAL_CLASSES = [];
-
     private $classReflector;
     private $constants;
 
@@ -81,10 +79,6 @@ final class Reflector
 
     public function isClassInternal(string $name): bool
     {
-        if (array_key_exists($name, self::KNOWN_INTERNAL_CLASSES)) {
-            return true;
-        }
-
         try {
             return $this->classReflector->reflect($name)->isInternal();
         } catch (IdentifierNotFound | InvalidIdentifierName $exception) {
