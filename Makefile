@@ -62,13 +62,13 @@ tm: bin/phpunit
 
 .PHONY: e2e
 e2e:	## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030
 
 PHPSCOPER=bin/php-scoper.phar
 
 .PHONY: e2e_004
 e2e_004:	## Run end-to-end tests for the fixture set 004 — Source code case
-e2e_004: bin/php-scoper.phar
+e2e_004: $(PHPSCOPER)
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set004
 
 	php build/set004/bin/greet.phar > build/set004/output
@@ -76,7 +76,7 @@ e2e_004: bin/php-scoper.phar
 
 .PHONY: e2e_005
 e2e_005:	## Run end-to-end tests for the fixture set 005 — Third-party code case
-e2e_005: bin/php-scoper.phar fixtures/set005/vendor
+e2e_005: $(PHPSCOPER) fixtures/set005/vendor
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set005
 
 	php build/set005/bin/greet.phar > build/set005/output
@@ -84,7 +84,7 @@ e2e_005: bin/php-scoper.phar fixtures/set005/vendor
 
 .PHONY: e2e_011
 e2e_011:	## Run end-to-end tests for the fixture set 011 — Whitelist case
-e2e_011: bin/php-scoper.phar fixtures/set011/vendor
+e2e_011: $(PHPSCOPER) fixtures/set011/vendor
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set011
 	cp -R fixtures/set011/tests/ build/set011/tests/
 
@@ -93,7 +93,7 @@ e2e_011: bin/php-scoper.phar fixtures/set011/vendor
 
 .PHONY: e2e_013
 e2e_013:	# Run end-to-end tests for the fixture set 013 — The init command
-e2e_013: bin/php-scoper.phar
+e2e_013: $(PHPSCOPER)
 	rm -rf build/set013
 	cp -R fixtures/set013 build/set013
 	$(PHPSCOPER) init --working-dir=build/set013 --no-interaction
@@ -101,7 +101,7 @@ e2e_013: bin/php-scoper.phar
 
 .PHONY: e2e_014
 e2e_014:	## Run end-to-end tests for the fixture set 014 — Source code case with PSR-0
-e2e_014: bin/php-scoper.phar
+e2e_014: $(PHPSCOPER)
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set014
 
 	php build/set014/bin/greet.phar > build/set014/output
@@ -109,7 +109,7 @@ e2e_014: bin/php-scoper.phar
 
 .PHONY: e2e_015
 e2e_015:	## Run end-to-end tests for the fixture set 015 — Third-party code case with PSR-0
-e2e_015: bin/php-scoper.phar fixtures/set015/vendor
+e2e_015: $(PHPSCOPER) fixtures/set015/vendor
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set015
 
 	php build/set015/bin/greet.phar > build/set015/output
@@ -117,7 +117,7 @@ e2e_015: bin/php-scoper.phar fixtures/set015/vendor
 
 .PHONY: e2e_016
 e2e_016:	## Run end-to-end tests for the fixture set 016 — Symfony Finder
-e2e_016: bin/php-scoper.phar fixtures/set016-symfony-finder/vendor
+e2e_016: $(PHPSCOPER) fixtures/set016-symfony-finder/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set016-symfony-finder \
 		--output-dir=../../build/set016-symfony-finder \
@@ -132,7 +132,7 @@ e2e_016: bin/php-scoper.phar fixtures/set016-symfony-finder/vendor
 
 .PHONY: e2e_017
 e2e_017:	## Run end-to-end tests for the fixture set 017 — Symfony DependencyInjection
-e2e_017: bin/php-scoper.phar fixtures/set017-symfony-di/vendor
+e2e_017: $(PHPSCOPER) fixtures/set017-symfony-di/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set017-symfony-di \
 		--output-dir=../../build/set017-symfony-di \
@@ -147,7 +147,7 @@ e2e_017: bin/php-scoper.phar fixtures/set017-symfony-di/vendor
 
 .PHONY: e2e_018
 e2e_018:	## Run end-to-end tests for the fixture set 018 — Nikic PHP-Parser
-e2e_018: bin/php-scoper.phar fixtures/set018-nikic-parser/vendor
+e2e_018: $(PHPSCOPER) fixtures/set018-nikic-parser/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set018-nikic-parser \
 		--prefix=_Prefixed \
@@ -162,7 +162,7 @@ e2e_018: bin/php-scoper.phar fixtures/set018-nikic-parser/vendor
 
 .PHONY: e2e_019
 e2e_019:	## Run end-to-end tests for the fixture set 019 — Symfony Console
-e2e_019: bin/php-scoper.phar fixtures/set019-symfony-console/vendor
+e2e_019: $(PHPSCOPER) fixtures/set019-symfony-console/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set019-symfony-console \
 		--prefix=_Prefixed \
 		--output-dir=../../build/set019-symfony-console \
@@ -177,7 +177,7 @@ e2e_019: bin/php-scoper.phar fixtures/set019-symfony-console/vendor
 
 .PHONY: e2e_020
 e2e_020:	## Run end-to-end tests for the fixture set 020 — Infection
-e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
+e2e_020: $(PHPSCOPER) fixtures/set020-infection/vendor clover.xml
 	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set020-infection \
 		--output-dir=../../build/set020-infection \
 		--force \
@@ -198,7 +198,7 @@ e2e_020: bin/php-scoper.phar fixtures/set020-infection/vendor clover.xml
 
 .PHONY: e2e_021
 e2e_021:	## Run end-to-end tests for the fixture set 020 — Composer
-e2e_021: bin/php-scoper.phar fixtures/set021-composer/vendor
+e2e_021: $(PHPSCOPER) fixtures/set021-composer/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer \
 		--output-dir=../../build/set021-composer \
 		--force \
@@ -218,7 +218,7 @@ e2e_021: bin/php-scoper.phar fixtures/set021-composer/vendor
 
 .PHONY: e2e_022
 e2e_022:	## Run end-to-end tests for the fixture set 022 — Whitelist the project code with namespace whitelisting
-e2e_022: bin/php-scoper.phar fixtures/set022/vendor
+e2e_022: $(PHPSCOPER) fixtures/set022/vendor
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set022
 	cp -R fixtures/set022/tests/ build/set022/tests/
 
@@ -228,7 +228,7 @@ e2e_022: bin/php-scoper.phar fixtures/set022/vendor
 
 .PHONY: e2e_023
 e2e_023:	## Run end-to-end tests for the fixture set 023 — Whitelisting a whole third-party component with namespace whitelisting
-e2e_023: bin/php-scoper.phar fixtures/set023/vendor
+e2e_023: $(PHPSCOPER) fixtures/set023/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set023 \
 		--output-dir=../../build/set023 \
 		--force \
@@ -241,7 +241,7 @@ e2e_023: bin/php-scoper.phar fixtures/set023/vendor
 
 .PHONY: e2e_024
 e2e_024:	## Run end-to-end tests for the fixture set 024 — Whitelisting user functions registered in the global namespace
-e2e_024: bin/php-scoper.phar fixtures/set024/vendor
+e2e_024: $(PHPSCOPER) fixtures/set024/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set024 \
 		--output-dir=../../build/set024 \
@@ -256,7 +256,7 @@ e2e_024: bin/php-scoper.phar fixtures/set024/vendor
 
 .PHONY: e2e_025
 e2e_025:	## Run end-to-end tests for the fixture set 025 — Whitelisting a vendor function
-e2e_025: bin/php-scoper.phar fixtures/set025/vendor
+e2e_025: $(PHPSCOPER) fixtures/set025/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set025 \
 		--output-dir=../../build/set025 \
@@ -270,7 +270,7 @@ e2e_025: bin/php-scoper.phar fixtures/set025/vendor
 
 .PHONY: e2e_026
 e2e_026:	## Run end-to-end tests for the fixture set 026 — Whitelisting classes and functions with pattern matching
-e2e_026: bin/php-scoper.phar fixtures/set026/vendor
+e2e_026: $(PHPSCOPER) fixtures/set026/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set026 \
 		--output-dir=../../build/set026 \
@@ -284,7 +284,7 @@ e2e_026: bin/php-scoper.phar fixtures/set026/vendor
 
 .PHONY: e2e_027
 e2e_027:	## Run end-to-end tests for the fixture set 027 — Laravel
-e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
+e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
 	php $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set027-laravel \
 		--output-dir=../../build/set027-laravel \
@@ -299,7 +299,7 @@ e2e_027: bin/php-scoper.phar fixtures/set027-laravel/vendor
 
 .PHONY: e2e_028
 e2e_028:	## Run end-to-end tests for the fixture set 028 — Symfony
-e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
+e2e_028: $(PHPSCOPER) fixtures/set028-symfony/vendor
 	php $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set028-symfony \
 		--output-dir=../../build/set028-symfony \
@@ -318,7 +318,7 @@ e2e_028: bin/php-scoper.phar fixtures/set028-symfony/vendor
 
 .PHONY: e2e_029
 e2e_029:	## Run end-to-end tests for the fixture set 029 — EasyRdf
-e2e_029: bin/php-scoper fixtures/set029-easy-rdf/vendor
+e2e_029: $(PHPSCOPER) fixtures/set029-easy-rdf/vendor
 	php $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set029-easy-rdf \
 		--output-dir=../../build/set029-easy-rdf \
@@ -333,6 +333,25 @@ e2e_029: bin/php-scoper fixtures/set029-easy-rdf/vendor
 	php build/set029-easy-rdf/main.php > build/set029-easy-rdf/output
 
 	diff fixtures/set029-easy-rdf/expected-output build/set029-easy-rdf/output
+	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
+
+.PHONY: e2e_030
+e2e_030:	## Run end-to-end tests for the fixture set 039 — global function whitelisting
+e2e_030: $(PHPSCOPER) fixtures/set030/vendor
+	php $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set030 \
+		--output-dir=../../build/set030 \
+		--no-config \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set030/main.php > fixtures/set030/expected-output
+
+	composer --working-dir=build/set030 dump-autoload --no-dev
+	php build/set030/main.php > build/set030/output
+
+	diff fixtures/set030/expected-output build/set030/output
 
 .PHONY: tb
 BLACKFIRE=blackfire
@@ -437,6 +456,10 @@ fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
 
 fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
 	composer --working-dir=fixtures/set029-easy-rdf install --no-dev
+	touch $@
+
+fixtures/set030/vendor: fixtures/set030/composer.json
+	composer --working-dir=fixtures/set030 install --no-dev
 	touch $@
 
 composer.lock: composer.json

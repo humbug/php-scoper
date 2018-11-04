@@ -23,7 +23,6 @@ use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
-use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
@@ -204,10 +203,7 @@ class PhpScoperSpecTest extends TestCase
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
-                new Reflector(
-                    $classReflector,
-                    new FunctionReflector($sourceLocator, $classReflector)
-                )
+                new Reflector($classReflector)
             )
         );
     }

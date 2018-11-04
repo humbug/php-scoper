@@ -9,6 +9,7 @@
 /fixtures/*/.box_dump/
 /fixtures/*/vendor/
 /fixtures/set028-symfony/expected-output
+/fixtures/set030/expected-output
 .phpunit*
 /vendor/
 /vendor-bin/*/vendor/
