@@ -19,7 +19,6 @@ use ReflectionFunction;
 use Roave\BetterReflection\Identifier\Exception\InvalidIdentifierName;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflector\Exception\IdentifierNotFound;
-use Roave\BetterReflection\Reflector\FunctionReflector;
 use function array_key_exists;
 use function array_values;
 use function get_defined_constants;
@@ -27,7 +26,7 @@ use function strtoupper;
 
 /**
  * Main class used to determine if a given symbol is internal or not. As of the time of writing, it leverages
- * Roave\BetterReflection to determine if given class is internal or not which allows to do reflection:
+ * Roave\BetterReflection to determine if given class is internal or not which allows to do reflection:.
  *
  * - Without loading the code scanned code at all
  * - Do reliable reflection against non-loaded APIs, i.e. a class from a non-loaded extension will properly appear

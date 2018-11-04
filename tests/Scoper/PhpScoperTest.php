@@ -28,7 +28,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Roave\BetterReflection\Reflector\ClassReflector;
-use Roave\BetterReflection\Reflector\FunctionReflector;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 
