@@ -204,10 +204,7 @@ class PhpScoperSpecTest extends TestCase
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
-                new Reflector(
-                    $classReflector,
-                    new FunctionReflector($sourceLocator, $classReflector)
-                )
+                new Reflector($classReflector)
             )
         );
     }

@@ -97,9 +97,6 @@ class ApplicationFactory
         );
         $classReflector = new ClassReflector($sourceLocator);
 
-        return new Reflector(
-            $classReflector,
-            new FunctionReflector($sourceLocator, $classReflector)
-        );
+        return new Reflector($classReflector);
     }
 }
