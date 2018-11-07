@@ -180,7 +180,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             ;
         }
 
-        return (
+        return
             (
                 $this->whitelist->isSymbolWhitelisted($string->value, true)
                 || $this->whitelist->isGlobalWhitelistedConstant($string->value)
@@ -188,7 +188,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             )
             ? $string
             : $this->createPrefixedString($string)
-        );
+        ;
     }
 
     private function prefixArrayItemString(String_ $string, ArrayItem $parentNode): String_
