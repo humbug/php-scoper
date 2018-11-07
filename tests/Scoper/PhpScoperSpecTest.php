@@ -14,11 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function array_filter;
-use function array_slice;
-use function array_values;
 use Error;
-use function explode;
 use Generator;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
@@ -31,22 +27,26 @@ use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
-use function strpos;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 use UnexpectedValueException;
 use const PHP_EOL;
 use function array_diff;
+use function array_filter;
 use function array_keys;
 use function array_map;
+use function array_slice;
+use function array_values;
 use function basename;
 use function current;
+use function explode;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 use function implode;
 use function is_array;
 use function sprintf;
+use function strpos;
 use function usort;
 
 class PhpScoperSpecTest extends TestCase
