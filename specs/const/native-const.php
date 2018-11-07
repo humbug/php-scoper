@@ -32,12 +32,19 @@ namespace Acme;
 
 $x = DIRECTORY_SEPARATOR;
 
+if (!defined('PATH_SEPARATOR')) {
+    define('PATH_SEPARATOR', "\n");
+}
+
 ----
 <?php
 
 namespace Humbug\Acme;
 
 $x = \DIRECTORY_SEPARATOR;
+if (!\defined('PATH_SEPARATOR')) {
+    \define('PATH_SEPARATOR', "\n");
+}
 
 PHP
     ,
@@ -51,6 +58,10 @@ use const Acme\DIRECTORY_SEPARATOR;
 
 $x = DIRECTORY_SEPARATOR;
 
+if (!defined('PATH_SEPARATOR')) {
+    define('PATH_SEPARATOR', "\n");
+}
+
 ----
 <?php
 
@@ -58,6 +69,9 @@ namespace Humbug\Acme;
 
 use const Humbug\Acme\DIRECTORY_SEPARATOR;
 $x = \Humbug\Acme\DIRECTORY_SEPARATOR;
+if (!\defined('PATH_SEPARATOR')) {
+    \define('PATH_SEPARATOR', "\n");
+}
 
 PHP
     ,
