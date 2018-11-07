@@ -41,6 +41,8 @@ use function count;
  * define('DUMMY_CONST', 'foo');
  * ```
  *
+ * It does not do the prefixing.
+ *
  * @private
  */
 final class ConstStmtReplacer extends NodeVisitorAbstract

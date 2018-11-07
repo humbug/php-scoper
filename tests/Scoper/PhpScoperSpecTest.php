@@ -138,7 +138,8 @@ class PhpScoperSpecTest extends TestCase
 
             $this->fail(
                 sprintf(
-                    'Unexpected parse error found in the following lines: %s%s',
+                    'Unexpected parse error found in the following lines: %s%s%s',
+                    $error->getMessage(),
                     "\n\n> ",
                     implode(
                         "\n> ",
