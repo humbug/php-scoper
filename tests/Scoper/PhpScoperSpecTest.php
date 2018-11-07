@@ -14,18 +14,24 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use function array_filter;
+use function array_slice;
+use function array_values;
 use Error;
+use function explode;
 use Generator;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
+use function strpos;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
@@ -112,6 +118,34 @@ class PhpScoperSpecTest extends TestCase
             $this->assertTrue(true);
 
             return;
+        } catch (PhpParserError $error) {
+            if (0 !== strpos($error->getMessage(), 'Syntax error,')) {
+                throw new Error(
+                    sprintf(
+                        'Could not parse the spec %s: %s',
+                        $spec,
+                        $error->getMessage()
+                    ),
+                    0,
+                    $error
+                );
+            }
+
+            $lines = array_values(array_filter(explode("\n", $contents)));
+
+            $startLine = $error->getAttributes()['startLine'] - 1;
+            $endLine = $error->getAttributes()['endLine'] + 1;
+
+            $this->fail(
+                sprintf(
+                    'Unexpected parse error found in the following lines: %s%s',
+                    "\n\n> ",
+                    implode(
+                        "\n> ",
+                        array_slice($lines, $startLine, $endLine - $startLine + 1)
+                    )
+                )
+            );
         } catch (Throwable $throwable) {
             throw new Error(
                 sprintf(
