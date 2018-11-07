@@ -64,6 +64,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'function_exists',
         'class_alias',
         'define',
+        'defined',
     ];
 
     private $prefix;
@@ -254,7 +255,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         /* @var FuncCall $argParent */
-        if (false === ($argParent->name instanceof Name) || 'define' !== (string) $argParent->name) {
+        if (false === ($argParent->name instanceof Name)
+            || ('define' !== (string) $argParent->name && 'defined' !== (string) $argParent->name)
+        ) {
             return false;
         }
 
