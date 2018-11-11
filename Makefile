@@ -62,7 +62,7 @@ tm: bin/phpunit
 
 .PHONY: e2e
 e2e:	 ## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -353,20 +353,6 @@ e2e_030: $(PHPSCOPER) fixtures/set030/vendor
 
 	diff fixtures/set030/expected-output build/set030/output
 
-.PHONY: e2e_031
-e2e_031: ## Run end-to-end tests for the fixture set 031 — Scope PHPUnit & run it on PHP-Scoper tests
-e2e_031: $(PHPSCOPER) fixtures/set031-phpunit/vendor
-	php $(PHPSCOPER) php-scoper add-prefix \
-		--working-dir=fixtures/set031-phpunit \
-		--output-dir=../../build/set031-phpunit \
-		--no-config \
-		--force \
-		--no-interaction
-
-	composer --working-dir=build/set031-phpunit dump-autoload --no-dev
-
-	php bin/scoped-phpunit
-
 .PHONY: tb
 BLACKFIRE=blackfire
 tb:	 ## Run Blackfire profiling
@@ -476,10 +462,6 @@ fixtures/set030/vendor: fixtures/set030/composer.json
 	composer --working-dir=fixtures/set030 install --no-dev
 	touch $@
 
-fixtures/set031-phpunit/vendor: fixtures/set031-phpunit/composer.json
-	composer --working-dir=fixtures/set031-phpunit install --no-dev
-	touch $@
-
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
 
@@ -533,9 +515,6 @@ fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
 
 fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 	@echo fixtures/set029-easy-rdf/composer.lock is not up to date.
-
-fixtures/set031-phpunit/composer.lock: fixtures/set031-phpunit/composer.json
-	@echo fixtures/set031-phpunit/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json.dist
 	$(BOX) compile

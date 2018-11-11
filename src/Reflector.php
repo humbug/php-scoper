@@ -67,6 +67,7 @@ final class Reflector
         'stream_isatty' => true,
         'utf8_decode' => true,
         'utf8_encode' => true,
+        'zend_loader_file_encoded' => true,
     ];
 
     private $classReflector;
