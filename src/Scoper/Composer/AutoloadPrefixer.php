@@ -90,7 +90,7 @@ final class AutoloadPrefixer
         $loader = [];
 
         foreach ($autoload as $namespace => $paths) {
-            $newNamespace = $whitelist->belongsToWhitelistedNamespace($namespace)
+            $newNamespace = $whitelist->isWhitelistedNamespace($namespace)
                 ? $namespace
                 : sprintf('%s\\%s', $prefix, $namespace)
             ;
@@ -213,7 +213,7 @@ final class AutoloadPrefixer
     {
         return array_map(
             static function (string $provider) use ($prefix, $whitelist): string {
-                return $whitelist->belongsToWhitelistedNamespace($provider)
+                return $whitelist->isWhitelistedNamespace($provider)
                     ? $provider
                     : sprintf('%s\\%s', $prefix, $provider)
                 ;

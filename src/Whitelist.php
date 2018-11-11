@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper;
 use Countable;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
-use const SORT_REGULAR;
 use function array_flip;
 use function array_key_exists;
 use function array_map;
@@ -154,6 +153,19 @@ final class Whitelist implements Countable
 
     public function belongsToWhitelistedNamespace(string $name): bool
     {
+        $nameNamespace = $this->retrieveNameNamespace($name);
+
+        foreach ($this->namespaces as $namespace) {
+            if ('' === $namespace || 0 === strpos($nameNamespace, $namespace)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function isWhitelistedNamespace(string $name): bool
+    {
         $name = strtolower($name);
 
         if (0 === strpos($name, '\\')) {
@@ -161,9 +173,24 @@ final class Whitelist implements Countable
         }
 
         foreach ($this->namespaces as $namespace) {
-            if ('' === $namespace || 0 === strpos($name, $namespace)) {
+            if ('' === $namespace) {
                 return true;
             }
+
+            if ('' !== $namespace && 0 !== strpos($name, $namespace)) {
+                continue;
+            }
+
+            $nameParts = explode('\\', $name);
+            $namespaceParts = explode('\\', $namespace);
+
+            foreach ($namespaceParts as $index => $namespacePart) {
+                if ($nameParts[$index] !== $namespacePart) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         return false;
@@ -184,17 +211,12 @@ final class Whitelist implements Countable
 
     public function recordWhitelistedFunction(FullyQualified $original, FullyQualified $alias): void
     {
-        $this->whitelistedFunctions[] = [(string) $original, (string) $alias];
+        $this->whitelistedFunctions[(string) $original] = [(string) $original, (string) $alias];
     }
 
     public function getRecordedWhitelistedFunctions(): array
     {
-        return array_values(
-            array_unique(
-                $this->whitelistedFunctions,
-                SORT_REGULAR
-            )
-        );
+        return array_values($this->whitelistedFunctions);
     }
 
     /**
@@ -225,12 +247,12 @@ final class Whitelist implements Countable
 
     public function recordWhitelistedClass(FullyQualified $original, FullyQualified $alias): void
     {
-        $this->whitelistedClasses[] = [(string) $original, (string) $alias];
+        $this->whitelistedClasses[(string) $original] = [(string) $original, (string) $alias];
     }
 
     public function getRecordedWhitelistedClasses(): array
     {
-        return $this->whitelistedClasses;
+        return array_values($this->whitelistedClasses);
     }
 
     /**
@@ -306,5 +328,20 @@ final class Whitelist implements Countable
         $parts[] = $lastPart;
 
         return implode('\\', $parts);
+    }
+
+    private function retrieveNameNamespace(string $name): string
+    {
+        $name = strtolower($name);
+
+        if (0 === strpos($name, '\\')) {
+            $name = substr($name, 1);
+        }
+
+        $nameParts = explode('\\', $name);
+
+        array_pop($nameParts);
+
+        return [] === $nameParts ? '' : implode('\\', $nameParts);
     }
 }
