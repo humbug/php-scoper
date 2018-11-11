@@ -56,15 +56,15 @@ use function strpos;
 final class StringScalarPrefixer extends NodeVisitorAbstract
 {
     private const SPECIAL_FUNCTION_NAMES = [
-        'is_a',
-        'is_subclass_of',
-        'interface_exists',
-        'class_exists',
-        'trait_exists',
-        'function_exists',
         'class_alias',
+        'class_exists',
         'define',
         'defined',
+        'function_exists',
+        'interface_exists',
+        'is_a',
+        'is_subclass_of',
+        'trait_exists',
     ];
 
     private $prefix;
