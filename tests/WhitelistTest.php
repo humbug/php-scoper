@@ -102,22 +102,22 @@ class WhitelistTest extends TestCase
         $whitelist = Whitelist::create(true, true, true);
 
         $whitelist->recordWhitelistedFunction(
-            new FullyQualified('Acme\foo'),
-            new FullyQualified('Humbug\Acme\foo')
+            new FullyQualified('Acme\Foo'),
+            new FullyQualified('Humbug\Acme\Foo')
         );
         $whitelist->recordWhitelistedFunction(
-            new FullyQualified('Acme\foo'),
-            new FullyQualified('Humbug\Acme\foo')
+            new FullyQualified('Acme\Foo'),
+            new FullyQualified('Humbug\Acme\Foo')
         );
         $whitelist->recordWhitelistedFunction(
-            new FullyQualified('Acme\bar'),
-            new FullyQualified('Humbug\Acme\bar')
+            new FullyQualified('Acme\Bar'),
+            new FullyQualified('Humbug\Acme\Bar')
         );
 
         $this->assertSame(
             [
-                ['Acme\foo', 'Humbug\Acme\foo'],
-                ['Acme\bar', 'Humbug\Acme\bar'],
+                ['Acme\Foo', 'Humbug\Acme\Foo'],
+                ['Acme\Bar', 'Humbug\Acme\Bar'],
             ],
             $whitelist->getRecordedWhitelistedFunctions()
         );
@@ -125,7 +125,6 @@ class WhitelistTest extends TestCase
 
     public function test_it_can_record_whitelisted_classes(): void
     {
-        $this->markTestSkipped('TODO');
         $whitelist = Whitelist::create(true, true, true);
 
         $whitelist->recordWhitelistedClass(
@@ -146,7 +145,7 @@ class WhitelistTest extends TestCase
                 ['Acme\foo', 'Humbug\Acme\foo'],
                 ['Acme\bar', 'Humbug\Acme\bar'],
             ],
-            $whitelist->getRecordedWhitelistedFunctions()
+            $whitelist->getRecordedWhitelistedClasses()
         );
     }
 
@@ -161,11 +160,21 @@ class WhitelistTest extends TestCase
     }
 
     /**
+     * @dataProvider provideNamespacedSymbolWhitelists
+     */
+    public function test_it_can_tell_if_a_symbol_belongs_to_a_whitelisted_namespace(Whitelist $whitelist, string $symbol, bool $expected): void
+    {
+        $actual = $whitelist->belongsToWhitelistedNamespace($symbol);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
      * @dataProvider provideNamespaceWhitelists
      */
-    public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $class, bool $expected): void
+    public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $namespace, bool $expected): void
     {
-        $actual = $whitelist->belongsToWhitelistedNamespace($class);
+        $actual = $whitelist->isWhitelistedNamespace($namespace);
 
         $this->assertSame($expected, $actual);
     }
@@ -545,6 +554,153 @@ class WhitelistTest extends TestCase
             false,
             true,
         ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme_Foo*'),
+            'Acme_Foo',
+            false,
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme_Foo*'),
+            'Acme_Foo_Bar',
+            false,
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme_Foo*'),
+            'acme_foo',
+            true,
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme_Foo*'),
+            'Acme_Foo',
+            true,
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme_Foo*'),
+            'acme_foo_bar',
+            true,
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme_Foo*'),
+            'Acme_Foo_bar',
+            true,
+            true,
+        ];
+    }
+
+    public function provideNamespacedSymbolWhitelists(): Generator
+    {
+        yield [
+            Whitelist::create(true, true, true),
+            'Acme\Foo',
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\Foo\*'),
+            'Acme\Foo',
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\Foo\*'),
+            'acme\foo',
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\*'),
+            'Acme\Foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\*'),
+            'Acme_Foo',
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\*'),
+            'acme\foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\*'),
+            'acme_foo',
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\Foo\*'),
+            'Acme\Foo\Bar',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\Foo\*'),
+            'acme\foo\bar',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\Foo\B*'),
+            'Acme\Foo\Bar',
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\Foo\B*'),
+            'Acme\Foo\B\Bar',
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, '\*'),
+            'Acme',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, '\*'),
+            'acme',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, '\*'),
+            'Acme\Foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, '\*'),
+            'acme\foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, '\*'),
+            'Acme_Foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, '\*'),
+            'acme_foo',
+            true,
+        ];
     }
 
     public function provideNamespaceWhitelists(): Generator
@@ -575,8 +731,20 @@ class WhitelistTest extends TestCase
 
         yield [
             Whitelist::create(true, true, true, 'Acme\*'),
+            'Acme_Foo',
+            false,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\*'),
             'acme\foo',
             true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, 'Acme\*'),
+            'acme_foo',
+            false,
         ];
 
         yield [
@@ -612,6 +780,18 @@ class WhitelistTest extends TestCase
         yield [
             Whitelist::create(true, true, true, '\*'),
             'acme\foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, '\*'),
+            'Acme_Foo',
+            true,
+        ];
+
+        yield [
+            Whitelist::create(true, true, true, '\*'),
+            'acme_foo',
             true,
         ];
     }

@@ -324,6 +324,8 @@ return [
         'PHPUnit\Framework\TestCase',
         'PHPUNIT_VERSION',
         'iter\count',
+        'Acme\Foo*', // Warning: will not whitelist sub namespaces like Acme\Foo\Bar but will whitelist symbols like
+                     // Acme\Foo or Acme\Fooo
     ],
 ];
 ```
@@ -516,6 +518,21 @@ Note that this may lead to autoloading issues. Indeed if you have the following 
 And whitelist the namespace `PHPUnit\Framework\*`, then the autoloading for this package
 will be faulty and will not work. For this to work, the whole package `PHPUnit\*` would
 need to be whitelisted.
+
+**Warning:** the following _is not_ a namespace whitelist:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+return [
+    'whitelist' => [
+        'PHPUnit\F*',   // Will only whitelist symbols such as PHPUnit\F or PHPunit\Foo, but not symbols belonging to
+                        // sub-namespaces like PHPunit\Foo\Bar
+    ],
+];
+```
 
 
 ## Building a Scoped PHAR
