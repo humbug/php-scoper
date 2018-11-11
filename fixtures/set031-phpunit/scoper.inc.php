@@ -14,4 +14,13 @@ declare(strict_types=1);
 
 return [
     'prefix' => '_PhpScoper5be867309e78e',
+
+    'whitelist' => [
+        'PHPUnit\*',
+//        'SebastianBergmann\CodeCoverage\*',
+//        'PharIo\*',
+//        'PHP_Token*',
+//        'PHPUnit_Framework_MockObject_MockObject',
+//        'MultiDependencyTest',
+    ],
 ];
