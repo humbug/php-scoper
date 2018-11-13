@@ -28,6 +28,7 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitorAbstract;
 use function array_key_exists;
 use function array_shift;
@@ -122,6 +123,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof Param
                 || $parentNode instanceof Const_
                 || $parentNode instanceof PropertyProperty
+                || $parentNode instanceof Return_
             )
         ) {
             return $string;
