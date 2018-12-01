@@ -86,7 +86,6 @@ function get_common_path(array $paths): string
             }
         }
     }
-    $lastSeparatorPos = false;
     foreach (['/', '\\'] as $separator) {
         $lastSeparatorPos = strrpos($commonPath, $separator);
         if ($lastSeparatorPos !== false) {
