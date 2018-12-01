@@ -63,11 +63,11 @@ function create_scoper(): Scoper
 function get_common_path(array $paths): string
 {
     $nbPaths = count($paths);
-    if ($nbPaths === 0) {
+    if (0 === $nbPaths) {
         return '';
     }
     $pathRef = array_pop($paths);
-    if ($nbPaths === 1) {
+    if (1 === $nbPaths) {
         $commonPath = $pathRef;
     } else {
         $commonPath = '';
@@ -76,6 +76,7 @@ function get_common_path(array $paths): string
             foreach ($paths as $path) {
                 if (!isset($path[$pos]) || $path[$pos] !== $char) {
                     $isCommonChar = false;
+
                     break;
                 }
             }
@@ -88,11 +89,13 @@ function get_common_path(array $paths): string
     }
     foreach (['/', '\\'] as $separator) {
         $lastSeparatorPos = strrpos($commonPath, $separator);
-        if ($lastSeparatorPos !== false) {
+        if (false !== $lastSeparatorPos) {
             $commonPath = rtrim(substr($commonPath, 0, $lastSeparatorPos), $separator);
+
             break;
         }
     }
+
     return $commonPath;
 }
 
