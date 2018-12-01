@@ -72,19 +72,12 @@ function get_common_path(array $paths): string
     } else {
         $commonPath = '';
         foreach (str_split($pathRef) as $pos => $char) {
-            $isCommonChar = true;
             foreach ($paths as $path) {
                 if (!isset($path[$pos]) || $path[$pos] !== $char) {
-                    $isCommonChar = false;
-
-                    break;
+                    break 2;
                 }
             }
-            if ($isCommonChar) {
-                $commonPath .= $char;
-            } else {
-                break;
-            }
+            $commonPath .= $char;
         }
     }
     foreach (['/', '\\'] as $separator) {
