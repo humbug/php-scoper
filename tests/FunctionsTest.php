@@ -74,5 +74,37 @@ class FunctionsTest extends TestCase
             ],
             '',
         ];
+
+        yield [
+            [
+                'C:\\path\\to\\file',
+            ],
+            'C:\\path\\to',
+        ];
+
+        yield [
+            [
+                'C:\\path\\to\\file',
+                'C:\\path\\to\\another-file',
+            ],
+            'C:\\path\\to',
+        ];
+
+        yield [
+            [
+                'C:\\path\\to\\file',
+                'C:\\path\\to\\another-file',
+                'C:\\path\\another-to\\another-file',
+            ],
+            'C:\\path',
+        ];
+
+        yield [
+            [
+                'C:\\path\\to\\file',
+                'D:\\another\\path\\to\\another-file',
+            ],
+            '',
+        ];
     }
 }
