@@ -272,6 +272,9 @@ EOF;
             '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
             $display
         );
+        if ('\\' === \DIRECTORY_SEPARATOR && 'Hyper' !== getenv('TERM_PROGRAM')) {
+            $display = str_replace(['>', '-', '='], ['░', '░', '▓'], $display);
+        }
 
         $lines = explode("\n", $display);
 
