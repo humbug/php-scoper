@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Humbug\PhpScoper\Console\DisplayNormalizer;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
@@ -262,10 +263,8 @@ EOF;
     {
         $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmp, '/path/to', $display);
-        if ('\\' === DIRECTORY_SEPARATOR) {
-            $display = $this->getNormalizeSeparators($display);
-            $display = $this->getNormalizeProgressBar($display);
-        }
+        $display = DisplayNormalizer::normalizeSeparators($display);
+        $display = DisplayNormalizer::normalizeProgressBar($display);
         $display = preg_replace(
             '/PHP Scoper version (?:dev\-)?.+/',
             'PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
