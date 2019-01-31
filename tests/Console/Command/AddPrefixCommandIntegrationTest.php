@@ -286,35 +286,6 @@ EOF;
         return implode("\n", $lines);
     }
 
-    private function getNormalizeSeparators(string $display): string
-    {
-        if (preg_match_all('/\/path\/to(.*\\\\)+/', $display, $match)) {
-            $paths = $match[0];
-            usort($paths, static function ($a, $b) {
-                return strlen($b) - strlen($a);
-            });
-            foreach ($paths as $path) {
-                $fixedPath = str_replace('\\', '/', $path);
-                $display = str_replace($path, $fixedPath, $display);
-            }
-        }
-
-        return $display;
-    }
-
-    private function getNormalizeProgressBar(string $display): string
-    {
-        if (preg_match_all('/\\[=*>?\\-*\\]/', $display, $match)) {
-            $bars = $match[0];
-            foreach ($bars as $bar) {
-                $fixedBar = str_replace(['>', '-', '='], ['░', '░', '▓'], $bar);
-                $display = str_replace($bar, $fixedBar, $display);
-            }
-        }
-
-        return $display;
-    }
-
     private function assertFilesAreSame(string $expectedDir, string $actualDir): void
     {
         $expected = $this->collectFiles($expectedDir);
