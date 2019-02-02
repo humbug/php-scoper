@@ -22,6 +22,7 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Parser;
 use function array_map;
+use function array_pop;
 use function count;
 use function is_array;
 use function is_object;
@@ -29,8 +30,8 @@ use function is_scalar;
 use function is_string;
 use function method_exists;
 use function serialize;
-use function strlen;
-use function strpos;
+use function str_split;
+use function strrpos;
 use function substr;
 use function unserialize;
 
@@ -61,38 +62,34 @@ function create_scoper(): Scoper
  */
 function get_common_path(array $paths): string
 {
-    if (0 === count($paths)) {
+    $nbPaths = count($paths);
+    if (0 === $nbPaths) {
         return '';
     }
-
-    $lastOffset = 1;
-    $common = DIRECTORY_SEPARATOR;
-
-    while (false !== ($index = strpos($paths[0], DIRECTORY_SEPARATOR, $lastOffset))) {
-        $dirLen = $index - $lastOffset + 1;
-        $dir = substr($paths[0], $lastOffset, $dirLen);
-
-        foreach ($paths as $path) {
-            if (substr($path, $lastOffset, $dirLen) !== $dir) {
-                if (0 < strlen($common) && DIRECTORY_SEPARATOR === $common[strlen($common) - 1]) {
-                    $common = substr($common, 0, -1);
+    $pathRef = array_pop($paths);
+    if (1 === $nbPaths) {
+        $commonPath = $pathRef;
+    } else {
+        $commonPath = '';
+        foreach (str_split($pathRef) as $pos => $char) {
+            foreach ($paths as $path) {
+                if (!isset($path[$pos]) || $path[$pos] !== $char) {
+                    break 2;
                 }
-
-                return $common;
             }
+            $commonPath .= $char;
         }
+    }
+    foreach (['/', '\\'] as $separator) {
+        $lastSeparatorPos = strrpos($commonPath, $separator);
+        if (false !== $lastSeparatorPos) {
+            $commonPath = rtrim(substr($commonPath, 0, $lastSeparatorPos), $separator);
 
-        $common .= $dir;
-        $lastOffset = $index + 1;
+            break;
+        }
     }
 
-    $common = substr($common, 0, -1);
-
-    if (0 < strlen($common) && DIRECTORY_SEPARATOR === $common[strlen($common) - 1]) {
-        $common = substr($common, 0, -1);
-    }
-
-    return $common;
+    return $commonPath;
 }
 
 /**

@@ -82,14 +82,14 @@ PHP
         );
         touch('file1');
 
-        $configuration = Configuration::load($this->tmp.'/scoper.inc.php');
+        $configuration = Configuration::load($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php');
 
-        $this->assertSame([$this->tmp.'/file1'], $configuration->getWhitelistedFiles());
+        $this->assertSame([$this->tmp.DIRECTORY_SEPARATOR.'file1'], $configuration->getWhitelistedFiles());
         $this->assertEquals(
             Whitelist::create(false, false, false, 'Foo', 'Bar\*'),
             $configuration->getWhitelist()
         );
-        $this->assertSame($this->tmp.'/scoper.inc.php', $configuration->getPath());
+        $this->assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
         $this->assertSame('MyPrefix', $configuration->getPrefix());
         $this->assertSame([], $configuration->getFilesWithContents());
         $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());

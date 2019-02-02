@@ -16,10 +16,10 @@ namespace Humbug\PhpScoper\Autoload;
 
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
-use const PHP_EOL;
 use function array_column;
 use function array_map;
 use function array_unshift;
+use function chr;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
@@ -28,10 +28,12 @@ use function strpos;
 final class ScoperAutoloadGenerator
 {
     private $whitelist;
+    private $eol;
 
     public function __construct(Whitelist $whitelist)
     {
         $this->whitelist = $whitelist;
+        $this->eol = chr(10);
     }
 
     public function dump(string $prefix): string
@@ -41,16 +43,16 @@ final class ScoperAutoloadGenerator
         $hasNamespacedFunctions = $this->hasNamespacedFunctions($whitelistedFunctions);
 
         $statements = implode(
-            PHP_EOL,
+            $this->eol,
             $this->createClassAliasStatements(
                 $this->whitelist->getRecordedWhitelistedClasses(),
                 $hasNamespacedFunctions)
             )
-            .PHP_EOL
-            .PHP_EOL
+            .$this->eol
+            .$this->eol
         ;
         $statements .= implode(
-            PHP_EOL,
+            $this->eol,
             $this->createFunctionAliasStatements(
                 $whitelistedFunctions,
                 $hasNamespacedFunctions
@@ -125,7 +127,7 @@ PHP;
             );
 
             array_unshift($statements, 'namespace {');
-            $statements[] = '}'.PHP_EOL;
+            $statements[] = '}'.$this->eol;
         }
 
         array_unshift(

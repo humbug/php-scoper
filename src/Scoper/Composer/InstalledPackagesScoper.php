@@ -21,7 +21,7 @@ use function Humbug\PhpScoper\json_encode;
 
 final class InstalledPackagesScoper implements Scoper
 {
-    private static $filePattern = '/composer\/installed\.json/';
+    private static $filePattern = '/composer(\/|\\\\)installed\.json/';
 
     private $decoratedScoper;
 
