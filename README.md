@@ -73,7 +73,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ### Phive
 
 
-You can install Box with [Phive][phive]
+You can install PHP-Scoper with [Phive][phive]
 
 ```bash
 $ phive install humbug/php-scoper --force-accept-unsigned
