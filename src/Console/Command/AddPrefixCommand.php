@@ -195,7 +195,7 @@ final class AddPrefixCommand extends BaseCommand
         foreach ($filesWithContents as [$inputFilePath, $inputContents]) {
             $outputFilePath = $output.str_replace($commonPath, '', $inputFilePath);
 
-            $pattern = '~((?:.*)\\' . DIRECTORY_SEPARATOR . 'vendor)\\' . DIRECTORY_SEPARATOR . '.*~';
+            $pattern = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
             if (preg_match($pattern, $outputFilePath, $matches)) {
                 $vendorDirs[$matches[1]] = true;
             }
