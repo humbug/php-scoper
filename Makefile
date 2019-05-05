@@ -17,6 +17,12 @@ clean:	 ## Clean all created artifacts
 clean:
 	git clean --exclude=.idea/ -ffdx
 
+update-root-version: ## Check the lastest GitHub release and update COMPOSER_ROOT_VERSION accordingly
+update-root-version:
+	rm .composer-root-version
+	$(MAKE) .composer-root-version
+
+
 .PHONY: cs
 CODE_SNIFFER=vendor-bin/code-sniffer/vendor/bin/phpcs
 CODE_SNIFFER_FIX=vendor-bin/code-sniffer/vendor/bin/phpcbf
@@ -363,19 +369,16 @@ tb: bin/php-scoper.phar  vendor
 # Rules from files
 #---------------------------------------------------------------------------
 
-vendor: composer.lock
-	export COMPOSER_ROOT_VERSION='0.11.99'; composer install
-	unset "COMPOSER_ROOT_VERSION"
+vendor: composer.lock .composer-root-version
+	source .composer-root-version; composer install
 	touch $@
 
-vendor/bamarni: composer.lock
-	export COMPOSER_ROOT_VERSION='0.11.99'; composer install
-	unset "COMPOSER_ROOT_VERSION"
+vendor/bamarni: composer.lock .composer-root-version
+	source .composer-root-version; composer install
 	touch $@
 
-bin/phpunit: composer.lock
-	export COMPOSER_ROOT_VERSION='0.11.99'; composer install
-	unset "COMPOSER_ROOT_VERSION"
+bin/phpunit: composer.lock .composer-root-version
+	source .composer-root-version; composer install
 	touch $@
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
@@ -540,4 +543,8 @@ $(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
 
 $(PHPSTAN): vendor-bin/phpstan/vendor
 	composer bin phpstan install
+	touch $@
+
+.composer-root-version:
+	php bin/dump-root-version.php
 	touch $@
