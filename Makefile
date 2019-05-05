@@ -49,12 +49,12 @@ build: bin/php-scoper.phar
 
 .PHONY: test
 test:	 ## Run all the tests
-test: check-root-version tc e2e
+test: check-composer-root-version tc e2e
 
-.PHONY: check-root-version
-check-root-version:	## Checks that the COMPOSER_ROOT_VERSION is up to date
-check-root-version: .composer-root-version
-	php bin/check-root-version.php
+.PHONY: check-composer-root-version
+check-composer-root-version:	## Checks that the COMPOSER_ROOT_VERSION is up to date
+check-composer-root-version: .composer-root-version
+	php bin/check-composer-root-version.php
 
 .PHONY: tu
 PHPUNIT=bin/phpunit
@@ -551,5 +551,5 @@ $(PHPSTAN): vendor-bin/phpstan/vendor
 	touch $@
 
 .composer-root-version:
-	php bin/dump-root-version.php
+	php bin/dump-composer-root-version.php
 	touch $@
