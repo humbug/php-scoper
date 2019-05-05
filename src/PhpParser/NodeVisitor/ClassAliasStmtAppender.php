@@ -14,6 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\Whitelist;
+use PhpParser\Node;
+use PhpParser\Node\Name\FullyQualified;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use function array_reduce;
@@ -45,6 +54,17 @@ use function array_reduce;
  */
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
+    private $prefix;
+    private $whitelist;
+    private $nameResolver;
+
+    public function __construct(string $prefix, Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
+    {
+        $this->prefix = $prefix;
+        $this->whitelist = $whitelist;
+        $this->nameResolver = $nameResolver;
+    }
+
     /**
      * @inheritdoc
      */
@@ -72,5 +92,56 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         );
 
         return $namespace;
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    private function createNamespaceStmts(array $stmts, Stmt $stmt): array
+    {
+        $stmts[] = $stmt;
+
+        if (false === ($stmt instanceof Class_ || $stmt instanceof Interface_)) {
+            return $stmts;
+        }
+        /** @var Class_|Interface_ $stmt */
+        if (null === $stmt->name) {
+            return $stmts;
+        }
+
+        $originalName = $this->nameResolver->resolveName($stmt->name)->getName();
+
+        if (false === ($originalName instanceof FullyQualified)
+            || $this->whitelist->belongsToWhitelistedNamespace((string) $originalName)
+            || (
+                false === $this->whitelist->isSymbolWhitelisted((string) $originalName)
+                && false === $this->whitelist->isGlobalWhitelistedClass((string) $originalName)
+            )
+        ) {
+            return $stmts;
+        }
+        /* @var FullyQualified $originalName */
+
+        $stmts[] = $this->createAliasStmt($originalName, $stmt);
+
+        return $stmts;
+    }
+
+    private function createAliasStmt(FullyQualified $originalName, Node $stmt): Expression
+    {
+        $call = new ClassAliasFuncCall(
+            FullyQualified::concat($this->prefix, $originalName),
+            $originalName,
+            $stmt->getAttributes()
+        );
+
+        $expression = new Expression(
+            $call,
+            $stmt->getAttributes()
+        );
+
+        $call->setAttribute(ParentNodeAppender::PARENT_ATTRIBUTE, $expression);
+
+        return $expression;
     }
 }
