@@ -68,7 +68,7 @@ tc: bin/phpunit vendor-bin/covers-validator/vendor clover.xml
 
 .PHONY: tm
 tm:	 ## Run Infection (Mutation Testing)
-tm: bin/phpunit
+tm: clover.xml
 	$(MAKE) e2e_020
 
 .PHONY: e2e
