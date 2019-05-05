@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-require_once 'root-version.php';
+require_once __DIR__.'/root-version.php';
 
 $composerRootVersion = get_composer_root_version(get_last_tag_name());
 
 preg_match(
     '/COMPOSER_ROOT_VERSION=\'(?<version>.*?)\'/',
-    file_get_contents('.composer-root-version'),
+    file_get_contents(__DIR__.'/../.composer-root-version'),
     $matches
 );
 
