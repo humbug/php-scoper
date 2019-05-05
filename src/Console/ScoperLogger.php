@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,7 +32,7 @@ class ScoperLogger
     private $startTime;
     private $progressBar;
 
-    public function __construct(Application $application, SymfonyStyle $io)
+    public function __construct(SymfonyApplication $application, SymfonyStyle $io)
     {
         $this->io = $io;
         $this->application = $application;
