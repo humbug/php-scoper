@@ -18,7 +18,6 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use function Humbug\PhpScoper\clone_node;
@@ -75,24 +74,6 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
         $this->namespaceStatements->add($namespace, $originalNamespace);
 
         return $namespace;
-    }
-
-    private function isWhitelistedNode(Node $node): bool
-    {
-        if ($node instanceof ClassLike) {
-            return true;
-        }
-
-        // Check nodes in the global namespaces.
-        if ($node instanceof Namespace_ && null === $node->name) {
-            foreach ($node->stmts as $statement) {
-                if ($this->isWhitelistedNode($statement)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     private function shouldPrefixStmt(Namespace_ $namespace): bool

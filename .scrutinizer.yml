@@ -3,6 +3,12 @@ build:
         variables:
             COMPOSER_ROOT_VERSION: '0.11.99'
 
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+
     tests:
         override:
             -

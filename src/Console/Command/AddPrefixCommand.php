@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
-use Humbug\PhpScoper\Logger\ConsoleLogger;
+use Humbug\PhpScoper\Console\ScoperLogger;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\ConfigurableScoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -139,7 +139,7 @@ final class AddPrefixCommand extends BaseCommand
             $this->scoper = $this->scoper->withWhitelistedFiles(...$config->getWhitelistedFiles());
         }
 
-        $logger = new ConsoleLogger(
+        $logger = new ScoperLogger(
             $this->getApplication(),
             $io
         );
@@ -182,7 +182,7 @@ final class AddPrefixCommand extends BaseCommand
         array $patchers,
         Whitelist $whitelist,
         bool $stopOnFailure,
-        ConsoleLogger $logger
+        ScoperLogger $logger
     ): void {
         // Creates output directory if does not already exist
         $this->fileSystem->mkdir($output);
@@ -241,7 +241,7 @@ final class AddPrefixCommand extends BaseCommand
         array $patchers,
         Whitelist $whitelist,
         bool $stopOnFailure,
-        ConsoleLogger $logger
+        ScoperLogger $logger
     ): void {
         try {
             $scoppedContent = $this->scoper->scope($inputFilePath, $inputContents, $prefix, $patchers, $whitelist);

@@ -36,7 +36,7 @@ final class ScoperAutoloadGenerator
         $this->eol = chr(10);
     }
 
-    public function dump(string $prefix): string
+    public function dump(): string
     {
         $whitelistedFunctions = $this->whitelist->getRecordedWhitelistedFunctions();
 
@@ -148,14 +148,8 @@ EOF
     {
         $statements = array_map(
             static function (array $node) use ($hasNamespacedFunctions): string {
-                /**
-                 * @var string
-                 * @var string $alias
-                 */
-                [$original, $alias] = $node;
-
-                $original = new FullyQualified($original);
-                $alias = new FullyQualified($alias);
+                $original = new FullyQualified($node[0]);
+                $alias = new FullyQualified($node[1]);
 
                 if ($hasNamespacedFunctions) {
                     $namespace = $original->slice(0, -1);

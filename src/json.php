@@ -12,10 +12,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+// Safe JSON functions; ensures the encode/decode always throws an exception on error.
+// This code can be removed once 7.3.0 is required as a minimal version by leveraging
+// JSON_THROW_ON_ERROR.
+
 namespace Humbug\PhpScoper {
-    use Exception;
     use JsonException;
-    use function class_exists;
     use function error_clear_last;
     use function json_decode as original_json_decode;
     use function json_encode as original_json_encode;
