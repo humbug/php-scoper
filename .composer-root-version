@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+export COMPOSER_ROOT_VERSION='0.11.99'

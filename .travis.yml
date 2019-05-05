@@ -19,12 +19,13 @@ matrix:
 before_install:
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - phpenv config-rm xdebug.ini || true
-  - export COMPOSER_ROOT_VERSION=0.11.99
+  - source .composer-root-version
 
 install:
   - composer install --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
 
 script:
+  - make check-composer-root-version
   - |
     if [ "$COVERAGE" == "true" ]; then
       make tc

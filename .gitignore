@@ -1,5 +1,8 @@
 /bin/
 !/bin/php-scoper
+!/bin/check-composer-root-version.php
+!/bin/check-composer-root-version.php
+!/bin/root-version.php
 /.box_dump/
 /box.json
 /build/
