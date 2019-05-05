@@ -49,7 +49,12 @@ build: bin/php-scoper.phar
 
 .PHONY: test
 test:	 ## Run all the tests
-test: tc e2e
+test: check-root-version tc e2e
+
+.PHONY: check-root-version
+check-root-version:	## Checks that the COMPOSER_ROOT_VERSION is up to date
+check-root-version: .composer-root-version
+	php bin/check-root-version.php
 
 .PHONY: tu
 PHPUNIT=bin/phpunit

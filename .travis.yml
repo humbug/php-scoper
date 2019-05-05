@@ -25,6 +25,7 @@ install:
   - composer install --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
 
 script:
+  - make check-root-version
   - |
     if [ "$COVERAGE" == "true" ]; then
       make tc
