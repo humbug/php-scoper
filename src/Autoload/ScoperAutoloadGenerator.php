@@ -209,7 +209,7 @@ EOF
     private function hasNamespacedFunctions(array $functions): bool
     {
         foreach ($functions as [$original, $alias]) {
-            /**
+            /*
              * @var string
              * @var string $alias
              */
