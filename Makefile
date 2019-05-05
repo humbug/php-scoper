@@ -375,15 +375,15 @@ tb: bin/php-scoper.phar  vendor
 #---------------------------------------------------------------------------
 
 vendor: composer.lock .composer-root-version
-	/bin/bash -c 'source .composer-root-version'; composer install
+	/bin/bash -c 'source .composer-root-version' && composer install
 	touch $@
 
 vendor/bamarni: composer.lock .composer-root-version
-	/bin/bash -c 'source .composer-root-version'; composer install
+	/bin/bash -c 'source .composer-root-version' && composer install
 	touch $@
 
 bin/phpunit: composer.lock .composer-root-version
-	/bin/bash -c 'source .composer-root-version'; composer install
+	/bin/bash -c 'source .composer-root-version' && composer install
 	touch $@
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
