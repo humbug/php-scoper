@@ -43,7 +43,7 @@ namespace Humbug;
 $x = new \stdClass();
 (bool) $x;
 (int) $x;
-(double) $x;
+(float) $x;
 (array) $x;
 (object) $x;
 

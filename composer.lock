@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2db131833aaa70b6b9710145243be084",
+    "content-hash": "032fe5a5a39a55e7b524e242e2adf43a",
     "packages": [
         {
             "name": "jetbrains/phpstorm-stubs",
@@ -300,29 +300,30 @@
         },
         {
             "name": "roave/better-reflection",
-            "version": "3.3.0",
+            "version": "3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/BetterReflection.git",
-                "reference": "df78b556a7280c4145d4ed5edd2ca6a7e7e22716"
+                "reference": "68f10dcfa07ad1d829fcdad9d58979800a4bd025"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/df78b556a7280c4145d4ed5edd2ca6a7e7e22716",
-                "reference": "df78b556a7280c4145d4ed5edd2ca6a7e7e22716",
+                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/68f10dcfa07ad1d829fcdad9d58979800a4bd025",
+                "reference": "68f10dcfa07ad1d829fcdad9d58979800a4bd025",
                 "shasum": ""
             },
             "require": {
+                "ext-json": "*",
                 "jetbrains/phpstorm-stubs": "2019.1",
                 "nikic/php-parser": "^4.0.4",
-                "php": ">=7.1.0,<7.4.0",
+                "php": ">=7.2.0,<7.4.0",
                 "phpdocumentor/reflection-docblock": "^4.1.1",
                 "phpdocumentor/type-resolver": "^0.4.0",
                 "roave/signature": "^1.0"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^5.0",
-                "phpunit/phpunit": "^7.0.0"
+                "doctrine/coding-standard": "^6.0",
+                "phpunit/phpunit": "^8.1.0"
             },
             "suggest": {
                 "composer/composer": "Required to use the ComposerSourceLocator"
@@ -365,7 +366,7 @@
                 }
             ],
             "description": "Better Reflection - an improved code reflection API",
-            "time": "2019-04-20T07:54:38+00:00"
+            "time": "2019-04-22T18:26:58+00:00"
         },
         {
             "name": "roave/signature",
@@ -4384,10 +4385,10 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1"
+        "php": "^7.2"
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "7.1.3"
+        "php": "7.2.0"
     }
 }

@@ -20,7 +20,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "nikic/php-parser": "^4.0",
         "ocramius/package-versions": "^1.1",
         "roave/better-reflection": "^3.0",
@@ -61,7 +61,7 @@
         "bin-dir": "bin",
         "sort-packages": true,
         "platform": {
-            "php": "7.1.3"
+            "php": "7.2.0"
         }
     },
     "extra": {
