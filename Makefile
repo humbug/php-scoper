@@ -364,17 +364,17 @@ tb: bin/php-scoper.phar  vendor
 #---------------------------------------------------------------------------
 
 vendor: composer.lock
-	export COMPOSER_ROOT_VERSION='0.10.99'; composer install
+	export COMPOSER_ROOT_VERSION='0.11.99'; composer install
 	unset "COMPOSER_ROOT_VERSION"
 	touch $@
 
 vendor/bamarni: composer.lock
-	export COMPOSER_ROOT_VERSION='0.10.99'; composer install
+	export COMPOSER_ROOT_VERSION='0.11.99'; composer install
 	unset "COMPOSER_ROOT_VERSION"
 	touch $@
 
 bin/phpunit: composer.lock
-	export COMPOSER_ROOT_VERSION='0.10.99'; composer install
+	export COMPOSER_ROOT_VERSION='0.11.99'; composer install
 	unset "COMPOSER_ROOT_VERSION"
 	touch $@
 
