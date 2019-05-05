@@ -247,18 +247,6 @@ class Configuration
         );
     }
 
-    private static function validateConfigKey(string $key): void
-    {
-        if (false === in_array($key, self::KEYWORDS, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid configuration key value "%s" found.',
-                    $key
-                )
-            );
-        }
-    }
-
     /**
      * If the prefix is set to null in the config file/argument then a random prefix is being used. However if set to
      * empty, the configuration will use a null prefix.

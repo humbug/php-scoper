@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Logger;
+namespace Humbug\PhpScoper\Console;
 
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Console\Application;
@@ -25,7 +25,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * @private
  * @final
  */
-class ConsoleLogger
+class ScoperLogger
 {
     private $application;
     private $io;
@@ -120,6 +120,7 @@ class ConsoleLogger
                 )
             );
         }
+
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
             $this->io->writeln(
                 sprintf(

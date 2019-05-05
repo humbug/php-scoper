@@ -20,7 +20,6 @@ use Iterator;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Parser;
 use function array_map;
 use function array_pop;
 use function count;
