@@ -21,9 +21,16 @@ use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
+use PhpParser\Lexer\Emulative;
+use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\FunctionReflector;
+use Roave\BetterReflection\SourceLocator\Ast\Parser\MemoizingParser;
+use Roave\BetterReflection\SourceLocator\SourceStubber\AggregateSourceStubber;
+use Roave\BetterReflection\SourceLocator\SourceStubber\PhpStormStubsSourceStubber;
+use Roave\BetterReflection\SourceLocator\SourceStubber\ReflectionSourceStubber;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
@@ -31,7 +38,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 use UnexpectedValueException;
-use const PHP_EOL;
 use function array_diff;
 use function array_filter;
 use function array_keys;
@@ -48,6 +54,7 @@ use function is_array;
 use function sprintf;
 use function strpos;
 use function usort;
+use const PHP_EOL;
 
 class PhpScoperSpecTest extends TestCase
 {
@@ -229,16 +236,42 @@ class PhpScoperSpecTest extends TestCase
 
         $sourceLocator = new AggregateSourceLocator([
             new StringSourceLocator($contents, $astLocator),
-            new PhpInternalSourceLocator($astLocator),
+            new PhpInternalSourceLocator(
+                $astLocator,
+                new AggregateSourceStubber(
+                    new PhpStormStubsSourceStubber(
+                        new MemoizingParser(
+                            (new ParserFactory())->create(
+                                ParserFactory::PREFER_PHP7,
+                                new Emulative([
+                                    'usedAttributes' => [
+                                        'comments',
+                                        'startLine',
+                                        'endLine',
+                                        'startFilePos',
+                                        'endFilePos',
+                                    ],
+                                ])
+                            )
+                        )
+                    ),
+                    new ReflectionSourceStubber()
+                )
+            ),
         ]);
 
         $classReflector = new ClassReflector($sourceLocator);
+
+        $functionReflector = new FunctionReflector($sourceLocator, $classReflector);
 
         return new PhpScoper(
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
-                new Reflector($classReflector)
+                new Reflector(
+                    $classReflector,
+                    $functionReflector
+                )
             )
         );
     }

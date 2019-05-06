@@ -30,6 +30,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
+use Roave\BetterReflection\Reflector\FunctionReflector;
 
 class PhpScoperTest extends TestCase
 {
@@ -89,6 +90,16 @@ class PhpScoperTest extends TestCase
     private $classReflector;
 
     /**
+     * @var FunctionReflector|ObjectProphecy
+     */
+    private $functionReflectorProphecy;
+
+    /**
+     * @var FunctionReflector
+     */
+    private $functionReflector;
+
+    /**
      * @inheritdoc
      */
     public function setUp(): void
@@ -108,11 +119,17 @@ class PhpScoperTest extends TestCase
         $this->classReflectorProphecy = $this->prophesize(ClassReflector::class);
         $this->classReflector = $this->classReflectorProphecy->reveal();
 
+        $this->functionReflectorProphecy = $this->prophesize(FunctionReflector::class);
+        $this->functionReflector = $this->functionReflectorProphecy->reveal();
+
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
-                new Reflector($this->classReflector)
+                new Reflector(
+                    $this->classReflector,
+                    $this->functionReflector
+                )
             )
         );
     }

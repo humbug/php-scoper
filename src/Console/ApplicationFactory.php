@@ -18,6 +18,23 @@ use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
+use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
+use Humbug\PhpScoper\Scoper\NullScoper;
+use Humbug\PhpScoper\Scoper\PatchScoper;
+use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Scoper\SymfonyScoper;
+use PackageVersions\Versions;
+use PhpParser\Parser;
+use PhpParser\ParserFactory;
+use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\FunctionReflector;
+use Roave\BetterReflection\SourceLocator\Ast\Locator;
+use Roave\BetterReflection\SourceLocator\SourceStubber\AggregateSourceStubber;
+use Roave\BetterReflection\SourceLocator\SourceStubber\PhpStormStubsSourceStubber;
+use Roave\BetterReflection\SourceLocator\SourceStubber\ReflectionSourceStubber;
+use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**

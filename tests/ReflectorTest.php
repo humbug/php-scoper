@@ -15,9 +15,16 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Generator;
+use PhpParser\Lexer\Emulative;
+use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\FunctionReflector;
+use Roave\BetterReflection\SourceLocator\Ast\Parser\MemoizingParser;
+use Roave\BetterReflection\SourceLocator\SourceStubber\AggregateSourceStubber;
+use Roave\BetterReflection\SourceLocator\SourceStubber\PhpStormStubsSourceStubber;
+use Roave\BetterReflection\SourceLocator\SourceStubber\ReflectionSourceStubber;
 use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
@@ -101,62 +108,51 @@ PHP
 
         yield [
             '<?php',
-            'Countable',    // 7.2.0
+            'ReflectionGenerator',  // 7.0.0
             true,
         ];
 
         yield [
             '<?php',
-            'ReflectionGenerator',  // 7.0.0
+            'Countable',    // 7.2.0
             true,
         ];
     }
 
     public function provideFunctions(): Generator
     {
-        yield [
-            '<?php',
-            'class_exists',
-            true,
-        ];
+//        yield [
+//            '<?php',
+//            'class_exists',
+//            true,
+//        ];
+//
+//        yield [
+//            '<?php',
+//            'unknown',
+//            false,
+//        ];
+//
+//        yield [
+//            <<<'PHP'
+//<?php
+//
+//function foo() {}
+//PHP
+//            ,
+//            'foo',
+//            false,
+//        ];
+//
+//        yield [
+//            '<?php',
+//            'spl_object_id',  // PHP 7.2.0
+//            true,
+//        ];
 
         yield [
             '<?php',
-            'unknown',
-            false,
-        ];
-
-        yield [
-            <<<'PHP'
-<?php
-
-function foo {}
-PHP
-            ,
-            'foo',
-            false,
-        ];
-
-        yield [
-            <<<'PHP'
-<?php
-
-function class_exists {}
-PHP
-            ,
-            'class_exists',
-            true,
-        ];
-
-        yield [
-            '<?php',
-            'spl_object_id',  // PHP 7.2.0
-            true,
-        ];
-
-        yield [
-            '<?php',
-            'stream_isatty',  // PHP 7.2.0
+            'is_countable',  // PHP 7.3.0
             true,
         ];
     }
@@ -202,6 +198,12 @@ PHP
             'PHP_OS_FAMILY',  // PHP 7.2.0
             true,
         ];
+
+        yield [
+            '<?php',
+            'JSON_THROW_ON_ERROR',  // PHP 7.3.0
+            true,
+        ];
     }
 
     private function createReflector(string $code): Reflector
@@ -210,11 +212,34 @@ PHP
 
         $sourceLocator = new AggregateSourceLocator([
             new StringSourceLocator($code, $astLocator),
-            new PhpInternalSourceLocator($astLocator),
+            new PhpInternalSourceLocator(
+                $astLocator,
+                new AggregateSourceStubber(
+                    new PhpStormStubsSourceStubber(
+                        new MemoizingParser(
+                            (new ParserFactory())->create(
+                                ParserFactory::PREFER_PHP7,
+                                new Emulative([
+                                    'usedAttributes' => [
+                                        'comments',
+                                        'startLine',
+                                        'endLine',
+                                        'startFilePos',
+                                        'endFilePos',
+                                    ],
+                                ])
+                            )
+                        )
+                    ),
+                    new ReflectionSourceStubber()
+                )
+            ),
         ]);
 
         $classReflector = new ClassReflector($sourceLocator);
 
-        return new Reflector($classReflector);
+        $functionReflector = new FunctionReflector($sourceLocator, $classReflector);
+
+        return new Reflector($classReflector, $functionReflector);
     }
 }
