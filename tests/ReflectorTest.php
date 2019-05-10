@@ -15,19 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Generator;
-use PhpParser\Lexer\Emulative;
-use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
-use Roave\BetterReflection\BetterReflection;
-use Roave\BetterReflection\Reflector\ClassReflector;
-use Roave\BetterReflection\Reflector\FunctionReflector;
-use Roave\BetterReflection\SourceLocator\Ast\Parser\MemoizingParser;
-use Roave\BetterReflection\SourceLocator\SourceStubber\AggregateSourceStubber;
-use Roave\BetterReflection\SourceLocator\SourceStubber\PhpStormStubsSourceStubber;
-use Roave\BetterReflection\SourceLocator\SourceStubber\ReflectionSourceStubber;
-use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
-use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
-use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 
 /**
  * @covers \Humbug\PhpScoper\Reflector

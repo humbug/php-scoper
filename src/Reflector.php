@@ -18,10 +18,10 @@ use Roave\BetterReflection\Identifier\Exception\InvalidIdentifierName;
 use Roave\BetterReflection\Reflection\ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionFunction;
 use Roave\BetterReflection\Reflector\Exception\IdentifierNotFound;
+use Roave\BetterReflection\Reflector\Reflector as BetterReflectionReflector;
 use function array_key_exists;
 use function array_values;
 use function get_defined_constants;
-use Roave\BetterReflection\Reflector\Reflector as BetterReflectionReflector;
 use function strtoupper;
 
 /**
@@ -40,7 +40,7 @@ use function strtoupper;
 final class Reflector
 {
     /**
-     * TODO: Migrate to Roave/BetterReflection once it supports constants
+     * TODO: Migrate to Roave/BetterReflection once it supports constants.
      */
     private const KNOWN_INTERNAL_CONSTANTS = [
         // PHP 7.0
