@@ -39,7 +39,7 @@ class ReflectorTest extends TestCase
      */
     public function test_it_can_identify_internal_classes(string $code, string $class, bool $expected): void
     {
-        $reflector = $this->createReflector($code);
+        $reflector = ReflectorFactory::create($code);
 
         $actual = $reflector->isClassInternal($class);
 
@@ -51,7 +51,7 @@ class ReflectorTest extends TestCase
      */
     public function test_it_can_identify_internal_functions(string $code, string $class, bool $expected): void
     {
-        $reflector = $this->createReflector($code);
+        $reflector = ReflectorFactory::create($code);
 
         $actual = $reflector->isFunctionInternal($class);
 
@@ -63,7 +63,7 @@ class ReflectorTest extends TestCase
      */
     public function test_it_can_identify_internal_constants(string $code, string $class, bool $expected): void
     {
-        $reflector = $this->createReflector($code);
+        $reflector = ReflectorFactory::create($code);
 
         $actual = $reflector->isConstantInternal($class);
 
@@ -246,42 +246,5 @@ PHP
             'FTP_ASCII',
             false,
         ];
-    }
-
-    private function createReflector(string $code): Reflector
-    {
-        $astLocator = (new BetterReflection())->astLocator();
-
-        $sourceLocator = new AggregateSourceLocator([
-            new PhpInternalSourceLocator(
-                $astLocator,
-                new AggregateSourceStubber(
-                    new PhpStormStubsSourceStubber(
-                        new MemoizingParser(
-                            (new ParserFactory())->create(
-                                ParserFactory::PREFER_PHP7,
-                                new Emulative([
-                                    'usedAttributes' => [
-                                        'comments',
-                                        'startLine',
-                                        'endLine',
-                                        'startFilePos',
-                                        'endFilePos',
-                                    ],
-                                ])
-                            )
-                        )
-                    ),
-                    new ReflectionSourceStubber()
-                )
-            ),
-            new StringSourceLocator($code, $astLocator),
-        ]);
-
-        $classReflector = new ClassReflector($sourceLocator);
-
-        $functionReflector = new FunctionReflector($sourceLocator, $classReflector);
-
-        return new Reflector($classReflector, $functionReflector);
     }
 }

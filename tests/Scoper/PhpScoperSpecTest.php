@@ -18,6 +18,7 @@ use Error;
 use Generator;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\ReflectorFactory;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
@@ -232,46 +233,11 @@ class PhpScoperSpecTest extends TestCase
 
     private function createScoper(string $contents): Scoper
     {
-        $astLocator = (new BetterReflection())->astLocator();
-
-        $sourceLocator = new AggregateSourceLocator([
-            new StringSourceLocator($contents, $astLocator),
-            new PhpInternalSourceLocator(
-                $astLocator,
-                new AggregateSourceStubber(
-                    new PhpStormStubsSourceStubber(
-                        new MemoizingParser(
-                            (new ParserFactory())->create(
-                                ParserFactory::PREFER_PHP7,
-                                new Emulative([
-                                    'usedAttributes' => [
-                                        'comments',
-                                        'startLine',
-                                        'endLine',
-                                        'startFilePos',
-                                        'endFilePos',
-                                    ],
-                                ])
-                            )
-                        )
-                    ),
-                    new ReflectionSourceStubber()
-                )
-            ),
-        ]);
-
-        $classReflector = new ClassReflector($sourceLocator);
-
-        $functionReflector = new FunctionReflector($sourceLocator, $classReflector);
-
         return new PhpScoper(
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
-                new Reflector(
-                    $classReflector,
-                    $functionReflector
-                )
+                ReflectorFactory::create($contents)
             )
         );
     }
