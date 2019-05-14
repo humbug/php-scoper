@@ -35,7 +35,8 @@ class TraverserFactoryTest extends TestCase
 
         $classReflector = new Reflector(
             (new BetterReflection())->classReflector(),
-            (new BetterReflection())->functionReflector()
+            (new BetterReflection())->functionReflector(),
+            (new BetterReflection())->constantReflector()
         );
 
         $traverserFactory = new TraverserFactory($classReflector);

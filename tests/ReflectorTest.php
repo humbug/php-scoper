@@ -227,12 +227,10 @@ PHP
             true,
         ];
 
-        // TODO: As of now, this is not give the expected result since constants are not taken from the stubs but from
-        // the known & loaded constants.
         yield 'PHP extension internal constant' => [
             '<?php',
             'FTP_ASCII',
-            false,
+            true,
         ];
     }
 }

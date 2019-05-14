@@ -14,15 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use function in_array;
 use Roave\BetterReflection\Identifier\Exception\InvalidIdentifierName;
 use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\Reflection\ReflectionConstant;
 use Roave\BetterReflection\Reflection\ReflectionFunction;
 use Roave\BetterReflection\Reflector\Exception\IdentifierNotFound;
 use Roave\BetterReflection\Reflector\Reflector as BetterReflectionReflector;
-use function array_key_exists;
-use function array_values;
-use function get_defined_constants;
-use function strtoupper;
 
 /**
  * Main class used to determine if a given symbol is internal or not. As of the time of writing, it leverages
@@ -343,6 +341,7 @@ final class Reflector
 
     private $classReflector;
     private $functionReflector;
+    private $constantReflector;
 
     /**
      * @var array<string, mixed> Lazily instantiated internal constants.
@@ -351,10 +350,12 @@ final class Reflector
 
     public function __construct(
         BetterReflectionReflector $classReflector,
-        BetterReflectionReflector $functionReflector
+        BetterReflectionReflector $functionReflector,
+        BetterReflectionReflector $constantReflector
     ) {
         $this->classReflector = $classReflector;
         $this->functionReflector = $functionReflector;
+        $this->constantReflector = $constantReflector;
     }
 
     public function isClassInternal(string $name): bool
@@ -383,25 +384,17 @@ final class Reflector
 
     public function isConstantInternal(string $name): bool
     {
-        if (array_key_exists($name, self::KNOWN_INTERNAL_CONSTANTS)) {
+        if (in_array($name, ['STDIN', 'STDOUT', 'STDERR'], true)) {
             return true;
         }
 
-        return array_key_exists(strtoupper($name), $this->getInternalConstants());
-    }
+        try {
+            /** @var ReflectionConstant $constantReflection */
+            $constantReflection = $this->constantReflector->reflect($name);
 
-    private function getInternalConstants(): array
-    {
-        if (null !== $this->constants) {
-            return $this->constants;
+            return $constantReflection->isInternal();
+        } catch (IdentifierNotFound | InvalidIdentifierName $exception) {
+            return false;
         }
-
-        $constants = get_defined_constants(true);
-
-        unset($constants['user']);
-
-        $this->constants = array_merge(...array_values($constants));
-
-        return $this->constants;
     }
 }

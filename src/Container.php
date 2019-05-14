@@ -24,6 +24,7 @@ use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\ConstantReflector;
 use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Ast\Locator;
 use Roave\BetterReflection\SourceLocator\SourceStubber\AggregateSourceStubber;
@@ -86,9 +87,11 @@ final class Container
 
             $classReflector = new ClassReflector($sourceLocator);
 
-            $functionReflector = new FunctionReflector($sourceLocator, $classReflector);
-
-            return new Reflector($classReflector, $functionReflector);
+            return new Reflector(
+                $classReflector,
+                new FunctionReflector($sourceLocator, $classReflector),
+                new ConstantReflector($sourceLocator, $classReflector)
+            );
         }
 
         return $this->reflector;

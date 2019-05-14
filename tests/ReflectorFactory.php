@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper;
 use PhpParser\ParserFactory;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\ConstantReflector;
 use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Ast\Parser\MemoizingParser;
 use Roave\BetterReflection\SourceLocator\SourceStubber\PhpStormStubsSourceStubber;
@@ -44,8 +45,10 @@ final class ReflectorFactory
 
         $classReflector = new ClassReflector($sourceLocator);
 
-        $functionReflector = new FunctionReflector($sourceLocator, $classReflector);
-
-        return new Reflector($classReflector, $functionReflector);
+        return new Reflector(
+            $classReflector,
+            new FunctionReflector($sourceLocator, $classReflector),
+            new ConstantReflector($sourceLocator, $classReflector)
+        );
     }
 }
