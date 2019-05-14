@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global constant usage in the global scope with the global constants whitelisted',
+        'title' => 'Global constant declaration & usage in the global scope with the global constants whitelisted',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
