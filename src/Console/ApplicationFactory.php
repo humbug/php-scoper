@@ -16,34 +16,27 @@ namespace Humbug\PhpScoper\Console;
 
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
-use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
-use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
-use Humbug\PhpScoper\Scoper\NullScoper;
-use Humbug\PhpScoper\Scoper\PatchScoper;
-use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Scoper\SymfonyScoper;
-use PackageVersions\Versions;
-use PhpParser\Parser;
-use PhpParser\ParserFactory;
-use Roave\BetterReflection\Reflector\ClassReflector;
-use Roave\BetterReflection\SourceLocator\Ast\Locator;
-use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
-use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @final
+ * TODO: mark this class as final in the next release
+ */
 class ApplicationFactory
 {
     public function create(): Application
     {
-        $app = new Application('PHP Scoper', static::getVersion());
+        $app = new Application(
+            new Container(),
+            'PHP Scoper'
+        );
 
         $app->addCommands([
             new AddPrefixCommand(
                 new Filesystem(),
-                static::createScoper()
+                $app->getContainer()->getScoper()
             ),
             new InitCommand(),
         ]);
@@ -51,51 +44,11 @@ class ApplicationFactory
         return $app;
     }
 
-    protected static function getVersion(): string
-    {
-        if (0 === strpos(__FILE__, 'phar:')) {
-            return '@git_version_placeholder@';
-        }
-
-        $rawVersion = Versions::getVersion('humbug/php-scoper');
-
-        [$prettyVersion, $commitHash] = explode('@', $rawVersion);
-
-        return (1 === preg_match('/9{7}/', $prettyVersion)) ? $commitHash : $prettyVersion;
-    }
-
+    /**
+     * @deprecated This function will be removed in the next release
+     */
     protected static function createScoper(): Scoper
     {
-        return new PatchScoper(
-            new PhpScoper(
-                static::createParser(),
-                new JsonFileScoper(
-                    new InstalledPackagesScoper(
-                        new SymfonyScoper(
-                            new NullScoper()
-                        )
-                    )
-                ),
-                new TraverserFactory(static::createReflector())
-            )
-        );
-    }
-
-    protected static function createParser(): Parser
-    {
-        return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
-    }
-
-    protected static function createReflector(): Reflector
-    {
-        $phpParser = static::createParser();
-        $astLocator = new Locator($phpParser);
-
-        $sourceLocator = new MemoizingSourceLocator(
-            new PhpInternalSourceLocator($astLocator)
-        );
-        $classReflector = new ClassReflector($sourceLocator);
-
-        return new Reflector($classReflector);
+        return (new Container())->getScoper();
     }
 }

@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ApplicationFactory;
 use Iterator;
+use PackageVersions\Versions;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -39,19 +40,13 @@ function create_application(): Application
     return (new ApplicationFactory())->create();
 }
 
-/**
- * @private
- *
- * @deprecated Will be removed in future releases.
- */
-function create_scoper(): Scoper
+function get_php_scoper_version(): string
 {
-    return (new class() extends ApplicationFactory {
-        public static function createScoper(): Scoper
-        {
-            return parent::createScoper();
-        }
-    })::createScoper();
+    $rawVersion = Versions::getVersion('humbug/php-scoper');
+
+    [$prettyVersion, $commitHash] = explode('@', $rawVersion);
+
+    return $prettyVersion.'@'.substr($commitHash, 0, 7);
 }
 
 /**
