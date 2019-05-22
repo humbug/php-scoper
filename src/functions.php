@@ -40,21 +40,6 @@ function create_application(): Application
 }
 
 /**
- * @private
- *
- * @deprecated Will be removed in future releases.
- */
-function create_scoper(): Scoper
-{
-    return (new class() extends ApplicationFactory {
-        public static function createScoper(): Scoper
-        {
-            return parent::createScoper();
-        }
-    })::createScoper();
-}
-
-/**
  * @param string[] $paths Absolute paths
  *
  * @return string

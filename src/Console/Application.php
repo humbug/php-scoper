@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
+use Humbug\PhpScoper\Container;
 use PackageVersions\Versions;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use function trim;
@@ -32,13 +33,18 @@ final class Application extends SymfonyApplication
 
 ASCII;
 
+    private $container;
     private $releaseDate;
 
     /**
      * {@inheritdoc}
      */
-    public function __construct(string $name = 'Box', string $version = null, string $releaseDate = '@release-date@')
-    {
+    public function __construct(
+        Container $container,
+        string $name = 'Box',
+        string $version = null,
+        string $releaseDate = '@release-date@'
+    ) {
         if (null === $version) {
             $rawVersion = Versions::getVersion('humbug/php-scoper');
 
@@ -47,9 +53,15 @@ ASCII;
             $version = $prettyVersion.'@'.substr($commitHash, 0, 7);
         }
 
+        $this->container = $container;
         $this->releaseDate = false === strpos($releaseDate, '@') ? $releaseDate : '';
 
         parent::__construct($name, $version);
+    }
+
+    public function getContainer(): Container
+    {
+        return $this->container;
     }
 
     /**

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Console\Application;
+use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Scoper;
@@ -902,7 +903,7 @@ EOF;
         /** @var Scoper $handle */
         $handle = $this->scoperProphecy->reveal();
 
-        $application = new Application('php-scoper-test');
+        $application = new Application(new Container(), 'php-scoper-test');
         $application->addCommands([
             new AddPrefixCommand($fileSystem, $handle),
         ]);

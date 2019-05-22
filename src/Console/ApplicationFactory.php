@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Console;
 
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
+use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
@@ -38,7 +39,11 @@ class ApplicationFactory
 {
     public function create(): Application
     {
-        $app = new Application('PHP Scoper', static::getVersion());
+        $app = new Application(
+            new Container(),
+            'PHP Scoper',
+            static::getVersion()
+        );
 
         $app->addCommands([
             new AddPrefixCommand(
