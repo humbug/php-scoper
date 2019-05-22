@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Closure;
-use Humbug\PhpScoper\Console\ApplicationFactory;
 use LogicException;
 use PhpParser\Parser;
 use Symfony\Component\Filesystem\Filesystem;

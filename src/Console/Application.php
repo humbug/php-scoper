@@ -15,9 +15,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Humbug\PhpScoper\Container;
-use function Humbug\PhpScoper\get_php_scoper_version;
-use PackageVersions\Versions;
 use Symfony\Component\Console\Application as SymfonyApplication;
+use function Humbug\PhpScoper\get_php_scoper_version;
 use function trim;
 
 final class Application extends SymfonyApplication
