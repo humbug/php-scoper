@@ -35,7 +35,7 @@ use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ApplicationFactory
+final class ApplicationFactory
 {
     public function create(): Application
     {
