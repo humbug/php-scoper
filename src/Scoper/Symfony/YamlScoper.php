@@ -30,7 +30,7 @@ use function substr;
  */
 final class YamlScoper implements Scoper
 {
-    private const FILE_PATH_PATTERN = '/.*\.ya?ml$/i';
+    private const FILE_PATH_PATTERN = '/\.ya?ml$/i';
 
     private $decoratedScoper;
 

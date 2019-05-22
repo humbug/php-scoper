@@ -21,7 +21,7 @@ use function Humbug\PhpScoper\json_encode;
 
 final class InstalledPackagesScoper implements Scoper
 {
-    private static $filePattern = '/composer(\/|\\\\)installed\.json/';
+    private static $filePattern = '/composer(\/|\\\\)installed\.json$/';
 
     private $decoratedScoper;
 
@@ -41,7 +41,7 @@ final class InstalledPackagesScoper implements Scoper
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
-        $decodedJson = json_decode($contents);
+        $decodedJson = json_decode($contents, false);
 
         $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix, $whitelist);
 

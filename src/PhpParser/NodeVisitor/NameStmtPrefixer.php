@@ -139,9 +139,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $name;
         }
 
-        $resolvedValue = $this->nameResolver->resolveName($name);
-
-        $resolvedName = $resolvedValue->getName();
+        $resolvedName = $this->nameResolver->resolveName($name)->getName();
 
         if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
             || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted

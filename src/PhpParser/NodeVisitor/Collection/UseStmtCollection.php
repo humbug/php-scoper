@@ -109,10 +109,6 @@ final class UseStmtCollection implements IteratorAggregate
                     // Match the alias
                     return $useStatement->name;
                 }
-
-                if (null !== $useStatement->alias) {
-                    continue;
-                }
             }
         }
 

@@ -24,7 +24,7 @@ use function func_get_args;
 
 final class PhpScoper implements Scoper
 {
-    private const FILE_PATH_PATTERN = '/.*\.php$/';
+    private const FILE_PATH_PATTERN = '/\.php$/';
     private const NOT_FILE_BINARY = '/\..+?$/';
     private const PHP_TAG = '/^<\?php/';
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
@@ -60,9 +60,7 @@ final class PhpScoper implements Scoper
     {
         $statements = $this->parser->parse($php);
 
-        $traverser = $this->traverserFactory->create($this, $prefix, $whitelist);
-
-        $statements = $traverser->traverse($statements);
+        $statements = $this->traverserFactory->create($this, $prefix, $whitelist)->traverse($statements);
 
         $prettyPrinter = new Standard();
 

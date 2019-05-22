@@ -29,7 +29,7 @@ use function substr;
  */
 final class XmlScoper implements Scoper
 {
-    private const FILE_PATH_PATTERN = '/.*\.xml$/i';
+    private const FILE_PATH_PATTERN = '/\.xml$/i';
 
     private $decoratedScoper;
 

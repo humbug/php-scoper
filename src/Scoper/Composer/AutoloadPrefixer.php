@@ -44,7 +44,7 @@ final class AutoloadPrefixer
             $contents->{'autoload-dev'} = self::prefixAutoloadStatements($contents->{'autoload-dev'}, $prefix, $whitelist);
         }
 
-        if (isset($contents->extra, $contents->extra->laravel, $contents->extra->laravel->providers)) {
+        if (isset($contents->extra->laravel->providers)) {
             $contents->extra->laravel->providers = self::prefixLaravelProviders($contents->extra->laravel->providers, $prefix, $whitelist);
         }
 
@@ -184,25 +184,25 @@ final class AutoloadPrefixer
     private static function mergeNamespaces(string $psr0Namespace, $psr0Path, array $psr4)
     {
         // Both strings
-        if (is_string($psr4[$psr0Namespace]) && is_string($psr0Path)) {
+        if (is_string($psr0Path) && is_string($psr4[$psr0Namespace])) {
             return [$psr4[$psr0Namespace], $psr0Path];
         }
 
         // PSR-4 is string, and PSR-0 is array
-        if (is_string($psr4[$psr0Namespace]) && is_array($psr0Path)) {
+        if (is_array($psr0Path) && is_string($psr4[$psr0Namespace])) {
             $psr0Path[] = $psr4[$psr0Namespace];
 
             return $psr0Path;
         }
 
-        // Psr-4 is array and psr-0 is string
-        if (is_array($psr4[$psr0Namespace]) && is_string($psr0Path)) {
+        // PSR-4 is array and PSR-0 is string
+        if (is_string($psr0Path) && is_array($psr4[$psr0Namespace])) {
             $psr4[$psr0Namespace][] = $psr0Path;
 
             return $psr4[$psr0Namespace];
         }
 
-        if (is_array($psr4[$psr0Namespace]) && is_array($psr0Path)) {
+        if (is_array($psr0Path) && is_array($psr4[$psr0Namespace])) {
             return array_merge($psr4[$psr0Namespace], $psr0Path);
         }
 

@@ -241,7 +241,7 @@ class Configuration
     private static function validateConfigKeys(array $config): void
     {
         array_map(
-            self::class.'::validateConfigKey',
+            [self::class, 'validateConfigKey'],
             array_keys($config)
         );
     }
@@ -523,7 +523,7 @@ class Configuration
     private static function retrieveFilesWithContents(Iterator $files): array
     {
         return array_reduce(
-            iterator_to_array($files),
+            iterator_to_array($files, false),
             static function (array $files, SplFileInfo $fileInfo): array {
                 $file = $fileInfo->getRealPath();
 
