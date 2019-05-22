@@ -43,7 +43,7 @@ final class JsonFileScoper implements Scoper
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
-        $decodedJson = json_decode($contents);
+        $decodedJson = json_decode($contents, false);
 
         if (false === ($decodedJson instanceof stdClass)) {
             throw new LogicException(

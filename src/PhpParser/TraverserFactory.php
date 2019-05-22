@@ -36,7 +36,7 @@ class TraverserFactory
 
     public function create(PhpScoper $scoper, string $prefix, Whitelist $whitelist): NodeTraverserInterface
     {
-        $traverser = new NodeTraverser($prefix);
+        $traverser = new NodeTraverser();
 
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();

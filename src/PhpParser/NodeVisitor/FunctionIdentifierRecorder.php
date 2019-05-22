@@ -67,11 +67,11 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         if (
-            (
+            false === $this->reflector->isFunctionInternal((string) $resolvedName)
+            && (
                 $this->whitelist->isGlobalWhitelistedFunction((string) $resolvedName)
                 || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
             )
-            && false === $this->reflector->isFunctionInternal((string) $resolvedName)
         ) {
             $this->whitelist->recordWhitelistedFunction(
                 $resolvedName,

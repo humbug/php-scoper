@@ -32,15 +32,6 @@ use function count;
  */
 final class NodeTraverser extends PhpParserNodeTraverser
 {
-    private $prefix;
-
-    public function __construct(string $prefix)
-    {
-        parent::__construct();
-
-        $this->prefix = $prefix;
-    }
-
     /**
      * @inheritdoc
      */

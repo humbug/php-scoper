@@ -224,7 +224,7 @@ final class AddPrefixCommand extends BaseCommand
         $vendorDir = (0 === count($vendorDirs)) ? null : $vendorDirs[0];
 
         if (null !== $vendorDir) {
-            $autoload = (new ScoperAutoloadGenerator($whitelist))->dump($prefix);
+            $autoload = (new ScoperAutoloadGenerator($whitelist))->dump();
 
             $this->fileSystem->dumpFile($vendorDir.'/scoper-autoload.php', $autoload);
         }
@@ -391,7 +391,7 @@ final class AddPrefixCommand extends BaseCommand
         if (null === $configFile) {
             $configFile = $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT);
 
-            if (false === file_exists($configFile) && false === $this->init) {
+            if (false === $this->init && false === file_exists($configFile)) {
                 $this->init = true;
 
                 $initCommand = $this->getApplication()->find('init');
