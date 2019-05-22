@@ -41,66 +41,17 @@ class ApplicationFactory
     {
         $app = new Application(
             new Container(),
-            'PHP Scoper',
-            static::getVersion()
+            'PHP Scoper'
         );
 
         $app->addCommands([
             new AddPrefixCommand(
                 new Filesystem(),
-                static::createScoper()
+                $app->getContainer()->getScoper()
             ),
             new InitCommand(),
         ]);
 
         return $app;
-    }
-
-    protected static function getVersion(): string
-    {
-        if (0 === strpos(__FILE__, 'phar:')) {
-            return '@git_version_placeholder@';
-        }
-
-        $rawVersion = Versions::getVersion('humbug/php-scoper');
-
-        [$prettyVersion, $commitHash] = explode('@', $rawVersion);
-
-        return (1 === preg_match('/9{7}/', $prettyVersion)) ? $commitHash : $prettyVersion;
-    }
-
-    protected static function createScoper(): Scoper
-    {
-        return new PatchScoper(
-            new PhpScoper(
-                static::createParser(),
-                new JsonFileScoper(
-                    new InstalledPackagesScoper(
-                        new SymfonyScoper(
-                            new NullScoper()
-                        )
-                    )
-                ),
-                new TraverserFactory(static::createReflector())
-            )
-        );
-    }
-
-    protected static function createParser(): Parser
-    {
-        return (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
-    }
-
-    protected static function createReflector(): Reflector
-    {
-        $phpParser = static::createParser();
-        $astLocator = new Locator($phpParser);
-
-        $sourceLocator = new MemoizingSourceLocator(
-            new PhpInternalSourceLocator($astLocator)
-        );
-        $classReflector = new ClassReflector($sourceLocator);
-
-        return new Reflector($classReflector);
     }
 }

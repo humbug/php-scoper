@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Humbug\PhpScoper\Container;
+use function Humbug\PhpScoper\get_php_scoper_version;
 use PackageVersions\Versions;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use function trim;
@@ -42,21 +43,13 @@ ASCII;
     public function __construct(
         Container $container,
         string $name = 'Box',
-        string $version = null,
+        ?string $version = null,
         string $releaseDate = '@release-date@'
     ) {
-        if (null === $version) {
-            $rawVersion = Versions::getVersion('humbug/php-scoper');
-
-            [$prettyVersion, $commitHash] = explode('@', $rawVersion);
-
-            $version = $prettyVersion.'@'.substr($commitHash, 0, 7);
-        }
-
         $this->container = $container;
         $this->releaseDate = false === strpos($releaseDate, '@') ? $releaseDate : '';
 
-        parent::__construct($name, $version);
+        parent::__construct($name, $version ?? get_php_scoper_version());
     }
 
     public function getContainer(): Container

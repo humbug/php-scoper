@@ -13,7 +13,6 @@
     "files": [
         "src/scoper.inc.php.tpl"
     ],
-    "git": "git_version_placeholder",
     "datetime": "release-date",
 
     "compression": "GZ",

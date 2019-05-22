@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ApplicationFactory;
 use Iterator;
+use PackageVersions\Versions;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
@@ -37,6 +38,15 @@ use function unserialize;
 function create_application(): Application
 {
     return (new ApplicationFactory())->create();
+}
+
+function get_php_scoper_version(): string
+{
+    $rawVersion = Versions::getVersion('humbug/php-scoper');
+
+    [$prettyVersion, $commitHash] = explode('@', $rawVersion);
+
+    return $prettyVersion.'@'.substr($commitHash, 0, 7);
 }
 
 /**
