@@ -20,7 +20,11 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\Scoper;
 use Symfony\Component\Filesystem\Filesystem;
 
-final class ApplicationFactory
+/**
+ * @final
+ * TODO: mark this class as final in the next release
+ */
+class ApplicationFactory
 {
     public function create(): Application
     {
@@ -38,5 +42,13 @@ final class ApplicationFactory
         ]);
 
         return $app;
+    }
+
+    /**
+     * @deprecated This function will be removed in the next release
+     */
+    protected static function createScoper(): Scoper
+    {
+        return (new Container())->getScoper();
     }
 }
