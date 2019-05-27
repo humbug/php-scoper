@@ -28,10 +28,10 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Roave\BetterReflection\Reflector\ClassReflector;
-use function Humbug\PhpScoper\create_fake_patcher;
-use function Humbug\PhpScoper\create_parser;
 use Roave\BetterReflection\Reflector\ConstantReflector;
 use Roave\BetterReflection\Reflector\FunctionReflector;
+use function Humbug\PhpScoper\create_fake_patcher;
+use function Humbug\PhpScoper\create_parser;
 
 class PhpScoperTest extends TestCase
 {

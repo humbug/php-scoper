@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use PhpParser\Parser;
-use PhpParser\ParserFactory;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflector\ConstantReflector;
