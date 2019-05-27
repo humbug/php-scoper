@@ -33,11 +33,7 @@ class TraverserFactoryTest extends TestCase
 
         $whitelist = Whitelist::create(true, true, true, 'Foo');
 
-        $classReflector = new Reflector(
-            (new BetterReflection())->classReflector(),
-            (new BetterReflection())->functionReflector(),
-            (new BetterReflection())->constantReflector()
-        );
+        $classReflector = new Reflector((new BetterReflection())->classReflector());
 
         $traverserFactory = new TraverserFactory($classReflector);
 

@@ -17,11 +17,17 @@ namespace Humbug\PhpScoper\Scoper;
 use Error;
 use Generator;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\ReflectorFactory;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
+use Roave\BetterReflection\BetterReflection;
+use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\SourceLocator\Type\AggregateSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
+use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
@@ -220,12 +226,15 @@ class PhpScoperSpecTest extends TestCase
 
     private function createScoper(string $contents): Scoper
     {
+        $phpParser = create_parser();
+
         return new PhpScoper(
-            create_parser(),
+            $phpParser,
             new FakeScoper(),
-            new TraverserFactory(
-                ReflectorFactory::create($contents)
-            )
+            new TraverserFactory(ReflectorFactory::create(
+                $contents,
+                $phpParser
+            ))
         );
     }
 

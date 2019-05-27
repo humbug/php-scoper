@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Roave\BetterReflection\BetterReflection;
 use Roave\BetterReflection\Reflector\ClassReflector;
@@ -27,7 +28,7 @@ use Roave\BetterReflection\SourceLocator\Type\StringSourceLocator;
 
 final class ReflectorFactory
 {
-    public static function create(string $code): Reflector
+    public static function create(string $code, Parser $parser = null): Reflector
     {
         $astLocator = (new BetterReflection())->astLocator();
 
@@ -36,7 +37,7 @@ final class ReflectorFactory
                 $astLocator,
                 new PhpStormStubsSourceStubber(
                     new MemoizingParser(
-                        (new ParserFactory())->create(ParserFactory::ONLY_PHP7)
+                        $parser ?? create_parser()
                     )
                 )
             ),

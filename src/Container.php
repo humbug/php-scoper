@@ -37,6 +37,7 @@ final class Container
 {
     private $parser;
     private $reflector;
+    private $functionReflector;
     private $scoper;
 
     public function getScoper(): Scoper
@@ -73,7 +74,13 @@ final class Container
     {
         if (null === $this->reflector) {
             $phpParser = $this->getParser();
-            $astLocator = new Locator($phpParser);
+
+            $astLocator = new Locator(
+                $phpParser,
+                function (): FunctionReflector {
+                    return $this->functionReflector;
+                }
+            );
 
             $sourceLocator = new MemoizingSourceLocator(
                 new PhpInternalSourceLocator(
@@ -87,9 +94,11 @@ final class Container
 
             $classReflector = new ClassReflector($sourceLocator);
 
+            $this->functionReflector = new FunctionReflector($sourceLocator, $classReflector);
+
             return new Reflector(
                 $classReflector,
-                new FunctionReflector($sourceLocator, $classReflector),
+                $this->functionReflector,
                 new ConstantReflector($sourceLocator, $classReflector)
             );
         }
