@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\ReflectorFactory;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Whitelist;
@@ -33,9 +34,7 @@ class TraverserFactoryTest extends TestCase
 
         $whitelist = Whitelist::create(true, true, true, 'Foo');
 
-        $classReflector = new Reflector((new BetterReflection())->classReflector());
-
-        $traverserFactory = new TraverserFactory($classReflector);
+        $traverserFactory = new TraverserFactory(ReflectorFactory::create(null));
 
         $phpScoper = new PhpScoper(
             new FakeParser(),

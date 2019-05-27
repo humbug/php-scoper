@@ -96,7 +96,7 @@ final class Container
 
             $this->functionReflector = new FunctionReflector($sourceLocator, $classReflector);
 
-            return new Reflector(
+            $this->reflector = new Reflector(
                 $classReflector,
                 $this->functionReflector,
                 new ConstantReflector($sourceLocator, $classReflector)
