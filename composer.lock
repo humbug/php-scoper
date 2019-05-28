@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0fbebd716f7e4a63c0a27a6cda47d3ef",
+    "content-hash": "5166c5f95a9b15f0051d66360584ef18",
     "packages": [
         {
             "name": "jetbrains/phpstorm-stubs",
@@ -47,16 +47,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.2.2",
+            "version": "v4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "1bd73cc04c3843ad8d6b0bfc0956026a151fc420"
+                "reference": "5221f49a608808c1e4d436df32884cbc1b821ac0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/1bd73cc04c3843ad8d6b0bfc0956026a151fc420",
-                "reference": "1bd73cc04c3843ad8d6b0bfc0956026a151fc420",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/5221f49a608808c1e4d436df32884cbc1b821ac0",
+                "reference": "5221f49a608808c1e4d436df32884cbc1b821ac0",
                 "shasum": ""
             },
             "require": {
@@ -94,7 +94,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2019-05-25T20:07:01+00:00"
+            "time": "2019-02-16T20:54:15+00:00"
         },
         {
             "name": "ocramius/package-versions",
@@ -300,16 +300,16 @@
         },
         {
             "name": "roave/better-reflection",
-            "version": "3.5.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/BetterReflection.git",
-                "reference": "a93d26f6f08add54943d752dad1da64c464c2e69"
+                "reference": "8e125f10dcae12b6413cec6c2fae165ce9925ad2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/a93d26f6f08add54943d752dad1da64c464c2e69",
-                "reference": "a93d26f6f08add54943d752dad1da64c464c2e69",
+                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/8e125f10dcae12b6413cec6c2fae165ce9925ad2",
+                "reference": "8e125f10dcae12b6413cec6c2fae165ce9925ad2",
                 "shasum": ""
             },
             "require": {
@@ -366,7 +366,7 @@
                 }
             ],
             "description": "Better Reflection - an improved code reflection API",
-            "time": "2019-05-28T00:00:03+00:00"
+            "time": "2019-05-14T11:41:23+00:00"
         },
         {
             "name": "roave/signature",
@@ -475,47 +475,36 @@
         },
         {
             "name": "symfony/contracts",
-            "version": "v1.1.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/contracts.git",
-                "reference": "b6e291a08e6b002fb56aa6f3e2a2beb6674d2b2f"
+                "reference": "1aa7ab2429c3d594dd70689604b5cf7421254cdf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/contracts/zipball/b6e291a08e6b002fb56aa6f3e2a2beb6674d2b2f",
-                "reference": "b6e291a08e6b002fb56aa6f3e2a2beb6674d2b2f",
+                "url": "https://api.github.com/repos/symfony/contracts/zipball/1aa7ab2429c3d594dd70689604b5cf7421254cdf",
+                "reference": "1aa7ab2429c3d594dd70689604b5cf7421254cdf",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1.3"
             },
-            "replace": {
-                "symfony/cache-contracts": "self.version",
-                "symfony/event-dispatcher-contracts": "self.version",
-                "symfony/http-client-contracts": "self.version",
-                "symfony/service-contracts": "self.version",
-                "symfony/translation-contracts": "self.version"
-            },
             "require-dev": {
                 "psr/cache": "^1.0",
-                "psr/container": "^1.0",
-                "symfony/polyfill-intl-idn": "^1.10"
+                "psr/container": "^1.0"
             },
             "suggest": {
                 "psr/cache": "When using the Cache contracts",
                 "psr/container": "When using the Service contracts",
-                "psr/event-dispatcher": "When using the EventDispatcher contracts",
-                "symfony/cache-implementation": "",
-                "symfony/event-dispatcher-implementation": "",
-                "symfony/http-client-implementation": "",
-                "symfony/service-implementation": "",
-                "symfony/translation-implementation": ""
+                "symfony/cache-contracts-implementation": "",
+                "symfony/service-contracts-implementation": "",
+                "symfony/translation-contracts-implementation": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
@@ -550,7 +539,7 @@
                 "interoperability",
                 "standards"
             ],
-            "time": "2019-05-28T07:50:59+00:00"
+            "time": "2018-12-05T08:06:11+00:00"
         },
         {
             "name": "symfony/filesystem",
@@ -1386,16 +1375,16 @@
         },
         {
             "name": "composer/xdebug-handler",
-            "version": "1.3.3",
+            "version": "1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/xdebug-handler.git",
-                "reference": "46867cbf8ca9fb8d60c506895449eb799db1184f"
+                "reference": "d17708133b6c276d6e42ef887a877866b909d892"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/xdebug-handler/zipball/46867cbf8ca9fb8d60c506895449eb799db1184f",
-                "reference": "46867cbf8ca9fb8d60c506895449eb799db1184f",
+                "url": "https://api.github.com/repos/composer/xdebug-handler/zipball/d17708133b6c276d6e42ef887a877866b909d892",
+                "reference": "d17708133b6c276d6e42ef887a877866b909d892",
                 "shasum": ""
             },
             "require": {
@@ -1426,7 +1415,7 @@
                 "Xdebug",
                 "performance"
             ],
-            "time": "2019-05-27T17:52:04+00:00"
+            "time": "2019-01-28T20:25:53+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -2269,36 +2258,33 @@
         },
         {
             "name": "humbug/box",
-            "version": "3.7.3",
+            "version": "3.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/humbug/box.git",
-                "reference": "ca265788865bdbedf23d5d2a4efbd8de4bb06e7b"
+                "reference": "96d1abc92c083c7fb502053b6b103c5ef399bcd6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/humbug/box/zipball/ca265788865bdbedf23d5d2a4efbd8de4bb06e7b",
-                "reference": "ca265788865bdbedf23d5d2a4efbd8de4bb06e7b",
+                "url": "https://api.github.com/repos/humbug/box/zipball/96d1abc92c083c7fb502053b6b103c5ef399bcd6",
+                "reference": "96d1abc92c083c7fb502053b6b103c5ef399bcd6",
                 "shasum": ""
             },
             "require": {
-                "amphp/parallel-functions": "^0.1.3",
-                "beberlei/assert": "^3.2",
+                "amphp/parallel-functions": "^0.1.2",
+                "beberlei/assert": "^3.0",
                 "composer/semver": "^1.5",
-                "composer/xdebug-handler": "^1.3.2",
+                "composer/xdebug-handler": "^1.1.0",
                 "ext-phar": "*",
                 "hoa/compiler": "^3.17",
                 "humbug/php-scoper": "^0.11",
                 "justinrainbow/json-schema": "^5.2",
                 "nikic/iter": "^1.6",
-                "nikic/php-parser": "^4.2",
-                "ocramius/package-versions": "^1.4",
-                "opis/closure": "^3.2",
+                "ocramius/package-versions": "^1.3",
                 "paragonie/pharaoh": "^0.5",
-                "php": "^7.2",
-                "phpseclib/phpseclib": "^2.0",
-                "psr/log": "^1.0",
-                "seld/jsonlint": "^1.7",
+                "php": "^7.1",
+                "phpseclib/phpseclib": "~2.0",
+                "seld/jsonlint": "^1.6",
                 "symfony/console": "^4.2",
                 "symfony/filesystem": "^4.2",
                 "symfony/finder": "^4.0",
@@ -2307,11 +2293,11 @@
                 "webmozart/path-util": "^2.3"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.3",
+                "bamarni/composer-bin-plugin": "^1.2",
                 "infection/infection": "^0.10",
-                "mikey179/vfsstream": "^1.6",
-                "phpunit/phpunit": "^8.1",
-                "symfony/phpunit-bridge": "^4.2"
+                "mikey179/vfsstream": "^1.1",
+                "phpunit/phpunit": "^7.0",
+                "symfony/phpunit-bridge": "^4.1"
             },
             "suggest": {
                 "ext-openssl": "To accelerate private key generation."
@@ -2360,7 +2346,7 @@
             "keywords": [
                 "phar"
             ],
-            "time": "2019-05-21T23:07:15+00:00"
+            "time": "2019-04-09T20:12:17+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2522,16 +2508,16 @@
         },
         {
             "name": "opis/closure",
-            "version": "3.2.0",
+            "version": "3.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/closure.git",
-                "reference": "09b4389715a7eec100176ea58286649181753508"
+                "reference": "ccb8e3928c5c8181c76cdd0ed9366c5bcaafd91b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/closure/zipball/09b4389715a7eec100176ea58286649181753508",
-                "reference": "09b4389715a7eec100176ea58286649181753508",
+                "url": "https://api.github.com/repos/opis/closure/zipball/ccb8e3928c5c8181c76cdd0ed9366c5bcaafd91b",
+                "reference": "ccb8e3928c5c8181c76cdd0ed9366c5bcaafd91b",
                 "shasum": ""
             },
             "require": {
@@ -2544,7 +2530,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.2.x-dev"
+                    "dev-master": "3.1.x-dev"
                 }
             },
             "autoload": {
@@ -2579,7 +2565,7 @@
                 "serialization",
                 "serialize"
             ],
-            "time": "2019-05-05T12:50:25+00:00"
+            "time": "2019-02-22T10:30:00+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",
@@ -2745,16 +2731,16 @@
         },
         {
             "name": "paragonie/sodium_compat",
-            "version": "v1.10.0",
+            "version": "v1.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/sodium_compat.git",
-                "reference": "228a9fc64cf4ba84c7967c1076d94209db03e0ee"
+                "reference": "87125d5b265f98c4d1b8d83a1f0726607c229421"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/228a9fc64cf4ba84c7967c1076d94209db03e0ee",
-                "reference": "228a9fc64cf4ba84c7967c1076d94209db03e0ee",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/87125d5b265f98c4d1b8d83a1f0726607c229421",
+                "reference": "87125d5b265f98c4d1b8d83a1f0726607c229421",
                 "shasum": ""
             },
             "require": {
@@ -2823,7 +2809,7 @@
                 "secret-key cryptography",
                 "side-channel resistant"
             ],
-            "time": "2019-05-13T16:04:50+00:00"
+            "time": "2019-03-20T17:19:05+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -2929,16 +2915,16 @@
         },
         {
             "name": "phpseclib/phpseclib",
-            "version": "2.0.17",
+            "version": "2.0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "3ca5b88d582c69178c8d01fd9d02b94e15042bb8"
+                "reference": "11cf67cf78dc4acb18dc9149a57be4aee5036ce0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/3ca5b88d582c69178c8d01fd9d02b94e15042bb8",
-                "reference": "3ca5b88d582c69178c8d01fd9d02b94e15042bb8",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/11cf67cf78dc4acb18dc9149a57be4aee5036ce0",
+                "reference": "11cf67cf78dc4acb18dc9149a57be4aee5036ce0",
                 "shasum": ""
             },
             "require": {
@@ -3017,7 +3003,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2019-05-26T20:38:34+00:00"
+            "time": "2019-03-10T16:53:45+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -3336,16 +3322,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.1.5",
+            "version": "8.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "01392d4b5878aa617e8d9bc7a529e5febc8fe956"
+                "reference": "2a676677982b484ee36b54961f570c02eabbe7e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/01392d4b5878aa617e8d9bc7a529e5febc8fe956",
-                "reference": "01392d4b5878aa617e8d9bc7a529e5febc8fe956",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2a676677982b484ee36b54961f570c02eabbe7e1",
+                "reference": "2a676677982b484ee36b54961f570c02eabbe7e1",
                 "shasum": ""
             },
             "require": {
@@ -3414,7 +3400,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-05-14T04:57:31+00:00"
+            "time": "2019-04-19T15:52:00+00:00"
         },
         {
             "name": "psr/log",
@@ -4396,7 +4382,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "roave/better-reflection": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
