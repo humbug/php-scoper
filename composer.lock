@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5166c5f95a9b15f0051d66360584ef18",
+    "content-hash": "e12cdc9b0b914440118269197436f1dd",
     "packages": [
         {
             "name": "jetbrains/phpstorm-stubs",
@@ -300,16 +300,16 @@
         },
         {
             "name": "roave/better-reflection",
-            "version": "dev-master",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/BetterReflection.git",
-                "reference": "8e125f10dcae12b6413cec6c2fae165ce9925ad2"
+                "reference": "a93d26f6f08add54943d752dad1da64c464c2e69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/8e125f10dcae12b6413cec6c2fae165ce9925ad2",
-                "reference": "8e125f10dcae12b6413cec6c2fae165ce9925ad2",
+                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/a93d26f6f08add54943d752dad1da64c464c2e69",
+                "reference": "a93d26f6f08add54943d752dad1da64c464c2e69",
                 "shasum": ""
             },
             "require": {
@@ -366,7 +366,7 @@
                 }
             ],
             "description": "Better Reflection - an improved code reflection API",
-            "time": "2019-05-14T11:41:23+00:00"
+            "time": "2019-05-28T00:00:03+00:00"
         },
         {
             "name": "roave/signature",
@@ -4382,9 +4382,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "roave/better-reflection": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

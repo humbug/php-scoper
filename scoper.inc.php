@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 use Isolated\Symfony\Component\Finder\Finder;
 
-$jetBrainStubs = (static function(): array {
+$jetBrainStubs = (static function (): array {
     $files = [];
 
     foreach (new DirectoryIterator(__DIR__.'/vendor/jetbrains/phpstorm-stubs') as $directoryInfo) {
@@ -56,11 +56,11 @@ return [
         // BetterReflection stub: leave the stub map unchanged
         //
         static function (string $filePath, string $prefix, string $contents): string {
-            if ($filePath === 'vendor/roave/better-reflection/src/SourceLocator/SourceStubber/PhpStormStubsMap.php') {
+            if ('vendor/roave/better-reflection/src/SourceLocator/SourceStubber/PhpStormStubsMap.php' === $filePath) {
                 $contents = str_replace(
                     [
-                        $prefix . '\\\\',
-                        $prefix . '\\',
+                        $prefix.'\\\\',
+                        $prefix.'\\',
                         'namespace Roave\BetterReflection\SourceLocator\SourceStubber;',
                     ],
                     [
