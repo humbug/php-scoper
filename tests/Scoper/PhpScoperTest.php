@@ -28,6 +28,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\ConstantReflector;
+use Roave\BetterReflection\Reflector\FunctionReflector;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 
@@ -89,6 +91,26 @@ class PhpScoperTest extends TestCase
     private $classReflector;
 
     /**
+     * @var FunctionReflector
+     */
+    private $functionReflector;
+
+    /**
+     * @var FunctionReflector|ObjectProphecy
+     */
+    private $functionReflectorProphecy;
+
+    /**
+     * @var ConstantReflector|ObjectProphecy
+     */
+    private $constantReflectorProphecy;
+
+    /**
+     * @var ConstantReflector
+     */
+    private $constantReflector;
+
+    /**
      * @inheritdoc
      */
     public function setUp(): void
@@ -108,11 +130,21 @@ class PhpScoperTest extends TestCase
         $this->classReflectorProphecy = $this->prophesize(ClassReflector::class);
         $this->classReflector = $this->classReflectorProphecy->reveal();
 
+        $this->functionReflectorProphecy = $this->prophesize(FunctionReflector::class);
+        $this->functionReflector = $this->functionReflectorProphecy->reveal();
+
+        $this->constantReflectorProphecy = $this->prophesize(ConstantReflector::class);
+        $this->constantReflector = $this->constantReflectorProphecy->reveal();
+
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
-                new Reflector($this->classReflector)
+                new Reflector(
+                    $this->classReflector,
+                    $this->functionReflector,
+                    $this->constantReflector
+                )
             )
         );
     }

@@ -269,16 +269,17 @@ e2e_024: $(PHPSCOPER) fixtures/set024/vendor
 .PHONY: e2e_025
 e2e_025: ## Run end-to-end tests for the fixture set 025 — Whitelisting a vendor function
 e2e_025: $(PHPSCOPER) fixtures/set025/vendor
-	$(PHPBIN) $(PHPSCOPER) add-prefix \
-		--working-dir=fixtures/set025 \
-		--output-dir=../../build/set025 \
-		--force \
-		--no-interaction \
-		--stop-on-failure
-	composer --working-dir=build/set025 dump-autoload
-
-	php build/set025/main.php > build/set025/output
-	diff fixtures/set025/expected-output build/set025/output
+# TODO: https://github.com/nikic/PHP-Parser/issues/612
+#	$(PHPBIN) $(PHPSCOPER) add-prefix \
+#		--working-dir=fixtures/set025 \
+#		--output-dir=../../build/set025 \
+#		--force \
+#		--no-interaction \
+#		--stop-on-failure
+#	composer --working-dir=build/set025 dump-autoload
+#
+#	php build/set025/main.php > build/set025/output
+#	diff fixtures/set025/expected-output build/set025/output
 
 .PHONY: e2e_026
 e2e_026: ## Run end-to-end tests for the fixture set 026 — Whitelisting classes and functions with pattern matching

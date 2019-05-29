@@ -14,15 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use ReflectionException;
-use ReflectionFunction;
 use Roave\BetterReflection\Identifier\Exception\InvalidIdentifierName;
-use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\Reflection\ReflectionConstant;
+use Roave\BetterReflection\Reflection\ReflectionFunction;
 use Roave\BetterReflection\Reflector\Exception\IdentifierNotFound;
-use function array_key_exists;
-use function array_values;
-use function get_defined_constants;
-use function strtoupper;
+use Roave\BetterReflection\Reflector\Reflector as BetterReflectionReflector;
+use function in_array;
 
 /**
  * Main class used to determine if a given symbol is internal or not. As of the time of writing, it leverages
@@ -39,49 +37,27 @@ use function strtoupper;
  */
 final class Reflector
 {
-    private const KNOWN_INTERNAL_CONSTANTS = [
-        'CURLM_ADDED_ALREADY' => true,
-        'JSON_UNESCAPED_LINE_TERMINATORS' => true,
-        'OPENSSL_DONT_ZERO_PAD_KEY' => true,
-        'PHP_FD_SETSIZE' => true,
-        'PHP_INT_MIN' => true,
-        'PHP_OS_FAMILY' => true,
-    ];
-
-    private const KNOWN_INTERNAL_FUNCTIONS = [
-        'deflate_add' => true,
-        'deflate_init' => true,
-        'error_clear_last' => true,
-        'ftp_append' => true,
-        'hash_hkdf' => true,
-        'inflate_add' => true,
-        'inflate_init' => true,
-        'intdiv' => true,
-        'is_iterable' => true,
-        'openssl_pkcs7_read' => true,
-        'pcntl_signal_get_handler' => true,
-        'preg_replace_callback_array' => true,
-        'sapi_windows_vt100_support' => true,
-        'socket_export_stream' => true,
-        'spl_object_id' => true,
-        'stream_isatty' => true,
-        'utf8_decode' => true,
-        'utf8_encode' => true,
-        'zend_loader_file_encoded' => true,
-    ];
-
     private $classReflector;
-    private $constants;
+    private $functionReflector;
+    private $constantReflector;
 
-    public function __construct(ClassReflector $classReflector)
-    {
+    public function __construct(
+        BetterReflectionReflector $classReflector,
+        BetterReflectionReflector $functionReflector,
+        BetterReflectionReflector $constantReflector
+    ) {
         $this->classReflector = $classReflector;
+        $this->functionReflector = $functionReflector;
+        $this->constantReflector = $constantReflector;
     }
 
     public function isClassInternal(string $name): bool
     {
         try {
-            return $this->classReflector->reflect($name)->isInternal();
+            /** @var ReflectionClass $classReflection */
+            $classReflection = $this->classReflector->reflect($name);
+
+            return $classReflection->isInternal();
         } catch (IdentifierNotFound | InvalidIdentifierName $exception) {
             return false;
         }
@@ -89,38 +65,29 @@ final class Reflector
 
     public function isFunctionInternal(string $name): bool
     {
-        if (array_key_exists($name, self::KNOWN_INTERNAL_FUNCTIONS)) {
-            return true;
-        }
-
         try {
-            return (new ReflectionFunction($name))->isInternal();
-        } catch (ReflectionException $exception) {
+            /** @var ReflectionFunction $functionReflection */
+            $functionReflection = $this->functionReflector->reflect($name);
+
+            return $functionReflection->isInternal();
+        } catch (IdentifierNotFound | InvalidIdentifierName $exception) {
             return false;
         }
     }
 
     public function isConstantInternal(string $name): bool
     {
-        if (array_key_exists($name, self::KNOWN_INTERNAL_CONSTANTS)) {
+        if (in_array($name, ['STDIN', 'STDOUT', 'STDERR'], true)) {
             return true;
         }
 
-        return array_key_exists(strtoupper($name), $this->getInternalConstants());
-    }
+        try {
+            /** @var ReflectionConstant $constantReflection */
+            $constantReflection = $this->constantReflector->reflect($name);
 
-    private function getInternalConstants(): array
-    {
-        if (null !== $this->constants) {
-            return $this->constants;
+            return $constantReflection->isInternal();
+        } catch (IdentifierNotFound | InvalidIdentifierName $exception) {
+            return false;
         }
-
-        $constants = get_defined_constants(true);
-
-        unset($constants['user']);
-
-        $this->constants = array_merge(...array_values($constants));
-
-        return $this->constants;
     }
 }
