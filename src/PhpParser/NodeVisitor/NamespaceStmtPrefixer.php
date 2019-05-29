@@ -63,15 +63,15 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
     private function prefixNamespaceStmt(Namespace_ $namespace): Node
     {
-        $originalNamespace = $namespace;
-
         if ($this->shouldPrefixStmt($namespace)) {
-            $originalNamespace = clone_node($namespace);
+            $originalName = $namespace->name;
 
             $namespace->name = Name::concat($this->prefix, $namespace->name);
+
+            NamespaceManipulator::setOriginalName($namespace, $originalName);
         }
 
-        $this->namespaceStatements->add($namespace, $originalNamespace);
+        $this->namespaceStatements->add($namespace);
 
         return $namespace;
     }
