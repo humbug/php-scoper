@@ -14,7 +14,17 @@ declare(strict_types=1);
 
 require_once __DIR__.'/root-version.php';
 
-$composerRootVersion = get_composer_root_version(get_last_tag_name());
+try {
+    $composerRootVersion = get_composer_root_version(get_last_tag_name());
+} catch (RuntimeException $exception) {
+    if ('humbug/box' !== getenv('TRAVIS_REPO_SLUG')) {
+        // Ignore this PR to avoid too many builds to fail untimely or locally due to API rate limits because the last
+        // release version could not be retrieved.
+        return;
+    }
+
+    throw $exception;
+}
 
 preg_match(
     '/COMPOSER_ROOT_VERSION=\'(?<version>.*?)\'/',
