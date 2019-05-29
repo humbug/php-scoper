@@ -16,9 +16,7 @@ matrix:
       env: COVERAGE='true'
     - php: '7.2'
     - php: '7.4snapshot'
-    - php: nightly
   allow_failures:
-    - php: nightly
     - php: '7.4snapshot'
   fast_finish: true
 
