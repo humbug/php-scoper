@@ -14,31 +14,68 @@ declare(strict_types=1);
 
 use Isolated\Symfony\Component\Finder\Finder;
 
+$jetBrainStubs = (static function (): array {
+    $files = [];
+
+    foreach (new DirectoryIterator(__DIR__.'/vendor/jetbrains/phpstorm-stubs') as $directoryInfo) {
+        if ($directoryInfo->isDot()) {
+            continue;
+        }
+
+        if (false === $directoryInfo->isDir()) {
+            continue;
+        }
+
+        if (in_array($directoryInfo->getBasename(), ['tests', 'meta'], true)) {
+            continue;
+        }
+
+        foreach (new DirectoryIterator($directoryInfo->getPathName()) as $fileInfo) {
+            if ($fileInfo->isDot()) {
+                continue;
+            }
+
+            if (1 !== preg_match('/\.php$/', $fileInfo->getBasename())) {
+                continue;
+            }
+
+            $files[] = $fileInfo->getPathName();
+        }
+    }
+
+    return $files;
+})();
+
 return [
     'whitelist' => [
         Finder::class,
     ],
+    'files-whitelist' => $jetBrainStubs,
     'patchers' => [
-        function (string $filePath, string $prefix, string $contents): string {
-            //
-            // PHP-Parser patch
-            //
-            if ($filePath === realpath(__DIR__.'/vendor/nikic/php-parser/lib/PhpParser/NodeAbstract.php')) {
-                $length = 15 + strlen($prefix) + 1;
-
-                return preg_replace(
-                    '%strpos\((.+?)\) \+ 15%',
-                    sprintf('strpos($1) + %d', $length),
+        //
+        // BetterReflection stub: leave the stub map unchanged
+        //
+        static function (string $filePath, string $prefix, string $contents): string {
+            if ('vendor/roave/better-reflection/src/SourceLocator/SourceStubber/PhpStormStubsMap.php' === $filePath) {
+                $contents = str_replace(
+                    [
+                        $prefix.'\\\\',
+                        $prefix.'\\',
+                        'namespace Roave\BetterReflection\SourceLocator\SourceStubber;',
+                    ],
+                    [
+                        '',
+                        '',
+                        sprintf(
+                            'namespace %s\Roave\BetterReflection\SourceLocator\SourceStubber;',
+                            $prefix
+                        ),
+                    ],
                     $contents
                 );
             }
 
             return $contents;
-        },
-        function (string $filePath, string $prefix, string $contents): string {
-            $finderClass = sprintf('\%s\%s', $prefix, Finder::class);
-
-            return str_replace($finderClass, '\\'.Finder::class, $contents);
         },
     ],
 ];

@@ -23,7 +23,7 @@
         "php": "^7.2",
         "nikic/php-parser": "^4.0",
         "ocramius/package-versions": "^1.1",
-        "roave/better-reflection": "^3.0",
+        "roave/better-reflection": "^3.5",
         "symfony/console": "^3.2 || ^4.0",
         "symfony/filesystem": "^3.2 || ^4.0",
         "symfony/finder": "^3.2 || ^4.0"
