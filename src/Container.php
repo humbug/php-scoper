@@ -24,6 +24,7 @@ use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\Reflector\FunctionReflector;
 use Roave\BetterReflection\SourceLocator\Ast\Locator;
 use Roave\BetterReflection\SourceLocator\Type\MemoizingSourceLocator;
 use Roave\BetterReflection\SourceLocator\Type\PhpInternalSourceLocator;
@@ -32,6 +33,7 @@ final class Container
 {
     private $parser;
     private $reflector;
+    private $functionReflector;
     private $scoper;
 
     public function getScoper(): Scoper
@@ -68,12 +70,19 @@ final class Container
     {
         if (null === $this->reflector) {
             $phpParser = $this->getParser();
-            $astLocator = new Locator($phpParser);
+            $astLocator = new Locator(
+                $phpParser,
+                function () {
+                    return $this->functionReflector;
+                }
+            );
 
             $sourceLocator = new MemoizingSourceLocator(
                 new PhpInternalSourceLocator($astLocator)
             );
             $classReflector = new ClassReflector($sourceLocator);
+
+            $this->functionReflector = new FunctionReflector($sourceLocator, $classReflector);
 
             $this->reflector = new Reflector($classReflector);
         }

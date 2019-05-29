@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0fbebd716f7e4a63c0a27a6cda47d3ef",
+    "content-hash": "e12cdc9b0b914440118269197436f1dd",
     "packages": [
         {
             "name": "jetbrains/phpstorm-stubs",
@@ -300,23 +300,23 @@
         },
         {
             "name": "roave/better-reflection",
-            "version": "3.4.0",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/BetterReflection.git",
-                "reference": "68f10dcfa07ad1d829fcdad9d58979800a4bd025"
+                "reference": "a93d26f6f08add54943d752dad1da64c464c2e69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/68f10dcfa07ad1d829fcdad9d58979800a4bd025",
-                "reference": "68f10dcfa07ad1d829fcdad9d58979800a4bd025",
+                "url": "https://api.github.com/repos/Roave/BetterReflection/zipball/a93d26f6f08add54943d752dad1da64c464c2e69",
+                "reference": "a93d26f6f08add54943d752dad1da64c464c2e69",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "jetbrains/phpstorm-stubs": "2019.1",
-                "nikic/php-parser": "^4.0.4",
-                "php": ">=7.2.0,<7.4.0",
+                "nikic/php-parser": "^4.2.1",
+                "php": ">=7.2.0,<7.5.0",
                 "phpdocumentor/reflection-docblock": "^4.1.1",
                 "phpdocumentor/type-resolver": "^0.4.0",
                 "roave/signature": "^1.0"
@@ -366,7 +366,7 @@
                 }
             ],
             "description": "Better Reflection - an improved code reflection API",
-            "time": "2019-04-22T18:26:58+00:00"
+            "time": "2019-05-28T00:00:03+00:00"
         },
         {
             "name": "roave/signature",
