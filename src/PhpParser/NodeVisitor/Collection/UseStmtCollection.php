@@ -14,9 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
 
+use function array_key_exists;
 use ArrayIterator;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use function implode;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
@@ -28,6 +30,7 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function count;
 use function Humbug\PhpScoper\clone_node;
+use function sprintf;
 
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
@@ -37,6 +40,8 @@ use function Humbug\PhpScoper\clone_node;
  */
 final class UseStmtCollection implements IteratorAggregate
 {
+    private $hashes = [];
+
     /**
      * @var Use_[][]
      */
@@ -81,8 +86,41 @@ final class UseStmtCollection implements IteratorAggregate
             return null;
         }
 
-        $useStatements = $this->nodes[(string) $namespaceName] ?? [];
+        $isFunctionName = $this->isFunctionName($node, $parentNode);
+        $isConstantName = $this->isConstantName($node, $parentNode);
 
+        $hash = implode(
+            ':',
+            [
+                $namespaceName ? $namespaceName->toString() : '',
+                $name,
+                $isFunctionName ? 'func' : '',
+                $isConstantName ? 'const' : '',
+            ]
+        );
+
+        if (array_key_exists($hash, $this->hashes)) {
+            return $this->hashes[$hash];
+        }
+
+        return $this->hashes[$hash] = $this->find(
+            $this->nodes[(string) $namespaceName] ?? [],
+            $isFunctionName,
+            $isConstantName,
+            $name
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIterator(): iterable
+    {
+        return new ArrayIterator($this->nodes);
+    }
+
+    private function find(array $useStatements, bool $isFunctionName, bool $isConstantName, string $name): ?Name
+    {
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
                 if (!($useStatement instanceof UseUse)) {
@@ -90,7 +128,7 @@ final class UseStmtCollection implements IteratorAggregate
                 }
 
                 if ($name === $useStatement->getAlias()->toLowerString()) {
-                    if ($this->isFunctionName($node, $parentNode)) {
+                    if ($isFunctionName) {
                         if (Use_::TYPE_FUNCTION === $use_->type) {
                             return $useStatement->name;
                         }
@@ -98,7 +136,7 @@ final class UseStmtCollection implements IteratorAggregate
                         continue;
                     }
 
-                    if ($parentNode instanceof ConstFetch && 1 === count($node->parts)) {
+                    if ($isConstantName) {
                         if (Use_::TYPE_CONSTANT === $use_->type) {
                             return $useStatement->name;
                         }
@@ -113,14 +151,6 @@ final class UseStmtCollection implements IteratorAggregate
         }
 
         return null;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getIterator(): iterable
-    {
-        return new ArrayIterator($this->nodes);
     }
 
     private function isFunctionName(Name $node, ?Node $parentNode): bool
@@ -139,5 +169,10 @@ final class UseStmtCollection implements IteratorAggregate
         /* @var Function_ $parentNode */
 
         return $node instanceof NamedIdentifier && $node->getOriginalNode() === $parentNode->name;
+    }
+
+    private function isConstantName(Name $node, ?Node $parentNode): bool
+    {
+        return $parentNode instanceof ConstFetch && 1 === count($node->parts);
     }
 }
