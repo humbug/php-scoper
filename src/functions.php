@@ -18,22 +18,16 @@ use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ApplicationFactory;
 use Iterator;
 use PackageVersions\Versions;
-use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use function array_map;
 use function array_pop;
 use function count;
-use function is_array;
 use function is_object;
-use function is_scalar;
 use function is_string;
 use function method_exists;
-use function serialize;
 use function str_split;
 use function strrpos;
 use function substr;
-use function unserialize;
 
 function create_application(): Application
 {

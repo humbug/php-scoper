@@ -17,9 +17,9 @@ namespace Humbug\PhpScoper;
 use Closure;
 use LogicException;
 use PhpParser\Parser;
-use function sprintf;
-use Symfony\Component\Filesystem\Filesystem;
 use RuntimeException;
+use Symfony\Component\Filesystem\Filesystem;
+use function sprintf;
 
 /**
  * Creates a temporary directory.
@@ -59,7 +59,7 @@ function make_tmp_dir(string $namespace, string $className): string
             );
         }
 
-        $i++;
+        ++$i;
     }
 
     return $tempDir;

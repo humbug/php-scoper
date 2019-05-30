@@ -43,7 +43,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     private $mapping = [];
 
     /**
-     * @param Namespace_ $namespace         New namespace, may have been prefixed.
+     * @param Namespace_ $namespace    New namespace, may have been prefixed.
      * @param Namespace_ $originalName Original unchanged namespace.
      */
     public function add(Namespace_ $namespace): void

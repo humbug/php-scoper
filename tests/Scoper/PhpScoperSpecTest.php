@@ -18,7 +18,6 @@ use Error;
 use Generator;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\ReflectorFactory;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
