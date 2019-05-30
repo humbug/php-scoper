@@ -422,7 +422,7 @@ EOF;
                 Argument::that(
                     function (string $prefix): bool {
                         $this->assertRegExp(
-                            '/^\_PhpScoper[a-z0-9]{13}$/',
+                            '/^\_PhpScoper[a-z0-9]{12}$/',
                             $prefix
                         );
 

@@ -478,6 +478,6 @@ final class AddPrefixCommand extends BaseCommand
 
     private function generateRandomPrefix(): string
     {
-        return uniqid('_PhpScoper', false);
+        return '_PhpScoper'.bin2hex(random_bytes(6));
     }
 }

@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\Scoper;
 use Error;
 use Generator;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\ReflectorFactory;
+use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
@@ -97,7 +97,7 @@ class PhpScoperSpecTest extends TestCase
     ): void {
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
-        $scoper = $this->createScoper($contents);
+        $scoper = $this->createScoper();
 
         try {
             $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
@@ -218,17 +218,14 @@ class PhpScoperSpecTest extends TestCase
         }
     }
 
-    private function createScoper(string $contents): Scoper
+    private function createScoper(): Scoper
     {
         $phpParser = create_parser();
 
         return new PhpScoper(
             $phpParser,
             new FakeScoper(),
-            new TraverserFactory(ReflectorFactory::create(
-                $contents,
-                $phpParser
-            ))
+            new TraverserFactory(new Reflector())
         );
     }
 

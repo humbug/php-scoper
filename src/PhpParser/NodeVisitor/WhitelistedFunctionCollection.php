@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use ArrayIterator;
 use Countable;

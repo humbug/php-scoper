@@ -17,7 +17,9 @@ namespace Humbug\PhpScoper;
 use Closure;
 use LogicException;
 use PhpParser\Parser;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
+use function sprintf;
 
 /**
  * Creates a temporary directory.
@@ -43,8 +45,21 @@ function make_tmp_dir(string $namespace, string $className): string
     $systemTempDir = str_replace('\\', '/', realpath(sys_get_temp_dir()));
     $basePath = $systemTempDir.'/'.$namespace.'/'.$shortClass;
 
+    $i = 0;
+
     while (false === @mkdir($tempDir = escape_path($basePath.rand(10000, 99999)), 0777, true)) {
         // Run until we are able to create a directory
+        if ($i > 100) {
+            throw new RuntimeException(
+                sprintf(
+                    'Could not create temporary directory for "%s:%s" after 100 attempts',
+                    $namespace,
+                    $className
+                )
+            );
+        }
+
+        ++$i;
     }
 
     return $tempDir;
@@ -55,16 +70,11 @@ function escape_path(string $path): string
     return str_replace('/', DIRECTORY_SEPARATOR, $path);
 }
 
-//TODO: https://github.com/humbug/php-scoper/pull/19/files#r118838268
 function remove_dir(string $path): void
 {
     $path = escape_path($path);
 
-    if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-        exec(sprintf('rd /s /q %s', escapeshellarg($path)));
-    } else {
-        (new Filesystem())->remove($path);
-    }
+    (new Filesystem())->remove($path);
 }
 
 function create_fake_patcher(): Closure

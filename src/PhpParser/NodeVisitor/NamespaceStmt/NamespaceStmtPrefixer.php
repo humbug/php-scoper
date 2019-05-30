@@ -12,15 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
-use function Humbug\PhpScoper\clone_node;
 
 /**
  * Prefixes the relevant namespaces.
@@ -63,15 +61,15 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
     private function prefixNamespaceStmt(Namespace_ $namespace): Node
     {
-        $originalNamespace = $namespace;
-
         if ($this->shouldPrefixStmt($namespace)) {
-            $originalNamespace = clone_node($namespace);
+            $originalName = $namespace->name;
 
             $namespace->name = Name::concat($this->prefix, $namespace->name);
+
+            NamespaceManipulator::setOriginalName($namespace, $originalName);
         }
 
-        $this->namespaceStatements->add($namespace, $originalNamespace);
+        $this->namespaceStatements->add($namespace);
 
         return $namespace;
     }

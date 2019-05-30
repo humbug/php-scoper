@@ -36,11 +36,7 @@ use function readlink;
 use function realpath;
 use function sprintf;
 
-/**
- * @final
- * TODO: make this class as final as soon as the underlying deprecated class is removed.
- */
-class Configuration
+final class Configuration
 {
     private const PREFIX_KEYWORD = 'prefix';
     private const WHITELISTED_FILES_KEYWORD = 'files-whitelist';

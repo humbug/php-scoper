@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
 use ArrayIterator;
 use Countable;
@@ -43,14 +43,13 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     private $mapping = [];
 
     /**
-     * @param Namespace_ $node         New namespace, may have been prefixed.
-     * @param Namespace_ $originalName Original unchanged namespace.
+     * @param Namespace_ $namespace New namespace, may have been prefixed.
      */
-    public function add(Namespace_ $node, Namespace_ $originalName): void
+    public function add(Namespace_ $namespace): void
     {
-        $this->nodes[] = $originalName;
+        $this->nodes[] = $namespace;
 
-        $this->mapping[(string) $node->name] = $originalName->name;
+        $this->mapping[(string) $namespace->name] = NamespaceManipulator::getOriginalName($namespace);
     }
 
     public function findNamespaceForNode(Node $node): ?Name
@@ -61,16 +60,16 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
 
         // Shortcut if there is only one namespace
         if (1 === count($this->nodes)) {
-            return $this->nodes[0]->name;
+            return NamespaceManipulator::getOriginalName($this->nodes[0]);
         }
 
-        return $this->getNodeNamespace($node);
+        return $this->getNodeNamespaceName($node);
     }
 
     public function findNamespaceByName(string $name): ?Name
     {
         foreach ($this->nodes as $node) {
-            if ((string) $node->name === $name) {
+            if ((string) NamespaceManipulator::getOriginalName($node) === $name) {
                 return $node->name;
             }
         }
@@ -82,7 +81,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     {
         $lastNode = end($this->nodes);
 
-        return false === $lastNode ? null : $lastNode->name;
+        return false === $lastNode ? null : NamespaceManipulator::getOriginalName($lastNode);
     }
 
     /**
@@ -93,7 +92,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return count($this->nodes);
     }
 
-    private function getNodeNamespace(Node $node): ?Name
+    private function getNodeNamespaceName(Node $node): ?Name
     {
         if (false === ParentNodeAppender::hasParent($node)) {
             return null;
@@ -105,7 +104,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
             return $this->mapping[(string) $parentNode->name];
         }
 
-        return $this->getNodeNamespace($parentNode);
+        return $this->getNodeNamespaceName($parentNode);
     }
 
     /**
