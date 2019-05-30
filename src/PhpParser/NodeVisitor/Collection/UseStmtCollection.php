@@ -18,6 +18,7 @@ use function array_key_exists;
 use ArrayIterator;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtManipulator;
 use function implode;
 use IteratorAggregate;
 use PhpParser\Node;
@@ -29,8 +30,6 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function count;
-use function Humbug\PhpScoper\clone_node;
-use function sprintf;
 
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
@@ -49,9 +48,9 @@ final class UseStmtCollection implements IteratorAggregate
         null => [],
     ];
 
-    public function add(?Name $namespaceName, Use_ $node): void
+    public function add(?Name $namespaceName, Use_ $use): void
     {
-        $this->nodes[(string) $namespaceName][] = clone_node($node);
+        $this->nodes[(string) $namespaceName][] = $use;
     }
 
     /**
@@ -123,14 +122,14 @@ final class UseStmtCollection implements IteratorAggregate
     {
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
-                if (!($useStatement instanceof UseUse)) {
+                if (false === ($useStatement instanceof UseUse)) {
                     continue;
                 }
 
                 if ($name === $useStatement->getAlias()->toLowerString()) {
                     if ($isFunctionName) {
                         if (Use_::TYPE_FUNCTION === $use_->type) {
-                            return $useStatement->name;
+                            return UseStmtManipulator::getOriginalName($useStatement);
                         }
 
                         continue;
@@ -138,14 +137,14 @@ final class UseStmtCollection implements IteratorAggregate
 
                     if ($isConstantName) {
                         if (Use_::TYPE_CONSTANT === $use_->type) {
-                            return $useStatement->name;
+                            return UseStmtManipulator::getOriginalName($useStatement);
                         }
 
                         continue;
                     }
 
                     // Match the alias
-                    return $useStatement->name;
+                    return UseStmtManipulator::getOriginalName($useStatement);
                 }
             }
         }

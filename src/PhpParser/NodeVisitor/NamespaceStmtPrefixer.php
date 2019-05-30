@@ -20,7 +20,6 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
-use function Humbug\PhpScoper\clone_node;
 
 /**
  * Prefixes the relevant namespaces.
