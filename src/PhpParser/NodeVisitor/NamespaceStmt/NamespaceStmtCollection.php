@@ -12,11 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Collection;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
 use ArrayIterator;
 use Countable;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceManipulator;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
 use PhpParser\Node;

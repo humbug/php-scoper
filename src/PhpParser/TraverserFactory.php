@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Whitelist;
@@ -45,12 +45,12 @@ class TraverserFactory
 
         $traverser->addVisitor(new NodeVisitor\ParentNodeAppender());
 
-        $traverser->addVisitor(new NodeVisitor\NamespaceStmtPrefixer($prefix, $whitelist, $namespaceStatements));
+        $traverser->addVisitor(new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer($prefix, $whitelist, $namespaceStatements));
 
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $this->reflector));
 
-        $traverser->addVisitor(new NodeVisitor\FunctionIdentifierRecorder($prefix, $nameResolver, $whitelist, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder($prefix, $nameResolver, $whitelist, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\ClassIdentifierRecorder($prefix, $nameResolver, $whitelist));
         $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $this->reflector));

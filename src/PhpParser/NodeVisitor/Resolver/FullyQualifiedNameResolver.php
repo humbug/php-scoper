@@ -15,10 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver;
 
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\UseStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NameStmtPrefixer;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;

@@ -86,46 +86,6 @@ function get_common_path(array $paths): string
     return $commonPath;
 }
 
-/**
- * In-house clone functions. Does a partial clone that should be enough to provide the immutability required in some
- * places for the scoper. It however does not guarantee a deep cloning as would be horribly slow for no good reasons.
- * A better alternative would be to find a way to push immutability upstream in PHP-Parser directly.
- *
- * @param Node $node
- *
- * @return Node
- */
-function clone_node(Node $node): Node
-{
-    $clone = deep_clone($node);
-
-    foreach ($node->getAttributes() as $key => $attribute) {
-        $clone->setAttribute($key, $attribute);
-    }
-
-    return $clone;
-}
-
-/**
- * @param mixed $node
- *
- * @return mixed
- *
- * @internal
- */
-function deep_clone($node)
-{
-    if (is_array($node)) {
-        return array_map(__FUNCTION__, $node);
-    }
-
-    if (null === $node || is_scalar($node)) {
-        return $node;
-    }
-
-    return unserialize(serialize($node));
-}
-
 function chain(iterable ...$iterables): Iterator
 {
     foreach ($iterables as $iterable) {

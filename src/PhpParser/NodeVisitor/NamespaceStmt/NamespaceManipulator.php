@@ -12,13 +12,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
-use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
-use function count;
 
 /**
  * @private

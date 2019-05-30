@@ -12,9 +12,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Collection\NamespaceStmtCollection;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Name;
