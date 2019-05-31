@@ -63,6 +63,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Grouped constants whitelisting](#grouped-constants-whitelisting)
     - [Composer](#composer-autoloader)
     - [Composer Plugins](#composer-plugins)
+    - [PSR-0 Partial support](#psr-0-partial-support)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
