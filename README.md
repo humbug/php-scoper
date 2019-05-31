@@ -822,6 +822,41 @@ This cannot be changed easily so for now when you are using an isolated version
  of Composer, you will need to use the `--no-plugins` option.
 
 
+### PSR-0 Partial support
+
+As of now, given the following directory structure:
+
+```
+src/
+  JsonMapper.php
+  JsonMapper/
+    Exception.php
+```
+
+with the following configuration:
+
+```json
+{
+  "autoload": {
+     "psr-0": {"JsonMapper": "src/"}
+  }
+}
+```
+
+The autoloading will not work. Indeed, PHP-Scoper attempts to support PSR-0 by
+transforming it to PSR-4, i.e. in the case above:
+
+```json
+{
+  "autoload": {
+     "psr-4": {"PhpScoperPrefix\\JsonMapper": "src/"}
+  }
+}
+```
+
+If this will work for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
+
+
 ## Contributing
 
 [Contribution Guide](CONTRIBUTING.md)
