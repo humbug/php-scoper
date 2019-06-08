@@ -1,5 +1,5 @@
 {
     "require": {
-        "nikic/iter": "^1.6"
+        "nikic/iter": "^2.0"
     }
 }
