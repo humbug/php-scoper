@@ -19,7 +19,7 @@ clean:
 
 update-root-version: ## Check the lastest GitHub release and update COMPOSER_ROOT_VERSION accordingly
 update-root-version:
-	rm .composer-root-version
+	rm .composer-root-version || true
 	$(MAKE) .composer-root-version
 
 
