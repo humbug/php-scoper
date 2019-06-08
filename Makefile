@@ -210,23 +210,22 @@ e2e_020: $(PHPSCOPER) fixtures/set020-infection/vendor clover.xml
 .PHONY: e2e_021
 e2e_021: ## Run end-to-end tests for the fixture set 021 — Composer
 e2e_021: $(PHPSCOPER) fixtures/set021-composer/vendor
-# TODO: https://github.com/humbug/box/issues/421
-#	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer \
-#		--output-dir=../../build/set021-composer \
-#		--force \
-#		--no-interaction \
-#		--stop-on-failure \
-#		--no-config
-#	composer --working-dir=build/set021-composer dump-autoload
-#
-#	php fixtures/set021-composer/vendor/composer/composer/bin/composer licenses \
-#		--no-plugins \
-#		> build/set021-composer/expected-output
-#	php build/set021-composer/vendor/composer/composer/bin/composer licenses \
-#		--no-plugins \
-#		> build/set021-composer/output
-#
-#	diff build/set021-composer/expected-output build/set021-composer/output
+	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer \
+		--output-dir=../../build/set021-composer \
+		--force \
+		--no-interaction \
+		--stop-on-failure \
+		--no-config
+	composer --working-dir=build/set021-composer dump-autoload
+
+	php fixtures/set021-composer/vendor/composer/composer/bin/composer licenses \
+		--no-plugins \
+		> build/set021-composer/expected-output
+	php build/set021-composer/vendor/composer/composer/bin/composer licenses \
+		--no-plugins \
+		> build/set021-composer/output
+
+	diff build/set021-composer/expected-output build/set021-composer/output
 
 .PHONY: e2e_022
 e2e_022: ## Run end-to-end tests for the fixture set 022 — Whitelist the project code with namespace whitelisting
@@ -269,17 +268,16 @@ e2e_024: $(PHPSCOPER) fixtures/set024/vendor
 .PHONY: e2e_025
 e2e_025: ## Run end-to-end tests for the fixture set 025 — Whitelisting a vendor function
 e2e_025: $(PHPSCOPER) fixtures/set025/vendor
-# TODO: https://github.com/nikic/PHP-Parser/issues/612
-#	$(PHPBIN) $(PHPSCOPER) add-prefix \
-#		--working-dir=fixtures/set025 \
-#		--output-dir=../../build/set025 \
-#		--force \
-#		--no-interaction \
-#		--stop-on-failure
-#	composer --working-dir=build/set025 dump-autoload
-#
-#	php build/set025/main.php > build/set025/output
-#	diff fixtures/set025/expected-output build/set025/output
+	$(PHPBIN) $(PHPSCOPER) add-prefix \
+		--working-dir=fixtures/set025 \
+		--output-dir=../../build/set025 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set025 dump-autoload
+
+	php build/set025/main.php > build/set025/output
+	diff fixtures/set025/expected-output build/set025/output
 
 .PHONY: e2e_026
 e2e_026: ## Run end-to-end tests for the fixture set 026 — Whitelisting classes and functions with pattern matching
