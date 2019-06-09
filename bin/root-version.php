@@ -48,7 +48,8 @@ BASH
             sprintf(
                 'No tag name could be found in: %s',
                 $lastReleaseEndpointContents
-            )
+            ),
+            100
         );
     }
 
