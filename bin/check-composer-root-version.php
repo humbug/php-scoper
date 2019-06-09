@@ -23,6 +23,12 @@ try {
         return;
     }
 
+    if (100 === $exception->getCode()) {
+        // This is the GitHub API playing tricks on us... I could not find a way to reliably fix it so it is just better
+        // to avoid bailing out because of it for now.
+        return;
+    }
+
     throw $exception;
 }
 
