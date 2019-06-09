@@ -36,6 +36,12 @@ function create_application(): Application
 
 function get_php_scoper_version(): string
 {
+    // Since PHP-Scoper relies on COMPOSER_ROOT_VERSION the version parsed by PackageVersions, we rely on Box
+    // placeholders in order to get the right version for the PHAR.
+    if (strpos(__FILE__, 'phar:') === 0) {
+        return '@git_version_placeholder@';
+    }
+
     $rawVersion = Versions::getVersion('humbug/php-scoper');
 
     [$prettyVersion, $commitHash] = explode('@', $rawVersion);
