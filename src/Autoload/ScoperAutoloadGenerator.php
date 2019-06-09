@@ -14,7 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
+use function explode;
 use Humbug\PhpScoper\Whitelist;
+use function implode;
 use PhpParser\Node\Name\FullyQualified;
 use function array_column;
 use function array_map;
@@ -102,16 +104,25 @@ PHP;
     private function createClassAliasStatements(array $whitelistedClasses, bool $hasNamespacedFunctions): array
     {
         $statements = array_map(
-            static function (string $prefixedClass): string {
+            static function (array $pair): string {
+                /**
+                 * @var string $originalClass
+                 * @var string $prefixedClass
+                 */
+                [$originalClass, $prefixedClass] = $pair;
+
                 return sprintf(
-                    'class_exists(\'%s\');',
+                    <<<'PHP'
+if (!class_exists('%s', false)) {
+    class_exists('%s');
+}
+PHP
+                    ,
+                    $originalClass,
                     $prefixedClass
                 );
             },
-            array_column(
-                $whitelistedClasses,
-                1
-            )
+            $whitelistedClasses
         );
 
         if ([] === $statements) {
@@ -119,9 +130,19 @@ PHP;
         }
 
         if ($hasNamespacedFunctions) {
+            $eol = $this->eol;
+
             $statements = array_map(
-                static function (string $statement): string {
-                    return str_repeat(' ', 4).$statement;
+                static function (string $statement) use ($eol): string {
+                    return implode(
+                        $eol,
+                        array_map(
+                            static function (string $statement): string {
+                                return str_repeat(' ', 4).$statement;
+                            },
+                            explode($eol, $statement)
+                        )
+                    );
                 },
                 $statements
             );
