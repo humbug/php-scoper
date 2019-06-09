@@ -14,14 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use function explode;
 use Humbug\PhpScoper\Whitelist;
-use function implode;
 use PhpParser\Node\Name\FullyQualified;
-use function array_column;
 use function array_map;
 use function array_unshift;
 use function chr;
+use function explode;
+use function implode;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
@@ -106,7 +105,7 @@ PHP;
         $statements = array_map(
             static function (array $pair): string {
                 /**
-                 * @var string $originalClass
+                 * @var string
                  * @var string $prefixedClass
                  */
                 [$originalClass, $prefixedClass] = $pair;

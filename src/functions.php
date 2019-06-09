@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use ErrorException;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ApplicationFactory;
 use Iterator;
