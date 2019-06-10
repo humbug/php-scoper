@@ -56,6 +56,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 - [Recommendations](#recommendations)
 - [Limitations](#limitations)
     - [Dynamic symbols](#dynamic-symbols)
+    - [Date symbols](#date-symbols)
     - [Heredoc values](#heredoc-values)
     - [Callables](#callables)
     - [String values](#string-values)
@@ -646,6 +647,19 @@ possible such as:
 - concatenated strings strings, e.g.:
     - `$class = 'Symfony\\Component\\'.$name;`
     - `const X = 'Symfony\\Component' . '\\Yaml\\Ya_1';`
+
+
+### Date symbols
+
+You code may be using a convention for the date string formats which could be mistaken for classes, e.g.:
+
+```php
+const ISO8601_BASIC = 'Ymd\THis\Z';
+``` 
+
+In this scenario, PHP-Scoper has no way to tell that string `'Ymd\THis\Z'` does not refer to a symbol but is
+a date format. In this case, you will have to rely on patchers. Note however that PHP-Scoper will be able to
+handle some cases such as, see the [date-spec](specs/misc/date.php).
 
 
 ### Heredoc values

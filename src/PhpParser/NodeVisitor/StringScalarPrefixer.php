@@ -23,6 +23,9 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Param;
@@ -38,6 +41,7 @@ use function in_array;
 use function is_string;
 use function preg_match;
 use function strpos;
+use function strtolower;
 
 /**
  * Prefixes the string scalar values when appropriate.
@@ -66,6 +70,11 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'is_a',
         'is_subclass_of',
         'trait_exists',
+    ];
+
+    private const DATETIME_CLASSES = [
+        'datetime',
+        'datetimeimmutable',
     ];
 
     private $prefix;
@@ -138,26 +147,52 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function prefixStringArg(String_ $string, Arg $parentNode): String_
     {
-        $functionNode = ParentNodeAppender::getParent($parentNode);
+        $callerNode = ParentNodeAppender::getParent($parentNode);
 
-        if (false === ($functionNode instanceof FuncCall)) {
-            // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
-            return $this->belongsToTheGlobalNamespace($string)
-                ? $string
-                : $this->createPrefixedString($string)
-            ;
+        if ($callerNode instanceof New_) {
+            return $this->prefixNewStringArg($string, $callerNode);
         }
-        /** @var FuncCall $functionNode */
 
+        if ($callerNode instanceof FuncCall) {
+            return $this->prefixFunctionStringArg($string, $callerNode);
+        }
+
+        if ($callerNode instanceof StaticCall) {
+            return $this->prefixStaticCallStringArg($string, $callerNode);
+        }
+
+        // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular
+        // string
+        return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
+    }
+
+    private function prefixNewStringArg(String_ $string, New_ $newNode): String_
+    {
+        $class = $newNode->class;
+
+        if (false === ($class instanceof FullyQualified)) {
+            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
+        }
+
+        if (in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
+            return $string;
+        }
+
+        return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
+    }
+
+    private function prefixFunctionStringArg(String_ $string, FuncCall $functionNode): String_
+    {
         // In the case of a function call, we allow to prefix strings which could be classes belonging to the global
         // namespace in some cases
         $functionName = $functionNode->name instanceof Name ? (string) $functionNode->name : null;
 
+        if (in_array($functionName, ['date_create', 'date', 'gmdate', 'date_create_from_format'], true)) {
+            return $string;
+        }
+
         if (false === in_array($functionName, self::SPECIAL_FUNCTION_NAMES, true)) {
-            return $this->belongsToTheGlobalNamespace($string)
-                ? $string
-                : $this->createPrefixedString($string)
-            ;
+            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
         if ('function_exists' === $functionName) {
@@ -191,6 +226,27 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             ? $string
             : $this->createPrefixedString($string)
         ;
+    }
+
+    private function prefixStaticCallStringArg(String_ $string, StaticCall $callNode): String_
+    {
+        $class = $callNode->class;
+
+        if (false === ($class instanceof FullyQualified)) {
+            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
+        }
+
+        if (false === in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
+            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
+        }
+
+        if ($callNode->name instanceof Identifier
+            && 'createFromFormat' === $callNode->name->toString()
+        ) {
+            return $string;
+        }
+
+        return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
     }
 
     private function prefixArrayItemString(String_ $string, ArrayItem $parentNode): String_
@@ -267,6 +323,15 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         return $parent === $argParent->args[0];
+    }
+
+    private function createPrefixedStringIfDoesNotBelongToGlobalNamespace(String_ $string): String_
+    {
+        // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
+        return $this->belongsToTheGlobalNamespace($string)
+            ? $string
+            : $this->createPrefixedString($string)
+        ;
     }
 
     private function createPrefixedString(String_ $previous): String_
