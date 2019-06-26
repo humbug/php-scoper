@@ -1,5 +1,0 @@
-
-Fatal error: Uncaught Error: Call to undefined function pcov\start() in /Users/tfidry/Project/Humbug/php-scoper/build/set032-extension-symbol/main.php:6
-Stack trace:
-#0 {main}
-  thrown in /Users/tfidry/Project/Humbug/php-scoper/build/set032-extension-symbol/main.php on line 6
