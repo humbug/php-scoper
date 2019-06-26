@@ -53,10 +53,10 @@ return [
     'files-whitelist' => $jetBrainStubs,
     'patchers' => [
         //
-        // BetterReflection stub: leave the stub map unchanged
+        // PHPStorm stub map: leave it unchanged
         //
         static function (string $filePath, string $prefix, string $contents): string {
-            if ('vendor/roave/better-reflection/src/SourceLocator/SourceStubber/PhpStormStubsMap.php' !== $filePath) {
+            if ('vendor/jetbrains/phpstorm-stubs/PhpStormStubsMap.php' !== $filePath) {
                 return $contents;
             }
 
@@ -64,13 +64,13 @@ return [
                 [
                     $prefix.'\\\\',
                     $prefix.'\\',
-                    'namespace Roave\BetterReflection\SourceLocator\SourceStubber;',
+                    'namespace JetBrains\PHPStormStub;',
                 ],
                 [
                     '',
                     '',
                     sprintf(
-                        'namespace %s\Roave\BetterReflection\SourceLocator\SourceStubber;',
+                        'namespace %s\JetBrains\PHPStormStub;',
                         $prefix
                     ),
                 ],
