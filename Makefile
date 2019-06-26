@@ -366,18 +366,15 @@ e2e_030: $(PHPSCOPER) fixtures/set030/vendor
 
 .PHONY: e2e_031
 e2e_031: ## Run end-to-end tests for the fixture set 031 — unloaded extension symbol
-e2e_031: $(PHPSCOPER) fixtures/set031-extension-symbol/expected-output
-	php $(PHPSCOPER) add-prefix \
+e2e_031: $(PHPSCOPER)
+	php bin/php-scoper add-prefix \
 		--working-dir=fixtures/set031-extension-symbol \
 		--output-dir=../../build/set031-extension-symbol \
-		--no-config \
 		--force \
 		--no-interaction \
 		--stop-on-failure
 
-	php build/set031-extension-symbol/main.php > build/set031-extension-symbol/output || true
-
-	diff fixtures/set031-extension-symbol/expected-output build/set031-extension-symbol/output
+	diff fixtures/set031-extension-symbol/expected-main.php build/set031-extension-symbol/main.php
 
 .PHONY: tb
 BLACKFIRE=blackfire
@@ -541,10 +538,6 @@ fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 
 bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json.dist
 	$(BOX) compile
-	touch $@
-
-fixtures/set031-extension-symbol/expected-output: fixtures/set031-extension-symbol/expected-output.dist fixtures/set031-extension-symbol/dump-expected-output.php
-	php fixtures/set031-extension-symbol/dump-expected-output.php
 	touch $@
 
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
