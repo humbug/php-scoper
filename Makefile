@@ -73,7 +73,7 @@ tm: clover.xml
 
 .PHONY: e2e
 e2e:	 ## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -363,6 +363,18 @@ e2e_030: $(PHPSCOPER) fixtures/set030/vendor
 	php build/set030/main.php > build/set030/output
 
 	diff fixtures/set030/expected-output build/set030/output
+
+.PHONY: e2e_031
+e2e_031: ## Run end-to-end tests for the fixture set 031 — unloaded extension symbol
+e2e_031: $(PHPSCOPER)
+	php bin/php-scoper add-prefix \
+		--working-dir=fixtures/set031-extension-symbol \
+		--output-dir=../../build/set031-extension-symbol \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	diff fixtures/set031-extension-symbol/expected-main.php build/set031-extension-symbol/main.php
 
 .PHONY: tb
 BLACKFIRE=blackfire
