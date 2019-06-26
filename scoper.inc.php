@@ -56,26 +56,45 @@ return [
         // BetterReflection stub: leave the stub map unchanged
         //
         static function (string $filePath, string $prefix, string $contents): string {
-            if ('vendor/roave/better-reflection/src/SourceLocator/SourceStubber/PhpStormStubsMap.php' === $filePath) {
-                $contents = str_replace(
-                    [
-                        $prefix.'\\\\',
-                        $prefix.'\\',
-                        'namespace Roave\BetterReflection\SourceLocator\SourceStubber;',
-                    ],
-                    [
-                        '',
-                        '',
-                        sprintf(
-                            'namespace %s\Roave\BetterReflection\SourceLocator\SourceStubber;',
-                            $prefix
-                        ),
-                    ],
-                    $contents
-                );
+            if ('vendor/roave/better-reflection/src/SourceLocator/SourceStubber/PhpStormStubsMap.php' !== $filePath) {
+                return $contents;
             }
 
-            return $contents;
+            return str_replace(
+                [
+                    $prefix.'\\\\',
+                    $prefix.'\\',
+                    'namespace Roave\BetterReflection\SourceLocator\SourceStubber;',
+                ],
+                [
+                    '',
+                    '',
+                    sprintf(
+                        'namespace %s\Roave\BetterReflection\SourceLocator\SourceStubber;',
+                        $prefix
+                    ),
+                ],
+                $contents
+            );
+        },
+        //
+        // Reflector: leave the registered internal symbols unchanged
+        //
+        static function (string $filePath, string $prefix, string $contents): string {
+            if ('src/Reflector.php' !== $filePath) {
+                return $contents;
+            }
+
+            $originalContents = file_get_contents(__DIR__.'/src/Reflector.php');
+
+            $classPosition = strpos($originalContents, 'final class Reflector');
+            $prefixedClassPosition = strpos($contents, 'final class Reflector');
+
+            return sprintf(
+                '%s%s',
+                substr($contents, 0, $prefixedClassPosition),
+                substr($originalContents, $classPosition)
+            );
         },
     ],
 ];

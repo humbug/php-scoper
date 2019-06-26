@@ -1,0 +1,5 @@
+
+Fatal error: Uncaught Error: Call to undefined function pcov\start() in __PATH_TO_PROJECT__/build/set032-extension-symbol/main.php:6
+Stack trace:
+#0 {main}
+  thrown in __PATH_TO_PROJECT__/build/set032-extension-symbol/main.php on line 6
