@@ -543,7 +543,7 @@ bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json.dist
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
 clover.xml: src
 	$(COVERS_VALIDATOR)
-	phpdbg -qrr -d zend.enable_gc=0 $(PHPUNIT) \
+	php -d zend.enable_gc=0 $(PHPUNIT) \
 		--coverage-html=dist/coverage \
 		--coverage-text \
 		--coverage-clover=clover.xml \
