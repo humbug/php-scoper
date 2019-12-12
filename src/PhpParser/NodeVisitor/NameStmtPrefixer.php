@@ -35,6 +35,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitorAbstract;
 use function in_array;
 
@@ -114,6 +115,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof Interface_
                 || $parentNode instanceof New_
                 || $parentNode instanceof Param
+                || $parentNode instanceof Property
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof StaticPropertyFetch
             )
