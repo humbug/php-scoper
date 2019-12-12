@@ -22,6 +22,10 @@ before_install:
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - phpenv config-rm xdebug.ini || true
   - source .composer-root-version
+  - |
+      if [ "$COVERAGE" == "true" ]; then
+        pecl install pcov;
+      fi
 
 install:
   - composer install --no-interaction --no-progress --no-suggest --prefer-dist $COMPOSER_FLAGS
