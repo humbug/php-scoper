@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/JetBrains/phpstorm-stubs.git",
-                "reference": "883b6facd78e01c0743b554af86fa590c2573f40"
+                "reference": "8b7d7955f4046c795883b1c34ce173401bdea570"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JetBrains/phpstorm-stubs/zipball/883b6facd78e01c0743b554af86fa590c2573f40",
-                "reference": "883b6facd78e01c0743b554af86fa590c2573f40",
+                "url": "https://api.github.com/repos/JetBrains/phpstorm-stubs/zipball/8b7d7955f4046c795883b1c34ce173401bdea570",
+                "reference": "8b7d7955f4046c795883b1c34ce173401bdea570",
                 "shasum": ""
             },
             "require-dev": {
@@ -48,7 +48,7 @@
                 "stubs",
                 "type"
             ],
-            "time": "2019-12-05T16:56:26+00:00"
+            "time": "2019-12-09T18:03:16+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -4303,16 +4303,16 @@
         },
         {
             "name": "ulrichsg/getopt-php",
-            "version": "3.2.2",
+            "version": "v3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/getopt-php/getopt-php.git",
-                "reference": "9df490db25bd192d074f5de4210e232a8ddbeda0"
+                "reference": "373c478d4251a6ad2d42585ab51d58e950713c03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/getopt-php/getopt-php/zipball/9df490db25bd192d074f5de4210e232a8ddbeda0",
-                "reference": "9df490db25bd192d074f5de4210e232a8ddbeda0",
+                "url": "https://api.github.com/repos/getopt-php/getopt-php/zipball/373c478d4251a6ad2d42585ab51d58e950713c03",
+                "reference": "373c478d4251a6ad2d42585ab51d58e950713c03",
                 "shasum": ""
             },
             "require": {
@@ -4343,9 +4343,9 @@
                     "email": "thflori@gmail.com"
                 }
             ],
-            "description": "Command line arguments parser for PHP 5.4 - 7.1",
+            "description": "Command line arguments parser for PHP 5.4 - 7.3",
             "homepage": "http://getopt-php.github.io/getopt-php",
-            "time": "2019-01-22T08:01:50+00:00"
+            "time": "2019-11-06T06:20:03+00:00"
         },
         {
             "name": "webmozart/assert",
