@@ -20,6 +20,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function Humbug\PhpScoper\create_application;
+use function str_replace;
 
 /**
  * @coversNothing
@@ -121,9 +122,6 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
  0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
- 1/4 [▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░]  25%
- 2/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░]  50%
- 3/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  75%
  4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
  [OK] Successfully prefixed 4 files.
@@ -134,6 +132,21 @@ PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 EOF;
 
         $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
+
+        // Remove the intermediary states of the progress bar as it might
+        // change depending of the speed of the machine
+        $actual = str_replace(
+            [
+                '
+ 1/4 [▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░]  25%',
+                '
+ 2/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░]  50%',
+                '
+ 3/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  75%',
+            ],
+            ['', '', ''],
+            $actual
+        );
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
