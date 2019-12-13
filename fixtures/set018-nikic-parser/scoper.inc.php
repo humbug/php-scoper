@@ -16,7 +16,7 @@ use Isolated\Symfony\Component\Finder\Finder;
 
 return [
     'patchers' => [
-        function (string $filePath, string $prefix, string $contents): string {
+        static function (string $filePath, string $prefix, string $contents): string {
             //
             // PHP-Parser patch
             //
@@ -32,7 +32,7 @@ return [
 
             return $contents;
         },
-        function (string $filePath, string $prefix, string $contents): string {
+        static function (string $filePath, string $prefix, string $contents): string {
             $finderClass = sprintf('\%s\%s', $prefix, Finder::class);
 
             return str_replace($finderClass, '\\'.Finder::class, $contents);
