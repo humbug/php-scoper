@@ -122,13 +122,11 @@ class ScoperLogger
         }
 
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
-            $previous = $exception->getPrevious();
-
             $this->io->writeln(
                 sprintf(
                     "\t".'%s: %s',
                     $exception->getMessage(),
-                    null === $previous ? '' : $previous->getMessage()
+                    (string) $exception->getPrevious()
                 )
             );
         }
