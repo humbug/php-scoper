@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\Node;
 
 use InvalidArgumentException;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 
 final class FullyQualifiedFactory
 {
     /**
-     * @param string|string[]|self|null $name1
-     * @param string|string[]|self|null $name2
+     * @param string|string[]|Name|null $name1
+     * @param string|string[]|Name|null $name2
      */
     public static function concat($name1, $name2, array $attributes = []): FullyQualified {
         if (null === $name1 && null === $name2) {

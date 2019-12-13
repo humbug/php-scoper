@@ -35,7 +35,7 @@ cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
 PHPSTAN=vendor-bin/phpstan/vendor/bin/phpstan
 phpstan: ## Runs PHPStan
 phpstan: $(PHPSTAN)
-	$(PHPNOGC) $(PHPSTAN) analyze src -l6
+	$(PHPNOGC) $(PHPSTAN) analyze src --level max
 
 .PHONY: build
 build:	 ## Build the PHAR

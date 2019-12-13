@@ -11,8 +11,8 @@ use PhpParser\Node\Name\FullyQualified;
 final class NameFactory
 {
     /**
-     * @param string|string[]|self|null $name1
-     * @param string|string[]|self|null $name2
+     * @param string|string[]|Name|null $name1
+     * @param string|string[]|Name|null $name2
      */
     public static function concat($name1, $name2, array $attributes = []): Name {
         if (null === $name1 && null === $name2) {

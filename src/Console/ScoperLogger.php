@@ -122,30 +122,13 @@ class ScoperLogger
         }
 
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+            $previous = $exception->getPrevious();
+
             $this->io->writeln(
                 sprintf(
                     "\t".'%s: %s',
                     $exception->getMessage(),
-                    $exception->getPrevious()->getMessage()
-                )
-            );
-        }
-
-        $this->progressBar->advance();
-    }
-
-    /**
-     * Output scoping failure message.
-     *
-     * @param string $path
-     */
-    public function outputFail(string $path): void
-    {
-        if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $this->io->writeln(
-                sprintf(
-                    ' * [<error>FA</error>] %s',
-                    $path
+                    null === $previous ? '' : $previous->getMessage()
                 )
             );
         }
