@@ -126,7 +126,7 @@ class ScoperLogger
                 sprintf(
                     "\t".'%s: %s',
                     $exception->getMessage(),
-                    $exception->getPrevious()
+                    $exception->getPrevious()->getMessage()
                 )
             );
         }

@@ -57,7 +57,7 @@ function get_common_path(array $paths): string
         return '';
     }
 
-    $pathRef = array_pop($paths);
+    $pathRef = (string) array_pop($paths);
 
     if (1 === $nbPaths) {
         $commonPath = $pathRef;
@@ -77,6 +77,7 @@ function get_common_path(array $paths): string
 
     foreach (['/', '\\'] as $separator) {
         $lastSeparatorPos = strrpos($commonPath, $separator);
+
         if (false !== $lastSeparatorPos) {
             $commonPath = rtrim(substr($commonPath, 0, $lastSeparatorPos), $separator);
 

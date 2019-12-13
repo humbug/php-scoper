@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\PhpParser\Node\NameFactory;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;
@@ -152,7 +153,7 @@ final class NodeTraverser extends PhpParserNodeTraverser
         return array_map(
             static function (UseUse $use) use ($node): Use_ {
                 $newUse = new UseUse(
-                    Name::concat($node->prefix, $use->name, $use->name->getAttributes()),
+                    NameFactory::concat($node->prefix, $use->name, $use->name->getAttributes()),
                     $use->alias,
                     $use->type,
                     $use->getAttributes()

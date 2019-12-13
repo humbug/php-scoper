@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
+use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -104,6 +105,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         if (false === ($stmt instanceof Class_ || $stmt instanceof Interface_)) {
             return $stmts;
         }
+
         /** @var Class_|Interface_ $stmt */
         if (null === $stmt->name) {
             return $stmts;
@@ -130,7 +132,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     private function createAliasStmt(FullyQualified $originalName, Node $stmt): Expression
     {
         $call = new ClassAliasFuncCall(
-            FullyQualified::concat($this->prefix, $originalName),
+            FullyQualifiedFactory::concat($this->prefix, $originalName),
             $originalName,
             $stmt->getAttributes()
         );

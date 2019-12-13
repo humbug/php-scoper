@@ -173,7 +173,7 @@ EOF
 
                 if ($hasNamespacedFunctions) {
                     $namespace = $original->slice(0, -1);
-                    $functionName = null === $namespace ? $original->toString() : $original->slice(1)->toString();
+                    $functionName = null === $namespace ? $original->toString() : (string) $original->slice(1);
 
                     return sprintf(
                         <<<'PHP'
