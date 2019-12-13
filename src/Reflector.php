@@ -239,6 +239,10 @@ final class Reflector
         'pcov\clear',
         'pcov\waiting',
         'pcov\memory',
+
+        // PHP 7.4
+        'mb_str_split',
+        'password_algos',
     ];
 
     private const MISSING_CONSTANTS = [

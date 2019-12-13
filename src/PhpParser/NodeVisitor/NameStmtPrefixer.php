@@ -17,7 +17,9 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
+use function in_array;
 use PhpParser\Node;
+use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -34,8 +36,8 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
+use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitorAbstract;
-use function in_array;
 
 /**
  * Prefixes names when appropriate.
@@ -101,19 +103,21 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         if (false === (
-                $parentNode instanceof ConstFetch
-                || $parentNode instanceof ClassConstFetch
-                || $parentNode instanceof StaticPropertyFetch
-                || $parentNode instanceof Param
-                || $parentNode instanceof FuncCall
-                || $parentNode instanceof StaticCall
-                || $parentNode instanceof Function_
-                || $parentNode instanceof ClassMethod
-                || $parentNode instanceof New_
-                || $parentNode instanceof Class_
-                || $parentNode instanceof Interface_
+                $parentNode instanceof ArrowFunction
                 || $parentNode instanceof Catch_
+                || $parentNode instanceof ConstFetch
+                || $parentNode instanceof Class_
+                || $parentNode instanceof ClassConstFetch
+                || $parentNode instanceof ClassMethod
+                || $parentNode instanceof FuncCall
+                || $parentNode instanceof Function_
                 || $parentNode instanceof Instanceof_
+                || $parentNode instanceof Interface_
+                || $parentNode instanceof New_
+                || $parentNode instanceof Param
+                || $parentNode instanceof Property
+                || $parentNode instanceof StaticCall
+                || $parentNode instanceof StaticPropertyFetch
             )
         ) {
             return $name;
@@ -121,14 +125,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         if (
             (
-                $parentNode instanceof FuncCall
-                || $parentNode instanceof StaticCall
+                $parentNode instanceof Catch_
                 || $parentNode instanceof ClassConstFetch
-                || $parentNode instanceof StaticPropertyFetch
                 || $parentNode instanceof New_
-                || $parentNode instanceof Param
-                || $parentNode instanceof Catch_
+                || $parentNode instanceof FuncCall
                 || $parentNode instanceof Instanceof_
+                || $parentNode instanceof Param
+                || $parentNode instanceof StaticCall
+                || $parentNode instanceof StaticPropertyFetch
             )
             && in_array((string) $name, self::PHP_FUNCTION_KEYWORDS, true)
         ) {
