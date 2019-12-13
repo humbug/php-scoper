@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Countable;
-use InvalidArgumentException;
-use PhpParser\Node\Name\FullyQualified;
 use function array_flip;
 use function array_key_exists;
 use function array_map;
@@ -24,8 +21,11 @@ use function array_pop;
 use function array_unique;
 use function array_values;
 use function count;
+use Countable;
 use function explode;
 use function implode;
+use InvalidArgumentException;
+use PhpParser\Node\Name\FullyQualified;
 use function preg_match;
 use function sprintf;
 use function str_replace;
@@ -67,12 +67,7 @@ final class Whitelist implements Countable
             }
 
             if ('' === trim($element)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Invalid whitelist element "%s": cannot accept an empty string',
-                        $element
-                    )
-                );
+                throw new InvalidArgumentException(sprintf('Invalid whitelist element "%s": cannot accept an empty string', $element));
             }
 
             $original[] = $element;
@@ -117,12 +112,7 @@ final class Whitelist implements Countable
     private static function assertValidPattern(string $element): void
     {
         if (1 !== preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid whitelist pattern "%s".',
-                    $element
-                )
-            );
+            throw new InvalidArgumentException(sprintf('Invalid whitelist pattern "%s".', $element));
         }
     }
 

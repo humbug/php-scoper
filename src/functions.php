@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use function array_pop;
+use function count;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ApplicationFactory;
 use Iterator;
 use PackageVersions\Versions;
-use function array_pop;
-use function count;
 use function str_split;
 use function strrpos;
 use function substr;

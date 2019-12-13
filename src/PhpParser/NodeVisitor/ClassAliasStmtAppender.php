@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use function array_reduce;
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
@@ -26,7 +27,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
-use function array_reduce;
 
 /**
  * Appends a `class_alias` to the whitelisted classes.

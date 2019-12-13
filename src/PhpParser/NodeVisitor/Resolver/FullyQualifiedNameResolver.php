@@ -20,6 +20,8 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NameStmtPrefixer;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
+use function in_array;
+use function ltrim;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -27,8 +29,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use function in_array;
-use function ltrim;
 
 /**
  * Attempts to resolve the node name into a fully qualified node. Returns a valid (non fully-qualified) name node on

@@ -16,8 +16,8 @@ namespace Humbug\PhpScoper;
 
 use ArrayIterator;
 use Generator;
-use PHPUnit\Framework\TestCase;
 use function iterator_to_array;
+use PHPUnit\Framework\TestCase;
 
 class FunctionsTest extends TestCase
 {

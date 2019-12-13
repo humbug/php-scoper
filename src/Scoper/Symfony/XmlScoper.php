@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
+use function func_get_args;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
-use function func_get_args;
 use function preg_match_all;
 use function str_replace;
 use function strlen;

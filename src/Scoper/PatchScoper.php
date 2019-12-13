@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
 use function array_reduce;
 use function func_get_args;
+use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
 
 final class PatchScoper implements Scoper
 {

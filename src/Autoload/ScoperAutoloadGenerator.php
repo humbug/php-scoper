@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Humbug\PhpScoper\Whitelist;
-use PhpParser\Node\Name\FullyQualified;
 use function array_map;
 use function array_unshift;
 use function chr;
 use function explode;
+use Humbug\PhpScoper\Whitelist;
 use function implode;
+use PhpParser\Node\Name\FullyQualified;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
