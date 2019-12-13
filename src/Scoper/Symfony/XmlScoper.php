@@ -55,7 +55,7 @@ final class XmlScoper implements Scoper
 
     private function scopeClasses(string $contents, string $prefix, Whitelist $whitelist): string
     {
-        if (1 > preg_match_all('/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?){1})):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u', $contents, $matches)) {
+        if (1 > preg_match_all('/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\(?:\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u', $contents, $matches)) {
             return $contents;
         }
 
@@ -80,7 +80,7 @@ final class XmlScoper implements Scoper
 
     private function scopeNamespaces(string $contents, string $prefix, Whitelist $whitelist): string
     {
-        if (1 > preg_match_all('/\<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?){1})))"/', $contents, $matches)) {
+        if (1 > preg_match_all('/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\(?:\\)?))))"/', $contents, $matches)) {
             return $contents;
         }
 

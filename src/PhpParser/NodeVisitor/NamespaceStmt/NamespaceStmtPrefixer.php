@@ -80,6 +80,8 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
             return false;
         }
 
-        return null === $namespace->name || (null !== $namespace->name && $this->prefix !== $namespace->name->getFirst());
+        $nameFirstPart = null === $namespace->name ? '' : $namespace->name->getFirst();
+
+        return $this->prefix !== $nameFirstPart;
     }
 }

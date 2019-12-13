@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\PhpParser\Node\NameFactory;
 use PhpParser\Node;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;

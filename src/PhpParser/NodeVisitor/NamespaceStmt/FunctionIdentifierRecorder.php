@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
+use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
@@ -76,7 +77,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         ) {
             $this->whitelist->recordWhitelistedFunction(
                 $resolvedName,
-                FullyQualified::concat($this->prefix, $resolvedName)
+                FullyQualifiedFactory::concat($this->prefix, $resolvedName)
             );
         }
 

@@ -6,7 +6,6 @@ namespace Humbug\PhpScoper\PhpParser\Node;
 
 use InvalidArgumentException;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
 
 final class NameFactory
 {

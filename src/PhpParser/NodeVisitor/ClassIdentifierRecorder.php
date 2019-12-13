@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -76,7 +77,7 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         ) {
             $this->whitelist->recordWhitelistedClass(
                 $resolvedName,
-                FullyQualified::concat($this->prefix, $resolvedName)
+                FullyQualifiedFactory::concat($this->prefix, $resolvedName)
             );
         }
 

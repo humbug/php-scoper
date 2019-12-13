@@ -182,9 +182,8 @@ final class Whitelist implements Countable
             }
 
             $nameParts = explode('\\', $name);
-            $namespaceParts = explode('\\', $namespace);
 
-            foreach ($namespaceParts as $index => $namespacePart) {
+            foreach (explode('\\', $namespace) as $index => $namespacePart) {
                 if ($nameParts[$index] !== $namespacePart) {
                     return false;
                 }
