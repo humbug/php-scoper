@@ -1,0 +1,8 @@
+parameters:
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    excludes_analyse:
+        - src/Console/Command/AddPrefixCommand.php
+    ignoreErrors:
+        - '#has no typehint specified#'
+        - '#with no typehint specified#'

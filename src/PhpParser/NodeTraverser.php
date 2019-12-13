@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\PhpParser\Node\NameFactory;
 use PhpParser\Node;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
@@ -93,6 +94,7 @@ final class NodeTraverser extends PhpParserNodeTraverser
             }
 
             $firstRealStatementIndex = $i;
+            /** @var Stmt[] $realStatements */
             $realStatements = array_slice($nodes, $i);
 
             break;
