@@ -542,7 +542,7 @@ clover.xml: src
 		--coverage-text \
 		--coverage-clover=clover.xml \
 		--coverage-xml=dist/infection-coverage/coverage-xml \
-		--log-junit=dist/infection-coverage/phpunit.junit.xml
+		--log-junit=dist/infection-coverage/junit.xml
 
 $(CODE_SNIFFER): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install

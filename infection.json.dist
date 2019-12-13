@@ -9,6 +9,7 @@
         "text": "build\/infection-log.txt"
     },
     "mutators": {
+        "@default": true,
         "PublicVisibility": false
     }
 }

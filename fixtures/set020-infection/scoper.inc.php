@@ -16,19 +16,19 @@ use Isolated\Symfony\Component\Finder\Finder;
 
 return [
     'patchers' => [
-        function (string $filePath, string $prefix, string $contents): string {
-            //
-            // Infection IncludeInterceptor patch
-            //
-            if ($filePath === realpath(__DIR__.'/vendor/infection/infection/src/TestFramework/Config/MutationConfigBuilder.php')) {
-                return str_replace(
-                    'use Infection\\\\StreamWrapper\\\\IncludeInterceptor;',
-                    'use '.$prefix.'\\\\Infection\\\\StreamWrapper\\\\IncludeInterceptor;',
-                    $contents
-                );
-            }
-
-            return $contents;
-        },
+//        static function (string $filePath, string $prefix, string $contents): string {
+//            //
+//            // Infection IncludeInterceptor patch
+//            //
+//            if ($filePath === realpath(__DIR__.'/vendor/infection/infection/src/TestFramework/Config/MutationConfigBuilder.php')) {
+//                return str_replace(
+//                    'use Infection\\\\StreamWrapper\\\\IncludeInterceptor;',
+//                    'use '.$prefix.'\\\\Infection\\\\StreamWrapper\\\\IncludeInterceptor;',
+//                    $contents
+//                );
+//            }
+//
+//            return $contents;
+//        },
     ],
 ];
