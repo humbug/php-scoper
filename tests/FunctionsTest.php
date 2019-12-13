@@ -14,17 +14,44 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use ArrayIterator;
 use Generator;
 use PHPUnit\Framework\TestCase;
+use function iterator_to_array;
 
 class FunctionsTest extends TestCase
 {
+    public function test_it_can_create_an_application(): void
+    {
+        $app1 = create_application();
+        $app2 = create_application();
+
+        $this->assertNotSame($app1, $app2);
+    }
+
+    public function test_it_gets_the_PHP_Scoper_version(): void
+    {
+        $version = get_php_scoper_version();
+
+        $this->assertStringContainsString('@', $version);
+    }
+
     /**
      * @dataProvider providePaths
      */
     public function test_get_the_common_path(array $paths, string $expected): void
     {
         $actual = get_common_path($paths);
+
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @dataProvider provideGenerators
+     */
+    public function test_it_can_chain_iterators(array $iterators, array $expected): void
+    {
+        $actual = iterator_to_array(chain(...$iterators), true);
 
         $this->assertSame($expected, $actual);
     }
@@ -105,6 +132,60 @@ class FunctionsTest extends TestCase
                 'D:\\another\\path\\to\\another-file',
             ],
             '',
+        ];
+    }
+
+    public function provideGenerators(): Generator
+    {
+        yield [
+            [],
+            [],
+        ];
+
+        yield [
+            [
+                ['a' => 'alpha', 'b' => 'beta', 2 => 'two'],
+                [0, 1, 2],
+            ],
+            [
+                'a' => 'alpha',
+                'b' => 'beta',
+                2 => 2,
+                0 => 0,
+                1 => 1,
+            ],
+        ];
+
+        yield [
+            [
+                new ArrayIterator(['a' => 'alpha', 'b' => 'beta', 2 => 'two']),
+                new ArrayIterator([0, 1, 2]),
+            ],
+            [
+                'a' => 'alpha',
+                'b' => 'beta',
+                2 => 2,
+                0 => 0,
+                1 => 1,
+            ],
+        ];
+
+        yield [
+            [
+                (static function (): Generator {
+                    yield from ['a' => 'alpha', 'b' => 'beta', 2 => 'two'];
+                })(),
+                (static function (): Generator {
+                    yield from [0, 1, 2];
+                })(),
+            ],
+            [
+                'a' => 'alpha',
+                'b' => 'beta',
+                2 => 2,
+                0 => 0,
+                1 => 1,
+            ],
         ];
     }
 }
