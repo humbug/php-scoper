@@ -14,8 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use function array_key_exists;
+use function array_shift;
+use function array_values;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
+use function implode;
+use function in_array;
+use function is_string;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -33,12 +39,6 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitorAbstract;
-use function array_key_exists;
-use function array_shift;
-use function array_values;
-use function implode;
-use function in_array;
-use function is_string;
 use function preg_match;
 use function strpos;
 use function strtolower;
