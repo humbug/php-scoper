@@ -30,7 +30,7 @@ final class SymfonyPatcher
             return $contents;
         }
 
-        return preg_replace(
+        return (string) preg_replace(
             '/use (Symfony(\\\\(?:\\\\)?)Component\\\\.+?;)/',
             sprintf(
                 'use %s$2$1',

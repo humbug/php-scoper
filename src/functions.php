@@ -14,17 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use function array_pop;
+use function count;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ApplicationFactory;
 use Iterator;
 use PackageVersions\Versions;
-use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
-use function array_pop;
-use function count;
-use function is_object;
-use function is_string;
-use function method_exists;
 use function str_split;
 use function strrpos;
 use function substr;
@@ -57,25 +52,32 @@ function get_php_scoper_version(): string
 function get_common_path(array $paths): string
 {
     $nbPaths = count($paths);
+
     if (0 === $nbPaths) {
         return '';
     }
-    $pathRef = array_pop($paths);
+
+    $pathRef = (string) array_pop($paths);
+
     if (1 === $nbPaths) {
         $commonPath = $pathRef;
     } else {
         $commonPath = '';
+
         foreach (str_split($pathRef) as $pos => $char) {
             foreach ($paths as $path) {
                 if (!isset($path[$pos]) || $path[$pos] !== $char) {
                     break 2;
                 }
             }
+
             $commonPath .= $char;
         }
     }
+
     foreach (['/', '\\'] as $separator) {
         $lastSeparatorPos = strrpos($commonPath, $separator);
+
         if (false !== $lastSeparatorPos) {
             $commonPath = rtrim(substr($commonPath, 0, $lastSeparatorPos), $separator);
 
@@ -89,19 +91,6 @@ function get_common_path(array $paths): string
 function chain(iterable ...$iterables): Iterator
 {
     foreach ($iterables as $iterable) {
-        foreach ($iterable as $key => $value) {
-            yield $key => $value;
-        }
+        yield from $iterable;
     }
-}
-
-function is_stringable($value): bool
-{
-    return
-        null === $value
-        || is_string($value)
-        || $value instanceof Name
-        || $value instanceof Identifier
-        || (is_object($value) && method_exists($value, '__toString'))
-    ;
 }

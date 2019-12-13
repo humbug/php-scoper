@@ -14,8 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use function array_slice;
+use function array_values;
+use function count;
+use Humbug\PhpScoper\PhpParser\Node\NameFactory;
 use PhpParser\Node;
-use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
@@ -23,9 +27,6 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser as PhpParserNodeTraverser;
-use function array_slice;
-use function array_values;
-use function count;
 
 /**
  * @private
@@ -93,6 +94,7 @@ final class NodeTraverser extends PhpParserNodeTraverser
             }
 
             $firstRealStatementIndex = $i;
+            /** @var Stmt[] $realStatements */
             $realStatements = array_slice($nodes, $i);
 
             break;
@@ -152,7 +154,7 @@ final class NodeTraverser extends PhpParserNodeTraverser
         return array_map(
             static function (UseUse $use) use ($node): Use_ {
                 $newUse = new UseUse(
-                    Name::concat($node->prefix, $use->name, $use->name->getAttributes()),
+                    NameFactory::concat($node->prefix, $use->name, $use->name->getAttributes()),
                     $use->alias,
                     $use->type,
                     $use->getAttributes()

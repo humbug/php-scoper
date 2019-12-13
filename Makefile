@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := help
 
 PHPBIN=php
+PHPSTAN_URL=https://github.com/phpstan/phpstan/releases/download/0.12.2/phpstan.phar
 
 .PHONY: help
 help:
@@ -32,10 +33,10 @@ cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
 	$(PHPNOGC) $(CODE_SNIFFER)
 
 .PHONY: phpstan
-PHPSTAN=vendor-bin/phpstan/vendor/bin/phpstan
+PHPSTAN=bin/phpstan
 phpstan: ## Runs PHPStan
 phpstan: $(PHPSTAN)
-	$(PHPNOGC) $(PHPSTAN) analyze src -l6
+	$(PHPNOGC) $(PHPSTAN) analyze src --level max
 
 .PHONY: build
 build:	 ## Build the PHAR
@@ -406,10 +407,6 @@ vendor-bin/code-sniffer/vendor: vendor-bin/code-sniffer/composer.lock vendor/bam
 	composer bin code-sniffer install
 	touch $@
 
-vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock vendor/bamarni
-	composer bin phpstan install
-	touch $@
-
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
 	touch $@
@@ -491,9 +488,6 @@ vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.
 vendor-bin/code-sniffer/composer.lock: vendor-bin/code-sniffer/composer.json
 	@echo code-sniffer composer.lock is not up to date
 
-vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
-	@echo phpstan composer.lock is not up to date
-
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
 
@@ -558,8 +552,10 @@ $(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
 	touch $@
 
-$(PHPSTAN): vendor-bin/phpstan/vendor
-	composer bin phpstan install
+$(PHPSTAN):
+	rm $@ || true
+	wget $(PHPSTAN_URL) -O $@
+	chmod +x $@
 	touch $@
 
 .composer-root-version:

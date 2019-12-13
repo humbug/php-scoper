@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Humbug\PhpScoper\Whitelist;
-use PhpParser\Node\Name\FullyQualified;
 use function array_map;
 use function array_unshift;
 use function chr;
 use function explode;
+use Humbug\PhpScoper\Whitelist;
 use function implode;
+use PhpParser\Node\Name\FullyQualified;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
@@ -173,7 +173,7 @@ EOF
 
                 if ($hasNamespacedFunctions) {
                     $namespace = $original->slice(0, -1);
-                    $functionName = null === $namespace ? $original->toString() : $original->slice(1)->toString();
+                    $functionName = null === $namespace ? $original->toString() : (string) $original->slice(1);
 
                     return sprintf(
                         <<<'PHP'

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
@@ -197,7 +198,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $name;
         }
 
-        return FullyQualified::concat(
+        return FullyQualifiedFactory::concat(
             $this->prefix,
             $resolvedName->toString(),
             $resolvedName->getAttributes()
