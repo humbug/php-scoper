@@ -34,56 +34,79 @@ foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 foo('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 
 foo('DateTime');
+foo('\\DateTime');
 foo('Swift');
+foo('\\Swift');
 foo(['DateTime', 'autoload']);
+foo(['\\DateTime', 'autoload']);
 foo(['Swift', 'autoload']);
+foo(['\\Swift', 'autoload']);
 
 spl_autoload_register(['Swift', 'autoload']);
+spl_autoload_register(['\Swift', 'autoload']);
 spl_autoload_register(['Humbug\\Swift', 'autoload']);
 spl_autoload_register(['\\Humbug\\Swift', 'autoload']);
+spl_autoload_register(['\\Humbug\\Swift', 'autoload']);
 spl_autoload_register(['DateTime', 'autoload']);
+spl_autoload_register(['\\DateTime', 'autoload']);
 
 is_a($swift, 'Swift');
+is_a($swift, '\\Swift');
 is_a($swift, 'Humbug\\Swift');
 is_a($swift, '\\Humbug\\Swift');
 is_a($swift, 'DateTime');
+is_a($swift, '\\DateTime');
 
 is_subclass_of($swift, 'Swift');
-is_subclass_of($swift, 'Humbug\Swift');
-is_subclass_of($swift, '\Humbug\Swift');
+is_subclass_of($swift, '\\Swift');
+is_subclass_of($swift, 'Humbug\\Swift');
+is_subclass_of($swift, '\\Humbug\\Swift');
 is_subclass_of($swift, 'DateTime');
+is_subclass_of($swift, '\\DateTime');
 is_subclass_of('Mailer', 'Swift');
-is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
-is_subclass_of('\Humbug\Mailer', '\Humbug\Swift');
+is_subclass_of('\\Mailer', '\\Swift');
+is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
+is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
+is_subclass_of('\\Humbug\\Mailer', '\\Humbug\\Swift');
 is_subclass_of('Mailer', 'DateTime');
+is_subclass_of('\\Mailer', '\\DateTime');
 
 interface_exists('Swift');
-interface_exists('Humbug\Swift');
-interface_exists('\Humbug\Swift');
+interface_exists('\\Swift');
+interface_exists('Humbug\\Swift');
+interface_exists('\\Humbug\\Swift');
 interface_exists('DateTime');
+interface_exists('\\DateTime');
 
 class_exists('Swift');
-class_exists('Humbug\Swift');
-class_exists('\Humbug\Swift');
+class_exists('\\Swift');
+class_exists('Humbug\\Swift');
+class_exists('\\Humbug\\Swift');
 class_exists('DateTime');
+class_exists('\\DateTime');
 
 trait_exists('Swift');
-trait_exists('Humbug\Swift');
-trait_exists('\Humbug\Swift');
+trait_exists('\\Swift');
+trait_exists('Humbug\\Swift');
+trait_exists('\\Humbug\\Swift');
 trait_exists('DateTime');
+trait_exists('\\DateTime');
 
 function_exists('dump');
-function_exists('Humbug\dump');
-function_exists('\Humbug\dump');
+function_exists('Humbug\\dump');
+function_exists('\Humbug\\dump');
 function_exists('var_dump');
 
 class_alias('Swift', 'Mailer');
-class_alias('Humbug\Swift', 'Mailer');
-class_alias('\Humbug\Swift', 'Mailer');
+class_alias('\\Swift', '\\Mailer');
+class_alias('Humbug\\Swift', 'Mailer');
+class_alias('\\Humbug\\Swift', '\\Mailer');
 class_alias('DateTime', 'DateTimeInterface');
+class_alias('\\DateTime', '\\DateTimeInterface');
 
 ($this->colorize)('fg-green', '✔');
 ($this->colorize)(['Soft', 'autoload']);
+($this->colorize)(['\\Soft', 'autoload']);
 
 ----
 <?php
@@ -95,37 +118,57 @@ namespace Humbug;
 \Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 \Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
 \Humbug\foo('DateTime');
+\Humbug\foo('\\DateTime');
 \Humbug\foo('Swift');
+\Humbug\foo('\\Swift');
 \Humbug\foo(['DateTime', 'autoload']);
+\Humbug\foo(['\\DateTime', 'autoload']);
 \Humbug\foo(['Swift', 'autoload']);
+\Humbug\foo(['\\Swift', 'autoload']);
+\spl_autoload_register(['Humbug\\Swift', 'autoload']);
+\spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['DateTime', 'autoload']);
+\spl_autoload_register(['\\DateTime', 'autoload']);
+\is_a($swift, 'Humbug\\Swift');
 \is_a($swift, 'Humbug\\Swift');
 \is_a($swift, 'Humbug\\Swift');
 \is_a($swift, 'Humbug\\Swift');
 \is_a($swift, 'DateTime');
+\is_a($swift, '\\DateTime');
+\is_subclass_of($swift, 'Humbug\\Swift');
 \is_subclass_of($swift, 'Humbug\\Swift');
 \is_subclass_of($swift, 'Humbug\\Swift');
 \is_subclass_of($swift, 'Humbug\\Swift');
 \is_subclass_of($swift, 'DateTime');
+\is_subclass_of($swift, '\\DateTime');
+\is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
+\is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
 \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
 \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
 \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
 \is_subclass_of('Humbug\\Mailer', 'DateTime');
+\is_subclass_of('Humbug\\Mailer', '\\DateTime');
+\interface_exists('Humbug\\Swift');
 \interface_exists('Humbug\\Swift');
 \interface_exists('Humbug\\Swift');
 \interface_exists('Humbug\\Swift');
 \interface_exists('DateTime');
+\interface_exists('\\DateTime');
+\class_exists('Humbug\\Swift');
 \class_exists('Humbug\\Swift');
 \class_exists('Humbug\\Swift');
 \class_exists('Humbug\\Swift');
 \class_exists('DateTime');
+\class_exists('\\DateTime');
+\trait_exists('Humbug\\Swift');
 \trait_exists('Humbug\\Swift');
 \trait_exists('Humbug\\Swift');
 \trait_exists('Humbug\\Swift');
 \trait_exists('DateTime');
+\trait_exists('\\DateTime');
 \function_exists('Humbug\\dump');
 \function_exists('Humbug\\dump');
 \function_exists('Humbug\\dump');
@@ -133,9 +176,12 @@ namespace Humbug;
 \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
 \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
 \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
+\class_alias('Humbug\\Swift', 'Humbug\\Mailer');
 \class_alias('DateTime', 'DateTimeInterface');
+\class_alias('\\DateTime', '\\DateTimeInterface');
 ($this->colorize)('fg-green', '✔');
 ($this->colorize)(['Soft', 'autoload']);
+($this->colorize)(['\\Soft', 'autoload']);
 
 PHP
     ,
