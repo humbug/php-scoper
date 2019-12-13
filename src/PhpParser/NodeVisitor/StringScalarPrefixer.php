@@ -22,6 +22,7 @@ use Humbug\PhpScoper\Whitelist;
 use function implode;
 use function in_array;
 use function is_string;
+use function ltrim;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -42,7 +43,6 @@ use PhpParser\NodeVisitorAbstract;
 use function preg_match;
 use function strpos;
 use function strtolower;
-use function substr;
 
 /**
  * Prefixes the string scalar values when appropriate.
@@ -108,7 +108,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return $string;
         }
 
-        $normalizedValue = '\\' === $string->value[0] ? substr($string->value, 1) : $string->value;
+        $normalizedValue = ltrim($string->value, '\\');
 
         if ($this->whitelist->belongsToWhitelistedNamespace($string->value)) {
             return $string;
