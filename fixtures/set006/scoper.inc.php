@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'patchers' => [
-        function () {
+        static function () {
             return 'Hello world!';
         }
     ],

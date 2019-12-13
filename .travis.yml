@@ -10,6 +10,11 @@ env:
   global:
     secure: "1sVenz4DUy14AWE08s8V7Vz1D313t08R7axjBWI5R53BGNScm0lHlF/mONYEkdais5Mo9jkXwfzXIhqwqT6i9xltuIAIb1wUIwnQJCiACUGFWE4IP48ayD4KcjlExxoYHf2l98N0x/fc6ihwTa9pEHSH0cltr9wFJVbQD+lMC82V5gSVVzuteXjd7Dp/UFEgx3PcjRyvsrhySOE+qNInvOu3+ChPbFGE5Z18fncULJrEfVKpvOPBSYDDyI3A7KoHx/MrY9h3ow89S0jQw1AP1B5SVWKhIrFQT/d2oGeVPE382PSdnD5YiUNgcW85EHyFjt70oQyu1gxyIhRKygR+o02pDeanOJXp9wVsTo2yp6Nf/WWjniQenxxueM5MHfimMt1Khpx4ebiIuCOzIn6lhgQ1Aw6z3vVZelqk07zrIEycKJNWsto6a0X7H8McnJDyOlJ/PnbwXwsmcg29jDmNnKc6rGiQ08gK8BaZZfqhdtH8WxKxyUCuowprHslq614/W/4sLNophAOFSyOEFQl1Zqz3Ibe5EVPHbw5paxt9eY8W3gGajY8Bh1BYZOkXmkIgm4UFJHqslal/91Z4CIbLtCjGac0LWrvZaE5QFM8VRLmjgBWij5ajzFP5PI7S9JKJCETj8yrSRE51nAOPq1s1HmxdNQHmBa/xXQP8UahaRsM="
 
+addons:
+    apt:
+        packages:
+            - tree
+
 matrix:
   include:
     - php: '7.3'

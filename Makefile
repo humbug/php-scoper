@@ -74,7 +74,7 @@ tm: clover.xml
 
 .PHONY: e2e
 e2e:	 ## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -376,6 +376,20 @@ e2e_031: $(PHPSCOPER)
 		--stop-on-failure
 
 	diff fixtures/set031-extension-symbol/expected-main.php build/set031-extension-symbol/main.php
+
+.PHONY: e2e_032
+e2e_032: ## Run end-to-end tests for the fixture set 032 — isolated finder
+e2e_032: $(PHPSCOPER)
+	php bin/php-scoper add-prefix \
+		--working-dir=fixtures/set032-isolated-finder \
+		--output-dir=../../build/set032-isolated-finder \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	tree build/set032-isolated-finder > build/set032-isolated-finder/actual-tree
+
+	diff fixtures/set032-isolated-finder/expected-tree build/set032-isolated-finder/actual-tree
 
 .PHONY: tb
 BLACKFIRE=blackfire
