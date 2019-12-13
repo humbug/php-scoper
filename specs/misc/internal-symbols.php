@@ -25,7 +25,7 @@ return [
         'registered-functions' => [],
     ],
 
-    'Empty file' => <<<'PHP'
+    'Known internal symbols that used to or still require a patch in the Reflector' => <<<'PHP'
 <?php
 
 namespace Acme;
@@ -77,6 +77,8 @@ use parallel\Runtime\Error\IllegalFunction;
 use parallel\Runtime\Error\IllegalInstruction;
 use parallel\Runtime\Error\IllegalParameter;
 use parallel\Runtime\Error\IllegalReturn;
+#https://github.com/bobthecow/psysh/issues/581#issuecomment-560137900
+use ReflectionClassConstant;
 
 use function parallel\bootstrap;
 use function parallel\run;
@@ -305,6 +307,8 @@ use parallel\Runtime\Error\IllegalFunction;
 use parallel\Runtime\Error\IllegalInstruction;
 use parallel\Runtime\Error\IllegalParameter;
 use parallel\Runtime\Error\IllegalReturn;
+#https://github.com/bobthecow/psysh/issues/581#issuecomment-560137900
+use ReflectionClassConstant;
 use function parallel\bootstrap;
 use function parallel\run;
 use function pcov\collect;
