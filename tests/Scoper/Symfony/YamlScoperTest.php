@@ -87,7 +87,12 @@ class YamlScoperTest extends TestCase
     /**
      * @dataProvider provideYamlFiles
      */
-    public function test_it_scopes_Yaml_files(string $contents, Whitelist $whitelist, string $expected, array $expectedClasses): void
+    public function test_it_scopes_Yaml_files(
+        string $contents,
+        Whitelist $whitelist,
+        string $expected,
+        array $expectedClasses
+    ): void
     {
         $prefix = 'Humbug';
         $file = 'file.yaml';
@@ -116,14 +121,14 @@ class YamlScoperTest extends TestCase
 
     public function provideYamlFiles(): Generator
     {
-        yield [
+        yield 'empty' => [
             '',
             Whitelist::create(true, true, true),
             '',
             [],
         ];
 
-        yield [
+        yield 'not quoted service definitions' => [
             <<<'YAML'
 services:
     Symfony\Component\Console\Style\SymfonyStyle: ~
@@ -144,7 +149,33 @@ YAML
             [],
         ];
 
-        yield [
+        yield 'not quoted service definitions with whitelist' => [
+            <<<'YAML'
+services:
+    Symfony\Component\Console\Style\SymfonyStyle: ~
+    Symfony\Component\Console\Input\InputInterface:
+        alias: 'Symfony\Component\Console\Input\ArgvInput'
+    Symfony\Component\Finder\Output\OutputInterface: '@Symfony\Component\Console\Output\ConsoleOutput'
+YAML
+            ,
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Symfony\Component\Console\*'
+            ),
+            <<<'YAML'
+services:
+    Symfony\Component\Console\Style\SymfonyStyle: ~
+    Symfony\Component\Console\Input\InputInterface:
+        alias: 'Symfony\Component\Console\Input\ArgvInput'
+    Humbug\Symfony\Component\Finder\Output\OutputInterface: '@Symfony\Component\Console\Output\ConsoleOutput'
+YAML
+            ,
+            [],
+        ];
+
+        yield 'quoted service definitions' => [
             <<<'YAML'
 services:
     "Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -165,7 +196,7 @@ YAML
             [],
         ];
 
-        yield [
+        yield 'quoted service definitions with whitelist' => [
             <<<'YAML'
 services:
     "Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -182,10 +213,13 @@ YAML
             [],
         ];
 
-        yield [
+        yield 'PSR-4 service locator' => [
             <<<'YAML'
 services:
     Acme\Controller\:
+        resource: "../src"
+
+    Bar\Controller\:
         resource: "../src"
 YAML
             ,
@@ -194,12 +228,43 @@ YAML
 services:
     Humbug\Acme\Controller\:
         resource: "../src"
+
+    Humbug\Bar\Controller\:
+        resource: "../src"
 YAML
             ,
             [],
         ];
 
-        yield [
+        yield 'PSR-4 service locator with whitelist' => [
+            <<<'YAML'
+services:
+    Acme\Controller\:
+        resource: "../src"
+
+    Bar\Controller\:
+        resource: "../src"
+YAML
+            ,
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\Controller\*'
+            ),
+            <<<'YAML'
+services:
+    Acme\Controller\:
+        resource: "../src"
+
+    Humbug\Bar\Controller\:
+        resource: "../src"
+YAML
+            ,
+            [],
+        ];
+
+        yield 'service as alias' => [
             <<<'YAML'
 services:
     Acme\Foo: '@Acme\Foo\Bar'
@@ -216,7 +281,29 @@ YAML
             [],
         ];
 
-        yield [
+        yield 'service as alias with whitelist' => [
+            <<<'YAML'
+services:
+    Acme\Foo\X: '@Acme\Foo\Bar'
+    Acme\Bar: '@Acme\Bar\Acme\Foo'
+YAML
+            ,
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\Foo\*'
+            ),
+            <<<'YAML'
+services:
+    Acme\Foo\X: '@Acme\Foo\Bar'
+    Humbug\Acme\Bar: '@Humbug\Acme\Bar\Acme\Foo'
+YAML
+            ,
+            [],
+        ];
+
+        yield 'service with class-name as argument with short-argument notation' => [
             <<<'YAML'
 services:
     Acme\Foo: 
@@ -233,7 +320,35 @@ YAML
             [],
         ];
 
-        yield [
+        yield 'service with class-name as argument with short-argument notation with whitelist' => [
+            <<<'YAML'
+services:
+    Acme\Foo\X: 
+        - '@Acme\Foo\Y'
+
+    Acme\Bar\X: 
+        - '@Acme\Bar\Y'
+YAML
+            ,
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\Foo\*'
+            ),
+            <<<'YAML'
+services:
+    Acme\Foo\X: 
+        - '@Acme\Foo\Y'
+
+    Humbug\Acme\Bar\X: 
+        - '@Humbug\Acme\Bar\Y'
+YAML
+            ,
+            [],
+        ];
+
+        yield 'service with class alias key, class as argument and class in tag attribute' => [
             <<<'YAML'
 services:
     foo:
@@ -253,6 +368,50 @@ services:
             - '@Humbug\Acme\Bar'
         tags:
             - { name: my_tag, id: 'Humbug\Acme\Baz' }
+YAML
+            ,
+            [],
+        ];
+
+        yield 'service with class alias key, class as argument and class in tag attribute with whitelist' => [
+            <<<'YAML'
+services:
+    foo:
+        class: 'Acme\Foo\X'
+        arguments:
+            - '@Acme\Foo\Y'
+        tags:
+            - { name: my_tag, id: 'Acme\Foo\Z' }
+    
+    bar:
+        class: 'Acme\Bar\X'
+        arguments:
+            - '@Acme\Bar\Y'
+        tags:
+            - { name: my_tag, id: 'Acme\Bar\Z' }
+YAML
+            ,
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\Foo\*'
+            ),
+            <<<'YAML'
+services:
+    foo:
+        class: 'Acme\Foo\X'
+        arguments:
+            - '@Acme\Foo\Y'
+        tags:
+            - { name: my_tag, id: 'Acme\Foo\Z' }
+    
+    bar:
+        class: 'Humbug\Acme\Bar\X'
+        arguments:
+            - '@Humbug\Acme\Bar\Y'
+        tags:
+            - { name: my_tag, id: 'Humbug\Acme\Bar\Z' }
 YAML
             ,
             [],
