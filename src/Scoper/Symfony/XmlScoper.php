@@ -111,12 +111,32 @@ final class XmlScoper implements Scoper
         $scopedContents = '';
 
         foreach ($classes as $index => $class) {
+            $separator = $separators[$index];
+
+            $psr4Service = '"'.$class.$separator.'"';
+
+            if (false !== strpos($contents, $psr4Service)) {
+                $offset = strpos($contents, $psr4Service) + strlen($psr4Service);
+
+                $stringToScope = substr($contents, 0, $offset);
+                $contents = substr($contents, $offset);
+
+                $prefixedClass = $prefix.$separator.$class;
+
+                $scopedContents .= $whitelist->belongsToWhitelistedNamespace($class.$separator.'__UnknownService__')
+                    ? $stringToScope
+                    : str_replace($class, $prefixedClass, $stringToScope)
+                ;
+
+                continue;
+            }
+
             $offset = strpos($contents, $class) + strlen($class);
 
             $stringToScope = substr($contents, 0, $offset);
             $contents = substr($contents, $offset);
 
-            $prefixedClass = $prefix.$separators[$index].$class;
+            $prefixedClass = $prefix.$separator.$class;
 
             $scopedContents .= $whitelist->belongsToWhitelistedNamespace($class)
                 ? $stringToScope
