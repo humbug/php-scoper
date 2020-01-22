@@ -96,5 +96,16 @@ return [
                 substr($originalContents, $classPosition)
             );
         },
+        static function (string $filePath, string $prefix, string $contents): string {
+            if ('bin/php-scoper' !== $filePath) {
+                return $contents;
+            }
+
+            return str_replace(
+                '\\'.$prefix.'\Isolated\Symfony\Component\Finder\Finder::class',
+                '\Isolated\Symfony\Component\Finder\Finder::class',
+                $contents
+            );
+        },
     ],
 ];

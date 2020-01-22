@@ -368,7 +368,7 @@ e2e_030: $(PHPSCOPER) fixtures/set030/vendor
 .PHONY: e2e_031
 e2e_031: ## Run end-to-end tests for the fixture set 031 — unloaded extension symbol
 e2e_031: $(PHPSCOPER)
-	php bin/php-scoper add-prefix \
+	php $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set031-extension-symbol \
 		--output-dir=../../build/set031-extension-symbol \
 		--force \
@@ -380,7 +380,7 @@ e2e_031: $(PHPSCOPER)
 .PHONY: e2e_032
 e2e_032: ## Run end-to-end tests for the fixture set 032 — isolated finder
 e2e_032: $(PHPSCOPER)
-	php bin/php-scoper add-prefix \
+	php $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set032-isolated-finder \
 		--output-dir=../../build/set032-isolated-finder \
 		--force \
