@@ -42,6 +42,23 @@ use function Humbug\main;
 PHP
     ,
 
+    'Uppercase global function call imported with a use statement in the global scope' => <<<'PHP'
+<?php
+
+use function main;
+
+MAIN();
+----
+<?php
+
+namespace Humbug;
+
+use function Humbug\main;
+\Humbug\main();
+
+PHP
+    ,
+
     'Global function call imported with a use statement in the global scope with global functions whitelisted' => [
         'whitelist-global-functions' => true,
         'registered-functions' => [
@@ -99,6 +116,28 @@ namespace Humbug;
 
 use function Humbug\main;
 \Humbug\main();
+
+PHP
+    ],
+
+    'Uppercase global FQ function call imported with a use statement in the global scope with global functions whitelisted' => [
+        'whitelist-global-functions' => true,
+        'registered-functions' => [
+            ['MAIN', 'Humbug\MAIN'],
+        ],
+        'payload' => <<<'PHP'
+<?php
+
+use function main;
+
+\MAIN();
+----
+<?php
+
+namespace Humbug;
+
+use function Humbug\main;
+\Humbug\MAIN();
 
 PHP
     ],

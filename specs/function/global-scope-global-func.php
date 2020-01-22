@@ -39,6 +39,20 @@ namespace Humbug;
 PHP
     ,
 
+    'Uppercase global function call in the global scope' => <<<'PHP'
+<?php
+
+MAIN();
+----
+<?php
+
+namespace Humbug;
+
+\Humbug\MAIN();
+
+PHP
+    ,
+
     'FQ global function call in the global scope' => <<<'PHP'
 <?php
 
@@ -67,6 +81,20 @@ namespace Humbug;
 PHP
     ,
 
+    'Uppercase global function call in the global scope of an internal function' => <<<'PHP'
+<?php
+
+IS_ARRAY();
+----
+<?php
+
+namespace Humbug;
+
+\IS_ARRAY();
+
+PHP
+    ,
+
     'FQ global function call in the global scope of an internal function' => <<<'PHP'
 <?php
 
@@ -77,6 +105,20 @@ PHP
 namespace Humbug;
 
 \is_array();
+
+PHP
+    ,
+
+    'Uppercase FQ global function call in the global scope of an internal function' => <<<'PHP'
+<?php
+
+\IS_ARRAY();
+----
+<?php
+
+namespace Humbug;
+
+\IS_ARRAY();
 
 PHP
     ,

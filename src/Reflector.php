@@ -18,6 +18,7 @@ use function array_fill_keys;
 use function array_keys;
 use function array_merge;
 use JetBrains\PHPStormStub\PhpStormStubsMap;
+use function strtolower;
 
 /**
  * @private
@@ -106,7 +107,7 @@ final class Reflector
 
     public function isFunctionInternal(string $name): bool
     {
-        return isset(self::$FUNCTIONS[$name]);
+        return isset(self::$FUNCTIONS[strtolower($name)]);
     }
 
     public function isConstantInternal(string $name): bool
