@@ -15,12 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
 use Generator;
+use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
-use function Humbug\PhpScoper\create_fake_patcher;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Symfony\XmlScoper
@@ -114,7 +114,7 @@ class XmlScoperTest extends TestCase
 
     public function provideXmlFiles(): Generator
     {
-        yield [
+        yield 'empty' => [
             '',
             Whitelist::create(true, true, true),
             '',
@@ -248,7 +248,7 @@ XML
             [],
         ];
 
-        yield [
+        yield 'PSR-4 service locator' => [
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -289,7 +289,53 @@ XML
             [],
         ];
 
-        yield [
+        yield 'PSR-4 service locator with whitelist' => [
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Default configuration for services in *this* file -->
+        <defaults autowire="true" autoconfigure="true" public="false" />
+
+        <prototype namespace="Acme\Foo\" resource="../src/*" exclude="../src/{Entity,Migrations,Tests}" />
+        <prototype namespace="Acme\Bar\" resource="../src/*" exclude="../src/{Entity,Migrations,Tests}" />
+    </services>
+</container>
+XML
+            ,
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\Foo\*'
+            ),
+            <<<'XML'
+<!-- config/services.xml -->
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- Default configuration for services in *this* file -->
+        <defaults autowire="true" autoconfigure="true" public="false" />
+
+        <prototype namespace="Acme\Foo\" resource="../src/*" exclude="../src/{Entity,Migrations,Tests}" />
+        <prototype namespace="Humbug\Acme\Bar\" resource="../src/*" exclude="../src/{Entity,Migrations,Tests}" />
+    </services>
+</container>
+XML
+            ,
+            [],
+        ];
+
+        yield 'service with alias' => [
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -326,7 +372,7 @@ XML
             [],
         ];
 
-        yield [
+        yield 'service with argument' => [
             <<<'XML'
 <!-- app/config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -367,7 +413,7 @@ XML
             [],
         ];
 
-        yield [
+        yield 'service with tag' => [
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
