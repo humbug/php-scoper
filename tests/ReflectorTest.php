@@ -89,6 +89,11 @@ class ReflectorTest extends TestCase
             true,
         ];
 
+        yield 'PHP internal function with the wrong case' => [
+            'CLASS_EXISTS',
+            true,
+        ];
+
         yield 'PHP unknown user-defined function' => [
             'unknown',
             false,
