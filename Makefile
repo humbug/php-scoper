@@ -1,7 +1,13 @@
+# See https://tech.davis-hansson.com/p/make/
+MAKEFLAGS += --warn-undefined-variables
+MAKEFLAGS += --no-builtin-rules
+
 .DEFAULT_GOAL := help
 
 PHPBIN=php
 PHPSTAN_URL=https://github.com/phpstan/phpstan/releases/download/0.12.2/phpstan.phar
+
+SRC_FILES=$(shell find bin/ src/ -type f)
 
 .PHONY: help
 help:
@@ -544,12 +550,12 @@ fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
 fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 	@echo fixtures/set029-easy-rdf/composer.lock is not up to date.
 
-bin/php-scoper.phar: bin/php-scoper src vendor scoper.inc.php box.json.dist
+bin/php-scoper.phar: bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
 	$(BOX) compile
 	touch $@
 
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
-clover.xml: src
+clover.xml: $(SRC_FILES)
 	$(COVERS_VALIDATOR)
 	php -d zend.enable_gc=0 $(PHPUNIT) \
 		--coverage-html=dist/coverage \
