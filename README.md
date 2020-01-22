@@ -108,6 +108,8 @@ install it for your project, we recommend you to take a look at
 
 ```bash
 composer require --dev bamarni/composer-bin-plugin
+composer bin php-scoper config minimum-stability dev
+composer bin php-scoper config prefer-stable true 
 composer bin php-scoper require --dev humbug/php-scoper
 ```
 
