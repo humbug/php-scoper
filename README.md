@@ -545,7 +545,7 @@ return [
 
 ### With Box
 
-If you are using [Box](box) to build your PHAR, you can use the existing
+If you are using [Box][box] to build your PHAR, you can use the existing
 [PHP-Scoper integration][php-scoper-integration]. Box will take care of
 most of the things for you so you should only have to adjust the PHP-Scoper
 configuration to your needs.
