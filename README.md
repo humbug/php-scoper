@@ -65,6 +65,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Composer](#composer-autoloader)
     - [Composer Plugins](#composer-plugins)
     - [PSR-0 Partial support](#psr-0-partial-support)
+    - [WordPress](#wordpress)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -873,6 +874,13 @@ transforming it to PSR-4, i.e. in the case above:
 
 If this will work for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
 
+### WordPress
+
+Currently, PHP-Scoper is built in such a way that it generates a completely enclosed application. However, since this does not work in plugin landscapes, because dependencies of not bundled functions and classes are needed, there is currently no optimal solution within PHP-Scoper for WordPress.
+
+There is an open issue regarding [better support of WordPress API](https://github.com/humbug/php-scoper/issues/303). If you agree to migrate your plugin or want to start a new plugin you can use [**WP React Starter**](https://github.com/devowlio/wp-react-starter) - it's an open source boilerplate for WordPress plugins. **Why?** Well, WP React Starter its mission is to be the most modern and best boilerplate in the WordPress community and now PHP-Scoper is part of it.
+
+If you are not able to migrate you can have a look at the solution itself, read more about it here [#303 (comment)](https://github.com/humbug/php-scoper/issues/303#issuecomment-614207305).
 
 ## Contributing
 
