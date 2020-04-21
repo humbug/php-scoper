@@ -826,6 +826,11 @@ after prefixing an application.
 
 Note: when using Box, Box is able to take care of that step for you.
 
+PHP-Scoper also can not handle Composers static file autoloaders. This is due
+to Composer loading files based on a hash which is generated from package name
+and relative file path. For a workaround see
+[#298](https://github.com/humbug/php-scoper/issues/298#issuecomment-525700081).
+
 
 ### Composer Plugins
 
