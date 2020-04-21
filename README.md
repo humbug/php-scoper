@@ -30,10 +30,10 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ## Table of Contents
 
 - [Installation](#installation)
-- [Usage](#usage)
     - [Phive](#phive)
     - [PHAR](#phar)
     - [Composer](#composer)
+- [Usage](#usage)
 - [Configuration](#configuration)
     - [Prefix](#prefix)
     - [Finders and paths](#finders-and-paths)
@@ -65,7 +65,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Composer](#composer-autoloader)
     - [Composer Plugins](#composer-plugins)
     - [PSR-0 Partial support](#psr-0-partial-support)
-    - [WordPress](#wordpress)
+    - [WordPress support](#wordpress-support)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -876,11 +876,10 @@ If this will work for the classes under `src/JsonMapper/`, it will not for `Json
 
 ### WordPress
 
-Currently, PHP-Scoper is built in such a way that it generates a completely enclosed application. However, since this does not work in plugin landscapes, because dependencies of not bundled functions and classes are needed, there is currently no optimal solution within PHP-Scoper for WordPress.
+As of now PHP-Scoper does not easily allow to completely leave unchanged non-included third-party code causing some hurdles with Wordpress plugins. There is a standing issue about providing a better integration out of the box (See [#303][better-wp-support]) but alternatively you can already use [**WP React Starter**][wp-react-starter] which is a boilerplate for WordPress plugins.
 
-There is an open issue regarding [better support of WordPress API](https://github.com/humbug/php-scoper/issues/303). If you agree to migrate your plugin or want to start a new plugin you can use [**WP React Starter**](https://github.com/devowlio/wp-react-starter) - it's an open source boilerplate for WordPress plugins. **Why?** Well, WP React Starter its mission is to be the most modern and best boilerplate in the WordPress community and now PHP-Scoper is part of it.
+If you are not able to migrate you can have a look at the solution itself, read more about it here [#303 (comment)][wp-react-starter-details].
 
-If you are not able to migrate you can have a look at the solution itself, read more about it here [#303 (comment)](https://github.com/humbug/php-scoper/issues/303#issuecomment-614207305).
 
 ## Contributing
 
@@ -897,12 +896,15 @@ now been moved under the
 [@webmozart]: https://twitter.com/webmozart
 [bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
 [Bernhard Schussek]: https://webmozart.io/
+[better-wp-support]: https://github.com/humbug/php-scoper/issues/303
 [box]: https://github.com/humbug/box
 [humbug]: https://github.com/humbug
 [releases]: https://github.com/humbug/php-scoper/releases
 [symfony_finder]: https://symfony.com/doc/current/components/finder.html
 [releases]: https://github.com/humbug/php-scoper/releases
 [whitelist]: #whitelist
+[wp-react-starter]: https://github.com/devowlio/wp-react-starter
+[wp-react-starter-details]: https://github.com/humbug/php-scoper/issues/303#issuecomment-614207305
 [patchers]: #patchers
 [php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
 [phar-extract-to]: https://secure.php.net/manual/en/phar.extractto.php
