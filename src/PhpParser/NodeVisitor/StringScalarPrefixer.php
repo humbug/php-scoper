@@ -131,13 +131,12 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         if (false === (
-                $parentNode instanceof Assign
+            $parentNode instanceof Assign
                 || $parentNode instanceof Param
                 || $parentNode instanceof Const_
                 || $parentNode instanceof PropertyProperty
                 || $parentNode instanceof Return_
-            )
-        ) {
+        )) {
             return $string;
         }
 

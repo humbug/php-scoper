@@ -9,6 +9,7 @@ disabled:
     - phpdoc_inline_tag
     - property_separation
     - const_separation
+    - single_line_throw
 
 finder:
   exclude:

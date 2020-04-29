@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use Humbug\PhpScoper\Whitelist;
-use stdClass;
 use function array_map;
+use Humbug\PhpScoper\Whitelist;
 use function is_array;
 use function is_string;
 use function rtrim;
+use stdClass;
 use function str_replace;
 use function strpos;
 

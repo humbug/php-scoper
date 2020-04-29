@@ -21,7 +21,8 @@ function get_last_tag_name(): string
         : "-H \"Authorization: token $gitHubToken\""
     ;
 
-    $lastReleaseEndpointContents = shell_exec(<<<BASH
+    $lastReleaseEndpointContents = shell_exec(
+        <<<BASH
 curl -s $headerOption https://api.github.com/repos/humbug/php-scoper/releases/latest
 BASH
     );

@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use PHPUnit\Framework\TestCase;
 use function array_filter;
 use function array_map;
 use function array_unique;
 use function array_values;
 use function explode;
 use function file_get_contents;
+use PHPUnit\Framework\TestCase;
 use function preg_match;
 use function preg_match_all;
 
@@ -56,7 +56,9 @@ class MakefileE2ETest extends TestCase
             array_filter(
                 array_map(
                     'trim',
-                    explode(' ', $matches['steps']
+                    explode(
+                        ' ',
+                        $matches['steps']
                     )
                 )
             )
