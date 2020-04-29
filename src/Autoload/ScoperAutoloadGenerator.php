@@ -47,8 +47,9 @@ final class ScoperAutoloadGenerator
             $this->eol,
             $this->createClassAliasStatements(
                 $this->whitelist->getRecordedWhitelistedClasses(),
-                $hasNamespacedFunctions)
+                $hasNamespacedFunctions
             )
+        )
             .$this->eol
             .$this->eol
         ;

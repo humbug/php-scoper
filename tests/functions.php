@@ -18,8 +18,8 @@ use Closure;
 use LogicException;
 use PhpParser\Parser;
 use RuntimeException;
-use Symfony\Component\Filesystem\Filesystem;
 use function sprintf;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Creates a temporary directory.

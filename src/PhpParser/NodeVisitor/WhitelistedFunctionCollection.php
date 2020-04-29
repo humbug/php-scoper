@@ -15,10 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use ArrayIterator;
+use function count;
 use Countable;
 use IteratorAggregate;
 use PhpParser\Node\Name\FullyQualified;
-use function count;
 
 final class WhitelistedFunctionCollection implements IteratorAggregate, Countable
 {

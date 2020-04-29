@@ -14,27 +14,27 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\Patcher\SymfonyPatcher;
-use InvalidArgumentException;
-use Iterator;
-use RuntimeException;
-use SplFileInfo;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Finder\Finder;
-use const DIRECTORY_SEPARATOR;
 use function array_key_exists;
 use function array_unshift;
+use const DIRECTORY_SEPARATOR;
 use function dirname;
 use function file_exists;
 use function gettype;
+use Humbug\PhpScoper\Patcher\SymfonyPatcher;
+use InvalidArgumentException;
 use function is_array;
 use function is_bool;
 use function is_file;
 use function is_link;
 use function is_string;
+use Iterator;
 use function readlink;
 use function realpath;
+use RuntimeException;
+use SplFileInfo;
 use function sprintf;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 final class Configuration
 {
