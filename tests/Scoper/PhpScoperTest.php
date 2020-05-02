@@ -113,7 +113,7 @@ class PhpScoperTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
