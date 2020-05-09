@@ -59,7 +59,20 @@ final class Reflector
         'parallel\Runtime\Error\IllegalReturn',
     ];
 
-    private const MISSING_FUNCTIONS = [];
+    private const MISSING_FUNCTIONS = [
+        // https://github.com/JetBrains/phpstorm-stubs/pull/793
+        'phpdbg_break_next',
+        'phpdbg_break_file',
+        'phpdbg_break_method',
+        'phpdbg_break_function',
+        'phpdbg_color',
+        'phpdbg_prompt',
+        'phpdbg_exec',
+        'phpdbg_clear',
+        'phpdbg_start_oplog',
+        'phpdbg_end_oplog',
+        'phpdbg_get_executable',
+    ];
 
     private const MISSING_CONSTANTS = [
         'STDIN',
