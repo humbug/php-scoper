@@ -118,6 +118,12 @@ class ReflectorTest extends TestCase
             'ftp_alloc',
             true,
         ];
+
+        // https://github.com/sebastianbergmann/phpunit/issues/4211
+        yield 'PHPDBG internal function' => [
+            'phpdbg_break_file',
+            true,
+        ];
     }
 
     public function provideConstants(): Generator
