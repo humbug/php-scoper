@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
-use LogicException;
-use stdClass;
 use function gettype;
 use function Humbug\PhpScoper\json_decode;
 use function Humbug\PhpScoper\json_encode;
+use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
+use LogicException;
 use function sprintf;
+use stdClass;
 
 final class JsonFileScoper implements Scoper
 {

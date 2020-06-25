@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use function Humbug\PhpScoper\create_fake_patcher;
+use function Humbug\PhpScoper\create_parser;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
@@ -30,8 +32,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflector\ConstantReflector;
 use Roave\BetterReflection\Reflector\FunctionReflector;
-use function Humbug\PhpScoper\create_fake_patcher;
-use function Humbug\PhpScoper\create_parser;
 
 class PhpScoperTest extends TestCase
 {
@@ -113,7 +113,7 @@ class PhpScoperTest extends TestCase
     /**
      * @inheritdoc
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();

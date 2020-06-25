@@ -104,7 +104,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         if (false === (
-                $parentNode instanceof ArrowFunction
+            $parentNode instanceof ArrowFunction
                 || $parentNode instanceof Catch_
                 || $parentNode instanceof ConstFetch
                 || $parentNode instanceof Class_
@@ -119,7 +119,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof Property
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof StaticPropertyFetch
-            )
+        )
         ) {
             return $name;
         }

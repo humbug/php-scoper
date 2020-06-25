@@ -14,9 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use function count;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Console\ScoperLogger;
+use function Humbug\PhpScoper\get_common_path;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\ConfigurableScoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -31,8 +33,6 @@ use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
-use function count;
-use function Humbug\PhpScoper\get_common_path;
 
 final class AddPrefixCommand extends BaseCommand
 {
@@ -113,7 +113,7 @@ final class AddPrefixCommand extends BaseCommand
                 self::NO_CONFIG_OPT,
                 null,
                 InputOption::VALUE_NONE,
-            'Do not look for a configuration file.'
+                'Do not look for a configuration file.'
             )
         ;
     }
