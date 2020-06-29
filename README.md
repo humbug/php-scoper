@@ -30,10 +30,10 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ## Table of Contents
 
 - [Installation](#installation)
-- [Usage](#usage)
     - [Phive](#phive)
     - [PHAR](#phar)
     - [Composer](#composer)
+- [Usage](#usage)
 - [Configuration](#configuration)
     - [Prefix](#prefix)
     - [Finders and paths](#finders-and-paths)
@@ -65,6 +65,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Composer](#composer-autoloader)
     - [Composer Plugins](#composer-plugins)
     - [PSR-0 Partial support](#psr-0-partial-support)
+    - [WordPress support](#wordpress-support)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -878,6 +879,12 @@ transforming it to PSR-4, i.e. in the case above:
 
 If this will work for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
 
+### WordPress
+
+As of now PHP-Scoper does not easily allow to completely leave unchanged non-included third-party code causing some hurdles with Wordpress plugins. There is a standing issue about providing a better integration out of the box (See [#303][better-wp-support]) but alternatively you can already use [**WP React Starter**][wp-react-starter] which is a boilerplate for WordPress plugins.
+
+If you are not able to migrate you can have a look at the solution itself, read more about it here [#303 (comment)][wp-react-starter-details].
+
 
 ## Contributing
 
@@ -894,12 +901,15 @@ now been moved under the
 [@webmozart]: https://twitter.com/webmozart
 [bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
 [Bernhard Schussek]: https://webmozart.io/
+[better-wp-support]: https://github.com/humbug/php-scoper/issues/303
 [box]: https://github.com/humbug/box
 [humbug]: https://github.com/humbug
 [releases]: https://github.com/humbug/php-scoper/releases
 [symfony_finder]: https://symfony.com/doc/current/components/finder.html
 [releases]: https://github.com/humbug/php-scoper/releases
 [whitelist]: #whitelist
+[wp-react-starter]: https://github.com/devowlio/wp-react-starter
+[wp-react-starter-details]: https://github.com/humbug/php-scoper/issues/303#issuecomment-614207305
 [patchers]: #patchers
 [php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
 [phar-extract-to]: https://secure.php.net/manual/en/phar.extractto.php
