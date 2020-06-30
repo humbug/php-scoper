@@ -65,7 +65,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Composer](#composer-autoloader)
     - [Composer Plugins](#composer-plugins)
     - [PSR-0 Partial support](#psr-0-partial-support)
-    - [WordPress support](#wordpress-support)
+    - [WordPress support](#wordpress)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
