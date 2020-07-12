@@ -21,9 +21,9 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.2",
+        "composer/package-versions-deprecated": "^1.8",
         "jetbrains/phpstorm-stubs": "dev-master",
         "nikic/php-parser": "^4.0",
-        "ocramius/package-versions": "^1.1",
         "symfony/console": "^3.2 || ^4.0",
         "symfony/filesystem": "^3.2 || ^4.0",
         "symfony/finder": "^3.2 || ^4.0"
