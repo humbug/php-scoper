@@ -29,7 +29,6 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use function in_array;
 
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
