@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\NodeTraverserInterface;
+use PhpParser\NodeVisitor\NameResolver;
 
 /**
  * @private
@@ -42,6 +43,7 @@ class TraverserFactory
         $useStatements = new UseStmtCollection();
 
         $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
+        $newNameResolver = new NameResolver();
 
         $traverser->addVisitor(new NodeVisitor\ParentNodeAppender());
 
@@ -50,15 +52,15 @@ class TraverserFactory
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
         $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $this->reflector));
 
-        $traverser->addVisitor(new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder($prefix, $nameResolver, $whitelist, $this->reflector));
-        $traverser->addVisitor(new NodeVisitor\ClassIdentifierRecorder($prefix, $nameResolver, $whitelist));
-        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder($prefix, $nameResolver, $newNameResolver, $whitelist, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\ClassIdentifierRecorder($prefix, $nameResolver, $newNameResolver, $whitelist));
+        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $newNameResolver, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\NewdocPrefixer($scoper, $prefix, $whitelist));
         $traverser->addVisitor(new NodeVisitor\EvalPrefixer($scoper, $prefix, $whitelist));
 
-        $traverser->addVisitor(new NodeVisitor\ClassAliasStmtAppender($prefix, $whitelist, $nameResolver));
-        $traverser->addVisitor(new NodeVisitor\ConstStmtReplacer($whitelist, $nameResolver));
+        $traverser->addVisitor(new NodeVisitor\ClassAliasStmtAppender($prefix, $whitelist, $nameResolver, $newNameResolver));
+        $traverser->addVisitor(new NodeVisitor\ConstStmtReplacer($whitelist, $nameResolver, $newNameResolver));
 
         return $traverser;
     }

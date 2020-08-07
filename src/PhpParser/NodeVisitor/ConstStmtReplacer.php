@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use PhpParser\NodeVisitor\NameResolver;
 use function count;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Whitelist;
@@ -27,6 +28,7 @@ use PhpParser\Node\Stmt\Const_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitorAbstract;
 use UnexpectedValueException;
+use function xdebug_break;
 
 /**
  * Replaces const declaration by define when the constant is whitelisted.
@@ -49,11 +51,16 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
 {
     private $whitelist;
     private $nameResolver;
+    private $newNameResolver;
 
-    public function __construct(Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
-    {
+    public function __construct(
+        Whitelist $whitelist,
+        FullyQualifiedNameResolver $nameResolver,
+        NameResolver $newNameResolver
+    ) {
         $this->whitelist = $whitelist;
         $this->nameResolver = $nameResolver;
+        $this->newNameResolver = $newNameResolver;
     }
 
     /**
@@ -69,12 +76,24 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
 
         foreach ($node->consts as $constant) {
             /** @var Node\Const_ $constant */
+            $newResolvedConstantName = $this->newNameResolver->getNameContext()->getResolvedName(
+                new Name(
+                    (string) $constant->name,
+                    $node->getAttributes()
+                ),
+                Node\Stmt\Use_::TYPE_CONSTANT
+            );
             $resolvedConstantName = $this->nameResolver->resolveName(
                 new Name(
                     (string) $constant->name,
                     $node->getAttributes()
                 )
             )->getName();
+
+            if ((string) $newResolvedConstantName !== (string) $resolvedConstantName) {
+                xdebug_break();
+                $x = '';
+            }
 
             if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName, true)) {
                 continue;

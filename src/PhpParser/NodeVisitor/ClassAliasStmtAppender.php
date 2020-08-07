@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
+use PhpParser\NodeVisitor\NameResolver;
 use function array_reduce;
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
@@ -58,12 +60,14 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     private $prefix;
     private $whitelist;
     private $nameResolver;
+    private $newNameResolver;
 
-    public function __construct(string $prefix, Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
+    public function __construct(string $prefix, Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver, NameResolver $newNameResolver)
     {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
         $this->nameResolver = $nameResolver;
+        $this->newNameResolver = $newNameResolver;
     }
 
     /**
@@ -112,6 +116,12 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         }
 
         $originalName = $this->nameResolver->resolveName($stmt->name)->getName();
+        $newOriginalName = $this->newNameResolver->getNameContext()->getResolvedName(NamedIdentifier::create($stmt->name), Stmt\Use_::TYPE_NORMAL);
+
+        if ((string) $originalName !== (string) $newOriginalName) {
+            xdebug_break();
+            $x = '';
+        }
 
         if (false === ($originalName instanceof FullyQualified)
             || $this->whitelist->belongsToWhitelistedNamespace((string) $originalName)

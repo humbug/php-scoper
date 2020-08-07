@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
+use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
@@ -27,6 +28,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -38,17 +40,20 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 {
     private $prefix;
     private $nameResolver;
+    private $newNameResolver;
     private $whitelist;
     private $reflector;
 
     public function __construct(
         string $prefix,
         FullyQualifiedNameResolver $nameResolver,
+        NameResolver $newNameResolver,
         Whitelist $whitelist,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
         $this->nameResolver = $nameResolver;
+        $this->newNameResolver = $newNameResolver;
         $this->whitelist = $whitelist;
         $this->reflector = $reflector;
     }
@@ -110,6 +115,12 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName(NamedIdentifier::create($node), Node\Stmt\Use_::TYPE_NORMAL);
+
+        if ((string) $resolvedName !== (string) $newResolvedName) {
+            xdebug_break();
+            $x = '';
+        }
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
@@ -123,6 +134,12 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName($node, Node\Stmt\Use_::TYPE_NORMAL);
+
+        if ((string) $resolvedName !== (string) $newResolvedName) {
+            xdebug_break();
+            $x = '';
+        }
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
@@ -145,6 +162,13 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $x = '';
+        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName($node, Node\Stmt\Use_::TYPE_NORMAL);
+
+        if ((string) $resolvedName !== (string) $newResolvedName) {
+            xdebug_break();
+            $x = '';
+        }
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }

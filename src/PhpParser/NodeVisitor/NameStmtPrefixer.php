@@ -18,6 +18,7 @@ use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
+use PhpParser\NodeVisitor\NameResolver;
 use function in_array;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -66,17 +67,20 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     private $prefix;
     private $whitelist;
     private $nameResolver;
+    private $newNameResolver;
     private $reflector;
 
     public function __construct(
         string $prefix,
         Whitelist $whitelist,
         FullyQualifiedNameResolver $nameResolver,
+        NameResolver $newNameResolver,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
         $this->nameResolver = $nameResolver;
+        $this->newNameResolver = $newNameResolver;
         $this->reflector = $reflector;
     }
 
@@ -145,6 +149,12 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         $resolvedName = $this->nameResolver->resolveName($name)->getName();
+        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName($name, Node\Stmt\Use_::TYPE_NORMAL);
+
+        if ((string) $resolvedName !== (string) $newResolvedName) {
+            xdebug_break();
+            $x = '';
+        }
 
         if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
             || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
