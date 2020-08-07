@@ -142,8 +142,10 @@ final class UseStmtCollection implements IteratorAggregate
                         continue;
                     }
 
-                    // Match the alias
-                    return UseStmtManipulator::getOriginalName($useStatement);
+                    if (Use_::TYPE_NORMAL === $use_->type) {
+                        // Match the alias
+                        return UseStmtManipulator::getOriginalName($useStatement);
+                    }
                 }
             }
         }
