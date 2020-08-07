@@ -118,8 +118,9 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName(NamedIdentifier::create($node), Node\Stmt\Use_::TYPE_NORMAL);
 
         if ((string) $resolvedName !== (string) $newResolvedName) {
-            xdebug_break();
+//            xdebug_break();
             $x = '';
+//            $resolvedName = $newResolvedName;
         }
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
