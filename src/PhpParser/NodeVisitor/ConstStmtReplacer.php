@@ -28,7 +28,6 @@ use PhpParser\Node\Stmt\Const_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitorAbstract;
 use UnexpectedValueException;
-use function xdebug_break;
 
 /**
  * Replaces const declaration by define when the constant is whitelisted.

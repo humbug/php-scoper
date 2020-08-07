@@ -74,7 +74,6 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName(NamedIdentifier::create($node), Node\Stmt\Use_::TYPE_NORMAL);
 
         if ((string) $resolvedName !== (string) $newResolvedName) {
-            xdebug_break();
             $x = '';
         }
 

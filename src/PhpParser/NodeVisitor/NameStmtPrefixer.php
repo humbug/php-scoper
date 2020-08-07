@@ -152,7 +152,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName($name, Node\Stmt\Use_::TYPE_NORMAL);
 
         if ((string) $resolvedName !== (string) $newResolvedName) {
-//            xdebug_break();
             $x = '';
         }
 

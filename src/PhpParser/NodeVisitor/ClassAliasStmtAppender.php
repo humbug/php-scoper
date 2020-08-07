@@ -119,7 +119,6 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         $newOriginalName = $this->newNameResolver->getNameContext()->getResolvedName(NamedIdentifier::create($stmt->name), Stmt\Use_::TYPE_NORMAL);
 
         if ((string) $originalName !== (string) $newOriginalName) {
-            xdebug_break();
             $x = '';
         }
 
