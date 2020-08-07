@@ -56,4 +56,36 @@ abstract class TestCase extends \Humbug\PHPUnit\Framework\Assert
 
 PHP
     ],
+
+    'Internal class & const with the same name' => [
+        'registered-functions' => [],
+        'payload' => <<<'PHP'
+<?php
+
+namespace PHPUnit\Framework;
+
+use const SORT_NUMERIC;
+
+abstract class TestCase extends SORT_NUMERIC {
+    function __construct() {
+        echo SORT_NUMERIC;
+    }
+}
+
+----
+<?php
+
+namespace Humbug\PHPUnit\Framework;
+
+use const SORT_NUMERIC;
+abstract class TestCase extends \Humbug\PHPUnit\Framework\SORT_NUMERIC
+{
+    function __construct()
+    {
+        echo \SORT_NUMERIC;
+    }
+}
+
+PHP
+    ],
 ];
