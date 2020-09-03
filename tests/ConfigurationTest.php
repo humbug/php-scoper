@@ -36,6 +36,7 @@ class ConfigurationTest extends FileSystemTestCase
         $this->assertNull($configuration->getPrefix());
         $this->assertSame([], $configuration->getFilesWithContents());
         $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
+        $this->assertFalse($configuration->getWhitelist()->getNamespacesWhitelistIsInverted());
     }
 
     public function test_it_cannot_create_a_configuration_with_an_invalid_key(): void
@@ -77,6 +78,7 @@ return [
     'whitelist-global-classes' => false,
     'whitelist-global-functions' => false,
     'whitelist' => ['Foo', 'Bar\*'],
+    'inverse-namespaces-whitelist' => true
 ];
 PHP
         );
@@ -85,13 +87,13 @@ PHP
         $configuration = Configuration::load($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php');
 
         $this->assertSame([$this->tmp.DIRECTORY_SEPARATOR.'file1'], $configuration->getWhitelistedFiles());
-        $this->assertEquals(
-            Whitelist::create(false, false, false, 'Foo', 'Bar\*'),
-            $configuration->getWhitelist()
-        );
+        $expectedWhitelist = Whitelist::create(false, false, false, 'Foo', 'Bar\*');
+        $expectedWhitelist->setNamespacesWhitelistIsInverted(true);
+        $this->assertEquals($expectedWhitelist, $configuration->getWhitelist());
         $this->assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
         $this->assertSame('MyPrefix', $configuration->getPrefix());
         $this->assertSame([], $configuration->getFilesWithContents());
         $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
+        $this->assertTrue($configuration->getWhitelist()->getNamespacesWhitelistIsInverted());
     }
 }
