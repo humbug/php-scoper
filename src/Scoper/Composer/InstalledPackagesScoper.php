@@ -43,7 +43,12 @@ final class InstalledPackagesScoper implements Scoper
 
         $decodedJson = json_decode($contents, false);
 
-        $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix, $whitelist);
+        // compatibility with Composer 2
+        if (isset($decodedJson->packages)) {
+            $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages, $prefix, $whitelist);
+        } else {
+            $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix, $whitelist);
+        }
 
         return json_encode(
             $decodedJson,
