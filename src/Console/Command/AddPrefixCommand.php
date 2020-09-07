@@ -129,9 +129,13 @@ final class AddPrefixCommand extends BaseCommand
 
         $this->validatePrefix($input);
         $this->validatePaths($input);
-        $this->validateOutputDir($input, $io);
 
         $config = $this->retrieveConfig($input, $output, $io);
+
+        if(!$this->validateOutputDir($input, $io, $config)) {
+        	return 0;
+        };
+
         $output = $input->getOption(self::OUTPUT_DIR_OPT);
 
         $logger = new ScoperLogger(
@@ -307,7 +311,13 @@ final class AddPrefixCommand extends BaseCommand
         $input->setArgument(self::PATH_ARG, $paths);
     }
 
-    private function validateOutputDir(InputInterface $input, OutputStyle $io): void
+	/**
+	 * @param InputInterface $input
+	 * @param OutputStyle $io
+	 *
+	 * @return bool True if the command execution must continue after the function returns, false otherwise
+	 */
+    private function validateOutputDir(InputInterface $input, OutputStyle $io): bool
     {
         $outputDir = $input->getOption(self::OUTPUT_DIR_OPT);
 
@@ -318,7 +328,7 @@ final class AddPrefixCommand extends BaseCommand
         $input->setOption(self::OUTPUT_DIR_OPT, $outputDir);
 
         if (false === $this->fileSystem->exists($outputDir)) {
-            return;
+            return true;
         }
 
         if (false === is_writable($outputDir)) {
@@ -333,7 +343,7 @@ final class AddPrefixCommand extends BaseCommand
         if ($input->getOption(self::FORCE_OPT)) {
             $this->fileSystem->remove($outputDir);
 
-            return;
+            return true;
         }
 
         if (false === is_dir($outputDir)) {
@@ -347,7 +357,7 @@ final class AddPrefixCommand extends BaseCommand
             );
 
             if (false === $canDeleteFile) {
-                return;
+                return false;
             }
 
             $this->fileSystem->remove($outputDir);
@@ -362,11 +372,13 @@ final class AddPrefixCommand extends BaseCommand
             );
 
             if (false === $canDeleteFile) {
-                return;
+                return false;
             }
 
             $this->fileSystem->remove($outputDir);
         }
+
+        return true;
     }
 
     private function retrieveConfig(InputInterface $input, OutputInterface $output, OutputStyle $io): Configuration
