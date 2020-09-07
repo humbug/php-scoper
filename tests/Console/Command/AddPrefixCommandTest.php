@@ -139,18 +139,21 @@ EOF;
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
-    /**
-     * @testWith [true, false, "output_dir_from_config"]
-     *           [false, true, "output_dir_from_command_line"]
-     *           [true, true, "output_dir_from_command_line"]
-     *
-     * @param bool $use_output_dir_in_config_file True to use a configuration file with a 'output-dir' key
-     * @param bool $use_output_dir_in_command_line True to specify an output directory in command line
-     * @param string $expected_output_dir The actual output directory where the files will have been generated
-     */
-    public function test_scope_the_given_paths($use_output_dir_in_config_file, $use_output_dir_in_command_line, $expected_output_dir): void
+    public function provideOutputDirOptions()
     {
-        if($use_output_dir_in_config_file) {
+        return [
+            [true, false, 'output_dir_from_config'],
+            [false, true, 'output_dir_from_command_line'],
+            [true, true, 'output_dir_from_command_line'],
+        ];
+    }
+
+    /**
+     * @dataProvider provideOutputDirOptions
+     */
+    public function test_scope_the_given_paths($useOutputDirInConfigFile, $useOutputDirInCommandLine, $expoectedOutputDir): void
+    {
+        if($useOutputDirInConfigFile) {
             $foo = $this->tmp . '/output_dir_from_config';
             dump_file( $this->tmp . '/scoper.inc.php', "
 <?php
@@ -167,22 +170,25 @@ return [
             'paths' => [
                 $root = self::FIXTURE_PATH.'/set002/original',
             ],
-            '--output-dir' => $this->tmp . '/' . $expected_output_dir,
+            '--output-dir' => $this->tmp . '/' . $expoectedOutputDir,
             '--no-interaction',
             '--no-config' => null,
         ];
 
-        if($use_output_dir_in_config_file) {
+        if($useOutputDirInConfigFile) {
             $input['--config'] = $this->tmp . '/scoper.inc.php';
-        }
-        else {
+        } else {
             $input['--no-config'] = null;
+        }
+
+        if($useOutputDirInCommandLine) {
+            $input['--output-dir'] = $this->tmp . '/' . $expoectedOutputDir;
         }
 
         $this->fileSystemProphecy->isAbsolutePath($root)->willReturn(true);
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
 
-        $this->fileSystemProphecy->mkdir($this->tmp . '/' . $expected_output_dir)->shouldBeCalled();
+        $this->fileSystemProphecy->mkdir($this->tmp . '/' . $expoectedOutputDir)->shouldBeCalled();
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
         $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
 
@@ -197,7 +203,7 @@ return [
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
             $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp . '/' . $expected_output_dir.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp . '/' . $expoectedOutputDir . '/' . $expectedFile);
 
             $inputContents = file_get_contents($inputPath);
 
