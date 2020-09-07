@@ -174,7 +174,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_symbol_belongs_to_a_whitelisted_namespace_in_inclusive_mode(Whitelist $whitelist, string $symbol, bool $expected): void
     {
-        $whitelist->setNamespacesWhitelistIsInverted(true);
+        $whitelist->setNamespaceWhitelistIsInverted(true);
         $actual = $whitelist->belongsToWhitelistedNamespace($symbol);
 
         $this->assertSame(!$expected, $actual);
@@ -195,7 +195,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_namespace_is_whitelisted_in_inverted_mode(Whitelist $whitelist, string $namespace, bool $expected): void
     {
-        $whitelist->setNamespacesWhitelistIsInverted(true);
+        $whitelist->setNamespaceWhitelistIsInverted(true);
         $actual = $whitelist->isWhitelistedNamespace($namespace);
 
         $this->assertSame(!$expected, $actual);

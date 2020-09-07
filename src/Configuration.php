@@ -402,9 +402,10 @@ final class Configuration
             }
         }
 
-        $whitelist_instance = Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, $whitelistGlobalFunctions, ...$whitelist);
-        $whitelist_instance->setNamespacesWhitelistIsInverted($namespacesWhitelistIsInverted);
-        return $whitelist_instance;
+        $whitelistInstance = Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, $whitelistGlobalFunctions, ...$whitelist);
+        $whitelistInstance->setNamespaceWhitelistIsInverted($namespacesWhitelistIsInverted);
+
+        return $whitelistInstance;
     }
 
     /**
