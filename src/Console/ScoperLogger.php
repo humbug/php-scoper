@@ -31,6 +31,8 @@ class ScoperLogger
     private $io;
     private $startTime;
     private $progressBar;
+    private $prefixedFilesCount;
+    private $totalProcessedFilesCount;
 
     public function __construct(SymfonyApplication $application, SymfonyStyle $io)
     {
@@ -46,6 +48,9 @@ class ScoperLogger
      */
     public function outputScopingStart(string $prefix, array $paths): void
     {
+        $this->prefixedFilesCount       = 0;
+        $this->totalProcessedFilesCount = 0;
+
         $this->io->writeln($this->application->getHelp());
 
         $newLine = 1;
@@ -95,8 +100,9 @@ class ScoperLogger
      * Output scoping success message.
      *
      * @param string $path
+     * @param bool $fileWasPrefixed True if the file was prefixed, false if it was just copied
      */
-    public function outputSuccess(string $path): void
+    public function outputSuccess(string $path, bool $fileWasPrefixed): void
     {
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
             $this->io->writeln(
@@ -106,6 +112,11 @@ class ScoperLogger
                 )
             );
         }
+
+        if($fileWasPrefixed) {
+            $this->prefixedFilesCount++;
+        }
+        $this->totalProcessedFilesCount++;
 
         $this->progressBar->advance();
     }
@@ -131,6 +142,8 @@ class ScoperLogger
             );
         }
 
+        $this->prefixedFilesCount++;
+
         $this->progressBar->advance();
     }
 
@@ -150,12 +163,21 @@ class ScoperLogger
         $this->io->newLine(2);
 
         if (false === $failed) {
-            $this->io->success(
-                sprintf(
+            if($this->totalProcessedFilesCount === $this->prefixedFilesCount) {
+                $message = sprintf(
                     'Successfully prefixed %d files.',
-                    $this->progressBar->getMaxSteps()
-                )
-            );
+                    $this->prefixedFilesCount
+                );
+            }
+            else {
+                $message = sprintf(
+                    'Successfully processed %d files, of which %d were prefixed.',
+                    $this->totalProcessedFilesCount,
+                    $this->prefixedFilesCount
+                );
+            }
+
+            $this->io->success($message);
         }
 
         if ($this->io->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {

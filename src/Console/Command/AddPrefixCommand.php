@@ -20,7 +20,6 @@ use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Console\ScoperLogger;
 use function Humbug\PhpScoper\get_common_path;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Scoper\ConfigurableScoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Whitelist;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -57,7 +56,7 @@ final class AddPrefixCommand extends BaseCommand
         parent::__construct();
 
         $this->fileSystem = $fileSystem;
-        $this->scoper = new ConfigurableScoper($scoper);
+        $this->scoper = $scoper;
     }
 
     /**
@@ -135,10 +134,6 @@ final class AddPrefixCommand extends BaseCommand
         $config = $this->retrieveConfig($input, $output, $io);
         $output = $input->getOption(self::OUTPUT_DIR_OPT);
 
-        if ([] !== $config->getWhitelistedFiles()) {
-            $this->scoper = $this->scoper->withWhitelistedFiles(...$config->getWhitelistedFiles());
-        }
-
         $logger = new ScoperLogger(
             $this->getApplication(),
             $io
@@ -149,10 +144,14 @@ final class AddPrefixCommand extends BaseCommand
             $input->getArgument(self::PATH_ARG)
         );
 
+        $io->writeln("Output directory: <comment>$output</comment>");
+        $io->writeln('');
+
         try {
             $this->scopeFiles(
                 $config->getPrefix(),
                 $config->getFilesWithContents(),
+                $config->getWhitelistedFiles(),
                 $output,
                 $config->getPatchers(),
                 $config->getWhitelist(),
@@ -178,6 +177,7 @@ final class AddPrefixCommand extends BaseCommand
     private function scopeFiles(
         string $prefix,
         array $filesWithContents,
+        array $whitelistedFiles,
         string $output,
         array $patchers,
         Whitelist $whitelist,
@@ -187,12 +187,12 @@ final class AddPrefixCommand extends BaseCommand
         // Creates output directory if does not already exist
         $this->fileSystem->mkdir($output);
 
-        $logger->outputFileCount(count($filesWithContents));
+        $logger->outputFileCount(count($filesWithContents) + count($whitelistedFiles));
 
         $vendorDirs = [];
         $commonPath = get_common_path(array_keys($filesWithContents));
 
-        foreach ($filesWithContents as [$inputFilePath, $inputContents]) {
+        foreach ($filesWithContents as $inputFilePath => $inputContents) {
             $outputFilePath = $output.str_replace($commonPath, '', $inputFilePath);
 
             $pattern = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
@@ -210,6 +210,12 @@ final class AddPrefixCommand extends BaseCommand
                 $stopOnFailure,
                 $logger
             );
+        }
+
+        foreach($whitelistedFiles as $filePath) {
+	        $outputFilePath = $output.str_replace($commonPath, '', $filePath);
+	        $this->fileSystem->copy($filePath, $outputFilePath, true);
+	        $logger->outputSuccess($filePath, false);
         }
 
         $vendorDirs = array_keys($vendorDirs);
@@ -267,7 +273,7 @@ final class AddPrefixCommand extends BaseCommand
         $this->fileSystem->dumpFile($outputFilePath, $scoppedContent);
 
         if (false === isset($exception)) {
-            $logger->outputSuccess($inputFilePath);
+            $logger->outputSuccess($inputFilePath, true);
         }
     }
 

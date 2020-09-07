@@ -132,7 +132,11 @@ final class Configuration
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
-        $filesWithContents = self::retrieveFilesWithContents(chain($filesFromPaths, ...$finders));
+
+        $files = self::retrieveFiles(chain($filesFromPaths, ...$finders));
+        $whitelistedFiles = array_intersect($whitelistedFiles, $files);
+        $files = array_diff($files, $whitelistedFiles);
+        $filesWithContents = self::retrieveFilesWithContents($files);
 
         return new self($path, $prefix, $filesWithContents, $patchers, $whitelist, $whitelistedFiles);
     }
@@ -166,13 +170,13 @@ final class Configuration
 
     public function withPaths(array $paths): self
     {
-        $filesWithContents = self::retrieveFilesWithContents(
+        $files = self::retrieveFiles(
             chain(
                 self::retrieveFilesFromPaths(
                     array_unique($paths)
                 )
-            )
-        );
+        ));
+        $filesWithContents = self::retrieveFilesWithContents($files);
 
         return new self(
             $this->path,
@@ -514,9 +518,9 @@ final class Configuration
     /**
      * @param Iterator $files
      *
-     * @return string[][] Array of tuple with the first argument being the file path and the second its contents
+     * @return string[][] Array of file paths
      */
-    private static function retrieveFilesWithContents(Iterator $files): array
+    private static function retrieveFiles(Iterator $files): array
     {
         return array_reduce(
             iterator_to_array($files, false),
@@ -541,11 +545,26 @@ final class Configuration
                     );
                 }
 
-                $files[$fileInfo->getRealPath()] = [$fileInfo->getRealPath(), file_get_contents($file)];
+                $files[] = $file;
 
                 return $files;
             },
             []
         );
+    }
+
+    /**
+     * @param array $files
+     *
+     * @return array Array where keys are file names and values are file contents
+     */
+    private static function retrieveFilesWithContents(array $files): array
+    {
+        $filesWithContents = [];
+        foreach($files as $file) {
+            $filesWithContents[$file] = file_get_contents($file);
+        }
+
+        return $filesWithContents;
     }
 }
