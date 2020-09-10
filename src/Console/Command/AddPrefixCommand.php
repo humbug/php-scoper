@@ -129,13 +129,9 @@ final class AddPrefixCommand extends BaseCommand
 
         $this->validatePrefix($input);
         $this->validatePaths($input);
+        $this->validateOutputDir($input, $io);
 
         $config = $this->retrieveConfig($input, $output, $io);
-
-        if(!$this->validateOutputDir($input, $io, $config)) {
-        	return 0;
-        };
-
         $output = $input->getOption(self::OUTPUT_DIR_OPT);
 
         $logger = new ScoperLogger(
@@ -217,9 +213,9 @@ final class AddPrefixCommand extends BaseCommand
         }
 
         foreach($whitelistedFiles as $filePath) {
-	        $outputFilePath = $output.str_replace($commonPath, '', $filePath);
-	        $this->fileSystem->copy($filePath, $outputFilePath, true);
-	        $logger->outputSuccess($filePath, false);
+            $outputFilePath = $output.str_replace($commonPath, '', $filePath);
+            $this->fileSystem->copy($filePath, $outputFilePath, true);
+            $logger->outputSuccess($filePath, false);
         }
 
         $vendorDirs = array_keys($vendorDirs);
@@ -311,13 +307,7 @@ final class AddPrefixCommand extends BaseCommand
         $input->setArgument(self::PATH_ARG, $paths);
     }
 
-	/**
-	 * @param InputInterface $input
-	 * @param OutputStyle $io
-	 *
-	 * @return bool True if the command execution must continue after the function returns, false otherwise
-	 */
-    private function validateOutputDir(InputInterface $input, OutputStyle $io): bool
+    private function validateOutputDir(InputInterface $input, OutputStyle $io): void
     {
         $outputDir = $input->getOption(self::OUTPUT_DIR_OPT);
 
@@ -328,7 +318,7 @@ final class AddPrefixCommand extends BaseCommand
         $input->setOption(self::OUTPUT_DIR_OPT, $outputDir);
 
         if (false === $this->fileSystem->exists($outputDir)) {
-            return true;
+            return;
         }
 
         if (false === is_writable($outputDir)) {
@@ -343,7 +333,7 @@ final class AddPrefixCommand extends BaseCommand
         if ($input->getOption(self::FORCE_OPT)) {
             $this->fileSystem->remove($outputDir);
 
-            return true;
+            return;
         }
 
         if (false === is_dir($outputDir)) {
@@ -357,7 +347,7 @@ final class AddPrefixCommand extends BaseCommand
             );
 
             if (false === $canDeleteFile) {
-                return false;
+                return;
             }
 
             $this->fileSystem->remove($outputDir);
@@ -372,13 +362,11 @@ final class AddPrefixCommand extends BaseCommand
             );
 
             if (false === $canDeleteFile) {
-                return false;
+                return;
             }
 
             $this->fileSystem->remove($outputDir);
         }
-
-        return true;
     }
 
     private function retrieveConfig(InputInterface $input, OutputInterface $output, OutputStyle $io): Configuration
