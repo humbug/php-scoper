@@ -5,6 +5,7 @@ MAKEFLAGS += --no-builtin-rules
 .DEFAULT_GOAL := help
 
 PHPBIN=php
+PHPNOGC=php -d zend.enable_gc=0
 PHPSTAN_URL=https://github.com/phpstan/phpstan/releases/download/0.12.2/phpstan.phar
 
 SRC_FILES=$(shell find bin/ src/ -type f)
