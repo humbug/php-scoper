@@ -305,14 +305,14 @@ YAML
         yield 'service with class-name as argument with short-argument notation' => [
             <<<'YAML'
 services:
-    Acme\Foo: 
+    Acme\Foo:
         - '@Acme\Bar'
 YAML
             ,
             Whitelist::create(true, true, true),
             <<<'YAML'
 services:
-    Humbug\Acme\Foo: 
+    Humbug\Acme\Foo:
         - '@Humbug\Acme\Bar'
 YAML
             ,
@@ -322,10 +322,10 @@ YAML
         yield 'service with class-name as argument with short-argument notation with whitelist' => [
             <<<'YAML'
 services:
-    Acme\Foo\X: 
+    Acme\Foo\X:
         - '@Acme\Foo\Y'
 
-    Acme\Bar\X: 
+    Acme\Bar\X:
         - '@Acme\Bar\Y'
 YAML
             ,
@@ -337,10 +337,10 @@ YAML
             ),
             <<<'YAML'
 services:
-    Acme\Foo\X: 
+    Acme\Foo\X:
         - '@Acme\Foo\Y'
 
-    Humbug\Acme\Bar\X: 
+    Humbug\Acme\Bar\X:
         - '@Humbug\Acme\Bar\Y'
 YAML
             ,
@@ -381,7 +381,7 @@ services:
             - '@Acme\Foo\Y'
         tags:
             - { name: my_tag, id: 'Acme\Foo\Z' }
-    
+
     bar:
         class: 'Acme\Bar\X'
         arguments:
@@ -404,7 +404,7 @@ services:
             - '@Acme\Foo\Y'
         tags:
             - { name: my_tag, id: 'Acme\Foo\Z' }
-    
+
     bar:
         class: 'Humbug\Acme\Bar\X'
         arguments:
@@ -419,14 +419,14 @@ YAML
         yield [
             <<<'YAML'
 services:
-    Acme\Foo: 
+    Acme\Foo:
         - '@Acme\Bar'
 YAML
             ,
             Whitelist::create(true, true, true, 'Acme\Foo'),
             <<<'YAML'
 services:
-    Humbug\Acme\Foo: 
+    Humbug\Acme\Foo:
         - '@Humbug\Acme\Bar'
 YAML
             ,
@@ -438,18 +438,18 @@ YAML
         yield [
             <<<'YAML'
 services:
-    Foo: 
+    Foo:
         - '@Acme\Bar'
-        
+
     Closure: ~
 YAML
             ,
             Whitelist::create(true, true, true),
             <<<'YAML'
 services:
-    Foo: 
+    Foo:
         - '@Humbug\Acme\Bar'
-        
+
     Closure: ~
 YAML
             ,
@@ -460,7 +460,7 @@ YAML
         yield [
             <<<'YAML'
 services:
-    Acme\Foo: 
+    Acme\Foo:
         - '@Acme\Bar'
     Emca\Foo:
         - '@Emca\Bar'
@@ -469,7 +469,7 @@ YAML
             Whitelist::create(true, true, true, 'Acme\*'),
             <<<'YAML'
 services:
-    Acme\Foo: 
+    Acme\Foo:
         - '@Acme\Bar'
     Humbug\Emca\Foo:
         - '@Humbug\Emca\Bar'
