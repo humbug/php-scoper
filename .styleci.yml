@@ -6,6 +6,8 @@ enabled:
     - declare_strict_types
 
 disabled:
+    - native_constant_invocation_symfony
+    - native_function_invocation_symfony
     - phpdoc_annotation_without_dot # This is still buggy: https://github.com/symfony/symfony/pull/19198
     - phpdoc_inline_tag
     - single_line_throw
@@ -13,6 +15,7 @@ disabled:
 finder:
   exclude:
     - 'fixtures'
+    - 'specs'
   not-path:
     - 'src/check.php'
     - 'src/Autoload/Requirements.php'
