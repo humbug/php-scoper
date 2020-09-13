@@ -32,6 +32,12 @@ use const A\{B};
 use const A\{B\C, D};
 use const \A\B\{C\D as ABCD, E};
 
+B;
+C;
+D;
+ABCD;
+E;
+
 ----
 <?php
 
@@ -42,6 +48,11 @@ use const Humbug\A\B\C;
 use const Humbug\A\D;
 use const Humbug\A\B\C\D as ABCD;
 use const Humbug\A\B\E;
+\Humbug\A\B;
+\Humbug\A\B\C;
+\Humbug\A\D;
+\Humbug\A\B\C\D;
+\Humbug\A\B\E;
 
 PHP
     ,

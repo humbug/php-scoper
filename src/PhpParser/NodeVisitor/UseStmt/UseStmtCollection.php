@@ -127,7 +127,8 @@ final class UseStmtCollection implements IteratorAggregate
 
                 if ($name === $useStatement->getAlias()->toLowerString()) {
                     if ($isFunctionName) {
-                        if (Use_::TYPE_FUNCTION === $use_->type) {
+                        if (Use_::TYPE_FUNCTION === $use_->type ||
+                            (Use_::TYPE_UNKNOWN === $use_->type && Use_::TYPE_FUNCTION === $useStatement->type)) {
                             return UseStmtManipulator::getOriginalName($useStatement);
                         }
 
@@ -135,14 +136,16 @@ final class UseStmtCollection implements IteratorAggregate
                     }
 
                     if ($isConstantName) {
-                        if (Use_::TYPE_CONSTANT === $use_->type) {
+                        if (Use_::TYPE_CONSTANT === $use_->type ||
+                            (Use_::TYPE_UNKNOWN === $use_->type && Use_::TYPE_CONSTANT === $useStatement->type)) {
                             return UseStmtManipulator::getOriginalName($useStatement);
                         }
 
                         continue;
                     }
 
-                    if (Use_::TYPE_NORMAL === $use_->type) {
+                    if (Use_::TYPE_NORMAL === $use_->type ||
+                        (Use_::TYPE_UNKNOWN === $use_->type && Use_::TYPE_NORMAL === $useStatement->type)) {
                         // Match the alias
                         return UseStmtManipulator::getOriginalName($useStatement);
                     }
