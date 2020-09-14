@@ -33,6 +33,8 @@ use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
+use function is_dir;
+use function sprintf;
 
 final class AddPrefixCommand extends BaseCommand
 {
@@ -305,9 +307,6 @@ final class AddPrefixCommand extends BaseCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputStyle $io
-     *
      * @return bool True if the command execution must continue after the function returns, false otherwise
      */
     private function validateOutputDir(InputInterface $input, OutputStyle $io, Configuration $config): bool

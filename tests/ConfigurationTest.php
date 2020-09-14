@@ -33,6 +33,7 @@ class ConfigurationTest extends FileSystemTestCase
             $configuration->getWhitelist()
         );
         $this->assertNull($configuration->getPath());
+        $this->assertSame('ask', $configuration->getOnExistingOutputDir());
         $this->assertNull($configuration->getPrefix());
         $this->assertSame([], $configuration->getFilesWithContents());
         $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());

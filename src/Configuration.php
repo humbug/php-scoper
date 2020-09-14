@@ -35,6 +35,8 @@ use SplFileInfo;
 use function sprintf;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use function in_array;
+use function implode;
 
 final class Configuration
 {
@@ -562,11 +564,6 @@ final class Configuration
         );
     }
 
-    /**
-     * @param array $config
-     *
-     * @return string
-     */
     private static function retrieveOnExistingOutputDir(array $config): string
     {
         if (false === array_key_exists(self::ON_EXISTING_OUTPUT_DIR_KEYWORD, $config)) {
@@ -586,13 +583,13 @@ final class Configuration
         }
 
         $allowedOnExistingOutputDirValues = ['ask', 'overwrite', 'abort'];
-        if(!in_array($onExistingOutputDir, $allowedOnExistingOutputDirValues)) {
+        if(!in_array($onExistingOutputDir, $allowedOnExistingOutputDirValues, true)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Found value of "%s" for %s; allowed values are %s.',
-                    $onExistingOutputDir,
-                    self::ON_EXISTING_OUTPUT_DIR_KEYWORD,
-                    implode(', ', $allowedOnExistingOutputDirValues)
+	                'Expected one of "%s" for "%s". Got "%s".',
+	                implode('", "', $allowedOnExistingOutputDirValues),
+	                self::ON_EXISTING_OUTPUT_DIR_KEYWORD,
+	                $onExistingOutputDir
                 )
             );
         }
