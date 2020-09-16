@@ -62,11 +62,6 @@ final class UseStmtCollection implements IteratorAggregate
      * use Y;
      *
      * will return the use statement for `Bar\Foo`.
-     *
-     * @param Name|null $namespaceName
-     * @param Name      $node
-     *
-     * @return null|Name
      */
     public function findStatementForNode(?Name $namespaceName, Name $node): ?Name
     {
