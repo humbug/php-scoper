@@ -32,6 +32,12 @@ use A\{B};
 use A\{B\C, D};
 use \A\B\{C\D as ABCD, E};
 
+B::class;
+C::class;
+D::class;
+ABCD::class;
+E::class;
+
 ----
 <?php
 
@@ -42,6 +48,11 @@ use Humbug\A\B\C;
 use Humbug\A\D;
 use Humbug\A\B\C\D as ABCD;
 use Humbug\A\B\E;
+\Humbug\A\B::class;
+\Humbug\A\B\C::class;
+\Humbug\A\D::class;
+\Humbug\A\B\C\D::class;
+\Humbug\A\B\E::class;
 
 PHP
     ,
@@ -79,6 +90,12 @@ use A\{B};
 use A\{B\C, D};
 use \A\B\{C\G, E};
 
+B::class;
+C::class;
+D::class;
+G::class;
+E::class;
+
 ----
 <?php
 
@@ -89,6 +106,11 @@ use Humbug\A\B\C;
 use Humbug\A\D;
 use Humbug\A\B\C\G;
 use Humbug\A\B\E;
+\Humbug\A\B::class;
+\Humbug\A\B\C::class;
+\Humbug\A\D::class;
+\Humbug\A\B\C\G::class;
+\Humbug\A\B\E::class;
 
 PHP
     ],
