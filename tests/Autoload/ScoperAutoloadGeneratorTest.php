@@ -187,8 +187,8 @@ $loader = require_once __DIR__.'/autoload.php';
 
 // Aliases for the whitelisted classes. For more information see:
 // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
-if (!class_exists('A\Foo', false)) {
-    class_exists('Humbug\A\Foo');
+if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
+    spl_autoload_call('Humbug\A\Foo');
 }
 
 return $loader;
@@ -221,11 +221,11 @@ $loader = require_once __DIR__.'/autoload.php';
 
 // Aliases for the whitelisted classes. For more information see:
 // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
-if (!class_exists('Foo', false)) {
-    class_exists('Humbug\Foo');
+if (!class_exists('Foo', false) && !interface_exists('Foo', false) && !trait_exists('Foo', false)) {
+    spl_autoload_call('Humbug\Foo');
 }
-if (!class_exists('Bar', false)) {
-    class_exists('Humbug\Bar');
+if (!class_exists('Bar', false) && !interface_exists('Bar', false) && !trait_exists('Bar', false)) {
+    spl_autoload_call('Humbug\Bar');
 }
 
 return $loader;
@@ -281,8 +281,8 @@ namespace {
 // Aliases for the whitelisted classes. For more information see:
 // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
 namespace {
-    if (!class_exists('A\Foo', false)) {
-        class_exists('Humbug\A\Foo');
+    if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
+        spl_autoload_call('Humbug\A\Foo');
     }
 }
 
