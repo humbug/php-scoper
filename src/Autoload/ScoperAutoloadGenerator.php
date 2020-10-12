@@ -113,8 +113,8 @@ PHP;
 
                 return sprintf(
                     <<<'PHP'
-if (!class_exists('%s', false)) {
-    class_exists('%s');
+if (!class_exists('%1$s', false) && !interface_exists('%1$s', false) && !trait_exists('%1$s', false)) {
+    spl_autoload_call('%2$s');
 }
 PHP
                     ,
