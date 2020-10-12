@@ -3,6 +3,7 @@
         "bin/greet.php"
     ],
     "autoload": {
+        "classmap": ["polyfill"],
         "psr-4": {
             "Set011\\": "src/"
         }
