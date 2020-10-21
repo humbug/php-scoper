@@ -65,6 +65,17 @@ final class Reflector
         'STDIN',
         'STDOUT',
         'STDERR',
+        // Added in PHP 7.4
+        'T_BAD_CHARACTER',
+        'T_FN',
+        'T_COALESCE_EQUAL',
+        // Added in PHP 8.0
+        'T_NAME_QUALIFIED',
+        'T_NAME_FULLY_QUALIFIED',
+        'T_NAME_RELATIVE',
+        'T_MATCH',
+        'T_NULLSAFE_OBJECT_OPERATOR',
+        'T_ATTRIBUTE',
     ];
 
     private static $CLASSES;
