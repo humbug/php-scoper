@@ -1,0 +1,88 @@
+name: Build
+
+on:
+    push:
+        branches: [master]
+    pull_request:
+    release:
+        types: [created]
+
+jobs:
+    tests:
+        runs-on: ubuntu-latest
+        name: Build and test
+        strategy:
+            matrix:
+                php: ["7.2", "7.4"]
+                composer-version: ["1"]
+                coverage: ["none"]
+                publish-phar: [false]
+                include:
+                    -   php: "7.3"
+                        coverage: "pcov"
+                        publish-phar: true
+                    -   php: "7.4"
+                        composer-version: "2"
+
+        steps:
+            -   uses: actions/checkout@v2
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "${{ matrix.php }}"
+                    ini-values: "phar.readonly=0"
+                    tools: "composer:v${{ matrix.composer-version }}"
+                    coverage: "${{ matrix.coverage }}"
+
+            -   name: Set composer root version
+                run: source .composer-root-version
+
+            -   name: Install dependencies
+                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+            -   name: Run check-composer-root-version
+                run: make check-composer-root-version
+
+            -   name: Run tests (coverage)
+                if: matrix.publish-phar
+                run: make tc
+
+            -   name: Run tests (e2e)
+                if: matrix.publish-phar
+                run: make e2e
+
+            -   name: Run tests
+                if: !matrix.publish-phar
+                run: make tu
+
+            -   name: Run phpstan
+                if: !matrix.publish-phar
+                run: make phpstan
+
+            -   uses: actions/upload-artifact@v1
+                name: Publish the PHAR
+                if: matrix.publish-phar
+                with:
+                    name: php-scoper.phar
+                    path: bin/php-scoper.phar
+
+    publish-phar:
+        runs-on: ubuntu-latest
+        name: Publish the PHAR
+        needs: tests
+        if: github.event_name == 'release'
+        steps:
+            -   uses: actions/download-artifact@v1
+                with:
+                    name: php-scoper.phar
+                    path: .
+            -   name: Upload php-scoper.phar
+                uses: actions/upload-release-asset@v1
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                with:
+                    upload_url: ${{ github.event.release.upload_url }}
+                    asset_path: php-scoper.phar
+                    asset_name: php-scoper.phar
+                    asset_content_type: application/zip
