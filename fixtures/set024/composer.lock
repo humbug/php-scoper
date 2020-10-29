@@ -8,28 +8,25 @@
     "packages": [
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.8.0",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "3296adf6a6454a050679cde90f95350ad604b171"
+                "reference": "0b6a8940385311a24e060ec1fe35680e17c74497"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/3296adf6a6454a050679cde90f95350ad604b171",
-                "reference": "3296adf6a6454a050679cde90f95350ad604b171",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/0b6a8940385311a24e060ec1fe35680e17c74497",
+                "reference": "0b6a8940385311a24e060ec1fe35680e17c74497",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "suggest": {
-                "ext-mbstring": "For best performance"
-            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.8-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
@@ -63,20 +60,20 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-04-26T10:06:28+00:00"
+            "time": "2015-11-04T20:28:58+00:00"
         },
         {
             "name": "symfony/polyfill-php72",
-            "version": "v1.8.0",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php72.git",
-                "reference": "a4576e282d782ad82397f3e4ec1df8e0f0cafb46"
+                "reference": "8abc9097f5001d310f0edba727469c988acc6ea7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/a4576e282d782ad82397f3e4ec1df8e0f0cafb46",
-                "reference": "a4576e282d782ad82397f3e4ec1df8e0f0cafb46",
+                "url": "https://api.github.com/repos/symfony/polyfill-php72/zipball/8abc9097f5001d310f0edba727469c988acc6ea7",
+                "reference": "8abc9097f5001d310f0edba727469c988acc6ea7",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +82,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.8-dev"
+                    "dev-master": "1.5-dev"
                 }
             },
             "autoload": {
@@ -118,20 +115,20 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-04-26T10:06:28+00:00"
+            "time": "2017-07-11T13:25:55+00:00"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v4.1.1",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "b2eebaec085d1f2cafbad7644733d494a3bbbc9b"
+                "reference": "bc88ad53e825ebacc7b190bbd360781fce381c64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/b2eebaec085d1f2cafbad7644733d494a3bbbc9b",
-                "reference": "b2eebaec085d1f2cafbad7644733d494a3bbbc9b",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/bc88ad53e825ebacc7b190bbd360781fce381c64",
+                "reference": "bc88ad53e825ebacc7b190bbd360781fce381c64",
                 "shasum": ""
             },
             "require": {
@@ -193,7 +190,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2018-06-23T12:23:56+00:00"
+            "time": "2018-04-29T07:56:09+00:00"
         }
     ],
     "packages-dev": [],
@@ -201,7 +198,8 @@
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
-    "prefer-lowest": false,
+    "prefer-lowest": true,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

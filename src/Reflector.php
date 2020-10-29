@@ -26,6 +26,9 @@ use function strtolower;
 final class Reflector
 {
     private const MISSING_CLASSES = [
+        // PHP 8.0
+        'Stringable',
+
         // https://github.com/JetBrains/phpstorm-stubs/pull/594
         'parallel\Channel',
         'parallel\Channel\Error',
@@ -65,10 +68,12 @@ final class Reflector
         'STDIN',
         'STDOUT',
         'STDERR',
+
         // Added in PHP 7.4
         'T_BAD_CHARACTER',
         'T_FN',
         'T_COALESCE_EQUAL',
+
         // Added in PHP 8.0
         'T_NAME_QUALIFIED',
         'T_NAME_FULLY_QUALIFIED',

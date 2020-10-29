@@ -1,23 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ed267dfa912358d8a48b3612695a17f",
+    "content-hash": "472ed66a92baf94227f2654dbdd1ade4",
     "packages": [
         {
             "name": "symfony/finder",
-            "version": "v4.0.4",
+            "version": "v4.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "8b08180f2b7ccb41062366b9ad91fbc4f1af8601"
+                "reference": "ce8743441da64c41e2a667b8eb66070444ed911e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/8b08180f2b7ccb41062366b9ad91fbc4f1af8601",
-                "reference": "8b08180f2b7ccb41062366b9ad91fbc4f1af8601",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/ce8743441da64c41e2a667b8eb66070444ed911e",
+                "reference": "ce8743441da64c41e2a667b8eb66070444ed911e",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.4-dev"
                 }
             },
             "autoload": {
@@ -53,7 +53,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-03T07:38:00+00:00"
+            "time": "2019-11-17T21:56:56+00:00"
         }
     ],
     "packages-dev": [],
@@ -61,7 +61,8 @@
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
-    "prefer-lowest": false,
+    "prefer-lowest": true,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

@@ -18,10 +18,9 @@ matrix:
   include:
     - php: '7.3'
       env: COVERAGE='true'
-    - php: '7.2'
     - php: '7.4'
     - php: '7.4'
-      env: COMPOSER_VERSION='snapshot'
+      env: COMPOSER_VERSION='2'
   fast_finish: true
 
 before_install:
