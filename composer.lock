@@ -81,12 +81,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/JetBrains/phpstorm-stubs.git",
-                "reference": "147255f02ed786e1febaa641f86cfb9f656a3fda"
+                "reference": "5b7def27af1f88c009f137b4c4a38bb4732a3713"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JetBrains/phpstorm-stubs/zipball/147255f02ed786e1febaa641f86cfb9f656a3fda",
-                "reference": "147255f02ed786e1febaa641f86cfb9f656a3fda",
+                "url": "https://api.github.com/repos/JetBrains/phpstorm-stubs/zipball/5b7def27af1f88c009f137b4c4a38bb4732a3713",
+                "reference": "5b7def27af1f88c009f137b4c4a38bb4732a3713",
                 "shasum": ""
             },
             "require-dev": {
@@ -118,7 +118,7 @@
                 "stubs",
                 "type"
             ],
-            "time": "2020-07-28T12:16:34+00:00"
+            "time": "2020-09-14T12:37:46+00:00"
         },
         {
             "name": "nikic/php-parser",

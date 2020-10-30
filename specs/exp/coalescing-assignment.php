@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
+        'minPhpVersion' => 70400,
         'title' => 'Null coalescing assignment operator',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',

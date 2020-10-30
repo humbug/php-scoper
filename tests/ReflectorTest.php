@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper;
 
 use Generator;
 use PHPUnit\Framework\TestCase;
+use const PHP_VERSION_ID;
 
 /**
  * @covers \Humbug\PhpScoper\Reflector
@@ -161,6 +162,11 @@ class ReflectorTest extends TestCase
         yield 'PHP extension internal constant' => [
             'FTP_ASCII',
             true,
+        ];
+
+        yield 'T_MATCH constant' => [
+            'T_MATCH',
+            PHP_VERSION_ID >= 80000,
         ];
     }
 }
