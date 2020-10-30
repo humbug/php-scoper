@@ -393,7 +393,7 @@ With:
 
 $loader = require_once __DIR__.'/autoload.php';
 
-class_alias('Humbug\\Acme\\Foo');   // Triggers the autoloading of
+class_exists('Humbug\\Acme\\Foo');   // Triggers the autoloading of
                                     // `Humbug\Acme\Foo` after the
                                     // Composer autoload is registered
 
