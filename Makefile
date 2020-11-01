@@ -380,7 +380,6 @@ e2e_029: $(PHPSCOPER) fixtures/set029-easy-rdf/vendor
 	php build/set029-easy-rdf/main.php > build/set029-easy-rdf/output
 
 	diff fixtures/set029-easy-rdf/expected-output build/set029-easy-rdf/output
-	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
 
 .PHONY: e2e_030
 e2e_030: ## Run end-to-end tests for the fixture set 030 — global function whitelisting
