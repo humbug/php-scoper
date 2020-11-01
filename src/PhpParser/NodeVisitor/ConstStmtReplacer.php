@@ -63,7 +63,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Const_)) {
+        if (!$node instanceof Const_) {
             return $node;
         }
 

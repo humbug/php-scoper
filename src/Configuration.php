@@ -68,8 +68,6 @@ final class Configuration
     /**
      * @param string|null $path  Absolute path to the configuration file.
      * @param string[]    $paths List of paths to append besides the one configured
-     *
-     * @return self
      */
     public static function load(string $path = null, array $paths = []): self
     {
@@ -96,7 +94,7 @@ final class Configuration
                 );
             }
 
-            if (false === is_file($path) && false === (is_link($path) && is_file(readlink($path)))) {
+            if (false === is_file($path) && false === (is_link($path) && false !== readlink($path) && is_file(readlink($path)))) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected the path of the configuration file to be a file but "%s" appears to be a '
@@ -464,8 +462,6 @@ final class Configuration
 
     /**
      * @param string[] $paths
-     *
-     * @return iterable
      */
     private static function retrieveFilesFromPaths(array $paths): iterable
     {
@@ -512,8 +508,6 @@ final class Configuration
     }
 
     /**
-     * @param Iterator $files
-     *
      * @return string[][] Array of tuple with the first argument being the file path and the second its contents
      */
     private static function retrieveFilesWithContents(Iterator $files): array
