@@ -13,7 +13,7 @@ jobs:
         name: Build and test
         strategy:
             matrix:
-                php: [ "7.2", "7.4" ]
+                php: [ "7.3", "7.4" ]
                 composer-version: [ "1" ]
                 coverage: [ "none" ]
                 publish-phar: [ false ]
