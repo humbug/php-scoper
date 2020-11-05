@@ -82,10 +82,6 @@ jobs:
                 if: matrix.publish-phar == false
                 run: make tu
 
-            -   name: Run phpstan
-                if: matrix.publish-phar == false
-                run: make phpstan
-
             -   uses: actions/upload-artifact@v1
                 name: Publish the PHAR
                 if: matrix.publish-phar == true

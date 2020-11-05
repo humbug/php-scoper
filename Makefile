@@ -6,7 +6,6 @@ MAKEFLAGS += --no-builtin-rules
 
 PHPBIN=php
 PHPNOGC=php -d zend.enable_gc=0
-PHPSTAN_URL=https://github.com/phpstan/phpstan/releases/download/0.12.53/phpstan.phar
 
 SRC_FILES=$(shell find bin/ src/ -type f)
 
@@ -37,6 +36,11 @@ CODE_SNIFFER_FIX=vendor-bin/code-sniffer/vendor/bin/phpcbf
 cs:	 ## Fixes CS
 cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
 	$(PHPNOGC) $(CODE_SNIFFER_FIX) || true
+	$(PHPNOGC) $(CODE_SNIFFER)
+
+.PHONY: cs-check
+cs-check: ## Checks CS
+cs-check: $(CODE_SNIFFER)
 	$(PHPNOGC) $(CODE_SNIFFER)
 
 .PHONY: phpstan
@@ -573,10 +577,8 @@ $(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
 	touch $@
 
-$(PHPSTAN):
-	rm $@ || true
-	wget $(PHPSTAN_URL) -O $@
-	chmod +x $@
+$(PHPSTAN): vendor/bamarni
+	composer bin phpstan install
 	touch $@
 
 .composer-root-version:
