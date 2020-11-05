@@ -20,6 +20,7 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PatchScoper

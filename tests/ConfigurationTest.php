@@ -17,6 +17,8 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use function KevinGH\Box\FileSystem\dump_file;
+use function touch;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * @covers \Humbug\PhpScoper\Configuration

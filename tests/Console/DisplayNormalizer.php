@@ -18,6 +18,7 @@ use function preg_match_all;
 use function str_replace;
 use function strlen;
 use function usort;
+use const DIRECTORY_SEPARATOR;
 
 final class DisplayNormalizer
 {

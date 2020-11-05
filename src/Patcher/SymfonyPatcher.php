@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Patcher;
 
 use function preg_replace;
+use function sprintf;
 use function strpos;
 
 final class SymfonyPatcher

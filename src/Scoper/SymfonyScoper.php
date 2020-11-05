@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function func_get_args;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\Symfony\XmlScoper as SymfonyXmlScoper;
 use Humbug\PhpScoper\Scoper\Symfony\YamlScoper as SymfonyYamlScoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
+use function func_get_args;
 
 /**
  * Scopes the Symfony configuration related files.

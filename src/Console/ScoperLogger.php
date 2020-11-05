@@ -20,6 +20,12 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use function count;
+use function memory_get_peak_usage;
+use function memory_get_usage;
+use function microtime;
+use function round;
+use function sprintf;
 
 /**
  * @private

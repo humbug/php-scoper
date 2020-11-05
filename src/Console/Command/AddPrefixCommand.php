@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use function count;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Console\ScoperLogger;
-use function Humbug\PhpScoper\get_common_path;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\ConfigurableScoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -33,6 +31,23 @@ use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
+use function array_keys;
+use function array_map;
+use function bin2hex;
+use function count;
+use function file_exists;
+use function file_get_contents;
+use function getcwd;
+use function Humbug\PhpScoper\get_common_path;
+use function is_dir;
+use function is_writable;
+use function preg_match;
+use function random_bytes;
+use function sprintf;
+use function str_replace;
+use function strlen;
+use function usort;
+use const DIRECTORY_SEPARATOR;
 
 final class AddPrefixCommand extends BaseCommand
 {

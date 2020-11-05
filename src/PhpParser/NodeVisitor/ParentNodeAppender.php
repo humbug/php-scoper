@@ -14,9 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use function count;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
+use function array_pop;
+use function count;
 
 /**
  * Appends the parent node as an attribute to each node. This allows to have more context in the other visitors when
