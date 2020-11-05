@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Scoper\NullScoper;
 use Humbug\PhpScoper\Scoper\PatchScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Scoper\SymfonyScoper;
+use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 
@@ -54,7 +55,7 @@ final class Container
     public function getParser(): Parser
     {
         if (null === $this->parser) {
-            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
+            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7, new Lexer());
         }
 
         return $this->parser;

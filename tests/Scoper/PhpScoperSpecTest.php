@@ -49,6 +49,7 @@ use function strlen;
 use function strpos;
 use function usort;
 use const PHP_EOL;
+use const PHP_VERSION_ID;
 
 class PhpScoperSpecTest extends TestCase
 {
@@ -56,6 +57,7 @@ class PhpScoperSpecTest extends TestCase
     private const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
 
     private const SPECS_META_KEYS = [
+        'minPhpVersion',
         'title',
         'prefix',
         'whitelist',
@@ -99,8 +101,13 @@ class PhpScoperSpecTest extends TestCase
         Whitelist $whitelist,
         ?string $expected,
         array $expectedRegisteredClasses,
-        array $expectedRegisteredFunctions
+        array $expectedRegisteredFunctions,
+        ?int $minPhpVersion
     ): void {
+        if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
+            $this->markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
+        }
+
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
         $scoper = $this->createScoper();
@@ -291,6 +298,7 @@ class PhpScoperSpecTest extends TestCase
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
             $fixtureSet['registered-classes'] ?? $meta['registered-classes'],
             $fixtureSet['registered-functions'] ?? $meta['registered-functions'],
+            $meta['minPhpVersion'] ?? null,
         ];
     }
 

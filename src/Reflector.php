@@ -15,10 +15,13 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use JetBrains\PHPStormStub\PhpStormStubsMap;
+use function array_diff;
 use function array_fill_keys;
+use function array_filter;
 use function array_keys;
 use function array_merge;
 use function strtolower;
+use const PHP_VERSION_ID;
 
 /**
  * @private
@@ -27,55 +30,55 @@ final class Reflector
 {
     private const MISSING_CLASSES = [
         // https://github.com/JetBrains/phpstorm-stubs/pull/594
-        'parallel\Channel',
-        'parallel\Channel\Error',
-        'parallel\Channel\Error\Closed',
-        'parallel\Channel\Error\Existence',
-        'parallel\Channel\Error\IllegalValue',
-        'parallel\Error',
-        'parallel\Events',
-        'parallel\Events\Error',
-        'parallel\Events\Error\Existence',
-        'parallel\Events\Error\Timeout',
-        'parallel\Events\Event',
-        'parallel\Events\Event\Type',
-        'parallel\Events\Input',
-        'parallel\Events\Input\Error',
-        'parallel\Events\Input\Error\Existence',
-        'parallel\Events\Input\Error\IllegalValue',
-        'parallel\Future',
-        'parallel\Future\Error',
-        'parallel\Future\Error\Cancelled',
-        'parallel\Future\Error\Foreign',
-        'parallel\Future\Error\Killed',
-        'parallel\Runtime',
-        'parallel\Runtime\Bootstrap',
-        'parallel\Runtime\Error',
-        'parallel\Runtime\Error\Bootstrap',
-        'parallel\Runtime\Error\Closed',
-        'parallel\Runtime\Error\IllegalFunction',
-        'parallel\Runtime\Error\IllegalInstruction',
-        'parallel\Runtime\Error\IllegalParameter',
-        'parallel\Runtime\Error\IllegalReturn',
+        'parallel\Channel' => 0,
+        'parallel\Channel\Error' => 0,
+        'parallel\Channel\Error\Closed' => 0,
+        'parallel\Channel\Error\Existence' => 0,
+        'parallel\Channel\Error\IllegalValue' => 0,
+        'parallel\Error' => 0,
+        'parallel\Events' => 0,
+        'parallel\Events\Error' => 0,
+        'parallel\Events\Error\Existence' => 0,
+        'parallel\Events\Error\Timeout' => 0,
+        'parallel\Events\Event' => 0,
+        'parallel\Events\Event\Type' => 0,
+        'parallel\Events\Input' => 0,
+        'parallel\Events\Input\Error' => 0,
+        'parallel\Events\Input\Error\Existence' => 0,
+        'parallel\Events\Input\Error\IllegalValue' => 0,
+        'parallel\Future' => 0,
+        'parallel\Future\Error' => 0,
+        'parallel\Future\Error\Cancelled' => 0,
+        'parallel\Future\Error\Foreign' => 0,
+        'parallel\Future\Error\Killed' => 0,
+        'parallel\Runtime' => 0,
+        'parallel\Runtime\Bootstrap' => 0,
+        'parallel\Runtime\Error' => 0,
+        'parallel\Runtime\Error\Bootstrap' => 0,
+        'parallel\Runtime\Error\Closed' => 0,
+        'parallel\Runtime\Error\IllegalFunction' => 0,
+        'parallel\Runtime\Error\IllegalInstruction' => 0,
+        'parallel\Runtime\Error\IllegalParameter' => 0,
+        'parallel\Runtime\Error\IllegalReturn' => 0,
     ];
 
     private const MISSING_FUNCTIONS = [];
 
     private const MISSING_CONSTANTS = [
-        'STDIN',
-        'STDOUT',
-        'STDERR',
+        'STDIN' => 0,
+        'STDOUT' => 0,
+        'STDERR' => 0,
         // Added in PHP 7.4
-        'T_BAD_CHARACTER',
-        'T_FN',
-        'T_COALESCE_EQUAL',
+        'T_BAD_CHARACTER' => 70400,
+        'T_FN' => 70400,
+        'T_COALESCE_EQUAL' => 70400,
         // Added in PHP 8.0
-        'T_NAME_QUALIFIED',
-        'T_NAME_FULLY_QUALIFIED',
-        'T_NAME_RELATIVE',
-        'T_MATCH',
-        'T_NULLSAFE_OBJECT_OPERATOR',
-        'T_ATTRIBUTE',
+        'T_NAME_QUALIFIED' => 80000,
+        'T_NAME_FULLY_QUALIFIED' => 80000,
+        'T_NAME_RELATIVE' => 80000,
+        'T_MATCH' => 80000,
+        'T_NULLSAFE_OBJECT_OPERATOR' => 80000,
+        'T_ATTRIBUTE' => 80000,
     ];
 
     private static $CLASSES;
@@ -87,7 +90,7 @@ final class Reflector
     /**
      * @param array<string,string>|null $symbols
      * @param array<string,string>      $source
-     * @param string[]                  $missingSymbols
+     * @param array<string, int>        $missingSymbols
      */
     private static function initSymbolList(?array &$symbols, array $source, array $missingSymbols): void
     {
@@ -95,10 +98,22 @@ final class Reflector
             return;
         }
 
+        $excludingSymbols = array_keys(
+            array_filter(
+                $missingSymbols,
+                static function ($version) {
+                    return PHP_VERSION_ID < $version;
+                }
+            )
+        );
+
         $symbols = array_fill_keys(
-            array_merge(
-                array_keys($source),
-                $missingSymbols
+            array_diff(
+                array_merge(
+                    array_keys($source),
+                    array_keys($missingSymbols)
+                ),
+                $excludingSymbols
             ),
             true
         );
