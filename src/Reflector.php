@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use JetBrains\PHPStormStub\PhpStormStubsMap;
 use function array_fill_keys;
 use function array_keys;
 use function array_merge;
-use JetBrains\PHPStormStub\PhpStormStubsMap;
 use function strtolower;
 
 /**

@@ -15,13 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
+use function count;
+use function end;
 
 /**
  * Utility class collecting all the namespaces for the scoped files allowing to easily find the namespace to which

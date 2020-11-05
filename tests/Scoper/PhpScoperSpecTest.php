@@ -14,6 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Error;
+use Generator;
+use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
+use PhpParser\Error as PhpParserError;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
+use UnexpectedValueException;
 use function array_diff;
 use function array_filter;
 use function array_keys;
@@ -21,28 +33,22 @@ use function array_map;
 use function array_slice;
 use function array_values;
 use function basename;
+use function count;
 use function current;
-use Error;
 use function explode;
-use Generator;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
-use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
 use function implode;
 use function is_array;
-use const PHP_EOL;
-use PhpParser\Error as PhpParserError;
-use PHPUnit\Framework\TestCase;
+use function is_string;
+use function min;
+use function preg_split;
 use function sprintf;
+use function str_repeat;
+use function strlen;
 use function strpos;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
-use Throwable;
-use UnexpectedValueException;
 use function usort;
+use const PHP_EOL;
 
 class PhpScoperSpecTest extends TestCase
 {

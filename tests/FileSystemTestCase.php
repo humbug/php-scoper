@@ -15,6 +15,11 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use PHPUnit\Framework\TestCase;
+use function chdir;
+use function getcwd;
+use function realpath;
+use function str_replace;
+use function sys_get_temp_dir;
 
 abstract class FileSystemTestCase extends TestCase
 {

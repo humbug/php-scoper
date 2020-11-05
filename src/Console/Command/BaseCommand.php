@@ -19,6 +19,10 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use function chdir;
+use function file_exists;
+use function getcwd;
+use function sprintf;
 
 abstract class BaseCommand extends Command
 {

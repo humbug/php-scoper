@@ -21,6 +21,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use function file_exists;
+use function getcwd;
+use function sprintf;
+use const DIRECTORY_SEPARATOR;
 
 final class InitCommand extends BaseCommand
 {

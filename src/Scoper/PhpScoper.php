@@ -14,13 +14,16 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function func_get_args;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+use function basename;
+use function func_get_args;
+use function ltrim;
+use function preg_match;
 
 final class PhpScoper implements Scoper
 {

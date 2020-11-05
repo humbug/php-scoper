@@ -14,22 +14,27 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use function file_get_contents;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
-use function Humbug\PhpScoper\escape_path;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
-use function preg_replace;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
+use function chdir;
+use function count;
+use function file_get_contents;
+use function Humbug\PhpScoper\escape_path;
+use function preg_replace;
+use function realpath;
+use function sprintf;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
