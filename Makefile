@@ -39,6 +39,11 @@ cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
 	$(PHPNOGC) $(CODE_SNIFFER_FIX) || true
 	$(PHPNOGC) $(CODE_SNIFFER)
 
+.PHONY: cs-check
+cs-check: ## Checks CS
+cs-check: $(CODE_SNIFFER)
+	$(PHPNOGC) $(CODE_SNIFFER)
+
 .PHONY: phpstan
 PHPSTAN=bin/phpstan
 phpstan: ## Runs PHPStan
@@ -573,10 +578,8 @@ $(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
 	touch $@
 
-$(PHPSTAN):
-	rm $@ || true
-	wget $(PHPSTAN_URL) -O $@
-	chmod +x $@
+$(PHPSTAN): vendor/bamarni
+	composer bin phpstan install
 	touch $@
 
 .composer-root-version:
