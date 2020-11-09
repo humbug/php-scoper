@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
+use function str_replace;
+
 class RemovePrefixFromIdentifiersPatcher
 {
     public function __construct($identifiers)
@@ -11,7 +13,7 @@ class RemovePrefixFromIdentifiersPatcher
         $this->identifiers = $identifiers;
     }
 
-    public function __invoke($filePath, $prefix, $content)
+    public function __invoke($filePath, $prefix, $content): string
     {
         $prefixDoubleSlashed = str_replace('\\', '\\\\', $prefix);
         $quotes = ['\'', '"', '`'];

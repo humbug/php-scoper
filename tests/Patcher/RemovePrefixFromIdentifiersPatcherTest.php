@@ -8,6 +8,8 @@ use Generator;
 use Humbug\PhpScoper\Extractor\IdentifierExtractor;
 use Humbug\PhpScoper\Patcher\RemovePrefixFromIdentifiersPatcher;
 use PHPUnit\Framework\TestCase;
+use function file_get_contents;
+use function preg_replace;
 
 /**
  * @covers \Humbug\PhpScoper\Patcher\RemovePrefixFromIdentifiersPatcher

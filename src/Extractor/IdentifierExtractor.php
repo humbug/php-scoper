@@ -6,6 +6,13 @@ namespace Humbug\PhpScoper\Extractor;
 
 use InvalidArgumentException;
 use PhpParser\ParserFactory;
+use function array_merge;
+use function array_pop;
+use function count;
+use function file_exists;
+use function file_get_contents;
+use function get_class;
+use function in_array;
 
 class IdentifierExtractor
 {
@@ -20,7 +27,11 @@ class IdentifierExtractor
         ];
     }
 
-    public function addStub($file)
+    /**
+     * @param string $file
+     * @return self
+     */
+    public function addStub($file): self
     {
         if (! file_exists($file)) {
             throw new InvalidArgumentException("File not found: " . $file);
@@ -30,7 +41,10 @@ class IdentifierExtractor
         return $this;
     }
 
-    public function extract()
+    /**
+     * @return array
+     */
+    public function extract(): array
     {
         $identifiers = [];
         foreach ($this->stubFiles as $file) {
@@ -42,13 +56,21 @@ class IdentifierExtractor
         return $identifiers;
     }
 
-    protected function generateAst($code)
+    /**
+     * @param string $code
+     * @return array<Node\Stmt[]>|null
+     */
+    protected function generateAst($code): array
     {
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
         return $parser->parse($code);
     }
 
-    protected function extractIdentifiersFromAst($ast)
+    /**
+     * @param array<Node\Stmt[]> $ast
+     * @return array<Node\Stmt[]>|null
+     */
+    protected function extractIdentifiersFromAst($ast): array
     {
         $globals = [];
         $items = $ast;
