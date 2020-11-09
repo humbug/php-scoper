@@ -414,95 +414,95 @@ tb: bin/php-scoper.phar  vendor
 
 vendor: composer.lock .composer-root-version
 	/bin/bash -c 'source .composer-root-version && composer install'
-	touch $@
+	touch -c $@
 
 vendor/bamarni: composer.lock .composer-root-version
 	/bin/bash -c 'source .composer-root-version && composer install'
-	touch $@
+	touch -c $@
 
 bin/phpunit: composer.lock .composer-root-version
 	/bin/bash -c 'source .composer-root-version && composer install'
-	touch $@
+	touch -c $@
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
 	composer bin covers-validator install
-	touch $@
+	touch -c $@
 
 vendor-bin/code-sniffer/vendor: vendor-bin/code-sniffer/composer.lock vendor/bamarni
 	composer bin code-sniffer install
-	touch $@
+	touch -c $@
 
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
-	touch $@
+	touch -c $@
 
 fixtures/set011/vendor:
 	composer --working-dir=fixtures/set011 dump-autoload
-	touch $@
+	touch -c $@
 
 fixtures/set015/vendor: fixtures/set015/composer.lock
 	composer --working-dir=fixtures/set015 install
-	touch $@
+	touch -c $@
 
 fixtures/set016-symfony-finder/vendor: fixtures/set016-symfony-finder/composer.lock
 	composer --working-dir=fixtures/set016-symfony-finder install
-	touch $@
+	touch -c $@
 
 fixtures/set017-symfony-di/vendor: fixtures/set017-symfony-di/composer.lock
 	composer --working-dir=fixtures/set017-symfony-di install
-	touch $@
+	touch -c $@
 
 fixtures/set018-nikic-parser/vendor: fixtures/set018-nikic-parser/composer.lock
 	composer --working-dir=fixtures/set018-nikic-parser install
-	touch $@
+	touch -c $@
 
 fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer.lock
 	composer --working-dir=fixtures/set019-symfony-console install
-	touch $@
+	touch -c $@
 
 fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
 	composer --working-dir=fixtures/set020-infection install
-	touch $@
+	touch -c $@
 
 fixtures/set021-composer/vendor: fixtures/set021-composer/composer.lock
 	composer --working-dir=fixtures/set021-composer install
-	touch $@
+	touch -c $@
 
 fixtures/set022/vendor: fixtures/set022/composer.json
 	composer --working-dir=fixtures/set022 update
-	touch $@
+	touch -c $@
 
 fixtures/set023/vendor: fixtures/set023/composer.lock
 	composer --working-dir=fixtures/set023 install
-	touch $@
+	touch -c $@
 
 fixtures/set024/vendor: fixtures/set024/composer.lock
 	composer --working-dir=fixtures/set024 install
-	touch $@
+	touch -c $@
 
 fixtures/set025/vendor: fixtures/set025/composer.lock
 	composer --working-dir=fixtures/set025 install
-	touch $@
+	touch -c $@
 
 fixtures/set026/vendor:
 	composer --working-dir=fixtures/set026 update
-	touch $@
+	touch -c $@
 
 fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
 	composer --working-dir=fixtures/set027-laravel install --no-dev
-	touch $@
+	touch -c $@
 
 fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
 	composer --working-dir=fixtures/set028-symfony install --no-dev --no-scripts
-	touch $@
+	touch -c $@
 
 fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
 	composer --working-dir=fixtures/set029-easy-rdf install --no-dev
-	touch $@
+	touch -c $@
 
 fixtures/set030/vendor: fixtures/set030/composer.json
 	composer --working-dir=fixtures/set030 install --no-dev
-	touch $@
+	touch -c $@
 
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
@@ -557,7 +557,7 @@ fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 
 bin/php-scoper.phar: bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
 	$(BOX) compile
-	touch $@
+	touch -c $@
 
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
 clover.xml: $(SRC_FILES)
@@ -571,16 +571,16 @@ clover.xml: $(SRC_FILES)
 
 $(CODE_SNIFFER): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
-	touch $@
+	touch -c $@
 
 $(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
-	touch $@
+	touch -c $@
 
 $(PHPSTAN): vendor/bamarni
 	composer bin phpstan install
-	touch $@
+	touch -c $@
 
 .composer-root-version:
 	php bin/dump-composer-root-version.php
-	touch $@
+	touch -c $@
