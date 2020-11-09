@@ -15,12 +15,21 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Console\DisplayNormalizer;
-use function Humbug\PhpScoper\create_application;
 use Humbug\PhpScoper\FileSystemTestCase;
-use function str_replace;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use function array_map;
+use function array_reduce;
+use function explode;
+use function file_get_contents;
+use function file_put_contents;
+use function Humbug\PhpScoper\create_application;
+use function implode;
+use function iterator_to_array;
+use function preg_replace;
+use function realpath;
+use function str_replace;
 
 /**
  * @coversNothing

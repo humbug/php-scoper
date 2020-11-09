@@ -14,10 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
+use function Humbug\PhpScoper\create_fake_patcher;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\NullScoper

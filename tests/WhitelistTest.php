@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_flip;
 use Generator;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use function array_flip;
 
 /**
  * @covers \Humbug\PhpScoper\Whitelist

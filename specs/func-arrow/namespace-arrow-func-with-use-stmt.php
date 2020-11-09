@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
+        'minPhpVersion' => 70400,
         'title' => 'Arrow function in a namespace with use statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',

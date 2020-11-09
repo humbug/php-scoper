@@ -14,14 +14,17 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use function array_map;
 use Humbug\PhpScoper\Whitelist;
+use stdClass;
+use function array_map;
+use function array_merge;
 use function is_array;
 use function is_string;
 use function rtrim;
-use stdClass;
+use function sprintf;
 use function str_replace;
 use function strpos;
+use function substr;
 
 /**
  * @private

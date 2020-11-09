@@ -17,12 +17,13 @@ declare(strict_types=1);
 // JSON_THROW_ON_ERROR.
 
 namespace Humbug\PhpScoper {
-    use function error_clear_last;
-    use function json_decode as original_json_decode;
-    use function json_encode as original_json_encode;
-    use function json_last_error;
-    use function json_last_error_msg as original_json_last_error_msg;
     use JsonException;
+use function class_exists;
+use function error_clear_last;
+use function json_decode as original_json_decode;
+use function json_encode as original_json_encode;
+use function json_last_error;
+use function json_last_error_msg as original_json_last_error_msg;
 
     /**
      * @throws JsonException

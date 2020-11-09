@@ -14,27 +14,40 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_key_exists;
-use function array_unshift;
-use const DIRECTORY_SEPARATOR;
-use function dirname;
-use function file_exists;
-use function gettype;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
-use function is_array;
-use function is_bool;
-use function is_file;
-use function is_link;
-use function is_string;
 use Iterator;
-use function readlink;
-use function realpath;
 use RuntimeException;
 use SplFileInfo;
-use function sprintf;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use function array_filter;
+use function array_key_exists;
+use function array_keys;
+use function array_map;
+use function array_merge;
+use function array_reduce;
+use function array_unique;
+use function array_unshift;
+use function dirname;
+use function file_exists;
+use function file_get_contents;
+use function gettype;
+use function in_array;
+use function is_array;
+use function is_bool;
+use function is_callable;
+use function is_dir;
+use function is_file;
+use function is_link;
+use function is_readable;
+use function is_string;
+use function iterator_to_array;
+use function readlink;
+use function realpath;
+use function sprintf;
+use function trim;
+use const DIRECTORY_SEPARATOR;
 
 final class Configuration
 {
@@ -68,8 +81,6 @@ final class Configuration
     /**
      * @param string|null $path  Absolute path to the configuration file.
      * @param string[]    $paths List of paths to append besides the one configured
-     *
-     * @return self
      */
     public static function load(string $path = null, array $paths = []): self
     {
@@ -96,7 +107,7 @@ final class Configuration
                 );
             }
 
-            if (false === is_file($path) && false === (is_link($path) && is_file(readlink($path)))) {
+            if (false === is_file($path) && false === (is_link($path) && false !== readlink($path) && is_file(readlink($path)))) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected the path of the configuration file to be a file but "%s" appears to be a '
@@ -464,8 +475,6 @@ final class Configuration
 
     /**
      * @param string[] $paths
-     *
-     * @return iterable
      */
     private static function retrieveFilesFromPaths(array $paths): iterable
     {
@@ -512,8 +521,6 @@ final class Configuration
     }
 
     /**
-     * @param Iterator $files
-     *
      * @return string[][] Array of tuple with the first argument being the file path and the second its contents
      */
     private static function retrieveFilesWithContents(Iterator $files): array
