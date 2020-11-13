@@ -55,7 +55,14 @@ final class Container
     public function getParser(): Parser
     {
         if (null === $this->parser) {
-            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7, new Lexer());
+            $phpVersion = Lexer\Emulative::PHP_7_3;
+            if (PHP_VERSION_ID >= 80000) {
+                $phpVersion = Lexer\Emulative::PHP_8_0;
+            } elseif (PHP_VERSION_ID >= 70400) {
+                $phpVersion = Lexer\Emulative::PHP_7_4;
+            }
+
+            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7, new Lexer\Emulative(['phpVersion' => $phpVersion]));
         }
 
         return $this->parser;
