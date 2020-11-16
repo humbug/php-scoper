@@ -22,7 +22,6 @@
     "require": {
         "php": "^7.3",
         "composer/package-versions-deprecated": "^1.8",
-        "jetbrains/phpstorm-stubs": "dev-master",
         "nikic/php-parser": "^4.0",
         "symfony/console": "^3.2 || ^4.0",
         "symfony/filesystem": "^3.2 || ^4.0",
@@ -31,6 +30,7 @@
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.1",
         "humbug/box": "^3.8",
+        "jetbrains/phpstorm-stubs": "dev-master",
         "phpunit/phpunit": "^8.0"
     },
     "replace": {
