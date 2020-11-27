@@ -19,6 +19,7 @@ use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
@@ -27,6 +28,8 @@ use function is_a;
  */
 class PatchScoperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Scoper|ObjectProphecy
      */

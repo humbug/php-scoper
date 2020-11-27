@@ -19,6 +19,7 @@ use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function is_a;
@@ -28,6 +29,8 @@ use function is_a;
  */
 class XmlScoperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Scoper
      */

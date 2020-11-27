@@ -44,7 +44,7 @@ cs-check: $(CODE_SNIFFER)
 	$(PHPNOGC) $(CODE_SNIFFER)
 
 .PHONY: phpstan
-PHPSTAN=bin/phpstan
+PHPSTAN=vendor-bin/phpstan/vendor/bin/phpstan
 phpstan: ## Runs PHPStan
 phpstan: $(PHPSTAN)
 	$(PHPNOGC) $(PHPSTAN) analyze src --level max
