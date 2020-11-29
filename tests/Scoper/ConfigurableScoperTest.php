@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
@@ -26,6 +27,8 @@ use function is_a;
  */
 class ConfigurableScoperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Scoper|ObjectProphecy
      */

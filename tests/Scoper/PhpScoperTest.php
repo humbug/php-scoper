@@ -26,6 +26,7 @@ use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Roave\BetterReflection\Reflector\ClassReflector;
 use Roave\BetterReflection\Reflector\ConstantReflector;
@@ -36,6 +37,8 @@ use function is_a;
 
 class PhpScoperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Scoper
      */
