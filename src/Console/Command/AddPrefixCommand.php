@@ -150,10 +150,6 @@ final class AddPrefixCommand extends BaseCommand
         $config = $this->retrieveConfig($input, $output, $io);
         $output = $input->getOption(self::OUTPUT_DIR_OPT);
 
-        if ([] !== $config->getWhitelistedFiles()) {
-            $this->scoper = $this->scoper->withWhitelistedFiles(...$config->getWhitelistedFiles());
-        }
-
         $logger = new ScoperLogger(
             $this->getApplication(),
             $io

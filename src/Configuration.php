@@ -21,6 +21,7 @@ use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use function array_diff;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
@@ -42,6 +43,8 @@ use function is_file;
 use function is_link;
 use function is_readable;
 use function is_string;
+use function iter\map;
+use function iter\toArray;
 use function iterator_to_array;
 use function readlink;
 use function realpath;
@@ -143,7 +146,10 @@ final class Configuration
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
-        $filesWithContents = self::retrieveFilesWithContents(chain($filesFromPaths, ...$finders));
+        $filesWithContents = self::retrieveFilesWithContents(
+            chain($filesFromPaths, ...$finders),
+            $whitelistedFiles,
+        );
 
         return new self($path, $prefix, $filesWithContents, $patchers, $whitelist, $whitelistedFiles);
     }
@@ -182,7 +188,8 @@ final class Configuration
                 self::retrieveFilesFromPaths(
                     array_unique($paths)
                 )
-            )
+            ),
+            $this->whitelistedFiles,
         );
 
         return new self(
@@ -235,14 +242,6 @@ final class Configuration
     public function getWhitelist(): Whitelist
     {
         return $this->whitelist;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getWhitelistedFiles(): array
-    {
-        return $this->whitelistedFiles;
     }
 
     private static function validateConfigKeys(array $config): void
@@ -523,14 +522,13 @@ final class Configuration
     /**
      * @return string[][] Array of tuple with the first argument being the file path and the second its contents
      */
-    private static function retrieveFilesWithContents(Iterator $files): array
+    private static function retrieveFilesWithContents(iterable $files, array $whitelistedFiles): array
     {
-        return array_reduce(
-            iterator_to_array($files, false),
-            static function (array $files, SplFileInfo $fileInfo): array {
-                $file = $fileInfo->getRealPath();
+        $filePaths = array_map(
+            static function (SplFileInfo $fileInfo): string {
+                $filePath = $fileInfo->getRealPath();
 
-                if (false === $file) {
+                if (false === $filePath) {
                     throw new RuntimeException(
                         sprintf(
                             'Could not find the file "%s".',
@@ -539,20 +537,26 @@ final class Configuration
                     );
                 }
 
-                if (false === is_readable($file)) {
+                if (false === is_readable($filePath)) {
                     throw new RuntimeException(
                         sprintf(
                             'Could not read the file "%s".',
-                            $file
+                            $filePath
                         )
                     );
                 }
 
-                $files[$fileInfo->getRealPath()] = [$fileInfo->getRealPath(), file_get_contents($file)];
-
-                return $files;
+                return $filePath;
             },
-            []
+            toArray($files),
         );
+
+        $filesWithContents = [];
+
+        foreach (array_diff($filePaths, $whitelistedFiles) as $filePath) {
+            $filesWithContents[$filePath] = [$filePath, file_get_contents($filePath)];
+        }
+
+        return $filesWithContents;
     }
 }
