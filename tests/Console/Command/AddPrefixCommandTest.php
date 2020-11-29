@@ -22,6 +22,7 @@ use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -41,6 +42,8 @@ use const DIRECTORY_SEPARATOR;
  */
 class AddPrefixCommandTest extends FileSystemTestCase
 {
+    use ProphecyTrait;
+
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures';
 
     /**
@@ -426,7 +429,7 @@ EOF;
                 Argument::any(),
                 Argument::that(
                     function (string $prefix): bool {
-                        $this->assertRegExp(
+                        $this->assertMatchesRegularExpression(
                             '/^\_PhpScoper[a-z0-9]{12}$/',
                             $prefix
                         );
