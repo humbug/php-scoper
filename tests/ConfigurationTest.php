@@ -82,11 +82,19 @@ return [
 ];
 PHP
         );
-        touch('file1');
+        dump_file('file1', 'file1 content');
 
         $configuration = Configuration::load($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php');
 
-        $this->assertSame([$this->tmp.DIRECTORY_SEPARATOR.'file1'], $configuration->getWhitelistedFiles());
+        $this->assertSame(
+            [
+                $this->tmp.DIRECTORY_SEPARATOR.'file1' => [
+                    $this->tmp.DIRECTORY_SEPARATOR.'file1',
+                    'file1 content',
+                ],
+            ],
+            $configuration->getWhitelistedFiles()
+        );
         $this->assertEquals(
             Whitelist::create(false, false, false, 'Foo', 'Bar\*'),
             $configuration->getWhitelist()

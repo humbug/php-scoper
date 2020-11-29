@@ -21,7 +21,6 @@ use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use function array_diff;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
@@ -43,7 +42,6 @@ use function is_file;
 use function is_link;
 use function is_readable;
 use function is_string;
-use function iter\map;
 use function iter\toArray;
 use function iterator_to_array;
 use function readlink;
@@ -146,12 +144,16 @@ final class Configuration
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
-        $filesWithContents = self::retrieveFilesWithContents(
-            chain($filesFromPaths, ...$finders),
-            $whitelistedFiles,
-        );
+        $filesWithContents = self::retrieveFilesWithContents(chain($filesFromPaths, ...$finders));
 
-        return new self($path, $prefix, $filesWithContents, $patchers, $whitelist, $whitelistedFiles);
+        return new self(
+            $path,
+            $prefix,
+            $filesWithContents,
+            $patchers,
+            $whitelist,
+            self::retrieveFilesWithContents($whitelistedFiles),
+        );
     }
 
     /**
@@ -163,7 +165,7 @@ final class Configuration
      * @param Whitelist   $whitelist         List of classes that will not be scoped.
      *                                       returning a boolean which if `true` means the class should be scoped
      *                                       (i.e. is ignored) or scoped otherwise.
-     * @param string[]    $whitelistedFiles  List of absolute paths of files to completely ignore
+     * @param string[][]  $whitelistedFiles Analogue to $filesWithContents
      */
     private function __construct(
         ?string $path,
@@ -188,8 +190,7 @@ final class Configuration
                 self::retrieveFilesFromPaths(
                     array_unique($paths)
                 )
-            ),
-            $this->whitelistedFiles,
+            )
         );
 
         return new self(
@@ -242,6 +243,14 @@ final class Configuration
     public function getWhitelist(): Whitelist
     {
         return $this->whitelist;
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function getWhitelistedFiles(): array
+    {
+        return $this->whitelistedFiles;
     }
 
     private static function validateConfigKeys(array $config): void
@@ -520,19 +529,22 @@ final class Configuration
     }
 
     /**
-     * @return string[][] Array of tuple with the first argument being the file path and the second its contents
+     * @return array<string, array{string, string}> Array of tuple with the first argument being the file path and the second its contents
      */
-    private static function retrieveFilesWithContents(iterable $files, array $whitelistedFiles): array
+    private static function retrieveFilesWithContents(iterable $files): array
     {
-        $filePaths = array_map(
-            static function (SplFileInfo $fileInfo): string {
-                $filePath = $fileInfo->getRealPath();
+        return array_reduce(
+            toArray($files),
+            static function (array $files, $filePathOrFileInfo): array {
+                $filePath = $filePathOrFileInfo instanceof SplFileInfo
+                    ? $filePathOrFileInfo->getRealPath()
+                    : realpath($filePathOrFileInfo);
 
                 if (false === $filePath) {
                     throw new RuntimeException(
                         sprintf(
                             'Could not find the file "%s".',
-                            (string) $fileInfo
+                            (string) $filePathOrFileInfo
                         )
                     );
                 }
@@ -546,17 +558,11 @@ final class Configuration
                     );
                 }
 
-                return $filePath;
+                $files[$filePath] = [$filePath, file_get_contents($filePath)];
+
+                return $files;
             },
-            toArray($files),
+            []
         );
-
-        $filesWithContents = [];
-
-        foreach (array_diff($filePaths, $whitelistedFiles) as $filePath) {
-            $filesWithContents[$filePath] = [$filePath, file_get_contents($filePath)];
-        }
-
-        return $filesWithContents;
     }
 }

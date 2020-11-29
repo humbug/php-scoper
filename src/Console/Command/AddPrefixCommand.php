@@ -33,6 +33,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 use function array_keys;
 use function array_map;
+use function array_merge;
 use function bin2hex;
 use function count;
 use function file_exists;
@@ -51,6 +52,8 @@ use const DIRECTORY_SEPARATOR;
 
 final class AddPrefixCommand extends BaseCommand
 {
+    private const VENDOR_PATTERN = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
+
     private const PATH_ARG = 'paths';
     private const PREFIX_OPT = 'prefix';
     private const OUTPUT_DIR_OPT = 'output-dir';
@@ -164,6 +167,7 @@ final class AddPrefixCommand extends BaseCommand
             $this->scopeFiles(
                 $config->getPrefix(),
                 $config->getFilesWithContents(),
+                $config->getWhitelistedFiles(),
                 $output,
                 $config->getPatchers(),
                 $config->getWhitelist(),
@@ -184,11 +188,12 @@ final class AddPrefixCommand extends BaseCommand
     }
 
     /**
-     * @var callable[]
+     * @var callable[] $patchers
      */
     private function scopeFiles(
         string $prefix,
         array $filesWithContents,
+        array $whitelistedFiles,
         string $output,
         array $patchers,
         Whitelist $whitelist,
@@ -198,16 +203,20 @@ final class AddPrefixCommand extends BaseCommand
         // Creates output directory if does not already exist
         $this->fileSystem->mkdir($output);
 
-        $logger->outputFileCount(count($filesWithContents));
+        $logger->outputFileCount(count($filesWithContents) + count($whitelistedFiles));
 
         $vendorDirs = [];
-        $commonPath = get_common_path(array_keys($filesWithContents));
+        $commonPath = get_common_path(
+            array_merge(
+                array_keys($filesWithContents),
+                array_keys($whitelistedFiles),
+            ),
+        );
 
         foreach ($filesWithContents as [$inputFilePath, $inputContents]) {
             $outputFilePath = $output.str_replace($commonPath, '', $inputFilePath);
 
-            $pattern = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
-            if (preg_match($pattern, $outputFilePath, $matches)) {
+            if (preg_match(self::VENDOR_PATTERN, $outputFilePath, $matches)) {
                 $vendorDirs[$matches[1]] = true;
             }
 
@@ -221,6 +230,16 @@ final class AddPrefixCommand extends BaseCommand
                 $stopOnFailure,
                 $logger
             );
+        }
+
+        foreach ($whitelistedFiles as [$inputFilePath, $inputContents]) {
+            $outputFilePath = $output.str_replace($commonPath, '', $inputFilePath);
+
+            if (preg_match(self::VENDOR_PATTERN, $outputFilePath, $matches)) {
+                $vendorDirs[$matches[1]] = true;
+            }
+
+            $this->fileSystem->dumpFile($outputFilePath, $inputContents);
         }
 
         $vendorDirs = array_keys($vendorDirs);
