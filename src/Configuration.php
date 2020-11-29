@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
-use Iterator;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
@@ -42,7 +41,6 @@ use function is_file;
 use function is_link;
 use function is_readable;
 use function is_string;
-use function iter\toArray;
 use function iterator_to_array;
 use function readlink;
 use function realpath;
@@ -534,7 +532,7 @@ final class Configuration
     private static function retrieveFilesWithContents(iterable $files): array
     {
         return array_reduce(
-            toArray($files),
+            iterator_to_array($files, false),
             static function (array $files, $filePathOrFileInfo): array {
                 $filePath = $filePathOrFileInfo instanceof SplFileInfo
                     ? $filePathOrFileInfo->getRealPath()

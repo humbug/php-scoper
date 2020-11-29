@@ -18,7 +18,6 @@ use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Console\ScoperLogger;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Scoper\ConfigurableScoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Whitelist;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -75,7 +74,7 @@ final class AddPrefixCommand extends BaseCommand
         parent::__construct();
 
         $this->fileSystem = $fileSystem;
-        $this->scoper = new ConfigurableScoper($scoper);
+        $this->scoper = $scoper;
     }
 
     /**
