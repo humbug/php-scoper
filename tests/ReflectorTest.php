@@ -163,10 +163,5 @@ class ReflectorTest extends TestCase
             'FTP_ASCII',
             true,
         ];
-
-        yield 'T_MATCH constant' => [
-            'T_MATCH',
-            PHP_VERSION_ID >= 80000,
-        ];
     }
 }
