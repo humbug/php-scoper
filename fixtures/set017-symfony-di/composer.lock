@@ -57,16 +57,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v4.1.12",
+            "version": "v4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "919a245e0642afa353a333d8bf3352320af85969"
+                "reference": "761403523081846099f2f84bf098854aabc64b58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/919a245e0642afa353a333d8bf3352320af85969",
-                "reference": "919a245e0642afa353a333d8bf3352320af85969",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/761403523081846099f2f84bf098854aabc64b58",
+                "reference": "761403523081846099f2f84bf098854aabc64b58",
                 "shasum": ""
             },
             "require": {
@@ -74,7 +74,7 @@
                 "psr/container": "^1.0"
             },
             "conflict": {
-                "symfony/config": "<4.1.1",
+                "symfony/config": "<3.4",
                 "symfony/finder": "<3.4",
                 "symfony/proxy-manager-bridge": "<3.4",
                 "symfony/yaml": "<3.4"
@@ -83,7 +83,7 @@
                 "psr/container-implementation": "1.0"
             },
             "require-dev": {
-                "symfony/config": "~4.1",
+                "symfony/config": "~3.4|~4.0",
                 "symfony/expression-language": "~3.4|~4.0",
                 "symfony/yaml": "~3.4|~4.0"
             },
@@ -97,7 +97,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.1-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
@@ -124,7 +124,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2019-04-16T11:21:55+00:00"
+            "time": "2017-11-30T14:32:51+00:00"
         }
     ],
     "packages-dev": [],
@@ -132,7 +132,8 @@
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
-    "prefer-lowest": false,
+    "prefer-lowest": true,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }
