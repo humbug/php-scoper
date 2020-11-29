@@ -1,0 +1,5 @@
+{
+    "require": {
+        "composer/composer": "^2.0"
+    }
+}

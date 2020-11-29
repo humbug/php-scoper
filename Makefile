@@ -85,7 +85,7 @@ tm: clover.xml
 
 .PHONY: e2e
 e2e:	 ## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_0210 e2e_0211 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -207,37 +207,65 @@ e2e_020: $(PHPSCOPER) fixtures/set020-infection/vendor clover.xml
 		--no-interaction
 	composer --working-dir=build/set020-infection dump-autoload
 
+	# We generate the expected output file: we test that the scoping process
+	# does not alter it
 	php fixtures/set020-infection/vendor/infection/infection/bin/infection \
 		--coverage=dist/infection-coverage \
+		--skip-initial-tests \
+		--only-covered \
+		--no-progress
 		> build/set020-infection/expected-output
 	sed 's/Time.*//' build/set020-infection/expected-output > build/set020-infection/expected-output
 
 	php build/set020-infection/vendor/infection/infection/bin/infection \
 		--coverage=dist/infection-coverage \
+		--skip-initial-tests \
+		--only-covered \
+		--no-progress
 		> build/set020-infection/output
 	sed 's/Time.*//' build/set020-infection/output > build/set020-infection/output
 
 	diff build/set020-infection/expected-output build/set020-infection/output
 
-.PHONY: e2e_021
-e2e_021: ## Run end-to-end tests for the fixture set 021 — Composer
-e2e_021: $(PHPSCOPER) fixtures/set021-composer/vendor
-	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer \
-		--output-dir=../../build/set021-composer \
+.PHONY: e2e_0210
+e2e_0210: ## Run end-to-end tests for the fixture set 021 — Composer 1
+e2e_0210: $(PHPSCOPER) fixtures/set021-composer-1/vendor
+	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer-1 \
+		--output-dir=../../build/set021-composer-1 \
 		--force \
 		--no-interaction \
 		--stop-on-failure \
 		--no-config
-	composer --working-dir=build/set021-composer dump-autoload
+	composer --working-dir=build/set021-composer-1 dump-autoload
 
-	php fixtures/set021-composer/vendor/composer/composer/bin/composer licenses \
+	php fixtures/set021-composer-1/vendor/composer/composer/bin/composer licenses \
 		--no-plugins \
-		> build/set021-composer/expected-output
-	php build/set021-composer/vendor/composer/composer/bin/composer licenses \
+		> build/set021-composer-1/expected-output
+	php build/set021-composer-1/vendor/composer/composer/bin/composer licenses \
 		--no-plugins \
-		> build/set021-composer/output
+		> build/set021-composer-1/output
 
-	diff build/set021-composer/expected-output build/set021-composer/output
+	diff build/set021-composer-1/expected-output build/set021-composer-1/output
+
+.PHONY: e2e_0211
+e2e_0211: ## Run end-to-end tests for the fixture set 021 — Composer 2
+e2e_0211: $(PHPSCOPER) fixtures/set021-composer-2/vendor
+	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer-2 \
+		--output-dir=../../build/set021-composer-2 \
+		--force \
+		--no-interaction \
+		--stop-on-failure \
+		--no-config
+	composer --working-dir=build/set021-composer-2 dump-autoload
+
+	php fixtures/set021-composer-2/vendor/composer/composer/bin/composer licenses \
+		--no-plugins \
+		> build/set021-composer-2/expected-output
+	php build/set021-composer-2/vendor/composer/composer/bin/composer licenses \
+		--no-plugins \
+		> build/set021-composer-2/output
+
+	diff build/set021-composer-2/expected-output build/set021-composer-2/output
 
 .PHONY: e2e_022
 e2e_022: ## Run end-to-end tests for the fixture set 022 — Whitelist the project code with namespace whitelisting
@@ -356,7 +384,6 @@ e2e_029: $(PHPSCOPER) fixtures/set029-easy-rdf/vendor
 	php build/set029-easy-rdf/main.php > build/set029-easy-rdf/output
 
 	diff fixtures/set029-easy-rdf/expected-output build/set029-easy-rdf/output
-	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
 
 .PHONY: e2e_030
 e2e_030: ## Run end-to-end tests for the fixture set 030 — global function whitelisting
@@ -468,8 +495,12 @@ fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
 	composer --working-dir=fixtures/set020-infection install
 	touch -c $@
 
-fixtures/set021-composer/vendor: fixtures/set021-composer/composer.lock
-	composer --working-dir=fixtures/set021-composer install
+fixtures/set021-composer-1/vendor: fixtures/set021-composer-1/composer.lock
+	composer --working-dir=fixtures/set021-composer-1 install
+	touch -c $@
+
+fixtures/set021-composer-2/vendor: fixtures/set021-composer-2/composer.lock
+	composer --working-dir=fixtures/set021-composer-2 install
 	touch -c $@
 
 fixtures/set022/vendor: fixtures/set022/composer.json
