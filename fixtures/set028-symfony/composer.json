@@ -2,16 +2,12 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.3",
+        "php": "^7.1.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/console": "*",
-        "symfony/flex": "^1.9",
+        "symfony/flex": "^1.1",
         "symfony/framework-bundle": "*",
-        "symfony/polyfill-ctype": "^1.20",
-        "symfony/polyfill-iconv": "^1.20",
-        "symfony/polyfill-php74": "^1.20",
-        "symfony/polyfill-php80": "^1.20",
         "symfony/yaml": "*"
     },
     "require-dev": {
@@ -34,7 +30,12 @@
         }
     },
     "replace": {
-        "paragonie/random_compat": "2.*"
+        "paragonie/random_compat": "2.*",
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php71": "*",
+        "symfony/polyfill-php70": "*",
+        "symfony/polyfill-php56": "*"
     },
     "scripts": {
         "auto-scripts": {
@@ -54,7 +55,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.1.7"
+            "require": "4.1.*"
         }
     }
 }
