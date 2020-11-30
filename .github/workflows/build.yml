@@ -24,12 +24,19 @@ jobs:
                         composer-version: "1"
                         coverage: "pcov"
                         publish-phar: true
+                        run-e2e: true
                         git-fetch-depth: 0 # box/composer needs history to determine a recent git version
                     -   php: "7.4"
                         composer-version: "2"
                         coverage: "none"
                         publish-phar: false
                         git-fetch-depth: 1
+                    -   php: "8.0"
+                        composer-version: "2"
+                        coverage: "none"
+                        publish-phar: false
+                        run-e2e: true
+                        git-fetch-depth: 0 # box/composer needs history to determine a recent git version
 
         steps:
             -   uses: actions/checkout@v2
@@ -70,17 +77,17 @@ jobs:
                 if: matrix.coverage == 'pcov'
                 run: make tc
 
+            -   name: Run tests
+                if: matrix.coverage == 'none'
+                run: make tu
+
             -   name: install tree
-                if: matrix.publish-phar == true
+                if: matrix.run-e2e == true
                 run: sudo apt-get install -y tree
 
             -   name: Run tests (e2e)
-                if: matrix.publish-phar == true
+                if: matrix.run-e2e == true
                 run: make e2e
-
-            -   name: Run tests
-                if: matrix.publish-phar == false
-                run: make tu
 
             -   uses: actions/upload-artifact@v1
                 name: Publish the PHAR

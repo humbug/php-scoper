@@ -58,6 +58,7 @@ class PhpScoperSpecTest extends TestCase
 
     private const SPECS_META_KEYS = [
         'minPhpVersion',
+        'maxPhpVersion',
         'title',
         'prefix',
         'whitelist',
@@ -102,10 +103,15 @@ class PhpScoperSpecTest extends TestCase
         ?string $expected,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions,
-        ?int $minPhpVersion
+        ?int $minPhpVersion,
+        ?int $maxPhpVersion
     ): void {
         if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
             $this->markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
+        }
+
+        if (null !== $maxPhpVersion && $maxPhpVersion <= PHP_VERSION_ID) {
+            $this->markTestSkipped(sprintf('Max PHP version not matched for spec %s', $spec));
         }
 
         $filePath = 'file.php';
@@ -299,6 +305,7 @@ class PhpScoperSpecTest extends TestCase
             $fixtureSet['registered-classes'] ?? $meta['registered-classes'],
             $fixtureSet['registered-functions'] ?? $meta['registered-functions'],
             $meta['minPhpVersion'] ?? null,
+            $meta['maxPhpVersion'] ?? null,
         ];
     }
 

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
+        'maxPhpVersion' => 70499,
         'title' => 'Match',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "35364586f58254fe0a358ecc8caa32bf",
+    "content-hash": "9c4b872d1c9e587809f7a60862105f1b",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -126,7 +126,7 @@
             "support": {
                 "source": "https://github.com/JetBrains/phpstorm-stubs/tree/master"
             },
-            "time": "2020-11-27T08:56:43+00:00"
+            "time": "2020-11-29T19:48:06+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -5517,7 +5517,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3"
+        "php": "^7.3 || ^8.0"
     },
     "platform-dev": [],
     "platform-overrides": {

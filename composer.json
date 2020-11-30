@@ -20,7 +20,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.3",
+        "php": "^7.3 || ^8.0",
         "composer/package-versions-deprecated": "^1.8",
         "jetbrains/phpstorm-stubs": "dev-master",
         "nikic/php-parser": "^4.0",
