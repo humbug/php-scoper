@@ -33,7 +33,7 @@ jobs:
                         git-fetch-depth: 1
                     -   php: "8.0"
                         composer-version: "2"
-                        coverage: "none"
+                        coverage: "pcov"
                         publish-phar: false
                         run-e2e: true
                         git-fetch-depth: 0 # box/composer needs history to determine a recent git version
