@@ -1,0 +1,68 @@
+name: e2e
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+
+jobs:
+
+    generate-jobs:
+        name: Generate Jobs
+        runs-on: ubuntu-latest
+        outputs:
+            matrix: ${{ steps.generate-jobs.outputs.matrix }}
+        steps:
+            -   uses: actions/checkout@v2
+            -   id: generate-jobs
+                name: Generate Jobs
+                run: |
+                    matrix="$(php .github/workflows/generate-e2e-matrix.php)"
+                    echo "::set-output name=matrix::$matrix"
+
+    e2e:
+        needs: generate-jobs
+        runs-on: ubuntu-latest
+        name: ${{ matrix.e2e }} - ${{ matrix.php }}
+        strategy:
+            fail-fast: false
+            matrix:
+                include: ${{ fromJson(needs.generate-jobs.outputs.matrix) }}
+
+        steps:
+            -   uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    ini-values: "phar.readonly=0"
+                    tools: composer:v2
+                    coverage: pcov
+
+            -   name: Get composer cache directory
+                id: composercache
+                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            -   name: Cache composer dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composercache.outputs.dir }}
+                    key: ${{ runner.os }}-composer-cache-${{ hashFiles('**/composer.lock') }}
+                    restore-keys: ${{ runner.os }}-composer-cache-
+
+            -   name: Set composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install dependencies
+                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+            -   name: Run check-composer-root-version
+                run: make check-composer-root-version
+
+            -   name: Run e2e ${{ matrix.e2e }}
+                run: make ${{ matrix.e2e }}
