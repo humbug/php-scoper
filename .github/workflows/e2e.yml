@@ -7,27 +7,41 @@ on:
 
 jobs:
 
-    generate-jobs:
-        name: Generate Jobs
-        runs-on: ubuntu-latest
-        outputs:
-            matrix: ${{ steps.generate-jobs.outputs.matrix }}
-        steps:
-            -   uses: actions/checkout@v2
-            -   id: generate-jobs
-                name: Generate Jobs
-                run: |
-                    matrix="$(php .github/workflows/generate-e2e-matrix.php)"
-                    echo "::set-output name=matrix::$matrix"
-
     e2e:
-        needs: generate-jobs
         runs-on: ubuntu-latest
         name: ${{ matrix.e2e }} - ${{ matrix.php }}
         strategy:
             fail-fast: false
             matrix:
-                include: ${{ fromJson(needs.generate-jobs.outputs.matrix) }}
+                e2e:
+                    - 'e2e_004'
+                    - 'e2e_005'
+                    - 'e2e_011'
+                    - 'e2e_013'
+                    - 'e2e_014'
+                    - 'e2e_015'
+                    - 'e2e_016'
+                    - 'e2e_017'
+                    - 'e2e_018'
+                    - 'e2e_019'
+                    - 'e2e_020'
+                    - 'e2e_0211'
+                    - 'e2e_022'
+                    - 'e2e_023'
+                    - 'e2e_024'
+                    - 'e2e_025'
+                    - 'e2e_026'
+                    - 'e2e_027'
+                    - 'e2e_028'
+                    - 'e2e_029'
+                    - 'e2e_030'
+                    - 'e2e_031'
+                    - 'e2e_032'
+                php: [ '7.3', '8.0' ]
+
+                include:
+                    -   e2e: 'e2e_0210'
+                        php: '7.3'
 
         steps:
             -   uses: actions/checkout@v2
@@ -63,6 +77,10 @@ jobs:
 
             -   name: Run check-composer-root-version
                 run: make check-composer-root-version
+
+            -   name: Install tree
+                if: matrix.e2e == 'e2e_032'
+                run: sudo apt-get install -y tree
 
             -   name: Run e2e ${{ matrix.e2e }}
                 run: make ${{ matrix.e2e }}
