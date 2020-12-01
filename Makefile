@@ -76,7 +76,7 @@ tu: bin/phpunit
 
 .PHONY: tc
 tc:	 ## Run PHPUnit tests with test coverage
-tc: bin/phpunit vendor-bin/covers-validator/vendor clover.xml
+tc: bin/phpunit clover.xml
 
 .PHONY: tm
 tm:	 ## Run Infection (Mutation Testing)
@@ -599,9 +599,9 @@ bin/php-scoper.phar: bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.
 	touch -c $@
 
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
-clover.xml: $(SRC_FILES)
+clover.xml: $(SRC_FILES) vendor-bin/covers-validator/vendor
 	$(COVERS_VALIDATOR)
-	php -d zend.enable_gc=0 $(PHPUNIT) \
+	$(PHPNOGC) $(PHPUNIT) \
 		--coverage-html=dist/coverage \
 		--coverage-text \
 		--coverage-clover=clover.xml \
