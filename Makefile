@@ -209,16 +209,17 @@ e2e_020: $(PHPSCOPER) fixtures/set020-infection/vendor clover.xml
 
 	# We generate the expected output file: we test that the scoping process
 	# does not alter it
-	php fixtures/set020-infection/vendor/infection/infection/bin/infection \
-		--coverage=dist/infection-coverage \
+	cd fixtures/set020-infection && php vendor/infection/infection/bin/infection \
+		--coverage=../../dist/infection-coverage \
 		--skip-initial-tests \
 		--only-covered \
 		--no-progress
 		> build/set020-infection/expected-output
 	sed 's/Time.*//' build/set020-infection/expected-output > build/set020-infection/expected-output
 
-	php build/set020-infection/vendor/infection/infection/bin/infection \
-		--coverage=dist/infection-coverage \
+
+	cd build/set020-infection && php vendor/infection/infection/bin/infection \
+		--coverage=../../dist/infection-coverage \
 		--skip-initial-tests \
 		--only-covered \
 		--no-progress
