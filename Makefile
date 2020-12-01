@@ -118,6 +118,7 @@ e2e_011: $(PHPSCOPER) fixtures/set011/vendor
 e2e_013: # Run end-to-end tests for the fixture set 013 — The init command
 e2e_013: $(PHPSCOPER)
 	rm -rf build/set013
+	mkdir -p build
 	cp -R fixtures/set013 build/set013
 	$(PHPSCOPER) init --working-dir=build/set013 --no-interaction
 	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
