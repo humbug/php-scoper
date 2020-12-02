@@ -80,10 +80,6 @@ jobs:
             -   name: Run check-composer-root-version
                 run: make check-composer-root-version
 
-            -   name: Generate coverage
-                if: matrix.e2e == 'e2e_020'
-                run: make tc
-
             -   name: Install tree
                 if: matrix.e2e == 'e2e_032'
                 run: sudo apt-get install -y tree
