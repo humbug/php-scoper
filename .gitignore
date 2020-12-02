@@ -12,6 +12,7 @@
 /fixtures/*/.box_dump/
 /fixtures/*/vendor/
 /fixtures/set028-symfony/expected-output
+/fixtures/set030/composer.lock
 /fixtures/set030/expected-output
 /fixtures/set031-extension-symbol/expected-output
 .phpunit*
