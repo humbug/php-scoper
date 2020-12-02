@@ -232,6 +232,7 @@ e2e_020: $(PHPSCOPER) fixtures/set020-infection/vendor clover.xml
 .PHONY: e2e_0210
 e2e_0210: ## Run end-to-end tests for the fixture set 021 — Composer 1
 e2e_0210: $(PHPSCOPER) fixtures/set021-composer-1/vendor
+	rm -rf fixtures/set021-composer-1/vendor/*/*/tests
 	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer-1 \
 		--output-dir=../../build/set021-composer-1 \
 		--force \

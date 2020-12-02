@@ -25,6 +25,7 @@ jobs:
                     - 'e2e_018'
                     - 'e2e_019'
                     - 'e2e_020'
+                    - 'e2e_0210'
                     - 'e2e_0211'
                     - 'e2e_022'
                     - 'e2e_023'
@@ -40,9 +41,6 @@ jobs:
                 tools: [ 'composer:v2' ]
 
                 include:
-                    -   e2e: 'e2e_0210'
-                        php: '7.3'
-                        tools: 'composer:v2'
                     -   e2e: 'e2e_027'
                         php: '7.3'
                         tools: 'composer:v1'

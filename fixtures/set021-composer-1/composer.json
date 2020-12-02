@@ -1,5 +1,6 @@
 {
+    "minimum-stability": "dev",
     "require": {
-        "composer/composer": "^1.6"
+        "composer/composer": "^1.10@dev"
     }
 }
