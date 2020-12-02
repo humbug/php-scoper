@@ -31,17 +31,21 @@ jobs:
                     - 'e2e_024'
                     - 'e2e_025'
                     - 'e2e_026'
-                    - 'e2e_027'
                     - 'e2e_028'
                     - 'e2e_029'
                     - 'e2e_030'
                     - 'e2e_031'
                     - 'e2e_032'
                 php: [ '7.3', '8.0' ]
+                tools: [ 'composer:v2' ]
 
                 include:
                     -   e2e: 'e2e_0210'
                         php: '7.3'
+                        tools: 'composer:v2'
+                    -   e2e: 'e2e_027'
+                        php: '7.3'
+                        tools: 'composer:v1'
 
         steps:
             -   uses: actions/checkout@v2
@@ -53,7 +57,7 @@ jobs:
                 with:
                     php-version: ${{ matrix.php }}
                     ini-values: "phar.readonly=0"
-                    tools: composer:v2
+                    tools: ${{ matrix.tools }}
                     coverage: pcov
 
             -   name: Get composer cache directory
