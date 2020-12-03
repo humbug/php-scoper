@@ -23,7 +23,7 @@
         "php": "^7.3",
         "composer/package-versions-deprecated": "^1.8",
         "jetbrains/phpstorm-stubs": "dev-master",
-        "nikic/php-parser": "^4.0",
+        "nikic/php-parser": "dev-master@dev as 4.10.3",
         "symfony/console": "^3.2 || ^4.0",
         "symfony/filesystem": "^3.2 || ^4.0",
         "symfony/finder": "^3.2 || ^4.0"
