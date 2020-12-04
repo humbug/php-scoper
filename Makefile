@@ -6,6 +6,7 @@ MAKEFLAGS += --no-builtin-rules
 
 PHPBIN=php
 PHPNOGC=php -d zend.enable_gc=0
+IS_PHP8=$(shell php -r "echo version_compare(PHP_VERSION, '8.0.0', '>=') ? 'true' : 'false';")
 
 SRC_FILES=$(shell find bin/ src/ -type f)
 
@@ -337,6 +338,7 @@ e2e_026: $(PHPSCOPER) fixtures/set026/vendor
 
 .PHONY: e2e_027
 e2e_027: ## Run end-to-end tests for the fixture set 027 — Laravel
+ifeq ("$(IS_PHP8)", "true"))
 e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set027-laravel \
@@ -349,6 +351,10 @@ e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
 
 	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
+else
+e2e_027:
+	echo "SKIP e2e_027: PHP version not supported"
+endif
 
 .PHONY: e2e_028
 e2e_028: ## Run end-to-end tests for the fixture set 028 — Symfony
