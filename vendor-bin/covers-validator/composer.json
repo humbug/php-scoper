@@ -1,7 +1,6 @@
 {
     "require-dev": {
-        "symfony/console": "^3.3",
-        "ockcyp/covers-validator": "^0.6"
+        "ockcyp/covers-validator": "^1.3"
     },
     "config": {
         "bin-dir": "bin",

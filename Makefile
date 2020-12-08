@@ -6,6 +6,7 @@ MAKEFLAGS += --no-builtin-rules
 
 PHPBIN=php
 PHPNOGC=php -d zend.enable_gc=0
+IS_PHP8=$(shell php -r "echo version_compare(PHP_VERSION, '8.0.0', '>=') ? 'true' : 'false';")
 
 SRC_FILES=$(shell find bin/ src/ -type f)
 
@@ -76,7 +77,7 @@ tu: bin/phpunit
 
 .PHONY: tc
 tc:	 ## Run PHPUnit tests with test coverage
-tc: bin/phpunit vendor-bin/covers-validator/vendor clover.xml
+tc: bin/phpunit clover.xml
 
 .PHONY: tm
 tm:	 ## Run Infection (Mutation Testing)
@@ -118,6 +119,7 @@ e2e_011: $(PHPSCOPER) fixtures/set011/vendor
 e2e_013: # Run end-to-end tests for the fixture set 013 — The init command
 e2e_013: $(PHPSCOPER)
 	rm -rf build/set013
+	mkdir -p build
 	cp -R fixtures/set013 build/set013
 	$(PHPSCOPER) init --working-dir=build/set013 --no-interaction
 	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
@@ -209,16 +211,17 @@ e2e_020: $(PHPSCOPER) fixtures/set020-infection/vendor clover.xml
 
 	# We generate the expected output file: we test that the scoping process
 	# does not alter it
-	php fixtures/set020-infection/vendor/infection/infection/bin/infection \
-		--coverage=dist/infection-coverage \
+	cd fixtures/set020-infection && php vendor/infection/infection/bin/infection \
+		--coverage=../../dist/infection-coverage \
 		--skip-initial-tests \
 		--only-covered \
 		--no-progress
 		> build/set020-infection/expected-output
 	sed 's/Time.*//' build/set020-infection/expected-output > build/set020-infection/expected-output
 
-	php build/set020-infection/vendor/infection/infection/bin/infection \
-		--coverage=dist/infection-coverage \
+
+	cd build/set020-infection && php vendor/infection/infection/bin/infection \
+		--coverage=../../dist/infection-coverage \
 		--skip-initial-tests \
 		--only-covered \
 		--no-progress
@@ -335,8 +338,9 @@ e2e_026: $(PHPSCOPER) fixtures/set026/vendor
 
 .PHONY: e2e_027
 e2e_027: ## Run end-to-end tests for the fixture set 027 — Laravel
+ifeq ("$(IS_PHP8)", "true"))
 e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
-	php $(PHPSCOPER) add-prefix \
+	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set027-laravel \
 		--output-dir=../../build/set027-laravel \
 		--no-config \
@@ -347,6 +351,10 @@ e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
 
 	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
+else
+e2e_027:
+	echo "SKIP e2e_027: PHP version not supported"
+endif
 
 .PHONY: e2e_028
 e2e_028: ## Run end-to-end tests for the fixture set 028 — Symfony
@@ -598,9 +606,9 @@ bin/php-scoper.phar: bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.
 	touch -c $@
 
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
-clover.xml: $(SRC_FILES)
+clover.xml: $(SRC_FILES) vendor-bin/covers-validator/vendor
 	$(COVERS_VALIDATOR)
-	php -d zend.enable_gc=0 $(PHPUNIT) \
+	$(PHPNOGC) $(PHPUNIT) \
 		--coverage-html=dist/coverage \
 		--coverage-text \
 		--coverage-clover=clover.xml \
