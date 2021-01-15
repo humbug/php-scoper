@@ -8,7 +8,7 @@ about: If something isn't working as expected 🤔.
 
 | Question    | Answer
 | ------------| ---------------
-| Box version | x.y.z <!-- (`php-scoper.phar -V` or `composer show | grep humbug/php-scoper`) -->
+| PHP-Scoper version | x.y.z <!-- (`php-scoper.phar -V` or `composer show | grep humbug/php-scoper`) -->
 | PHP version | x.y.z <!-- (`php -v`) -->
 | Platform with version | e.g. Ubuntu/Windows/MacOS
 | Github Repo | - <!-- (if public) -->
