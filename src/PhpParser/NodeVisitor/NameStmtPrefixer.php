@@ -219,10 +219,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         );
     }
 
-    private static function array_starts_with($haystack, $needle): bool
+    private static function array_starts_with($arr, $prefix): bool
     {
-        for ($i = 0; $i < count($needle); ++$i) {
-            if ($haystack[$i] !== $needle[$i]) {
+        for ($i = 0; $i < count($prefix); ++$i) {
+            if ($arr[$i] !== $prefix[$i]) {
                 return false;
             }
         }
