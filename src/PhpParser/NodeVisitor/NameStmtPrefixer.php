@@ -40,6 +40,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitorAbstract;
+use function count;
 use function in_array;
 
 /**
@@ -101,9 +102,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private function prefixName(Name $name): Node
     {
-        if ($this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name) !== null) {
-            return $name;
-        }
         $parentNode = ParentNodeAppender::getParent($name);
 
         if ($parentNode instanceof NullableType) {
@@ -156,6 +154,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         $resolvedName = $this->nameResolver->resolveName($name)->getName();
+
+        $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
+        if ($useStatement !== null and self::array_starts_with($resolvedName->parts, $useStatement->parts)) {
+            return $name;
+        }
 
         if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
             || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
@@ -214,5 +217,15 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             $resolvedName->toString(),
             $resolvedName->getAttributes()
         );
+    }
+
+    private static function array_starts_with($haystack, $needle): bool
+    {
+        for ($i = 0; $i < count($needle); ++$i) {
+            if ($haystack[$i] !== $needle[$i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }
