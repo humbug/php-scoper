@@ -48,11 +48,11 @@ use function Humbug\A\B\c;
 use function Humbug\A\d;
 use function Humbug\A\B\C\g;
 use function Humbug\A\B\e;
-\Humbug\A\b();
-\Humbug\A\B\c();
-\Humbug\A\d();
-\Humbug\A\B\C\g();
-\Humbug\A\B\e();
+b();
+c();
+d();
+g();
+e();
 
 PHP
     ,
