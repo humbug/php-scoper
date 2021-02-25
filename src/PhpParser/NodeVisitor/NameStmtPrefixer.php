@@ -16,6 +16,8 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -65,17 +67,23 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private $prefix;
     private $whitelist;
+    private $namespaceStatements;
+    private $useStatements;
     private $nameResolver;
     private $reflector;
 
     public function __construct(
         string $prefix,
         Whitelist $whitelist,
+        NamespaceStmtCollection $namespaceStatements,
+        UseStmtCollection $useStatements,
         FullyQualifiedNameResolver $nameResolver,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
+        $this->namespaceStatements = $namespaceStatements;
+        $this->useStatements = $useStatements;
         $this->nameResolver = $nameResolver;
         $this->reflector = $reflector;
     }
@@ -93,6 +101,9 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private function prefixName(Name $name): Node
     {
+        if ($this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name) !== null) {
+            return $name;
+        }
         $parentNode = ParentNodeAppender::getParent($name);
 
         if ($parentNode instanceof NullableType) {
