@@ -76,7 +76,7 @@ class Foo
 namespace Humbug\A;
 
 use Humbug\Foo;
-Foo::main();
+\Humbug\Foo::main();
 
 PHP
     ,
@@ -95,7 +95,7 @@ Closure::bind();
 namespace Humbug\A;
 
 use Closure;
-\Closure::bind();
+Closure::bind();
 
 PHP
     ,

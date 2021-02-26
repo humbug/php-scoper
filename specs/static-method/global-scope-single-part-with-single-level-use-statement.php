@@ -42,7 +42,7 @@ class Foo
 {
 }
 use Humbug\Foo;
-\Humbug\Foo::main();
+Foo::main();
 
 PHP
     ,
@@ -81,7 +81,7 @@ Closure::bind();
 namespace Humbug;
 
 use Closure;
-\Closure::bind();
+Closure::bind();
 
 PHP
     ,
