@@ -142,11 +142,11 @@ namespace Humbug\Bar;
 use Acme\Foo;
 use const Acme\FOO;
 use const Acme\BAR;
-new \Acme\Foo();
+new Foo();
 new \acmE\Foo();
-\Acme\FOO;
+FOO;
 \acmE\FOO;
-\Acme\BAR;
+BAR;
 \acmE\BAR;
 
 PHP

@@ -82,7 +82,7 @@ abstract class TestCase extends \Humbug\PHPUnit\Framework\SORT_NUMERIC
 {
     function __construct()
     {
-        echo \SORT_NUMERIC;
+        echo SORT_NUMERIC;
     }
 }
 
