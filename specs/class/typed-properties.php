@@ -210,8 +210,8 @@ class A
 {
     public string $name;
     public ?\Humbug\Foo\B $foo;
-    public ?\Humbug\Bar\C $foo;
-    public ?\DateTimeImmutable $bar;
+    public ?C $foo;
+    public ?DateTimeImmutable $bar;
     public ?\Humbug\Foo\Closure $baz;
     public function a()
     {

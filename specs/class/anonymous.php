@@ -449,7 +449,7 @@ new class
     {
     }
 };
-new class extends \Humbug\A implements \Humbug\Foo\B, \Humbug\Foo\C, \Iterator
+new class extends A implements \Humbug\Foo\B, \Humbug\Foo\C, \Iterator
 {
 };
 namespace Humbug\Bar;
@@ -459,7 +459,7 @@ new class
 {
     public $foo;
 };
-new class($a, $b) extends \Humbug\A
+new class($a, $b) extends A
 {
     use T;
 };

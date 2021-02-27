@@ -37,7 +37,7 @@ FOO;
 namespace Humbug;
 
 use const Humbug\DUMMY_CONST as FOO;
-\Humbug\DUMMY_CONST;
+FOO;
 
 PHP
     ,
@@ -56,7 +56,7 @@ FOO;
 namespace Humbug;
 
 use const DUMMY_CONST as FOO;
-\DUMMY_CONST;
+FOO;
 
 PHP
     ],

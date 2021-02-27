@@ -77,7 +77,7 @@ class A
     {
     }
 }
-class B extends \Humbug\Foo\A implements \Iterator
+class B extends \Humbug\Foo\A implements Iterator
 {
 }
 
@@ -148,7 +148,7 @@ class A
 namespace Humbug\Bar;
 
 use Humbug\Foo\A;
-class B extends \Humbug\Foo\A
+class B extends A
 {
 }
 

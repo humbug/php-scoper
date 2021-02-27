@@ -117,7 +117,7 @@ class C
 class D
 {
 }
-interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
+interface A extends \Humbug\Foo\C, \Humbug\Foo\D, Iterator
 {
     public function a();
 }
@@ -153,7 +153,7 @@ class C
 class D
 {
 }
-interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
+interface A extends \Humbug\Foo\C, \Humbug\Foo\D, Iterator
 {
     public function a();
 }
@@ -192,7 +192,7 @@ class C
 class D
 {
 }
-interface A extends \Humbug\Foo\C, \Humbug\Foo\D, \Iterator
+interface A extends \Humbug\Foo\C, \Humbug\Foo\D, Iterator
 {
     public function a();
 }

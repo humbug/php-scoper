@@ -88,7 +88,7 @@ Reflector::MAIN_CONST;
 namespace Humbug\X;
 
 use Reflector;
-\Reflector::MAIN_CONST;
+Reflector::MAIN_CONST;
 
 PHP
     ],
