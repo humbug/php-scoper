@@ -88,7 +88,7 @@ class Foo
 {
 }
 use Humbug\Foo as A;
-A\Bar\DUMMY_CONST;
+\Foo\Bar\DUMMY_CONST;
 
 PHP
     ],
