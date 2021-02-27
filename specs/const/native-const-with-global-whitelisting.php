@@ -57,7 +57,7 @@ $x = DIRECTORY_SEPARATOR;
 namespace Humbug\Acme;
 
 use const Humbug\Acme\DIRECTORY_SEPARATOR;
-$x = \Humbug\Acme\DIRECTORY_SEPARATOR;
+$x = DIRECTORY_SEPARATOR;
 
 PHP
     ,

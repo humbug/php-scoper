@@ -42,7 +42,7 @@ class Foo
 {
 }
 use Humbug\Foo;
-\Humbug\Foo\Bar\DUMMY_CONST;
+Foo\Bar\DUMMY_CONST;
 
 PHP
     ,
@@ -88,7 +88,7 @@ class Foo
 {
 }
 use Humbug\Foo;
-\Foo\Bar\DUMMY_CONST;
+Foo\Bar\DUMMY_CONST;
 
 PHP
     ],

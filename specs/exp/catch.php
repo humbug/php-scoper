@@ -220,7 +220,7 @@ namespace Humbug\Acme;
 use Humbug\X\FooException;
 try {
     echo "foo";
-} catch (\Humbug\X\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP
@@ -245,7 +245,7 @@ namespace Humbug\Acme;
 use Humbug\X\FooException;
 try {
     echo "foo";
-} catch (\Humbug\X\FooException|\Throwable $t) {
+} catch (FooException|\Throwable $t) {
 }
 
 PHP

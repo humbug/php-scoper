@@ -93,13 +93,13 @@ use Humbug\Foo as X;
 use Humbug\Foo\Bar as Y;
 use Humbug\Foo\Bar\Poz as Z;
 \Humbug\Foo::MAIN_CONST;
-\Humbug\Foo::MAIN_CONST;
+X::MAIN_CONST;
+Y::MAIN_CONST;
+X\Bar::MAIN_CONST;
 \Humbug\Foo\Bar::MAIN_CONST;
-\Humbug\Foo\Bar::MAIN_CONST;
-\Humbug\Foo\Bar::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
+Z::MAIN_CONST;
+Y\Poz::MAIN_CONST;
+X\Bar\Poz::MAIN_CONST;
 \Humbug\Foo\Bar\Poz::MAIN_CONST;
 
 PHP
@@ -164,13 +164,13 @@ use Humbug\Foo as X;
 use Humbug\Foo\Bar as Y;
 use Humbug\Foo\Bar\Poz as Z;
 \Humbug\Foo::MAIN_CONST;
-\Humbug\Foo::MAIN_CONST;
+X::MAIN_CONST;
+Y::MAIN_CONST;
+X\Bar::MAIN_CONST;
 \Humbug\Foo\Bar::MAIN_CONST;
-\Humbug\Foo\Bar::MAIN_CONST;
-\Humbug\Foo\Bar::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
+Z::MAIN_CONST;
+Y\Poz::MAIN_CONST;
+X\Bar\Poz::MAIN_CONST;
 \Humbug\Foo\Bar\Poz::MAIN_CONST;
 
 PHP
@@ -327,13 +327,13 @@ use Humbug\Foo\Bar\Poz as Z;
 \Humbug\A\Aoo\Aoz::MAIN_CONST;
 \Humbug\A\Aoo\Aoz\Poz::MAIN_CONST;
 \Humbug\A\Foo::MAIN_CONST;
-\Humbug\Foo::MAIN_CONST;
-\Humbug\Foo\Bar::MAIN_CONST;
-\Humbug\Foo\Bar::MAIN_CONST;
+X::MAIN_CONST;
+Y::MAIN_CONST;
+X\Bar::MAIN_CONST;
 \Humbug\A\Foo\Bar::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
-\Humbug\Foo\Bar\Poz::MAIN_CONST;
+Z::MAIN_CONST;
+Y\Poz::MAIN_CONST;
+X\Bar\Poz::MAIN_CONST;
 \Humbug\A\Foo\Bar\Poz::MAIN_CONST;
 
 PHP
