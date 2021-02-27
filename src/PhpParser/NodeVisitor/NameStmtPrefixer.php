@@ -156,7 +156,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         $resolvedName = $this->nameResolver->resolveName($name)->getName();
 
         $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
-        if ($useStatement !== null and self::array_starts_with($resolvedName->parts, $useStatement->parts)) {
+        if (
+            $useStatement !== null and
+            self::array_starts_with($resolvedName->parts, $useStatement->parts) and
+            !($parentNode instanceof ConstFetch && $this->whitelist->isGlobalWhitelistedConstant($resolvedName->toString()))
+        ) {
             return $name;
         }
 
