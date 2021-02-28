@@ -155,6 +155,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         $resolvedName = $this->nameResolver->resolveName($name)->getName();
 
+        // Do not prefix if there is a matching use statement.
         $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
         if (
             $useStatement !== null and
