@@ -159,7 +159,8 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         if (
             $useStatement !== null and
             self::array_starts_with($resolvedName->parts, $useStatement->parts) and
-            !($parentNode instanceof ConstFetch and ($this->whitelist->isGlobalWhitelistedConstant($resolvedName->toString()) or $this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true)))
+            !($parentNode instanceof ConstFetch and ($this->whitelist->isGlobalWhitelistedConstant($resolvedName->toString()) or $this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true))) and
+            !($name instanceof FullyQualified)
         ) {
             return $name;
         }
