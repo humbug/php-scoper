@@ -174,6 +174,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $newNode->class;
 
+        if (false === ($class instanceof Name)) {
+            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
+        }
+
         if (in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
             return $string;
         }
@@ -235,6 +239,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function prefixStaticCallStringArg(String_ $string, StaticCall $callNode): String_
     {
         $class = $callNode->class;
+
+        if (false === ($class instanceof Name)) {
+            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
+        }
 
         if (false === in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
