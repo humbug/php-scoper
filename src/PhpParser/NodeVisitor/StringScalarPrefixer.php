@@ -174,12 +174,12 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $newNode->class;
 
-        if (false === ($class instanceof FullyQualified)) {
-            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
-        }
-
         if (in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
             return $string;
+        }
+
+        if (false === ($class instanceof FullyQualified)) {
+            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
         return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
@@ -236,10 +236,6 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $callNode->class;
 
-        if (false === ($class instanceof FullyQualified)) {
-            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
-        }
-
         if (false === in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
@@ -248,6 +244,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             && 'createFromFormat' === $callNode->name->toString()
         ) {
             return $string;
+        }
+
+        if (false === ($class instanceof FullyQualified)) {
+            return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
         return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
