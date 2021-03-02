@@ -195,7 +195,7 @@ namespace Acme;
 
 try {
     echo "foo";
-} catch (FooException $t) {
+} catch (\Acme\FooException $t) {
 }
 
 PHP

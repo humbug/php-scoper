@@ -157,7 +157,7 @@ class Command
 }
 namespace X;
 
-PHPUnit\Command::MAIN_CONST;
+\X\PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],

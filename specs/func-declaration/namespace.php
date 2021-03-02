@@ -397,7 +397,7 @@ class Foo
 class ArrayIterator
 {
 }
-function foo(Foo $arg0 = null, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, ArrayIterator $arg4, \ArrayIterator $arg5, X\Y $arg6, \Humbug\X\Y $arg7)
+function foo(\Pi\Foo $arg0 = null, \Humbug\Foo $arg1, \Pi\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \Pi\ArrayIterator $arg4, \ArrayIterator $arg5, \Pi\X\Y $arg6, \Humbug\X\Y $arg7)
 {
 }
 

@@ -40,6 +40,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitorAbstract;
+use function array_merge;
 use function count;
 use function in_array;
 
@@ -168,8 +169,13 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $name;
         }
 
+        // Do not prefix if the Name is inside of the current namespace
         $namespace = $this->namespaceStatements->getCurrentNamespaceName();
-        if ($namespace !== null && array_merge($namespace->parts, $name->parts) === $resolvedName->parts) {
+        if (
+            $namespace !== null and
+            array_merge($namespace->parts, $name->parts) === $resolvedName->parts and
+            !$this->whitelist->belongsToWhitelistedNamespace($resolvedName->toString())
+        ) {
             return $name;
         }
 
