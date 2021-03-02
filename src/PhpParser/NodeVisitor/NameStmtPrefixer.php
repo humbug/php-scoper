@@ -168,6 +168,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $name;
         }
 
+        $namespace = $this->namespaceStatements->getCurrentNamespaceName();
+        if ($namespace !== null && array_merge($namespace->parts, $name->parts) === $resolvedName->parts) {
+            return $name;
+        }
+
         if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
             || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
         ) {
