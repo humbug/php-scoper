@@ -170,13 +170,20 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         // Do not prefix if the Name is inside of the current namespace
-        $namespace = $this->namespaceStatements->getCurrentNamespaceName();
-        if (
-            $namespace !== null and
-            array_merge($namespace->parts, $name->parts) === $resolvedName->parts and
-            !$this->whitelist->belongsToWhitelistedNamespace($resolvedName->toString())
-        ) {
-            return $name;
+        if (!$this->whitelist->belongsToWhitelistedNamespace($resolvedName->toString())) {
+            $namespace = $this->namespaceStatements->getCurrentNamespaceName();
+            if (
+                (
+                    $namespace !== null and
+                    array_merge($namespace->parts, $name->parts) === $resolvedName->parts
+                ) or
+                (
+                    $namespace === null and
+                    $name->parts === $resolvedName->parts
+                )
+            ) {
+                return $name;
+            }
         }
 
         if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
