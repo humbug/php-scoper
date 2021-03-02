@@ -45,7 +45,7 @@ class Command
 }
 namespace Humbug;
 
-\Humbug\PHPUnit\Command::$mainStaticProp;
+PHPUnit\Command::$mainStaticProp;
 
 PHP
     ,

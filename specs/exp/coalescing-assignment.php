@@ -70,7 +70,7 @@ $x ??= new Foo();
 
 namespace Humbug;
 
-$x ??= new \Humbug\Foo();
+$x ??= new Foo();
 
 PHP
     ,

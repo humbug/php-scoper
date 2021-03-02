@@ -84,7 +84,7 @@ class A
         return $this->name;
     }
 }
-class B extends \Humbug\A
+class B extends A
 {
     static $foo = 'BAR';
     public function __construct(string $name)
@@ -93,8 +93,8 @@ class B extends \Humbug\A
         parent::$foo;
     }
 }
-\Humbug\B::test();
-echo (new \Humbug\B('yo'))->getName() . \PHP_EOL;
+B::test();
+echo (new B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ,

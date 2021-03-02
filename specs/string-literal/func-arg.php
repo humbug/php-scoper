@@ -113,18 +113,18 @@ class_alias('\\DateTime', '\\DateTimeInterface');
 
 namespace Humbug;
 
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('DateTime');
-\Humbug\foo('\\DateTime');
-\Humbug\foo('Swift');
-\Humbug\foo('\\Swift');
-\Humbug\foo(['DateTime', 'autoload']);
-\Humbug\foo(['\\DateTime', 'autoload']);
-\Humbug\foo(['Swift', 'autoload']);
-\Humbug\foo(['\\Swift', 'autoload']);
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('DateTime');
+foo('\\DateTime');
+foo('Swift');
+foo('\\Swift');
+foo(['DateTime', 'autoload']);
+foo(['\\DateTime', 'autoload']);
+foo(['Swift', 'autoload']);
+foo(['\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
@@ -260,14 +260,14 @@ class_alias('DateTime', 'DateTimeInterface');
 
 namespace Humbug;
 
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('DateTime');
-\Humbug\foo('Swift');
-\Humbug\foo(['DateTime', 'autoload']);
-\Humbug\foo(['Swift', 'autoload']);
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('DateTime');
+foo('Swift');
+foo(['DateTime', 'autoload']);
+foo(['Swift', 'autoload']);
 (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
 })();
 (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
@@ -391,14 +391,14 @@ class_alias('DateTime', 'DateTimeInterface');
 
 namespace Humbug;
 
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-\Humbug\foo('DateTime');
-\Humbug\foo('Swift');
-\Humbug\foo(['DateTime', 'autoload']);
-\Humbug\foo(['Swift', 'autoload']);
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+foo('DateTime');
+foo('Swift');
+foo(['DateTime', 'autoload']);
+foo(['Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
 \spl_autoload_register(['Humbug\\Swift', 'autoload']);
@@ -463,9 +463,9 @@ class_alias('Swift'.'', 'Mailer'.'');
 
 namespace Humbug;
 
-\Humbug\foo('Symfony\\Component' . '\\Yaml\\Ya_1');
-\Humbug\foo('\\Symfony\\Component' . '\\Yaml\\Ya_1');
-\Humbug\foo('Swift' . '');
+foo('Symfony\\Component' . '\\Yaml\\Ya_1');
+foo('\\Symfony\\Component' . '\\Yaml\\Ya_1');
+foo('Swift' . '');
 \spl_autoload_register(['Swift' . '', 'autoload']);
 \is_a($swift, 'Swift' . '');
 \is_subclass_of($swift, 'Swift' . '');
@@ -538,14 +538,14 @@ class Yaml
 }
 namespace Humbug;
 
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
-\Humbug\foo(\DateTime::class);
-\Humbug\foo(\Humbug\Swift::class);
-\Humbug\foo([\DateTime::class, 'autoload']);
-\Humbug\foo([\Humbug\Swift::class, 'autoload']);
+foo(Symfony\Component\Yaml\Yaml::class);
+foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
+foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
+foo(\Humbug\Symfony\Component\Yaml\Yaml::class);
+foo(\DateTime::class);
+foo(\Humbug\Swift::class);
+foo([\DateTime::class, 'autoload']);
+foo([\Humbug\Swift::class, 'autoload']);
 \spl_autoload_register([\Humbug\Swift::class, 'autoload']);
 \spl_autoload_register([\Humbug\Swift::class, 'autoload']);
 \spl_autoload_register([\DateTime::class, 'autoload']);
@@ -603,10 +603,10 @@ class Ya_1
 \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
 namespace Humbug;
 
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
-\Humbug\foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
+foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
+foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
+foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
+foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
 
 PHP
     ],

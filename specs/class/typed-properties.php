@@ -43,7 +43,7 @@ namespace Humbug;
 class A
 {
     public string $name;
-    public ?\Humbug\B $foo;
+    public ?B $foo;
     public function a()
     {
     }

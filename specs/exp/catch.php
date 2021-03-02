@@ -81,7 +81,7 @@ namespace Humbug;
 
 try {
     echo "foo";
-} catch (\Humbug\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP

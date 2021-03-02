@@ -42,7 +42,7 @@ namespace Humbug;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\Foo $x): \Humbug\Bar => $x;
+fn(Foo $x): Bar => $x;
 fn(\DateTimeImmutable $x): \Closure => $x;
 
 PHP

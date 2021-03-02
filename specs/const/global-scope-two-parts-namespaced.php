@@ -34,7 +34,7 @@ PHPUnit\Command\DUMMY_CONST;
 
 namespace Humbug;
 
-\Humbug\PHPUnit\Command\DUMMY_CONST;
+PHPUnit\Command\DUMMY_CONST;
 
 PHP
     ,

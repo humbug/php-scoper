@@ -161,7 +161,7 @@ class Yaml
 }
 namespace Humbug;
 
-$x = \Humbug\Symfony\Component\Yaml\Yaml::class;
+$x = Symfony\Component\Yaml\Yaml::class;
 $x = \Humbug\Symfony\Component\Yaml\Yaml::class;
 $x = \Humbug\Symfony\Component\Yaml\Yaml::class;
 $x = \Humbug\Symfony\Component\Yaml\Yaml::class;

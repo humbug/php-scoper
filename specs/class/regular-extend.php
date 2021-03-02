@@ -45,7 +45,7 @@ class A
     {
     }
 }
-class B extends \Humbug\A implements \Iterator
+class B extends A implements \Iterator
 {
 }
 

@@ -50,7 +50,7 @@ date_format(new DateTime('now'), 'd\H\Z');
 namespace Humbug;
 
 const ISO8601_BASIC = 'Humbug\\Ymd\\THis\\Z';
-new \Humbug\Foo('Humbug\\d\\H\\Z');
+new Foo('Humbug\\d\\H\\Z');
 new \DateTime('d\\H\\Z');
 new \DateTimeImmutable('d\\H\\Z');
 \date_create('d\\H\\Z');

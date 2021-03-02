@@ -66,14 +66,14 @@ new class
     {
     }
 };
-new class extends \Humbug\A implements \Humbug\B, \Humbug\C, \Iterator
+new class extends A implements B, C, \Iterator
 {
 };
 new class
 {
     public $foo;
 };
-new class($a, $b) extends \Humbug\A
+new class($a, $b) extends A
 {
     use T;
 };
@@ -81,7 +81,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends \Humbug\A
+        return new class($this) extends A
         {
             const A = 'B';
         };
@@ -284,7 +284,7 @@ new class
     {
     }
 };
-new class extends \Humbug\A implements \Humbug\B, \Humbug\C, \Iterator
+new class extends \Humbug\A implements B, \Humbug\C, \Iterator
 {
 };
 new class
@@ -428,7 +428,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends \Humbug\A
+        return new class($this) extends A
         {
             const A = 'B';
         };

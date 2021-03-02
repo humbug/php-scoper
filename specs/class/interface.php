@@ -45,7 +45,7 @@ class C
 class D
 {
 }
-interface A extends \Humbug\C, \Humbug\D, \Iterator
+interface A extends C, D, \Iterator
 {
     public function a();
 }
