@@ -34,7 +34,7 @@ DUMMY_CONST;
 
 namespace Humbug;
 
-DUMMY_CONST;
+\Humbug\DUMMY_CONST;
 
 PHP
     ,
@@ -94,7 +94,7 @@ DUMMY_CONST;
 
 namespace Humbug;
 
-DUMMY_CONST;
+\Humbug\DUMMY_CONST;
 
 PHP
     ,
