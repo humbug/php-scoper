@@ -87,7 +87,7 @@ $x ??= new Foo();
 
 namespace Humbug\Acme;
 
-$x ??= new \Humbug\Acme\Foo();
+$x ??= new Foo();
 
 PHP
     ,

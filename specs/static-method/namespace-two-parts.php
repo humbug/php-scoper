@@ -45,7 +45,7 @@ class Bar
 }
 namespace Humbug\X;
 
-\Humbug\X\Foo\Bar::main();
+Foo\Bar::main();
 
 PHP
     ,
@@ -101,7 +101,7 @@ class Bar
 \class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
 namespace Humbug\X;
 
-\Humbug\X\Foo\Bar::main();
+Foo\Bar::main();
 
 PHP
     ],

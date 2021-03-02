@@ -164,7 +164,7 @@ class A
         return $this->name;
     }
 }
-class B extends \Humbug\Foo\A
+class B extends A
 {
     const FOO = 'BAR';
     public function __construct(string $name)

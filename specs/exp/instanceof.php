@@ -93,8 +93,8 @@ $x instanceof Foo;
 
 namespace Humbug\Acme;
 
-$x = new \Humbug\Acme\Foo();
-$x instanceof \Humbug\Acme\Foo;
+$x = new Foo();
+$x instanceof Foo;
 
 PHP
     ,

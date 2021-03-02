@@ -46,7 +46,7 @@ class Command
 }
 namespace Humbug\X;
 
-\Humbug\X\PHPUnit\Command::MAIN_CONST;
+PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],
@@ -103,7 +103,7 @@ class Command
 \class_alias('Humbug\\X\\PHPUnit\\Command', 'X\\PHPUnit\\Command', \false);
 namespace Humbug\X;
 
-\Humbug\X\PHPUnit\Command::MAIN_CONST;
+PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],
@@ -157,7 +157,7 @@ class Command
 }
 namespace X;
 
-\X\PHPUnit\Command::MAIN_CONST;
+PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],

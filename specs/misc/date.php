@@ -97,7 +97,7 @@ namespace Humbug\Acme;
 use DateTime;
 use DateTimeImmutable;
 const ISO8601_BASIC = 'Humbug\\Ymd\\THis\\Z';
-new \Humbug\Acme\Foo('Humbug\\d\\H\\Z');
+new Foo('Humbug\\d\\H\\Z');
 new DateTime('d\\H\\Z');
 new DateTimeImmutable('d\\H\\Z');
 \date_create('d\\H\\Z');

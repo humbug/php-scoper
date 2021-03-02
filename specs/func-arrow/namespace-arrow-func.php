@@ -44,8 +44,8 @@ namespace Humbug\Acme;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\Acme\Foo $x): \Humbug\Acme\Bar => $x;
-fn(\Humbug\Acme\DateTimeImmutable $x): \Humbug\Acme\Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ,
@@ -71,8 +71,8 @@ namespace Humbug\Acme;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\Acme\Foo $x): \Humbug\Acme\Bar => $x;
-fn(\Humbug\Acme\DateTimeImmutable $x): \Humbug\Acme\Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ],
@@ -102,8 +102,8 @@ namespace Humbug\Acme;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\Acme\Foo $x): \Humbug\Acme\Bar => $x;
-fn(\Humbug\Acme\DateTimeImmutable $x): \Humbug\Acme\Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ],

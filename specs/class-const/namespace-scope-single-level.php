@@ -42,7 +42,7 @@ namespace Humbug\X;
 class Command
 {
 }
-\Humbug\X\Command::MAIN_CONST;
+Command::MAIN_CONST;
 
 PHP
     ],

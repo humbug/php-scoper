@@ -45,7 +45,7 @@ class Command
 }
 namespace Humbug\X;
 
-\Humbug\X\PHPUnit\Command::$mainStaticProp;
+PHPUnit\Command::$mainStaticProp;
 
 PHP
     ,
@@ -101,7 +101,7 @@ class Command
 \class_alias('Humbug\\X\\PHPUnit\\Command', 'X\\PHPUnit\\Command', \false);
 namespace Humbug\X;
 
-\Humbug\X\PHPUnit\Command::$mainStaticProp;
+PHPUnit\Command::$mainStaticProp;
 
 PHP
     ],

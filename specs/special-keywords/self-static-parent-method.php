@@ -214,7 +214,7 @@ class A
         return $arg;
     }
 }
-class B extends \Humbug\Foo\A
+class B extends A
 {
     public function __construct(string $name)
     {
