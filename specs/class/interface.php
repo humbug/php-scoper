@@ -82,7 +82,7 @@ class D
 {
 }
 \class_alias('Humbug\\D', 'D', \false);
-interface A extends \Humbug\C, \Humbug\D, \Iterator
+interface A extends C, D, \Iterator
 {
     public function a();
 }

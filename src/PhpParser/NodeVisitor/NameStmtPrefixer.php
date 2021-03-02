@@ -169,6 +169,12 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $name;
         }
 
+        if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
+            || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
+        ) {
+            return $resolvedName;
+        }
+
         // Do not prefix if the Name is inside of the current namespace
         if (!$this->whitelist->belongsToWhitelistedNamespace($resolvedName->toString())) {
             $namespace = $this->namespaceStatements->getCurrentNamespaceName();
@@ -179,17 +185,16 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 ) or
                 (
                     $namespace === null and
-                    $name->parts === $resolvedName->parts
+                    $name->parts === $resolvedName->parts and
+                    !($name instanceof FullyQualified) and
+                    !($parentNode instanceof ConstFetch) and
+                    !$this->whitelist->isSymbolWhitelisted($resolvedName->toString()) and
+                    !$this->reflector->isFunctionInternal($resolvedName->toString()) and
+                    !$this->reflector->isClassInternal($resolvedName->toString())
                 )
             ) {
                 return $name;
             }
-        }
-
-        if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
-            || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
-        ) {
-            return $resolvedName;
         }
 
         // Check if the class can be prefixed
