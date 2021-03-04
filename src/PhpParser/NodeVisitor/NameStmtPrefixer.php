@@ -176,25 +176,25 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         // Do not prefix if the Name is inside of the current namespace
-        if (!$this->whitelist->belongsToWhitelistedNamespace($resolvedName->toString())) {
-            $namespace = $this->namespaceStatements->getCurrentNamespaceName();
-            if (
-                (
-                    $namespace !== null and
-                    array_merge($namespace->parts, $name->parts) === $resolvedName->parts
-                ) or
-                (
-                    $namespace === null and
-                    $name->parts === $resolvedName->parts and
-                    !($name instanceof FullyQualified) and
-                    !($parentNode instanceof ConstFetch) and
-                    !$this->whitelist->isSymbolWhitelisted($resolvedName->toString()) and
-                    !$this->reflector->isFunctionInternal($resolvedName->toString()) and
-                    !$this->reflector->isClassInternal($resolvedName->toString())
-                )
-            ) {
-                return $name;
-            }
+        $namespace = $this->namespaceStatements->getCurrentNamespaceName();
+        if (
+            (
+                // In a namespace
+                $namespace !== null and
+                array_merge($namespace->parts, $name->parts) === $resolvedName->parts
+            ) or
+            (
+                // In the global scope
+                $namespace === null and
+                $name->parts === $resolvedName->parts and
+                !($name instanceof FullyQualified) and
+                !($parentNode instanceof ConstFetch) and
+                !$this->whitelist->isSymbolWhitelisted($resolvedName->toString()) and
+                !$this->reflector->isFunctionInternal($resolvedName->toString()) and
+                !$this->reflector->isClassInternal($resolvedName->toString())
+            )
+        ) {
+            return $name;
         }
 
         // Check if the class can be prefixed
