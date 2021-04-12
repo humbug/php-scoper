@@ -194,7 +194,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             }
         }
 
-        if ('self' === (string) $resolvedName && $parentNode instanceof ClassMethod) {
+        if ($parentNode instanceof ClassMethod && $resolvedName->isSpecialClassName()) {
             return $name;
         }
 
