@@ -240,7 +240,8 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private static function array_starts_with($arr, $prefix): bool
     {
-        for ($i = 0; $i < count($prefix); ++$i) {
+        $prefixLength = count($prefix);
+        for ($i = 0; $i < $prefixLength; ++$i) {
             if ($arr[$i] !== $prefix[$i]) {
                 return false;
             }
