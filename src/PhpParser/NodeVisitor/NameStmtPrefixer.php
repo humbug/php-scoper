@@ -157,13 +157,24 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         // Do not prefix if there is a matching use statement.
         $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
+
         if (
-            $useStatement !== null and
-            self::array_starts_with($resolvedName->parts, $useStatement->parts) and
-            !($parentNode instanceof ConstFetch and ($this->whitelist->isGlobalWhitelistedConstant($resolvedName->toString()) or $this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true))) and
-            !($useStatement->getAttribute('parent') and $useStatement->getAttribute('parent')->alias !== null and $this->whitelist->isSymbolWhitelisted($useStatement->toString())) and
-            !($name instanceof FullyQualified) and
-            $resolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
+            $useStatement !== null
+            && !($name instanceof FullyQualified)
+            && self::array_starts_with($resolvedName->parts, $useStatement->parts)
+            && !(
+                $parentNode instanceof ConstFetch
+                && (
+                    $this->whitelist->isGlobalWhitelistedConstant($resolvedName->toString())
+                    || $this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true)
+                )
+            )
+            && !(
+                $useStatement->getAttribute('parent')
+                && $useStatement->getAttribute('parent')->alias !== null
+                && $this->whitelist->isSymbolWhitelisted($useStatement->toString())
+            )
+            && $resolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
         ) {
             return $name;
         }
