@@ -314,7 +314,7 @@ use Humbug\Foo;
 use Humbug\Foo\Bar;
 use ArrayIterator;
 use Humbug\X\Y;
-function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\Pi\X\Y $arg6, \Humbug\X\Y $arg7)
+function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\Pi\X\Y $arg6, \Humbug\X\Y $arg7)
 {
 }
 
@@ -534,25 +534,25 @@ function foo() : callable
 function foo() : ?callable
 {
 }
-function foo() : \Humbug\Foo
+function foo() : Foo
 {
 }
 function foo() : \Humbug\Foo
 {
 }
-function foo() : ?\Humbug\Foo
+function foo() : ?Foo
 {
 }
 function foo() : ?\Humbug\Foo
 {
 }
-function foo() : \ArrayIterator
+function foo() : ArrayIterator
 {
 }
 function foo() : \ArrayIterator
 {
 }
-function foo() : ?\ArrayIterator
+function foo() : ?ArrayIterator
 {
 }
 function foo() : ?\ArrayIterator

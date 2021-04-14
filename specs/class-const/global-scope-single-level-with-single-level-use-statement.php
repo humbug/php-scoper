@@ -43,7 +43,7 @@ class Command
 {
 }
 use Humbug\Command;
-\Humbug\Command::MAIN_CONST;
+Command::MAIN_CONST;
 
 PHP
     ],
@@ -84,7 +84,7 @@ Reflector::MAIN_CONST;
 namespace Humbug;
 
 use Reflector;
-\Reflector::MAIN_CONST;
+Reflector::MAIN_CONST;
 
 PHP
     ],

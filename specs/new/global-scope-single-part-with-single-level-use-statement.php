@@ -49,7 +49,7 @@ class Foo
 namespace Humbug;
 
 use Humbug\Foo;
-new \Humbug\Foo();
+new Foo();
 
 PHP
     ],
@@ -96,7 +96,7 @@ new ArrayIterator([]);
 namespace Humbug;
 
 use ArrayIterator;
-new \ArrayIterator([]);
+new ArrayIterator([]);
 
 PHP
     ],

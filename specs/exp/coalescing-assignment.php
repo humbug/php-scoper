@@ -55,7 +55,7 @@ $x ??= new stdClass();
 namespace Humbug\Acme;
 
 use stdClass;
-$x ??= new \stdClass();
+$x ??= new stdClass();
 
 PHP
     ,

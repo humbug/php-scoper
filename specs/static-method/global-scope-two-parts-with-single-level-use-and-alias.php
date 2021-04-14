@@ -57,7 +57,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo as A;
-\Humbug\Foo\Bar::main();
+A\Bar::main();
 
 PHP
     ,
@@ -85,7 +85,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo\Bar as A;
-\Humbug\Foo\Bar::main();
+A::main();
 
 PHP
     ,
@@ -198,7 +198,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo as A;
-\Humbug\Foo\Bar::main();
+A\Bar::main();
 
 PHP
     ],
@@ -232,7 +232,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo\Bar as A;
-\Humbug\Foo\Bar::main();
+A::main();
 
 PHP
     ],

@@ -174,7 +174,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $newNode->class;
 
-        if (false === ($class instanceof FullyQualified)) {
+        if (false === ($class instanceof Name)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
@@ -236,7 +236,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $callNode->class;
 
-        if (false === ($class instanceof FullyQualified)) {
+        if (false === ($class instanceof Name)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 

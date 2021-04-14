@@ -57,7 +57,7 @@ $x = is_array([]);
 namespace Humbug\Acme;
 
 use function Humbug\Acme\is_array;
-$x = \Humbug\Acme\is_array([]);
+$x = is_array([]);
 
 PHP
     ,

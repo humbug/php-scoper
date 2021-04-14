@@ -15,7 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -38,6 +40,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitorAbstract;
+use function count;
 use function in_array;
 
 /**
@@ -65,17 +68,23 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private $prefix;
     private $whitelist;
+    private $namespaceStatements;
+    private $useStatements;
     private $nameResolver;
     private $reflector;
 
     public function __construct(
         string $prefix,
         Whitelist $whitelist,
+        NamespaceStmtCollection $namespaceStatements,
+        UseStmtCollection $useStatements,
         FullyQualifiedNameResolver $nameResolver,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
+        $this->namespaceStatements = $namespaceStatements;
+        $this->useStatements = $useStatements;
         $this->nameResolver = $nameResolver;
         $this->reflector = $reflector;
     }
@@ -146,6 +155,30 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         $resolvedName = $this->nameResolver->resolveName($name)->getName();
 
+        // Do not prefix if there is a matching use statement.
+        $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
+
+        if (
+            $useStatement !== null
+            && !($name instanceof FullyQualified)
+            && self::array_starts_with($resolvedName->parts, $useStatement->parts)
+            && !(
+                $parentNode instanceof ConstFetch
+                && (
+                    $this->whitelist->isGlobalWhitelistedConstant($resolvedName->toString())
+                    || $this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true)
+                )
+            )
+            && !(
+                $useStatement->getAttribute('parent')
+                && $useStatement->getAttribute('parent')->alias !== null
+                && $this->whitelist->isSymbolWhitelisted($useStatement->toString())
+            )
+            && $resolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
+        ) {
+            return $name;
+        }
+
         if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
             || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
         ) {
@@ -203,5 +236,16 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             $resolvedName->toString(),
             $resolvedName->getAttributes()
         );
+    }
+
+    private static function array_starts_with($arr, $prefix): bool
+    {
+        $prefixLength = count($prefix);
+        for ($i = 0; $i < $prefixLength; ++$i) {
+            if ($arr[$i] !== $prefix[$i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

@@ -228,8 +228,8 @@ class B extends \Humbug\Foo\A
 namespace Humbug;
 
 use Humbug\Foo\B;
-\Humbug\Foo\B::test();
-echo (new \Humbug\Foo\B('yo'))->getName() . \PHP_EOL;
+B::test();
+echo (new B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ,

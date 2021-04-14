@@ -57,7 +57,7 @@ function main()
 namespace Humbug;
 
 use Humbug\Foo as X;
-\Humbug\Foo\main();
+X\main();
 
 PHP
     ,
@@ -136,7 +136,7 @@ function main()
 namespace Humbug;
 
 use Humbug\Foo as X;
-\Humbug\Foo\main();
+X\main();
 
 PHP
     ],

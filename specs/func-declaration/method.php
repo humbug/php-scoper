@@ -251,25 +251,25 @@ class Main
     function foo() : ?callable
     {
     }
-    function foo() : \Humbug\Foo
+    function foo() : Foo
     {
     }
     function foo() : \Humbug\Foo
     {
     }
-    function foo() : ?\Humbug\Foo
+    function foo() : ?Foo
     {
     }
     function foo() : ?\Humbug\Foo
     {
     }
-    function foo() : \ArrayIterator
+    function foo() : ArrayIterator
     {
     }
     function foo() : \ArrayIterator
     {
     }
-    function foo() : ?\ArrayIterator
+    function foo() : ?ArrayIterator
     {
     }
     function foo() : ?\ArrayIterator

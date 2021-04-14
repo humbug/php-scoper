@@ -168,7 +168,7 @@ class B extends \Humbug\Foo\A
 namespace Humbug;
 
 use Humbug\Foo\B;
-echo (new \Humbug\Foo\B('yo'))->normalize()->getName() . \PHP_EOL;
+echo (new B('yo'))->normalize()->getName() . \PHP_EOL;
 
 PHP
     ,

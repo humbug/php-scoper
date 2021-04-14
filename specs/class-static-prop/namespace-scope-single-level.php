@@ -85,7 +85,7 @@ Reflector::$mainStaticProp;
 namespace Humbug\X;
 
 use Reflector;
-\Reflector::$mainStaticProp;
+Reflector::$mainStaticProp;
 
 PHP
     ,

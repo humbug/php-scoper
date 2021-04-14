@@ -42,7 +42,7 @@ class Command
 {
 }
 use Humbug\Command;
-\Humbug\Command::$mainStaticProp;
+Command::$mainStaticProp;
 
 PHP
     ,
@@ -81,7 +81,7 @@ Reflector::$mainStaticProp;
 namespace Humbug;
 
 use Reflector;
-\Reflector::$mainStaticProp;
+Reflector::$mainStaticProp;
 
 PHP
     ,

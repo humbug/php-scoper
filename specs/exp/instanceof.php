@@ -57,8 +57,8 @@ $x instanceof stdClass;
 namespace Humbug\Acme;
 
 use stdClass;
-$x = new \stdClass();
-$x instanceof \stdClass;
+$x = new stdClass();
+$x instanceof stdClass;
 
 PHP
     ,
