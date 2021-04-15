@@ -190,18 +190,18 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         if (
             (
                 // In a namespace
-                $namespace !== null and
-                array_merge($namespace->parts, $name->parts) === $resolvedName->parts
-            ) or
-            (
+                $namespace !== null
+                && array_merge($namespace->parts, $name->parts) === $resolvedName->parts
+            )
+            || (
                 // In the global scope
-                $namespace === null and
-                $name->parts === $resolvedName->parts and
-                !($name instanceof FullyQualified) and
-                !($parentNode instanceof ConstFetch) and
-                !$this->whitelist->isSymbolWhitelisted($resolvedName->toString()) and
-                !$this->reflector->isFunctionInternal($resolvedName->toString()) and
-                !$this->reflector->isClassInternal($resolvedName->toString())
+                $namespace === null
+                && $name->parts === $resolvedName->parts
+                && !($name instanceof FullyQualified)
+                && !($parentNode instanceof ConstFetch)
+                && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
+                && !$this->reflector->isFunctionInternal($resolvedName->toString())
+                && !$this->reflector->isClassInternal($resolvedName->toString())
             )
         ) {
             return $name;
