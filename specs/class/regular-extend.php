@@ -45,7 +45,7 @@ class A
     {
     }
 }
-class B extends \Humbug\A implements \Iterator
+class B extends A implements \Iterator
 {
 }
 
@@ -77,7 +77,7 @@ class A
     {
     }
 }
-class B extends \Humbug\Foo\A implements Iterator
+class B extends A implements Iterator
 {
 }
 
@@ -111,7 +111,7 @@ class A
     {
     }
 }
-class B extends \Humbug\Foo\A
+class B extends A
 {
 }
 \class_alias('Humbug\\Foo\\B', 'Foo\\B', \false);

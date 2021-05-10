@@ -41,7 +41,7 @@ namespace Humbug\A;
 class Foo
 {
 }
-\Humbug\A\Foo::main();
+Foo::main();
 
 PHP
     ,

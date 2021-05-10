@@ -81,7 +81,7 @@ class A
         return $this->name;
     }
 }
-class B extends \Humbug\A
+class B extends A
 {
     public function normalize() : parent
     {
@@ -90,7 +90,7 @@ class B extends \Humbug\A
         return $instance;
     }
 }
-echo (new \Humbug\B('yo'))->normalize()->getName() . \PHP_EOL;
+echo (new B('yo'))->normalize()->getName() . \PHP_EOL;
 
 PHP
     ,
@@ -156,7 +156,7 @@ class A
         return $this->name;
     }
 }
-class B extends \Humbug\Foo\A
+class B extends A
 {
     public function normalize() : parent
     {

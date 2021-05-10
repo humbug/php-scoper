@@ -148,7 +148,7 @@ class Foo
 class ArrayIterator
 {
 }
-function foo(\Humbug\Pi\Foo $arg0 = null, \Humbug\Foo $arg1, \Humbug\Pi\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \Humbug\Pi\ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\Pi\X\Y $arg6, \Humbug\X\Y $arg7)
+function foo(Foo $arg0 = null, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, ArrayIterator $arg4, \ArrayIterator $arg5, X\Y $arg6, \Humbug\X\Y $arg7)
 {
 }
 
@@ -235,7 +235,7 @@ class Foo
 class ArrayIterator
 {
 }
-function foo(\Humbug\Pi\Foo $arg0 = null, \Humbug\Foo $arg1, \Humbug\Pi\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \Humbug\Pi\ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\Pi\X\Y $arg6, \Humbug\X\Y $arg7)
+function foo(Foo $arg0 = null, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, ArrayIterator $arg4, \ArrayIterator $arg5, X\Y $arg6, \Humbug\X\Y $arg7)
 {
 }
 
@@ -314,7 +314,7 @@ use Humbug\Foo;
 use Humbug\Foo\Bar;
 use ArrayIterator;
 use Humbug\X\Y;
-function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\Pi\X\Y $arg6, \Humbug\X\Y $arg7)
+function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, ArrayIterator $arg4, \ArrayIterator $arg5, X\Y $arg6, \Humbug\X\Y $arg7)
 {
 }
 
@@ -558,13 +558,13 @@ function foo() : ?ArrayIterator
 function foo() : ?\ArrayIterator
 {
 }
-function foo() : \Humbug\Pi\X\Y
+function foo() : X\Y
 {
 }
 function foo() : \Humbug\X\Y
 {
 }
-function foo() : ?\Humbug\Pi\X\Y
+function foo() : ?X\Y
 {
 }
 function foo() : ?\Humbug\X\Y

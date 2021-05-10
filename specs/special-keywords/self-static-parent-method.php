@@ -108,7 +108,7 @@ class A
         return $arg;
     }
 }
-class B extends \Humbug\A
+class B extends A
 {
     public function __construct(string $name)
     {
@@ -119,8 +119,8 @@ class B extends \Humbug\A
         echo __METHOD__ . \PHP_EOL;
     }
 }
-\Humbug\B::test();
-echo (new \Humbug\B('yo'))->getName() . \PHP_EOL;
+B::test();
+echo (new B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ,
@@ -214,7 +214,7 @@ class A
         return $arg;
     }
 }
-class B extends \Humbug\Foo\A
+class B extends A
 {
     public function __construct(string $name)
     {

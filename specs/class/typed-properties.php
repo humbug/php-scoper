@@ -43,7 +43,7 @@ namespace Humbug;
 class A
 {
     public string $name;
-    public ?\Humbug\B $foo;
+    public ?B $foo;
     public function a()
     {
     }
@@ -75,7 +75,7 @@ namespace Humbug;
 class A
 {
     public string $name;
-    public ?\Humbug\B $foo;
+    public ?B $foo;
     public function a()
     {
     }
@@ -106,7 +106,7 @@ namespace Humbug\Foo;
 class A
 {
     public string $name;
-    public ?\Humbug\Foo\B $foo;
+    public ?B $foo;
     public function a()
     {
     }
@@ -135,7 +135,7 @@ namespace Humbug\Foo;
 class A
 {
     public string $name;
-    public ?\Humbug\Foo\B $foo;
+    public ?B $foo;
     public function a()
     {
     }
@@ -170,7 +170,7 @@ namespace Humbug\Foo;
 class A
 {
     public string $name;
-    public ?\Humbug\Foo\B $foo;
+    public ?B $foo;
     public function a()
     {
     }
@@ -209,10 +209,10 @@ use DateTimeImmutable;
 class A
 {
     public string $name;
-    public ?\Humbug\Foo\B $foo;
+    public ?B $foo;
     public ?C $foo;
     public ?DateTimeImmutable $bar;
-    public ?\Humbug\Foo\Closure $baz;
+    public ?Closure $baz;
     public function a()
     {
     }

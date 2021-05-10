@@ -36,7 +36,7 @@ PHPUnit\main();
 
 namespace Humbug\X;
 
-\Humbug\X\PHPUnit\main();
+PHPUnit\main();
 
 PHP
     ,
@@ -71,7 +71,7 @@ PHPUnit\main();
 
 namespace Humbug\X;
 
-\Humbug\X\PHPUnit\main();
+PHPUnit\main();
 
 PHP
     ],

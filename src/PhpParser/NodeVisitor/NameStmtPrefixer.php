@@ -40,6 +40,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitorAbstract;
+use function array_merge;
 use function count;
 use function in_array;
 
@@ -157,7 +158,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         // Do not prefix if there is a matching use statement.
         $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
-
         if (
             $useStatement !== null
             && !($name instanceof FullyQualified)
@@ -183,6 +183,28 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
         ) {
             return $resolvedName;
+        }
+
+        // Do not prefix if the Name is inside of the current namespace
+        $namespace = $this->namespaceStatements->getCurrentNamespaceName();
+        if (
+            (
+                // In a namespace
+                $namespace !== null
+                && array_merge($namespace->parts, $name->parts) === $resolvedName->parts
+            )
+            || (
+                // In the global scope
+                $namespace === null
+                && $name->parts === $resolvedName->parts
+                && !($name instanceof FullyQualified)
+                && !($parentNode instanceof ConstFetch)
+                && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
+                && !$this->reflector->isFunctionInternal($resolvedName->toString())
+                && !$this->reflector->isClassInternal($resolvedName->toString())
+            )
+        ) {
+            return $name;
         }
 
         // Check if the class can be prefixed

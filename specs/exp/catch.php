@@ -81,7 +81,7 @@ namespace Humbug;
 
 try {
     echo "foo";
-} catch (\Humbug\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP
@@ -147,7 +147,7 @@ namespace Humbug\Acme;
 
 try {
     echo "foo";
-} catch (\Humbug\Acme\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP
@@ -171,7 +171,7 @@ namespace Humbug\Acme;
 
 try {
     echo "foo";
-} catch (\Humbug\Acme\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP

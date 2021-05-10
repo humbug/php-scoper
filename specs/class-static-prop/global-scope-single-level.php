@@ -39,7 +39,7 @@ namespace Humbug;
 class Command
 {
 }
-\Humbug\Command::$mainStaticProp;
+Command::$mainStaticProp;
 
 PHP
     ,

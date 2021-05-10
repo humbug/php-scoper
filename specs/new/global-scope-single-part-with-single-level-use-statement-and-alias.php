@@ -78,7 +78,7 @@ class Foo
 namespace Humbug;
 
 use Humbug\Foo as X;
-new \Humbug\Foo();
+new Foo();
 
 PHP
     ],
