@@ -28,8 +28,8 @@ use function strpos;
 
 final class ScoperAutoloadGenerator
 {
-    private $whitelist;
-    private $eol;
+    private Whitelist $whitelist;
+    private string $eol;
 
     public function __construct(Whitelist $whitelist)
     {
@@ -230,7 +230,7 @@ EOF
     private function hasNamespacedFunctions(array $functions): bool
     {
         foreach ($functions as [$original, $alias]) {
-            /*
+            /**
              * @var string
              * @var string $alias
              */

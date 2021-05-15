@@ -19,15 +19,15 @@ use Humbug\PhpScoper\Whitelist;
 use LogicException;
 use stdClass;
 use function gettype;
-use function Humbug\PhpScoper\json_decode;
-use function Humbug\PhpScoper\json_encode;
+use function Safe\json_decode;
+use function Safe\json_encode;
 use function Safe\preg_match;
 use function Safe\sprintf;
 use const JSON_PRETTY_PRINT;
 
 final class JsonFileScoper implements Scoper
 {
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
@@ -36,8 +36,6 @@ final class JsonFileScoper implements Scoper
 
     /**
      * Scopes PHP and JSON files related to Composer.
-     *
-     * {@inheritdoc}
      */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {

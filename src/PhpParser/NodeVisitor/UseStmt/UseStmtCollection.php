@@ -39,12 +39,12 @@ use function strtolower;
  */
 final class UseStmtCollection implements IteratorAggregate
 {
-    private $hashes = [];
+    private array $hashes = [];
 
     /**
      * @var Use_[][]
      */
-    private $nodes = [
+    private array $nodes = [
         null => [],
     ];
 
@@ -105,9 +105,6 @@ final class UseStmtCollection implements IteratorAggregate
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);

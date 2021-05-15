@@ -28,9 +28,6 @@ abstract class BaseCommand extends Command
 {
     private const WORKING_DIR_OPT = 'working-dir';
 
-    /**
-     * @inheritdoc
-     */
     protected function configure(): void
     {
         $this->addOption(

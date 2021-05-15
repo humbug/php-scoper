@@ -22,8 +22,8 @@ use function Safe\array_flip;
 
 final class FileWhitelistScoper implements Scoper
 {
-    private $decoratedScoper;
-    private $filePaths;
+    private Scoper $decoratedScoper;
+    private array $filePaths;
 
     public function __construct(Scoper $decoratedScoper, string ...$filePaths)
     {
@@ -31,9 +31,6 @@ final class FileWhitelistScoper implements Scoper
         $this->filePaths = array_flip($filePaths);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         if (array_key_exists($filePath, $this->filePaths)) {

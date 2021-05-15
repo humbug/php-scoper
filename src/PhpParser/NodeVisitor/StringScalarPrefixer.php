@@ -80,9 +80,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'datetimeimmutable',
     ];
 
-    private $prefix;
-    private $whitelist;
-    private $reflector;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private Reflector $reflector;
 
     public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
     {
@@ -91,9 +91,6 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $this->reflector = $reflector;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         return $node instanceof String_

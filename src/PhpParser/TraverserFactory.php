@@ -27,7 +27,7 @@ use PhpParser\NodeTraverserInterface;
  */
 class TraverserFactory
 {
-    private $reflector;
+    private Reflector $reflector;
 
     public function __construct(Reflector $reflector)
     {

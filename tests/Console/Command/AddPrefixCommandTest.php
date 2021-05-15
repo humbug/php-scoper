@@ -49,7 +49,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
     /**
      * @var ApplicationTester
      */
-    private $appTester;
+    private ApplicationTester $appTester;
 
     /**
      * @var Filesystem|ObjectProphecy

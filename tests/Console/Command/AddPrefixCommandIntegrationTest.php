@@ -44,7 +44,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
     /**
      * @var ApplicationTester
      */
-    private $appTester;
+    private ApplicationTester $appTester;
 
     /**
      * @inheritdoc

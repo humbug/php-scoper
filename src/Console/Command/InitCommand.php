@@ -32,7 +32,7 @@ final class InitCommand extends BaseCommand
     private const CONFIG_FILE_TEMPLATE = __DIR__.'/../../scoper.inc.php.tpl';
     private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
 
-    private $fileSystem;
+    private Filesystem $fileSystem;
 
     public function __construct($name = null)
     {
@@ -41,9 +41,6 @@ final class InitCommand extends BaseCommand
         $this->fileSystem = new Filesystem();
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function configure(): void
     {
         parent::configure();
@@ -64,9 +61,6 @@ final class InitCommand extends BaseCommand
         ;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->changeWorkingDirectory($input);

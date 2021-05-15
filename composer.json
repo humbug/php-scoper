@@ -42,8 +42,7 @@
     "bin": ["bin/php-scoper"],
     "autoload": {
         "files": [
-            "src/functions.php",
-            "src/json.php"
+            "src/functions.php"
         ],
         "psr-4": {
             "Humbug\\PhpScoper\\": "src/"

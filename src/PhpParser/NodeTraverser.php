@@ -36,9 +36,6 @@ use function current;
  */
 final class NodeTraverser extends PhpParserNodeTraverser
 {
-    /**
-     * @inheritdoc
-     */
     public function traverse(array $nodes): array
     {
         $nodes = $this->wrapInNamespace($nodes);

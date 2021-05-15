@@ -26,12 +26,12 @@ abstract class FileSystemTestCase extends TestCase
     /**
      * @var string
      */
-    protected $cwd;
+    protected string $cwd;
 
     /**
      * @var string
      */
-    protected $tmp;
+    protected string $tmp;
 
     /**
      * {@inheritdoc}

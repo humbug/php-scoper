@@ -27,13 +27,13 @@ use PhpParser\ParserFactory;
 
 final class Container
 {
-    private $parser;
-    private $reflector;
-    private $scoper;
+    private Parser $parser;
+    private Reflector $reflector;
+    private Scoper $scoper;
 
     public function getScoper(): Scoper
     {
-        if (null === $this->scoper) {
+        if (!isset($this->scoper)) {
             $this->scoper = new PatchScoper(
                 new PhpScoper(
                     $this->getParser(),
@@ -54,7 +54,7 @@ final class Container
 
     public function getParser(): Parser
     {
-        if (null === $this->parser) {
+        if (!isset($this->parser)) {
             $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7, new Lexer());
         }
 
@@ -63,7 +63,7 @@ final class Container
 
     public function getReflector(): Reflector
     {
-        if (null === $this->reflector) {
+        if (!isset($this->reflector)) {
             $this->reflector = new Reflector();
         }
 

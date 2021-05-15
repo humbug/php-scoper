@@ -67,12 +67,12 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         'parent',
     ];
 
-    private $prefix;
-    private $whitelist;
-    private $namespaceStatements;
-    private $useStatements;
-    private $nameResolver;
-    private $reflector;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private NamespaceStmtCollection $namespaceStatements;
+    private UseStmtCollection $useStatements;
+    private FullyQualifiedNameResolver $nameResolver;
+    private Reflector $reflector;
 
     public function __construct(
         string $prefix,
@@ -90,9 +90,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         $this->reflector = $reflector;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         return ($node instanceof Name && ParentNodeAppender::hasParent($node))
@@ -161,6 +158,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         if (
             $useStatement !== null
             && !($name instanceof FullyQualified)
+            && $resolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
             && self::array_starts_with($resolvedName->parts, $useStatement->parts)
             && !(
                 $parentNode instanceof ConstFetch
@@ -174,7 +172,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 && $useStatement->getAttribute('parent')->alias !== null
                 && $this->whitelist->isSymbolWhitelisted($useStatement->toString())
             )
-            && $resolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
         ) {
             return $name;
         }

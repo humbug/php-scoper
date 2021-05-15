@@ -55,9 +55,9 @@ use function array_reduce;
  */
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
-    private $prefix;
-    private $whitelist;
-    private $nameResolver;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private FullyQualifiedNameResolver $nameResolver;
 
     public function __construct(string $prefix, Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
     {
@@ -66,9 +66,6 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         $this->nameResolver = $nameResolver;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function afterTraverse(array $nodes): array
     {
         $newNodes = [];
