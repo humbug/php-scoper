@@ -42,7 +42,7 @@ use function implode;
 use function in_array;
 use function is_string;
 use function ltrim;
-use function Safe\preg_match;
+use function preg_match as native_preg_match;
 use function strpos;
 use function strtolower;
 
@@ -102,7 +102,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function prefixStringScalar(String_ $string): String_
     {
         if (false === (ParentNodeAppender::hasParent($string) && is_string($string->value))
-            || 1 !== preg_match('/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u', $string->value)
+            || 1 !== native_preg_match('/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u', $string->value)
         ) {
             return $string;
         }

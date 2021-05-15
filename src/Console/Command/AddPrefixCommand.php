@@ -39,10 +39,10 @@ use function file_exists;
 use function Humbug\PhpScoper\get_common_path;
 use function is_dir;
 use function is_writable;
+use function preg_match as native_preg_match;
 use function random_bytes;
 use function Safe\file_get_contents;
 use function Safe\getcwd;
-use function Safe\preg_match;
 use function Safe\sprintf;
 use function Safe\usort;
 use function str_replace;
@@ -202,7 +202,7 @@ final class AddPrefixCommand extends BaseCommand
             $outputFilePath = $output.str_replace($commonPath, '', $inputFilePath);
 
             $pattern = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
-            if (preg_match($pattern, $outputFilePath, $matches)) {
+            if (native_preg_match($pattern, $outputFilePath, $matches)) {
                 $vendorDirs[$matches[1]] = true;
             }
 
@@ -281,7 +281,7 @@ final class AddPrefixCommand extends BaseCommand
     {
         $prefix = $input->getOption(self::PREFIX_OPT);
 
-        if (null !== $prefix && 1 === preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
+        if (null !== $prefix && 1 === native_preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
             $prefix = $matches['prefix'];
         }
 
