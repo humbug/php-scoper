@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Fidry\Console\IO;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -24,13 +25,17 @@ use function file_exists;
 use function Safe\getcwd;
 use function Safe\sprintf;
 
-abstract class BaseCommand extends Command
+final class ChangeableDirectory
 {
     private const WORKING_DIR_OPT = 'working-dir';
 
-    protected function configure(): void
+    private function __construct()
     {
-        $this->addOption(
+    }
+
+    public static function createOption(): InputOption
+    {
+        return new InputOption(
             self::WORKING_DIR_OPT,
             'd',
             InputOption::VALUE_REQUIRED,
@@ -39,10 +44,9 @@ abstract class BaseCommand extends Command
         );
     }
 
-    final public function changeWorkingDirectory(InputInterface $input): void
+    public static function changeWorkingDirectory(IO $io): void
     {
-        /** @var string|null $workingDir */
-        $workingDir = $input->getOption(self::WORKING_DIR_OPT);
+        $workingDir = $io->getNullableStringOption(self::WORKING_DIR_OPT);
 
         if (null === $workingDir) {
             return;

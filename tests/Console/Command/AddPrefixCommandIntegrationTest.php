@@ -14,7 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Fidry\Console\Application\SymfonyApplication;
+use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\DisplayNormalizer;
+use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
@@ -22,7 +25,6 @@ use Symfony\Component\Finder\SplFileInfo;
 use function array_map;
 use function array_reduce;
 use function explode;
-use function Humbug\PhpScoper\create_application;
 use function implode;
 use function iterator_to_array;
 use function Safe\file_get_contents;
@@ -53,11 +55,17 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
     {
         parent::setUp();
 
-        $application = create_application();
-        $application->setAutoExit(false);
-        $application->setCatchExceptions(false);
+        $application = new Application(
+            new Container(),
+            'TestVersion',
+            '28/01/2020',
+            false,
+            false,
+        );
 
-        $this->appTester = new ApplicationTester($application);
+        $this->appTester = new ApplicationTester(
+            new SymfonyApplication($application),
+        );
 
         file_put_contents('scoper.inc.php', '<?php return [];');
     }

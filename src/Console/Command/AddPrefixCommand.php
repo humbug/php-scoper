@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Fidry\Console\Command\Command;
+use Fidry\Console\Command\Configuration as CommandConfiguration;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Console\ScoperLogger;
@@ -23,12 +26,9 @@ use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Humbug\PhpScoper\Whitelist;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\OutputStyle;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 use function array_keys;
@@ -49,7 +49,7 @@ use function str_replace;
 use function strlen;
 use const DIRECTORY_SEPARATOR;
 
-final class AddPrefixCommand extends BaseCommand
+final class AddPrefixCommand implements Command
 {
     private const PATH_ARG = 'paths';
     private const PREFIX_OPT = 'prefix';
@@ -66,93 +66,95 @@ final class AddPrefixCommand extends BaseCommand
 
     public function __construct(Filesystem $fileSystem, Scoper $scoper)
     {
-        parent::__construct();
-
         $this->fileSystem = $fileSystem;
         $this->scoper = new ConfigurableScoper($scoper);
     }
 
-    protected function configure(): void
+    public function getConfiguration(): CommandConfiguration
     {
-        parent::configure();
-
-        $this
-            ->setName('add-prefix')
-            ->setDescription('Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.')
-            ->addArgument(
-                self::PATH_ARG,
-                InputArgument::IS_ARRAY,
-                'The path(s) to process.'
-            )
-            ->addOption(
-                self::PREFIX_OPT,
-                'p',
-                InputOption::VALUE_REQUIRED,
-                'The namespace prefix to add.'
-            )
-            ->addOption(
-                self::OUTPUT_DIR_OPT,
-                'o',
-                InputOption::VALUE_REQUIRED,
-                'The output directory in which the prefixed code will be dumped.',
-                'build'
-            )
-            ->addOption(
-                self::FORCE_OPT,
-                'f',
-                InputOption::VALUE_NONE,
-                'Deletes any existing content in the output directory without any warning.'
-            )
-            ->addOption(
-                self::STOP_ON_FAILURE_OPT,
-                's',
-                InputOption::VALUE_NONE,
-                'Stops on failure.'
-            )
-            ->addOption(
-                self::CONFIG_FILE_OPT,
-                'c',
-                InputOption::VALUE_REQUIRED,
-                sprintf(
-                    'Configuration file. Will use "%s" if found by default.',
-                    self::CONFIG_FILE_DEFAULT
-                )
-            )
-            ->addOption(
-                self::NO_CONFIG_OPT,
-                null,
-                InputOption::VALUE_NONE,
-                'Do not look for a configuration file.'
-            )
-        ;
+        return new CommandConfiguration(
+            'add-prefix',
+            'Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.',
+            '',
+            [
+                new InputArgument(
+                    self::PATH_ARG,
+                    InputArgument::IS_ARRAY,
+                    'The path(s) to process.'
+                ),
+            ],
+            [
+                ChangeableDirectory::createOption(),
+                new InputOption(
+                    self::PREFIX_OPT,
+                    'p',
+                    InputOption::VALUE_REQUIRED,
+                    'The namespace prefix to add.',
+                ),
+                new InputOption(
+                    self::OUTPUT_DIR_OPT,
+                    'o',
+                    InputOption::VALUE_REQUIRED,
+                    'The output directory in which the prefixed code will be dumped.',
+                    'build',
+                ),
+                new InputOption(
+                    self::FORCE_OPT,
+                    'f',
+                    InputOption::VALUE_NONE,
+                    'Deletes any existing content in the output directory without any warning.'
+                ),
+                new InputOption(
+                    self::STOP_ON_FAILURE_OPT,
+                    's',
+                    InputOption::VALUE_NONE,
+                    'Stops on failure.'
+                ),
+                new InputOption(
+                    self::CONFIG_FILE_OPT,
+                    'c',
+                    InputOption::VALUE_REQUIRED,
+                    sprintf(
+                        'Conf,iguration file. Will use "%s" if found by default.',
+                        self::CONFIG_FILE_DEFAULT
+                    )
+                ),
+                new InputOption(
+                    self::NO_CONFIG_OPT,
+                    null,
+                    InputOption::VALUE_NONE,
+                    'Do not look for a configuration file.'
+                ),
+            ],
+        );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function execute(IO $io): int
     {
-        $io = new SymfonyStyle($input, $output);
         $io->writeln('');
 
-        $this->changeWorkingDirectory($input);
+        ChangeableDirectory::changeWorkingDirectory($io);
 
-        $this->validatePrefix($input);
-        $this->validatePaths($input);
-        $this->validateOutputDir($input, $io);
+        $this->validatePrefix($io);
+        $this->validatePaths($io);
+        $this->validateOutputDir($io);
 
-        $config = $this->retrieveConfig($input, $output, $io);
-        $output = $input->getOption(self::OUTPUT_DIR_OPT);
+        $config = $this->retrieveConfig($io);
+        $output = $io->getStringOption(self::OUTPUT_DIR_OPT);
 
         if ([] !== $config->getWhitelistedFiles()) {
             $this->scoper = $this->scoper->withWhitelistedFiles(...$config->getWhitelistedFiles());
         }
 
         $logger = new ScoperLogger(
+            // TODO
             $this->getApplication(),
-            $io
+            $io,
         );
 
         $logger->outputScopingStart(
             $config->getPrefix(),
-            $input->getArgument(self::PATH_ARG)
+            $io->getStringArrayArgument(self::PATH_ARG)
         );
 
         try {
@@ -162,7 +164,7 @@ final class AddPrefixCommand extends BaseCommand
                 $output,
                 $config->getPatchers(),
                 $config->getWhitelist(),
-                $input->getOption(self::STOP_ON_FAILURE_OPT),
+                $io->getBooleanOption(self::STOP_ON_FAILURE_OPT),
                 $logger
             );
         } catch (Throwable $throwable) {
@@ -277,18 +279,18 @@ final class AddPrefixCommand extends BaseCommand
         }
     }
 
-    private function validatePrefix(InputInterface $input): void
+    private function validatePrefix(IO $io): void
     {
-        $prefix = $input->getOption(self::PREFIX_OPT);
+        $prefix = $io->getNullableStringOption(self::PREFIX_OPT);
 
         if (null !== $prefix && 1 === native_preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
             $prefix = $matches['prefix'];
         }
 
-        $input->setOption(self::PREFIX_OPT, $prefix);
+        $io->getInput()->setOption(self::PREFIX_OPT, $prefix);
     }
 
-    private function validatePaths(InputInterface $input): void
+    private function validatePaths(IO $io): void
     {
         $cwd = getcwd();
         $fileSystem = $this->fileSystem;
@@ -301,21 +303,21 @@ final class AddPrefixCommand extends BaseCommand
 
                 return $path;
             },
-            $input->getArgument(self::PATH_ARG)
+            $io->getStringArrayArgument(self::PATH_ARG)
         );
 
-        $input->setArgument(self::PATH_ARG, $paths);
+        $io->getInput()->setArgument(self::PATH_ARG, $paths);
     }
 
-    private function validateOutputDir(InputInterface $input, OutputStyle $io): void
+    private function validateOutputDir(IO $io): void
     {
-        $outputDir = $input->getOption(self::OUTPUT_DIR_OPT);
+        $outputDir = $io->getStringOption(self::OUTPUT_DIR_OPT);
 
         if (false === $this->fileSystem->isAbsolutePath($outputDir)) {
             $outputDir = getcwd().DIRECTORY_SEPARATOR.$outputDir;
         }
 
-        $input->setOption(self::OUTPUT_DIR_OPT, $outputDir);
+        $io->getInput()->setOption(self::OUTPUT_DIR_OPT, $outputDir);
 
         if (false === $this->fileSystem->exists($outputDir)) {
             return;
@@ -330,7 +332,7 @@ final class AddPrefixCommand extends BaseCommand
             );
         }
 
-        if ($input->getOption(self::FORCE_OPT)) {
+        if ($io->getBooleanOption(self::FORCE_OPT)) {
             $this->fileSystem->remove($outputDir);
 
             return;
@@ -369,11 +371,11 @@ final class AddPrefixCommand extends BaseCommand
         }
     }
 
-    private function retrieveConfig(InputInterface $input, OutputInterface $output, OutputStyle $io): Configuration
+    private function retrieveConfig(IO $io): Configuration
     {
-        $prefix = $input->getOption(self::PREFIX_OPT);
+        $prefix = $io->getStringOption(self::PREFIX_OPT);
 
-        if ($input->getOption(self::NO_CONFIG_OPT)) {
+        if ($io->getBooleanOption(self::NO_CONFIG_OPT)) {
             $io->writeln(
                 'Loading without configuration file.',
                 OutputInterface::VERBOSITY_DEBUG
@@ -386,13 +388,13 @@ final class AddPrefixCommand extends BaseCommand
             }
 
             if (null === $config->getPrefix()) {
-                $config = $config->withPrefix($this->generateRandomPrefix());
+                $config = $config->withPrefix(self::generateRandomPrefix());
             }
 
-            return $this->retrievePaths($input, $config);
+            return $this->retrievePaths($io, $config);
         }
 
-        $configFile = $input->getOption(self::CONFIG_FILE_OPT);
+        $configFile = $io->getNullableStringOption(self::CONFIG_FILE_OPT);
 
         if (null === $configFile) {
             $configFile = $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT);
@@ -400,12 +402,13 @@ final class AddPrefixCommand extends BaseCommand
             if (false === $this->init && false === file_exists($configFile)) {
                 $this->init = true;
 
+                // TODO
                 $initCommand = $this->getApplication()->find('init');
 
                 $initInput = new StringInput('');
-                $initInput->setInteractive($input->isInteractive());
+                $initInput->setInteractive($io->isInteractive());
 
-                $initCommand->run($initInput, $output);
+                $initCommand->run($initInput, $io->getOutput());
 
                 $io->writeln(
                     sprintf(
@@ -415,7 +418,7 @@ final class AddPrefixCommand extends BaseCommand
                     OutputInterface::VERBOSITY_DEBUG
                 );
 
-                return self::retrieveConfig($input, $output, $io);
+                return self::retrieveConfig($io);
             }
 
             if ($this->init) {
@@ -448,23 +451,23 @@ final class AddPrefixCommand extends BaseCommand
         }
 
         $config = Configuration::load($configFile);
-        $config = $this->retrievePaths($input, $config);
+        $config = $this->retrievePaths($io, $config);
 
         if (null !== $prefix) {
             $config = $config->withPrefix($prefix);
         }
 
         if (null === $config->getPrefix()) {
-            $config = $config->withPrefix($this->generateRandomPrefix());
+            $config = $config->withPrefix(self::generateRandomPrefix());
         }
 
         return $config;
     }
 
-    private function retrievePaths(InputInterface $input, Configuration $config): Configuration
+    private function retrievePaths(IO $io, Configuration $config): Configuration
     {
         // Checks if there is any path included and if note use the current working directory as the include path
-        $paths = $input->getArgument(self::PATH_ARG);
+        $paths = $io->getStringArrayArgument(self::PATH_ARG);
 
         if (0 === count($paths) && 0 === count($config->getFilesWithContents())) {
             $paths = [getcwd()];
@@ -482,7 +485,7 @@ final class AddPrefixCommand extends BaseCommand
         return $path;
     }
 
-    private function generateRandomPrefix(): string
+    private static function generateRandomPrefix(): string
     {
         return '_PhpScoper'.bin2hex(random_bytes(6));
     }
