@@ -20,9 +20,9 @@ use Iterator;
 use PackageVersions\Versions;
 use function array_pop;
 use function count;
+use function Safe\substr;
 use function str_split;
 use function strrpos;
-use function substr;
 
 function create_application(): Application
 {

@@ -25,7 +25,7 @@ use function memory_get_peak_usage;
 use function memory_get_usage;
 use function microtime;
 use function round;
-use function sprintf;
+use function Safe\sprintf;
 
 /**
  * @private

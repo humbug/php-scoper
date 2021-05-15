@@ -23,7 +23,7 @@ use PhpParser\PrettyPrinter\Standard;
 use function basename;
 use function func_get_args;
 use function ltrim;
-use function preg_match;
+use function Safe\preg_match;
 
 final class PhpScoper implements Scoper
 {

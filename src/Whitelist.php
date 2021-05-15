@@ -18,7 +18,6 @@ use Countable;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
 use function array_filter;
-use function array_flip;
 use function array_key_exists;
 use function array_map;
 use function array_pop;
@@ -27,12 +26,13 @@ use function array_values;
 use function count;
 use function explode;
 use function implode;
-use function preg_match;
-use function sprintf;
+use function Safe\array_flip;
+use function Safe\preg_match;
+use function Safe\sprintf;
+use function Safe\substr;
 use function str_replace;
 use function strpos;
 use function strtolower;
-use function substr;
 use function trim;
 
 final class Whitelist implements Countable

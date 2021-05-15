@@ -28,13 +28,13 @@ use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
-use function chdir;
 use function count;
-use function file_get_contents;
 use function Humbug\PhpScoper\escape_path;
-use function preg_replace;
-use function realpath;
-use function sprintf;
+use function Safe\chdir;
+use function Safe\file_get_contents;
+use function Safe\preg_replace;
+use function Safe\realpath;
+use function Safe\sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**

@@ -31,7 +31,6 @@ use function array_unique;
 use function array_unshift;
 use function dirname;
 use function file_exists;
-use function file_get_contents;
 use function gettype;
 use function in_array;
 use function is_array;
@@ -43,9 +42,10 @@ use function is_link;
 use function is_readable;
 use function is_string;
 use function iterator_to_array;
-use function readlink;
-use function realpath;
-use function sprintf;
+use function realpath as native_realpath;
+use function Safe\file_get_contents;
+use function Safe\readlink;
+use function Safe\sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 
@@ -432,7 +432,7 @@ final class Configuration
                 $file = $dirPath.DIRECTORY_SEPARATOR.$file;
             }
 
-            $whitelistedFiles[$index] = realpath($file);
+            $whitelistedFiles[$index] = native_realpath($file);
         }
 
         return array_filter($whitelistedFiles);

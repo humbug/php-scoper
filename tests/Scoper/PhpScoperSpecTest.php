@@ -42,12 +42,12 @@ use function implode;
 use function is_array;
 use function is_string;
 use function min;
-use function preg_split;
-use function sprintf;
+use function Safe\preg_split;
+use function Safe\sprintf;
+use function Safe\usort;
 use function str_repeat;
 use function strlen;
 use function strpos;
-use function usort;
 use const PHP_EOL;
 use const PHP_VERSION_ID;
 

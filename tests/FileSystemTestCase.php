@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use PHPUnit\Framework\TestCase;
-use function chdir;
-use function getcwd;
-use function realpath;
+use function Safe\chdir;
+use function Safe\getcwd;
+use function Safe\realpath;
 use function str_replace;
 use function sys_get_temp_dir;
 

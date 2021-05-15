@@ -21,7 +21,7 @@ use function array_unshift;
 use function chr;
 use function explode;
 use function implode;
-use function sprintf;
+use function Safe\sprintf;
 use function str_repeat;
 use function str_replace;
 use function strpos;

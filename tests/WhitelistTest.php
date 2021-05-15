@@ -18,7 +18,7 @@ use Generator;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use function array_flip;
+use function Safe\array_flip;
 
 /**
  * @covers \Humbug\PhpScoper\Whitelist
