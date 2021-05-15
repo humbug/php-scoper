@@ -43,7 +43,6 @@ use function in_array;
 use function is_string;
 use function ltrim;
 use function preg_match as native_preg_match;
-use function Safe\preg_match;
 use function strpos;
 use function strtolower;
 
@@ -81,9 +80,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'datetimeimmutable',
     ];
 
-    private $prefix;
-    private $whitelist;
-    private $reflector;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private Reflector $reflector;
 
     public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
     {
@@ -92,9 +91,6 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $this->reflector = $reflector;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         return $node instanceof String_

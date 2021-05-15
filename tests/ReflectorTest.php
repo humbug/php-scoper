@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper;
 
 use Generator;
 use PHPUnit\Framework\TestCase;
-use const PHP_VERSION_ID;
 
 /**
  * @covers \Humbug\PhpScoper\Reflector

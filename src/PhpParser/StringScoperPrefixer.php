@@ -22,9 +22,9 @@ use function Safe\substr;
 
 trait StringScoperPrefixer
 {
-    private $scoper;
-    private $prefix;
-    private $whitelist;
+    private PhpScoper $scoper;
+    private string $prefix;
+    private Whitelist $whitelist;
 
     public function __construct(PhpScoper $scoper, string $prefix, Whitelist $whitelist)
     {

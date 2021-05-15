@@ -31,9 +31,9 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
-    private $prefix;
-    private $nameResolver;
-    private $whitelist;
+    private string $prefix;
+    private FullyQualifiedNameResolver $nameResolver;
+    private Whitelist $whitelist;
 
     public function __construct(
         string $prefix,
@@ -45,9 +45,6 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         $this->whitelist = $whitelist;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         if (false === ($node instanceof Identifier) || false === ParentNodeAppender::hasParent($node)) {

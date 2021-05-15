@@ -39,8 +39,8 @@ use function ltrim;
  */
 final class FullyQualifiedNameResolver
 {
-    private $namespaceStatements;
-    private $useStatements;
+    private NamespaceStmtCollection $namespaceStatements;
+    private UseStmtCollection $useStatements;
 
     public function __construct(NamespaceStmtCollection $namespaceStatements, UseStmtCollection $useStatements)
     {

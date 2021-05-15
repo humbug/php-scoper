@@ -71,12 +71,12 @@ final class Configuration
         self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
     ];
 
-    private $path;
-    private $prefix;
-    private $filesWithContents;
-    private $patchers;
-    private $whitelist;
-    private $whitelistedFiles;
+    private ?string $path;
+    private ?string $prefix;
+    private array $filesWithContents;
+    private array $patchers;
+    private Whitelist $whitelist;
+    private array $whitelistedFiles;
 
     /**
      * @param string|null $path  Absolute path to the configuration file.

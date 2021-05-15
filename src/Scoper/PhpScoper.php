@@ -24,7 +24,6 @@ use function basename;
 use function func_get_args;
 use function ltrim;
 use function preg_match as native_preg_match;
-use function Safe\preg_match;
 
 final class PhpScoper implements Scoper
 {
@@ -33,9 +32,9 @@ final class PhpScoper implements Scoper
     private const PHP_TAG = '/^<\?php/';
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
-    private $parser;
-    private $decoratedScoper;
-    private $traverserFactory;
+    private Parser $parser;
+    private Scoper $decoratedScoper;
+    private TraverserFactory $traverserFactory;
 
     public function __construct(Parser $parser, Scoper $decoratedScoper, TraverserFactory $traverserFactory)
     {
@@ -46,8 +45,6 @@ final class PhpScoper implements Scoper
 
     /**
      * Scopes PHP files.
-     *
-     * {@inheritdoc}
      *
      * @throws PhpParserError
      */

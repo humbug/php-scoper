@@ -25,24 +25,18 @@ final class WhitelistedFunctionCollection implements IteratorAggregate, Countabl
     /**
      * @var FullyQualified[][]
      */
-    private $nodes = [];
+    private array $nodes = [];
 
     public function add(FullyQualified $original, FullyQualified $alias): void
     {
         $this->nodes[] = [$original, $alias];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function count(): int
     {
         return count($this->nodes);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);

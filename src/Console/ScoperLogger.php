@@ -33,10 +33,10 @@ use function Safe\sprintf;
  */
 class ScoperLogger
 {
-    private $application;
-    private $io;
+    private SymfonyApplication $application;
+    private SymfonyStyle $io;
     private $startTime;
-    private $progressBar;
+    private ProgressBar $progressBar;
 
     public function __construct(SymfonyApplication $application, SymfonyStyle $io)
     {

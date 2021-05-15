@@ -35,13 +35,13 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     /**
      * @var Namespace_[]
      */
-    private $nodes = [];
+    private array $nodes = [];
 
     /**
      * @var (Name|null)[] Associative array with the potentially prefixed namespace names as keys and their original name
      *                    as value.
      */
-    private $mapping = [];
+    private array $mapping = [];
 
     /**
      * @param Namespace_ $namespace New namespace, may have been prefixed.
@@ -85,9 +85,6 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return false === $lastNode ? null : NamespaceManipulator::getOriginalName($lastNode);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function count(): int
     {
         return count($this->nodes);
@@ -108,9 +105,6 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return $this->getNodeNamespaceName($parentNode);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);

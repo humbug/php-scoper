@@ -21,8 +21,6 @@ use function array_filter;
 use function func_get_args;
 use function preg_match as native_preg_match;
 use function preg_match_all as native_preg_match_all;
-use function Safe\preg_match;
-use function Safe\preg_match_all;
 use function Safe\substr;
 use function str_replace;
 use function strlen;
@@ -35,16 +33,13 @@ final class YamlScoper implements Scoper
 {
     private const FILE_PATH_PATTERN = '/\.ya?ml$/i';
 
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
         $this->decoratedScoper = $decoratedScoper;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         if (1 !== native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {

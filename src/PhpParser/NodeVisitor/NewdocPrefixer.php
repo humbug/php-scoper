@@ -26,9 +26,6 @@ final class NewdocPrefixer extends NodeVisitorAbstract
 {
     use StringScoperPrefixer;
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         if ($node instanceof String_ && $this->isPhpNowdoc($node)) {

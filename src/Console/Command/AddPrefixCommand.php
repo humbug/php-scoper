@@ -43,7 +43,6 @@ use function preg_match as native_preg_match;
 use function random_bytes;
 use function Safe\file_get_contents;
 use function Safe\getcwd;
-use function Safe\preg_match;
 use function Safe\sprintf;
 use function Safe\usort;
 use function str_replace;
@@ -61,13 +60,10 @@ final class AddPrefixCommand extends BaseCommand
     private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
     private const NO_CONFIG_OPT = 'no-config';
 
-    private $fileSystem;
-    private $scoper;
-    private $init = false;
+    private Filesystem $fileSystem;
+    private ConfigurableScoper $scoper;
+    private bool $init = false;
 
-    /**
-     * @inheritdoc
-     */
     public function __construct(Filesystem $fileSystem, Scoper $scoper)
     {
         parent::__construct();
@@ -76,9 +72,6 @@ final class AddPrefixCommand extends BaseCommand
         $this->scoper = new ConfigurableScoper($scoper);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function configure(): void
     {
         parent::configure();
@@ -134,9 +127,6 @@ final class AddPrefixCommand extends BaseCommand
         ;
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);

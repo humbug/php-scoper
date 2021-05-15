@@ -29,7 +29,10 @@ final class ParentNodeAppender extends NodeVisitorAbstract
 {
     public const PARENT_ATTRIBUTE = 'parent';
 
-    private $stack;
+    /**
+     * @var Node[]
+     */
+    private array $stack;
 
     public static function hasParent(Node $node): bool
     {
@@ -49,9 +52,6 @@ final class ParentNodeAppender extends NodeVisitorAbstract
         ;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function beforeTraverse(array $nodes): ?array
     {
         $this->stack = [];
@@ -59,9 +59,6 @@ final class ParentNodeAppender extends NodeVisitorAbstract
         return $nodes;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         if ([] !== $this->stack) {
@@ -73,9 +70,6 @@ final class ParentNodeAppender extends NodeVisitorAbstract
         return $node;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function leaveNode(Node $node): Node
     {
         array_pop($this->stack);

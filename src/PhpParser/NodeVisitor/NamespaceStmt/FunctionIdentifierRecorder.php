@@ -36,10 +36,10 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 {
-    private $prefix;
-    private $nameResolver;
-    private $whitelist;
-    private $reflector;
+    private string $prefix;
+    private FullyQualifiedNameResolver $nameResolver;
+    private Whitelist $whitelist;
+    private Reflector $reflector;
 
     public function __construct(
         string $prefix,
@@ -53,9 +53,6 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         $this->reflector = $reflector;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         if (false === ($node instanceof Identifier || $node instanceof Name || $node instanceof String_)

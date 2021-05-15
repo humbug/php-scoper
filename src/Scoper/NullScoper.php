@@ -19,9 +19,6 @@ use Humbug\PhpScoper\Whitelist;
 
 final class NullScoper implements Scoper
 {
-    /**
-     * @inheritdoc
-     */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         return $contents;

@@ -35,12 +35,9 @@ final class Application extends SymfonyApplication
 
 ASCII;
 
-    private $container;
-    private $releaseDate;
+    private Container $container;
+    private string $releaseDate;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(
         Container $container,
         string $name = 'Box',
@@ -58,9 +55,6 @@ ASCII;
         return $this->container;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getLongVersion(): string
     {
         return trim(
@@ -73,9 +67,6 @@ ASCII;
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getHelp(): string
     {
         return self::LOGO.parent::getHelp();

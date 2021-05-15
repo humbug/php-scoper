@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection ClassConstantCanBeUsedInspection */
+
 declare(strict_types=1);
 
 /*
@@ -78,11 +80,20 @@ final class Reflector
         'T_ATTRIBUTE',
     ];
 
-    private static $CLASSES;
+    /**
+     * @var array<string,string>|null
+     */
+    private static ?array $CLASSES = null;
 
-    private static $FUNCTIONS;
+    /**
+     * @var array<string,string>|null
+     */
+    private static ?array $FUNCTIONS = null;
 
-    private static $CONSTANTS;
+    /**
+     * @var array<string,string>|null
+     */
+    private static ?array $CONSTANTS = null;
 
     /**
      * @param array<string,string>|null $symbols

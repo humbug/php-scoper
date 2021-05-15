@@ -28,7 +28,6 @@ use function explode;
 use function implode;
 use function preg_match as native_preg_match;
 use function Safe\array_flip;
-use function Safe\preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
@@ -38,18 +37,18 @@ use function trim;
 
 final class Whitelist implements Countable
 {
-    private $original;
-    private $symbols;
-    private $constants;
-    private $namespaces;
-    private $patterns;
+    private array $original;
+    private array $symbols;
+    private array $constants;
+    private array $namespaces;
+    private array $patterns;
 
-    private $whitelistGlobalConstants;
-    private $whitelistGlobalClasses;
-    private $whitelistGlobalFunctions;
+    private bool $whitelistGlobalConstants;
+    private bool $whitelistGlobalClasses;
+    private bool $whitelistGlobalFunctions;
 
-    private $whitelistedFunctions = [];
-    private $whitelistedClasses = [];
+    private array $whitelistedFunctions = [];
+    private array $whitelistedClasses = [];
 
     public static function create(
         bool $whitelistGlobalConstants,
@@ -296,9 +295,6 @@ final class Whitelist implements Countable
         return $this->original;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function count(): int
     {
         return count($this->whitelistedFunctions) + count($this->whitelistedClasses);

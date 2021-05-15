@@ -47,8 +47,8 @@ use function count;
  */
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
-    private $whitelist;
-    private $nameResolver;
+    private Whitelist $whitelist;
+    private FullyQualifiedNameResolver $nameResolver;
 
     public function __construct(Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
     {
@@ -57,8 +57,6 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param Const_ $node
      */
     public function enterNode(Node $node): Node
