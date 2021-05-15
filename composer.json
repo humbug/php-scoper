@@ -20,7 +20,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.3 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "composer/package-versions-deprecated": "^1.8",
         "jetbrains/phpstorm-stubs": "^2020.2",
         "nikic/php-parser": "^4.0",
@@ -62,7 +62,7 @@
         "bin-dir": "bin",
         "sort-packages": true,
         "platform": {
-            "php": "7.3.0"
+            "php": "7.4.0"
         }
     },
     "extra": {
