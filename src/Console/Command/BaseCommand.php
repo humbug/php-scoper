@@ -19,8 +19,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use function chdir as native_chdir;
 use function file_exists;
-use function Safe\chdir;
 use function Safe\getcwd;
 use function Safe\sprintf;
 
@@ -57,7 +57,7 @@ abstract class BaseCommand extends Command
             );
         }
 
-        if (false === chdir($workingDir)) {
+        if (false === native_chdir($workingDir)) {
             throw new RuntimeException(
                 sprintf(
                     'Failed to change the working directory to "%s" from "%s".',

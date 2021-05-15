@@ -6,3 +6,9 @@ parameters:
     ignoreErrors:
         - '#has no typehint specified#'
         - '#with no typehint specified#'
+        - message: '#Cannot cast array\<string\>\|string to string\.#'
+          path: 'src/Patcher/SymfonyPatcher.php'
+        - message: '#Parameter \#1 \$nodes of method PhpParser\\NodeTraverserInterface::traverse\(\) expects array\<PhpParser\\Node\>, array\<PhpParser\\Node\\Stmt\>\|null given\.#'
+          path: 'src/Scoper/PhpScoper.php'
+        - message: '#Parameter \#2 \$input1 of function array_map expects array, array\<int, string\>\|false given\.#'
+          path: 'src/Autoload/ScoperAutoloadGenerator.php'
