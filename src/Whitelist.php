@@ -26,6 +26,7 @@ use function array_values;
 use function count;
 use function explode;
 use function implode;
+use function preg_match as native_preg_match;
 use function Safe\array_flip;
 use function Safe\preg_match;
 use function Safe\sprintf;
@@ -112,7 +113,7 @@ final class Whitelist implements Countable
 
     private static function assertValidPattern(string $element): void
     {
-        if (1 !== preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
+        if (1 !== native_preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
             throw new InvalidArgumentException(sprintf('Invalid whitelist pattern "%s".', $element));
         }
     }
@@ -267,7 +268,7 @@ final class Whitelist implements Countable
         foreach ($this->patterns as $pattern) {
             $pattern = false === $constant ? $pattern.'i' : $pattern;
 
-            if (1 === preg_match($pattern, $name)) {
+            if (1 === native_preg_match($pattern, $name)) {
                 return true;
             }
         }
