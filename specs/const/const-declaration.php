@@ -51,22 +51,22 @@ if (!defined('Acme\BAR_CONST')) {
 
 namespace Humbug;
 
-const FOO_CONST = \Humbug\foo();
+const FOO_CONST = foo();
 const X = 'x', Y = '';
 if (!\defined('Humbug\\BAR_CONST')) {
-    \define('Humbug\\BAR_CONST', \Humbug\foo());
+    \define('Humbug\\BAR_CONST', foo());
 }
 if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-    \define('Humbug\\Acme\\BAR_CONST', \Humbug\foo());
+    \define('Humbug\\Acme\\BAR_CONST', foo());
 }
 if (!\defined('Humbug\\FOO_CONST')) {
-    \define(\Humbug\FOO_CONST, \Humbug\foo());
+    \define(\Humbug\FOO_CONST, foo());
 }
 if (!\defined('Humbug\\FOO_CONST')) {
-    \define(\Humbug\FOO_CONST, \Humbug\foo());
+    \define(\Humbug\FOO_CONST, foo());
 }
 if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-    \define(\Humbug\Acme\BAR_CONST, \Humbug\foo());
+    \define(\Humbug\Acme\BAR_CONST, foo());
 }
 
 PHP
@@ -154,22 +154,22 @@ if (!defined('Emca\BAZ')) {
 
 namespace Humbug;
 
-\define('FOO_CONST', \Humbug\foo());
+\define('FOO_CONST', foo());
 const X = 'x', Y = '';
 if (!\defined('BAR_CONST')) {
-    \define('BAR_CONST', \Humbug\foo());
+    \define('BAR_CONST', foo());
 }
 if (!\defined('Acme\\BAR_CONST')) {
-    \define('Acme\\BAR_CONST', \Humbug\foo());
+    \define('Acme\\BAR_CONST', foo());
 }
 if (!\defined('FOO_CONST')) {
-    \define(\FOO_CONST, \Humbug\foo());
+    \define(\FOO_CONST, foo());
 }
 if (!\defined('FOO_CONST')) {
-    \define(\FOO_CONST, \Humbug\foo());
+    \define(\FOO_CONST, foo());
 }
 if (!\defined('Acme\\BAR_CONST')) {
-    \define(\Acme\BAR_CONST, \Humbug\foo());
+    \define(\Acme\BAR_CONST, foo());
 }
 if (!\defined('BAZ')) {
     \define('BAZ', 'baz');

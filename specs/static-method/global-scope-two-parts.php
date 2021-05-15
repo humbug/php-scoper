@@ -45,7 +45,7 @@ class Bar
 }
 namespace Humbug;
 
-\Humbug\Foo\Bar::main();
+Foo\Bar::main();
 
 PHP
     ,

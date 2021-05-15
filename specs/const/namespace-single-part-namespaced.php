@@ -36,7 +36,7 @@ PHPUnit\DUMMY_CONST;
 
 namespace Humbug\A;
 
-\Humbug\A\PHPUnit\DUMMY_CONST;
+PHPUnit\DUMMY_CONST;
 
 PHP
     ,
@@ -70,7 +70,7 @@ PHPUnit\DUMMY_CONST;
 
 namespace Humbug\A;
 
-\Humbug\A\PHPUnit\DUMMY_CONST;
+PHPUnit\DUMMY_CONST;
 
 PHP
     ],

@@ -53,8 +53,8 @@ use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\X\Foo $x): \Humbug\X\Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ,
@@ -89,8 +89,8 @@ use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\X\Foo $x): \Humbug\X\Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ],
@@ -127,8 +127,8 @@ use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\X\Foo $x): \Humbug\X\Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ],

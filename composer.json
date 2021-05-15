@@ -22,7 +22,7 @@
     "require": {
         "php": "^7.3 || ^8.0",
         "composer/package-versions-deprecated": "^1.8",
-        "jetbrains/phpstorm-stubs": "dev-master",
+        "jetbrains/phpstorm-stubs": "^2020.2",
         "nikic/php-parser": "^4.0",
         "symfony/console": "^3.2 || ^4.0",
         "symfony/filesystem": "^3.2 || ^4.0",

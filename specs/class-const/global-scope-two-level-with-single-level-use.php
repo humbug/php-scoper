@@ -58,7 +58,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo;
-\Humbug\Foo\Bar::MAIN_CONST;
+Foo\Bar::MAIN_CONST;
 
 PHP
     ],
@@ -96,7 +96,7 @@ class X
 namespace Humbug;
 
 use Humbug\Foo\Bar;
-\Humbug\Foo\Bar\X::MAIN_CONST;
+Bar\X::MAIN_CONST;
 
 PHP
     ],
@@ -177,7 +177,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo;
-\Humbug\Foo\Bar::MAIN_CONST;
+Foo\Bar::MAIN_CONST;
 
 PHP
     ],

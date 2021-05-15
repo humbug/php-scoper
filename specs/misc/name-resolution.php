@@ -46,7 +46,7 @@ abstract class TestCase extends Assert {
 namespace Humbug\PHPUnit\Framework;
 
 use function assert;
-abstract class TestCase extends \Humbug\PHPUnit\Framework\Assert
+abstract class TestCase extends Assert
 {
     function __construct()
     {
@@ -78,7 +78,7 @@ abstract class TestCase extends SORT_NUMERIC {
 namespace Humbug\PHPUnit\Framework;
 
 use const SORT_NUMERIC;
-abstract class TestCase extends \Humbug\PHPUnit\Framework\SORT_NUMERIC
+abstract class TestCase extends SORT_NUMERIC
 {
     function __construct()
     {

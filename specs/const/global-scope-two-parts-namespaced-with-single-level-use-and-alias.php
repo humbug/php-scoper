@@ -42,7 +42,7 @@ class Foo
 {
 }
 use Humbug\Foo as A;
-\Humbug\Foo\Bar\DUMMY_CONST;
+A\Bar\DUMMY_CONST;
 
 PHP
     ,

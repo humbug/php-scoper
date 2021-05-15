@@ -45,7 +45,7 @@ declare (strict_types=1);
 namespace Humbug\Acme;
 
 use Humbug\Acme\Foo\Match;
-class Foo implements \Humbug\Acme\Foo\Match
+class Foo implements Match
 {
 }
 namespace Humbug\Acme\Foo;
