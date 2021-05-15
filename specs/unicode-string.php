@@ -32,7 +32,6 @@ return [
 namespace MaxMind\Db;
 
 class Reader {
-    private static $METADATA_START_MARKER = "\xAB\xCD\xEFMaxMind.com";
     private static $UNICODE = "äßæ";
     private static $EMOJIS = "👾 🤖";
 }
@@ -40,7 +39,13 @@ class Reader {
 ----
 <?php
 
+namespace Humbug\MaxMind\Db;
 
+class Reader
+{
+    private static $UNICODE = "äßæ";
+    private static $EMOJIS = "👾 🤖";
+}
 
 PHP
     ,
