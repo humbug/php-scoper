@@ -19,12 +19,12 @@ use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
 use function array_filter;
 use function func_get_args;
-use function preg_match;
-use function preg_match_all;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\substr;
 use function str_replace;
 use function strlen;
 use function strpos;
-use function substr;
 
 /**
  * Scopes the Symfony XML configuration files.

@@ -36,17 +36,17 @@ use function array_map;
 use function bin2hex;
 use function count;
 use function file_exists;
-use function file_get_contents;
-use function getcwd;
 use function Humbug\PhpScoper\get_common_path;
 use function is_dir;
 use function is_writable;
-use function preg_match;
 use function random_bytes;
-use function sprintf;
+use function Safe\file_get_contents;
+use function Safe\getcwd;
+use function Safe\preg_match;
+use function Safe\sprintf;
+use function Safe\usort;
 use function str_replace;
 use function strlen;
-use function usort;
 use const DIRECTORY_SEPARATOR;
 
 final class AddPrefixCommand extends BaseCommand

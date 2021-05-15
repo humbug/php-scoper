@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\Console;
 use Humbug\PhpScoper\Container;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use function Humbug\PhpScoper\get_php_scoper_version;
-use function sprintf;
+use function Safe\sprintf;
 use function strpos;
 use function trim;
 

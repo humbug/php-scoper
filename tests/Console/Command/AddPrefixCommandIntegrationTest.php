@@ -22,13 +22,13 @@ use Symfony\Component\Finder\SplFileInfo;
 use function array_map;
 use function array_reduce;
 use function explode;
-use function file_get_contents;
-use function file_put_contents;
 use function Humbug\PhpScoper\create_application;
 use function implode;
 use function iterator_to_array;
-use function preg_replace;
-use function realpath;
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\preg_replace;
+use function Safe\realpath;
 use function str_replace;
 
 /**

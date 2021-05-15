@@ -18,7 +18,7 @@ use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Scalar\String_;
-use function substr;
+use function Safe\substr;
 
 trait StringScoperPrefixer
 {

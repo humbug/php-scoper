@@ -42,7 +42,7 @@ use function implode;
 use function in_array;
 use function is_string;
 use function ltrim;
-use function preg_match;
+use function Safe\preg_match;
 use function strpos;
 use function strtolower;
 

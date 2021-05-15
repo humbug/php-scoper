@@ -18,7 +18,7 @@ use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use function Humbug\PhpScoper\json_decode;
 use function Humbug\PhpScoper\json_encode;
-use function preg_match;
+use function Safe\preg_match;
 use const JSON_PRETTY_PRINT;
 
 final class InstalledPackagesScoper implements Scoper

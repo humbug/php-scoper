@@ -21,10 +21,10 @@ use function array_merge;
 use function is_array;
 use function is_string;
 use function rtrim;
-use function sprintf;
+use function Safe\sprintf;
+use function Safe\substr;
 use function str_replace;
 use function strpos;
-use function substr;
 
 /**
  * @private
