@@ -338,7 +338,7 @@ e2e_026: $(PHPSCOPER) fixtures/set026/vendor
 
 .PHONY: e2e_027
 e2e_027: ## Run end-to-end tests for the fixture set 027 — Laravel
-ifeq ("$(IS_PHP8)", "true"))
+ifeq ("$(IS_PHP8)", "true")
 e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set027-laravel \
