@@ -18,8 +18,8 @@ use PHPUnit\Framework\TestCase;
 use function Safe\chdir;
 use function Safe\getcwd;
 use function Safe\realpath;
-use function Safe\sys_get_temp_dir;
 use function str_replace;
+use function sys_get_temp_dir;
 
 abstract class FileSystemTestCase extends TestCase
 {
