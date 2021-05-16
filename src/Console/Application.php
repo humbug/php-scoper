@@ -105,17 +105,14 @@ ASCII;
 
     public function getCommands(): array
     {
-        // TODO: move to the container
-        $fileSystem = new Filesystem();
-
         return [
             new AddPrefixCommand(
-                $fileSystem,
+                $this->container->getFileSystem(),
                 $this->container->getScoper(),
                 $this,
             ),
             new InitCommand(
-                $fileSystem,
+                $this->container->getFileSystem(),
                 new FormatterHelper(),
             ),
         ];

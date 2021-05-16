@@ -14,6 +14,7 @@
 namespace Humbug\PhpScoper;
 
 use ErrorException;
+use Fidry\Console\Application\ApplicationRunner;
 use Humbug\PhpScoper\Console\Application;
 use Isolated\Symfony\Component\Finder\Finder as IsolatedFinder;
 use RuntimeException;
@@ -56,4 +57,8 @@ if (false === class_exists(IsolatedFinder::class)) {
     class_alias(Finder::class, IsolatedFinder::class);
 }
 
-Application::create();
+ApplicationRunner::runApplication(
+    Application::create(),
+    null,
+    null,
+);

@@ -37,7 +37,7 @@ use function str_replace;
  * @coversNothing
  *
  * @group integration
- * @runTestsInSeparateProcesses 
+ * @runTestsInSeparateProcesses
  */
 class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 {
