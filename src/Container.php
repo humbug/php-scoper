@@ -24,12 +24,23 @@ use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class Container
 {
+    private Filesystem $filesystem;
     private Parser $parser;
     private Reflector $reflector;
     private Scoper $scoper;
+
+    public function getFileSystem(): Filesystem
+    {
+        if (!isset($this->filesystem)) {
+            $this->filesystem = new Filesystem();
+        }
+
+        return $this->filesystem;
+    }
 
     public function getScoper(): Scoper
     {

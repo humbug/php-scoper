@@ -14,7 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Fidry\Console\Application\Application;
 use Fidry\Console\Command\Command;
+use Fidry\Console\Command\CommandAware;
+use Fidry\Console\Command\CommandAwareness;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\IO;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
@@ -49,8 +52,10 @@ use function str_replace;
 use function strlen;
 use const DIRECTORY_SEPARATOR;
 
-final class AddPrefixCommand implements Command
+final class AddPrefixCommand implements Command, CommandAware
 {
+    use CommandAwareness;
+
     private const PATH_ARG = 'paths';
     private const PREFIX_OPT = 'prefix';
     private const OUTPUT_DIR_OPT = 'output-dir';
@@ -63,11 +68,16 @@ final class AddPrefixCommand implements Command
     private Filesystem $fileSystem;
     private ConfigurableScoper $scoper;
     private bool $init = false;
+    private Application $application;
 
-    public function __construct(Filesystem $fileSystem, Scoper $scoper)
-    {
+    public function __construct(
+        Filesystem $fileSystem,
+        Scoper $scoper,
+        Application $application
+    ) {
         $this->fileSystem = $fileSystem;
         $this->scoper = new ConfigurableScoper($scoper);
+        $this->application = $application;
     }
 
     public function getConfiguration(): CommandConfiguration
@@ -147,8 +157,7 @@ final class AddPrefixCommand implements Command
         }
 
         $logger = new ScoperLogger(
-            // TODO
-            $this->getApplication(),
+            $this->application,
             $io,
         );
 
@@ -181,7 +190,7 @@ final class AddPrefixCommand implements Command
     }
 
     /**
-     * @var callable[]
+     * @var callable[] $patchers
      */
     private function scopeFiles(
         string $prefix,
@@ -402,13 +411,14 @@ final class AddPrefixCommand implements Command
             if (false === $this->init && false === file_exists($configFile)) {
                 $this->init = true;
 
-                // TODO
-                $initCommand = $this->getApplication()->find('init');
+                $initCommand = $this->getCommandRegistry()->getCommand('init');
 
                 $initInput = new StringInput('');
                 $initInput->setInteractive($io->isInteractive());
 
-                $initCommand->run($initInput, $io->getOutput());
+                $initCommand->execute(
+                    new IO($initInput, $io->getOutput()),
+                );
 
                 $io->writeln(
                     sprintf(

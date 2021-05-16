@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Fidry\Console\Application\SymfonyApplication;
+use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
@@ -24,6 +26,7 @@ use InvalidArgumentException;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use ReflectionClass;
 use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
@@ -92,13 +95,13 @@ class AddPrefixCommandTest extends FileSystemTestCase
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-php-scoper-test version UNKNOWN
+PhpScoper version TestVersion 28/01/2020
 
 Usage:
   command [options] [arguments]
 
 Options:
-  -h, --help            Display this help message
+  -h, --help            Display help for the given command. When no command is given display help for the list command
   -q, --quiet           Do not output any message
   -V, --version         Display this application version
       --ansi            Force ANSI output
@@ -108,13 +111,13 @@ Options:
 
 Available commands:
   add-prefix  Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.
-  help        Displays help for a command
-  list        Lists commands
+  help        Display help for a command
+  init        Generates a configuration file.
+  list        List commands
 
 EOF;
 
         $actual = $this->appTester->getDisplay(true);
-        $actual = preg_replace('/php-scoper-test version .*/', 'php-scoper-test version UNKNOWN', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
@@ -133,12 +136,11 @@ EOF;
         $this->appTester->run($input);
 
         $expected = <<<'EOF'
-php-scoper-test version UNKNOWN
+PhpScoper version TestVersion 28/01/2020
 
 EOF;
 
         $actual = $this->appTester->getDisplay(true);
-        $actual = preg_replace('/php-scoper-test version .*/', 'php-scoper-test version UNKNOWN', $actual);
 
         $this->assertSame($expected, $actual);
         $this->assertSame(0, $this->appTester->getStatusCode());
@@ -908,15 +910,27 @@ EOF;
         /** @var Filesystem $fileSystem */
         $fileSystem = $this->fileSystemProphecy->reveal();
 
-        /** @var Scoper $handle */
-        $handle = $this->scoperProphecy->reveal();
+        /** @var Scoper $scoper */
+        $scoper = $this->scoperProphecy->reveal();
 
-        $application = new Application(new Container(), 'php-scoper-test');
-        $application->addCommands([
-            new AddPrefixCommand($fileSystem, $handle),
-        ]);
-        $application->setAutoExit(false);
-        $application->setCatchExceptions(false);
+        $application = new SymfonyApplication(
+            $innerApp = new Application(
+                new Container(),
+                'TestVersion',
+                '28/01/2020',
+                false,
+                false,
+            ),
+        );
+        $application->add(
+            new SymfonyCommand(
+                new AddPrefixCommand(
+                    $fileSystem,
+                    $scoper,
+                    $innerApp,
+                ),
+            ),
+        );
 
         return new ApplicationTester($application);
     }

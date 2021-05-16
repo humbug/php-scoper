@@ -112,6 +112,7 @@ ASCII;
             new AddPrefixCommand(
                 $fileSystem,
                 $this->container->getScoper(),
+                $this,
             ),
             new InitCommand(
                 $fileSystem,

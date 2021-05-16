@@ -14,8 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
+use Fidry\Console\Application\Application as FidryApplication;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,12 +34,12 @@ use function Safe\sprintf;
  */
 class ScoperLogger
 {
-    private SymfonyApplication $application;
-    private SymfonyStyle $io;
+    private FidryApplication $application;
+    private IO $io;
     private $startTime;
     private ProgressBar $progressBar;
 
-    public function __construct(SymfonyApplication $application, SymfonyStyle $io)
+    public function __construct(FidryApplication $application, IO $io)
     {
         $this->io = $io;
         $this->application = $application;

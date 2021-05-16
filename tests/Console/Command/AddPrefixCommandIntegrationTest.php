@@ -37,7 +37,7 @@ use function str_replace;
  * @coversNothing
  *
  * @group integration
- * @runTestsInSeparateProcesses
+ * @runTestsInSeparateProcesses 
  */
 class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 {
@@ -136,7 +136,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+PhpScoper version TestVersion 28/01/2020
 
  0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
  4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
@@ -194,7 +194,7 @@ EOF;
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+PhpScoper version TestVersion 28/01/2020
 
  * [NO] /path/to/composer/installed.json
  * [OK] /path/to/file.php
@@ -240,7 +240,7 @@ EOF;
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+PhpScoper version TestVersion 28/01/2020
 
  * [NO] /path/to/composer/installed.json
 	Could not parse the file "/path/to/composer/installed.json".: TypeError
@@ -295,11 +295,6 @@ EOF;
         $display = str_replace($this->tmp, '/path/to', $display);
         $display = DisplayNormalizer::normalizeSeparators($display);
         $display = DisplayNormalizer::normalizeProgressBar($display);
-        $display = preg_replace(
-            '/PHP Scoper version (?:dev\-)?.+/',
-            'PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
-            $display
-        );
         $display = preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
             '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',

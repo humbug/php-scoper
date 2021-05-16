@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d94489a73d63cbcf2f867e851d65a650",
+    "content-hash": "ecf00980b7adeb5816d8c34b1ed9d6d2",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -81,16 +81,16 @@
         },
         {
             "name": "fidry/console",
-            "version": "0.1.0",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/console.git",
-                "reference": "8551373747544611c0691bcdff0ec42950bb995d"
+                "reference": "850f9a7f8d231d6d5d18a91e67152268ed1afa62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/console/zipball/8551373747544611c0691bcdff0ec42950bb995d",
-                "reference": "8551373747544611c0691bcdff0ec42950bb995d",
+                "url": "https://api.github.com/repos/theofidry/console/zipball/850f9a7f8d231d6d5d18a91e67152268ed1afa62",
+                "reference": "850f9a7f8d231d6d5d18a91e67152268ed1afa62",
                 "shasum": ""
             },
             "require": {
@@ -143,9 +143,9 @@
             "description": "Library to create CLI applications",
             "support": {
                 "issues": "https://github.com/theofidry/console/issues",
-                "source": "https://github.com/theofidry/console/tree/0.1.0"
+                "source": "https://github.com/theofidry/console/tree/0.2.0"
             },
-            "time": "2021-05-14T08:52:42+00:00"
+            "time": "2021-05-16T21:57:51+00:00"
         },
         {
             "name": "jetbrains/phpstorm-stubs",
