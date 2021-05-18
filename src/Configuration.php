@@ -21,7 +21,6 @@ use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
-use UnexpectedValueException;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
