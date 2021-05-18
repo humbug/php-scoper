@@ -145,7 +145,6 @@ final class AddPrefixCommand implements Command, CommandAware
 
         ChangeableDirectory::changeWorkingDirectory($io);
 
-        $this->validatePrefix($io);
         $this->validatePaths($io);
         $this->validateOutputDir($io);
 
@@ -286,17 +285,6 @@ final class AddPrefixCommand implements Command, CommandAware
         if (false === isset($exception)) {
             $logger->outputSuccess($inputFilePath);
         }
-    }
-
-    private function validatePrefix(IO $io): void
-    {
-        $prefix = $io->getStringOption(self::PREFIX_OPT);
-
-        if (1 === native_preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
-            $prefix = $matches['prefix'];
-        }
-
-        $io->getInput()->setOption(self::PREFIX_OPT, $prefix);
     }
 
     private function validatePaths(IO $io): void
