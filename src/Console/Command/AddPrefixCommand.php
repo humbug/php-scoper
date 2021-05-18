@@ -163,7 +163,7 @@ final class AddPrefixCommand implements Command, CommandAware
 
         $logger->outputScopingStart(
             $config->getPrefix(),
-            $io->getStringArrayArgument(self::PATH_ARG)
+            self::getPathArguments($io),
         );
 
         try {
@@ -290,9 +290,9 @@ final class AddPrefixCommand implements Command, CommandAware
 
     private function validatePrefix(IO $io): void
     {
-        $prefix = $io->getNullableStringOption(self::PREFIX_OPT);
+        $prefix = $io->getStringOption(self::PREFIX_OPT);
 
-        if (null !== $prefix && 1 === native_preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
+        if (1 === native_preg_match('/(?<prefix>.*?)\\\\*$/', $prefix, $matches)) {
             $prefix = $matches['prefix'];
         }
 
@@ -312,7 +312,7 @@ final class AddPrefixCommand implements Command, CommandAware
 
                 return $path;
             },
-            $io->getStringArrayArgument(self::PATH_ARG)
+            self::getPathArguments($io),
         );
 
         $io->getInput()->setArgument(self::PATH_ARG, $paths);
@@ -477,7 +477,7 @@ final class AddPrefixCommand implements Command, CommandAware
     private function retrievePaths(IO $io, Configuration $config): Configuration
     {
         // Checks if there is any path included and if note use the current working directory as the include path
-        $paths = $io->getStringArrayArgument(self::PATH_ARG);
+        $paths = self::getPathArguments($io);
 
         if (0 === count($paths) && 0 === count($config->getFilesWithContents())) {
             $paths = [getcwd()];
@@ -493,6 +493,14 @@ final class AddPrefixCommand implements Command, CommandAware
         }
 
         return $path;
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function getPathArguments(IO $io): array
+    {
+        return $io->getStringArrayArgument(self::PATH_ARG);
     }
 
     private static function generateRandomPrefix(): string
