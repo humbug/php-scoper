@@ -44,6 +44,7 @@ use function is_string;
 use function iterator_to_array;
 use function realpath as native_realpath;
 use function Safe\file_get_contents;
+use function Safe\preg_match;
 use function Safe\readlink;
 use function Safe\sprintf;
 use function trim;
@@ -281,7 +282,20 @@ final class Configuration
 
         $prefix = trim($prefix);
 
-        return '' === $prefix ? null : $prefix;
+        if ('' === $prefix) {
+            return null;
+        }
+
+        if (1 === preg_match('/^[\p{L}\d_]+$/u', $prefix)) {
+            return $prefix;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'The prefix needs to be composed solely of letters and digits. Got "%s"',
+                $prefix,
+            ),
+        );
     }
 
     private static function retrievePatchers(array $config): array
