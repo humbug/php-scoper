@@ -145,10 +145,11 @@ final class AddPrefixCommand implements Command, CommandAware
 
         ChangeableDirectory::changeWorkingDirectory($io);
 
-        $this->validatePaths($io);
         $this->validateOutputDir($io);
 
-        $config = $this->retrieveConfig($io);
+        $paths = $this->getPathArguments($io);
+
+        $config = $this->retrieveConfig($io, $paths);
         $output = $io->getStringOption(self::OUTPUT_DIR_OPT);
 
         if ([] !== $config->getWhitelistedFiles()) {
@@ -162,7 +163,7 @@ final class AddPrefixCommand implements Command, CommandAware
 
         $logger->outputScopingStart(
             $config->getPrefix(),
-            self::getPathArguments($io),
+            $paths,
         );
 
         try {
@@ -287,25 +288,6 @@ final class AddPrefixCommand implements Command, CommandAware
         }
     }
 
-    private function validatePaths(IO $io): void
-    {
-        $cwd = getcwd();
-        $fileSystem = $this->fileSystem;
-
-        $paths = array_map(
-            static function (string $path) use ($cwd, $fileSystem) {
-                if (false === $fileSystem->isAbsolutePath($path)) {
-                    return $cwd.DIRECTORY_SEPARATOR.$path;
-                }
-
-                return $path;
-            },
-            self::getPathArguments($io),
-        );
-
-        $io->getInput()->setArgument(self::PATH_ARG, $paths);
-    }
-
     private function validateOutputDir(IO $io): void
     {
         $outputDir = $io->getStringOption(self::OUTPUT_DIR_OPT);
@@ -368,7 +350,10 @@ final class AddPrefixCommand implements Command, CommandAware
         }
     }
 
-    private function retrieveConfig(IO $io): Configuration
+    /**
+     * @param string[] $paths
+     */
+    private function retrieveConfig(IO $io, array $paths): Configuration
     {
         $prefix = $io->getStringOption(self::PREFIX_OPT);
 
@@ -388,7 +373,7 @@ final class AddPrefixCommand implements Command, CommandAware
                 $config = $config->withPrefix(self::generateRandomPrefix());
             }
 
-            return $this->retrievePaths($io, $config);
+            return $this->retrievePaths($config, $paths);
         }
 
         $configFile = $io->getNullableStringOption(self::CONFIG_FILE_OPT);
@@ -416,7 +401,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     OutputInterface::VERBOSITY_DEBUG
                 );
 
-                return self::retrieveConfig($io);
+                return self::retrieveConfig($io, $paths);
             }
 
             if ($this->init) {
@@ -449,7 +434,7 @@ final class AddPrefixCommand implements Command, CommandAware
         }
 
         $config = Configuration::load($configFile);
-        $config = $this->retrievePaths($io, $config);
+        $config = $this->retrievePaths($config, $paths);
 
         if (null !== $prefix) {
             $config = $config->withPrefix($prefix);
@@ -462,11 +447,13 @@ final class AddPrefixCommand implements Command, CommandAware
         return $config;
     }
 
-    private function retrievePaths(IO $io, Configuration $config): Configuration
+    /**
+     * @param string[] $paths
+     */
+    private function retrievePaths(Configuration $config, array $paths): Configuration
     {
-        // Checks if there is any path included and if note use the current working directory as the include path
-        $paths = self::getPathArguments($io);
-
+        // Checks if there is any path included and if note use the current
+        // working directory as the include path
         if (0 === count($paths) && 0 === count($config->getFilesWithContents())) {
             $paths = [getcwd()];
         }
@@ -484,11 +471,19 @@ final class AddPrefixCommand implements Command, CommandAware
     }
 
     /**
-     * @return string[]
+     * @return list<string> List of absolute paths
      */
-    private static function getPathArguments(IO $io): array
+    private function getPathArguments(IO $io): array
     {
-        return $io->getStringArrayArgument(self::PATH_ARG);
+        $cwd = getcwd();
+        $fileSystem = $this->fileSystem;
+
+        return array_map(
+            static fn (string $path) => $fileSystem->isAbsolutePath($path)
+                ? $path
+                : $cwd.DIRECTORY_SEPARATOR.$path,
+            $io->getStringArrayArgument(self::PATH_ARG),
+        );
     }
 
     private static function generateRandomPrefix(): string
