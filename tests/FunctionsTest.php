@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper;
 
 use ArrayIterator;
 use Generator;
+use Humbug\PhpScoper\Console\Application;
 use PHPUnit\Framework\TestCase;
 use function iterator_to_array;
 
@@ -23,8 +24,8 @@ class FunctionsTest extends TestCase
 {
     public function test_it_can_create_an_application(): void
     {
-        $app1 = create_application();
-        $app2 = create_application();
+        $app1 = Application::create();
+        $app2 = Application::create();
 
         $this->assertNotSame($app1, $app2);
     }
