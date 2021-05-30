@@ -85,7 +85,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->assertFilesAreSame(self::FIXTURE_PATH.'/../scoped', $this->tmp);
     }
@@ -108,8 +108,8 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 
         $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
     }
 
     public function test_scope_in_normal_mode(): void
@@ -165,8 +165,8 @@ EOF;
             $actual
         );
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
     }
 
     public function test_scope_in_verbose_mode(): void
@@ -211,8 +211,8 @@ EOF;
 
         $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
     }
 
     public function test_scope_in_very_verbose_mode(): void
@@ -285,8 +285,8 @@ EOF;
         // Remove overly lengthy stack-trace
         $actual = preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $actual);
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
     }
 
     private function getNormalizeDisplay(string $display): string
@@ -317,7 +317,7 @@ EOF;
 
         $actual = $this->collectFiles($actualDir);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     private function collectFiles(string $dir): array

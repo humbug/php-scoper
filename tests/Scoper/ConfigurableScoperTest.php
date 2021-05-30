@@ -50,7 +50,7 @@ class ConfigurableScoperTest extends TestCase
 
     public function test_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(ConfigurableScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(ConfigurableScoper::class, Scoper::class, true));
     }
 
     public function test_it_scopes_the_files_with_the_decorated_scoper(): void
@@ -70,7 +70,7 @@ class ConfigurableScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -98,12 +98,12 @@ class ConfigurableScoperTest extends TestCase
         foreach ($whitelistedFiles as $whitelistedFile) {
             $actual = $scoper->scope($whitelistedFile, $contents, $prefix, $patchers, $whitelist);
 
-            $this->assertSame($contents, $actual);
+            self::assertSame($contents, $actual);
         }
 
         $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }

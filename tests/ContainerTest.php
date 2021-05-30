@@ -30,7 +30,7 @@ class ContainerTest extends TestCase
     {
         $result = (new Container())->$getterName();
 
-        $this->assertNotNull($result);
+        self::assertNotNull($result);
     }
 
     /**
@@ -41,12 +41,12 @@ class ContainerTest extends TestCase
         $container = new Container();
         $anotherContainer = new Container();
 
-        $this->assertSame(
+        self::assertSame(
             $container->$getterName(),
             $container->$getterName()
         );
 
-        $this->assertNotSame(
+        self::assertNotSame(
             $container->$getterName(),
             $anotherContainer->$getterName()
         );

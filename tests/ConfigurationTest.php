@@ -29,15 +29,15 @@ class ConfigurationTest extends FileSystemTestCase
     {
         $configuration = Configuration::load();
 
-        $this->assertSame([], $configuration->getWhitelistedFiles());
-        $this->assertEquals(
+        self::assertSame([], $configuration->getWhitelistedFiles());
+        self::assertEquals(
             Whitelist::create(true, true, true),
             $configuration->getWhitelist()
         );
-        $this->assertNull($configuration->getPath());
-        $this->assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
-        $this->assertSame([], $configuration->getFilesWithContents());
-        $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
+        self::assertNull($configuration->getPath());
+        self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
+        self::assertSame([], $configuration->getFilesWithContents());
+        self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
     }
 
     public function test_it_cannot_create_a_configuration_with_an_invalid_key(): void
@@ -56,9 +56,9 @@ PHP
         try {
             Configuration::load($this->tmp.'/scoper.inc.php');
 
-            $this->fail('Expected exception to be thrown.');
+            self::fail('Expected exception to be thrown.');
         } catch (InvalidArgumentException $exception) {
-            $this->assertSame(
+            self::assertSame(
                 'Invalid configuration key value "unknown key" found.',
                 $exception->getMessage()
             );
@@ -86,14 +86,14 @@ PHP
 
         $configuration = Configuration::load($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php');
 
-        $this->assertSame([$this->tmp.DIRECTORY_SEPARATOR.'file1'], $configuration->getWhitelistedFiles());
-        $this->assertEquals(
+        self::assertSame([$this->tmp.DIRECTORY_SEPARATOR.'file1'], $configuration->getWhitelistedFiles());
+        self::assertEquals(
             Whitelist::create(false, false, false, 'Foo', 'Bar\*'),
             $configuration->getWhitelist()
         );
-        $this->assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
-        $this->assertSame('MyPrefix', $configuration->getPrefix());
-        $this->assertSame([], $configuration->getFilesWithContents());
-        $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
+        self::assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
+        self::assertSame('MyPrefix', $configuration->getPrefix());
+        self::assertSame([], $configuration->getFilesWithContents());
+        self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
     }
 }

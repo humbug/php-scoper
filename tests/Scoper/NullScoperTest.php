@@ -27,7 +27,7 @@ class NullScoperTest extends TestCase
 {
     public function test_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(NullScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(NullScoper::class, Scoper::class, true));
     }
 
     public function test_returns_the_file_content_unchanged(): void
@@ -45,6 +45,6 @@ class NullScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

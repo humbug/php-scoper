@@ -50,21 +50,21 @@ class WhitelistTest extends TestCase
         $whitelistConstantReflection->setAccessible(true);
         $actualConstants = $whitelistConstantReflection->getValue($whitelistObject);
 
-        $this->assertTrue($whitelistObject->whitelistGlobalConstants());
-        $this->assertTrue($whitelistObject->whitelistGlobalClasses());
-        $this->assertTrue($whitelistObject->whitelistGlobalFunctions());
-        $this->assertSame($expectedNamespaces, $actualNamespaces);
-        $this->assertSame($expectedSymbols, array_flip($actualSymbols));
-        $this->assertSame($expectedConstants, array_flip($actualConstants));
+        self::assertTrue($whitelistObject->whitelistGlobalConstants());
+        self::assertTrue($whitelistObject->whitelistGlobalClasses());
+        self::assertTrue($whitelistObject->whitelistGlobalFunctions());
+        self::assertSame($expectedNamespaces, $actualNamespaces);
+        self::assertSame($expectedSymbols, array_flip($actualSymbols));
+        self::assertSame($expectedConstants, array_flip($actualConstants));
 
         $whitelistObject = Whitelist::create(false, false, false, ...$whitelist);
 
-        $this->assertFalse($whitelistObject->whitelistGlobalConstants());
-        $this->assertFalse($whitelistObject->whitelistGlobalClasses());
-        $this->assertFalse($whitelistObject->whitelistGlobalFunctions());
-        $this->assertSame($expectedNamespaces, $actualNamespaces);
-        $this->assertSame($expectedSymbols, array_flip($actualSymbols));
-        $this->assertSame($expectedConstants, array_flip($actualConstants));
+        self::assertFalse($whitelistObject->whitelistGlobalConstants());
+        self::assertFalse($whitelistObject->whitelistGlobalClasses());
+        self::assertFalse($whitelistObject->whitelistGlobalFunctions());
+        self::assertSame($expectedNamespaces, $actualNamespaces);
+        self::assertSame($expectedSymbols, array_flip($actualSymbols));
+        self::assertSame($expectedConstants, array_flip($actualConstants));
     }
 
     /**
@@ -74,7 +74,7 @@ class WhitelistTest extends TestCase
     {
         $actual = $whitelist->isGlobalWhitelistedConstant($constant);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -84,7 +84,7 @@ class WhitelistTest extends TestCase
     {
         $actual = $whitelist->isGlobalWhitelistedClass($constant);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -94,7 +94,7 @@ class WhitelistTest extends TestCase
     {
         $actual = $whitelist->isGlobalWhitelistedFunction($constant);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function test_it_can_record_whitelisted_functions(): void
@@ -114,7 +114,7 @@ class WhitelistTest extends TestCase
             new FullyQualified('Humbug\Acme\Bar')
         );
 
-        $this->assertSame(
+        self::assertSame(
             [
                 ['Acme\Foo', 'Humbug\Acme\Foo'],
                 ['Acme\Bar', 'Humbug\Acme\Bar'],
@@ -140,7 +140,7 @@ class WhitelistTest extends TestCase
             new FullyQualified('Humbug\Acme\bar')
         );
 
-        $this->assertSame(
+        self::assertSame(
             [
                 ['Acme\foo', 'Humbug\Acme\foo'],
                 ['Acme\bar', 'Humbug\Acme\bar'],
@@ -156,7 +156,7 @@ class WhitelistTest extends TestCase
     {
         $actual = $whitelist->isSymbolWhitelisted($symbol, $caseSensitive);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -166,7 +166,7 @@ class WhitelistTest extends TestCase
     {
         $actual = $whitelist->belongsToWhitelistedNamespace($symbol);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -176,7 +176,7 @@ class WhitelistTest extends TestCase
     {
         $actual = $whitelist->isWhitelistedNamespace($namespace);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -186,7 +186,7 @@ class WhitelistTest extends TestCase
     {
         $actual = $whitelist->toArray();
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function provideWhitelists(): Generator
