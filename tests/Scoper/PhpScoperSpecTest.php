@@ -88,7 +88,7 @@ class PhpScoperSpecTest extends TestCase
     {
         $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
 
-        $this->assertCount(0, $files);
+        self::assertCount(0, $files);
     }
 
     /**
@@ -107,11 +107,11 @@ class PhpScoperSpecTest extends TestCase
         ?int $maxPhpVersion
     ): void {
         if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
-            $this->markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
+            self::markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
         }
 
         if (null !== $maxPhpVersion && $maxPhpVersion <= PHP_VERSION_ID) {
-            $this->markTestSkipped(sprintf('Max PHP version not matched for spec %s', $spec));
+            self::markTestSkipped(sprintf('Max PHP version not matched for spec %s', $spec));
         }
 
         $filePath = 'file.php';
@@ -122,14 +122,14 @@ class PhpScoperSpecTest extends TestCase
             $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
             if (null === $expected) {
-                $this->fail('Expected exception to be thrown.');
+                self::fail('Expected exception to be thrown.');
             }
         } catch (UnexpectedValueException $exception) {
             if (null !== $expected) {
                 throw $exception;
             }
 
-            $this->assertTrue(true);
+            self::assertTrue(true);
 
             return;
         } catch (PhpParserError $error) {
@@ -150,7 +150,7 @@ class PhpScoperSpecTest extends TestCase
             $startLine = $error->getAttributes()['startLine'] - 1;
             $endLine = $error->getAttributes()['endLine'] + 1;
 
-            $this->fail(
+            self::fail(
                 sprintf(
                     'Unexpected parse error found in the following lines: %s%s%s',
                     $error->getMessage(),
@@ -184,7 +184,7 @@ class PhpScoperSpecTest extends TestCase
             $expectedRegisteredFunctions
         );
 
-        $this->assertSame($expected, $actual, $specMessage);
+        self::assertSame($expected, $actual, $specMessage);
 
         $actualRecordedWhitelistedClasses = $whitelist->getRecordedWhitelistedClasses();
 
@@ -226,7 +226,7 @@ class PhpScoperSpecTest extends TestCase
                     )->current();
                 }
             } catch (Throwable $throwable) {
-                $this->fail(
+                self::fail(
                     sprintf(
                         'An error occurred while parsing the file "%s": %s',
                         $file,
@@ -264,7 +264,7 @@ class PhpScoperSpecTest extends TestCase
 
         $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
 
-        $this->assertSame(
+        self::assertSame(
             [],
             $diff = array_diff(
                 array_keys($meta),
@@ -277,7 +277,7 @@ class PhpScoperSpecTest extends TestCase
         );
 
         if (is_array($fixtureSet)) {
-            $this->assertSame(
+            self::assertSame(
                 [],
                 $diff = array_diff(
                     array_keys($fixtureSet),
@@ -461,6 +461,6 @@ OUTPUT
         usort($expected, $sort);
         usort($actual, $sort);
 
-        $this->assertSame($expected, $actual, $message);
+        self::assertSame($expected, $actual, $message);
     }
 }

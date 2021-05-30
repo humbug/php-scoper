@@ -29,7 +29,7 @@ class ReflectorTest extends TestCase
     {
         $actual = (new Reflector())->isClassInternal($class);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -39,7 +39,7 @@ class ReflectorTest extends TestCase
     {
         $actual = (new Reflector())->isFunctionInternal($class);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -49,7 +49,7 @@ class ReflectorTest extends TestCase
     {
         $actual = (new Reflector())->isConstantInternal($class);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function provideClasses(): Generator

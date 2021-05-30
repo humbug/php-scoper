@@ -149,7 +149,7 @@ class PhpScoperTest extends TestCase
 
     public function test_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(PhpScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(PhpScoper::class, Scoper::class, true));
     }
 
     public function test_can_scope_a_PHP_file(): void
@@ -176,7 +176,7 @@ PHP;
 
         $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function test_does_not_scope_file_if_is_not_a_PHP_file(): void
@@ -207,7 +207,7 @@ PHP;
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -237,7 +237,7 @@ PHP;
 
         $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function test_can_scope_PHP_binary_files(): void
@@ -265,7 +265,7 @@ PHP;
 
         $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function test_does_not_scope_a_non_PHP_binary_files(): void
@@ -305,7 +305,7 @@ PHP;
 
         $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -327,14 +327,14 @@ PHP;
         try {
             $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-            $this->fail('Expected exception to have been thrown.');
+            self::fail('Expected exception to have been thrown.');
         } catch (PhpParserError $error) {
-            $this->assertEquals(
+            self::assertEquals(
                 'Syntax error, unexpected \';\' on line 3',
                 $error->getMessage()
             );
-            $this->assertSame(0, $error->getCode());
-            $this->assertNull($error->getPrevious());
+            self::assertSame(0, $error->getCode());
+            self::assertNull($error->getPrevious());
         }
     }
 

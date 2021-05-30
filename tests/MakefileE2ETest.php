@@ -36,7 +36,7 @@ class MakefileE2ETest extends TestCase
         $mainE2ERule = $this->retrieveE2ERule($contents);
         $e2eSubRules = $this->retrieveSubE2ERules($contents);
 
-        $this->assertSame($e2eSubRules, $mainE2ERule);
+        self::assertSame($e2eSubRules, $mainE2ERule);
     }
 
     /**
@@ -49,7 +49,7 @@ class MakefileE2ETest extends TestCase
             $makefileContents,
             $matches
         )) {
-            $this->assertFalse(false, 'Expected the string input to match the regex');
+            self::assertFalse(false, 'Expected the string input to match the regex');
         }
 
         return array_values(
@@ -75,7 +75,7 @@ class MakefileE2ETest extends TestCase
             $makefileContents,
             $matches
         )) {
-            $this->assertFalse(false, 'Expected the string input to match the regex');
+            self::assertFalse(false, 'Expected the string input to match the regex');
         }
 
         return array_values(

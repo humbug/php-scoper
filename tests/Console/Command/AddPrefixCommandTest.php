@@ -120,8 +120,8 @@ EOF;
 
         $actual = $this->appTester->getDisplay(true);
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
     }
@@ -143,8 +143,8 @@ EOF;
 
         $actual = $this->appTester->getDisplay(true);
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
     }
@@ -200,7 +200,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
@@ -277,7 +277,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
@@ -336,7 +336,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
@@ -397,7 +397,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
@@ -448,7 +448,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalled();
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalled();
@@ -509,7 +509,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(1);
@@ -570,7 +570,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
@@ -632,7 +632,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
@@ -660,9 +660,9 @@ EOF;
         try {
             $this->appTester->run($input);
 
-            $this->fail('Expected exception to be thrown.');
+            self::fail('Expected exception to be thrown.');
         } catch (RuntimeException $exception) {
-            $this->assertSame(
+            self::assertSame(
                 sprintf(
                     'Could not find the configuration file "%sunknown".',
                     $this->tmp.DIRECTORY_SEPARATOR
@@ -723,11 +723,11 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->assertCount(2, $patchersFound);
-        $this->assertEquals(new SymfonyPatcher(), $patchersFound[0]);
-        $this->assertEquals('Hello world!', $patchersFound[1]());
+        self::assertCount(2, $patchersFound);
+        self::assertEquals(new SymfonyPatcher(), $patchersFound[0]);
+        self::assertEquals('Hello world!', $patchersFound[1]());
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
 
@@ -752,9 +752,9 @@ EOF;
         try {
             $this->appTester->run($input);
 
-            $this->fail('Expected exception to be thrown.');
+            self::fail('Expected exception to be thrown.');
         } catch (InvalidArgumentException $exception) {
-            $this->assertSame(
+            self::assertSame(
                 'Expected patchers to be an array of callables, the "0" element is not.',
                 $exception->getMessage()
             );
@@ -809,7 +809,7 @@ EOF;
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(1);

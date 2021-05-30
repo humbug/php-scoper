@@ -59,7 +59,7 @@ class XmlScoperTest extends TestCase
 
     public function test_it_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(XmlScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(XmlScoper::class, Scoper::class, true));
     }
 
     /**
@@ -83,7 +83,7 @@ class XmlScoperTest extends TestCase
 
         $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes($scopedCount);
     }
@@ -99,10 +99,10 @@ class XmlScoperTest extends TestCase
 
         $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
-        $this->assertSame($expectedClasses, $whitelist->getRecordedWhitelistedClasses());
-        $this->assertSame([], $whitelist->getRecordedWhitelistedFunctions());
+        self::assertSame($expectedClasses, $whitelist->getRecordedWhitelistedClasses());
+        self::assertSame([], $whitelist->getRecordedWhitelistedFunctions());
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(0);
     }
