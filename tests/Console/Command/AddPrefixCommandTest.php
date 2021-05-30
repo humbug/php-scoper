@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
+use Humbug\PhpScoper\ConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
@@ -400,7 +401,7 @@ EOF;
         self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
         $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
         $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
         $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
@@ -729,7 +730,7 @@ EOF;
         self::assertEquals(new SymfonyPatcher(), $patchersFound[0]);
         self::assertEquals('Hello world!', $patchersFound[1]());
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
@@ -744,7 +745,7 @@ EOF;
             '--no-interaction',
         ];
 
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
@@ -843,6 +844,7 @@ EOF;
                     $fileSystem,
                     $scoper,
                     $innerApp,
+                    new ConfigurationFactory($fileSystem),
                 ),
             ),
         );

@@ -29,6 +29,7 @@ use Symfony\Component\Filesystem\Filesystem;
 final class Container
 {
     private Filesystem $filesystem;
+    private ConfigurationFactory $configFactory;
     private Parser $parser;
     private Reflector $reflector;
     private Scoper $scoper;
@@ -40,6 +41,17 @@ final class Container
         }
 
         return $this->filesystem;
+    }
+
+    public function getConfigurationFactory(): ConfigurationFactory
+    {
+        if (!isset($this->configFactory)) {
+            $this->configFactory = new ConfigurationFactory(
+                $this->getFileSystem(),
+            );
+        }
+
+        return $this->configFactory;
     }
 
     public function getScoper(): Scoper
