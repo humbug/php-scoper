@@ -75,12 +75,7 @@ final class Configuration
     ];
 
     private ?string $path;
-
-    /**
-     * @var non-empty-string
-     */
     private string $prefix;
-
     private array $filesWithContents;
     private array $patchers;
     private Whitelist $whitelist;
@@ -157,15 +152,18 @@ final class Configuration
     }
 
     /**
-     * @param string|null      $path              Absolute path to the configuration file loaded.
-     * @param non-empty-string $prefix            The prefix applied.
-     * @param string[][]       $filesWithContents Array of tuple with the first argument being the file path and the second its contents
-     * @param callable[]       $patchers          List of closures which can alter the content of the files being
-     *                                            scoped.
-     * @param Whitelist        $whitelist         List of classes that will not be scoped.
-     *                                            returning a boolean which if `true` means the class should be scoped
+     * @param string|null $path                   Absolute path to the configuration file loaded.
+     * @param string      $prefix                 The prefix applied.
+     * @param string[][]  $filesWithContents      Array of tuple with the first argument being the
+     *                                            file path and the second its contents
+     * @param callable[]  $patchers               List of closures which can alter the content of
+     *                                            the files being scoped.
+     * @param Whitelist   $whitelist              List of classes that will not be scoped.
+     *                                            returning a boolean which if `true` means the
+     *                                            class should be scoped
      *                                            (i.e. is ignored) or scoped otherwise.
-     * @param string[]         $whitelistedFiles  List of absolute paths of files to completely ignore
+     * @param string[]    $whitelistedFiles       List of absolute paths of files to completely
+     *                                            ignore
      */
     private function __construct(
         ?string $path,
@@ -273,9 +271,6 @@ final class Configuration
         }
     }
 
-    /**
-     * @return non-empty-string
-     */
     private static function retrievePrefix(array $config): string
     {
         $prefix = $config[self::PREFIX_KEYWORD] ?? null;
