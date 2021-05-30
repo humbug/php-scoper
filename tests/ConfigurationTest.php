@@ -96,4 +96,23 @@ PHP
         $this->assertSame([], $configuration->getFilesWithContents());
         $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
     }
+
+    public function test_it_can_create_a_configuration_with_a_namespace_prefix(): void
+    {
+        dump_file(
+            'scoper.inc.php',
+            <<<'PHP'
+<?php
+
+return [
+    'prefix' => 'My\Prefix',
+];
+PHP
+        );
+        touch('file1');
+
+        $configuration = Configuration::load($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php');
+
+        $this->assertSame('My\Prefix', $configuration->getPrefix());
+    }
 }

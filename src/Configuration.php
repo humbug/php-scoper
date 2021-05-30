@@ -74,6 +74,8 @@ final class Configuration
         self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
     ];
 
+    private const PREFIX_PATTERN = '/^[\p{L}\d_\\\\]+$/u';
+
     private ?string $path;
     private string $prefix;
     private array $filesWithContents;
@@ -279,13 +281,13 @@ final class Configuration
             return self::generateRandomPrefix();
         }
 
-        $prefix = trim($prefix);
+        $prefix = trim(trim($prefix), '\\');
 
         if ('' === $prefix) {
             return self::generateRandomPrefix();
         }
 
-        if (1 === preg_match('/^[\p{L}\d_]+$/u', $prefix)) {
+        if (1 === preg_match(self::PREFIX_PATTERN, $prefix)) {
             return $prefix;
         }
 
