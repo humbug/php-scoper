@@ -169,7 +169,7 @@ final class ConsoleScoper
             $scoppedContent = $this->scoper->scope(
                 $inputFilePath,
                 $inputContents,
-                (string) $config->getPrefix(),
+                $config->getPrefix(),
                 $config->getPatchers(),
                 $config->getWhitelist(),
             );

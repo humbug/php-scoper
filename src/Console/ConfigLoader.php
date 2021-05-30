@@ -196,10 +196,6 @@ final class ConfigLoader
             return $config->withPrefix($prefix);
         }
 
-        if (null === $config->getPrefix()) {
-            return $config->withPrefix(self::generateRandomPrefix());
-        }
-
         return $config;
     }
 
@@ -215,11 +211,6 @@ final class ConfigLoader
         }
 
         return $config;
-    }
-
-    private static function generateRandomPrefix(): string
-    {
-        return '_PhpScoper'.bin2hex(random_bytes(6));
     }
 
     private function makeAbsolutePath(

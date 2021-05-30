@@ -35,7 +35,7 @@ class ConfigurationTest extends FileSystemTestCase
             $configuration->getWhitelist()
         );
         $this->assertNull($configuration->getPath());
-        $this->assertNull($configuration->getPrefix());
+        $this->assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
         $this->assertSame([], $configuration->getFilesWithContents());
         $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
     }
