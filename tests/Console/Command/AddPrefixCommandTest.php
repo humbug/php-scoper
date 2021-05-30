@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\Console\Application;
+use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
@@ -26,7 +27,6 @@ use InvalidArgumentException;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use ReflectionClass;
 use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
@@ -35,13 +35,14 @@ use function count;
 use function Humbug\PhpScoper\escape_path;
 use function Safe\chdir;
 use function Safe\file_get_contents;
-use function Safe\preg_replace;
 use function Safe\realpath;
 use function Safe\sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
+ * @covers \Humbug\PhpScoper\Console\ConsoleScoper
+ * @covers \Humbug\PhpScoper\Console\ConfigLoader
  */
 class AddPrefixCommandTest extends FileSystemTestCase
 {
@@ -60,7 +61,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
     private $fileSystemProphecy;
 
     /**
-     * @var Scoper|ObjectProphecy
+     * @var ConsoleScoper|ObjectProphecy
      */
     private $scoperProphecy;
 
@@ -824,7 +825,7 @@ EOF;
         /** @var Filesystem $fileSystem */
         $fileSystem = $this->fileSystemProphecy->reveal();
 
-        /** @var Scoper $scoper */
+        /** @var ConsoleScoper $scoper */
         $scoper = $this->scoperProphecy->reveal();
 
         $application = new SymfonyApplication(

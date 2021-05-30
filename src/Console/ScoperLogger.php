@@ -20,7 +20,6 @@ use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use function count;
 use function memory_get_peak_usage;
 use function memory_get_usage;
@@ -48,10 +47,9 @@ class ScoperLogger
     }
 
     /**
-     * @param string   $prefix
      * @param string[] $paths
      */
-    public function outputScopingStart(string $prefix, array $paths): void
+    public function outputScopingStart(?string $prefix, array $paths): void
     {
         $this->io->writeln($this->application->getHelp());
 
@@ -63,8 +61,8 @@ class ScoperLogger
             $this->io->writeln(
                 sprintf(
                     'Prefix: %s',
-                    $prefix
-                )
+                    $prefix,
+                ),
             );
 
             $this->io->write('Paths:');
