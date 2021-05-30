@@ -29,6 +29,7 @@ use function array_merge;
 use function array_reduce;
 use function array_unique;
 use function array_unshift;
+use function bin2hex;
 use function dirname;
 use function file_exists;
 use function gettype;
@@ -42,6 +43,7 @@ use function is_link;
 use function is_readable;
 use function is_string;
 use function iterator_to_array;
+use function random_bytes;
 use function realpath as native_realpath;
 use function Safe\file_get_contents;
 use function Safe\preg_match;
@@ -73,7 +75,12 @@ final class Configuration
     ];
 
     private ?string $path;
-    private ?string $prefix;
+
+    /**
+     * @var non-empty-string
+     */
+    private string $prefix;
+
     private array $filesWithContents;
     private array $patchers;
     private Whitelist $whitelist;
@@ -150,19 +157,19 @@ final class Configuration
     }
 
     /**
-     * @param string|null $path              Absolute path to the configuration file loaded.
-     * @param string|null $prefix            The prefix applied.
-     * @param string[][]  $filesWithContents Array of tuple with the first argument being the file path and the second its contents
-     * @param callable[]  $patchers          List of closures which can alter the content of the files being
-     *                                       scoped.
-     * @param Whitelist   $whitelist         List of classes that will not be scoped.
-     *                                       returning a boolean which if `true` means the class should be scoped
-     *                                       (i.e. is ignored) or scoped otherwise.
-     * @param string[]    $whitelistedFiles  List of absolute paths of files to completely ignore
+     * @param string|null      $path              Absolute path to the configuration file loaded.
+     * @param non-empty-string $prefix            The prefix applied.
+     * @param string[][]       $filesWithContents Array of tuple with the first argument being the file path and the second its contents
+     * @param callable[]       $patchers          List of closures which can alter the content of the files being
+     *                                            scoped.
+     * @param Whitelist        $whitelist         List of classes that will not be scoped.
+     *                                            returning a boolean which if `true` means the class should be scoped
+     *                                            (i.e. is ignored) or scoped otherwise.
+     * @param string[]         $whitelistedFiles  List of absolute paths of files to completely ignore
      */
     private function __construct(
         ?string $path,
-        ?string $prefix,
+        string $prefix,
         array $filesWithContents,
         array $patchers,
         Whitelist $whitelist,
@@ -215,7 +222,7 @@ final class Configuration
         return $this->path;
     }
 
-    public function getPrefix(): ?string
+    public function getPrefix(): string
     {
         return $this->prefix;
     }
@@ -267,23 +274,20 @@ final class Configuration
     }
 
     /**
-     * If the prefix is set to null in the config file/argument then a random prefix is being used. However if set to
-     * empty, the configuration will use a null prefix.
-     *
-     * TL:DR; setting the prefix is a big confusing because it is not properly split in "set prefix" & prefix strategy".
+     * @return non-empty-string
      */
-    private static function retrievePrefix(array $config): ?string
+    private static function retrievePrefix(array $config): string
     {
         $prefix = $config[self::PREFIX_KEYWORD] ?? null;
 
         if (null === $prefix) {
-            return null;
+            return self::generateRandomPrefix();
         }
 
         $prefix = trim($prefix);
 
         if ('' === $prefix) {
-            return null;
+            return self::generateRandomPrefix();
         }
 
         if (1 === preg_match('/^[\p{L}\d_]+$/u', $prefix)) {
@@ -568,5 +572,10 @@ final class Configuration
             },
             []
         );
+    }
+
+    private static function generateRandomPrefix(): string
+    {
+        return '_PhpScoper'.bin2hex(random_bytes(6));
     }
 }
