@@ -16,9 +16,7 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Fidry\Console\IO;
 use InvalidArgumentException;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use function chdir as native_chdir;
 use function file_exists;

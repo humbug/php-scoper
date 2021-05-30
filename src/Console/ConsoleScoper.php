@@ -10,7 +10,6 @@ use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use Humbug\PhpScoper\Whitelist;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
 use function array_column;
@@ -158,9 +157,6 @@ final class ConsoleScoper
         return (0 === count($vendorDirs)) ? null : $vendorDirs[0];
     }
 
-    /**
-     * @param callable[] $patchers
-     */
     private function scopeFile(
         string $inputFilePath,
         string $inputContents,
@@ -173,7 +169,7 @@ final class ConsoleScoper
             $scoppedContent = $this->scoper->scope(
                 $inputFilePath,
                 $inputContents,
-                $config->getPrefix(),
+                (string) $config->getPrefix(),
                 $config->getPatchers(),
                 $config->getWhitelist(),
             );

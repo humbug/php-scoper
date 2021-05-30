@@ -78,7 +78,7 @@ final class ConfigLoader
                     $cwd,
                 );
             }
-        } else {
+        } elseif (null !== $configFilePath) {
             $configFilePath = $this->makeAbsolutePath(
                 $configFilePath,
                 $cwd,
@@ -95,7 +95,7 @@ final class ConfigLoader
      */
     private static function loadConfigWithoutConfigFile(
         IO $io,
-        ?string $prefix,
+        string $prefix,
         array $paths,
         string $cwd
     ): Configuration
@@ -203,9 +203,6 @@ final class ConfigLoader
         return $config;
     }
 
-    /**
-     * @param string[] $paths
-     */
     private static function configurePaths(
         Configuration $config,
         string $cwd

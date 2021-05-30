@@ -15,13 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Application\Application as FidryApplication;
-use Fidry\Console\Command\Command;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
 use Humbug\PhpScoper\Container;
-use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Helper\FormatterHelper;
-use Symfony\Component\Filesystem\Filesystem;
 use function Humbug\PhpScoper\get_php_scoper_version;
 use function Safe\sprintf;
 use function strpos;
