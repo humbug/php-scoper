@@ -107,6 +107,7 @@ ASCII;
                 $this->container->getFileSystem(),
                 $this->container->getScoper(),
                 $this,
+                $this->container->getConfigurationFactory(),
             ),
             new InitCommand(
                 $this->container->getFileSystem(),

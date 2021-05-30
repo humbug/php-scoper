@@ -16,23 +16,35 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
+use Symfony\Component\Filesystem\Filesystem;
 use function KevinGH\Box\FileSystem\dump_file;
 use function Safe\touch;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration
+ * @covers \Humbug\PhpScoper\ConfigurationFactory
  */
-class ConfigurationTest extends FileSystemTestCase
+class ConfigurationFactoryTest extends FileSystemTestCase
 {
+    private ConfigurationFactory $configFactory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->configFactory = new ConfigurationFactory(
+            new Filesystem(),
+        );
+    }
+
     public function test_it_can_be_created_without_a_file(): void
     {
-        $configuration = Configuration::load();
+        $configuration = $this->configFactory->create();
 
         self::assertSame([], $configuration->getWhitelistedFiles());
         self::assertEquals(
             Whitelist::create(true, true, true),
-            $configuration->getWhitelist()
+            $configuration->getWhitelist(),
         );
         self::assertNull($configuration->getPath());
         self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
@@ -42,49 +54,41 @@ class ConfigurationTest extends FileSystemTestCase
 
     public function test_it_cannot_create_a_configuration_with_an_invalid_key(): void
     {
-        dump_file(
-            'scoper.inc.php',
+        self::dumpStandardConfigFile(
             <<<'PHP'
-<?php
-
-return [
-    'unknown key' => 'val',
-];
-PHP
+            <?php
+            
+            return [
+                'unknown key' => 'val',
+            ];
+            PHP,
         );
 
-        try {
-            Configuration::load($this->tmp.'/scoper.inc.php');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid configuration key value "unknown key" found.');
 
-            self::fail('Expected exception to be thrown.');
-        } catch (InvalidArgumentException $exception) {
-            self::assertSame(
-                'Invalid configuration key value "unknown key" found.',
-                $exception->getMessage()
-            );
-        }
+        $this->createConfigFromStandardFile();
     }
 
     public function test_it_can_create_a_complete_configuration(): void
     {
-        dump_file(
-            'scoper.inc.php',
+        self::dumpStandardConfigFile(
             <<<'PHP'
-<?php
-
-return [
-    'prefix' => 'MyPrefix',
-    'files-whitelist' => ['file1', 'file2'],
-    'whitelist-global-constants' => false,
-    'whitelist-global-classes' => false,
-    'whitelist-global-functions' => false,
-    'whitelist' => ['Foo', 'Bar\*'],
-];
-PHP
+            <?php
+            
+            return [
+                'prefix' => 'MyPrefix',
+                'files-whitelist' => ['file1', 'file2'],
+                'whitelist-global-constants' => false,
+                'whitelist-global-classes' => false,
+                'whitelist-global-functions' => false,
+                'whitelist' => ['Foo', 'Bar\*'],
+            ];
+            PHP,
         );
         touch('file1');
 
-        $configuration = Configuration::load($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php');
+        $configuration = $this->createConfigFromStandardFile();
 
         self::assertSame([$this->tmp.DIRECTORY_SEPARATOR.'file1'], $configuration->getWhitelistedFiles());
         self::assertEquals(
@@ -95,5 +99,17 @@ PHP
         self::assertSame('MyPrefix', $configuration->getPrefix());
         self::assertSame([], $configuration->getFilesWithContents());
         self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
+    }
+
+    private static function dumpStandardConfigFile(string $contents): void
+    {
+        dump_file('scoper.inc.php', $contents);
+    }
+
+    private function createConfigFromStandardFile(): Configuration
+    {
+        return $this->configFactory->create(
+            $this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php',
+        );
     }
 }

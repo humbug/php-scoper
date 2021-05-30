@@ -22,6 +22,7 @@ use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\ExitCode;
 use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration;
+use Humbug\PhpScoper\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Scoper;
@@ -55,15 +56,18 @@ final class AddPrefixCommand implements Command, CommandAware
     private ConfigurableScoper $scoper;
     private bool $init = false;
     private Application $application;
+    private ConfigurationFactory $configFactory;
 
     public function __construct(
         Filesystem $fileSystem,
         Scoper $scoper,
-        Application $application
+        Application $application,
+        ConfigurationFactory $configFactory
     ) {
         $this->fileSystem = $fileSystem;
         $this->scoper = new ConfigurableScoper($scoper);
         $this->application = $application;
+        $this->configFactory = $configFactory;
     }
 
     public function getConfiguration(): CommandConfiguration
@@ -198,6 +202,7 @@ final class AddPrefixCommand implements Command, CommandAware
         $configLoader = new ConfigLoader(
             $this->getCommandRegistry(),
             $this->fileSystem,
+            $this->configFactory,
         );
 
         return $configLoader->loadConfig(
