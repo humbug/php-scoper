@@ -111,7 +111,6 @@ final class Configuration
                 ),
             );
         }
-        echo '/\\\{2,}$/';
 
         if (preg_match('/\\\{2,}/', $prefix)) {
             throw new InvalidArgumentException(

@@ -234,18 +234,13 @@ final class ConfigurationFactory
 
     private static function retrievePrefix(array $config): string
     {
-        $prefix = trim((string) $config[self::PREFIX_KEYWORD] ?? '');
+        $prefix = trim((string) ($config[self::PREFIX_KEYWORD] ?? ''));
 
         if ('' === $prefix) {
             return self::generateRandomPrefix();
         }
 
-        throw new InvalidArgumentException(
-            sprintf(
-                'The prefix needs to be composed solely of letters and digits. Got "%s"',
-                $prefix,
-            ),
-        );
+        return $prefix;
     }
 
     /**
