@@ -27,7 +27,7 @@ use PhpParser\NodeTraverserInterface;
  */
 class TraverserFactory
 {
-    private $reflector;
+    private Reflector $reflector;
 
     public function __construct(Reflector $reflector)
     {
@@ -52,7 +52,7 @@ class TraverserFactory
 
         $traverser->addVisitor(new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder($prefix, $nameResolver, $whitelist, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\ClassIdentifierRecorder($prefix, $nameResolver, $whitelist));
-        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $this->reflector));
+        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $namespaceStatements, $useStatements, $nameResolver, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $this->reflector));
         $traverser->addVisitor(new NodeVisitor\NewdocPrefixer($scoper, $prefix, $whitelist));
         $traverser->addVisitor(new NodeVisitor\EvalPrefixer($scoper, $prefix, $whitelist));

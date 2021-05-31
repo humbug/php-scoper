@@ -32,7 +32,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
         $actual = $generator->dump($prefix);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function provideWhitelists(): Generator

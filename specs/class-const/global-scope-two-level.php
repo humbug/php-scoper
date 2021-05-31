@@ -46,7 +46,7 @@ class Command
 }
 namespace Humbug;
 
-\Humbug\PHPUnit\Command::MAIN_CONST;
+PHPUnit\Command::MAIN_CONST;
 
 PHP
     ],

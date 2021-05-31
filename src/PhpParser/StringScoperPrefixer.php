@@ -18,13 +18,13 @@ use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Scalar\String_;
-use function substr;
+use function Safe\substr;
 
 trait StringScoperPrefixer
 {
-    private $scoper;
-    private $prefix;
-    private $whitelist;
+    private PhpScoper $scoper;
+    private string $prefix;
+    private Whitelist $whitelist;
 
     public function __construct(PhpScoper $scoper, string $prefix, Whitelist $whitelist)
     {

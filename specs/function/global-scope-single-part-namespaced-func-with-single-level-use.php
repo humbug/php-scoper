@@ -42,7 +42,7 @@ class Foo
 {
 }
 use Humbug\Foo;
-\Humbug\Foo\main();
+Foo\main();
 
 PHP
     ,
@@ -106,7 +106,7 @@ function main()
 namespace Humbug;
 
 use Humbug\Foo;
-\Humbug\Foo\main();
+Foo\main();
 
 PHP
     ],

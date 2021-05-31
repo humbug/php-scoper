@@ -14,7 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Fidry\Console\Application\SymfonyApplication;
+use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\DisplayNormalizer;
+use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
@@ -22,13 +25,12 @@ use Symfony\Component\Finder\SplFileInfo;
 use function array_map;
 use function array_reduce;
 use function explode;
-use function file_get_contents;
-use function file_put_contents;
-use function Humbug\PhpScoper\create_application;
 use function implode;
 use function iterator_to_array;
-use function preg_replace;
-use function realpath;
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\preg_replace;
+use function Safe\realpath;
 use function str_replace;
 
 /**
@@ -44,7 +46,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
     /**
      * @var ApplicationTester
      */
-    private $appTester;
+    private ApplicationTester $appTester;
 
     /**
      * @inheritdoc
@@ -53,11 +55,17 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
     {
         parent::setUp();
 
-        $application = create_application();
-        $application->setAutoExit(false);
-        $application->setCatchExceptions(false);
+        $application = new Application(
+            new Container(),
+            'TestVersion',
+            '28/01/2020',
+            false,
+            false,
+        );
 
-        $this->appTester = new ApplicationTester($application);
+        $this->appTester = new ApplicationTester(
+            new SymfonyApplication($application),
+        );
 
         file_put_contents('scoper.inc.php', '<?php return [];');
     }
@@ -77,7 +85,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
         $this->assertFilesAreSame(self::FIXTURE_PATH.'/../scoped', $this->tmp);
     }
@@ -100,8 +108,8 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 
         $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
     }
 
     public function test_scope_in_normal_mode(): void
@@ -128,7 +136,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+PhpScoper version TestVersion 28/01/2020
 
  0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
  4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
@@ -157,8 +165,8 @@ EOF;
             $actual
         );
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
     }
 
     public function test_scope_in_verbose_mode(): void
@@ -186,7 +194,7 @@ EOF;
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+PhpScoper version TestVersion 28/01/2020
 
  * [NO] /path/to/composer/installed.json
  * [OK] /path/to/file.php
@@ -203,8 +211,8 @@ EOF;
 
         $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
     }
 
     public function test_scope_in_very_verbose_mode(): void
@@ -232,7 +240,7 @@ EOF;
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+PhpScoper version TestVersion 28/01/2020
 
  * [NO] /path/to/composer/installed.json
 	Could not parse the file "/path/to/composer/installed.json".: TypeError
@@ -277,8 +285,8 @@ EOF;
         // Remove overly lengthy stack-trace
         $actual = preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $actual);
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame($expected, $actual);
+        self::assertSame(0, $this->appTester->getStatusCode());
     }
 
     private function getNormalizeDisplay(string $display): string
@@ -287,11 +295,6 @@ EOF;
         $display = str_replace($this->tmp, '/path/to', $display);
         $display = DisplayNormalizer::normalizeSeparators($display);
         $display = DisplayNormalizer::normalizeProgressBar($display);
-        $display = preg_replace(
-            '/PHP Scoper version (?:dev\-)?.+/',
-            'PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
-            $display
-        );
         $display = preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
             '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
@@ -314,7 +317,7 @@ EOF;
 
         $actual = $this->collectFiles($actualDir);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     private function collectFiles(string $dir): array

@@ -8,42 +8,23 @@ on:
         types: [ created ]
 
 jobs:
-    tests:
+    unit-tests:
         runs-on: ubuntu-latest
-        name: Build and test
+        name: "Unit-Tests: ${{ matrix.php }} - ${{ matrix.tools }}"
         strategy:
             fail-fast: false
             matrix:
-                php: [ "7.3", "7.4" ]
-                composer-version: [ "1" ]
-                coverage: [ "none" ]
-                publish-phar: [ false ]
-                git-fetch-depth: [ 1 ]
-                include:
-                    -   php: "7.3"
-                        composer-version: "1"
-                        coverage: "pcov"
-                        publish-phar: true
-                        git-fetch-depth: 0 # box/composer needs history to determine a recent git version
-                    -   php: "7.4"
-                        composer-version: "2"
-                        coverage: "none"
-                        publish-phar: false
-                        git-fetch-depth: 1
-
+                php: [ "7.4", "8.0" ]
+                tools: [ "composer:v1", "composer:v2" ]
         steps:
             -   uses: actions/checkout@v2
-                with:
-                    fetch-depth: "${{ matrix.git-fetch-depth }}"
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: "${{ matrix.php }}"
-                    ini-values: "phar.readonly=0"
-                    tools: "composer:v${{ matrix.composer-version }}"
-                    coverage: "${{ matrix.coverage }}"
-
+                    php-version: ${{ matrix.php }}
+                    tools: ${{ matrix.tools }}"
+                    coverage: none
             -   name: Get composer cache directory
                 id: composercache
                 run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -52,8 +33,11 @@ jobs:
                 uses: actions/cache@v2
                 with:
                     path: ${{ steps.composercache.outputs.dir }}
-                    key: ${{ runner.os }}-composer-cache-${{ hashFiles('**/composer.lock') }}
-                    restore-keys: ${{ runner.os }}-composer-cache-
+                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
+                    restore-keys: |
+                        composer-${{ runner.os }}-${{ matrix.php }}-
+                        composer-${{ runner.os }}-
+                        composer-
 
             -   name: Set composer root version
                 run: |
@@ -63,28 +47,133 @@ jobs:
             -   name: Install dependencies
                 run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
 
-            -   name: Run check-composer-root-version
-                run: make check-composer-root-version
-
-            -   name: Run tests (coverage)
-                if: matrix.coverage == 'pcov'
-                run: make tc
-
-            -   name: install tree
-                if: matrix.publish-phar == true
-                run: sudo apt-get install -y tree
-
-            -   name: Run tests (e2e)
-                if: matrix.publish-phar == true
-                run: make e2e
-
             -   name: Run tests
-                if: matrix.publish-phar == false
                 run: make tu
 
+    e2e-tests:
+        runs-on: ubuntu-latest
+        name: "e2e-Tests: ${{ matrix.e2e }} - ${{ matrix.php }} - ${{ matrix.tools }}"
+        strategy:
+            fail-fast: false
+            matrix:
+                e2e:
+                    - 'e2e_004'
+                    - 'e2e_005'
+                    - 'e2e_011'
+                    - 'e2e_013'
+                    - 'e2e_014'
+                    - 'e2e_015'
+                    - 'e2e_016'
+                    - 'e2e_017'
+                    - 'e2e_018'
+                    - 'e2e_019'
+                    - 'e2e_020'
+                    - 'e2e_0210'
+                    - 'e2e_0211'
+                    - 'e2e_022'
+                    - 'e2e_023'
+                    - 'e2e_024'
+                    - 'e2e_025'
+                    - 'e2e_026'
+                    - 'e2e_027'
+                    - 'e2e_028'
+                    - 'e2e_029'
+                    - 'e2e_030'
+                    - 'e2e_031'
+                    - 'e2e_032'
+                php: [ '7.4', '8.0' ]
+                tools: [ 'composer:v2' ]
+                include:
+                    -   php: '7.4'
+                        e2e: 'check-composer-root-version'
+                        tools: 'composer:v2'
+
+        steps:
+            -   uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    ini-values: "phar.readonly=0"
+                    tools: ${{ matrix.tools }}
+                    coverage: pcov
+
+            -   name: Get composer cache directory
+                id: composercache
+                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            -   name: Cache composer dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composercache.outputs.dir }}
+                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
+                    restore-keys: |
+                        composer-${{ runner.os }}-${{ matrix.php }}-
+                        composer-${{ runner.os }}-
+                        composer-
+
+            -   name: Set composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install dependencies
+                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+            -   name: Install tree
+                if: matrix.e2e == 'e2e_032'
+                run: sudo apt-get install -y tree
+
+            -   name: Run e2e ${{ matrix.e2e }}
+                run: make ${{ matrix.e2e }}
+
+    build-phar:
+        runs-on: ubuntu-latest
+        name: Build PHAR
+
+        steps:
+            -   uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '7.4'
+                    ini-values: 'phar.readonly=0'
+                    tools: 'composer:v2'
+                    coverage: 'none'
+
+            -   name: Get composer cache directory
+                id: composercache
+                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+            -   name: Cache composer dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composercache.outputs.dir }}
+                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
+                    restore-keys: |
+                        composer-${{ runner.os }}-${{ matrix.php }}-
+                        composer-${{ runner.os }}-
+                        composer-
+
+            -   name: Set composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install dependencies
+                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+            -   name: Build PHAR
+                run: make build
+
             -   uses: actions/upload-artifact@v1
-                name: Publish the PHAR
-                if: matrix.publish-phar == true
+                name: Upload the PHAR artifact
                 with:
                     name: php-scoper.phar
                     path: bin/php-scoper.phar
@@ -92,7 +181,10 @@ jobs:
     publish-phar:
         runs-on: ubuntu-latest
         name: Publish the PHAR
-        needs: tests
+        needs:
+            - unit-tests
+            - e2e-tests
+            - build-phar
         if: github.event_name == 'release'
         steps:
             -   uses: actions/download-artifact@v1

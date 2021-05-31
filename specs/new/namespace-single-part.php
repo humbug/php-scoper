@@ -42,7 +42,7 @@ namespace Humbug\A;
 class Foo
 {
 }
-new \Humbug\A\Foo();
+new Foo();
 
 PHP
     ],

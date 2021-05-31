@@ -24,16 +24,39 @@ use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class Container
 {
-    private $parser;
-    private $reflector;
-    private $scoper;
+    private Filesystem $filesystem;
+    private ConfigurationFactory $configFactory;
+    private Parser $parser;
+    private Reflector $reflector;
+    private Scoper $scoper;
+
+    public function getFileSystem(): Filesystem
+    {
+        if (!isset($this->filesystem)) {
+            $this->filesystem = new Filesystem();
+        }
+
+        return $this->filesystem;
+    }
+
+    public function getConfigurationFactory(): ConfigurationFactory
+    {
+        if (!isset($this->configFactory)) {
+            $this->configFactory = new ConfigurationFactory(
+                $this->getFileSystem(),
+            );
+        }
+
+        return $this->configFactory;
+    }
 
     public function getScoper(): Scoper
     {
-        if (null === $this->scoper) {
+        if (!isset($this->scoper)) {
             $this->scoper = new PatchScoper(
                 new PhpScoper(
                     $this->getParser(),
@@ -54,7 +77,7 @@ final class Container
 
     public function getParser(): Parser
     {
-        if (null === $this->parser) {
+        if (!isset($this->parser)) {
             $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7, new Lexer());
         }
 
@@ -63,7 +86,7 @@ final class Container
 
     public function getReflector(): Reflector
     {
-        if (null === $this->reflector) {
+        if (!isset($this->reflector)) {
             $this->reflector = new Reflector();
         }
 

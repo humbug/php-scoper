@@ -50,7 +50,7 @@ date_format(new DateTime('now'), 'd\H\Z');
 namespace Humbug;
 
 const ISO8601_BASIC = 'Humbug\\Ymd\\THis\\Z';
-new \Humbug\Foo('Humbug\\d\\H\\Z');
+new Foo('Humbug\\d\\H\\Z');
 new \DateTime('d\\H\\Z');
 new \DateTimeImmutable('d\\H\\Z');
 \date_create('d\\H\\Z');
@@ -97,17 +97,17 @@ namespace Humbug\Acme;
 use DateTime;
 use DateTimeImmutable;
 const ISO8601_BASIC = 'Humbug\\Ymd\\THis\\Z';
-new \Humbug\Acme\Foo('Humbug\\d\\H\\Z');
-new \DateTime('d\\H\\Z');
-new \DateTimeImmutable('d\\H\\Z');
+new Foo('Humbug\\d\\H\\Z');
+new DateTime('d\\H\\Z');
+new DateTimeImmutable('d\\H\\Z');
 \date_create('d\\H\\Z');
 \date('d\\H\\Z');
 \gmdate('d\\H\\Z');
-\DateTime::createFromFormat('d\\H\\Z', '15\\Feb\\2009');
-\DateTimeImmutable::createFromFormat('d\\H\\Z', '15\\Feb\\2009');
+DateTime::createFromFormat('d\\H\\Z', '15\\Feb\\2009');
+DateTimeImmutable::createFromFormat('d\\H\\Z', '15\\Feb\\2009');
 \date_create_from_format('d\\H\\Z', '15\\Feb\\2009');
-(new \DateTime('now'))->format('Humbug\\d\\H\\Z');
-\date_format(new \DateTime('now'), 'Humbug\\d\\H\\Z');
+(new DateTime('now'))->format('Humbug\\d\\H\\Z');
+\date_format(new DateTime('now'), 'Humbug\\d\\H\\Z');
 
 PHP
     ,

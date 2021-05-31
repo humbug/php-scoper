@@ -35,7 +35,7 @@ class InstalledPackagesScoperTest extends TestCase
 
     public function test_it_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(InstalledPackagesScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(InstalledPackagesScoper::class, Scoper::class, true));
     }
 
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_installed_file(): void
@@ -61,7 +61,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -81,7 +81,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function provideInstalledPackagesFiles(): Generator

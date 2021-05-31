@@ -144,7 +144,7 @@ class Yaml
 }
 namespace Humbug;
 
-const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
+const X = Symfony\Component\Yaml\Yaml::class;
 const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
 const X = \Humbug\Symfony\Component\Yaml\Yaml::class;
 const X = \Humbug\Symfony\Component\Yaml\Yaml::class;

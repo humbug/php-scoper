@@ -34,7 +34,7 @@ main();
 
 namespace Humbug;
 
-\Humbug\main();
+main();
 
 PHP
     ,
@@ -48,7 +48,7 @@ MAIN();
 
 namespace Humbug;
 
-\Humbug\MAIN();
+MAIN();
 
 PHP
     ,

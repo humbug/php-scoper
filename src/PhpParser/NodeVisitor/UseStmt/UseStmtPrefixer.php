@@ -30,9 +30,9 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
-    private $prefix;
-    private $whitelist;
-    private $reflector;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private Reflector $reflector;
 
     public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
     {
@@ -41,10 +41,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         $this->whitelist = $whitelist;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function enterNode(Node $node)
+    public function enterNode(Node $node): Node
     {
         if ($node instanceof UseUse && $this->shouldPrefixUseStmt($node)) {
             $previousName = $node->name;

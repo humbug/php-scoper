@@ -49,7 +49,7 @@ class Foo
 namespace Humbug\A;
 
 use Humbug\Foo;
-new \Humbug\Foo();
+new Foo();
 
 PHP
     ],

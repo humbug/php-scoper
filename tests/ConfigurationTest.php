@@ -2,106 +2,50 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-namespace Humbug\PhpScoper;
-
-use Humbug\PhpScoper\Patcher\SymfonyPatcher;
-use InvalidArgumentException;
-use function KevinGH\Box\FileSystem\dump_file;
-use function touch;
-use const DIRECTORY_SEPARATOR;
+use Humbug\PhpScoper\Configuration;
+use Humbug\PhpScoper\Whitelist;
+use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration
+ * @covers \Humbug\PhpScoper\ConfigurationFactory
  */
-class ConfigurationTest extends FileSystemTestCase
+final class ConfigurationTest extends TestCase
 {
-    public function test_it_can_be_created_without_a_file(): void
+    /**
+     * @dataProvider prefixProvider
+     */
+    public function test_it_validates_the_prefix(
+        string $prefix,
+        string $expectedExceptionMessage
+    ): void
     {
-        $configuration = Configuration::load();
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
 
-        $this->assertSame([], $configuration->getWhitelistedFiles());
-        $this->assertEquals(
-            Whitelist::create(true, true, true),
-            $configuration->getWhitelist()
+        new Configuration(
+            null,
+            $prefix,
+            [],
+            [],
+            Whitelist::create(
+                false,
+                false,
+                false,
+            ),
+            [],
         );
-        $this->assertNull($configuration->getPath());
-        $this->assertNull($configuration->getPrefix());
-        $this->assertSame([], $configuration->getFilesWithContents());
-        $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
     }
 
-    public function test_it_cannot_create_a_configuration_with_an_invalid_key(): void
+    public static function prefixProvider(): iterable
     {
-        dump_file(
-            'scoper.inc.php',
-            <<<'PHP'
-<?php
+        yield [
+            ';',
+            'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got ";"',
+        ];
 
-return [
-    'unknown key' => 'val',
-];
-PHP
-        );
-
-        try {
-            Configuration::load($this->tmp.'/scoper.inc.php');
-
-            $this->fail('Expected exception to be thrown.');
-        } catch (InvalidArgumentException $exception) {
-            $this->assertSame(
-                'Invalid configuration key value "unknown key" found.',
-                $exception->getMessage()
-            );
-        }
-    }
-
-    public function test_it_can_create_a_complete_configuration(): void
-    {
-        dump_file(
-            'scoper.inc.php',
-            <<<'PHP'
-<?php
-
-return [
-    'prefix' => 'MyPrefix',
-    'files-whitelist' => ['file1', 'file2'],
-    'whitelist-global-constants' => false,
-    'whitelist-global-classes' => false,
-    'whitelist-global-functions' => false,
-    'whitelist' => ['Foo', 'Bar\*'],
-];
-PHP
-        );
-        dump_file('file1', 'file1 content');
-
-        $configuration = Configuration::load($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php');
-
-        $this->assertSame(
-            [
-                $this->tmp.DIRECTORY_SEPARATOR.'file1' => [
-                    $this->tmp.DIRECTORY_SEPARATOR.'file1',
-                    'file1 content',
-                ],
-            ],
-            $configuration->getWhitelistedFiles()
-        );
-        $this->assertEquals(
-            Whitelist::create(false, false, false, 'Foo', 'Bar\*'),
-            $configuration->getWhitelist()
-        );
-        $this->assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
-        $this->assertSame('MyPrefix', $configuration->getPrefix());
-        $this->assertSame([], $configuration->getFilesWithContents());
-        $this->assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
+        yield [
+            'App\\\\Foo',
+            'Invalid namespace separator sequence. Got "App\\\\Foo"',
+        ];
     }
 }

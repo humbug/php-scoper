@@ -29,7 +29,7 @@ class SymfonyPatcherTest extends TestCase
     {
         $actual = (new SymfonyPatcher())->__invoke($filePath, 'Humbug', $contents);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function provideFiles(): Generator

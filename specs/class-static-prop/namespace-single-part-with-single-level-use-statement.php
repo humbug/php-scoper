@@ -48,7 +48,7 @@ class Foo
 namespace Humbug\X;
 
 use Humbug\Foo;
-\Humbug\Foo::$mainStaticProp;
+Foo::$mainStaticProp;
 
 PHP
     ,
@@ -95,7 +95,7 @@ Reflector::$mainStaticProp;
 namespace Humbug\X;
 
 use Reflector;
-\Reflector::$mainStaticProp;
+Reflector::$mainStaticProp;
 
 PHP
     ,

@@ -55,7 +55,7 @@ const DUMMY_CONST = '';
 namespace Humbug;
 
 use Humbug\Foo as A;
-\Humbug\Foo\DUMMY_CONST;
+A\DUMMY_CONST;
 
 PHP
     ,

@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper;
 
 use Generator;
 use PHPUnit\Framework\TestCase;
-use const PHP_VERSION_ID;
 
 /**
  * @covers \Humbug\PhpScoper\Reflector
@@ -30,7 +29,7 @@ class ReflectorTest extends TestCase
     {
         $actual = (new Reflector())->isClassInternal($class);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -40,7 +39,7 @@ class ReflectorTest extends TestCase
     {
         $actual = (new Reflector())->isFunctionInternal($class);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -50,7 +49,7 @@ class ReflectorTest extends TestCase
     {
         $actual = (new Reflector())->isConstantInternal($class);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function provideClasses(): Generator

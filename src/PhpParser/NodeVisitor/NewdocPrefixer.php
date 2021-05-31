@@ -19,16 +19,13 @@ use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
 use function ltrim;
+use function Safe\substr;
 use function strpos;
-use function substr;
 
 final class NewdocPrefixer extends NodeVisitorAbstract
 {
     use StringScoperPrefixer;
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         if ($node instanceof String_ && $this->isPhpNowdoc($node)) {

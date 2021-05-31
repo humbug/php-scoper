@@ -40,12 +40,12 @@ define(\Acme\BAR_CONST, foo());
 
 namespace Humbug;
 
-const FOO_CONST = \Humbug\foo();
-\define('BAR_CONST', \Humbug\foo());
-\define('Humbug\\Acme\\BAR_CONST', \Humbug\foo());
-\define(\FOO_CONST, \Humbug\foo());
-\define(\FOO_CONST, \Humbug\foo());
-\define(\Humbug\Acme\BAR_CONST, \Humbug\foo());
+const FOO_CONST = foo();
+\define('BAR_CONST', foo());
+\define('Humbug\\Acme\\BAR_CONST', foo());
+\define(\FOO_CONST, foo());
+\define(\FOO_CONST, foo());
+\define(\Humbug\Acme\BAR_CONST, foo());
 
 PHP
     ],
@@ -92,12 +92,12 @@ define(\Acme\BAR_CONST, foo());
 
 namespace Humbug;
 
-\define('FOO_CONST', \Humbug\foo());
-\define('BAR_CONST', \Humbug\foo());
-\define('Acme\\BAR_CONST', \Humbug\foo());
-\define(\FOO_CONST, \Humbug\foo());
-\define(\FOO_CONST, \Humbug\foo());
-\define(\Acme\BAR_CONST, \Humbug\foo());
+\define('FOO_CONST', foo());
+\define('BAR_CONST', foo());
+\define('Acme\\BAR_CONST', foo());
+\define(\FOO_CONST, foo());
+\define(\FOO_CONST, foo());
+\define(\Acme\BAR_CONST, foo());
 
 PHP
     ],

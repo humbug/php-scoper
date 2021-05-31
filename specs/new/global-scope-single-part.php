@@ -35,7 +35,7 @@ new Foo();
 
 namespace Humbug;
 
-new \Humbug\Foo();
+new Foo();
 
 PHP
     ],
@@ -80,7 +80,7 @@ new Unknown();
 
 namespace Humbug;
 
-new \Humbug\Unknown();
+new Unknown();
 
 PHP
     ],

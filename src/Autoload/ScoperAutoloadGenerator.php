@@ -19,17 +19,18 @@ use PhpParser\Node\Name\FullyQualified;
 use function array_map;
 use function array_unshift;
 use function chr;
+use function count;
 use function explode;
 use function implode;
-use function sprintf;
+use function Safe\sprintf;
 use function str_repeat;
 use function str_replace;
 use function strpos;
 
 final class ScoperAutoloadGenerator
 {
-    private $whitelist;
-    private $eol;
+    private Whitelist $whitelist;
+    private string $eol;
 
     public function __construct(Whitelist $whitelist)
     {
@@ -106,7 +107,7 @@ PHP;
         $statements = array_map(
             static function (array $pair): string {
                 /**
-                 * @var string
+                 * @var string $originalClass
                  * @var string $prefixedClass
                  */
                 [$originalClass, $prefixedClass] = $pair;
@@ -125,7 +126,7 @@ PHP
             $whitelistedClasses
         );
 
-        if ([] === $statements) {
+        if (count($statements) === 0) {
             return $statements;
         }
 
@@ -230,8 +231,8 @@ EOF
     private function hasNamespacedFunctions(array $functions): bool
     {
         foreach ($functions as [$original, $alias]) {
-            /*
-             * @var string
+            /**
+             * @var string $original
              * @var string $alias
              */
             if (false !== strpos($original, '\\')) {

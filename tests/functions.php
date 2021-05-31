@@ -19,13 +19,13 @@ use LogicException;
 use PhpParser\Parser;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
-use function mkdir;
 use function rand;
-use function realpath;
-use function sprintf;
+use function Safe\mkdir;
+use function Safe\realpath;
+use function Safe\sprintf;
+use function Safe\substr;
 use function str_replace;
 use function strrpos;
-use function substr;
 use function sys_get_temp_dir;
 use const DIRECTORY_SEPARATOR;
 

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
+        'maxPhpVersion' => 70499,
         'title' => 'Match',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
@@ -44,7 +45,7 @@ declare (strict_types=1);
 namespace Humbug\Acme;
 
 use Humbug\Acme\Foo\Match;
-class Foo implements \Humbug\Acme\Foo\Match
+class Foo implements Match
 {
 }
 namespace Humbug\Acme\Foo;

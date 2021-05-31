@@ -48,11 +48,11 @@ use Humbug\A\B\C;
 use Humbug\A\D;
 use Humbug\A\B\C\D as ABCD;
 use Humbug\A\B\E;
-\Humbug\A\B::class;
-\Humbug\A\B\C::class;
-\Humbug\A\D::class;
-\Humbug\A\B\C\D::class;
-\Humbug\A\B\E::class;
+B::class;
+C::class;
+D::class;
+ABCD::class;
+E::class;
 
 PHP
     ,
@@ -106,11 +106,11 @@ use Humbug\A\B\C;
 use Humbug\A\D;
 use Humbug\A\B\C\G;
 use Humbug\A\B\E;
-\Humbug\A\B::class;
-\Humbug\A\B\C::class;
-\Humbug\A\D::class;
-\Humbug\A\B\C\G::class;
-\Humbug\A\B\E::class;
+B::class;
+C::class;
+D::class;
+G::class;
+E::class;
 
 PHP
     ],

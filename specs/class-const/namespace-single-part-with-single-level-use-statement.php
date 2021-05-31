@@ -49,7 +49,7 @@ class Foo
 namespace Humbug\X;
 
 use Humbug\Foo;
-\Humbug\Foo::MAIN_CONST;
+Foo::MAIN_CONST;
 
 PHP
     ],
@@ -98,7 +98,7 @@ Reflector::MAIN_CONST;
 namespace Humbug\X;
 
 use Reflector;
-\Reflector::MAIN_CONST;
+Reflector::MAIN_CONST;
 
 PHP
     ],

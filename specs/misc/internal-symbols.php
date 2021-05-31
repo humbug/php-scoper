@@ -464,22 +464,22 @@ use const pcov\exclusive;
 \uv_fs_poll_stop();
 \uv_stop();
 \uv_signal_stop();
-\parallel\bootstrap();
-\parallel\run();
-\pcov\collect();
-\pcov\start();
-\pcov\stop();
-\pcov\clear();
-\pcov\waiting();
-\pcov\memory();
+bootstrap();
+run();
+collect();
+start();
+stop();
+clear();
+waiting();
+memory();
 \mb_str_split();
 \password_algos();
 echo \STDIN;
 echo \STDOUT;
 echo \STDERR;
-echo \pcov\all;
-echo \pcov\inclusive;
-echo \pcov\exclusive;
+echo all;
+echo inclusive;
+echo exclusive;
 
 PHP
     ,

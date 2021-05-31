@@ -21,9 +21,9 @@ use PhpParser\Node\Name;
  */
 final class ResolvedValue
 {
-    private $name;
-    private $namespace;
-    private $use;
+    private Name $name;
+    private ?Name $namespace;
+    private ?Name $use;
 
     public function __construct(Name $name, ?Name $namespace, ?Name $use)
     {

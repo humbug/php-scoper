@@ -57,7 +57,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo as X;
-\Humbug\Foo\Bar::$mainStaticProp;
+X\Bar::$mainStaticProp;
 
 PHP
     ,
@@ -85,7 +85,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo\Bar as X;
-\Humbug\Foo\Bar::$mainStaticProp;
+X::$mainStaticProp;
 
 PHP
     ,
@@ -165,7 +165,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo as X;
-\Humbug\Foo\Bar::$mainStaticProp;
+X\Bar::$mainStaticProp;
 
 PHP
     ],

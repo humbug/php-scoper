@@ -37,7 +37,7 @@ foo();
 namespace Humbug;
 
 use function Humbug\main as foo;
-\Humbug\main();
+foo();
 
 PHP
     ,
@@ -59,7 +59,7 @@ foo();
 namespace Humbug;
 
 use function Humbug\main as foo;
-\Humbug\main();
+foo();
 
 PHP
     ],

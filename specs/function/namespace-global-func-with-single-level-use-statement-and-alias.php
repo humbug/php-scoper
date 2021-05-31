@@ -39,7 +39,7 @@ foo();
 namespace Humbug\X;
 
 use function Humbug\main as foo;
-\Humbug\main();
+foo();
 
 PHP
     ,

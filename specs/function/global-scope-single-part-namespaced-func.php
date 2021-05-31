@@ -34,7 +34,7 @@ PHPUnit\main();
 
 namespace Humbug;
 
-\Humbug\PHPUnit\main();
+PHPUnit\main();
 
 PHP
     ,

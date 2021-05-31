@@ -42,9 +42,9 @@ namespace Humbug;
 use Humbug\A\B\C\D;
 use function Humbug\A\B\b\c;
 use const Humbug\A\B\D;
-\Humbug\A\B\C\D::class;
-\Humbug\A\B\b\c();
-\Humbug\A\B\D;
+D::class;
+c();
+D;
 
 PHP
     ,
