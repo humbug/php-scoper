@@ -2,8 +2,19 @@
 
 declare(strict_types=1);
 
-use Humbug\PhpScoper\Configuration;
-use Humbug\PhpScoper\Whitelist;
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Humbug\PhpScoper;
+
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,12 +38,12 @@ final class ConfigurationTest extends TestCase
             $prefix,
             [],
             [],
+            [],
             Whitelist::create(
                 false,
                 false,
                 false,
             ),
-            [],
         );
     }
 

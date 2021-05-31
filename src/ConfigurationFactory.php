@@ -117,9 +117,9 @@ final class ConfigurationFactory
             $path,
             $prefix,
             $filesWithContents,
+            $whitelistedFiles,
             $patchers,
             $whitelist,
-            $whitelistedFiles,
         );
     }
 
@@ -143,9 +143,9 @@ final class ConfigurationFactory
                 $config->getFilesWithContents(),
                 $filesWithContents,
             ),
+            $config->getWhitelistedFiles(),
             $config->getPatchers(),
             $config->getWhitelist(),
-            $config->getWhitelistedFiles(),
         );
     }
 
@@ -157,9 +157,9 @@ final class ConfigurationFactory
             $config->getPath(),
             $prefix,
             $config->getFilesWithContents(),
+            $config->getWhitelistedFiles(),
             $config->getPatchers(),
             $config->getWhitelist(),
-            $config->getWhitelistedFiles(),
         );
     }
 
@@ -234,7 +234,7 @@ final class ConfigurationFactory
 
     private static function retrievePrefix(array $config): string
     {
-        $prefix = trim((string) $config[self::PREFIX_KEYWORD] ?? '');
+        $prefix = trim((string) ($config[self::PREFIX_KEYWORD] ?? ''));
 
         if ('' === $prefix) {
             return self::generateRandomPrefix();

@@ -25,14 +25,17 @@ final class Configuration
     private ?string $path;
     private string $prefix;
     private array $filesWithContents;
+    private array $whitelistedFiles;
     private array $patchers;
     private Whitelist $whitelist;
-    private array $whitelistedFiles;
 
     /**
      * @param string|null $path                   Absolute path to the configuration file loaded.
      * @param string      $prefix                 The prefix applied.
-     * @param array<string, array{string, string}> $filesWithContents      Array of tuple with the
+     * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
+     *                                            first argument being the file path and the second
+     *                                            its contents
+     * @param array<string, array{string, string}> $whitelistedFiles Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
      * @param callable[]  $patchers               List of closures which can alter the content of
@@ -41,16 +44,14 @@ final class Configuration
      *                                            returning a boolean which if `true` means the
      *                                            class should be scoped
      *                                            (i.e. is ignored) or scoped otherwise.
-     * @param string[]    $whitelistedFiles       List of absolute paths of files to completely
-     *                                            ignore
      */
     public function __construct(
         ?string $path,
         string $prefix,
         array $filesWithContents,
+        array $whitelistedFiles,
         array $patchers,
-        Whitelist $whitelist,
-        array $whitelistedFiles
+        Whitelist $whitelist
     ) {
         self::validatePrefix($prefix);
 
@@ -111,7 +112,6 @@ final class Configuration
                 ),
             );
         }
-        echo '/\\\{2,}$/';
 
         if (preg_match('/\\\{2,}/', $prefix)) {
             throw new InvalidArgumentException(
