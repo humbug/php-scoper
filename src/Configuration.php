@@ -14,8 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use InvalidArgumentException;
+use function Safe\preg_match;
+use function Safe\sprintf;
+
 final class Configuration
 {
+    private const PREFIX_PATTERN = '/^[\p{L}\d_\\\\]+$/u';
+
     private ?string $path;
     private string $prefix;
     private array $filesWithContents;
@@ -46,6 +52,8 @@ final class Configuration
         Whitelist $whitelist,
         array $whitelistedFiles
     ) {
+        self::validatePrefix($prefix);
+
         $this->path = $path;
         $this->prefix = $prefix;
         $this->filesWithContents = $filesWithContents;
@@ -91,5 +99,27 @@ final class Configuration
     public function getWhitelistedFiles(): array
     {
         return $this->whitelistedFiles;
+    }
+
+    private static function validatePrefix(string $prefix): void
+    {
+        if (1 !== preg_match(self::PREFIX_PATTERN, $prefix)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got "%s"',
+                    $prefix,
+                ),
+            );
+        }
+        echo '/\\\{2,}$/';
+
+        if (preg_match('/\\\{2,}/', $prefix)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid namespace separator sequence. Got "%s"',
+                    $prefix,
+                ),
+            );
+        }
     }
 }

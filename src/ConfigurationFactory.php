@@ -47,7 +47,6 @@ use function random_bytes;
 use function readlink as native_readlink;
 use function realpath;
 use function Safe\file_get_contents;
-use function Safe\preg_match;
 use function Safe\sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
@@ -235,21 +234,10 @@ final class ConfigurationFactory
 
     private static function retrievePrefix(array $config): string
     {
-        $prefix = $config[self::PREFIX_KEYWORD] ?? null;
-
-        if (null === $prefix) {
-            return self::generateRandomPrefix();
-        }
-
-        $prefix = trim($prefix);
+        $prefix = trim((string) $config[self::PREFIX_KEYWORD] ?? '');
 
         if ('' === $prefix) {
             return self::generateRandomPrefix();
-        }
-
-        // TODO: move the prefix validation to the Configuration class
-        if (1 === preg_match('/^[\p{L}\d_]+$/u', $prefix)) {
-            return $prefix;
         }
 
         throw new InvalidArgumentException(
