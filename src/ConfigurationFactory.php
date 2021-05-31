@@ -240,12 +240,7 @@ final class ConfigurationFactory
             return self::generateRandomPrefix();
         }
 
-        throw new InvalidArgumentException(
-            sprintf(
-                'The prefix needs to be composed solely of letters and digits. Got "%s"',
-                $prefix,
-            ),
-        );
+        return $prefix;
     }
 
     /**
