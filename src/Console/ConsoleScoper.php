@@ -92,7 +92,7 @@ final class ConsoleScoper
         // Creates output directory if does not already exist
         $this->fileSystem->mkdir($outputDir);
 
-        $files = self::getFiles($config, $outputDir);
+        [$files, $whitelistedFiles] = self::getFiles($config, $outputDir);
 
         $logger->outputFileCount(count($files));
 
@@ -107,7 +107,16 @@ final class ConsoleScoper
             );
         }
 
-        $vendorDir = self::findVendorDir(array_column($files, 2));
+        foreach ($whitelistedFiles as [$inputFilePath, $inputContents, $outputFilePath]) {
+            $this->fileSystem->dumpFile($outputFilePath, $inputContents);
+        }
+
+        $vendorDir = self::findVendorDir(
+            [
+                ...array_column($files, 2),
+                ...array_column($whitelistedFiles, 2),
+            ],
+        );
 
         if (null !== $vendorDir) {
             $autoload = (new ScoperAutoloadGenerator($config->getWhitelist()))->dump();
@@ -120,21 +129,36 @@ final class ConsoleScoper
     }
 
     /**
-     * @return array<array{string, string, string}>
+     * @return array{array<array{string, string, string}>, array<array{string, string, string}>}
      */
     private static function getFiles(Configuration $config, string $outputDir): array
     {
         $filesWithContent = $config->getFilesWithContents();
-        $commonPath = get_common_path(array_keys($filesWithContent));
+        $whitelistedFilesWithContent = $config->getWhitelistedFilesWithContents();
 
-        return array_map(
-            static fn (array $inputFileTuple) => [
-                $inputFileTuple[0],
-                $inputFileTuple[1],
-                $outputDir.str_replace($commonPath, '', $inputFileTuple[0]),
+        $commonPath = get_common_path(
+            [
+                ...array_keys($filesWithContent),
+                ...array_keys($whitelistedFilesWithContent),
             ],
-            $filesWithContent,
         );
+
+        $mapFiles = static fn (array $inputFileTuple) => [
+            $inputFileTuple[0],
+            $inputFileTuple[1],
+            $outputDir.str_replace($commonPath, '', $inputFileTuple[0]),
+        ];
+
+        return [
+            array_map(
+                $mapFiles,
+                $filesWithContent,
+            ),
+            array_map(
+                $mapFiles,
+                $whitelistedFilesWithContent,
+            ),
+        ];
     }
 
     private static function findVendorDir(array $outputFilePaths): ?string

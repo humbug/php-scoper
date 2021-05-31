@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
-use Iterator;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
@@ -26,7 +25,6 @@ use function array_key_exists;
 use function array_keys;
 use function array_map;
 use function array_merge;
-use function array_reduce;
 use function array_unique;
 use function array_unshift;
 use function bin2hex;
@@ -42,7 +40,6 @@ use function is_file;
 use function is_link;
 use function is_readable;
 use function is_string;
-use function iterator_to_array;
 use function random_bytes;
 use function readlink as native_readlink;
 use function realpath;
@@ -117,7 +114,7 @@ final class ConfigurationFactory
             $path,
             $prefix,
             $filesWithContents,
-            $whitelistedFiles,
+            self::retrieveFilesWithContents($whitelistedFiles),
             $patchers,
             $whitelist,
         );
@@ -143,7 +140,7 @@ final class ConfigurationFactory
                 $config->getFilesWithContents(),
                 $filesWithContents,
             ),
-            $config->getWhitelistedFiles(),
+            $config->getWhitelistedFilesWithContents(),
             $config->getPatchers(),
             $config->getWhitelist(),
         );
@@ -157,7 +154,7 @@ final class ConfigurationFactory
             $config->getPath(),
             $prefix,
             $config->getFilesWithContents(),
-            $config->getWhitelistedFiles(),
+            $config->getWhitelistedFilesWithContents(),
             $config->getPatchers(),
             $config->getWhitelist(),
         );
@@ -488,41 +485,41 @@ final class ConfigurationFactory
     }
 
     /**
-     * @param Iterator<SplFileInfo> $files
+     * @param iterable<SplFileInfo|string> $files
      *
      * @return array<string, array{string, string}> Array of tuple with the first argument being the file path and the second its contents
      */
-    private static function retrieveFilesWithContents(Iterator $files): array
+    private static function retrieveFilesWithContents(iterable $files): array
     {
-        return array_reduce(
-            iterator_to_array($files, false),
-            static function (array $files, SplFileInfo $fileInfo): array {
-                $file = $fileInfo->getRealPath();
+        $filesWithContents = [];
 
-                if (false === $file) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Could not find the file "%s".',
-                            (string) $fileInfo,
-                        ),
-                    );
-                }
+        foreach ($files as $filePathOrFileInfo) {
+            $filePath = $filePathOrFileInfo instanceof SplFileInfo
+                ? $filePathOrFileInfo->getRealPath()
+                : realpath($filePathOrFileInfo);
 
-                if (false === is_readable($file)) {
-                    throw new RuntimeException(
-                        sprintf(
-                            'Could not read the file "%s".',
-                            $file,
-                        ),
-                    );
-                }
+            if (false === $filePath) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Could not find the file "%s".',
+                        (string) $filePathOrFileInfo,
+                    ),
+                );
+            }
 
-                $files[$fileInfo->getRealPath()] = [$fileInfo->getRealPath(), file_get_contents($file)];
+            if (false === is_readable($filePath)) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Could not read the file "%s".',
+                        $filePath,
+                    ),
+                );
+            }
 
-                return $files;
-            },
-            [],
-        );
+            $filesWithContents[$filePath] = [$filePath, file_get_contents($filePath)];
+        }
+
+        return $filesWithContents;
     }
 
     private static function generateRandomPrefix(): string

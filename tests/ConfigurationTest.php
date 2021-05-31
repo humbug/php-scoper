@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\Configuration;
-use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -40,12 +38,12 @@ final class ConfigurationTest extends TestCase
             $prefix,
             [],
             [],
+            [],
             Whitelist::create(
                 false,
                 false,
                 false,
             ),
-            [],
         );
     }
 

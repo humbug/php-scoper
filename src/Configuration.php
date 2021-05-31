@@ -25,7 +25,7 @@ final class Configuration
     private ?string $path;
     private string $prefix;
     private array $filesWithContents;
-    private array $whitelistedFiles;
+    private array $whitelistedFilesWithContents;
     private array $patchers;
     private Whitelist $whitelist;
 
@@ -35,9 +35,9 @@ final class Configuration
      * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
-     * @param array<string, array{string, string}> $whitelistedFiles Array of tuple with the
-     *                                            first argument being the file path and the second
-     *                                            its contents
+     * @param array<string, array{string, string}> $whitelistedFilesWithContents Array of tuple
+     *                                    with the first argument being the file path and the
+     *                                    second its contents
      * @param callable[]  $patchers               List of closures which can alter the content of
      *                                            the files being scoped.
      * @param Whitelist   $whitelist              List of classes that will not be scoped.
@@ -49,7 +49,7 @@ final class Configuration
         ?string $path,
         string $prefix,
         array $filesWithContents,
-        array $whitelistedFiles,
+        array $whitelistedFilesWithContents,
         array $patchers,
         Whitelist $whitelist
     ) {
@@ -60,7 +60,7 @@ final class Configuration
         $this->filesWithContents = $filesWithContents;
         $this->patchers = $patchers;
         $this->whitelist = $whitelist;
-        $this->whitelistedFiles = $whitelistedFiles;
+        $this->whitelistedFilesWithContents = $whitelistedFilesWithContents;
     }
 
     public function getPath(): ?string
@@ -95,11 +95,11 @@ final class Configuration
     }
 
     /**
-     * @return string[]
+     * @return array<string, array{string, string}>
      */
-    public function getWhitelistedFiles(): array
+    public function getWhitelistedFilesWithContents(): array
     {
-        return $this->whitelistedFiles;
+        return $this->whitelistedFilesWithContents;
     }
 
     private static function validatePrefix(string $prefix): void

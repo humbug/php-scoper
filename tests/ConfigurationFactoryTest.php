@@ -41,7 +41,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     {
         $configuration = $this->configFactory->create();
 
-        self::assertSame([], $configuration->getWhitelistedFiles());
+        self::assertSame([], $configuration->getWhitelistedFilesWithContents());
         self::assertEquals(
             Whitelist::create(true, true, true),
             $configuration->getWhitelist(),
@@ -90,15 +90,23 @@ class ConfigurationFactoryTest extends FileSystemTestCase
 
         $configuration = $this->createConfigFromStandardFile();
 
-        self::assertSame([$this->tmp.DIRECTORY_SEPARATOR.'file1'], $configuration->getWhitelistedFiles());
+        self::assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
+        self::assertSame('MyPrefix', $configuration->getPrefix());
+        self::assertSame([], $configuration->getFilesWithContents());
+        self::assertSame(
+            [
+                $this->tmp.DIRECTORY_SEPARATOR.'file1' => [
+                    $this->tmp.DIRECTORY_SEPARATOR.'file1',
+                    '',
+                ],
+            ],
+            $configuration->getWhitelistedFilesWithContents(),
+        );
+        self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
         self::assertEquals(
             Whitelist::create(false, false, false, 'Foo', 'Bar\*'),
             $configuration->getWhitelist()
         );
-        self::assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
-        self::assertSame('MyPrefix', $configuration->getPrefix());
-        self::assertSame([], $configuration->getFilesWithContents());
-        self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
     }
 
     private static function dumpStandardConfigFile(string $contents): void

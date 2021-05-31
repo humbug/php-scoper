@@ -26,13 +26,11 @@ use Humbug\PhpScoper\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Scoper\ConfigurableScoper;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use function array_map;
-use function count;
 use function is_dir;
 use function is_writable;
 use function Safe\getcwd;
@@ -53,7 +51,7 @@ final class AddPrefixCommand implements Command, CommandAware
     private const NO_CONFIG_OPT = 'no-config';
 
     private Filesystem $fileSystem;
-    private ConfigurableScoper $scoper;
+    private Scoper $scoper;
     private bool $init = false;
     private Application $application;
     private ConfigurationFactory $configFactory;
@@ -65,7 +63,7 @@ final class AddPrefixCommand implements Command, CommandAware
         ConfigurationFactory $configFactory
     ) {
         $this->fileSystem = $fileSystem;
-        $this->scoper = new ConfigurableScoper($scoper);
+        $this->scoper = $scoper;
         $this->application = $application;
         $this->configFactory = $configFactory;
     }
@@ -140,7 +138,7 @@ final class AddPrefixCommand implements Command, CommandAware
 
         $config = $this->retrieveConfig($io, $paths);
 
-        $this->getScoper($config)->scope(
+        $this->getScoper()->scope(
             $io,
             $config,
             $paths,
@@ -233,23 +231,12 @@ final class AddPrefixCommand implements Command, CommandAware
         );
     }
 
-    private function getScoper(Configuration $config): ConsoleScoper
+    private function getScoper(): ConsoleScoper
     {
         return new ConsoleScoper(
             $this->fileSystem,
             $this->application,
-            $this->getInnerScoper($config),
-        );
-    }
-
-    private function getInnerScoper(Configuration $config): Scoper
-    {
-        if (count($config->getWhitelistedFiles()) === 0) {
-            return $this->scoper;
-        }
-
-        return $this->scoper->withWhitelistedFiles(
-            ...$config->getWhitelistedFiles(),
+            $this->scoper,
         );
     }
 }
