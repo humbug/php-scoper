@@ -25,32 +25,33 @@ final class Configuration
     private ?string $path;
     private string $prefix;
     private array $filesWithContents;
+    private array $whitelistedFilesWithContents;
     private array $patchers;
     private Whitelist $whitelist;
-    private array $whitelistedFiles;
 
     /**
      * @param string|null $path                   Absolute path to the configuration file loaded.
      * @param string      $prefix                 The prefix applied.
-     * @param array<string, array{string, string}> $filesWithContents      Array of tuple with the
+     * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
+     * @param array<string, array{string, string}> $whitelistedFilesWithContents Array of tuple
+     *                                    with the first argument being the file path and the
+     *                                    second its contents
      * @param callable[]  $patchers               List of closures which can alter the content of
      *                                            the files being scoped.
      * @param Whitelist   $whitelist              List of classes that will not be scoped.
      *                                            returning a boolean which if `true` means the
      *                                            class should be scoped
      *                                            (i.e. is ignored) or scoped otherwise.
-     * @param string[]    $whitelistedFiles       List of absolute paths of files to completely
-     *                                            ignore
      */
     public function __construct(
         ?string $path,
         string $prefix,
         array $filesWithContents,
+        array $whitelistedFilesWithContents,
         array $patchers,
-        Whitelist $whitelist,
-        array $whitelistedFiles
+        Whitelist $whitelist
     ) {
         self::validatePrefix($prefix);
 
@@ -59,7 +60,7 @@ final class Configuration
         $this->filesWithContents = $filesWithContents;
         $this->patchers = $patchers;
         $this->whitelist = $whitelist;
-        $this->whitelistedFiles = $whitelistedFiles;
+        $this->whitelistedFilesWithContents = $whitelistedFilesWithContents;
     }
 
     public function getPath(): ?string
@@ -94,11 +95,11 @@ final class Configuration
     }
 
     /**
-     * @return string[]
+     * @return array<string, array{string, string}>
      */
-    public function getWhitelistedFiles(): array
+    public function getWhitelistedFilesWithContents(): array
     {
-        return $this->whitelistedFiles;
+        return $this->whitelistedFilesWithContents;
     }
 
     private static function validatePrefix(string $prefix): void
