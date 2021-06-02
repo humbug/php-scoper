@@ -30,18 +30,12 @@ class FileWhitelistScoperTest extends TestCase
     use ProphecyTrait;
 
     /**
-     * @var Scoper|ObjectProphecy
+     * @var ObjectProphecy<Scoper>
      */
-    private $decoratedScoperProphecy;
+    private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @var Scoper
-     */
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);

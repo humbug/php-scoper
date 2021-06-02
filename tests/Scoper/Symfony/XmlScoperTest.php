@@ -37,24 +37,16 @@ class XmlScoperTest extends TestCase
     private $scoper;
 
     /**
-     * @var Scoper|ObjectProphecy
+     * @var ObjectProphecy<Scoper>
      */
-    private $decoratedScoperProphecy;
+    private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @var Scoper
-     */
-    private $decoratedScoper;
-
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
+        $decoratedScoper = $this->decoratedScoperProphecy->reveal();
 
-        $this->scoper = new XmlScoper($this->decoratedScoper);
+        $this->scoper = new XmlScoper($decoratedScoper);
     }
 
     public function test_it_is_a_Scoper(): void

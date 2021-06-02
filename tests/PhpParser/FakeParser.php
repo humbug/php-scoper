@@ -20,9 +20,6 @@ use PhpParser\Parser;
 
 final class FakeParser implements Parser
 {
-    /**
-     * @inheritdoc
-     */
     public function parse(string $code, ErrorHandler $errorHandler = null)
     {
         throw new LogicException();
