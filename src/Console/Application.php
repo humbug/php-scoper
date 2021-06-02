@@ -105,7 +105,7 @@ ASCII;
         return [
             new AddPrefixCommand(
                 $this->container->getFileSystem(),
-                $this->container->getScoper(),
+                $this->container->getScoperFactory(),
                 $this,
                 $this->container->getConfigurationFactory(),
             ),

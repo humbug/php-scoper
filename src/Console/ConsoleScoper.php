@@ -9,6 +9,7 @@ use Fidry\Console\IO;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\ScoperFactory;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
@@ -34,17 +35,17 @@ final class ConsoleScoper
 
     private Filesystem $fileSystem;
     private Application $application;
-    private Scoper $scoper;
+    private ScoperFactory $scoperFactory;
 
     public function __construct(
         Filesystem $fileSystem,
         Application $application,
-        Scoper $scoper
+        ScoperFactory $scoperFactory
     )
     {
         $this->fileSystem = $fileSystem;
         $this->application = $application;
-        $this->scoper = $scoper;
+        $this->scoperFactory = $scoperFactory;
     }
 
     public function scope(
@@ -96,8 +97,11 @@ final class ConsoleScoper
 
         $logger->outputFileCount(count($files));
 
+        $scoper = $this->scoperFactory->createScoper(/* $config */);
+
         foreach ($files as [$inputFilePath, $inputContents, $outputFilePath]) {
             $this->scopeFile(
+                $scoper,
                 $inputFilePath,
                 $inputContents,
                 $outputFilePath,
@@ -182,6 +186,7 @@ final class ConsoleScoper
     }
 
     private function scopeFile(
+        Scoper $scoper,
         string $inputFilePath,
         string $inputContents,
         string $outputFilePath,
@@ -190,7 +195,7 @@ final class ConsoleScoper
         ScoperLogger $logger
     ): void {
         try {
-            $scoppedContent = $this->scoper->scope(
+            $scoppedContent = $scoper->scope(
                 $inputFilePath,
                 $inputContents,
                 $config->getPrefix(),
