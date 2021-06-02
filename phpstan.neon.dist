@@ -4,7 +4,6 @@ parameters:
     excludes_analyse:
         - src/Console/Command/AddPrefixCommand.php
     ignoreErrors:
-        - '#has no typehint specified#'
         - '#with no typehint specified#'
         - message: '#Cannot cast array\<string\>\|string to string\.#'
           path: 'src/Patcher/SymfonyPatcher.php'
