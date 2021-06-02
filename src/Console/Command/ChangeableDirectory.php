@@ -23,6 +23,9 @@ use function file_exists;
 use function Safe\getcwd;
 use function Safe\sprintf;
 
+/**
+ * @private
+ */
 final class ChangeableDirectory
 {
     private const WORKING_DIR_OPT = 'working-dir';

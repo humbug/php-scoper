@@ -14,13 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
-use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
-use Humbug\PhpScoper\Scoper\NullScoper;
-use Humbug\PhpScoper\Scoper\PatchScoper;
-use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -31,7 +24,7 @@ final class Container
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
-    private Scoper $scoper;
+    private ScoperFactory $scoperFactory;
 
     public function getFileSystem(): Filesystem
     {
@@ -53,25 +46,13 @@ final class Container
         return $this->configFactory;
     }
 
-    public function getScoper(): Scoper
+    public function getScoperFactory(): ScoperFactory
     {
-        if (!isset($this->scoper)) {
-            $this->scoper = new PatchScoper(
-                new PhpScoper(
-                    $this->getParser(),
-                    new JsonFileScoper(
-                        new InstalledPackagesScoper(
-                            new SymfonyScoper(
-                                new NullScoper()
-                            )
-                        )
-                    ),
-                    new TraverserFactory(new Reflector())
-                )
-            );
+        if (!isset($this->scoperFactory)) {
+            $this->scoperFactory = new ScoperFactory($this->getParser());
         }
 
-        return $this->scoper;
+        return $this->scoperFactory;
     }
 
     public function getParser(): Parser

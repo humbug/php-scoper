@@ -22,9 +22,12 @@ use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
+use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\ScoperFactory;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
+use PhpParser\Parser;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -62,7 +65,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
     private ObjectProphecy $fileSystemProphecy;
 
     /**
-     * @var ObjectProphecy<ConsoleScoper>
+     * @var ObjectProphecy<Scoper>
      */
     private ObjectProphecy $scoperProphecy;
 
@@ -823,7 +826,7 @@ EOF;
         /** @var Filesystem $fileSystem */
         $fileSystem = $this->fileSystemProphecy->reveal();
 
-        /** @var ConsoleScoper $scoper */
+        /** @var Scoper $scoper */
         $scoper = $this->scoperProphecy->reveal();
 
         $application = new SymfonyApplication(
@@ -839,7 +842,7 @@ EOF;
             new SymfonyCommand(
                 new AddPrefixCommand(
                     $fileSystem,
-                    $scoper,
+                    new DummyScoperFactory(new FakeParser(), $scoper),
                     $innerApp,
                     new ConfigurationFactory($fileSystem),
                 ),

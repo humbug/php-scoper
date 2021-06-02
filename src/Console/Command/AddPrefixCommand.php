@@ -25,7 +25,7 @@ use Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
-use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\ScoperFactory;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -37,6 +37,9 @@ use function Safe\getcwd;
 use function Safe\sprintf;
 use const DIRECTORY_SEPARATOR;
 
+/**
+ * @private
+ */
 final class AddPrefixCommand implements Command, CommandAware
 {
     use CommandAwareness;
@@ -51,19 +54,19 @@ final class AddPrefixCommand implements Command, CommandAware
     private const NO_CONFIG_OPT = 'no-config';
 
     private Filesystem $fileSystem;
-    private Scoper $scoper;
+    private ScoperFactory $scoperFactory;
     private bool $init = false;
     private Application $application;
     private ConfigurationFactory $configFactory;
 
     public function __construct(
         Filesystem $fileSystem,
-        Scoper $scoper,
+        ScoperFactory $scoperFactory,
         Application $application,
         ConfigurationFactory $configFactory
     ) {
         $this->fileSystem = $fileSystem;
-        $this->scoper = $scoper;
+        $this->scoperFactory = $scoperFactory;
         $this->application = $application;
         $this->configFactory = $configFactory;
     }
@@ -236,7 +239,7 @@ final class AddPrefixCommand implements Command, CommandAware
         return new ConsoleScoper(
             $this->fileSystem,
             $this->application,
-            $this->scoper,
+            $this->scoperFactory,
         );
     }
 }

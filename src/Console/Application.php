@@ -24,6 +24,9 @@ use function Safe\sprintf;
 use function strpos;
 use function trim;
 
+/**
+ * @private
+ */
 final class Application implements FidryApplication
 {
     private const LOGO = <<<'ASCII'
@@ -105,7 +108,7 @@ ASCII;
         return [
             new AddPrefixCommand(
                 $this->container->getFileSystem(),
-                $this->container->getScoper(),
+                $this->container->getScoperFactory(),
                 $this,
                 $this->container->getConfigurationFactory(),
             ),

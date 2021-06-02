@@ -26,6 +26,9 @@ use function Safe\getcwd;
 use function Safe\sprintf;
 use const DIRECTORY_SEPARATOR;
 
+/**
+ * @private
+ */
 final class InitCommand implements Command
 {
     private const CONFIG_FILE_OPT = 'config';
