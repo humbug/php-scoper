@@ -37,6 +37,9 @@ use function Safe\getcwd;
 use function Safe\sprintf;
 use const DIRECTORY_SEPARATOR;
 
+/**
+ * @private
+ */
 final class AddPrefixCommand implements Command, CommandAware
 {
     use CommandAwareness;
