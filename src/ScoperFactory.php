@@ -23,7 +23,10 @@ use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use PhpParser\Parser;
 
-final class ScoperFactory
+/**
+ * @final
+ */
+class ScoperFactory
 {
     private Parser $parser;
 
