@@ -31,7 +31,6 @@ final class Container
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
-    private Reflector $reflector;
     private Scoper $scoper;
 
     public function getFileSystem(): Filesystem
@@ -67,7 +66,7 @@ final class Container
                             )
                         )
                     ),
-                    new TraverserFactory($this->getReflector())
+                    new TraverserFactory(new Reflector())
                 )
             );
         }
@@ -82,14 +81,5 @@ final class Container
         }
 
         return $this->parser;
-    }
-
-    public function getReflector(): Reflector
-    {
-        if (!isset($this->reflector)) {
-            $this->reflector = new Reflector();
-        }
-
-        return $this->reflector;
     }
 }

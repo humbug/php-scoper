@@ -57,18 +57,15 @@ class AddPrefixCommandTest extends FileSystemTestCase
     private ApplicationTester $appTester;
 
     /**
-     * @var Filesystem|ObjectProphecy
+     * @var ObjectProphecy<Filesystem>
      */
-    private $fileSystemProphecy;
+    private ObjectProphecy $fileSystemProphecy;
 
     /**
-     * @var ConsoleScoper|ObjectProphecy
+     * @var ObjectProphecy<ConsoleScoper>
      */
-    private $scoperProphecy;
+    private ObjectProphecy $scoperProphecy;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         parent::setUp();

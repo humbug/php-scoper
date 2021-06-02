@@ -33,9 +33,6 @@ abstract class FileSystemTestCase extends TestCase
      */
     protected string $tmp;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -50,9 +47,6 @@ abstract class FileSystemTestCase extends TestCase
         chdir($this->tmp);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

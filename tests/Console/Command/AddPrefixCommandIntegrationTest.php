@@ -48,9 +48,6 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
      */
     private ApplicationTester $appTester;
 
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         parent::setUp();

@@ -35,7 +35,7 @@ class ScoperLogger
 {
     private FidryApplication $application;
     private IO $io;
-    private $startTime;
+    private float $startTime;
     private ProgressBar $progressBar;
 
     public function __construct(FidryApplication $application, IO $io)

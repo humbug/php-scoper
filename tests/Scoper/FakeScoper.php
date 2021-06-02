@@ -20,9 +20,6 @@ use LogicException;
 
 final class FakeScoper implements Scoper
 {
-    /**
-     * @inheritdoc
-     */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         throw new LogicException();

@@ -46,7 +46,7 @@ class JsonFileScoperTest extends TestCase
         $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create(true, true, true, 'Foo');
 
-        /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
+        /** @var ObjectProphecy<Scoper> $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
             ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
