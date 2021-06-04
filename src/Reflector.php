@@ -81,59 +81,102 @@ final class Reflector
     ];
 
     /**
-     * @var array<string,string>|null
+     * @var array<string,true>
      */
-    private static ?array $CLASSES = null;
+    private array $classes;
 
     /**
-     * @var array<string,string>|null
+     * @var array<string,true>
      */
-    private static ?array $FUNCTIONS = null;
+    private array $functions;
 
     /**
-     * @var array<string,string>|null
+     * @var array<string,true>
      */
-    private static ?array $CONSTANTS = null;
+    private array $constants;
 
-    /**
-     * @param array<string,string>|null $symbols
-     * @param array<string,string>      $source
-     * @param string[]                  $missingSymbols
-     */
-    private static function initSymbolList(?array &$symbols, array $source, array $missingSymbols): void
+    public static function createWithPhpStormStubs(): self
     {
-        if (null !== $symbols) {
-            return;
-        }
-
-        $symbols = array_fill_keys(
-            array_merge(
-                array_keys($source),
-                $missingSymbols
+        return new self(
+            self::createSymbolList(
+                array_keys(PhpStormStubsMap::CLASSES),
+                self::MISSING_CLASSES,
             ),
-            true
+            self::createSymbolList(
+                array_keys(PhpStormStubsMap::FUNCTIONS),
+                self::MISSING_FUNCTIONS,
+            ),
+            self::createSymbolList(
+                array_keys(PhpStormStubsMap::CONSTANTS),
+                self::MISSING_CONSTANTS,
+            ),
         );
     }
 
-    public function __construct()
+    /**
+     * @param array<string, true> $classes
+     * @param array<string, true> $functions
+     * @param array<string, true> $constants
+     */
+    public function __construct(array $classes, array $functions, array $constants)
     {
-        self::initSymbolList(self::$CLASSES, PhpStormStubsMap::CLASSES, self::MISSING_CLASSES);
-        self::initSymbolList(self::$FUNCTIONS, PhpStormStubsMap::FUNCTIONS, self::MISSING_FUNCTIONS);
-        self::initSymbolList(self::$CONSTANTS, PhpStormStubsMap::CONSTANTS, self::MISSING_CONSTANTS);
+        $this->classes = $classes;
+        $this->functions = $functions;
+        $this->constants = $constants;
+    }
+
+    /**
+     * @param string[] $classes
+     * @param string[] $functions
+     * @param string[] $constants
+     */
+    public function withSymbols(
+        array $classes,
+        array $functions,
+        array $constants
+    ): self
+    {
+        return new self(
+            self::createSymbolList(
+                array_keys($this->classes),
+                $classes,
+            ),
+            self::createSymbolList(
+                array_keys($this->functions),
+                $functions,
+            ),
+            self::createSymbolList(
+                array_keys($this->constants),
+                $constants,
+            ),
+        );
     }
 
     public function isClassInternal(string $name): bool
     {
-        return isset(self::$CLASSES[$name]);
+        return isset($this->classes[$name]);
     }
 
     public function isFunctionInternal(string $name): bool
     {
-        return isset(self::$FUNCTIONS[strtolower($name)]);
+        return isset($this->functions[strtolower($name)]);
     }
 
     public function isConstantInternal(string $name): bool
     {
-        return isset(self::$CONSTANTS[$name]);
+        return isset($this->constants[$name]);
+    }
+
+    /**
+     * @param string[][] $sources
+     *
+     * @return array<string, true>
+     */
+    private static function createSymbolList(array ...$sources): array
+    {
+        return array_fill_keys(
+            array_merge(...$sources),
+            true
+        );
     }
 }

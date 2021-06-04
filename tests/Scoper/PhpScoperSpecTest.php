@@ -244,7 +244,7 @@ class PhpScoperSpecTest extends TestCase
         return new PhpScoper(
             $phpParser,
             new FakeScoper(),
-            new TraverserFactory(new Reflector())
+            new TraverserFactory(Reflector::createWithPhpStormStubs())
         );
     }
 

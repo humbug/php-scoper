@@ -27,7 +27,7 @@ class ReflectorTest extends TestCase
      */
     public function test_it_can_identify_internal_classes(string $class, bool $expected): void
     {
-        $actual = (new Reflector())->isClassInternal($class);
+        $actual = (Reflector::createWithPhpStormStubs())->isClassInternal($class);
 
         self::assertSame($expected, $actual);
     }
@@ -37,7 +37,7 @@ class ReflectorTest extends TestCase
      */
     public function test_it_can_identify_internal_functions(string $class, bool $expected): void
     {
-        $actual = (new Reflector())->isFunctionInternal($class);
+        $actual = (Reflector::createWithPhpStormStubs())->isFunctionInternal($class);
 
         self::assertSame($expected, $actual);
     }
@@ -47,7 +47,7 @@ class ReflectorTest extends TestCase
      */
     public function test_it_can_identify_internal_constants(string $class, bool $expected): void
     {
-        $actual = (new Reflector())->isConstantInternal($class);
+        $actual = (Reflector::createWithPhpStormStubs())->isConstantInternal($class);
 
         self::assertSame($expected, $actual);
     }
