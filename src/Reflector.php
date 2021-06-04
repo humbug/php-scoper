@@ -81,17 +81,17 @@ final class Reflector
     ];
 
     /**
-     * @var array<string,string>|null
+     * @var array<string,true>
      */
     private array $classes;
 
     /**
-     * @var array<string,string>|null
+     * @var array<string,true>
      */
     private array $functions;
 
     /**
-     * @var array<string,string>|null
+     * @var array<string,true>
      */
     private array $constants;
 
@@ -168,7 +168,7 @@ final class Reflector
     }
 
     /**
-     * @param string[][]                  $sources
+     * @param string[][] $sources
      *
      * @return array<string, true>
      */

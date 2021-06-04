@@ -11,3 +11,6 @@ parameters:
           path: 'src/Scoper/PhpScoper.php'
         - message: '#Parameter \#2 \$input1 of function array_map expects array, array\<int, string\>\|false given\.#'
           path: 'src/Autoload/ScoperAutoloadGenerator.php'
+
+        - message: '#Reflector::createSymbolList\(\)#'
+          path: 'src/Reflector.php'
