@@ -30,20 +30,38 @@ final class Configuration
     private Whitelist $whitelist;
 
     /**
+     * @var string[]
+     */
+    private array $internalClasses;
+
+    /**
+     * @var string[]
+     */
+    private array $internalFunctions;
+
+    /**
+     * @var string[]
+     */
+    private array $internalConstants;
+
+    /**
      * @param string|null $path                   Absolute path to the configuration file loaded.
      * @param string      $prefix                 The prefix applied.
      * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
      * @param array<string, array{string, string}> $whitelistedFilesWithContents Array of tuple
-     *                                    with the first argument being the file path and the
-     *                                    second its contents
+     *                                            with the first argument being the file path and
+     *                                            the second its contents
      * @param callable[]  $patchers               List of closures which can alter the content of
      *                                            the files being scoped.
      * @param Whitelist   $whitelist              List of classes that will not be scoped.
      *                                            returning a boolean which if `true` means the
      *                                            class should be scoped
      *                                            (i.e. is ignored) or scoped otherwise.
+     * @param string[]    $internalClasses
+     * @param string[]    $internalFunctions
+     * @param string[]    $internalConstants
      */
     public function __construct(
         ?string $path,
@@ -51,7 +69,10 @@ final class Configuration
         array $filesWithContents,
         array $whitelistedFilesWithContents,
         array $patchers,
-        Whitelist $whitelist
+        Whitelist $whitelist,
+        array $internalClasses,
+        array $internalFunctions,
+        array $internalConstants
     ) {
         self::validatePrefix($prefix);
 
@@ -61,6 +82,9 @@ final class Configuration
         $this->patchers = $patchers;
         $this->whitelist = $whitelist;
         $this->whitelistedFilesWithContents = $whitelistedFilesWithContents;
+        $this->internalClasses = $internalClasses;
+        $this->internalFunctions = $internalFunctions;
+        $this->internalConstants = $internalConstants;
     }
 
     public function getPath(): ?string
@@ -107,7 +131,7 @@ final class Configuration
      */
     public function getInternalClasses(): array
     {
-        return [];
+        return $this->internalClasses;
     }
 
     /**
@@ -115,7 +139,7 @@ final class Configuration
      */
     public function getInternalFunctions(): array
     {
-        return [];
+        return $this->internalFunctions;
     }
 
     /**
@@ -123,7 +147,7 @@ final class Configuration
      */
     public function getInternalConstants(): array
     {
-        return [];
+        return $this->internalConstants;
     }
 
     private static function validatePrefix(string $prefix): void

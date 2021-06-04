@@ -83,4 +83,19 @@ return [
     //
     // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
     'whitelist-global-functions' => true,
+
+    // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
+    //
+    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    'system-classes' => [],
+
+    // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
+    //
+    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    'system-functions' => [],
+
+    // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
+    //
+    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    'system-constants' => [],
 ];

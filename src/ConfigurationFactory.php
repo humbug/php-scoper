@@ -27,6 +27,7 @@ use function array_map;
 use function array_merge;
 use function array_unique;
 use function array_unshift;
+use function array_values;
 use function bin2hex;
 use function dirname;
 use function file_exists;
@@ -47,6 +48,7 @@ use function Safe\file_get_contents;
 use function Safe\sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
+use const SORT_STRING;
 
 final class ConfigurationFactory
 {
@@ -58,6 +60,9 @@ final class ConfigurationFactory
     private const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
     private const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'whitelist-global-classes';
     private const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
+    private const CLASSES_INTERNAL_SYMBOLS_KEYWORD = 'exclude-classes';
+    private const FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD = 'exclude-functions';
+    private const CONSTANTS_INTERNAL_SYMBOLS_KEYWORD = 'exclude-constants';
 
     private const KEYWORDS = [
         self::PREFIX_KEYWORD,
@@ -117,6 +122,7 @@ final class ConfigurationFactory
             self::retrieveFilesWithContents($whitelistedFiles),
             $patchers,
             $whitelist,
+            ...self::retrieveAllInternalSymbols($config),
         );
     }
 
@@ -143,6 +149,9 @@ final class ConfigurationFactory
             $config->getWhitelistedFilesWithContents(),
             $config->getPatchers(),
             $config->getWhitelist(),
+            $config->getInternalClasses(),
+            $config->getInternalFunctions(),
+            $config->getInternalConstants(),
         );
     }
 
@@ -157,6 +166,9 @@ final class ConfigurationFactory
             $config->getWhitelistedFilesWithContents(),
             $config->getPatchers(),
             $config->getWhitelist(),
+            $config->getInternalClasses(),
+            $config->getInternalFunctions(),
+            $config->getInternalConstants(),
         );
     }
 
@@ -520,6 +532,55 @@ final class ConfigurationFactory
         }
 
         return $filesWithContents;
+    }
+
+    /**
+     * @return array{string[], string[], string[]}
+     */
+    private static function retrieveAllInternalSymbols(array $config): array
+    {
+        return [
+            self::retrieveInternalSymbols($config, self::CLASSES_INTERNAL_SYMBOLS_KEYWORD),
+            self::retrieveInternalSymbols($config, self::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD),
+            self::retrieveInternalSymbols($config, self::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD),
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function retrieveInternalSymbols(array $config, string $key): array
+    {
+        if (false === array_key_exists($key, $config)) {
+            return [];
+        }
+
+        $symbols = $config[$key];
+
+        if (false === is_array($symbols)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected "%s" to be an array of strings, got "%s" instead.',
+                    $key,
+                    gettype($symbols),
+                ),
+            );
+        }
+
+        foreach ($symbols as $index => $symbol) {
+            if (false === is_string($symbol)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected "%s" to be an array of strings, got "%s" for the element with the index "%s".',
+                        $key,
+                        gettype($symbol),
+                        $index,
+                    ),
+                );
+            }
+        }
+
+        return array_values(array_unique($symbols, SORT_STRING));
     }
 
     private static function generateRandomPrefix(): string
