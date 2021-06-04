@@ -82,7 +82,7 @@ class PhpScoperTest extends TestCase
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
-            new TraverserFactory(new Reflector())
+            new TraverserFactory(Reflector::createWithPhpStormStubs())
         );
     }
 

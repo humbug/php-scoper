@@ -97,7 +97,7 @@ final class ConsoleScoper
 
         $logger->outputFileCount(count($files));
 
-        $scoper = $this->scoperFactory->createScoper(/* $config */);
+        $scoper = $this->scoperFactory->createScoper($config);
 
         foreach ($files as [$inputFilePath, $inputContents, $outputFilePath]) {
             $this->scopeFile(

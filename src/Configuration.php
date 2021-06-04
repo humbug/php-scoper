@@ -102,6 +102,30 @@ final class Configuration
         return $this->whitelistedFilesWithContents;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getInternalClasses(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getInternalFunctions(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getInternalConstants(): array
+    {
+        return [];
+    }
+
     private static function validatePrefix(string $prefix): void
     {
         if (1 !== preg_match(self::PREFIX_PATTERN, $prefix)) {

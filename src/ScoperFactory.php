@@ -35,7 +35,7 @@ class ScoperFactory
         $this->parser = $parser;
     }
 
-    public function createScoper(/* Configuration $configuration */): Scoper
+    public function createScoper(Configuration $configuration): Scoper
     {
         return new PatchScoper(
             new PhpScoper(
@@ -47,7 +47,13 @@ class ScoperFactory
                         )
                     )
                 ),
-                new TraverserFactory(new Reflector(/* Configuration $configuration */))
+                new TraverserFactory(
+                    Reflector::createWithPhpStormStubs()->withSymbols(
+                        $configuration->getInternalClasses(),
+                        $configuration->getInternalFunctions(),
+                        $configuration->getInternalConstants(),
+                    ),
+                )
             )
         );
     }
