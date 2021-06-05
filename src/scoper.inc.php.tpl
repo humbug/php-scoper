@@ -84,18 +84,18 @@ return [
     // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
     'whitelist-global-functions' => true,
 
-    // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
+    // List of classes to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'system-classes' => [],
 
-    // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
+    // List of functions to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'system-functions' => [],
 
-    // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
+    // List of constants to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'system-constants' => [],
 ];
