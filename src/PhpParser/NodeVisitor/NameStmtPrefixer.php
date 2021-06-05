@@ -44,7 +44,6 @@ use PhpParser\NodeVisitorAbstract;
 use function array_merge;
 use function count;
 use function in_array;
-use function xdebug_break;
 
 /**
  * Prefixes names when appropriate.
@@ -165,7 +164,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            xdebug_break();
+            \xdebug_break();
             $x = '';
         }
 

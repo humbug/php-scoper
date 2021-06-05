@@ -29,7 +29,6 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use function array_reduce;
-use function xdebug_break;
 
 /**
  * Appends a `class_alias` to the whitelisted classes.
@@ -126,7 +125,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             );
 
         if ((string) $oldOriginalName !== (string) $originalName) {
-            xdebug_break();
+            \xdebug_break();
             $x = '';
         }
 

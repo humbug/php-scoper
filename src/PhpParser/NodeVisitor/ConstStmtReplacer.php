@@ -90,7 +90,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                 ->getName();
 
             if ((string) $oldResolvedConstantName !== (string) $resolvedConstantName) {
-                xdebug_break();
+                \xdebug_break();
                 $x = '';
             }
 

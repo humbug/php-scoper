@@ -30,7 +30,6 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
-use function xdebug_break;
 
 /**
  * Records the user functions registered in the global namespace which have been whitelisted and whitelisted functions.
@@ -121,7 +120,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            xdebug_break();
+            \xdebug_break();
             $x = '';
         }
 
@@ -145,7 +144,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            xdebug_break();
+            \xdebug_break();
             $x = '';
         }
 
@@ -178,7 +177,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            xdebug_break();
+            \xdebug_break();
             $x = '';
         }
 
