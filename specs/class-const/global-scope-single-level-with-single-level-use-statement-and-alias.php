@@ -46,7 +46,7 @@ class Foo
 {
 }
 use Humbug\Foo as X;
-X::MAIN_CONST;
+\Humbug\Foo::MAIN_CONST;
 
 PHP
     ],
@@ -91,7 +91,7 @@ X::MAIN_CONST;
 namespace Humbug;
 
 use Reflector as X;
-X::MAIN_CONST;
+\Reflector::MAIN_CONST;
 
 PHP
     ],

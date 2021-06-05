@@ -21,7 +21,6 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\NodeVisitor\NameResolver;
-use function in_array;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -45,6 +44,7 @@ use PhpParser\NodeVisitorAbstract;
 use function array_merge;
 use function count;
 use function in_array;
+use function xdebug_break;
 
 /**
  * Prefixes names when appropriate.
@@ -156,10 +156,16 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $name;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($name)->getName();
-        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName($name, Node\Stmt\Use_::TYPE_NORMAL);
+        $oldResolvedName = $this->nameResolver->resolveName($name)->getName();
+        $resolvedName = $this->newNameResolver
+            ->getNameContext()
+            ->getResolvedName(
+                $name,
+                Node\Stmt\Use_::TYPE_NORMAL,
+            );
 
-        if ((string) $resolvedName !== (string) $newResolvedName) {
+        if ((string) $oldResolvedName !== (string) $resolvedName) {
+            xdebug_break();
             $x = '';
         }
 

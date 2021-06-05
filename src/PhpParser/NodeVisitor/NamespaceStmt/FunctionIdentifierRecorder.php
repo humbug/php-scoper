@@ -30,6 +30,7 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
+use function xdebug_break;
 
 /**
  * Records the user functions registered in the global namespace which have been whitelisted and whitelisted functions.
@@ -111,10 +112,16 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
-        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName(NamedIdentifier::create($node), Node\Stmt\Use_::TYPE_NORMAL);
+        $oldResolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->newNameResolver
+            ->getNameContext()
+            ->getResolvedName(
+                NamedIdentifier::create($node),
+                Node\Stmt\Use_::TYPE_NORMAL,
+            );
 
-        if ((string) $resolvedName !== (string) $newResolvedName) {
+        if ((string) $oldResolvedName !== (string) $resolvedName) {
+            xdebug_break();
             $x = '';
         }
 
@@ -129,10 +136,15 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
-        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName($node, Node\Stmt\Use_::TYPE_NORMAL);
+        $oldResolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->newNameResolver
+            ->getNameContext()
+            ->getResolvedName(
+                $node,
+                Node\Stmt\Use_::TYPE_NORMAL,
+            );
 
-        if ((string) $resolvedName !== (string) $newResolvedName) {
+        if ((string) $oldResolvedName !== (string) $resolvedName) {
             xdebug_break();
             $x = '';
         }
@@ -157,11 +169,16 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
-        $x = '';
-        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName($node, Node\Stmt\Use_::TYPE_NORMAL);
+        $oldResolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->newNameResolver
+            ->getNameContext()
+            ->getResolvedName(
+                $node,
+                Node\Stmt\Use_::TYPE_NORMAL,
+            );
 
-        if ((string) $resolvedName !== (string) $newResolvedName) {
+        if ((string) $oldResolvedName !== (string) $resolvedName) {
+            xdebug_break();
             $x = '';
         }
 

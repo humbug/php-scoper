@@ -49,6 +49,7 @@ class TraverserFactory
         self::addVisitors(
             $traverser,
             [
+                $newNameResolver,
                 new NodeVisitor\ParentNodeAppender(),
 
                 new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
@@ -68,7 +69,11 @@ class TraverserFactory
                 ),
 
                 new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
-                    $prefix, $nameResolver, $newNameResolver, $whitelist, $this->reflector
+                    $prefix,
+                    $nameResolver,
+                    $newNameResolver,
+                    $whitelist,
+                    $this->reflector,
                 ),
                 new NodeVisitor\ClassIdentifierRecorder(
                     $prefix,

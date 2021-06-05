@@ -25,6 +25,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
+use function xdebug_break;
 
 /**
  * Records the user classes registered in the global namespace which have been whitelisted and whitelisted classes.
@@ -67,10 +68,16 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         }
 
         /** @var Identifier $node */
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
-        $newResolvedName = $this->newNameResolver->getNameContext()->getResolvedName(NamedIdentifier::create($node), Node\Stmt\Use_::TYPE_NORMAL);
+        $oldResolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->newNameResolver
+            ->getNameContext()
+            ->getResolvedName(
+                NamedIdentifier::create($node),
+                Node\Stmt\Use_::TYPE_NORMAL,
+            );
 
-        if ((string) $resolvedName !== (string) $newResolvedName) {
+        if ((string) $oldResolvedName !== (string) $resolvedName) {
+            xdebug_break();
             $x = '';
         }
 

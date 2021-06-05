@@ -29,6 +29,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
 use function array_reduce;
+use function xdebug_break;
 
 /**
  * Appends a `class_alias` to the whitelisted classes.
@@ -116,10 +117,16 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             return $stmts;
         }
 
-        $originalName = $this->nameResolver->resolveName($stmt->name)->getName();
-        $newOriginalName = $this->newNameResolver->getNameContext()->getResolvedName(NamedIdentifier::create($stmt->name), Stmt\Use_::TYPE_NORMAL);
+        $oldOriginalName = $this->nameResolver->resolveName($stmt->name)->getName();
+        $originalName = $this->newNameResolver
+            ->getNameContext()
+            ->getResolvedName(
+                NamedIdentifier::create($stmt->name),
+                Stmt\Use_::TYPE_NORMAL,
+            );
 
-        if ((string) $originalName !== (string) $newOriginalName) {
+        if ((string) $oldOriginalName !== (string) $originalName) {
+            xdebug_break();
             $x = '';
         }
 

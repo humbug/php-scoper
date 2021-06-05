@@ -73,21 +73,23 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
 
         foreach ($node->consts as $constant) {
             /** @var Node\Const_ $constant */
-            $newResolvedConstantName = $this->newNameResolver->getNameContext()->getResolvedName(
+            $resolvedConstantName = $this->newNameResolver->getNameContext()->getResolvedName(
                 new Name(
                     (string) $constant->name,
                     $node->getAttributes()
                 ),
                 Node\Stmt\Use_::TYPE_CONSTANT
             );
-            $resolvedConstantName = $this->nameResolver->resolveName(
-                new Name(
-                    (string) $constant->name,
-                    $node->getAttributes()
+            $oldResolvedConstantName = $this->nameResolver
+                ->resolveName(
+                    new Name(
+                        (string) $constant->name,
+                        $node->getAttributes(),
+                    ),
                 )
-            )->getName();
+                ->getName();
 
-            if ((string) $newResolvedConstantName !== (string) $resolvedConstantName) {
+            if ((string) $oldResolvedConstantName !== (string) $resolvedConstantName) {
                 xdebug_break();
                 $x = '';
             }
