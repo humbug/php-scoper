@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
+        'minPhpVersion' => 70400,
         'title' => 'Arrow function in the global namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
@@ -21,6 +22,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => false,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -41,7 +45,7 @@ namespace Humbug;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\Foo $x): \Humbug\Bar => $x;
+fn(Foo $x): Bar => $x;
 fn(\DateTimeImmutable $x): \Closure => $x;
 
 PHP
@@ -66,7 +70,7 @@ namespace Humbug;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\Foo $x): \Humbug\Bar => $x;
+fn(Foo $x): Bar => $x;
 fn(\DateTimeImmutable $x): \Closure => $x;
 
 PHP

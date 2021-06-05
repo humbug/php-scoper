@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -49,7 +52,7 @@ class Foo
 namespace Humbug;
 
 use Humbug\Foo;
-new \Humbug\Foo();
+new Foo();
 
 PHP
     ],
@@ -96,7 +99,7 @@ new ArrayIterator([]);
 namespace Humbug;
 
 use ArrayIterator;
-new \ArrayIterator([]);
+new ArrayIterator([]);
 
 PHP
     ],

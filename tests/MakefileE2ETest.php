@@ -14,15 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use PHPUnit\Framework\TestCase;
 use function array_filter;
 use function array_map;
 use function array_unique;
 use function array_values;
 use function explode;
-use function file_get_contents;
-use PHPUnit\Framework\TestCase;
-use function preg_match;
-use function preg_match_all;
+use function Safe\file_get_contents;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
 
 /**
  * @coversNothing
@@ -36,7 +36,7 @@ class MakefileE2ETest extends TestCase
         $mainE2ERule = $this->retrieveE2ERule($contents);
         $e2eSubRules = $this->retrieveSubE2ERules($contents);
 
-        $this->assertSame($e2eSubRules, $mainE2ERule);
+        self::assertSame($e2eSubRules, $mainE2ERule);
     }
 
     /**
@@ -49,7 +49,7 @@ class MakefileE2ETest extends TestCase
             $makefileContents,
             $matches
         )) {
-            $this->assertFalse(false, 'Expected the string input to match the regex');
+            self::assertFalse(false, 'Expected the string input to match the regex');
         }
 
         return array_values(
@@ -75,7 +75,7 @@ class MakefileE2ETest extends TestCase
             $makefileContents,
             $matches
         )) {
-            $this->assertFalse(false, 'Expected the string input to match the regex');
+            self::assertFalse(false, 'Expected the string input to match the regex');
         }
 
         return array_values(

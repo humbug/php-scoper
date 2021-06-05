@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
+        'minPhpVersion' => 70400,
         'title' => 'Null coalescing assignment operator',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
@@ -21,6 +22,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -54,7 +58,7 @@ $x ??= new stdClass();
 namespace Humbug\Acme;
 
 use stdClass;
-$x ??= new \stdClass();
+$x ??= new stdClass();
 
 PHP
     ,
@@ -69,7 +73,7 @@ $x ??= new Foo();
 
 namespace Humbug;
 
-$x ??= new \Humbug\Foo();
+$x ??= new Foo();
 
 PHP
     ,
@@ -86,7 +90,7 @@ $x ??= new Foo();
 
 namespace Humbug\Acme;
 
-$x ??= new \Humbug\Acme\Foo();
+$x ??= new Foo();
 
 PHP
     ,

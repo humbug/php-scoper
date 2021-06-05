@@ -14,10 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
+use function Humbug\PhpScoper\create_fake_patcher;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\NullScoper
@@ -26,7 +27,7 @@ class NullScoperTest extends TestCase
 {
     public function test_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(NullScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(NullScoper::class, Scoper::class, true));
     }
 
     public function test_returns_the_file_content_unchanged(): void
@@ -44,6 +45,6 @@ class NullScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }

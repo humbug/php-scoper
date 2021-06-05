@@ -15,47 +15,43 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
 use Generator;
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use function Humbug\PhpScoper\create_fake_patcher;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Symfony\XmlScoper
  */
 class XmlScoperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Scoper
      */
     private $scoper;
 
     /**
-     * @var Scoper|ObjectProphecy
+     * @var ObjectProphecy<Scoper>
      */
-    private $decoratedScoperProphecy;
+    private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @var Scoper
-     */
-    private $decoratedScoper;
-
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
+        $decoratedScoper = $this->decoratedScoperProphecy->reveal();
 
-        $this->scoper = new XmlScoper($this->decoratedScoper);
+        $this->scoper = new XmlScoper($decoratedScoper);
     }
 
     public function test_it_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(XmlScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(XmlScoper::class, Scoper::class, true));
     }
 
     /**
@@ -79,7 +75,7 @@ class XmlScoperTest extends TestCase
 
         $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes($scopedCount);
     }
@@ -95,10 +91,10 @@ class XmlScoperTest extends TestCase
 
         $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
-        $this->assertSame($expectedClasses, $whitelist->getRecordedWhitelistedClasses());
-        $this->assertSame([], $whitelist->getRecordedWhitelistedFunctions());
+        self::assertSame($expectedClasses, $whitelist->getRecordedWhitelistedClasses());
+        self::assertSame([], $whitelist->getRecordedWhitelistedFunctions());
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(0);
     }

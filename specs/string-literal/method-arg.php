@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -49,8 +52,8 @@ class Foo
     {
     }
 }
-(new \Humbug\X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
-$x = new \Humbug\X();
+(new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+$x = new X();
 $x->foo()('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
 
 PHP
@@ -76,7 +79,7 @@ class Foo
     {
     }
 }
-\Humbug\X::foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+X::foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
 
 PHP
     ,

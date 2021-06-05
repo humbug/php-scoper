@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use PhpParser\NodeVisitor\NameResolver;
-use function count;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -28,6 +27,7 @@ use PhpParser\Node\Stmt\Const_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitorAbstract;
 use UnexpectedValueException;
+use function count;
 
 /**
  * Replaces const declaration by define when the constant is whitelisted.
@@ -48,9 +48,9 @@ use UnexpectedValueException;
  */
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
-    private $whitelist;
-    private $nameResolver;
-    private $newNameResolver;
+    private Whitelist $whitelist;
+    private FullyQualifiedNameResolver $nameResolver;
+    private NameResolver $newNameResolver;
 
     public function __construct(
         Whitelist $whitelist,
@@ -63,13 +63,11 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
     }
 
     /**
-     * {@inheritdoc}
-     *
      * @param Const_ $node
      */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Const_)) {
+        if (!$node instanceof Const_) {
             return $node;
         }
 

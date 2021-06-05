@@ -14,16 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use function Humbug\PhpScoper\json_decode;
-use function Humbug\PhpScoper\json_encode;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use function preg_match as native_preg_match;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use const JSON_PRETTY_PRINT;
 
 final class InstalledPackagesScoper implements Scoper
 {
-    private static $filePattern = '/composer(\/|\\\\)installed\.json$/';
+    private static string $filePattern = '/composer(\/|\\\\)installed\.json$/';
 
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
@@ -32,18 +34,21 @@ final class InstalledPackagesScoper implements Scoper
 
     /**
      * Scopes PHP and JSON files related to Composer.
-     *
-     * {@inheritdoc}
      */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
-        if (1 !== preg_match(self::$filePattern, $filePath)) {
+        if (1 !== native_preg_match(self::$filePattern, $filePath)) {
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
         $decodedJson = json_decode($contents, false);
 
-        $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix, $whitelist);
+        // compatibility with Composer 2
+        if (isset($decodedJson->packages)) {
+            $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages, $prefix, $whitelist);
+        } else {
+            $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix, $whitelist);
+        }
 
         return json_encode(
             $decodedJson,

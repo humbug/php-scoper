@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -84,7 +87,7 @@ class A
         return $this->name;
     }
 }
-class B extends \Humbug\A
+class B extends A
 {
     static $foo = 'BAR';
     public function __construct(string $name)
@@ -93,8 +96,8 @@ class B extends \Humbug\A
         parent::$foo;
     }
 }
-\Humbug\B::test();
-echo (new \Humbug\B('yo'))->getName() . \PHP_EOL;
+B::test();
+echo (new B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ,
@@ -164,7 +167,7 @@ class A
         return $this->name;
     }
 }
-class B extends \Humbug\Foo\A
+class B extends A
 {
     static $foo = 'BAR';
     public function __construct(string $name)
@@ -176,8 +179,8 @@ class B extends \Humbug\Foo\A
 namespace Humbug;
 
 use Humbug\Foo\B;
-\Humbug\Foo\B::test();
-echo (new \Humbug\Foo\B('yo'))->getName() . \PHP_EOL;
+B::test();
+echo (new B('yo'))->getName() . \PHP_EOL;
 
 PHP
     ,

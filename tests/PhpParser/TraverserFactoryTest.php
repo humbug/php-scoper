@@ -32,7 +32,7 @@ class TraverserFactoryTest extends TestCase
 
         $whitelist = Whitelist::create(true, true, true, 'Foo');
 
-        $traverserFactory = new TraverserFactory(new Reflector());
+        $traverserFactory = new TraverserFactory(new Reflector([], [], []));
 
         $phpScoper = new PhpScoper(
             new FakeParser(),
@@ -43,6 +43,6 @@ class TraverserFactoryTest extends TestCase
         $firstTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);
         $secondTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);
 
-        $this->assertNotSame($firstTraverser, $secondTraverser);
+        self::assertNotSame($firstTraverser, $secondTraverser);
     }
 }

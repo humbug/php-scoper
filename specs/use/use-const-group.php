@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -32,6 +35,12 @@ use const A\{B};
 use const A\{B\C, D};
 use const \A\B\{C\D as ABCD, E};
 
+B;
+C;
+D;
+ABCD;
+E;
+
 ----
 <?php
 
@@ -42,6 +51,11 @@ use const Humbug\A\B\C;
 use const Humbug\A\D;
 use const Humbug\A\B\C\D as ABCD;
 use const Humbug\A\B\E;
+B;
+C;
+D;
+ABCD;
+E;
 
 PHP
     ,

@@ -14,13 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function func_get_args;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use function count;
+use function func_get_args;
 
 final class ConfigurableScoper implements Scoper
 {
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
@@ -31,7 +32,7 @@ final class ConfigurableScoper implements Scoper
     {
         $self = clone $this;
 
-        return [] === $whitelistedFiles
+        return count($whitelistedFiles) === 0
             ? $self
             : new self(
                 new FileWhitelistScoper(
@@ -42,9 +43,6 @@ final class ConfigurableScoper implements Scoper
         ;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         return $this->decoratedScoper->scope(...func_get_args());

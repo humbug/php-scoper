@@ -14,40 +14,41 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_flip;
+use Countable;
+use InvalidArgumentException;
+use PhpParser\Node\Name\FullyQualified;
+use function array_filter;
 use function array_key_exists;
 use function array_map;
 use function array_pop;
 use function array_unique;
 use function array_values;
 use function count;
-use Countable;
 use function explode;
 use function implode;
-use InvalidArgumentException;
-use PhpParser\Node\Name\FullyQualified;
-use function preg_match;
-use function sprintf;
+use function preg_match as native_preg_match;
+use function Safe\array_flip;
+use function Safe\sprintf;
+use function Safe\substr;
 use function str_replace;
 use function strpos;
 use function strtolower;
-use function substr;
 use function trim;
 
 final class Whitelist implements Countable
 {
-    private $original;
-    private $symbols;
-    private $constants;
-    private $namespaces;
-    private $patterns;
+    private array $original;
+    private array $symbols;
+    private array $constants;
+    private array $namespaces;
+    private array $patterns;
 
-    private $whitelistGlobalConstants;
-    private $whitelistGlobalClasses;
-    private $whitelistGlobalFunctions;
+    private bool $whitelistGlobalConstants;
+    private bool $whitelistGlobalClasses;
+    private bool $whitelistGlobalFunctions;
 
-    private $whitelistedFunctions = [];
-    private $whitelistedClasses = [];
+    private array $whitelistedFunctions = [];
+    private array $whitelistedClasses = [];
 
     public static function create(
         bool $whitelistGlobalConstants,
@@ -111,7 +112,7 @@ final class Whitelist implements Countable
 
     private static function assertValidPattern(string $element): void
     {
-        if (1 !== preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
+        if (1 !== native_preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
             throw new InvalidArgumentException(sprintf('Invalid whitelist pattern "%s".', $element));
         }
     }
@@ -266,7 +267,7 @@ final class Whitelist implements Countable
         foreach ($this->patterns as $pattern) {
             $pattern = false === $constant ? $pattern.'i' : $pattern;
 
-            if (1 === preg_match($pattern, $name)) {
+            if (1 === native_preg_match($pattern, $name)) {
                 return true;
             }
         }
@@ -294,9 +295,6 @@ final class Whitelist implements Countable
         return $this->original;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function count(): int
     {
         return count($this->whitelistedFunctions) + count($this->whitelistedClasses);

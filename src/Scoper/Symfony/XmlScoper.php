@@ -14,15 +14,17 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
-use function func_get_args;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
-use function preg_match_all;
+use function array_filter;
+use function func_get_args;
+use function preg_match as native_preg_match;
+use function preg_match_all as native_preg_match_all;
+use function Safe\substr;
 use function str_replace;
 use function strlen;
 use function strpos;
-use function substr;
 
 /**
  * Scopes the Symfony XML configuration files.
@@ -31,19 +33,16 @@ final class XmlScoper implements Scoper
 {
     private const FILE_PATH_PATTERN = '/\.xml$/i';
 
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
         $this->decoratedScoper = $decoratedScoper;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
-        if (1 !== preg_match(self::FILE_PATH_PATTERN, $filePath)) {
+        if (1 !== native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
@@ -55,7 +54,7 @@ final class XmlScoper implements Scoper
 
     private function scopeClasses(string $contents, string $prefix, Whitelist $whitelist): string
     {
-        if (1 > preg_match_all('/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u', $contents, $matches)) {
+        if (1 > native_preg_match_all('/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u', $contents, $matches)) {
             return $contents;
         }
 
@@ -80,7 +79,7 @@ final class XmlScoper implements Scoper
 
     private function scopeNamespaces(string $contents, string $prefix, Whitelist $whitelist): string
     {
-        if (1 > preg_match_all('/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/', $contents, $matches)) {
+        if (1 > native_preg_match_all('/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/', $contents, $matches)) {
             return $contents;
         }
 

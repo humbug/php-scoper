@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -68,7 +71,7 @@ if (!defined('PATH_SEPARATOR')) {
 namespace Humbug\Acme;
 
 use const Humbug\Acme\DIRECTORY_SEPARATOR;
-$x = \Humbug\Acme\DIRECTORY_SEPARATOR;
+$x = DIRECTORY_SEPARATOR;
 if (!\defined('PATH_SEPARATOR')) {
     \define('PATH_SEPARATOR', "\n");
 }

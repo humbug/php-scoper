@@ -18,26 +18,24 @@ use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\FileWhitelistScoper
  */
 class FileWhitelistScoperTest extends TestCase
 {
-    /**
-     * @var Scoper|ObjectProphecy
-     */
-    private $decoratedScoperProphecy;
+    use ProphecyTrait;
 
     /**
-     * @var Scoper
+     * @var ObjectProphecy<Scoper>
      */
-    private $decoratedScoper;
+    private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @inheritdoc
-     */
+    private Scoper $decoratedScoper;
+
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -46,7 +44,7 @@ class FileWhitelistScoperTest extends TestCase
 
     public function test_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(FileWhitelistScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(FileWhitelistScoper::class, Scoper::class, true));
     }
 
     public function test_it_scopes_the_file_contents_with_the_decorated_scoper_if_file_not_whitelisted_and_the_contents_unchanged_when_is_whitelisted(): void
@@ -65,12 +63,12 @@ class FileWhitelistScoperTest extends TestCase
 
         $scoper = new FileWhitelistScoper($this->decoratedScoper, $whitelistedFilePath);
 
-        $this->assertSame(
+        self::assertSame(
             $scopedContents,
             $scoper->scope($notWhitelistedFilePath, $contents, $prefix, $patchers, $whitelist)
         );
 
-        $this->assertSame(
+        self::assertSame(
             $contents,
             $scoper->scope($whitelistedFilePath, $contents, $prefix, $patchers, $whitelist)
         );

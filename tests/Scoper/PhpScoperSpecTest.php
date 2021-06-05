@@ -14,6 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Error;
+use Generator;
+use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Whitelist;
+use PhpParser\Error as PhpParserError;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
+use UnexpectedValueException;
 use function array_diff;
 use function array_filter;
 use function array_keys;
@@ -21,28 +33,23 @@ use function array_map;
 use function array_slice;
 use function array_values;
 use function basename;
+use function count;
 use function current;
-use Error;
 use function explode;
-use Generator;
 use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
-use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
 use function implode;
 use function is_array;
-use const PHP_EOL;
-use PhpParser\Error as PhpParserError;
-use PHPUnit\Framework\TestCase;
-use function sprintf;
+use function is_string;
+use function min;
+use function Safe\preg_split;
+use function Safe\sprintf;
+use function Safe\usort;
+use function str_repeat;
+use function strlen;
 use function strpos;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
-use Throwable;
-use UnexpectedValueException;
-use function usort;
+use const PHP_EOL;
+use const PHP_VERSION_ID;
 
 class PhpScoperSpecTest extends TestCase
 {
@@ -50,12 +57,17 @@ class PhpScoperSpecTest extends TestCase
     private const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
 
     private const SPECS_META_KEYS = [
+        'minPhpVersion',
+        'maxPhpVersion',
         'title',
         'prefix',
         'whitelist',
         'whitelist-global-constants',
         'whitelist-global-classes',
         'whitelist-global-functions',
+        'excluded-constants',
+        'excluded-classes',
+        'excluded-functions',
         'registered-classes',
         'registered-functions',
     ];
@@ -66,6 +78,9 @@ class PhpScoperSpecTest extends TestCase
         'whitelist-global-constants',
         'whitelist-global-classes',
         'whitelist-global-functions',
+        'excluded-constants',
+        'excluded-classes',
+        'excluded-functions',
         'registered-classes',
         'registered-functions',
         'payload',
@@ -79,7 +94,7 @@ class PhpScoperSpecTest extends TestCase
     {
         $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
 
-        $this->assertCount(0, $files);
+        self::assertCount(0, $files);
     }
 
     /**
@@ -91,26 +106,44 @@ class PhpScoperSpecTest extends TestCase
         string $contents,
         string $prefix,
         Whitelist $whitelist,
+        array $internalClasses,
+        array $internalFunctions,
+        array $internalConstants,
         ?string $expected,
         array $expectedRegisteredClasses,
-        array $expectedRegisteredFunctions
+        array $expectedRegisteredFunctions,
+        ?int $minPhpVersion,
+        ?int $maxPhpVersion
     ): void {
+        if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
+            self::markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
+        }
+
+        if (null !== $maxPhpVersion && $maxPhpVersion <= PHP_VERSION_ID) {
+            self::markTestSkipped(sprintf('Max PHP version not matched for spec %s', $spec));
+        }
+
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
-        $scoper = $this->createScoper();
+
+        $scoper = $this->createScoper(
+            $internalClasses,
+            $internalFunctions,
+            $internalConstants,
+        );
 
         try {
             $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
             if (null === $expected) {
-                $this->fail('Expected exception to be thrown.');
+                self::fail('Expected exception to be thrown.');
             }
         } catch (UnexpectedValueException $exception) {
             if (null !== $expected) {
                 throw $exception;
             }
 
-            $this->assertTrue(true);
+            self::assertTrue(true);
 
             return;
         } catch (PhpParserError $error) {
@@ -131,7 +164,7 @@ class PhpScoperSpecTest extends TestCase
             $startLine = $error->getAttributes()['startLine'] - 1;
             $endLine = $error->getAttributes()['endLine'] + 1;
 
-            $this->fail(
+            self::fail(
                 sprintf(
                     'Unexpected parse error found in the following lines: %s%s%s',
                     $error->getMessage(),
@@ -165,7 +198,7 @@ class PhpScoperSpecTest extends TestCase
             $expectedRegisteredFunctions
         );
 
-        $this->assertSame($expected, $actual, $specMessage);
+        self::assertSame($expected, $actual, $specMessage);
 
         $actualRecordedWhitelistedClasses = $whitelist->getRecordedWhitelistedClasses();
 
@@ -199,33 +232,44 @@ class PhpScoperSpecTest extends TestCase
                 unset($fixtures['meta']);
 
                 foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield $this->parseSpecFile(
+                    yield from $this->parseSpecFile(
                         basename($sourceDir).'/'.$file->getRelativePathname(),
                         $meta,
                         $fixtureTitle,
-                        $fixtureSet
-                    )->current();
+                        $fixtureSet,
+                    );
                 }
             } catch (Throwable $throwable) {
-                $this->fail(
+                self::fail(
                     sprintf(
                         'An error occurred while parsing the file "%s": %s',
                         $file,
-                        $throwable->getMessage()
-                    )
+                        $throwable->getMessage(),
+                    ),
                 );
             }
         }
     }
 
-    private function createScoper(): Scoper
+    private function createScoper(
+        array $internalClasses,
+        array $internalFunctions,
+        array $internalConstants
+    ): Scoper
     {
         $phpParser = create_parser();
+
+        $reflector = Reflector::createWithPhpStormStubs()
+            ->withSymbols(
+                $internalClasses,
+                $internalFunctions,
+                $internalConstants,
+            );
 
         return new PhpScoper(
             $phpParser,
             new FakeScoper(),
-            new TraverserFactory(new Reflector())
+            new TraverserFactory($reflector),
         );
     }
 
@@ -245,7 +289,7 @@ class PhpScoperSpecTest extends TestCase
 
         $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
 
-        $this->assertSame(
+        self::assertSame(
             [],
             $diff = array_diff(
                 array_keys($meta),
@@ -258,7 +302,7 @@ class PhpScoperSpecTest extends TestCase
         );
 
         if (is_array($fixtureSet)) {
-            $this->assertSame(
+            self::assertSame(
                 [],
                 $diff = array_diff(
                     array_keys($fixtureSet),
@@ -282,9 +326,14 @@ class PhpScoperSpecTest extends TestCase
                 $fixtureSet['whitelist-global-functions'] ?? $meta['whitelist-global-functions'],
                 ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
             ),
+            $fixtureSet['excluded-classes'] ?? $meta['excluded-classes'],
+            $fixtureSet['excluded-functions'] ?? $meta['excluded-functions'],
+            $fixtureSet['excluded-constants'] ?? $meta['excluded-constants'],
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
             $fixtureSet['registered-classes'] ?? $meta['registered-classes'],
             $fixtureSet['registered-functions'] ?? $meta['registered-functions'],
+            $meta['minPhpVersion'] ?? null,
+            $meta['maxPhpVersion'] ?? null,
         ];
     }
 
@@ -428,18 +477,11 @@ OUTPUT
      */
     private function assertSameRecordedSymbols(array $expected, array $actual, string $message): void
     {
-        $sort = static function (array $a, array $b): int {
-            /*
-             * @var string[] $a
-             * @var string[] $b
-             */
-
-            return $a[0] <=> $b[0];
-        };
+        $sort = static fn (array $a, array $b) => $a[0] <=> $b[0];
 
         usort($expected, $sort);
         usort($actual, $sort);
 
-        $this->assertSame($expected, $actual, $message);
+        self::assertSame($expected, $actual, $message);
     }
 }

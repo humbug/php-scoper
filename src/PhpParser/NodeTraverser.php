@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use function array_slice;
-use function array_values;
-use function count;
 use Humbug\PhpScoper\PhpParser\Node\NameFactory;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
@@ -27,15 +24,18 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser as PhpParserNodeTraverser;
+use function array_map;
+use function array_slice;
+use function array_splice;
+use function array_values;
+use function count;
+use function current;
 
 /**
  * @private
  */
 final class NodeTraverser extends PhpParserNodeTraverser
 {
-    /**
-     * @inheritdoc
-     */
     public function traverse(array $nodes): array
     {
         $nodes = $this->wrapInNamespace($nodes);

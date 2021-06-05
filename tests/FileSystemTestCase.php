@@ -15,22 +15,24 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use PHPUnit\Framework\TestCase;
+use function Safe\chdir;
+use function Safe\getcwd;
+use function Safe\realpath;
+use function str_replace;
+use function sys_get_temp_dir;
 
 abstract class FileSystemTestCase extends TestCase
 {
     /**
      * @var string
      */
-    protected $cwd;
+    protected string $cwd;
 
     /**
      * @var string
      */
-    protected $tmp;
+    protected string $tmp;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -45,9 +47,6 @@ abstract class FileSystemTestCase extends TestCase
         chdir($this->tmp);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function tearDown(): void
     {
         parent::tearDown();

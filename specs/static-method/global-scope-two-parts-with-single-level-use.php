@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -57,7 +60,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo;
-\Humbug\Foo\Bar::main();
+Foo\Bar::main();
 
 PHP
     ,
@@ -85,7 +88,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo\Bar;
-\Humbug\Foo\Bar::main();
+Bar::main();
 
 PHP
     ,
@@ -198,12 +201,12 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo;
-\Humbug\Foo\Bar::main();
+Foo\Bar::main();
 
 PHP
     ],
 
-    'Static method call statement of a whitelisted namespaced class imported with a use statement' => [
+    'SStatic method call statement of a whitelisted namespaced class partially imported with a use statementtatic method call statement of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
         'registered-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
@@ -232,7 +235,7 @@ class Bar
 namespace Humbug;
 
 use Humbug\Foo\Bar;
-\Humbug\Foo\Bar::main();
+Bar::main();
 
 PHP
     ],

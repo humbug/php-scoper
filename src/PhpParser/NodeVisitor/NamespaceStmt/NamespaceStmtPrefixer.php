@@ -37,9 +37,9 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {
-    private $prefix;
-    private $whitelist;
-    private $namespaceStatements;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private NamespaceStmtCollection $namespaceStatements;
 
     public function __construct(string $prefix, Whitelist $whitelist, NamespaceStmtCollection $namespaceStatements)
     {
@@ -48,9 +48,6 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
         $this->namespaceStatements = $namespaceStatements;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         return ($node instanceof Namespace_)

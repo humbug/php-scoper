@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -154,7 +157,7 @@ namespace Humbug;
 
 const FOO_CONST = 'foo';
 \define('BAR_CONST', 'foo');
-function foo(\Humbug\Foo $arg0, \Humbug\Foo $arg1, \Humbug\Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = \Humbug\FOO_CONST, string $bar = \BAR_CONST)
+function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = \Humbug\FOO_CONST, string $bar = \BAR_CONST)
 {
 }
 
@@ -266,7 +269,7 @@ namespace Humbug;
 
 use Humbug\Foo;
 use ArrayIterator;
-function foo(string $arg0, ?string $arg1, ?string $arg2 = null, \Humbug\Foo $arg3, ?\Humbug\Foo $arg4, \Humbug\Foo $arg5 = null, \Humbug\Foo $arg6, ?\Humbug\Foo $arg7, \Humbug\Foo $arg8 = null, \Humbug\Foo\Bar $arg9, ?\Humbug\Foo\Bar $arg10, \Humbug\Foo\Bar $arg11 = null, \Humbug\Foo\Bar $arg7, ?\Humbug\Foo\Bar $arg12, \Humbug\Foo\Bar $arg13 = null, \ArrayIterator $arg14, ?\ArrayIterator $arg15, ?\ArrayIterator $arg16 = null, \ArrayIterator $arg17, ?\ArrayIterator $arg18, \ArrayIterator $arg19 = null, \Humbug\X\Y $arg20, \Humbug\X\Y $arg21)
+function foo(string $arg0, ?string $arg1, ?string $arg2 = null, Foo $arg3, ?Foo $arg4, Foo $arg5 = null, \Humbug\Foo $arg6, ?\Humbug\Foo $arg7, \Humbug\Foo $arg8 = null, Foo\Bar $arg9, ?Foo\Bar $arg10, Foo\Bar $arg11 = null, \Humbug\Foo\Bar $arg7, ?\Humbug\Foo\Bar $arg12, \Humbug\Foo\Bar $arg13 = null, ArrayIterator $arg14, ?ArrayIterator $arg15, ?ArrayIterator $arg16 = null, \ArrayIterator $arg17, ?\ArrayIterator $arg18, \ArrayIterator $arg19 = null, \Humbug\X\Y $arg20, \Humbug\X\Y $arg21)
 {
 }
 
@@ -406,25 +409,25 @@ function foo() : callable
 function foo() : ?callable
 {
 }
-function foo() : \Humbug\Foo
+function foo() : Foo
 {
 }
 function foo() : \Humbug\Foo
 {
 }
-function foo() : ?\Humbug\Foo
+function foo() : ?Foo
 {
 }
 function foo() : ?\Humbug\Foo
 {
 }
-function foo() : \ArrayIterator
+function foo() : ArrayIterator
 {
 }
 function foo() : \ArrayIterator
 {
 }
-function foo() : ?\ArrayIterator
+function foo() : ?ArrayIterator
 {
 }
 function foo() : ?\ArrayIterator

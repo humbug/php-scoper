@@ -83,4 +83,19 @@ return [
     //
     // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
     'whitelist-global-functions' => true,
+
+    // List of classes to consider as internal i.e. to leave untouched.
+    //
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
+    'system-classes' => [],
+
+    // List of functions to consider as internal i.e. to leave untouched.
+    //
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
+    'system-functions' => [],
+
+    // List of constants to consider as internal i.e. to leave untouched.
+    //
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
+    'system-constants' => [],
 ];

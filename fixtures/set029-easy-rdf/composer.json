@@ -1,5 +1,5 @@
 {
     "require": {
-        "easyrdf/easyrdf": "^0.9.1"
+        "easyrdf/easyrdf": "^1.0.0"
     }
 }

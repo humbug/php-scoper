@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -81,7 +84,7 @@ namespace Humbug;
 
 try {
     echo "foo";
-} catch (\Humbug\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP
@@ -147,7 +150,7 @@ namespace Humbug\Acme;
 
 try {
     echo "foo";
-} catch (\Humbug\Acme\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP
@@ -171,7 +174,7 @@ namespace Humbug\Acme;
 
 try {
     echo "foo";
-} catch (\Humbug\Acme\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP
@@ -220,7 +223,7 @@ namespace Humbug\Acme;
 use Humbug\X\FooException;
 try {
     echo "foo";
-} catch (\Humbug\X\FooException $t) {
+} catch (FooException $t) {
 }
 
 PHP
@@ -245,7 +248,7 @@ namespace Humbug\Acme;
 use Humbug\X\FooException;
 try {
     echo "foo";
-} catch (\Humbug\X\FooException|\Throwable $t) {
+} catch (FooException|\Throwable $t) {
 }
 
 PHP

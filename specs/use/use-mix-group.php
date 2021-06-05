@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -30,6 +33,10 @@ return [
 
 use A\B\{C\D, function b\c, const D};
 
+D::class;
+c();
+D;
+
 ----
 <?php
 
@@ -38,6 +45,9 @@ namespace Humbug;
 use Humbug\A\B\C\D;
 use function Humbug\A\B\b\c;
 use const Humbug\A\B\D;
+D::class;
+c();
+D;
 
 PHP
     ,

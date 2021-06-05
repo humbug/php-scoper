@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -161,7 +164,7 @@ class Yaml
 }
 namespace Humbug;
 
-$x = \Humbug\Symfony\Component\Yaml\Yaml::class;
+$x = Symfony\Component\Yaml\Yaml::class;
 $x = \Humbug\Symfony\Component\Yaml\Yaml::class;
 $x = \Humbug\Symfony\Component\Yaml\Yaml::class;
 $x = \Humbug\Symfony\Component\Yaml\Yaml::class;

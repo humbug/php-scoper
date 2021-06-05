@@ -16,24 +16,25 @@ namespace Humbug\PhpScoper;
 
 use ArrayIterator;
 use Generator;
-use function iterator_to_array;
+use Humbug\PhpScoper\Console\Application;
 use PHPUnit\Framework\TestCase;
+use function iterator_to_array;
 
 class FunctionsTest extends TestCase
 {
     public function test_it_can_create_an_application(): void
     {
-        $app1 = create_application();
-        $app2 = create_application();
+        $app1 = Application::create();
+        $app2 = Application::create();
 
-        $this->assertNotSame($app1, $app2);
+        self::assertNotSame($app1, $app2);
     }
 
     public function test_it_gets_the_PHP_Scoper_version(): void
     {
         $version = get_php_scoper_version();
 
-        $this->assertStringContainsString('@', $version);
+        self::assertStringContainsString('@', $version);
     }
 
     /**
@@ -43,7 +44,7 @@ class FunctionsTest extends TestCase
     {
         $actual = get_common_path($paths);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     /**
@@ -53,7 +54,7 @@ class FunctionsTest extends TestCase
     {
         $actual = iterator_to_array(chain(...$iterators), true);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function providePaths(): Generator

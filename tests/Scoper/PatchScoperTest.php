@@ -19,26 +19,24 @@ use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PatchScoper
  */
 class PatchScoperTest extends TestCase
 {
-    /**
-     * @var Scoper|ObjectProphecy
-     */
-    private $decoratedScoperProphecy;
+    use ProphecyTrait;
 
     /**
-     * @var Scoper
+     * @var ObjectProphecy<Scoper>
      */
-    private $decoratedScoper;
+    private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @inheritdoc
-     */
+    private Scoper $decoratedScoper;
+
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -47,7 +45,7 @@ class PatchScoperTest extends TestCase
 
     public function test_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(PatchScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(PatchScoper::class, Scoper::class, true));
     }
 
     public function test_applies_the_list_of_patches_to_the_scoped_file(): void
@@ -86,7 +84,7 @@ class PatchScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }

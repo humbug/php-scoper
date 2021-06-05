@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -32,6 +35,12 @@ use A\{B};
 use A\{B\C, D};
 use \A\B\{C\D as ABCD, E};
 
+B::class;
+C::class;
+D::class;
+ABCD::class;
+E::class;
+
 ----
 <?php
 
@@ -42,6 +51,11 @@ use Humbug\A\B\C;
 use Humbug\A\D;
 use Humbug\A\B\C\D as ABCD;
 use Humbug\A\B\E;
+B::class;
+C::class;
+D::class;
+ABCD::class;
+E::class;
 
 PHP
     ,
@@ -79,6 +93,12 @@ use A\{B};
 use A\{B\C, D};
 use \A\B\{C\G, E};
 
+B::class;
+C::class;
+D::class;
+G::class;
+E::class;
+
 ----
 <?php
 
@@ -89,6 +109,11 @@ use Humbug\A\B\C;
 use Humbug\A\D;
 use Humbug\A\B\C\G;
 use Humbug\A\B\E;
+B::class;
+C::class;
+D::class;
+G::class;
+E::class;
 
 PHP
     ],

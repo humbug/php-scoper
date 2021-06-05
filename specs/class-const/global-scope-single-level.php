@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -40,7 +43,7 @@ namespace Humbug;
 class Command
 {
 }
-\Humbug\Command::MAIN_CONST;
+Command::MAIN_CONST;
 
 PHP
     ],

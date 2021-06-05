@@ -15,34 +15,28 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use IteratorAggregate;
 use PhpParser\Node\Name\FullyQualified;
+use function count;
 
 final class WhitelistedFunctionCollection implements IteratorAggregate, Countable
 {
     /**
      * @var FullyQualified[][]
      */
-    private $nodes = [];
+    private array $nodes = [];
 
     public function add(FullyQualified $original, FullyQualified $alias): void
     {
         $this->nodes[] = [$original, $alias];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function count(): int
     {
         return count($this->nodes);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);

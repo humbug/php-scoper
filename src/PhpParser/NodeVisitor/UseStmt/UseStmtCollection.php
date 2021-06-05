@@ -14,12 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
-use function array_key_exists;
 use ArrayIterator;
-use function count;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
-use function implode;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
@@ -29,6 +26,10 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use function array_key_exists;
+use function count;
+use function implode;
+use function strtolower;
 
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
@@ -38,12 +39,12 @@ use PhpParser\Node\Stmt\UseUse;
  */
 final class UseStmtCollection implements IteratorAggregate
 {
-    private $hashes = [];
+    private array $hashes = [];
 
     /**
      * @var Use_[][]
      */
-    private $nodes = [
+    private array $nodes = [
         null => [],
     ];
 
@@ -62,11 +63,6 @@ final class UseStmtCollection implements IteratorAggregate
      * use Y;
      *
      * will return the use statement for `Bar\Foo`.
-     *
-     * @param Name|null $namespaceName
-     * @param Name      $node
-     *
-     * @return null|Name
      */
     public function findStatementForNode(?Name $namespaceName, Name $node): ?Name
     {
@@ -109,9 +105,6 @@ final class UseStmtCollection implements IteratorAggregate
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);
@@ -125,9 +118,11 @@ final class UseStmtCollection implements IteratorAggregate
                     continue;
                 }
 
+                $type = Use_::TYPE_UNKNOWN !== $use_->type ? $use_->type : $useStatement->type;
+
                 if ($name === $useStatement->getAlias()->toLowerString()) {
                     if ($isFunctionName) {
-                        if (Use_::TYPE_FUNCTION === $use_->type) {
+                        if (Use_::TYPE_FUNCTION === $type) {
                             return UseStmtManipulator::getOriginalName($useStatement);
                         }
 
@@ -135,15 +130,17 @@ final class UseStmtCollection implements IteratorAggregate
                     }
 
                     if ($isConstantName) {
-                        if (Use_::TYPE_CONSTANT === $use_->type) {
+                        if (Use_::TYPE_CONSTANT === $type) {
                             return UseStmtManipulator::getOriginalName($useStatement);
                         }
 
                         continue;
                     }
 
-                    // Match the alias
-                    return UseStmtManipulator::getOriginalName($useStatement);
+                    if (Use_::TYPE_NORMAL === $type) {
+                        // Match the alias
+                        return UseStmtManipulator::getOriginalName($useStatement);
+                    }
                 }
             }
         }

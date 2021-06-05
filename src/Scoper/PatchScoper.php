@@ -14,23 +14,20 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function array_reduce;
-use function func_get_args;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use function array_reduce;
+use function func_get_args;
 
 final class PatchScoper implements Scoper
 {
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
         $this->decoratedScoper = $decoratedScoper;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
         return (string) array_reduce(

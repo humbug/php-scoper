@@ -22,9 +22,6 @@ use PhpParser\Node\Scalar\String_;
 
 final class ClassAliasFuncCall extends FuncCall
 {
-    /**
-     * @inheritdoc
-     */
     public function __construct(FullyQualified $prefixedName, FullyQualified $originalName, array $attributes = [])
     {
         parent::__construct(

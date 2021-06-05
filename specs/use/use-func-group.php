@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -28,20 +31,31 @@ return [
     <<<'PHP'
 <?php
 
-use A\{b};
-use A\{B\c, d};
-use \A\B\{C\g, e};
+use function A\{b};
+use function A\{B\c, d};
+use function \A\B\{C\g, e};
+
+b();
+c();
+d();
+g();
+e();
 
 ----
 <?php
 
 namespace Humbug;
 
-use Humbug\A\b;
-use Humbug\A\B\c;
-use Humbug\A\d;
-use Humbug\A\B\C\g;
-use Humbug\A\B\e;
+use function Humbug\A\b;
+use function Humbug\A\B\c;
+use function Humbug\A\d;
+use function Humbug\A\B\C\g;
+use function Humbug\A\B\e;
+b();
+c();
+d();
+g();
+e();
 
 PHP
     ,

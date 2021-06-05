@@ -15,13 +15,15 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Generator;
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use function Humbug\PhpScoper\create_fake_patcher;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper
@@ -29,9 +31,11 @@ use Prophecy\Prophecy\ObjectProphecy;
  */
 class InstalledPackagesScoperTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function test_it_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(InstalledPackagesScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(InstalledPackagesScoper::class, Scoper::class, true));
     }
 
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_installed_file(): void
@@ -42,7 +46,7 @@ class InstalledPackagesScoperTest extends TestCase
         $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create(true, true, true, 'Foo');
 
-        /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
+        /** @var ObjectProphecy<Scoper> $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
             ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
@@ -57,7 +61,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -77,7 +81,7 @@ class InstalledPackagesScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function provideInstalledPackagesFiles(): Generator
@@ -325,6 +329,132 @@ JSON
         ]
     }
 ]
+JSON
+        ];
+        yield [
+            <<<'JSON'
+{
+    "dev": true,
+    "packages": [
+        {
+            "name": "beberlei/assert",
+            "version": "v2.7.6",
+            "version_normalized": "2.7.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/assert.git",
+                "reference": "8726e183ebbb0169cb6cb4832e22ebd355524563"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/8726e183ebbb0169cb6cb4832e22ebd355524563",
+                "reference": "8726e183ebbb0169cb6cb4832e22ebd355524563",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.1.1",
+                "phpunit/phpunit": "^4|^5"
+            },
+            "time": "2017-05-04T02:00:24+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Assert\\": "lib/Assert"
+                },
+                "files": [
+                    "lib/Assert/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Richard Quadling",
+                    "email": "rquadling@gmail.com",
+                    "role": "Collaborator"
+                }
+            ],
+            "description": "Thin assertion library for input validation in business models.",
+            "keywords": [],
+            "platform": {}
+        }
+    ]
+}
+
+JSON
+            ,
+            <<<'JSON'
+{
+    "dev": true,
+    "packages": [
+        {
+            "name": "beberlei\/assert",
+            "version": "v2.7.6",
+            "version_normalized": "2.7.6.0",
+            "source": {
+                "type": "git",
+                "url": "https:\/\/github.com\/beberlei\/assert.git",
+                "reference": "8726e183ebbb0169cb6cb4832e22ebd355524563"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https:\/\/api.github.com\/repos\/beberlei\/assert\/zipball\/8726e183ebbb0169cb6cb4832e22ebd355524563",
+                "reference": "8726e183ebbb0169cb6cb4832e22ebd355524563",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "friendsofphp\/php-cs-fixer": "^2.1.1",
+                "phpunit\/phpunit": "^4|^5"
+            },
+            "time": "2017-05-04T02:00:24+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Foo\\Assert\\": "lib\/Assert"
+                },
+                "files": [
+                    "lib\/Assert\/functions.php"
+                ]
+            },
+            "notification-url": "https:\/\/packagist.org\/downloads\/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Richard Quadling",
+                    "email": "rquadling@gmail.com",
+                    "role": "Collaborator"
+                }
+            ],
+            "description": "Thin assertion library for input validation in business models.",
+            "keywords": [],
+            "platform": {}
+        }
+    ]
+}
 JSON
         ];
     }

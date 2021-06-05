@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => false,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -34,7 +37,7 @@ main();
 
 namespace Humbug;
 
-\Humbug\main();
+main();
 
 PHP
     ,
@@ -48,7 +51,7 @@ MAIN();
 
 namespace Humbug;
 
-\Humbug\MAIN();
+MAIN();
 
 PHP
     ,

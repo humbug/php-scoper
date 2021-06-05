@@ -4,5 +4,5 @@
             "src/functions.php"
         ]
     },
-    "bin": "main.php"
+    "bin": ["main.php"]
 }

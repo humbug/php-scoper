@@ -14,10 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
-use function preg_match_all;
+use function Safe\preg_match_all;
+use function Safe\usort;
 use function str_replace;
 use function strlen;
-use function usort;
+use const DIRECTORY_SEPARATOR;
 
 final class DisplayNormalizer
 {

@@ -15,7 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\NodeVisitor\NameResolver;
@@ -40,6 +42,9 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
 use PhpParser\NodeVisitorAbstract;
+use function array_merge;
+use function count;
+use function in_array;
 
 /**
  * Prefixes names when appropriate.
@@ -64,29 +69,32 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         'parent',
     ];
 
-    private $prefix;
-    private $whitelist;
-    private $nameResolver;
-    private $newNameResolver;
-    private $reflector;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private NamespaceStmtCollection $namespaceStatements;
+    private UseStmtCollection $useStatements;
+    private FullyQualifiedNameResolver $nameResolver;
+    private NameResolver $newNameResolver;
+    private Reflector $reflector;
 
     public function __construct(
         string $prefix,
         Whitelist $whitelist,
+        NamespaceStmtCollection $namespaceStatements,
+        UseStmtCollection $useStatements,
         FullyQualifiedNameResolver $nameResolver,
         NameResolver $newNameResolver,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
+        $this->namespaceStatements = $namespaceStatements;
+        $this->useStatements = $useStatements;
         $this->nameResolver = $nameResolver;
         $this->newNameResolver = $newNameResolver;
         $this->reflector = $reflector;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         return ($node instanceof Name && ParentNodeAppender::hasParent($node))
@@ -155,10 +163,55 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             $x = '';
         }
 
+        // Do not prefix if there is a matching use statement.
+        $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
+        if (
+            $useStatement !== null
+            && !($name instanceof FullyQualified)
+            && $resolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
+            && self::array_starts_with($resolvedName->parts, $useStatement->parts)
+            && !(
+                $parentNode instanceof ConstFetch
+                && (
+                    $this->whitelist->isGlobalWhitelistedConstant($resolvedName->toString())
+                    || $this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true)
+                )
+            )
+            && !(
+                $useStatement->getAttribute('parent')
+                && $useStatement->getAttribute('parent')->alias !== null
+                && $this->whitelist->isSymbolWhitelisted($useStatement->toString())
+            )
+        ) {
+            return $name;
+        }
+
         if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
             || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
         ) {
             return $resolvedName;
+        }
+
+        // Do not prefix if the Name is inside of the current namespace
+        $namespace = $this->namespaceStatements->getCurrentNamespaceName();
+        if (
+            (
+                // In a namespace
+                $namespace !== null
+                && array_merge($namespace->parts, $name->parts) === $resolvedName->parts
+            )
+            || (
+                // In the global scope
+                $namespace === null
+                && $name->parts === $resolvedName->parts
+                && !($name instanceof FullyQualified)
+                && !($parentNode instanceof ConstFetch)
+                && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
+                && !$this->reflector->isFunctionInternal($resolvedName->toString())
+                && !$this->reflector->isClassInternal($resolvedName->toString())
+            )
+        ) {
+            return $name;
         }
 
         // Check if the class can be prefixed
@@ -203,7 +256,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             }
         }
 
-        if ('self' === (string) $resolvedName && $parentNode instanceof ClassMethod) {
+        if ($parentNode instanceof ClassMethod && $resolvedName->isSpecialClassName()) {
             return $name;
         }
 
@@ -212,5 +265,16 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             $resolvedName->toString(),
             $resolvedName->getAttributes()
         );
+    }
+
+    private static function array_starts_with($arr, $prefix): bool
+    {
+        $prefixLength = count($prefix);
+        for ($i = 0; $i < $prefixLength; ++$i) {
+            if ($arr[$i] !== $prefix[$i]) {
+                return false;
+            }
+        }
+        return true;
     }
 }

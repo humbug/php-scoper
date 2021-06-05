@@ -15,47 +15,43 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
 use Generator;
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use function Humbug\PhpScoper\create_fake_patcher;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Symfony\YamlScoper
  */
 class YamlScoperTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Scoper
      */
     private $scoper;
 
     /**
-     * @var Scoper|ObjectProphecy
+     * @var ObjectProphecy<Scoper>
      */
-    private $decoratedScoperProphecy;
+    private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @var Scoper
-     */
-    private $decoratedScoper;
-
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
+        $decoratedScoper = $this->decoratedScoperProphecy->reveal();
 
-        $this->scoper = new YamlScoper($this->decoratedScoper);
+        $this->scoper = new YamlScoper($decoratedScoper);
     }
 
     public function test_it_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(YamlScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(YamlScoper::class, Scoper::class, true));
     }
 
     /**
@@ -79,7 +75,7 @@ class YamlScoperTest extends TestCase
 
         $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes($scopedCount);
     }
@@ -99,10 +95,10 @@ class YamlScoperTest extends TestCase
 
         $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
-        $this->assertSame($expectedClasses, $whitelist->getRecordedWhitelistedClasses());
-        $this->assertSame([], $whitelist->getRecordedWhitelistedFunctions());
+        self::assertSame($expectedClasses, $whitelist->getRecordedWhitelistedClasses());
+        self::assertSame([], $whitelist->getRecordedWhitelistedFunctions());
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(0);
     }
@@ -305,14 +301,14 @@ YAML
         yield 'service with class-name as argument with short-argument notation' => [
             <<<'YAML'
 services:
-    Acme\Foo: 
+    Acme\Foo:
         - '@Acme\Bar'
 YAML
             ,
             Whitelist::create(true, true, true),
             <<<'YAML'
 services:
-    Humbug\Acme\Foo: 
+    Humbug\Acme\Foo:
         - '@Humbug\Acme\Bar'
 YAML
             ,
@@ -322,10 +318,10 @@ YAML
         yield 'service with class-name as argument with short-argument notation with whitelist' => [
             <<<'YAML'
 services:
-    Acme\Foo\X: 
+    Acme\Foo\X:
         - '@Acme\Foo\Y'
 
-    Acme\Bar\X: 
+    Acme\Bar\X:
         - '@Acme\Bar\Y'
 YAML
             ,
@@ -337,10 +333,10 @@ YAML
             ),
             <<<'YAML'
 services:
-    Acme\Foo\X: 
+    Acme\Foo\X:
         - '@Acme\Foo\Y'
 
-    Humbug\Acme\Bar\X: 
+    Humbug\Acme\Bar\X:
         - '@Humbug\Acme\Bar\Y'
 YAML
             ,
@@ -381,7 +377,7 @@ services:
             - '@Acme\Foo\Y'
         tags:
             - { name: my_tag, id: 'Acme\Foo\Z' }
-    
+
     bar:
         class: 'Acme\Bar\X'
         arguments:
@@ -404,7 +400,7 @@ services:
             - '@Acme\Foo\Y'
         tags:
             - { name: my_tag, id: 'Acme\Foo\Z' }
-    
+
     bar:
         class: 'Humbug\Acme\Bar\X'
         arguments:
@@ -419,14 +415,14 @@ YAML
         yield [
             <<<'YAML'
 services:
-    Acme\Foo: 
+    Acme\Foo:
         - '@Acme\Bar'
 YAML
             ,
             Whitelist::create(true, true, true, 'Acme\Foo'),
             <<<'YAML'
 services:
-    Humbug\Acme\Foo: 
+    Humbug\Acme\Foo:
         - '@Humbug\Acme\Bar'
 YAML
             ,
@@ -438,18 +434,18 @@ YAML
         yield [
             <<<'YAML'
 services:
-    Foo: 
+    Foo:
         - '@Acme\Bar'
-        
+
     Closure: ~
 YAML
             ,
             Whitelist::create(true, true, true),
             <<<'YAML'
 services:
-    Foo: 
+    Foo:
         - '@Humbug\Acme\Bar'
-        
+
     Closure: ~
 YAML
             ,
@@ -460,7 +456,7 @@ YAML
         yield [
             <<<'YAML'
 services:
-    Acme\Foo: 
+    Acme\Foo:
         - '@Acme\Bar'
     Emca\Foo:
         - '@Emca\Bar'
@@ -469,7 +465,7 @@ YAML
             Whitelist::create(true, true, true, 'Acme\*'),
             <<<'YAML'
 services:
-    Acme\Foo: 
+    Acme\Foo:
         - '@Acme\Bar'
     Humbug\Emca\Foo:
         - '@Humbug\Emca\Bar'

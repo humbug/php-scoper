@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -48,7 +51,7 @@ class Foo
 namespace Humbug\A;
 
 use Humbug\Foo as X;
-\Humbug\Foo::$mainStaticProp;
+X::$mainStaticProp;
 
 PHP
     ,
@@ -99,7 +102,7 @@ X::$mainStaticProp;
 namespace Humbug\A;
 
 use Reflector as X;
-\Reflector::$mainStaticProp;
+X::$mainStaticProp;
 
 PHP
     ,

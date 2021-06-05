@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
+        'minPhpVersion' => 70400,
         'title' => 'Arrow function in a namespace with use statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
@@ -21,6 +22,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => false,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -52,8 +56,8 @@ use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\X\Foo $x): \Humbug\X\Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ,
@@ -88,8 +92,8 @@ use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\X\Foo $x): \Humbug\X\Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ],
@@ -126,8 +130,8 @@ use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
-fn(\Humbug\X\Foo $x): \Humbug\X\Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
+fn(Foo $x): Bar => $x;
+fn(DateTimeImmutable $x): Closure => $x;
 
 PHP
     ],

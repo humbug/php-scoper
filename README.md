@@ -1,8 +1,7 @@
 # PHP-Scoper
 
 [![Package version](https://img.shields.io/packagist/v/humbug/php-scoper.svg?style=flat-square)](https://packagist.org/packages/humbug/php-scoper)
-[![Travis Build Status](https://img.shields.io/travis/humbug/php-scoper.svg?branch=master&style=flat-square)](https://travis-ci.org/humbug/php-scoper?branch=master)
-[![AppVeyor Build Status](https://img.shields.io/appveyor/ci/humbug/php-scoper.svg?branch=master&style=flat-square)](https://ci.appveyor.com/project/humbug/php-scoper/branch/master)
+[![Build Status](https://github.com/humbug/php-scoper/workflows/Build/badge.svg)](https://github.com/humbug/php-scoper/actions)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/humbug/php-scoper.svg?branch=master&style=flat-square)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
 [![Slack](https://img.shields.io/badge/slack-%23humbug-red.svg?style=flat-square)](https://symfony.com/slack-invite)
@@ -39,6 +38,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelisted files](#whitelisted-files)
+    - [Excluded Symbols](#excluded-symbols)
     - [Whitelist][whitelist]
         - [Constants & functions from the global namespace](#constants--classes--functions-from-the-global-namespace)
         - [Symbols](#symbols)
@@ -160,6 +160,9 @@ return [
     'whitelist-global-constants' => true,   // bool
     'whitelist-global-classes' => true,     // bool
     'whitelist-global-functions' => true,   // bool
+    'exclude-constants' => [],              // string[]
+    'exclude-classes' => [],                // string[]
+    'exclude-functions' => [],              // string[]
 ];
 ```
 
@@ -289,6 +292,30 @@ For the files listed in `files-whitelist`, their content will be left
 untouched during the scoping process.
 
 
+### Excluded Symbols
+
+Symbols can be marked as excluded as follows:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+return [
+    'excluded-classes' => ['Stringeable'],
+    'excluded-functions' => ['str_contains'],
+    'excluded-constants' => ['PHP_EOL'],
+];
+```
+
+This enriches the list of Symbols PHP-Scoper's Reflector considers as "internal",
+i.e. PHP engine or extension symbols and that will be left completely untouched.
+
+This feature should be use very carefully as it can easily break the Composer
+autoloading and is recommended to be used only for compensating missing symbols
+from the [PhpStorm's stubs][phpstorm-stubs] shipped with PHP-Scoper.
+
+
 ### Whitelist
 
 PHP-Scoper's goal is to make sure that all code for a project lies in a 
@@ -393,7 +420,7 @@ With:
 
 $loader = require_once __DIR__.'/autoload.php';
 
-class_alias('Humbug\\Acme\\Foo');   // Triggers the autoloading of
+class_exists('Humbug\\Acme\\Foo');   // Triggers the autoloading of
                                     // `Humbug\Acme\Foo` after the
                                     // Composer autoload is registered
 
@@ -914,3 +941,4 @@ now been moved under the
 [php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
 [phar-extract-to]: https://secure.php.net/manual/en/phar.extractto.php
 [phive]: https://github.com/phar-io/phive
+[phpstorm-stubs]: https://github.com/JetBrains/phpstorm-stubs

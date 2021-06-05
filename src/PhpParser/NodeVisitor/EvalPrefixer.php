@@ -24,9 +24,6 @@ final class EvalPrefixer extends NodeVisitorAbstract
 {
     use StringScoperPrefixer;
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         if ($node instanceof String_ && ParentNodeAppender::findParent($node) instanceof Eval_) {

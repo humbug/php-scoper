@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -57,7 +60,7 @@ $x = is_array([]);
 namespace Humbug\Acme;
 
 use function Humbug\Acme\is_array;
-$x = \Humbug\Acme\is_array([]);
+$x = is_array([]);
 
 PHP
     ,

@@ -18,12 +18,9 @@ use PhpParser\Node\Name\FullyQualified;
 
 final class PrefixedName extends FullyQualified
 {
-    private $prefixedName;
-    private $originalName;
+    private FullyQualified $prefixedName;
+    private FullyQualified $originalName;
 
-    /**
-     * @inheritdoc
-     */
     public function __construct(FullyQualified $prefixedName, FullyQualified $originalName, array $attributes = [])
     {
         parent::__construct($prefixedName, $attributes);

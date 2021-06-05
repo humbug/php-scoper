@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -42,7 +45,7 @@ class Foo
 {
 }
 use Humbug\Foo as A;
-\Humbug\Foo\Bar\DUMMY_CONST;
+A\Bar\DUMMY_CONST;
 
 PHP
     ,

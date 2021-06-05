@@ -14,22 +14,23 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
+use Humbug\PhpScoper\Whitelist;
+use PhpParser\Node\Name\FullyQualified;
 use function array_map;
 use function array_unshift;
 use function chr;
+use function count;
 use function explode;
-use Humbug\PhpScoper\Whitelist;
 use function implode;
-use PhpParser\Node\Name\FullyQualified;
-use function sprintf;
+use function Safe\sprintf;
 use function str_repeat;
 use function str_replace;
 use function strpos;
 
 final class ScoperAutoloadGenerator
 {
-    private $whitelist;
-    private $eol;
+    private Whitelist $whitelist;
+    private string $eol;
 
     public function __construct(Whitelist $whitelist)
     {
@@ -106,15 +107,15 @@ PHP;
         $statements = array_map(
             static function (array $pair): string {
                 /**
-                 * @var string
+                 * @var string $originalClass
                  * @var string $prefixedClass
                  */
                 [$originalClass, $prefixedClass] = $pair;
 
                 return sprintf(
                     <<<'PHP'
-if (!class_exists('%s', false)) {
-    class_exists('%s');
+if (!class_exists('%1$s', false) && !interface_exists('%1$s', false) && !trait_exists('%1$s', false)) {
+    spl_autoload_call('%2$s');
 }
 PHP
                     ,
@@ -125,7 +126,7 @@ PHP
             $whitelistedClasses
         );
 
-        if ([] === $statements) {
+        if (count($statements) === 0) {
             return $statements;
         }
 
@@ -230,8 +231,8 @@ EOF
     private function hasNamespacedFunctions(array $functions): bool
     {
         foreach ($functions as [$original, $alias]) {
-            /*
-             * @var string
+            /**
+             * @var string $original
              * @var string $alias
              */
             if (false !== strpos($original, '\\')) {

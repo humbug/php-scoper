@@ -14,18 +14,20 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use function gettype;
-use function Humbug\PhpScoper\json_decode;
-use function Humbug\PhpScoper\json_encode;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use LogicException;
-use function sprintf;
 use stdClass;
+use function gettype;
+use function preg_match as native_preg_match;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\sprintf;
+use const JSON_PRETTY_PRINT;
 
 final class JsonFileScoper implements Scoper
 {
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     public function __construct(Scoper $decoratedScoper)
     {
@@ -34,12 +36,10 @@ final class JsonFileScoper implements Scoper
 
     /**
      * Scopes PHP and JSON files related to Composer.
-     *
-     * {@inheritdoc}
      */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
-        if (1 !== preg_match('/composer\.json$/', $filePath)) {
+        if (1 !== native_preg_match('/composer\.json$/', $filePath)) {
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 

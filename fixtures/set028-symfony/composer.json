@@ -2,11 +2,11 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.3 || ^8.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/console": "*",
-        "symfony/flex": "^1.1",
+        "symfony/flex": "^1.10",
         "symfony/framework-bundle": "*",
         "symfony/yaml": "*"
     },
@@ -14,6 +14,9 @@
         "symfony/dotenv": "*"
     },
     "config": {
+        "platform": {
+            "php": "7.3"
+        },
         "preferred-install": {
             "*": "dist"
         },
@@ -55,7 +58,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "4.1.*"
+            "require": "4.4.*"
         }
     }
 }

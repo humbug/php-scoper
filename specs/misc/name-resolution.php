@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -46,11 +49,43 @@ abstract class TestCase extends Assert {
 namespace Humbug\PHPUnit\Framework;
 
 use function assert;
-abstract class TestCase extends \Humbug\PHPUnit\Framework\Assert
+abstract class TestCase extends Assert
 {
     function __construct()
     {
         \assert();
+    }
+}
+
+PHP
+    ],
+
+    'Internal class & const with the same name' => [
+        'registered-functions' => [],
+        'payload' => <<<'PHP'
+<?php
+
+namespace PHPUnit\Framework;
+
+use const SORT_NUMERIC;
+
+abstract class TestCase extends SORT_NUMERIC {
+    function __construct() {
+        echo SORT_NUMERIC;
+    }
+}
+
+----
+<?php
+
+namespace Humbug\PHPUnit\Framework;
+
+use const SORT_NUMERIC;
+abstract class TestCase extends SORT_NUMERIC
+{
+    function __construct()
+    {
+        echo \SORT_NUMERIC;
     }
 }
 

@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use PhpParser\NodeVisitor\NameResolver;
-use function array_reduce;
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
@@ -29,6 +28,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
+use function array_reduce;
 
 /**
  * Appends a `class_alias` to the whitelisted classes.
@@ -57,10 +57,10 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
-    private $prefix;
-    private $whitelist;
-    private $nameResolver;
-    private $newNameResolver;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private FullyQualifiedNameResolver $nameResolver;
+    private NameResolver $newNameResolver;
 
     public function __construct(string $prefix, Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver, NameResolver $newNameResolver)
     {
@@ -70,9 +70,6 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         $this->newNameResolver = $newNameResolver;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function afterTraverse(array $nodes): array
     {
         $newNodes = [];

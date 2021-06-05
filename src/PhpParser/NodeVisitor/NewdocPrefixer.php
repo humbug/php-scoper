@@ -15,20 +15,17 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\StringScoperPrefixer;
-use function ltrim;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
+use function ltrim;
+use function Safe\substr;
 use function strpos;
-use function substr;
 
 final class NewdocPrefixer extends NodeVisitorAbstract
 {
     use StringScoperPrefixer;
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         if ($node instanceof String_ && $this->isPhpNowdoc($node)) {

@@ -14,58 +14,53 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
-use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
-use Humbug\PhpScoper\Scoper\NullScoper;
-use Humbug\PhpScoper\Scoper\PatchScoper;
-use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Scoper\SymfonyScoper;
+use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class Container
 {
-    private $parser;
-    private $reflector;
-    private $scoper;
+    private Filesystem $filesystem;
+    private ConfigurationFactory $configFactory;
+    private Parser $parser;
+    private ScoperFactory $scoperFactory;
 
-    public function getScoper(): Scoper
+    public function getFileSystem(): Filesystem
     {
-        if (null === $this->scoper) {
-            $this->scoper = new PatchScoper(
-                new PhpScoper(
-                    $this->getParser(),
-                    new JsonFileScoper(
-                        new InstalledPackagesScoper(
-                            new SymfonyScoper(
-                                new NullScoper()
-                            )
-                        )
-                    ),
-                    new TraverserFactory($this->getReflector())
-                )
+        if (!isset($this->filesystem)) {
+            $this->filesystem = new Filesystem();
+        }
+
+        return $this->filesystem;
+    }
+
+    public function getConfigurationFactory(): ConfigurationFactory
+    {
+        if (!isset($this->configFactory)) {
+            $this->configFactory = new ConfigurationFactory(
+                $this->getFileSystem(),
             );
         }
 
-        return $this->scoper;
+        return $this->configFactory;
+    }
+
+    public function getScoperFactory(): ScoperFactory
+    {
+        if (!isset($this->scoperFactory)) {
+            $this->scoperFactory = new ScoperFactory($this->getParser());
+        }
+
+        return $this->scoperFactory;
     }
 
     public function getParser(): Parser
     {
-        if (null === $this->parser) {
-            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
+        if (!isset($this->parser)) {
+            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7, new Lexer());
         }
 
         return $this->parser;
-    }
-
-    public function getReflector(): Reflector
-    {
-        if (null === $this->reflector) {
-            $this->reflector = new Reflector();
-        }
-
-        return $this->reflector;
     }
 }

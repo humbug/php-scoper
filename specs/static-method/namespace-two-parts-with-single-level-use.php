@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -48,7 +51,7 @@ class Foo
 namespace Humbug\A;
 
 use Humbug\Foo;
-\Humbug\Foo::main();
+Foo::main();
 
 PHP
     ,
@@ -95,7 +98,7 @@ Closure::bind();
 namespace Humbug\A;
 
 use Closure;
-\Closure::bind();
+Closure::bind();
 
 PHP
     ,

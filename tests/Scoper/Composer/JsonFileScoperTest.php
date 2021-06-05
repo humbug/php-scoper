@@ -15,13 +15,15 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Generator;
-use function Humbug\PhpScoper\create_fake_patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use function Humbug\PhpScoper\create_fake_patcher;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\Composer\JsonFileScoper
@@ -29,9 +31,11 @@ use Prophecy\Prophecy\ObjectProphecy;
  */
 class JsonFileScoperTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function test_it_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
     }
 
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_composer_file(): void
@@ -42,7 +46,7 @@ class JsonFileScoperTest extends TestCase
         $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create(true, true, true, 'Foo');
 
-        /** @var Scoper|ObjectProphecy $decoratedScoperProphecy */
+        /** @var ObjectProphecy<Scoper> $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
             ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
@@ -57,7 +61,7 @@ class JsonFileScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -77,7 +81,7 @@ class JsonFileScoperTest extends TestCase
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function provideComposerFiles(): Generator
@@ -151,7 +155,7 @@ JSON
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function providePSR0ComposerFiles(): Generator

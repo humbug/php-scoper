@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -77,8 +80,8 @@ namespace Humbug;
 
 use Humbug\FOO\x as Y;
 use Humbug\Foo\stdClass;
-\var_dump(new \Humbug\FOO\x());
-\var_dump(new \Humbug\Foo\stdClass());
+\var_dump(new y());
+\var_dump(new STDCLASS());
 
 PHP
     ,

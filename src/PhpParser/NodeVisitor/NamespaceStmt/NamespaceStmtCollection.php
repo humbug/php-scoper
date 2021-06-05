@@ -15,13 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
 use ArrayIterator;
-use function count;
 use Countable;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
+use function count;
+use function end;
 
 /**
  * Utility class collecting all the namespaces for the scoped files allowing to easily find the namespace to which
@@ -34,13 +35,13 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     /**
      * @var Namespace_[]
      */
-    private $nodes = [];
+    private array $nodes = [];
 
     /**
      * @var (Name|null)[] Associative array with the potentially prefixed namespace names as keys and their original name
      *                    as value.
      */
-    private $mapping = [];
+    private array $mapping = [];
 
     /**
      * @param Namespace_ $namespace New namespace, may have been prefixed.
@@ -84,9 +85,6 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return false === $lastNode ? null : NamespaceManipulator::getOriginalName($lastNode);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function count(): int
     {
         return count($this->nodes);
@@ -107,9 +105,6 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return $this->getNodeNamespaceName($parentNode);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);

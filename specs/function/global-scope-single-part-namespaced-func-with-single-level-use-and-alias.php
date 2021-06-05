@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -57,7 +60,7 @@ function main()
 namespace Humbug;
 
 use Humbug\Foo as X;
-\Humbug\Foo\main();
+X\main();
 
 PHP
     ,
@@ -136,7 +139,7 @@ function main()
 namespace Humbug;
 
 use Humbug\Foo as X;
-\Humbug\Foo\main();
+X\main();
 
 PHP
     ],

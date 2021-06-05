@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -66,14 +69,14 @@ new class
     {
     }
 };
-new class extends \Humbug\A implements \Humbug\B, \Humbug\C, \Iterator
+new class extends A implements B, C, \Iterator
 {
 };
 new class
 {
     public $foo;
 };
-new class($a, $b) extends \Humbug\A
+new class($a, $b) extends A
 {
     use T;
 };
@@ -81,7 +84,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends \Humbug\A
+        return new class($this) extends A
         {
             const A = 'B';
         };
@@ -141,14 +144,14 @@ new class
     {
     }
 };
-new class extends \Humbug\A implements \Humbug\B, \Humbug\C, \Iterator
+new class extends A implements B, C, \Iterator
 {
 };
 new class
 {
     public $foo;
 };
-new class($a, $b) extends \Humbug\A
+new class($a, $b) extends A
 {
     use T;
 };
@@ -156,7 +159,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends \Humbug\A
+        return new class($this) extends A
         {
             const A = 'B';
         };
@@ -284,7 +287,7 @@ new class
     {
     }
 };
-new class extends \Humbug\A implements \Humbug\B, \Humbug\C, \Iterator
+new class extends \Humbug\A implements B, \Humbug\C, \Iterator
 {
 };
 new class
@@ -356,14 +359,14 @@ new class
     {
     }
 };
-new class extends \Humbug\Foo\A implements \Humbug\Foo\B, \Humbug\Foo\C, \Iterator
+new class extends A implements B, C, \Iterator
 {
 };
 new class
 {
     public $foo;
 };
-new class($a, $b) extends \Humbug\Foo\A
+new class($a, $b) extends A
 {
     use T;
 };
@@ -371,7 +374,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends \Humbug\Foo\A
+        return new class($this) extends A
         {
             const A = 'B';
         };
@@ -428,7 +431,7 @@ class A
 {
     public function test()
     {
-        return new class($this) extends \Humbug\A
+        return new class($this) extends A
         {
             const A = 'B';
         };
@@ -449,7 +452,7 @@ new class
     {
     }
 };
-new class extends \Humbug\A implements \Humbug\Foo\B, \Humbug\Foo\C, \Iterator
+new class extends A implements B, C, \Iterator
 {
 };
 namespace Humbug\Bar;
@@ -459,7 +462,7 @@ new class
 {
     public $foo;
 };
-new class($a, $b) extends \Humbug\A
+new class($a, $b) extends A
 {
     use T;
 };

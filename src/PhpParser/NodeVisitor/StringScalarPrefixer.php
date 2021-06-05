@@ -14,15 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use function array_key_exists;
-use function array_shift;
-use function array_values;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
-use function implode;
-use function in_array;
-use function is_string;
-use function ltrim;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -40,7 +33,16 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\PropertyProperty;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\NodeVisitorAbstract;
-use function preg_match;
+use function array_filter;
+use function array_key_exists;
+use function array_shift;
+use function array_values;
+use function explode;
+use function implode;
+use function in_array;
+use function is_string;
+use function ltrim;
+use function preg_match as native_preg_match;
 use function strpos;
 use function strtolower;
 
@@ -78,9 +80,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'datetimeimmutable',
     ];
 
-    private $prefix;
-    private $whitelist;
-    private $reflector;
+    private string $prefix;
+    private Whitelist $whitelist;
+    private Reflector $reflector;
 
     public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
     {
@@ -89,9 +91,6 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $this->reflector = $reflector;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
         return $node instanceof String_
@@ -103,7 +102,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function prefixStringScalar(String_ $string): String_
     {
         if (false === (ParentNodeAppender::hasParent($string) && is_string($string->value))
-            || 1 !== preg_match('/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u', $string->value)
+            || 1 !== native_preg_match('/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u', $string->value)
         ) {
             return $string;
         }
@@ -172,7 +171,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $newNode->class;
 
-        if (false === ($class instanceof FullyQualified)) {
+        if (false === ($class instanceof Name)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
@@ -234,7 +233,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $callNode->class;
 
-        if (false === ($class instanceof FullyQualified)) {
+        if (false === ($class instanceof Name)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 

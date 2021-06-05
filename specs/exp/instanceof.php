@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -57,8 +60,8 @@ $x instanceof stdClass;
 namespace Humbug\Acme;
 
 use stdClass;
-$x = new \stdClass();
-$x instanceof \stdClass;
+$x = new stdClass();
+$x instanceof stdClass;
 
 PHP
     ,
@@ -74,8 +77,8 @@ $x instanceof Foo;
 
 namespace Humbug;
 
-$x = new \Humbug\Foo();
-$x instanceof \Humbug\Foo;
+$x = new Foo();
+$x instanceof Foo;
 
 PHP
     ,
@@ -93,8 +96,8 @@ $x instanceof Foo;
 
 namespace Humbug\Acme;
 
-$x = new \Humbug\Acme\Foo();
-$x instanceof \Humbug\Acme\Foo;
+$x = new Foo();
+$x instanceof Foo;
 
 PHP
     ,

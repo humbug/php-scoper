@@ -21,6 +21,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
+        'excluded-constants' => [],
+        'excluded-classes' => [],
+        'excluded-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -42,7 +45,7 @@ class Command
 {
 }
 use Humbug\Command;
-\Humbug\Command::$mainStaticProp;
+Command::$mainStaticProp;
 
 PHP
     ,
@@ -81,7 +84,7 @@ Reflector::$mainStaticProp;
 namespace Humbug;
 
 use Reflector;
-\Reflector::$mainStaticProp;
+Reflector::$mainStaticProp;
 
 PHP
     ,
