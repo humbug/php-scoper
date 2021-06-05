@@ -38,6 +38,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelisted files](#whitelisted-files)
+    - [Excluded Symbols](#excluded-symbols)
     - [Whitelist][whitelist]
         - [Constants & functions from the global namespace](#constants--classes--functions-from-the-global-namespace)
         - [Symbols](#symbols)
@@ -159,6 +160,9 @@ return [
     'whitelist-global-constants' => true,   // bool
     'whitelist-global-classes' => true,     // bool
     'whitelist-global-functions' => true,   // bool
+    'exclude-constants' => [],              // string[]
+    'exclude-classes' => [],                // string[]
+    'exclude-functions' => [],              // string[]
 ];
 ```
 
@@ -286,6 +290,30 @@ return [
 
 For the files listed in `files-whitelist`, their content will be left
 untouched during the scoping process.
+
+
+### Excluded Symbols
+
+Symbols can be marked as excluded as follows:
+
+```php
+<?php declare(strict_types=1);
+
+// scoper.inc.php
+
+return [
+    'excluded-classes' => ['Stringeable'],
+    'excluded-functions' => ['str_contains'],
+    'excluded-constants' => ['PHP_EOL'],
+];
+```
+
+This enriches the list of Symbols PHP-Scoper's Reflector considers as "internal",
+i.e. PHP engine or extension symbols and that will be left completely untouched.
+
+This feature should be use very carefully as it can easily break the Composer
+autoloading and is recommended to be used only for compensating missing symbols
+from the [PhpStorm's stubs][phpstorm-stubs] shipped with PHP-Scoper.
 
 
 ### Whitelist
@@ -913,3 +941,4 @@ now been moved under the
 [php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
 [phar-extract-to]: https://secure.php.net/manual/en/phar.extractto.php
 [phive]: https://github.com/phar-io/phive
+[phpstorm-stubs]: https://github.com/JetBrains/phpstorm-stubs
