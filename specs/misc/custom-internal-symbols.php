@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Mixed use statements with group statements',
+        'title' => 'Internal symbols defined by the user',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
+        'whitelist-global-classes' => true,
         'whitelist-global-functions' => true,
         'excluded-constants' => [],
         'excluded-classes' => [],
@@ -28,27 +28,45 @@ return [
         'registered-functions' => [],
     ],
 
-    <<<'PHP'
+    'Known non-internal symbols (sanity test)' => <<<'PHP'
 <?php
 
-use A\B\{C\D, function b\c, const D};
-
-D::class;
-c();
-D;
+use Foo;
+use const BAR;
+use function baz;
 
 ----
 <?php
 
 namespace Humbug;
 
-use Humbug\A\B\C\D;
-use function Humbug\A\B\b\c;
-use const Humbug\A\B\D;
-D::class;
-c();
-D;
+use Humbug\Foo;
+use const Humbug\BAR;
+use function Humbug\baz;
 
 PHP
     ,
+
+    'Declared internal symbols' => [
+        'excluded-classes' => ['Foo'],
+        'excluded-functions' => ['baz'],
+        'excluded-constants' => ['BAR'],
+        'payload' => <<<'PHP'
+            <?php
+            
+            use Foo;
+            use const BAR;
+            use function baz;
+            
+            ----
+            <?php
+            
+            namespace Humbug;
+            
+            use Foo;
+            use const BAR;
+            use function baz;
+            
+            PHP,
+    ],
 ];

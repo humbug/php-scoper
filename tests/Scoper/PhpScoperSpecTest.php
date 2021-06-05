@@ -65,6 +65,9 @@ class PhpScoperSpecTest extends TestCase
         'whitelist-global-constants',
         'whitelist-global-classes',
         'whitelist-global-functions',
+        'excluded-constants',
+        'excluded-classes',
+        'excluded-functions',
         'registered-classes',
         'registered-functions',
     ];
@@ -75,6 +78,9 @@ class PhpScoperSpecTest extends TestCase
         'whitelist-global-constants',
         'whitelist-global-classes',
         'whitelist-global-functions',
+        'excluded-constants',
+        'excluded-classes',
+        'excluded-functions',
         'registered-classes',
         'registered-functions',
         'payload',
@@ -100,6 +106,9 @@ class PhpScoperSpecTest extends TestCase
         string $contents,
         string $prefix,
         Whitelist $whitelist,
+        array $internalClasses,
+        array $internalFunctions,
+        array $internalConstants,
         ?string $expected,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions,
@@ -116,7 +125,12 @@ class PhpScoperSpecTest extends TestCase
 
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
-        $scoper = $this->createScoper();
+
+        $scoper = $this->createScoper(
+            $internalClasses,
+            $internalFunctions,
+            $internalConstants,
+        );
 
         try {
             $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
@@ -218,33 +232,44 @@ class PhpScoperSpecTest extends TestCase
                 unset($fixtures['meta']);
 
                 foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield $this->parseSpecFile(
+                    yield from $this->parseSpecFile(
                         basename($sourceDir).'/'.$file->getRelativePathname(),
                         $meta,
                         $fixtureTitle,
-                        $fixtureSet
-                    )->current();
+                        $fixtureSet,
+                    );
                 }
             } catch (Throwable $throwable) {
                 self::fail(
                     sprintf(
                         'An error occurred while parsing the file "%s": %s',
                         $file,
-                        $throwable->getMessage()
-                    )
+                        $throwable->getMessage(),
+                    ),
                 );
             }
         }
     }
 
-    private function createScoper(): Scoper
+    private function createScoper(
+        array $internalClasses,
+        array $internalFunctions,
+        array $internalConstants
+    ): Scoper
     {
         $phpParser = create_parser();
+
+        $reflector = Reflector::createWithPhpStormStubs()
+            ->withSymbols(
+                $internalClasses,
+                $internalFunctions,
+                $internalConstants,
+            );
 
         return new PhpScoper(
             $phpParser,
             new FakeScoper(),
-            new TraverserFactory(Reflector::createWithPhpStormStubs())
+            new TraverserFactory($reflector),
         );
     }
 
@@ -301,6 +326,9 @@ class PhpScoperSpecTest extends TestCase
                 $fixtureSet['whitelist-global-functions'] ?? $meta['whitelist-global-functions'],
                 ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
             ),
+            $fixtureSet['excluded-classes'] ?? $meta['excluded-classes'],
+            $fixtureSet['excluded-functions'] ?? $meta['excluded-functions'],
+            $fixtureSet['excluded-constants'] ?? $meta['excluded-constants'],
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
             $fixtureSet['registered-classes'] ?? $meta['registered-classes'],
             $fixtureSet['registered-functions'] ?? $meta['registered-functions'],
@@ -449,14 +477,7 @@ OUTPUT
      */
     private function assertSameRecordedSymbols(array $expected, array $actual, string $message): void
     {
-        $sort = static function (array $a, array $b): int {
-            /*
-             * @var string[] $a
-             * @var string[] $b
-             */
-
-            return $a[0] <=> $b[0];
-        };
+        $sort = static fn (array $a, array $b) => $a[0] <=> $b[0];
 
         usort($expected, $sort);
         usort($actual, $sort);
