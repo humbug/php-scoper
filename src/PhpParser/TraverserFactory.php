@@ -44,10 +44,12 @@ class TraverserFactory
         $useStatements = new UseStmtCollection();
 
         $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
+        $newNameResolver = new NameResolver();
 
         self::addVisitors(
             $traverser,
             [
+                $newNameResolver,
                 new NodeVisitor\ParentNodeAppender(),
 
                 new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
