@@ -53,7 +53,9 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
 
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Identifier) || false === ParentNodeAppender::hasParent($node)) {
+        if (false === ($node instanceof Identifier)
+            || false === ParentNodeAppender::hasParent($node)
+        ) {
             return $node;
         }
 
@@ -73,11 +75,11 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             ->getNameContext()
             ->getResolvedName(
                 NamedIdentifier::create($node),
-                Node\Stmt\Use_::TYPE_NORMAL,
+                Node\Stmt\Use_::TYPE_UNKNOWN,
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            
+            // TODO: check those cases if relevant
             $x = '';
         }
 

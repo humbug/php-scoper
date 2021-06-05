@@ -140,11 +140,11 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             ->getNameContext()
             ->getResolvedName(
                 $node,
-                Node\Stmt\Use_::TYPE_NORMAL,
+                Node\Stmt\Use_::TYPE_FUNCTION,
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            
+            // TODO: check those cases if relevant
             $x = '';
         }
 
@@ -173,11 +173,11 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             ->getNameContext()
             ->getResolvedName(
                 $node,
-                Node\Stmt\Use_::TYPE_NORMAL,
+                Node\Stmt\Use_::TYPE_FUNCTION,
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            
+            // TODO: check those cases if relevant
             $x = '';
         }
 

@@ -158,16 +158,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         $oldResolvedName = $this->nameResolver->resolveName($name)->getName();
 
-        $nameType = Node\Stmt\Use_::TYPE_UNKNOWN;
-        if (ParentNodeAppender::getParent($name) instanceof ConstFetch) {
-            $nameType = Node\Stmt\Use_::TYPE_CONSTANT;
-        }
-
         $resolvedName = $this->newNameResolver
             ->getNameContext()
             ->getResolvedName(
                 $name,
-                $nameType,
+                Node\Stmt\Use_::TYPE_UNKNOWN,
             );
 
         if (null === $resolvedName) {
@@ -175,6 +170,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
+            // TODO: check those cases if relevant
             $x = '';
         }
 
@@ -216,6 +212,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             );
 
         if ($oldCondition !== $newCondition) {
+            // TODO: check those cases if relevant
             $x = '';
         }
 
@@ -281,6 +278,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             );
 
         if ($oldCondition !== $newCondition) {
+            // TODO: check those cases if relevant
             $x = '';
         }
 
@@ -360,11 +358,13 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     private static function array_starts_with($arr, $prefix): bool
     {
         $prefixLength = count($prefix);
+
         for ($i = 0; $i < $prefixLength; ++$i) {
             if ($arr[$i] !== $prefix[$i]) {
                 return false;
             }
         }
+
         return true;
     }
 }

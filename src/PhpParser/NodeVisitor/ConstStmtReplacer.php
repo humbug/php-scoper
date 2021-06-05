@@ -73,13 +73,6 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
 
         foreach ($node->consts as $constant) {
             /** @var Node\Const_ $constant */
-            $resolvedConstantName = $this->newNameResolver->getNameContext()->getResolvedName(
-                new Name(
-                    (string) $constant->name,
-                    $node->getAttributes()
-                ),
-                Node\Stmt\Use_::TYPE_CONSTANT
-            );
             $oldResolvedConstantName = $this->nameResolver
                 ->resolveName(
                     new Name(
@@ -88,9 +81,18 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                     ),
                 )
                 ->getName();
+            $resolvedConstantName = $this->newNameResolver
+                ->getNameContext()
+                ->getResolvedName(
+                    new Name(
+                        (string) $constant->name,
+                        $node->getAttributes()
+                    ),
+                    Node\Stmt\Use_::TYPE_CONSTANT
+                );
 
             if ((string) $oldResolvedConstantName !== (string) $resolvedConstantName) {
-                
+                // TODO: check those cases if relevant
                 $x = '';
             }
 
