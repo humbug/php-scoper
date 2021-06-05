@@ -125,7 +125,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             );
 
         if ((string) $oldOriginalName !== (string) $originalName) {
-            \xdebug_break();
+            
             $x = '';
         }
 

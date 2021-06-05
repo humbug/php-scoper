@@ -25,7 +25,7 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
-\xdebug_break();
+
 
 /**
  * Records the user classes registered in the global namespace which have been whitelisted and whitelisted classes.
@@ -77,7 +77,7 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            \xdebug_break();
+            
             $x = '';
         }
 

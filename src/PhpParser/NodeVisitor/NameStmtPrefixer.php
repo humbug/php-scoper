@@ -44,6 +44,7 @@ use PhpParser\NodeVisitorAbstract;
 use function array_merge;
 use function count;
 use function in_array;
+use function xdebug_break;
 
 /**
  * Prefixes names when appropriate.
@@ -156,20 +157,68 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         $oldResolvedName = $this->nameResolver->resolveName($name)->getName();
+
+        $nameType = Node\Stmt\Use_::TYPE_UNKNOWN;
+        if (ParentNodeAppender::getParent($name) instanceof ConstFetch) {
+            $nameType = Node\Stmt\Use_::TYPE_CONSTANT;
+        }
+
         $resolvedName = $this->newNameResolver
             ->getNameContext()
             ->getResolvedName(
                 $name,
-                Node\Stmt\Use_::TYPE_NORMAL,
+                $nameType,
             );
 
+        if (null === $resolvedName) {
+            $resolvedName = $name;
+        }
+
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            \xdebug_break();
             $x = '';
         }
 
         // Do not prefix if there is a matching use statement.
         $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
+        
+        $oldCondition = $useStatement !== null
+            && !($name instanceof FullyQualified)
+            && $oldResolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
+            && self::array_starts_with($oldResolvedName->parts, $useStatement->parts)
+            && !(
+                $parentNode instanceof ConstFetch
+                && (
+                    $this->whitelist->isGlobalWhitelistedConstant($oldResolvedName->toString())
+                    || $this->whitelist->isSymbolWhitelisted($oldResolvedName->toString(), true)
+                )
+            )
+            && !(
+                $useStatement->getAttribute('parent')
+                && $useStatement->getAttribute('parent')->alias !== null
+                && $this->whitelist->isSymbolWhitelisted($useStatement->toString())
+            );
+        
+        $newCondition = $useStatement !== null
+            && !($name instanceof FullyQualified)
+            && $resolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
+            && self::array_starts_with($resolvedName->parts, $useStatement->parts)
+            && !(
+                $parentNode instanceof ConstFetch
+                && (
+                    $this->whitelist->isGlobalWhitelistedConstant($resolvedName->toString())
+                    || $this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true)
+                )
+            )
+            && !(
+                $useStatement->getAttribute('parent')
+                && $useStatement->getAttribute('parent')->alias !== null
+                && $this->whitelist->isSymbolWhitelisted($useStatement->toString())
+            );
+
+        if ($oldCondition !== $newCondition) {
+            $x = '';
+        }
+
         if (
             $useStatement !== null
             && !($name instanceof FullyQualified)
@@ -199,6 +248,42 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         // Do not prefix if the Name is inside of the current namespace
         $namespace = $this->namespaceStatements->getCurrentNamespaceName();
+        
+        $oldCondition = (
+                // In a namespace
+                $namespace !== null
+                && array_merge($namespace->parts, $name->parts) === $oldResolvedName->parts
+            )
+            || (
+                // In the global scope
+                $namespace === null
+                && $name->parts === $oldResolvedName->parts
+                && !($name instanceof FullyQualified)
+                && !($parentNode instanceof ConstFetch)
+                && !$this->whitelist->isSymbolWhitelisted($oldResolvedName->toString())
+                && !$this->reflector->isFunctionInternal($oldResolvedName->toString())
+                && !$this->reflector->isClassInternal($oldResolvedName->toString())
+            );
+        $newCondition = (
+                // In a namespace
+                $namespace !== null
+                && array_merge($namespace->parts, $name->parts) === $resolvedName->parts
+            )
+            || (
+                // In the global scope
+                $namespace === null
+                && $name->parts === $resolvedName->parts
+                && !($name instanceof FullyQualified)
+                && !($parentNode instanceof ConstFetch)
+                && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
+                && !$this->reflector->isFunctionInternal($resolvedName->toString())
+                && !$this->reflector->isClassInternal($resolvedName->toString())
+            );
+
+        if ($oldCondition !== $newCondition) {
+            $x = '';
+        }
+
         if (
             (
                 // In a namespace

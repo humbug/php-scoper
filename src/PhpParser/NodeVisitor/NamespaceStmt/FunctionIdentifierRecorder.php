@@ -120,7 +120,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            \xdebug_break();
+            
             $x = '';
         }
 
@@ -144,7 +144,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            \xdebug_break();
+            
             $x = '';
         }
 
@@ -177,7 +177,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             );
 
         if ((string) $oldResolvedName !== (string) $resolvedName) {
-            \xdebug_break();
+            
             $x = '';
         }
 
