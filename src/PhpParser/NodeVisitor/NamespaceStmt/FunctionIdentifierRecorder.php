@@ -40,8 +40,8 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
     private FullyQualifiedNameResolver $nameResolver;
-    private Whitelist $newNameResolver;
-    private $whitelist;
+    private NameResolver $newNameResolver;
+    private Whitelist $whitelist;
     private Reflector $reflector;
 
     public function __construct(

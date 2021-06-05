@@ -62,8 +62,12 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     private FullyQualifiedNameResolver $nameResolver;
     private NameResolver $newNameResolver;
 
-    public function __construct(string $prefix, Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver, NameResolver $newNameResolver)
-    {
+    public function __construct(
+        string $prefix,
+        Whitelist $whitelist,
+        FullyQualifiedNameResolver $nameResolver,
+        NameResolver $newNameResolver
+    ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
         $this->nameResolver = $nameResolver;
