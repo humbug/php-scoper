@@ -157,7 +157,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         $useStatement = $this->useStatements->findStatementForNode($this->namespaceStatements->findNamespaceForNode($name), $name);
         if (
             $useStatement !== null
-            && !($name instanceof FullyQualified)
+            && !(OriginalNameResolver::getOriginalName($name) instanceof FullyQualified)
             && $resolvedName->parts !== ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
             && self::array_starts_with($resolvedName->parts, $useStatement->parts)
             && !(
@@ -173,7 +173,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 && $this->whitelist->isSymbolWhitelisted($useStatement->toString())
             )
         ) {
-            return $name;
+            return OriginalNameResolver::getOriginalName($name);
         }
 
         if ($this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
@@ -194,14 +194,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 // In the global scope
                 $namespace === null
                 && $name->parts === $resolvedName->parts
-                && !($name instanceof FullyQualified)
+                && !(OriginalNameResolver::getOriginalName($name) instanceof FullyQualified)
                 && !($parentNode instanceof ConstFetch)
                 && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
                 && !$this->reflector->isFunctionInternal($resolvedName->toString())
                 && !$this->reflector->isClassInternal($resolvedName->toString())
             )
         ) {
-            return $name;
+            return OriginalNameResolver::getOriginalName($name);
         }
 
         // Check if the class can be prefixed

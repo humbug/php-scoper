@@ -44,7 +44,10 @@ class TraverserFactory
         $useStatements = new UseStmtCollection();
 
         $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
-        $newNameResolver = new NameResolver();
+        $newNameResolver = new NameResolver(
+            null,
+            ['preserveOriginalNames' => true],
+        );
 
         self::addVisitors(
             $traverser,
