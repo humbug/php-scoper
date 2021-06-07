@@ -160,9 +160,9 @@ return [
     'whitelist-global-constants' => true,   // bool
     'whitelist-global-classes' => true,     // bool
     'whitelist-global-functions' => true,   // bool
-    'exclude-constants' => [],              // string[]
-    'exclude-classes' => [],                // string[]
-    'exclude-functions' => [],              // string[]
+    'excluded-constants' => [],             // string[]
+    'excluded-classes' => [],               // string[]
+    'excluded-functions' => [],             // string[]
 ];
 ```
 
