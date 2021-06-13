@@ -34,6 +34,10 @@ return [
 class A {
     public string $name;
     
+    public ?self $instance = null;
+    
+    public static ?self $staticInstance = null;
+    
     public ?B $foo;
 
     public function a() {}
@@ -46,6 +50,8 @@ namespace Humbug;
 class A
 {
     public string $name;
+    public ?self $instance = null;
+    public static ?self $staticInstance = null;
     public ?B $foo;
     public function a()
     {
@@ -96,6 +102,8 @@ namespace Foo;
 class A
 {
     public string $name;
+    public ?self $instance = null;
+    public static ?self $staticInstance = null;
     public ?B $foo;
     public function a()
     {
@@ -109,6 +117,8 @@ namespace Humbug\Foo;
 class A
 {
     public string $name;
+    public ?self $instance = null;
+    public static ?self $staticInstance = null;
     public ?B $foo;
     public function a()
     {

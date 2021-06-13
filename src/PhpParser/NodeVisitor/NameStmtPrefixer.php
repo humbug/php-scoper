@@ -139,6 +139,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 || $parentNode instanceof FuncCall
                 || $parentNode instanceof Instanceof_
                 || $parentNode instanceof Param
+                || $parentNode instanceof Property
                 || $parentNode instanceof StaticCall
                 || $parentNode instanceof StaticPropertyFetch
             )
