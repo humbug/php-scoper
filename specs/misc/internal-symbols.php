@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => true,
+        'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
+        'whitelist-global-functions' => false,
         'excluded-constants' => [],
         'excluded-classes' => [],
         'excluded-functions' => [],
@@ -51,31 +51,31 @@ use Crypto\Base64Exception;
 use Crypto\Rand;
 use Crypto\RandException;
 use parallel\Channel;
-use parallel\Channel\Error;
-use parallel\Channel\Error\Closed;
-use parallel\Channel\Error\Existence;
-use parallel\Channel\Error\IllegalValue;
-use parallel\Error;
+use parallel\Channel\Error as ParallelChannelError;
+use parallel\Channel\Error\Closed as ParallelChannelClosed;
+use parallel\Channel\Error\Existence as ParallelChannelExistence;
+use parallel\Channel\Error\IllegalValue as ParallelChannelIllegalValue;
+use parallel\Error as ParallelError;
 use parallel\Events;
-use parallel\Events\Error;
-use parallel\Events\Error\Existence;
+use parallel\Events\Error as ParallelEventsError;
+use parallel\Events\Error\Existence as ParallelEventsExistence;
 use parallel\Events\Error\Timeout;
 use parallel\Events\Event;
 use parallel\Events\Event\Type;
 use parallel\Events\Input;
-use parallel\Events\Input\Error;
-use parallel\Events\Input\Error\Existence;
-use parallel\Events\Input\Error\IllegalValue;
+use parallel\Events\Input\Error as ParallelInputError;
+use parallel\Events\Input\Error\Existence as ParallelInputExistence;
+use parallel\Events\Input\Error\IllegalValue as ParallelInputIllegalValue;
 use parallel\Future;
-use parallel\Future\Error;
+use parallel\Future\Error as ParallelFutureError;
 use parallel\Future\Error\Cancelled;
 use parallel\Future\Error\Foreign;
 use parallel\Future\Error\Killed;
 use parallel\Runtime;
-use parallel\Runtime\Bootstrap;
-use parallel\Runtime\Error;
-use parallel\Runtime\Error\Bootstrap;
-use parallel\Runtime\Error\Closed;
+use parallel\Runtime\Bootstrap as ParallelRuntimeBootstrap;
+use parallel\Runtime\Error as ParallelRuntimeError;
+use parallel\Runtime\Error\Bootstrap as ParallelRuntimeErrorBootstrap;
+use parallel\Runtime\Error\Closed as ParallelRuntimeClosed;
 use parallel\Runtime\Error\IllegalFunction;
 use parallel\Runtime\Error\IllegalInstruction;
 use parallel\Runtime\Error\IllegalParameter;
@@ -281,31 +281,31 @@ use Crypto\Base64Exception;
 use Crypto\Rand;
 use Crypto\RandException;
 use parallel\Channel;
-use parallel\Channel\Error;
-use parallel\Channel\Error\Closed;
-use parallel\Channel\Error\Existence;
-use parallel\Channel\Error\IllegalValue;
-use parallel\Error;
+use parallel\Channel\Error as ParallelChannelError;
+use parallel\Channel\Error\Closed as ParallelChannelClosed;
+use parallel\Channel\Error\Existence as ParallelChannelExistence;
+use parallel\Channel\Error\IllegalValue as ParallelChannelIllegalValue;
+use parallel\Error as ParallelError;
 use parallel\Events;
-use parallel\Events\Error;
-use parallel\Events\Error\Existence;
+use parallel\Events\Error as ParallelEventsError;
+use parallel\Events\Error\Existence as ParallelEventsExistence;
 use parallel\Events\Error\Timeout;
 use parallel\Events\Event;
 use parallel\Events\Event\Type;
 use parallel\Events\Input;
-use parallel\Events\Input\Error;
-use parallel\Events\Input\Error\Existence;
-use parallel\Events\Input\Error\IllegalValue;
+use parallel\Events\Input\Error as ParallelInputError;
+use parallel\Events\Input\Error\Existence as ParallelInputExistence;
+use parallel\Events\Input\Error\IllegalValue as ParallelInputIllegalValue;
 use parallel\Future;
-use parallel\Future\Error;
+use parallel\Future\Error as ParallelFutureError;
 use parallel\Future\Error\Cancelled;
 use parallel\Future\Error\Foreign;
 use parallel\Future\Error\Killed;
 use parallel\Runtime;
-use parallel\Runtime\Bootstrap;
-use parallel\Runtime\Error;
-use parallel\Runtime\Error\Bootstrap;
-use parallel\Runtime\Error\Closed;
+use parallel\Runtime\Bootstrap as ParallelRuntimeBootstrap;
+use parallel\Runtime\Error as ParallelRuntimeError;
+use parallel\Runtime\Error\Bootstrap as ParallelRuntimeErrorBootstrap;
+use parallel\Runtime\Error\Closed as ParallelRuntimeClosed;
 use parallel\Runtime\Error\IllegalFunction;
 use parallel\Runtime\Error\IllegalInstruction;
 use parallel\Runtime\Error\IllegalParameter;

@@ -22,6 +22,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
+use function count;
 
 /**
  * Prefixes the use statements.
@@ -75,13 +76,25 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         if (Use_::TYPE_CONSTANT === $useType) {
-            return
-                false === $this->whitelist->isSymbolWhitelisted((string) $use->name)
-                && false === $this->reflector->isConstantInternal((string) $use->name)
-            ;
+            return self::shouldPrefixConstantUseStmt(
+                $use->name->toString(),
+                $this->whitelist,
+                $this->reflector,
+            );
         }
 
         return Use_::TYPE_NORMAL !== $useType || false === $this->reflector->isClassInternal((string) $use->name);
+    }
+
+    private static function shouldPrefixConstantUseStmt(
+        string $name,
+        Whitelist $whitelist,
+        Reflector $reflector
+    ): bool
+    {
+        return !$whitelist->isGlobalWhitelistedConstant($name)
+            && !$whitelist->isSymbolWhitelisted($name)
+            && !$reflector->isConstantInternal($name);
     }
 
     /**

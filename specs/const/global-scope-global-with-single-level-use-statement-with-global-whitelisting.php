@@ -39,7 +39,7 @@ DUMMY_CONST;
 
 namespace Humbug;
 
-use const Humbug\DUMMY_CONST;
+use const DUMMY_CONST;
 \DUMMY_CONST;
 
 PHP
@@ -75,7 +75,7 @@ use const DUMMY_CONST;
 
 namespace Humbug;
 
-use const Humbug\DUMMY_CONST;
+use const DUMMY_CONST;
 \DUMMY_CONST;
 
 PHP

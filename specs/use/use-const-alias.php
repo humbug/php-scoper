@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => true,
+        'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
+        'whitelist-global-functions' => false,
         'excluded-constants' => [],
         'excluded-classes' => [],
         'excluded-functions' => [],
@@ -42,6 +42,23 @@ use const Humbug\FOO as A;
 
 PHP
     ,
+
+    'Constant use statement for a constant belonging to the global namespace with global constant whitelisting' => [
+        'whitelist-global-constants' => true,
+        'payload' => <<<'PHP'
+            <?php
+            
+            use const FOO as A;
+            
+            ----
+            <?php
+            
+            namespace Humbug;
+            
+            use const FOO as A;
+            
+            PHP
+        ],
 
     'Constant use statement for a constant belonging to the global namespace and which has already been prefixed' => <<<'PHP'
 <?php

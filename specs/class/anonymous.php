@@ -222,7 +222,7 @@ namespace {
     };
     new class($a, $b) extends \A
     {
-        use T;
+        use \T;
     };
     class A
     {
