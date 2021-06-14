@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => true,
-        'whitelist-global-functions' => true,
+        'whitelist-global-constants' => false,
+        'whitelist-global-classes' => false,
+        'whitelist-global-functions' => false,
         'excluded-constants' => [],
         'excluded-classes' => [],
         'excluded-functions' => [],
@@ -29,23 +29,45 @@ return [
     ],
 
     'Known non-internal symbols (sanity test)' => <<<'PHP'
-<?php
+    <?php
+    
+    use Foo;
+    use const BAR;
+    use function baz;
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use Humbug\Foo;
+    use const Humbug\BAR;
+    use function Humbug\baz;
+    
+    PHP,
 
-use Foo;
-use const BAR;
-use function baz;
-
-----
-<?php
-
-namespace Humbug;
-
-use Humbug\Foo;
-use const Humbug\BAR;
-use function Humbug\baz;
-
-PHP
-    ,
+    'Known non-internal symbols with global whitelisting (sanity check)' => [
+        'whitelist-global-constants' => true,
+        'whitelist-global-classes' => true,
+        'whitelist-global-functions' => true,
+        'payload' => <<<'PHP'
+            <?php
+            
+            use Foo;
+            use const BAR;
+            use function baz;
+            
+            ----
+            <?php
+            
+            namespace Humbug;
+            
+            use Humbug\Foo;
+            use const BAR;
+            use function Humbug\baz;
+            
+            PHP,
+    ],
 
     'Declared internal symbols' => [
         'excluded-classes' => ['Foo'],

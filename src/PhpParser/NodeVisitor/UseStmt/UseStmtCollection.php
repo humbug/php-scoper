@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use ArrayIterator;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\OriginalNameResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use IteratorAggregate;
 use PhpParser\Node;
@@ -66,7 +67,7 @@ final class UseStmtCollection implements IteratorAggregate
      */
     public function findStatementForNode(?Name $namespaceName, Name $node): ?Name
     {
-        $name = strtolower($node->getFirst());
+        $name = self::getName($node);
 
         $parentNode = ParentNodeAppender::findParent($node);
 
@@ -80,8 +81,8 @@ final class UseStmtCollection implements IteratorAggregate
             return null;
         }
 
-        $isFunctionName = $this->isFunctionName($node, $parentNode);
-        $isConstantName = $this->isConstantName($node, $parentNode);
+        $isFunctionName = self::isFunctionName($node, $parentNode);
+        $isConstantName = self::isConstantName($node, $parentNode);
 
         $hash = implode(
             ':',
@@ -101,13 +102,29 @@ final class UseStmtCollection implements IteratorAggregate
             $this->nodes[(string) $namespaceName] ?? [],
             $isFunctionName,
             $isConstantName,
-            $name
+            $name,
         );
     }
 
     public function getIterator(): iterable
     {
         return new ArrayIterator($this->nodes);
+    }
+
+    private static function getName(Name $node): string
+    {
+        $originalNode = OriginalNameResolver::getOriginalName($node);
+
+        if (null === $originalNode) {
+            return self::getNameFirstPart($node);
+        }
+
+        return self::getNameFirstPart($originalNode);
+    }
+
+    private static function getNameFirstPart(Name $node): string
+    {
+        return strtolower($node->getFirst());
     }
 
     private function find(array $useStatements, bool $isFunctionName, bool $isConstantName, string $name): ?Name
@@ -148,14 +165,14 @@ final class UseStmtCollection implements IteratorAggregate
         return null;
     }
 
-    private function isFunctionName(Name $node, ?Node $parentNode): bool
+    private static function isFunctionName(Name $node, ?Node $parentNode): bool
     {
-        if (null === $parentNode || 1 !== count($node->parts)) {
+        if (null === $parentNode) {
             return false;
         }
 
         if ($parentNode instanceof FuncCall) {
-            return true;
+            return self::isFuncCallFunctionName($node);
         }
 
         if (false === ($parentNode instanceof Function_)) {
@@ -166,8 +183,47 @@ final class UseStmtCollection implements IteratorAggregate
         return $node instanceof NamedIdentifier && $node->getOriginalNode() === $parentNode->name;
     }
 
-    private function isConstantName(Name $node, ?Node $parentNode): bool
+    private static function isFuncCallFunctionName(Name $name): bool
     {
-        return $parentNode instanceof ConstFetch && 1 === count($node->parts);
+        if ($name instanceof Name\FullyQualified) {
+            $name = OriginalNameResolver::getOriginalName($name);
+        }
+
+        if (null === $name) {
+            return false;
+        }
+
+        // If the name has more than one part then any potentially associated
+        // use statement will be a regular use statement.
+        // e.g.:
+        // ```
+        // use Foo
+        // echo Foo\main();
+        // ```
+        return 1 === count($name->parts);
+    }
+
+    private static function isConstantName(Name $name, ?Node $parentNode): bool
+    {
+        if (!($parentNode instanceof ConstFetch)) {
+            return false;
+        }
+
+        if ($name instanceof Name\FullyQualified) {
+            $name = OriginalNameResolver::getOriginalName($name);
+        }
+
+        if (null === $name) {
+            return false;
+        }
+
+        // If the name has more than one part then any potentially associated
+        // use statement will be a regular use statement.
+        // e.g.:
+        // ```
+        // use Foo
+        // echo Foo\DUMMY_CONST;
+        // ```
+        return 1 === count($name->parts);
     }
 }

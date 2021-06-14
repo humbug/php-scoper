@@ -65,7 +65,7 @@ PHP
 
 use Humbug\A\{B};
 use Humbug\A\{B\C, D};
-use \Humbug\A\B\{C\D, E};
+use \Humbug\A\B\{C\E, F};
 
 ----
 <?php
@@ -75,8 +75,8 @@ namespace Humbug;
 use Humbug\A\B;
 use Humbug\A\B\C;
 use Humbug\A\D;
-use Humbug\A\B\C\D;
-use Humbug\A\B\E;
+use Humbug\A\B\C\E;
+use Humbug\A\B\F;
 
 PHP
     ,
