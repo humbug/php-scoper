@@ -104,7 +104,7 @@ namespace Pi {
     class ArrayIterator {}
 
     function foo(
-        Foo $arg0 = NULL,
+        Foo $arg0 = null,
         \Foo $arg1,
         Foo\Bar $arg2,
         \Foo\Bar $arg3,
@@ -151,7 +151,7 @@ class Foo
 class ArrayIterator
 {
 }
-function foo(Foo $arg0 = NULL, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, ArrayIterator $arg4, \ArrayIterator $arg5, X\Y $arg6, \Humbug\X\Y $arg7)
+function foo(Foo $arg0 = null, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, ArrayIterator $arg4, \ArrayIterator $arg5, X\Y $arg6, \Humbug\X\Y $arg7)
 {
 }
 
