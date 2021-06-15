@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
-use Humbug\PhpScoper\PhpParser\Node\NameFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
@@ -46,7 +45,6 @@ use PhpParser\Node\Stmt\TraitUseAdaptation\Precedence;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
-use function array_merge;
 use function count;
 use function in_array;
 use function strtolower;
@@ -377,11 +375,13 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         // Classes and namespaces usages are case-insensitive
-        return in_array(
+        $caseSensitiveUseStmt = !in_array(
             $useStatementParent->type,
             [Use_::TYPE_UNKNOWN, Use_::TYPE_NORMAL],
             true
-        )
+        );
+
+        return $caseSensitiveUseStmt
             ? strtolower($originalName->getFirst()) === $useStatementAlias->toLowerString()
             : $originalName->getFirst() === $useStatementAlias->toString();
     }
