@@ -47,11 +47,26 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         if ($node instanceof UseUse && $this->shouldPrefixUseStmt($node)) {
             $previousName = $node->name;
 
-            /** @var Name $prefixedName */
-            $prefixedName = Name::concat($this->prefix, $node->name, $node->name->getAttributes());
-            $node->name = $prefixedName;
+            $prefixedName = Name::concat(
+                $this->prefix,
+                $node->name,
+                $node->name->getAttributes(),
+            );
 
+            if (null === $prefixedName) {
+                return $node;
+            }
+
+            // TODO: move this to ParentNodeAppender or Manipulator
+            // Unlike the new (prefixed name), the previous name will not be
+            // traversed hence we need to manually set its parent attribute
+            $previousName->setAttribute(
+                ParentNodeAppender::PARENT_ATTRIBUTE,
+                $node,
+            );
             UseStmtManipulator::setOriginalName($node, $previousName);
+
+            $node->name = $prefixedName;
         }
 
         return $node;

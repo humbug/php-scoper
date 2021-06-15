@@ -15,7 +15,7 @@ final class OriginalNameResolver
         return $namespace->hasAttribute(self::ORIGINAL_NAME_ATTRIBUTE);
     }
 
-    public static function getOriginalName(Name $name): ?Name
+    public static function getOriginalName(Name $name): Name
     {
         if (false === self::hasOriginalName($name)) {
             return $name;

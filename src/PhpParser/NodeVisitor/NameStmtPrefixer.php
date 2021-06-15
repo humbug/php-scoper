@@ -42,10 +42,12 @@ use PhpParser\Node\Stmt\Property;
 use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Alias;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Precedence;
+use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
-use function array_merge;
 use function count;
 use function in_array;
+use function strtolower;
 
 /**
  * Prefixes names when appropriate.
@@ -323,19 +325,19 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         Name $originalName,
         Name $resolvedName,
         Node $parentNode,
-        ?Name $useStatement,
+        ?Name $useStatementName,
         Whitelist $whitelist
     ): bool
     {
         if (
-            null === $useStatement
+            null === $useStatementName
             || !($resolvedName instanceof FullyQualified)
             // In case the original name is a FQ, we do not skip the prefixing
             // and keep it as FQ
             || $originalName instanceof FullyQualified
             // TODO: review Isolated Finder support
             || $resolvedName->parts === ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
-            || !self::arrayStartsWith($resolvedName->parts, $useStatement->parts)
+            || !self::arrayStartsWith($resolvedName->parts, $useStatementName->parts)
         ) {
             return false;
         }
@@ -350,23 +352,37 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             // Note that this could be adjusted based on the type of the use
             // statement but that requires further changes as at this point we
             // only have the use statement name.
+            // TODO: review this statement also check use aliases with constants or functions
             if ($whitelist->isGlobalWhitelistedConstant($resolvedName->toString())
                 || $whitelist->isSymbolWhitelisted($resolvedName->toString(), true)
             ) {
                 return false;
             }
 
-            return null !== $useStatement;
+            return null !== $useStatementName;
         }
 
-        $useStatementParent = ParentNodeAppender::findParent($useStatement);
+        $useStatementParent = ParentNodeAppender::getParent($useStatementName);
 
-        if (null !== $useStatementParent) {
-            // TODO: see the type of the parent
-            return null === $useStatementParent->alias
-                || !$whitelist->isSymbolWhitelisted($useStatement->toString());
+        if (!($useStatementParent instanceof UseUse)) {
+            return false;
         }
 
-        return true;
+        $useStatementAlias = $useStatementParent->alias;
+
+        if (null === $useStatementAlias) {
+            return true;
+        }
+
+        // Classes and namespaces usages are case-insensitive
+        $caseSensitiveUseStmt = !in_array(
+            $useStatementParent->type,
+            [Use_::TYPE_UNKNOWN, Use_::TYPE_NORMAL],
+            true,
+        );
+
+        return $caseSensitiveUseStmt
+            ? $originalName->getFirst() === $useStatementAlias->toString()
+            : strtolower($originalName->getFirst()) === $useStatementAlias->toLowerString();
     }
 }
