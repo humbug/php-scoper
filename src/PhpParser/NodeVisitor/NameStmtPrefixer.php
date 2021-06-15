@@ -378,11 +378,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         $caseSensitiveUseStmt = !in_array(
             $useStatementParent->type,
             [Use_::TYPE_UNKNOWN, Use_::TYPE_NORMAL],
-            true
+            true,
         );
 
         return $caseSensitiveUseStmt
-            ? strtolower($originalName->getFirst()) === $useStatementAlias->toLowerString()
-            : $originalName->getFirst() === $useStatementAlias->toString();
+            ? $originalName->getFirst() === $useStatementAlias->toString()
+            : strtolower($originalName->getFirst()) === $useStatementAlias->toLowerString();
     }
 }
