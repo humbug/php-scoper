@@ -166,7 +166,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         $originalName = OriginalNameResolver::getOriginalName($resolvedName);
 
-        if ($parentNode instanceof ConstFetch && 'null' === (string) $originalName) {
+        if ($parentNode instanceof ConstFetch && 'null' === $originalName->toLowerString()) {
             return $originalName;
         }
 

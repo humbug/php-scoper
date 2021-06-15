@@ -36,7 +36,7 @@ class A {
     
     public ?self $instance = null;
     
-    public static ?self $staticInstance = null;
+    public static ?self $staticInstance = NULL;
     
     public ?B $foo;
 
@@ -51,7 +51,7 @@ class A
 {
     public string $name;
     public ?self $instance = null;
-    public static ?self $staticInstance = null;
+    public static ?self $staticInstance = NULL;
     public ?B $foo;
     public function a()
     {
@@ -103,7 +103,7 @@ class A
 {
     public string $name;
     public ?self $instance = null;
-    public static ?self $staticInstance = null;
+    public static ?self $staticInstance = NULL;
     public ?B $foo;
     public function a()
     {
@@ -118,7 +118,7 @@ class A
 {
     public string $name;
     public ?self $instance = null;
-    public static ?self $staticInstance = null;
+    public static ?self $staticInstance = NULL;
     public ?B $foo;
     public function a()
     {
