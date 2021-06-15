@@ -85,7 +85,7 @@ abstract class TestCase extends SORT_NUMERIC
 {
     function __construct()
     {
-        echo \SORT_NUMERIC;
+        echo SORT_NUMERIC;
     }
 }
 

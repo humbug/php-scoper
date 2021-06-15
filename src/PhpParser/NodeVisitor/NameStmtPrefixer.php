@@ -45,8 +45,11 @@ use PhpParser\Node\Stmt\TraitUseAdaptation\Precedence;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
+use UnexpectedValueException;
 use function count;
+use function get_class;
 use function in_array;
+use function Safe\sprintf;
 use function strtolower;
 
 /**
@@ -342,47 +345,68 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return false;
         }
 
+        [$useStmtAlias, $useStmtType] = self::getUseStmtAliasAndType($useStatementName);
+
         if ($parentNode instanceof ConstFetch) {
             // If a constant is whitelisted, it can be that letting a non FQ breaks
             // things. For example the whitelisted namespaced constant could be
             // used via a partial import (in which case it is a regular import not
             // a constant one) which may not be prefixed.
-            // For this reason in this scenario we will always transform the
-            // constant in a FQ one.
-            // Note that this could be adjusted based on the type of the use
-            // statement but that requires further changes as at this point we
-            // only have the use statement name.
-            // TODO: review this statement also check use aliases with constants or functions
             if ($whitelist->isGlobalWhitelistedConstant($resolvedName->toString())
                 || $whitelist->isSymbolWhitelisted($resolvedName->toString(), true)
             ) {
-                return false;
+                return Use_::TYPE_CONSTANT === $useStmtType;
             }
 
             return null !== $useStatementName;
         }
 
-        $useStatementParent = ParentNodeAppender::getParent($useStatementName);
-
-        if (!($useStatementParent instanceof UseUse)) {
-            return false;
-        }
-
-        $useStatementAlias = $useStatementParent->alias;
-
-        if (null === $useStatementAlias) {
+        if (null === $useStmtAlias) {
             return true;
         }
 
         // Classes and namespaces usages are case-insensitive
         $caseSensitiveUseStmt = !in_array(
-            $useStatementParent->type,
+            $useStmtType,
             [Use_::TYPE_UNKNOWN, Use_::TYPE_NORMAL],
             true,
         );
 
         return $caseSensitiveUseStmt
-            ? $originalName->getFirst() === $useStatementAlias->toString()
-            : strtolower($originalName->getFirst()) === $useStatementAlias->toLowerString();
+            ? $originalName->getFirst() === $useStmtAlias->toString()
+            : strtolower($originalName->getFirst()) === $useStmtAlias->toLowerString();
+    }
+
+    /**
+     * @return array{Identifier|string|null, Use_::TYPE_*}
+     */
+    private function getUseStmtAliasAndType(Name $name): array
+    {
+        $use = ParentNodeAppender::getParent($name);
+
+        if (!($use instanceof UseUse)) {
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Unexpected use statement name parent "%s"',
+                    get_class($use),
+                ),
+            );
+        }
+
+        $useParent = ParentNodeAppender::getParent($use);
+
+        if (!($useParent instanceof Use_)) {
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Unexpected UseUse parent "%s"',
+                    get_class($useParent),
+                ),
+            );
+        }
+
+        return [
+            $use->alias,
+            $useParent->type,
+        ];
     }
 }
