@@ -36,7 +36,7 @@ class A {
     
     public ?self $instance = null;
     
-    public static ?self $staticInstance = null;
+    public static ?self $staticInstance = NULL;
     
     public ?B $foo;
 
