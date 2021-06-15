@@ -34,8 +34,11 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
     private Whitelist $whitelist;
     private Reflector $reflector;
 
-    public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
-    {
+    public function __construct(
+        string $prefix,
+        Whitelist $whitelist,
+        Reflector $reflector
+    ) {
         $this->prefix = $prefix;
         $this->reflector = $reflector;
         $this->whitelist = $whitelist;
