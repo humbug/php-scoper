@@ -215,7 +215,7 @@ namespace {
     function foo(
         string $arg0,
         ?string $arg1,
-        ?string $arg2 = NULL,
+        ?string $arg2 = null,
         
         Foo $arg3,
         ?Foo $arg4,
@@ -269,7 +269,7 @@ namespace Humbug;
 
 use Humbug\Foo;
 use ArrayIterator;
-function foo(string $arg0, ?string $arg1, ?string $arg2 = NULL, Foo $arg3, ?Foo $arg4, Foo $arg5 = null, \Humbug\Foo $arg6, ?\Humbug\Foo $arg7, \Humbug\Foo $arg8 = null, Foo\Bar $arg9, ?Foo\Bar $arg10, Foo\Bar $arg11 = null, \Humbug\Foo\Bar $arg7, ?\Humbug\Foo\Bar $arg12, \Humbug\Foo\Bar $arg13 = null, ArrayIterator $arg14, ?ArrayIterator $arg15, ?ArrayIterator $arg16 = null, \ArrayIterator $arg17, ?\ArrayIterator $arg18, \ArrayIterator $arg19 = null, \Humbug\X\Y $arg20, \Humbug\X\Y $arg21)
+function foo(string $arg0, ?string $arg1, ?string $arg2 = null, Foo $arg3, ?Foo $arg4, Foo $arg5 = null, \Humbug\Foo $arg6, ?\Humbug\Foo $arg7, \Humbug\Foo $arg8 = null, Foo\Bar $arg9, ?Foo\Bar $arg10, Foo\Bar $arg11 = null, \Humbug\Foo\Bar $arg7, ?\Humbug\Foo\Bar $arg12, \Humbug\Foo\Bar $arg13 = null, ArrayIterator $arg14, ?ArrayIterator $arg15, ?ArrayIterator $arg16 = null, \ArrayIterator $arg17, ?\ArrayIterator $arg18, \ArrayIterator $arg19 = null, \Humbug\X\Y $arg20, \Humbug\X\Y $arg21)
 {
 }
 
