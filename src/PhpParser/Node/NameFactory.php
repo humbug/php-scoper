@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\Node;
 
 use InvalidArgumentException;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 
 final class NameFactory
@@ -33,6 +34,14 @@ final class NameFactory
         $fqName = Name::concat($name1, $name2, $attributes);
 
         return $fqName;
+    }
+
+    public static function fromIdentifier(Identifier $identifier): Name
+    {
+        return new Name(
+            $identifier->toString(),
+            $identifier->getAttributes(),
+        );
     }
 
     private function __construct()
