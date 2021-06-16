@@ -371,8 +371,8 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         );
 
         return $caseSensitiveUseStmt
-            ? $originalName->getFirst() === $useStmtAlias->toString()
-            : strtolower($originalName->getFirst()) === $useStmtAlias->toLowerString();
+            ? $originalName->getFirst() === $useStmtAlias
+            : strtolower($originalName->getFirst()) === strtolower($useStmtAlias);
     }
 
     private function isClassNamePrefixable(
@@ -438,7 +438,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     }
 
     /**
-     * @return array{Identifier|string|null, Use_::TYPE_*}
+     * @return array{string|null, Use_::TYPE_*}
      */
     private static function getUseStmtAliasAndType(Name $name): array
     {
@@ -464,8 +464,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             );
         }
 
+        $alias = $use->alias;
+
+        if (null !== $alias) {
+            $alias = (string) $alias;
+        }
+
         return [
-            $use->alias,
+            $alias,
             $useParent->type,
         ];
     }
