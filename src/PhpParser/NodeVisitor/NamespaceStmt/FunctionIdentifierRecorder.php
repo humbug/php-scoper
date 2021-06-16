@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -37,13 +37,13 @@ use PhpParser\NodeVisitorAbstract;
 final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
-    private FullyQualifiedNameResolver $nameResolver;
+    private IdentifierResolver $nameResolver;
     private Whitelist $whitelist;
     private Reflector $reflector;
 
     public function __construct(
         string $prefix,
-        FullyQualifiedNameResolver $nameResolver,
+        IdentifierResolver $nameResolver,
         Whitelist $whitelist,
         Reflector $reflector
     ) {
@@ -55,13 +55,15 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Identifier || $node instanceof Name || $node instanceof String_)
-            || false === ParentNodeAppender::hasParent($node)
+        if (!($node instanceof Identifier || $node instanceof Name || $node instanceof String_)
+            || !ParentNodeAppender::hasParent($node)
         ) {
             return $node;
         }
 
-        if (null === $resolvedName = $this->retrieveResolvedName($node)) {
+        $resolvedName = $this->retrieveResolvedName($node);
+
+        if (null === $resolvedName) {
             return $node;
         }
 
@@ -106,42 +108,40 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->nameResolver->resolveIdentifier($node);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
 
-    private function retrieveResolvedNameForFuncCall(Name $node): ?FullyQualified
+    private function retrieveResolvedNameForFuncCall(Name $name): ?FullyQualified
     {
-        $parent = ParentNodeAppender::getParent($node);
+        $parent = ParentNodeAppender::getParent($name);
 
-        if (false === ($parent instanceof FuncCall)) {
+        if (!($parent instanceof FuncCall)) {
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
-
-        return $resolvedName instanceof FullyQualified ? $resolvedName : null;
+        return $name instanceof FullyQualified ? $name : null;
     }
 
     private function retrieveResolvedNameForString(String_ $node): ?FullyQualified
     {
         $stringParent = ParentNodeAppender::getParent($node);
 
-        if (false === ($stringParent instanceof Arg)) {
+        if (!($stringParent instanceof Arg)) {
             return null;
         }
 
         $argParent = ParentNodeAppender::getParent($stringParent);
 
-        if (false === ($argParent instanceof FuncCall)
-            || false === ($argParent->name instanceof FullyQualified)
+        if (!($argParent instanceof FuncCall)
+            || !($argParent->name instanceof FullyQualified)
             || 'function_exists' !== (string) $argParent->name
         ) {
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->nameResolver->resolveIdentifier($node)->getName();
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }

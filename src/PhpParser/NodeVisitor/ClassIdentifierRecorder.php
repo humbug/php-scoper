@@ -15,13 +15,16 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\Use_;
+use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -32,49 +35,47 @@ use PhpParser\NodeVisitorAbstract;
 final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
-    private FullyQualifiedNameResolver $nameResolver;
+    private IdentifierResolver $identifierResolver;
     private Whitelist $whitelist;
 
     public function __construct(
         string $prefix,
-        FullyQualifiedNameResolver $nameResolver,
+        IdentifierResolver $identifierResolver,
         Whitelist $whitelist
     ) {
         $this->prefix = $prefix;
-        $this->nameResolver = $nameResolver;
+        $this->identifierResolver = $identifierResolver;
         $this->whitelist = $whitelist;
     }
 
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Identifier) || false === ParentNodeAppender::hasParent($node)) {
+        if (!($node instanceof Identifier) ||!ParentNodeAppender::hasParent($node)) {
             return $node;
         }
 
         $parent = ParentNodeAppender::getParent($node);
 
-        if (false === ($parent instanceof ClassLike) || $parent instanceof Trait_) {
+        if (!($parent instanceof ClassLike) || $parent instanceof Trait_) {
             return $node;
         }
-        /** @var ClassLike $parent */
+
         if (null === $parent->name) {
             return $node;
         }
 
-        /** @var Identifier $node */
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->identifierResolver->resolveIdentifier($node);
 
-        if (false === ($resolvedName instanceof FullyQualified)) {
+        if (!($resolvedName instanceof FullyQualified)) {
             return $node;
         }
 
-        /** @var FullyQualified $resolvedName */
         if ($this->whitelist->isGlobalWhitelistedClass((string) $resolvedName)
             || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
         ) {
             $this->whitelist->recordWhitelistedClass(
                 $resolvedName,
-                FullyQualifiedFactory::concat($this->prefix, $resolvedName)
+                FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );
         }
 

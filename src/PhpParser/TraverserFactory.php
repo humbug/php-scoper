@@ -14,8 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\PhpParser\NodeVisitor\IdentifierNameAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
@@ -43,16 +44,23 @@ class TraverserFactory
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
 
-        $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
-        $newNameResolver = new NameResolver(
+        $nameResolver = new NameResolver(
             null,
             ['preserveOriginalNames' => true],
+        );
+        $identifierResolver = new IdentifierResolver($nameResolver);
+
+        $stringPrefixer = new StringNodePrefixer(
+            $scoper,
+            $prefix,
+            $whitelist,
         );
 
         self::addVisitors(
             $traverser,
             [
-                $newNameResolver,
+                $nameResolver,
+                new IdentifierNameAppender($identifierResolver),
                 new NodeVisitor\ParentNodeAppender(),
 
                 new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
@@ -73,13 +81,13 @@ class TraverserFactory
 
                 new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
                     $prefix,
-                    $nameResolver,
+                    $identifierResolver,
                     $whitelist,
                     $this->reflector,
                 ),
                 new NodeVisitor\ClassIdentifierRecorder(
                     $prefix,
-                    $nameResolver,
+                    $identifierResolver,
                     $whitelist
                 ),
                 new NodeVisitor\NameStmtPrefixer(
@@ -94,25 +102,16 @@ class TraverserFactory
                     $whitelist,
                     $this->reflector,
                 ),
-                new NodeVisitor\NewdocPrefixer(
-                    $scoper,
-                    $prefix,
-                    $whitelist,
-                ),
-                new NodeVisitor\EvalPrefixer(
-                    $scoper,
-                    $prefix,
-                    $whitelist,
-                ),
+                new NodeVisitor\NewdocPrefixer($stringPrefixer),
+                new NodeVisitor\EvalPrefixer($stringPrefixer),
 
                 new NodeVisitor\ClassAliasStmtAppender(
                     $prefix,
                     $whitelist,
-                    $nameResolver,
                 ),
                 new NodeVisitor\ConstStmtReplacer(
                     $whitelist,
-                    $nameResolver,
+                    $identifierResolver,
                 ),
             ],
         );

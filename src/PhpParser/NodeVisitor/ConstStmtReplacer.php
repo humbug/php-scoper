@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -48,17 +48,16 @@ use function count;
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
     private Whitelist $whitelist;
-    private FullyQualifiedNameResolver $nameResolver;
+    private IdentifierResolver $nameResolver;
 
-    public function __construct(Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
-    {
+    public function __construct(
+        Whitelist $whitelist,
+        IdentifierResolver $nameResolver
+    ) {
         $this->whitelist = $whitelist;
         $this->nameResolver = $nameResolver;
     }
 
-    /**
-     * @param Const_ $node
-     */
     public function enterNode(Node $node): Node
     {
         if (!$node instanceof Const_) {
@@ -66,39 +65,40 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
         }
 
         foreach ($node->consts as $constant) {
-            /** @var Node\Const_ $constant */
-            $resolvedConstantName = $this->nameResolver->resolveName(
-                new Name(
-                    (string) $constant->name,
-                    $node->getAttributes()
-                )
-            )->getName();
+            $replacement = $this->replaceConst($node, $constant);
 
-            if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName, true)) {
-                continue;
+            if (null !== $replacement) {
+                return $replacement;
             }
-
-            if (count($node->consts) > 1) {
-                throw new UnexpectedValueException(
-                    'Whitelisting a constant declared in a grouped constant statement (e.g. `const FOO = '
-                    .'\'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant '
-                    .'declaration statements'
-                );
-            }
-
-            return new Expression(
-                new FuncCall(
-                    new FullyQualified('define'),
-                    [
-                        new Arg(
-                            new String_((string) $resolvedConstantName)
-                        ),
-                        new Arg($constant->value),
-                    ]
-                )
-            );
         }
 
         return $node;
+    }
+
+    private function replaceConst(Const_ $const, Node\Const_ $constant): ?Node
+    {
+        $resolvedConstantName = $this->nameResolver->resolveIdentifier($constant->name);
+
+        if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName, true)) {
+            return null;
+        }
+
+        if (count($const->consts) > 1) {
+            throw new UnexpectedValueException(
+                'Whitelisting a constant declared in a grouped constant statement (e.g. `const FOO = \'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant declaration statements',
+            );
+        }
+
+        return new Expression(
+            new FuncCall(
+                new FullyQualified('define'),
+                [
+                    new Arg(
+                        new String_((string) $resolvedConstantName)
+                    ),
+                    new Arg($constant->value),
+                ],
+            ),
+        );
     }
 }
