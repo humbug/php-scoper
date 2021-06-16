@@ -41,8 +41,11 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     private Whitelist $whitelist;
     private NamespaceStmtCollection $namespaceStatements;
 
-    public function __construct(string $prefix, Whitelist $whitelist, NamespaceStmtCollection $namespaceStatements)
-    {
+    public function __construct(
+        string $prefix,
+        Whitelist $whitelist,
+        NamespaceStmtCollection $namespaceStatements
+    ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
         $this->namespaceStatements = $namespaceStatements;
@@ -52,18 +55,13 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     {
         return ($node instanceof Namespace_)
             ? $this->prefixNamespaceStmt($node)
-            : $node
-        ;
+            : $node;
     }
 
     private function prefixNamespaceStmt(Namespace_ $namespace): Node
     {
         if ($this->shouldPrefixStmt($namespace)) {
-            $originalName = $namespace->name;
-
-            $namespace->name = Name::concat($this->prefix, $namespace->name);
-
-            NamespaceManipulator::setOriginalName($namespace, $originalName);
+            self::prefixStmt($namespace, $this->prefix);
         }
 
         $this->namespaceStatements->add($namespace);
@@ -80,5 +78,14 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
         $nameFirstPart = null === $namespace->name ? '' : $namespace->name->getFirst();
 
         return $this->prefix !== $nameFirstPart;
+    }
+
+    private static function prefixStmt(Namespace_ $namespace, string $prefix): void
+    {
+        $originalName = $namespace->name;
+
+        $namespace->name = Name::concat($prefix, $namespace->name);
+
+        NamespaceManipulator::setOriginalName($namespace, $originalName);
     }
 }

@@ -113,13 +113,9 @@ final class UseStmtCollection implements IteratorAggregate
 
     private static function getName(Name $node): string
     {
-        $originalNode = OriginalNameResolver::getOriginalName($node);
-
-        if (null === $originalNode) {
-            return self::getNameFirstPart($node);
-        }
-
-        return self::getNameFirstPart($originalNode);
+        return self::getNameFirstPart(
+            OriginalNameResolver::getOriginalName($node),
+        );
     }
 
     private static function getNameFirstPart(Name $node): string
@@ -189,10 +185,6 @@ final class UseStmtCollection implements IteratorAggregate
             $name = OriginalNameResolver::getOriginalName($name);
         }
 
-        if (null === $name) {
-            return false;
-        }
-
         // If the name has more than one part then any potentially associated
         // use statement will be a regular use statement.
         // e.g.:
@@ -211,10 +203,6 @@ final class UseStmtCollection implements IteratorAggregate
 
         if ($name instanceof Name\FullyQualified) {
             $name = OriginalNameResolver::getOriginalName($name);
-        }
-
-        if (null === $name) {
-            return false;
         }
 
         // If the name has more than one part then any potentially associated

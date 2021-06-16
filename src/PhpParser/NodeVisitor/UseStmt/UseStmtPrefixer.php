@@ -22,7 +22,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
-use function count;
 
 /**
  * Prefixes the use statements.
@@ -35,8 +34,11 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
     private Whitelist $whitelist;
     private Reflector $reflector;
 
-    public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
-    {
+    public function __construct(
+        string $prefix,
+        Whitelist $whitelist,
+        Reflector $reflector
+    ) {
         $this->prefix = $prefix;
         $this->reflector = $reflector;
         $this->whitelist = $whitelist;
@@ -45,13 +47,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
     public function enterNode(Node $node): Node
     {
         if ($node instanceof UseUse && $this->shouldPrefixUseStmt($node)) {
-            $previousName = $node->name;
-
-            /** @var Name $prefixedName */
-            $prefixedName = Name::concat($this->prefix, $node->name, $node->name->getAttributes());
-            $node->name = $prefixedName;
-
-            UseStmtManipulator::setOriginalName($node, $previousName);
+            self::prefixStmt($node, $this->prefix);
         }
 
         return $node;
@@ -59,7 +55,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
 
     private function shouldPrefixUseStmt(UseUse $use): bool
     {
-        $useType = $this->findUseType($use);
+        $useType = self::findUseType($use);
 
         // If is already from the prefix namespace
         if ($this->prefix === $use->name->getFirst()) {
@@ -83,15 +79,41 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
             );
         }
 
-        return Use_::TYPE_NORMAL !== $useType || false === $this->reflector->isClassInternal((string) $use->name);
+        return Use_::TYPE_NORMAL !== $useType
+            || !$this->reflector->isClassInternal((string) $use->name);
+    }
+
+    private static function prefixStmt(UseUse $use, string $prefix): void
+    {
+        $previousName = $use->name;
+
+        $prefixedName = Name::concat(
+            $prefix,
+            $use->name,
+            $use->name->getAttributes(),
+        );
+
+        if (null === $prefixedName) {
+            return;
+        }
+
+        // TODO: move this to ParentNodeAppender or Manipulator
+        // Unlike the new (prefixed name), the previous name will not be
+        // traversed hence we need to manually set its parent attribute
+        $previousName->setAttribute(
+            ParentNodeAppender::PARENT_ATTRIBUTE,
+            $use,
+        );
+        UseStmtManipulator::setOriginalName($use, $previousName);
+
+        $use->name = $prefixedName;
     }
 
     private static function shouldPrefixConstantUseStmt(
         string $name,
         Whitelist $whitelist,
         Reflector $reflector
-    ): bool
-    {
+    ): bool {
         return !$whitelist->isGlobalWhitelistedConstant($name)
             && !$whitelist->isSymbolWhitelisted($name)
             && !$reflector->isConstantInternal($name);
@@ -104,7 +126,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
      *
      * @return int See \PhpParser\Node\Stmt\Use_ type constants.
      */
-    private function findUseType(UseUse $use): int
+    private static function findUseType(UseUse $use): int
     {
         if (Use_::TYPE_UNKNOWN === $use->type) {
             /** @var Use_ $parentNode */

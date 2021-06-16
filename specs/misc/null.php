@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global constant imported with a use statement used in the global scope',
+        'title' => 'Null case-sensitivity',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
+        'whitelist-global-functions' => false,
         'excluded-constants' => [],
         'excluded-classes' => [],
         'excluded-functions' => [],
@@ -28,55 +28,39 @@ return [
         'registered-functions' => [],
     ],
 
-    'Constant call imported with a use statement' => <<<'PHP'
+    'Usages of null' => <<<'PHP'
 <?php
 
-use const DUMMY_CONST;
+const LOWERCASE_NULL = null;
+const UPPERCASE_NULL = null;
 
-DUMMY_CONST;
+$lowerCaseNull = null;
+$upperCaseNull = null;
+
+function foo($lowerCaseNull = null, $upperCaseNull = NULL) {}
+
+class X {
+    var $lowerCaseNull = null;
+    var $upperCaseNull = NULL;
+}
+
 ----
 <?php
 
 namespace Humbug;
 
-use const Humbug\DUMMY_CONST;
-DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted constant call imported with a use statement' => [
-        'whitelist' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
-<?php
-
-use const DUMMY_CONST;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const DUMMY_CONST;
-DUMMY_CONST;
-
-PHP
-    ],
-
-    'FQ constant call imported with a use statement' => <<<'PHP'
-<?php
-
-use const DUMMY_CONST;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const Humbug\DUMMY_CONST;
-\Humbug\DUMMY_CONST;
+const LOWERCASE_NULL = null;
+const UPPERCASE_NULL = null;
+$lowerCaseNull = null;
+$upperCaseNull = null;
+function foo($lowerCaseNull = null, $upperCaseNull = NULL)
+{
+}
+class X
+{
+    var $lowerCaseNull = null;
+    var $upperCaseNull = NULL;
+}
 
 PHP
     ,
