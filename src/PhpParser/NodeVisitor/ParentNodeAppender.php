@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
 use function array_pop;
 use function count;
