@@ -34,9 +34,9 @@ final class ParentNodeAppender extends NodeVisitorAbstract
      */
     private array $stack;
 
-    public static function setParent(Node $node, Node $parent): bool
+    public static function setParent(Node $node, Node $parent): void
     {
-        return $node->setAttribute(self::PARENT_ATTRIBUTE, $parent);
+        $node->setAttribute(self::PARENT_ATTRIBUTE, $parent);
     }
 
     public static function hasParent(Node $node): bool
