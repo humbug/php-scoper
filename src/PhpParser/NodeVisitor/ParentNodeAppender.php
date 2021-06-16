@@ -74,6 +74,14 @@ final class ParentNodeAppender extends NodeVisitorAbstract
                     $const->name->setAttribute(self::PARENT_ATTRIBUTE, $const);
                 }
             }
+
+            if ($node instanceof Node\Stmt\ClassLike) {
+                $name = $node->name;
+
+                if (null !== $name) {
+                    $name->setAttribute(self::PARENT_ATTRIBUTE, $node);
+                }
+            }
         }
 
         $this->stack[] = $node;

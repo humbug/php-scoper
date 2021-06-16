@@ -43,6 +43,12 @@ final class IdentifierResolver
 
     public function resolveIdentifier(Identifier $identifier): Name
     {
+        $resolvedName = $identifier->getAttribute('resolvedName');
+
+        if (null !== $resolvedName) {
+            return $resolvedName;
+        }
+
         $parentNode = ParentNodeAppender::getParent($identifier);
 
         if ($parentNode instanceof Function_) {
