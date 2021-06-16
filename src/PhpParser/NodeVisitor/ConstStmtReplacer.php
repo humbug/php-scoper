@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -48,12 +49,14 @@ use function count;
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
     private Whitelist $whitelist;
-    private FullyQualifiedNameResolver $nameResolver;
+    private IdentifierResolver $identifierResolver;
 
-    public function __construct(Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
-    {
+    public function __construct(
+        Whitelist $whitelist,
+        IdentifierResolver $identifierResolver
+    ) {
         $this->whitelist = $whitelist;
-        $this->nameResolver = $nameResolver;
+        $this->identifierResolver = $identifierResolver;
     }
 
     /**
@@ -67,12 +70,9 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
 
         foreach ($node->consts as $constant) {
             /** @var Node\Const_ $constant */
-            $resolvedConstantName = $this->nameResolver->resolveName(
-                new Name(
-                    (string) $constant->name,
-                    $node->getAttributes()
-                )
-            )->getName();
+            $resolvedConstantName = $this->identifierResolver->resolveIdentifier(
+                $constant->name,
+            );
 
             if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName, true)) {
                 continue;
