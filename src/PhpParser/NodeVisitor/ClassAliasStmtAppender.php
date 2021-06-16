@@ -58,13 +58,16 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
     private string $prefix;
     private Whitelist $whitelist;
+    private IdentifierResolver $identifierResolver;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist
+        Whitelist $whitelist,
+        IdentifierResolver $identifierResolver
     ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
+        $this->identifierResolver = $identifierResolver;
     }
 
     public function afterTraverse(array $nodes): array
@@ -110,11 +113,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             return $stmts;
         }
 
-        // We rely on the attribute here since we are in the afterTraverse(),
-        // the PHP-Parser name resolver context would not be up to date in
-        // regards of the current namespace hence the resolved name would be
-        // incorrect.
-        $resolvedName = $name->getAttribute('resolvedName');
+        $originalName = $this->identifierResolver->resolveIdentifier($stmt->name);
 
         if (!($resolvedName instanceof FullyQualified)
             || !$this->shouldAppendStmt($resolvedName)

@@ -19,7 +19,6 @@ use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Const_;
@@ -48,14 +47,14 @@ use function count;
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
     private Whitelist $whitelist;
-    private IdentifierResolver $nameResolver;
+    private IdentifierResolver $identifierResolver;
 
     public function __construct(
         Whitelist $whitelist,
-        IdentifierResolver $nameResolver
+        IdentifierResolver $identifierResolver
     ) {
         $this->whitelist = $whitelist;
-        $this->nameResolver = $nameResolver;
+        $this->identifierResolver = $identifierResolver;
     }
 
     public function enterNode(Node $node): Node
@@ -77,7 +76,9 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
 
     private function replaceConst(Const_ $const, Node\Const_ $constant): ?Node
     {
-        $resolvedConstantName = $this->nameResolver->resolveIdentifier($constant->name);
+        $resolvedConstantName = $this->identifierResolver->resolveIdentifier(
+            $constant->name,
+        );
 
         if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName, true)) {
             return null;

@@ -14,23 +14,16 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver;
 
-use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\NameStmtPrefixer;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
-use PhpParser\Node;
-use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitor\NameResolver;
-use function count;
-use function in_array;
+use function array_filter;
+use function implode;
 use function ltrim;
 
 /**
@@ -50,10 +43,50 @@ final class IdentifierResolver
 
     public function resolveIdentifier(Identifier $identifier): Name
     {
+        $resolvedName = $identifier->getAttribute('resolvedName');
+
+        if (null !== $resolvedName) {
+            return $resolvedName;
+        }
+
+        $parentNode = ParentNodeAppender::getParent($identifier);
+
+        if ($parentNode instanceof Function_) {
+            return $this->resolveFunctionIdentifier($identifier);
+        }
+
         $name = NamedIdentifier::create($identifier);
 
         return $this->nameResolver
             ->getNameContext()
             ->getResolvedClassName($name);
+    }
+
+    public function resolveString(String_ $string): Name
+    {
+        $name = new FullyQualified(
+            ltrim($string->value, '\\'),
+            $string->getAttributes(),
+        );
+
+        return $this->nameResolver
+            ->getNameContext()
+            ->getResolvedClassName($name);
+    }
+
+    private function resolveFunctionIdentifier(Identifier $identifier): Name
+    {
+        $nameParts = array_filter([
+            $this->nameResolver->getNameContext()->getNamespace(),
+            $identifier->toString(),
+        ]);
+
+        return new FullyQualified(
+            implode(
+                '\\',
+                $nameParts,
+            ),
+            $identifier->getAttributes(),
+        );
     }
 }

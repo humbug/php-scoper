@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\IdentifierNameAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
@@ -44,24 +43,18 @@ class TraverserFactory
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
 
-        $nameResolver = new NameResolver(
+        $newNameResolver = new NameResolver(
             null,
             ['preserveOriginalNames' => true],
         );
-        $identifierResolver = new IdentifierResolver($nameResolver);
-
-        $stringPrefixer = new StringNodePrefixer(
-            $scoper,
-            $prefix,
-            $whitelist,
-        );
+        $identifierResolver = new IdentifierResolver($newNameResolver);
 
         self::addVisitors(
             $traverser,
             [
-                $nameResolver,
-                new IdentifierNameAppender($identifierResolver),
+                $newNameResolver,
                 new NodeVisitor\ParentNodeAppender(),
+                new NodeVisitor\IdentifierNameAppender($identifierResolver),
 
                 new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
                     $prefix,
@@ -102,12 +95,21 @@ class TraverserFactory
                     $whitelist,
                     $this->reflector,
                 ),
-                new NodeVisitor\NewdocPrefixer($stringPrefixer),
-                new NodeVisitor\EvalPrefixer($stringPrefixer),
+                new NodeVisitor\NewdocPrefixer(
+                    $scoper,
+                    $prefix,
+                    $whitelist,
+                ),
+                new NodeVisitor\EvalPrefixer(
+                    $scoper,
+                    $prefix,
+                    $whitelist,
+                ),
 
                 new NodeVisitor\ClassAliasStmtAppender(
                     $prefix,
                     $whitelist,
+                    $identifierResolver,
                 ),
                 new NodeVisitor\ConstStmtReplacer(
                     $whitelist,

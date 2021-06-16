@@ -14,21 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
-use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
-use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Namespace_;
-use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
-use function array_reduce;
 
 /**
  * In some contexts we need to resolve identifiers but they can no longer be
@@ -48,20 +38,22 @@ final class IdentifierNameAppender extends NodeVisitorAbstract
         $this->identifierResolver = $identifierResolver;
     }
 
-    public function enterNode(Node $node): void
+    public function enterNode(Node $node): ?Node
     {
         if (!($node instanceof Class_ || $node instanceof Interface_)) {
-            return;
+            return null;
         }
 
         $name = $node->name;
 
         if (null === $name) {
-            return;
+            return null;
         }
 
-        $resolvedName = $this->identifierResolver->resolveIdentifier($node->name);
+        $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
         $name->setAttribute('resolvedName', $resolvedName);
+
+        return null;
     }
 }

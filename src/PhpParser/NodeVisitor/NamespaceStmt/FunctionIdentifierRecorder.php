@@ -37,18 +37,18 @@ use PhpParser\NodeVisitorAbstract;
 final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
-    private IdentifierResolver $nameResolver;
+    private IdentifierResolver $identifierResolver;
     private Whitelist $whitelist;
     private Reflector $reflector;
 
     public function __construct(
         string $prefix,
-        IdentifierResolver $nameResolver,
+        IdentifierResolver $identifierResolver,
         Whitelist $whitelist,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
-        $this->nameResolver = $nameResolver;
+        $this->identifierResolver = $identifierResolver;
         $this->whitelist = $whitelist;
         $this->reflector = $reflector;
     }
@@ -108,7 +108,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveIdentifier($node);
+        $resolvedName = $this->identifierResolver->resolveIdentifier($node);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
@@ -121,7 +121,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        return $name instanceof FullyQualified ? $name : null;
+        return $node instanceof FullyQualified ? $node : null;
     }
 
     private function retrieveResolvedNameForString(String_ $node): ?FullyQualified
@@ -141,7 +141,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveIdentifier($node)->getName();
+        $resolvedName = $this->identifierResolver->resolveString($node);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
