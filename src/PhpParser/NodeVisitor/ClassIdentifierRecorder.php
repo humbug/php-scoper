@@ -19,12 +19,9 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Trait_;
-use PhpParser\Node\Stmt\Use_;
-use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
 
 /**

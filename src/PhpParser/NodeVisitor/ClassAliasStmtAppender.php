@@ -113,7 +113,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             return $stmts;
         }
 
-        $resolvedName = $this->identifierResolver->resolveIdentifier($stmt->name);
+        $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
         if (!($resolvedName instanceof FullyQualified)
             || !$this->shouldAppendStmt($resolvedName)

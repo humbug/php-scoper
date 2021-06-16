@@ -63,20 +63,12 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $resolvedName = $this->retrieveResolvedName($node);
 
-        if (null === $resolvedName) {
-            return $node;
-        }
-
-        if (
-            false === $this->reflector->isFunctionInternal((string) $resolvedName)
-            && (
-                $this->whitelist->isGlobalWhitelistedFunction((string) $resolvedName)
-                || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
-            )
+        if (null !== $resolvedName
+            && $this->isFunctionWhitelisted($resolvedName)
         ) {
             $this->whitelist->recordWhitelistedFunction(
                 $resolvedName,
-                FullyQualifiedFactory::concat($this->prefix, $resolvedName)
+                FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );
         }
 
@@ -100,15 +92,17 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         return null;
     }
 
-    private function retrieveResolvedNameForIdentifier(Identifier $node): ?FullyQualified
+    private function retrieveResolvedNameForIdentifier(Identifier $identifier): ?FullyQualified
     {
-        $parent = ParentNodeAppender::getParent($node);
+        $parent = ParentNodeAppender::getParent($identifier);
 
-        if (false === ($parent instanceof Function_) || $node === $parent->returnType) {
+        if (!($parent instanceof Function_)
+            || $identifier === $parent->returnType
+        ) {
             return null;
         }
 
-        $resolvedName = $this->identifierResolver->resolveIdentifier($node);
+        $resolvedName = $this->identifierResolver->resolveIdentifier($identifier);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
@@ -121,12 +115,12 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        return $node instanceof FullyQualified ? $node : null;
+        return $name instanceof FullyQualified ? $name : null;
     }
 
-    private function retrieveResolvedNameForString(String_ $node): ?FullyQualified
+    private function retrieveResolvedNameForString(String_ $string): ?FullyQualified
     {
-        $stringParent = ParentNodeAppender::getParent($node);
+        $stringParent = ParentNodeAppender::getParent($string);
 
         if (!($stringParent instanceof Arg)) {
             return null;
@@ -141,8 +135,21 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->identifierResolver->resolveString($node);
+        $resolvedName = $this->identifierResolver->resolveString($string);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
+    }
+
+    private function isFunctionWhitelisted(FullyQualified $name): bool
+    {
+        $nameString = (string) $name;
+
+        return (
+            !$this->reflector->isFunctionInternal($nameString)
+            && (
+                $this->whitelist->isGlobalWhitelistedFunction($nameString)
+                || $this->whitelist->isSymbolWhitelisted($nameString)
+            )
+        );
     }
 }
