@@ -27,9 +27,12 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeVisitor\NameResolver;
+use function array_filter;
 use function count;
+use function implode;
 use function in_array;
 use function ltrim;
 
@@ -50,10 +53,44 @@ final class IdentifierResolver
 
     public function resolveIdentifier(Identifier $identifier): Name
     {
+        $parentNode = ParentNodeAppender::getParent($identifier);
+
+        if ($parentNode instanceof Function_) {
+            return $this->resolveFunctionIdentifier($identifier);
+        }
+
         $name = NamedIdentifier::create($identifier);
 
         return $this->nameResolver
             ->getNameContext()
             ->getResolvedClassName($name);
+    }
+
+    public function resolveString(String_ $string): Name
+    {
+        $name = new FullyQualified(
+            ltrim($string->value, '\\'),
+            $string->getAttributes(),
+        );
+
+        return $this->nameResolver
+            ->getNameContext()
+            ->getResolvedClassName($name);
+    }
+
+    private function resolveFunctionIdentifier(Identifier $identifier): Name
+    {
+        $nameParts = array_filter([
+            $this->nameResolver->getNameContext()->getNamespace(),
+            $identifier->toString(),
+        ]);
+
+        return new FullyQualified(
+            implode(
+                '\\',
+                $nameParts,
+            ),
+            $identifier->getAttributes(),
+        );
     }
 }

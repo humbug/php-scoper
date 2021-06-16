@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
@@ -37,18 +38,18 @@ use PhpParser\NodeVisitorAbstract;
 final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
-    private FullyQualifiedNameResolver $nameResolver;
+    private IdentifierResolver $identifierResolver;
     private Whitelist $whitelist;
     private Reflector $reflector;
 
     public function __construct(
         string $prefix,
-        FullyQualifiedNameResolver $nameResolver,
+        IdentifierResolver $identifierResolver,
         Whitelist $whitelist,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
-        $this->nameResolver = $nameResolver;
+        $this->identifierResolver = $identifierResolver;
         $this->whitelist = $whitelist;
         $this->reflector = $reflector;
     }
@@ -106,7 +107,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->identifierResolver->resolveIdentifier($node);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
@@ -119,9 +120,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
-
-        return $resolvedName instanceof FullyQualified ? $resolvedName : null;
+        return $node instanceof FullyQualified ? $node : null;
     }
 
     private function retrieveResolvedNameForString(String_ $node): ?FullyQualified
@@ -141,7 +140,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->identifierResolver->resolveString($node);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }

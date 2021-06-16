@@ -15,13 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
+use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
 use function array_pop;
 use function count;
 
 /**
- * Appends the parent node as an attribute to each node. This allows to have more context in the other visitors when
- * inspecting a node.
+ * Appends the parent node as an attribute to each node. This allows to have
+ * more context in the other visitors when inspecting a node.
  *
  * @private
  */
@@ -63,6 +64,17 @@ final class ParentNodeAppender extends NodeVisitorAbstract
     {
         if ([] !== $this->stack) {
             $node->setAttribute(self::PARENT_ATTRIBUTE, $this->stack[count($this->stack) - 1]);
+
+            // In some cases, e.g. to replace a node content, we need to access
+            // the child nodes early (i.e. before NodeVisitor::enterNode()) in
+            // which case without the following they cannot be accessed to
+            // with their parent node
+            if ($node instanceof Node\Stmt\Const_) {
+                foreach ($node->consts as $const) {
+                    $const->setAttribute(self::PARENT_ATTRIBUTE, $node);
+                    $const->name->setAttribute(self::PARENT_ATTRIBUTE, $const);
+                }
+            }
         }
 
         $this->stack[] = $node;

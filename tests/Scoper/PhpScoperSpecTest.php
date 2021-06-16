@@ -202,11 +202,11 @@ class PhpScoperSpecTest extends TestCase
 
         $actualRecordedWhitelistedClasses = $whitelist->getRecordedWhitelistedClasses();
 
-        $this->assertSameRecordedSymbols($actualRecordedWhitelistedClasses, $expectedRegisteredClasses, $specMessage);
+        $this->assertSameRecordedSymbols($expectedRegisteredClasses, $actualRecordedWhitelistedClasses, $specMessage);
 
         $actualRecordedWhitelistedFunctions = $whitelist->getRecordedWhitelistedFunctions();
 
-        $this->assertSameRecordedSymbols($actualRecordedWhitelistedFunctions, $expectedRegisteredFunctions, $specMessage);
+        $this->assertSameRecordedSymbols($expectedRegisteredFunctions, $actualRecordedWhitelistedFunctions, $specMessage);
     }
 
     public function provideValidFiles(): Generator

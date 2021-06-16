@@ -75,7 +75,7 @@ class TraverserFactory
 
                 new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
                     $prefix,
-                    $nameResolver,
+                    $identifierResolver,
                     $whitelist,
                     $this->reflector,
                 ),
