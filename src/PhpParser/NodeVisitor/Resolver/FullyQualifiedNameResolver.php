@@ -86,7 +86,7 @@ final class FullyQualifiedNameResolver
             return new FullyQualified($name, $name->getAttributes());
         }
 
-        if (in_array((string) $name, NameStmtPrefixer::PHP_SPECIAL_KEYWORDS, true)) {
+        if (in_array((string) $name, NameStmtPrefixer::SPECIAL_CLASS_NAMES, true)) {
             return $name;
         }
 

@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Whitelist;
@@ -69,17 +68,38 @@ use function strtolower;
  */
 final class NameStmtPrefixer extends NodeVisitorAbstract
 {
-    public const PHP_SPECIAL_KEYWORDS = [
+    // TODO: remove
+    public const SPECIAL_CLASS_NAMES = [
         'self',
         'static',
         'parent',
+    ];
+
+    private const SUPPORTED_PARENT_NODE_CLASS_NAMES = [
+        Alias::class,
+        ArrowFunction::class,
+        Catch_::class,
+        ConstFetch::class,
+        Class_::class,
+        ClassConstFetch::class,
+        ClassMethod::class,
+        FuncCall::class,
+        Function_::class,
+        Instanceof_::class,
+        Interface_::class,
+        New_::class,
+        Param::class,
+        Precedence::class,
+        Property::class,
+        StaticCall::class,
+        StaticPropertyFetch::class,
+        TraitUse::class,
     ];
 
     private string $prefix;
     private Whitelist $whitelist;
     private NamespaceStmtCollection $namespaceStatements;
     private UseStmtCollection $useStatements;
-    private FullyQualifiedNameResolver $nameResolver;
     private Reflector $reflector;
 
     public function __construct(
@@ -87,14 +107,12 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         Whitelist $whitelist,
         NamespaceStmtCollection $namespaceStatements,
         UseStmtCollection $useStatements,
-        FullyQualifiedNameResolver $nameResolver,
         Reflector $reflector
     ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
         $this->namespaceStatements = $namespaceStatements;
         $this->useStatements = $useStatements;
-        $this->nameResolver = $nameResolver;
         $this->reflector = $reflector;
     }
 
@@ -116,7 +134,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         $parent = ParentNodeAppender::findParent($name);
 
         if (null === $parent) {
-            return $parent;
+            return null;
         }
 
         if (!($parent instanceof NullableType)) {
@@ -128,50 +146,18 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private function prefixName(Name $resolvedName, Node $parentNode): Node
     {
-        if (false === (
-            $parentNode instanceof Alias
-            || $parentNode instanceof ArrowFunction
-            || $parentNode instanceof Catch_
-            || $parentNode instanceof ConstFetch
-            || $parentNode instanceof Class_
-            || $parentNode instanceof ClassConstFetch
-            || $parentNode instanceof ClassMethod
-            || $parentNode instanceof FuncCall
-            || $parentNode instanceof Function_
-            || $parentNode instanceof Instanceof_
-            || $parentNode instanceof Interface_
-            || $parentNode instanceof New_
-            || $parentNode instanceof Param
-            || $parentNode instanceof Precedence
-            || $parentNode instanceof Property
-            || $parentNode instanceof StaticCall
-            || $parentNode instanceof StaticPropertyFetch
-            || $parentNode instanceof TraitUse
-        )
-        ) {
-            return $resolvedName;
-        }
-
         if (
-            (
-                $parentNode instanceof Catch_
-                || $parentNode instanceof ClassConstFetch
-                || $parentNode instanceof New_
-                || $parentNode instanceof FuncCall
-                || $parentNode instanceof Instanceof_
-                || $parentNode instanceof Param
-                || $parentNode instanceof Property
-                || $parentNode instanceof StaticCall
-                || $parentNode instanceof StaticPropertyFetch
-            )
-            && in_array((string) $resolvedName, self::PHP_SPECIAL_KEYWORDS, true)
+            $resolvedName->isSpecialClassName()
+            || !self::isParentNodeSupported($parentNode)
         ) {
             return $resolvedName;
         }
 
         $originalName = OriginalNameResolver::getOriginalName($resolvedName);
 
-        if ($parentNode instanceof ConstFetch && 'null' === $originalName->toLowerString()) {
+        if ($parentNode instanceof ConstFetch
+            && 'null' === $originalName->toLowerString()
+        ) {
             return $originalName;
         }
 
@@ -193,12 +179,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $originalName;
         }
 
-        if ($resolvedName instanceof FullyQualified
-            && (
-                $this->prefix === $resolvedName->getFirst() // Skip if is already prefixed
-                || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)  // Skip if the namespace node is whitelisted
-            )
-        ) {
+        if ($this->isNamePrefixable($resolvedName)) {
             return $resolvedName;
         }
 
@@ -211,47 +192,25 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 $resolvedName,
                 $currentNamespace,
             )
-            || (
-                // In the global scope
-                $currentNamespace === null
-                && $originalName->parts === $resolvedName->parts
-                && !($originalName instanceof FullyQualified)
-                && !($parentNode instanceof ConstFetch)
-                && $resolvedName instanceof FullyQualified
-                && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
-                && !$this->reflector->isFunctionInternal($resolvedName->toString())
-                && !$this->reflector->isClassInternal($resolvedName->toString())
+            || $this->doesNameBelongToGlobalNamespace(
+                $originalName,
+                $resolvedName,
+                $parentNode,
+                $currentNamespace,
             )
         ) {
             return $originalName;
         }
 
-        // Check if the class can be prefixed
-        if (!($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall)
-            && $resolvedName instanceof FullyQualified
-            && $this->reflector->isClassInternal($resolvedName->toString())
-        ) {
+        if (!$this->isClassNamePrefixable($resolvedName, $parentNode)) {
             return $resolvedName;
         }
 
         if ($parentNode instanceof ConstFetch) {
-            if ($this->whitelist->isSymbolWhitelisted($resolvedName->toString(), true)) {
-                return $resolvedName;
-            }
+            $prefixedName = $this->prefixConstFetchNode($resolvedName);
 
-            if ($this->reflector->isConstantInternal($resolvedName->toString())) {
-                return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
-            }
-
-            // Constants have an autoloading fallback so we cannot prefix them when the name is ambiguous
-            // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
-            if (false === ($resolvedName instanceof FullyQualified)) {
-                return $resolvedName;
-            }
-
-            if ($this->whitelist->isGlobalWhitelistedConstant((string) $resolvedName)) {
-                // Unlike classes & functions, whitelisted are not prefixed with aliases registered in scoper-autoload.php
-                return new FullyQualified($resolvedName->toString(), $resolvedName->getAttributes());
+            if (null !== $prefixedName) {
+                return $prefixedName;
             }
 
             // Continue
@@ -260,27 +219,37 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         // Functions have a fallback auto-loading so we cannot prefix them when the name is ambiguous
         // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
         if ($parentNode instanceof FuncCall) {
-            if ($this->reflector->isFunctionInternal($originalName->toString())) {
-                return new FullyQualified(
-                    $originalName->toString(),
-                    $originalName->getAttributes(),
-                );
+            $prefixedName = $this->prefixFuncCallNode($originalName, $resolvedName);
+
+            if (null !== $prefixedName) {
+                return $prefixedName;
             }
 
-            if (!($resolvedName instanceof FullyQualified)) {
-                return $resolvedName;
-            }
+            // Continue
         }
 
-        if ($parentNode instanceof ClassMethod && $resolvedName->isSpecialClassName()) {
+        if ($parentNode instanceof ClassMethod
+            && $resolvedName->isSpecialClassName()
+        ) {
             return $resolvedName;
         }
 
         return FullyQualifiedFactory::concat(
             $this->prefix,
             $resolvedName->toString(),
-            $resolvedName->getAttributes()
+            $resolvedName->getAttributes(),
         );
+    }
+
+    private static function isParentNodeSupported(Node $parentNode): bool
+    {
+        foreach (self::SUPPORTED_PARENT_NODE_CLASS_NAMES as $supportedClassName) {
+            if ($parentNode instanceof $supportedClassName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -300,14 +269,27 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         return true;
     }
 
+    private function isNamePrefixable(Name $resolvedName): bool
+    {
+        if (!($resolvedName instanceof FullyQualified)) {
+            return false;
+        }
+
+        return (
+            // Is already prefixed
+            $this->prefix === $resolvedName->getFirst()
+            // The namespace node is whitelisted
+            || $this->whitelist->belongsToWhitelistedNamespace((string) $resolvedName)
+        );
+    }
+
     private static function doesNameBelongToNamespace(
         Name $originalName,
         Name $resolvedName,
-        ?Name $namespace
-    ): bool
-    {
+        ?Name $namespaceName
+    ): bool {
         if (
-            $namespace === null
+            $namespaceName === null
             || !($resolvedName instanceof FullyQualified)
             // In case the original name is a FQ, we do not skip the prefixing
             // and keep it as FQ
@@ -317,11 +299,28 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         $originalNameFQParts = [
-            ...$namespace->parts,
+            ...$namespaceName->parts,
             ...$originalName->parts,
         ];
 
         return $originalNameFQParts === $resolvedName->parts;
+    }
+
+    private function doesNameBelongToGlobalNamespace(
+        Name $originalName,
+        Name $resolvedName,
+        Node $parentNode,
+        ?Name $namespaceName
+    ): bool {
+        return (
+            // In the global scope
+            null === $namespaceName
+            && !($originalName instanceof FullyQualified)
+            && !($parentNode instanceof ConstFetch)
+            && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
+            && !$this->reflector->isFunctionInternal($resolvedName->toString())
+            && !$this->reflector->isClassInternal($resolvedName->toString())
+        );
     }
 
     private static function doesNameBelongToUseStatement(
@@ -330,8 +329,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         Node $parentNode,
         ?Name $useStatementName,
         Whitelist $whitelist
-    ): bool
-    {
+    ): bool {
         if (
             null === $useStatementName
             || !($resolvedName instanceof FullyQualified)
@@ -373,14 +371,76 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         );
 
         return $caseSensitiveUseStmt
-            ? $originalName->getFirst() === $useStmtAlias->toString()
-            : strtolower($originalName->getFirst()) === $useStmtAlias->toLowerString();
+            ? $originalName->getFirst() === $useStmtAlias
+            : strtolower($originalName->getFirst()) === strtolower($useStmtAlias);
+    }
+
+    private function isClassNamePrefixable(
+        Name $resolvedName,
+        Node $parentNode
+    ): bool
+    {
+        $isClassNode = !($parentNode instanceof ConstFetch || $parentNode instanceof FuncCall);
+
+        return (
+            !$isClassNode
+            || !($resolvedName instanceof FullyQualified)
+            || !$this->reflector->isClassInternal($resolvedName->toString())
+        );
+    }
+
+    private function prefixConstFetchNode(Name $resolvedName): ?Name
+    {
+        $resolvedNameString = $resolvedName->toString();
+
+        if ($this->whitelist->isSymbolWhitelisted($resolvedNameString, true)) {
+            return $resolvedName;
+        }
+
+        if ($this->reflector->isConstantInternal($resolvedNameString)) {
+            return new FullyQualified(
+                $resolvedNameString,
+                $resolvedName->getAttributes(),
+            );
+        }
+
+        // Constants have an auto-loading fallback so we cannot prefix them when the name is ambiguous
+        // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
+        if (!($resolvedName instanceof FullyQualified)) {
+            return $resolvedName;
+        }
+
+        if ($this->whitelist->isGlobalWhitelistedConstant($resolvedNameString)) {
+            // Unlike classes & functions, whitelisted are not prefixed with aliases registered in scoper-autoload.php
+            return new FullyQualified(
+                $resolvedNameString,
+                $resolvedName->getAttributes(),
+            );
+        }
+
+        return null;
+    }
+
+    private function prefixFuncCallNode(Name $originalName, Name $resolvedName): ?Name
+    {
+        if ($this->reflector->isFunctionInternal($originalName->toString())) {
+            return new FullyQualified(
+                $originalName->toString(),
+                $originalName->getAttributes(),
+            );
+        }
+
+        if (!($resolvedName instanceof FullyQualified)) {
+            return $resolvedName;
+        }
+
+        return null;
     }
 
     /**
-     * @return array{Identifier|string|null, Use_::TYPE_*}
+     * @return array{string|null, Use_::TYPE_*}
      */
-    private function getUseStmtAliasAndType(Name $name): array
+    private static function getUseStmtAliasAndType(Name $name): array
     {
         $use = ParentNodeAppender::getParent($name);
 
@@ -404,8 +464,14 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             );
         }
 
+        $alias = $use->alias;
+
+        if (null !== $alias) {
+            $alias = (string) $alias;
+        }
+
         return [
-            $use->alias,
+            $alias,
             $useParent->type,
         ];
     }

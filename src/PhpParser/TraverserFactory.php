@@ -87,7 +87,6 @@ class TraverserFactory
                     $whitelist,
                     $namespaceStatements,
                     $useStatements,
-                    $nameResolver,
                     $this->reflector,
                 ),
                 new NodeVisitor\StringScalarPrefixer(
