@@ -97,13 +97,9 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
             return;
         }
 
-        // TODO: move this to ParentNodeAppender or Manipulator
         // Unlike the new (prefixed name), the previous name will not be
         // traversed hence we need to manually set its parent attribute
-        $previousName->setAttribute(
-            ParentNodeAppender::PARENT_ATTRIBUTE,
-            $use,
-        );
+        ParentNodeAppender::setParent($previousName, $use);
         UseStmtManipulator::setOriginalName($use, $previousName);
 
         $use->name = $prefixedName;

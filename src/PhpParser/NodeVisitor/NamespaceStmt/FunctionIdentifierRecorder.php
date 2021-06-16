@@ -55,26 +55,20 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Identifier || $node instanceof Name || $node instanceof String_)
-            || false === ParentNodeAppender::hasParent($node)
+        if (!($node instanceof Identifier || $node instanceof Name || $node instanceof String_)
+            || !ParentNodeAppender::hasParent($node)
         ) {
             return $node;
         }
 
-        if (null === $resolvedName = $this->retrieveResolvedName($node)) {
-            return $node;
-        }
+        $resolvedName = $this->retrieveResolvedName($node);
 
-        if (
-            false === $this->reflector->isFunctionInternal((string) $resolvedName)
-            && (
-                $this->whitelist->isGlobalWhitelistedFunction((string) $resolvedName)
-                || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
-            )
+        if (null !== $resolvedName
+            && $this->isFunctionWhitelisted($resolvedName)
         ) {
             $this->whitelist->recordWhitelistedFunction(
                 $resolvedName,
-                FullyQualifiedFactory::concat($this->prefix, $resolvedName)
+                FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );
         }
 
@@ -98,49 +92,64 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         return null;
     }
 
-    private function retrieveResolvedNameForIdentifier(Identifier $node): ?FullyQualified
+    private function retrieveResolvedNameForIdentifier(Identifier $identifier): ?FullyQualified
     {
-        $parent = ParentNodeAppender::getParent($node);
+        $parent = ParentNodeAppender::getParent($identifier);
 
-        if (false === ($parent instanceof Function_) || $node === $parent->returnType) {
+        if (!($parent instanceof Function_)
+            || $identifier === $parent->returnType
+        ) {
             return null;
         }
 
-        $resolvedName = $this->identifierResolver->resolveIdentifier($node);
+        $resolvedName = $this->identifierResolver->resolveIdentifier($identifier);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
 
-    private function retrieveResolvedNameForFuncCall(Name $node): ?FullyQualified
+    private function retrieveResolvedNameForFuncCall(Name $name): ?FullyQualified
     {
-        $parent = ParentNodeAppender::getParent($node);
+        $parent = ParentNodeAppender::getParent($name);
 
-        if (false === ($parent instanceof FuncCall)) {
+        if (!($parent instanceof FuncCall)) {
             return null;
         }
 
-        return $node instanceof FullyQualified ? $node : null;
+        return $name instanceof FullyQualified ? $name : null;
     }
 
-    private function retrieveResolvedNameForString(String_ $node): ?FullyQualified
+    private function retrieveResolvedNameForString(String_ $string): ?FullyQualified
     {
-        $stringParent = ParentNodeAppender::getParent($node);
+        $stringParent = ParentNodeAppender::getParent($string);
 
-        if (false === ($stringParent instanceof Arg)) {
+        if (!($stringParent instanceof Arg)) {
             return null;
         }
 
         $argParent = ParentNodeAppender::getParent($stringParent);
 
-        if (false === ($argParent instanceof FuncCall)
-            || false === ($argParent->name instanceof FullyQualified)
+        if (!($argParent instanceof FuncCall)
+            || !($argParent->name instanceof FullyQualified)
             || 'function_exists' !== (string) $argParent->name
         ) {
             return null;
         }
 
-        $resolvedName = $this->identifierResolver->resolveString($node);
+        $resolvedName = $this->identifierResolver->resolveString($string);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
+    }
+
+    private function isFunctionWhitelisted(FullyQualified $name): bool
+    {
+        $nameString = (string) $name;
+
+        return (
+            !$this->reflector->isFunctionInternal($nameString)
+            && (
+                $this->whitelist->isGlobalWhitelistedFunction($nameString)
+                || $this->whitelist->isSymbolWhitelisted($nameString)
+            )
+        );
     }
 }

@@ -47,34 +47,32 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
 
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Identifier) || false === ParentNodeAppender::hasParent($node)) {
+        if (!($node instanceof Identifier) ||!ParentNodeAppender::hasParent($node)) {
             return $node;
         }
 
         $parent = ParentNodeAppender::getParent($node);
 
-        if (false === ($parent instanceof ClassLike) || $parent instanceof Trait_) {
+        if (!($parent instanceof ClassLike) || $parent instanceof Trait_) {
             return $node;
         }
-        /** @var ClassLike $parent */
+
         if (null === $parent->name) {
             return $node;
         }
 
-        /** @var Identifier $node */
         $resolvedName = $this->identifierResolver->resolveIdentifier($node);
 
-        if (false === ($resolvedName instanceof FullyQualified)) {
+        if (!($resolvedName instanceof FullyQualified)) {
             return $node;
         }
 
-        /** @var FullyQualified $resolvedName */
         if ($this->whitelist->isGlobalWhitelistedClass((string) $resolvedName)
             || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
         ) {
             $this->whitelist->recordWhitelistedClass(
                 $resolvedName,
-                FullyQualifiedFactory::concat($this->prefix, $resolvedName)
+                FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );
         }
 

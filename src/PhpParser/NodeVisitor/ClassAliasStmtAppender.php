@@ -19,6 +19,7 @@ use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -88,8 +89,8 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     {
         $namespace->stmts = array_reduce(
             $namespace->stmts,
-            [$this, 'createNamespaceStmts'],
-            []
+            fn (array $stmts, Stmt $stmt) => $this->createNamespaceStmts($stmts, $stmt),
+            [],
         );
 
         return $namespace;
@@ -102,47 +103,58 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     {
         $stmts[] = $stmt;
 
-        if (false === ($stmt instanceof Class_ || $stmt instanceof Interface_)) {
+        if (!($stmt instanceof Class_ || $stmt instanceof Interface_)) {
             return $stmts;
         }
 
-        /** @var Class_|Interface_ $stmt */
-        if (null === $stmt->name) {
+        $name = $stmt->name;
+
+        if (null === $name) {
             return $stmts;
         }
 
-        $originalName = $this->identifierResolver->resolveIdentifier($stmt->name);
+        $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
-        if (false === ($originalName instanceof FullyQualified)
-            || $this->whitelist->belongsToWhitelistedNamespace((string) $originalName)
-            || (
-                false === $this->whitelist->isSymbolWhitelisted((string) $originalName)
-                && false === $this->whitelist->isGlobalWhitelistedClass((string) $originalName)
-            )
+        if (!($resolvedName instanceof FullyQualified)
+            || !$this->shouldAppendStmt($resolvedName)
         ) {
             return $stmts;
         }
-        /* @var FullyQualified $originalName */
 
-        $stmts[] = $this->createAliasStmt($originalName, $stmt);
+        $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
 
         return $stmts;
     }
 
-    private function createAliasStmt(FullyQualified $originalName, Node $stmt): Expression
+    private function shouldAppendStmt(Name $resolvedName): bool
+    {
+        $resolvedNameString = (string) $resolvedName;
+
+        return !$this->whitelist->belongsToWhitelistedNamespace($resolvedNameString)
+            && (
+                $this->whitelist->isSymbolWhitelisted($resolvedNameString)
+                || $this->whitelist->isGlobalWhitelistedClass($resolvedNameString)
+            );
+    }
+
+    private static function createAliasStmt(
+        FullyQualified $originalName,
+        Node $stmt,
+        string $prefix
+    ): Expression
     {
         $call = new ClassAliasFuncCall(
-            FullyQualifiedFactory::concat($this->prefix, $originalName),
+            FullyQualifiedFactory::concat($prefix, $originalName),
             $originalName,
-            $stmt->getAttributes()
+            $stmt->getAttributes(),
         );
 
         $expression = new Expression(
             $call,
-            $stmt->getAttributes()
+            $stmt->getAttributes(),
         );
 
-        $call->setAttribute(ParentNodeAppender::PARENT_ATTRIBUTE, $expression);
+        ParentNodeAppender::setParent($call, $expression);
 
         return $expression;
     }

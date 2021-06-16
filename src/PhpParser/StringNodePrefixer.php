@@ -20,7 +20,10 @@ use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Scalar\String_;
 use function Safe\substr;
 
-trait StringScoperPrefixer
+/**
+ * @private
+ */
+final class StringNodePrefixer
 {
     private PhpScoper $scoper;
     private string $prefix;
@@ -33,12 +36,16 @@ trait StringScoperPrefixer
         $this->whitelist = $whitelist;
     }
 
-    private function scopeStringValue(String_ $node): void
+    public function prefixStringValue(String_ $node): void
     {
         try {
             $lastChar = substr($node->value, -1);
 
-            $newValue = $this->scoper->scopePhp($node->value, $this->prefix, $this->whitelist);
+            $newValue = $this->scoper->scopePhp(
+                $node->value,
+                $this->prefix,
+                $this->whitelist,
+            );
 
             if ("\n" !== $lastChar) {
                 $newValue = substr($newValue, 0, -1);

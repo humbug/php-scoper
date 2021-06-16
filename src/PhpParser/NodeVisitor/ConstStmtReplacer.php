@@ -57,9 +57,6 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
         $this->identifierResolver = $identifierResolver;
     }
 
-    /**
-     * @param Const_ $node
-     */
     public function enterNode(Node $node): Node
     {
         if (!$node instanceof Const_) {
@@ -67,36 +64,42 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
         }
 
         foreach ($node->consts as $constant) {
-            /** @var Node\Const_ $constant */
-            $resolvedConstantName = $this->identifierResolver->resolveIdentifier(
-                $constant->name,
-            );
+            $replacement = $this->replaceConst($node, $constant);
 
-            if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName, true)) {
-                continue;
+            if (null !== $replacement) {
+                return $replacement;
             }
-
-            if (count($node->consts) > 1) {
-                throw new UnexpectedValueException(
-                    'Whitelisting a constant declared in a grouped constant statement (e.g. `const FOO = '
-                    .'\'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant '
-                    .'declaration statements'
-                );
-            }
-
-            return new Expression(
-                new FuncCall(
-                    new FullyQualified('define'),
-                    [
-                        new Arg(
-                            new String_((string) $resolvedConstantName)
-                        ),
-                        new Arg($constant->value),
-                    ]
-                )
-            );
         }
 
         return $node;
+    }
+
+    private function replaceConst(Const_ $const, Node\Const_ $constant): ?Node
+    {
+        $resolvedConstantName = $this->identifierResolver->resolveIdentifier(
+            $constant->name,
+        );
+
+        if (false === $this->whitelist->isSymbolWhitelisted((string) $resolvedConstantName, true)) {
+            return null;
+        }
+
+        if (count($const->consts) > 1) {
+            throw new UnexpectedValueException(
+                'Whitelisting a constant declared in a grouped constant statement (e.g. `const FOO = \'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant declaration statements',
+            );
+        }
+
+        return new Expression(
+            new FuncCall(
+                new FullyQualified('define'),
+                [
+                    new Arg(
+                        new String_((string) $resolvedConstantName)
+                    ),
+                    new Arg($constant->value),
+                ],
+            ),
+        );
     }
 }
