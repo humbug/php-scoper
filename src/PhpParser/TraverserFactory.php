@@ -81,7 +81,7 @@ class TraverserFactory
                 ),
                 new NodeVisitor\ClassIdentifierRecorder(
                     $prefix,
-                    $nameResolver,
+                    $identifierResolver,
                     $whitelist
                 ),
                 new NodeVisitor\NameStmtPrefixer(
