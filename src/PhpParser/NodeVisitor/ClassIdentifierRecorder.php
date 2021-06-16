@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
@@ -32,16 +32,16 @@ use PhpParser\NodeVisitorAbstract;
 final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
-    private FullyQualifiedNameResolver $nameResolver;
+    private IdentifierResolver $identifierResolver;
     private Whitelist $whitelist;
 
     public function __construct(
         string $prefix,
-        FullyQualifiedNameResolver $nameResolver,
+        IdentifierResolver $identifierResolver,
         Whitelist $whitelist
     ) {
         $this->prefix = $prefix;
-        $this->nameResolver = $nameResolver;
+        $this->identifierResolver = $identifierResolver;
         $this->whitelist = $whitelist;
     }
 
@@ -62,7 +62,7 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         }
 
         /** @var Identifier $node */
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
+        $resolvedName = $this->identifierResolver->resolveIdentifier($node);
 
         if (false === ($resolvedName instanceof FullyQualified)) {
             return $node;

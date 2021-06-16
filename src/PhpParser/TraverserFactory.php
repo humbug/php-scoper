@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
@@ -48,6 +49,7 @@ class TraverserFactory
             null,
             ['preserveOriginalNames' => true],
         );
+        $identifierResolver = new IdentifierResolver($newNameResolver);
 
         self::addVisitors(
             $traverser,
@@ -73,13 +75,13 @@ class TraverserFactory
 
                 new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
                     $prefix,
-                    $nameResolver,
+                    $identifierResolver,
                     $whitelist,
                     $this->reflector,
                 ),
                 new NodeVisitor\ClassIdentifierRecorder(
                     $prefix,
-                    $nameResolver,
+                    $identifierResolver,
                     $whitelist
                 ),
                 new NodeVisitor\NameStmtPrefixer(
@@ -112,7 +114,7 @@ class TraverserFactory
                 ),
                 new NodeVisitor\ConstStmtReplacer(
                     $whitelist,
-                    $nameResolver,
+                    $identifierResolver,
                 ),
             ],
         );
