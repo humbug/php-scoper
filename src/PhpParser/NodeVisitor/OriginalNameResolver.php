@@ -8,6 +8,7 @@ use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 
+// TODO: review those classes
 final class OriginalNameResolver
 {
     private const ORIGINAL_NAME_ATTRIBUTE = 'originalName';

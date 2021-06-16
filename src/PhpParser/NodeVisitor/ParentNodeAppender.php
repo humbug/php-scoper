@@ -27,12 +27,17 @@ use function count;
  */
 final class ParentNodeAppender extends NodeVisitorAbstract
 {
-    public const PARENT_ATTRIBUTE = 'parent';
+    private const PARENT_ATTRIBUTE = 'parent';
 
     /**
      * @var Node[]
      */
     private array $stack;
+
+    public static function setParent(Node $node, Node $parent): bool
+    {
+        return $node->setAttribute(self::PARENT_ATTRIBUTE, $parent);
+    }
 
     public static function hasParent(Node $node): bool
     {
@@ -62,7 +67,7 @@ final class ParentNodeAppender extends NodeVisitorAbstract
     public function enterNode(Node $node): Node
     {
         if ([] !== $this->stack) {
-            $node->setAttribute(self::PARENT_ATTRIBUTE, $this->stack[count($this->stack) - 1]);
+            self::setParent($node, $this->stack[count($this->stack) - 1]);
 
             // In some cases, e.g. to replace a node content, we need to access
             // the child nodes early (i.e. before NodeVisitor::enterNode()) in
@@ -70,8 +75,8 @@ final class ParentNodeAppender extends NodeVisitorAbstract
             // with their parent node
             if ($node instanceof Node\Stmt\Const_) {
                 foreach ($node->consts as $const) {
-                    $const->setAttribute(self::PARENT_ATTRIBUTE, $node);
-                    $const->name->setAttribute(self::PARENT_ATTRIBUTE, $const);
+                    self::setParent($const, $node);
+                    self::setParent($const->name, $const);
                 }
             }
 
@@ -79,7 +84,7 @@ final class ParentNodeAppender extends NodeVisitorAbstract
                 $name = $node->name;
 
                 if (null !== $name) {
-                    $name->setAttribute(self::PARENT_ATTRIBUTE, $node);
+                    self::setParent($name, $node);
                 }
             }
         }

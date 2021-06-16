@@ -113,7 +113,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             return $stmts;
         }
 
-        $originalName = $this->identifierResolver->resolveIdentifier($stmt->name);
+        $resolvedName = $this->identifierResolver->resolveIdentifier($stmt->name);
 
         if (!($resolvedName instanceof FullyQualified)
             || !$this->shouldAppendStmt($resolvedName)
@@ -154,7 +154,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             $stmt->getAttributes(),
         );
 
-        $call->setAttribute(ParentNodeAppender::PARENT_ATTRIBUTE, $expression);
+        ParentNodeAppender::setParent($call, $expression);
 
         return $expression;
     }

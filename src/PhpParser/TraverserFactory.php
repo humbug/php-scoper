@@ -43,16 +43,21 @@ class TraverserFactory
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
 
-        $newNameResolver = new NameResolver(
+        $nameResolver = new NameResolver(
             null,
             ['preserveOriginalNames' => true],
         );
-        $identifierResolver = new IdentifierResolver($newNameResolver);
+        $identifierResolver = new IdentifierResolver($nameResolver);
+        $stringNodePrefixer = new StringNodePrefixer(
+            $scoper,
+            $prefix,
+            $whitelist,
+        );
 
         self::addVisitors(
             $traverser,
             [
-                $newNameResolver,
+                $nameResolver,
                 new NodeVisitor\ParentNodeAppender(),
                 new NodeVisitor\IdentifierNameAppender($identifierResolver),
 
@@ -95,16 +100,8 @@ class TraverserFactory
                     $whitelist,
                     $this->reflector,
                 ),
-                new NodeVisitor\NewdocPrefixer(
-                    $scoper,
-                    $prefix,
-                    $whitelist,
-                ),
-                new NodeVisitor\EvalPrefixer(
-                    $scoper,
-                    $prefix,
-                    $whitelist,
-                ),
+                new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
+                new NodeVisitor\EvalPrefixer($stringNodePrefixer),
 
                 new NodeVisitor\ClassAliasStmtAppender(
                     $prefix,

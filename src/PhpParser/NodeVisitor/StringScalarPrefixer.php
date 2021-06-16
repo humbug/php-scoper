@@ -354,7 +354,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             $previous->getAttributes()
         );
 
-        $string->setAttribute(ParentNodeAppender::PARENT_ATTRIBUTE, $string);
+        ParentNodeAppender::setParent($string, $string);
 
         return $string;
     }
