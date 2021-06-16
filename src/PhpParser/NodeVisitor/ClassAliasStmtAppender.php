@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
@@ -57,13 +57,16 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
     private string $prefix;
     private Whitelist $whitelist;
-    private FullyQualifiedNameResolver $nameResolver;
+    private IdentifierResolver $identifierResolver;
 
-    public function __construct(string $prefix, Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
-    {
+    public function __construct(
+        string $prefix,
+        Whitelist $whitelist,
+        IdentifierResolver $identifierResolver
+    ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
-        $this->nameResolver = $nameResolver;
+        $this->identifierResolver = $identifierResolver;
     }
 
     public function afterTraverse(array $nodes): array
@@ -108,7 +111,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             return $stmts;
         }
 
-        $originalName = $this->nameResolver->resolveName($stmt->name)->getName();
+        $originalName = $this->identifierResolver->resolveIdentifier($stmt->name);
 
         if (false === ($originalName instanceof FullyQualified)
             || $this->whitelist->belongsToWhitelistedNamespace((string) $originalName)
