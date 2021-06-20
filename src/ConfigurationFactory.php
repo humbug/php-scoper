@@ -196,12 +196,12 @@ final class ConfigurationFactory
             && false !== native_readlink($path)
             && is_file(native_readlink($path));
 
-        if (!is_file($path) && !$isADirectoryLink) {
+        if (!$isADirectoryLink && !is_file($path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected the path of the configuration file to be a file but "%s" appears to be a directory.',
-                    $path
-                )
+                    $path,
+                ),
             );
         }
 
@@ -211,8 +211,8 @@ final class ConfigurationFactory
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected configuration to be an array, found "%s" instead.',
-                    gettype($config)
-                )
+                    gettype($config),
+                ),
             );
         }
 
@@ -222,7 +222,7 @@ final class ConfigurationFactory
     private static function validateConfigKeys(array $config): void
     {
         array_map(
-            [self::class, 'validateConfigKey'],
+            static fn (string $key) => self::validateConfigKey($key),
             array_keys($config),
         );
     }
@@ -267,8 +267,8 @@ final class ConfigurationFactory
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected patchers to be an array of callables, found "%s" instead.',
-                    gettype($patchers)
-                )
+                    gettype($patchers),
+                ),
             );
         }
 
@@ -280,8 +280,8 @@ final class ConfigurationFactory
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected patchers to be an array of callables, the "%d" element is not.',
-                    $index
-                )
+                    $index,
+                ),
             );
         }
 
@@ -299,8 +299,8 @@ final class ConfigurationFactory
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected whitelist to be an array of strings, found "%s" instead.',
-                        gettype($whitelist)
-                    )
+                        gettype($whitelist),
+                    ),
                 );
             }
 
@@ -312,8 +312,8 @@ final class ConfigurationFactory
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected whitelist to be an array of string, the "%d" element is not.',
-                        $index
-                    )
+                        $index,
+                    ),
                 );
             }
         }
@@ -328,8 +328,8 @@ final class ConfigurationFactory
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
                         self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-                        gettype($whitelistGlobalConstants)
-                    )
+                        gettype($whitelistGlobalConstants),
+                    ),
                 );
             }
         }
@@ -344,8 +344,8 @@ final class ConfigurationFactory
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
                         self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-                        gettype($whitelistGlobalClasses)
-                    )
+                        gettype($whitelistGlobalClasses),
+                    ),
                 );
             }
         }
@@ -360,8 +360,8 @@ final class ConfigurationFactory
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
                         self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
-                        gettype($whitelistGlobalFunctions)
-                    )
+                        gettype($whitelistGlobalFunctions),
+                    ),
                 );
             }
         }
@@ -389,8 +389,8 @@ final class ConfigurationFactory
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected whitelisted files to be an array of strings, found "%s" instead.',
-                    gettype($whitelistedFiles)
-                )
+                    gettype($whitelistedFiles),
+                ),
             );
         }
 
@@ -399,8 +399,8 @@ final class ConfigurationFactory
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected whitelisted files to be an array of string, the "%d" element is not.',
-                        $index
-                    )
+                        $index,
+                    ),
                 );
             }
 
@@ -430,8 +430,8 @@ final class ConfigurationFactory
                 sprintf(
                     'Expected finders to be an array of "%s", found "%s" instead.',
                     Finder::class,
-                    gettype($finders)
-                )
+                    gettype($finders),
+                ),
             );
         }
 
@@ -444,8 +444,8 @@ final class ConfigurationFactory
                 sprintf(
                     'Expected finders to be an array of "%s", the "%d" element is not.',
                     Finder::class,
-                    $index
-                )
+                    $index,
+                ),
             );
         }
 
@@ -471,8 +471,8 @@ final class ConfigurationFactory
                 throw new RuntimeException(
                     sprintf(
                         'Could not find the file "%s".',
-                        $path
-                    )
+                        $path,
+                    ),
                 );
             }
 
@@ -489,7 +489,7 @@ final class ConfigurationFactory
             ->in($pathsToSearch)
             ->append($filesToAppend)
             ->filter(
-                static fn (SplFileInfo $fileInfo) => $fileInfo->isLink() ? false : null
+                static fn (SplFileInfo $fileInfo) => $fileInfo->isLink() ? false : null,
             )
             ->sortByName();
 

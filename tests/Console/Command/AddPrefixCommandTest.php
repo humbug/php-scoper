@@ -41,6 +41,7 @@ use function Safe\chdir;
 use function Safe\file_get_contents;
 use function Safe\realpath;
 use function Safe\sprintf;
+use function substr;
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -688,6 +689,16 @@ EOF;
 
         $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
         $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
+        $this->fileSystemProphecy
+            ->isAbsolutePath(
+                Argument::that(
+                    static function (string $path): bool {
+                        return DIRECTORY_SEPARATOR === $path[0]
+                            && 'scoper.inc.php' === substr($path, -14);
+                    }
+                )
+            )
+            ->willReturn(true);
 
         $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
