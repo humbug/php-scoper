@@ -95,13 +95,12 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         return $node instanceof String_
             ? $this->prefixStringScalar($node)
-            : $node
-        ;
+            : $node;
     }
 
     private function prefixStringScalar(String_ $string): String_
     {
-        if (false === (ParentNodeAppender::hasParent($string) && is_string($string->value))
+        if (!(ParentNodeAppender::hasParent($string) && is_string($string->value))
             || 1 !== native_preg_match('/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u', $string->value)
         ) {
             return $string;
@@ -129,7 +128,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return $this->prefixArrayItemString($string, $parentNode, $normalizedValue);
         }
 
-        if (false === (
+        if (!(
             $parentNode instanceof Assign
                 || $parentNode instanceof Param
                 || $parentNode instanceof Const_
@@ -142,8 +141,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
         return $this->belongsToTheGlobalNamespace($string)
             ? $string
-            : $this->createPrefixedString($string)
-        ;
+            : $this->createPrefixedString($string);
     }
 
     private function prefixStringArg(String_ $string, Arg $parentNode, string $normalizedValue): String_
@@ -171,7 +169,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $newNode->class;
 
-        if (false === ($class instanceof Name)) {
+        if (!($class instanceof Name)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
@@ -192,20 +190,19 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return $string;
         }
 
-        if (false === in_array($functionName, self::SPECIAL_FUNCTION_NAMES, true)) {
+        if (!in_array($functionName, self::SPECIAL_FUNCTION_NAMES, true)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
         if ('function_exists' === $functionName) {
             return $this->reflector->isFunctionInternal($normalizedValue)
                 ? $string
-                : $this->createPrefixedString($string)
-            ;
+                : $this->createPrefixedString($string);
         }
 
         $isConstantNode = $this->isConstantNode($string);
 
-        if (false === $isConstantNode) {
+        if (!$isConstantNode) {
             if ('define' === $functionName
                 && $this->belongsToTheGlobalNamespace($string)
             ) {
@@ -214,8 +211,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
             return $this->reflector->isClassInternal($normalizedValue)
                 ? $string
-                : $this->createPrefixedString($string)
-            ;
+                : $this->createPrefixedString($string);
         }
 
         return
@@ -225,19 +221,18 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                 || $this->reflector->isConstantInternal($normalizedValue)
             )
             ? $string
-            : $this->createPrefixedString($string)
-        ;
+            : $this->createPrefixedString($string);
     }
 
     private function prefixStaticCallStringArg(String_ $string, StaticCall $callNode): String_
     {
         $class = $callNode->class;
 
-        if (false === ($class instanceof Name)) {
+        if (!($class instanceof Name)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
-        if (false === in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
+        if (!in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
             return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
         }
 
@@ -264,28 +259,25 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $arrayNode = $parentNode;
         $parentNode = ParentNodeAppender::getParent($parentNode);
 
-        if (false === ($parentNode instanceof Arg)
-            || null === $functionNode = ParentNodeAppender::findParent($parentNode)
+        if (!($parentNode instanceof Arg)
+            || !ParentNodeAppender::hasParent($parentNode)
         ) {
             // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
             return $this->belongsToTheGlobalNamespace($string)
                 ? $string
-                : $this->createPrefixedString($string)
-            ;
+                : $this->createPrefixedString($string);
         }
 
         $functionNode = ParentNodeAppender::getParent($parentNode);
 
-        if (false === ($functionNode instanceof FuncCall)) {
+        if (!($functionNode instanceof FuncCall)) {
             // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
             return $this->belongsToTheGlobalNamespace($string)
                 ? $string
-                : $this->createPrefixedString($string)
-            ;
+                : $this->createPrefixedString($string);
         }
 
-        /** @var FuncCall $functionNode */
-        if (false === ($functionNode->name instanceof Name)) {
+        if (!($functionNode->name instanceof Name)) {
             return $string;
         }
 
@@ -297,28 +289,30 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                 && false === $this->reflector->isClassInternal($normalizedValue)
             )
             ? $this->createPrefixedString($string)
-            : $string
-        ;
+            : $string;
     }
 
     private function isConstantNode(String_ $node): bool
     {
         $parent = ParentNodeAppender::getParent($node);
 
-        if (false === ($parent instanceof Arg)) {
+        if (!($parent instanceof Arg)) {
             return false;
         }
 
         /** @var Arg $parent */
         $argParent = ParentNodeAppender::getParent($parent);
 
-        if (false === ($argParent instanceof FuncCall)) {
+        if (!($argParent instanceof FuncCall)) {
             return false;
         }
 
         /* @var FuncCall $argParent */
-        if (false === ($argParent->name instanceof Name)
-            || ('define' !== (string) $argParent->name && 'defined' !== (string) $argParent->name)
+        if (!($argParent->name instanceof Name)
+            || (
+                'define' !== (string) $argParent->name
+                && 'defined' !== (string) $argParent->name
+            )
         ) {
             return false;
         }
@@ -331,16 +325,15 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
         return $this->belongsToTheGlobalNamespace($string)
             ? $string
-            : $this->createPrefixedString($string)
-        ;
+            : $this->createPrefixedString($string);
     }
 
     private function createPrefixedString(String_ $previous): String_
     {
         $previousValueParts = array_values(
             array_filter(
-                explode('\\', $previous->value)
-            )
+                explode('\\', $previous->value),
+            ),
         );
 
         if ($this->prefix === $previousValueParts[0]) {
@@ -351,7 +344,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $string = new String_(
             (string) FullyQualified::concat($this->prefix, $previousValue),
-            $previous->getAttributes()
+            $previous->getAttributes(),
         );
 
         ParentNodeAppender::setParent($string, $string);
@@ -361,6 +354,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function belongsToTheGlobalNamespace(String_ $string): bool
     {
-        return '' === $string->value || 0 === (int) strpos($string->value, '\\', 1);
+        return '' === $string->value
+            || 0 === (int) strpos($string->value, '\\', 1);
     }
 }

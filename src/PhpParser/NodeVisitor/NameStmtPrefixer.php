@@ -68,13 +68,6 @@ use function strtolower;
  */
 final class NameStmtPrefixer extends NodeVisitorAbstract
 {
-    // TODO: remove
-    public const SPECIAL_CLASS_NAMES = [
-        'self',
-        'static',
-        'parent',
-    ];
-
     private const SUPPORTED_PARENT_NODE_CLASS_NAMES = [
         Alias::class,
         ArrowFunction::class,

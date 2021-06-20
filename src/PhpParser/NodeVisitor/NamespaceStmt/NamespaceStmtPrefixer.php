@@ -71,11 +71,13 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 
     private function shouldPrefixStmt(Namespace_ $namespace): bool
     {
-        if ($this->whitelist->isWhitelistedNamespace((string) $namespace->name)) {
+        $name = $namespace->name;
+
+        if ($this->whitelist->isWhitelistedNamespace((string) $name)) {
             return false;
         }
 
-        $nameFirstPart = null === $namespace->name ? '' : $namespace->name->getFirst();
+        $nameFirstPart = null === $name ? '' : $name->getFirst();
 
         return $this->prefix !== $nameFirstPart;
     }
@@ -84,7 +86,7 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     {
         $originalName = $namespace->name;
 
-        $namespace->name = Name::concat($prefix, $namespace->name);
+        $namespace->name = Name::concat($prefix, $originalName);
 
         NamespaceManipulator::setOriginalName($namespace, $originalName);
     }

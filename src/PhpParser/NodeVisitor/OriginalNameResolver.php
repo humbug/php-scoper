@@ -6,7 +6,6 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use PhpParser\Node\Name;
 
-// TODO: review those classes
 final class OriginalNameResolver
 {
     private const ORIGINAL_NAME_ATTRIBUTE = 'originalName';
@@ -23,11 +22,6 @@ final class OriginalNameResolver
         }
 
         return $name->getAttribute(self::ORIGINAL_NAME_ATTRIBUTE);
-    }
-
-    public static function setOriginalName(Name $namespace, ?Name $originalName): void
-    {
-        $namespace->setAttribute(self::ORIGINAL_NAME_ATTRIBUTE, $originalName);
     }
 
     private function __construct()
