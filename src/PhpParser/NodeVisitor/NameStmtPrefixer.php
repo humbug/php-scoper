@@ -264,7 +264,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private function isNamePrefixable(Name $resolvedName): bool
     {
-        if (!($resolvedName instanceof FullyQualified)) {
+        if (!$resolvedName->isFullyQualified()) {
             return false;
         }
 
@@ -283,10 +283,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     ): bool {
         if (
             $namespaceName === null
-            || !($resolvedName instanceof FullyQualified)
+            || !$resolvedName->isFullyQualified()
             // In case the original name is a FQ, we do not skip the prefixing
             // and keep it as FQ
-            || $originalName instanceof FullyQualified
+            || $originalName->isFullyQualified()
         ) {
             return false;
         }
@@ -308,7 +308,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         return (
             // In the global scope
             null === $namespaceName
-            && !($originalName instanceof FullyQualified)
+            && !$originalName->isFullyQualified()
             && !($parentNode instanceof ConstFetch)
             && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
             && !$this->reflector->isFunctionInternal($resolvedName->toString())
@@ -377,7 +377,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         return (
             !$isClassNode
-            || !($resolvedName instanceof FullyQualified)
+            || !$resolvedName->isFullyQualified()
             || !$this->reflector->isClassInternal($resolvedName->toString())
         );
     }
@@ -399,7 +399,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         // Constants have an auto-loading fallback so we cannot prefix them when the name is ambiguous
         // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
-        if (!($resolvedName instanceof FullyQualified)) {
+        if (!$resolvedName->isFullyQualified()) {
             return $resolvedName;
         }
 
@@ -423,7 +423,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             );
         }
 
-        if (!($resolvedName instanceof FullyQualified)) {
+        if (!$resolvedName->isFullyQualified()) {
             return $resolvedName;
         }
 
