@@ -174,10 +174,9 @@ final class UseStmtCollection implements IteratorAggregate
             return self::isFuncCallFunctionName($node);
         }
 
-        if (($parentNode instanceof Function_)) {
+        if (!($parentNode instanceof Function_)) {
             return false;
         }
-        /* @var Function_ $parentNode */
 
         return $node instanceof NamedIdentifier
             && $node->getOriginalNode() === $parentNode->name;
