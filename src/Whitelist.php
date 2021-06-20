@@ -196,7 +196,7 @@ final class Whitelist implements Countable
 
     public function isGlobalWhitelistedFunction(string $functionName): bool
     {
-        return $this->whitelistGlobalFunctions && false === strpos($functionName, '\\');
+        return $this->whitelistGlobalFunctions && !strpos($functionName, '\\');
     }
 
     public function recordWhitelistedFunction(FullyQualified $original, FullyQualified $alias): void
@@ -219,7 +219,7 @@ final class Whitelist implements Countable
 
     public function isGlobalWhitelistedConstant(string $constantName): bool
     {
-        return $this->whitelistGlobalConstants && false === strpos($constantName, '\\');
+        return $this->whitelistGlobalConstants && !strpos($constantName, '\\');
     }
 
     /**
@@ -232,7 +232,7 @@ final class Whitelist implements Countable
 
     public function isGlobalWhitelistedClass(string $className): bool
     {
-        return $this->whitelistGlobalClasses && false === strpos($className, '\\');
+        return $this->whitelistGlobalClasses && !strpos($className, '\\');
     }
 
     public function recordWhitelistedClass(FullyQualified $original, FullyQualified $alias): void
@@ -256,7 +256,7 @@ final class Whitelist implements Countable
      */
     public function isSymbolWhitelisted(string $name, bool $constant = false): bool
     {
-        if (false === $constant && array_key_exists(strtolower($name), $this->symbols)) {
+        if (!$constant && array_key_exists(strtolower($name), $this->symbols)) {
             return true;
         }
 
@@ -265,7 +265,7 @@ final class Whitelist implements Countable
         }
 
         foreach ($this->patterns as $pattern) {
-            $pattern = false === $constant ? $pattern.'i' : $pattern;
+            $pattern = !$constant ? $pattern.'i' : $pattern;
 
             if (1 === native_preg_match($pattern, $name)) {
                 return true;

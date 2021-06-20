@@ -27,7 +27,7 @@ final class SymfonyPatcher
 
     public function __invoke(string $filePath, string $prefix, string $contents): string
     {
-        if (false === $this->isValidPath($filePath)) {
+        if (!$this->isValidPath($filePath)) {
             return $contents;
         }
 

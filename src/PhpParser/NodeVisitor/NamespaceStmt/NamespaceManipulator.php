@@ -32,7 +32,7 @@ final class NamespaceManipulator extends NodeVisitorAbstract
 
     public static function getOriginalName(Namespace_ $namespace): ?Name
     {
-        if (false === self::hasOriginalName($namespace)) {
+        if (!self::hasOriginalName($namespace)) {
             return $namespace->name;
         }
 

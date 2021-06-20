@@ -53,7 +53,7 @@ final class ChangeableDirectory
             return;
         }
 
-        if (false === file_exists($workingDir)) {
+        if (!file_exists($workingDir)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Could not change the working directory to "%s": directory does not exists.',
@@ -62,7 +62,7 @@ final class ChangeableDirectory
             );
         }
 
-        if (false === native_chdir($workingDir)) {
+        if (!native_chdir($workingDir)) {
             throw new RuntimeException(
                 sprintf(
                     'Failed to change the working directory to "%s" from "%s".',

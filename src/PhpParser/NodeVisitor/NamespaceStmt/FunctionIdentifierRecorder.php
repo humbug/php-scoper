@@ -128,9 +128,14 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $argParent = ParentNodeAppender::getParent($stringParent);
 
-        if (!($argParent instanceof FuncCall)
-            || !($argParent->name instanceof FullyQualified)
-            || 'function_exists' !== (string) $argParent->name
+        if (!($argParent instanceof FuncCall)) {
+            return null;
+        }
+
+        $funcCallName = $argParent->name;
+
+        if (!($funcCallName instanceof FullyQualified)
+            || 'function_exists' !== $funcCallName->toString()
         ) {
             return null;
         }

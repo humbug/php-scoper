@@ -155,7 +155,7 @@ final class ConfigLoader
             return;
         }
 
-        if (false === file_exists($configFilePath)) {
+        if (!file_exists($configFilePath)) {
             throw new RuntimeException(
                 sprintf(
                     'Could not find the configuration file "%s".',
@@ -226,7 +226,7 @@ final class ConfigLoader
         string $cwd
     ): string
     {
-        if (false === $this->fileSystem->isAbsolutePath($path)) {
+        if (!$this->fileSystem->isAbsolutePath($path)) {
             $path = $cwd.DIRECTORY_SEPARATOR.$path;
         }
 

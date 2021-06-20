@@ -224,7 +224,7 @@ final class ConsoleScoper
 
         $this->fileSystem->dumpFile($outputFilePath, $scoppedContent);
 
-        if (false === isset($exception)) {
+        if (!isset($exception)) {
             $logger->outputSuccess($inputFilePath);
         }
     }

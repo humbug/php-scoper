@@ -174,7 +174,7 @@ final class ConfigurationFactory
 
     private function loadConfigFile(string $path): array
     {
-        if (false === $this->fileSystem->isAbsolutePath($path)) {
+        if (!$this->fileSystem->isAbsolutePath($path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected the path of the configuration file to load to be an absolute path, got "%s" instead',
@@ -183,7 +183,7 @@ final class ConfigurationFactory
             );
         }
 
-        if (false === file_exists($path)) {
+        if (!file_exists($path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected the path of the configuration file to exists but the file "%s" could not be found',
@@ -196,23 +196,23 @@ final class ConfigurationFactory
             && false !== native_readlink($path)
             && is_file(native_readlink($path));
 
-        if (false === is_file($path) && false === $isADirectoryLink) {
+        if (!$isADirectoryLink && !is_file($path)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected the path of the configuration file to be a file but "%s" appears to be a directory.',
-                    $path
-                )
+                    $path,
+                ),
             );
         }
 
         $config = include $path;
 
-        if (false === is_array($config)) {
+        if (!is_array($config)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected configuration to be an array, found "%s" instead.',
-                    gettype($config)
-                )
+                    gettype($config),
+                ),
             );
         }
 
@@ -222,7 +222,7 @@ final class ConfigurationFactory
     private static function validateConfigKeys(array $config): void
     {
         array_map(
-            [self::class, 'validateConfigKey'],
+            static fn (string $key) => self::validateConfigKey($key),
             array_keys($config),
         );
     }
@@ -257,18 +257,18 @@ final class ConfigurationFactory
      */
     private static function retrievePatchers(array $config): array
     {
-        if (false === array_key_exists(self::PATCHERS_KEYWORD, $config)) {
+        if (!array_key_exists(self::PATCHERS_KEYWORD, $config)) {
             return [];
         }
 
         $patchers = $config[self::PATCHERS_KEYWORD];
 
-        if (false === is_array($patchers)) {
+        if (!is_array($patchers)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected patchers to be an array of callables, found "%s" instead.',
-                    gettype($patchers)
-                )
+                    gettype($patchers),
+                ),
             );
         }
 
@@ -280,8 +280,8 @@ final class ConfigurationFactory
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected patchers to be an array of callables, the "%d" element is not.',
-                    $index
-                )
+                    $index,
+                ),
             );
         }
 
@@ -290,17 +290,17 @@ final class ConfigurationFactory
 
     private static function retrieveWhitelist(array $config): Whitelist
     {
-        if (false === array_key_exists(self::WHITELIST_KEYWORD, $config)) {
+        if (!array_key_exists(self::WHITELIST_KEYWORD, $config)) {
             $whitelist = [];
         } else {
             $whitelist = $config[self::WHITELIST_KEYWORD];
 
-            if (false === is_array($whitelist)) {
+            if (!is_array($whitelist)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected whitelist to be an array of strings, found "%s" instead.',
-                        gettype($whitelist)
-                    )
+                        gettype($whitelist),
+                    ),
                 );
             }
 
@@ -312,56 +312,56 @@ final class ConfigurationFactory
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected whitelist to be an array of string, the "%d" element is not.',
-                        $index
-                    )
+                        $index,
+                    ),
                 );
             }
         }
 
-        if (false === array_key_exists(self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD, $config)) {
+        if (!array_key_exists(self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD, $config)) {
             $whitelistGlobalConstants = true;
         } else {
             $whitelistGlobalConstants = $config[self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD];
 
-            if (false === is_bool($whitelistGlobalConstants)) {
+            if (!is_bool($whitelistGlobalConstants)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
                         self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-                        gettype($whitelistGlobalConstants)
-                    )
+                        gettype($whitelistGlobalConstants),
+                    ),
                 );
             }
         }
 
-        if (false === array_key_exists(self::WHITELIST_GLOBAL_CLASSES_KEYWORD, $config)) {
+        if (!array_key_exists(self::WHITELIST_GLOBAL_CLASSES_KEYWORD, $config)) {
             $whitelistGlobalClasses = true;
         } else {
             $whitelistGlobalClasses = $config[self::WHITELIST_GLOBAL_CLASSES_KEYWORD];
 
-            if (false === is_bool($whitelistGlobalClasses)) {
+            if (!is_bool($whitelistGlobalClasses)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
                         self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-                        gettype($whitelistGlobalClasses)
-                    )
+                        gettype($whitelistGlobalClasses),
+                    ),
                 );
             }
         }
 
-        if (false === array_key_exists(self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
+        if (!array_key_exists(self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
             $whitelistGlobalFunctions = true;
         } else {
             $whitelistGlobalFunctions = $config[self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD];
 
-            if (false === is_bool($whitelistGlobalFunctions)) {
+            if (!is_bool($whitelistGlobalFunctions)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
                         self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
-                        gettype($whitelistGlobalFunctions)
-                    )
+                        gettype($whitelistGlobalFunctions),
+                    ),
                 );
             }
         }
@@ -379,32 +379,32 @@ final class ConfigurationFactory
      */
     private function retrieveWhitelistedFiles(string $dirPath, array $config): array
     {
-        if (false === array_key_exists(self::WHITELISTED_FILES_KEYWORD, $config)) {
+        if (!array_key_exists(self::WHITELISTED_FILES_KEYWORD, $config)) {
             return [];
         }
 
         $whitelistedFiles = $config[self::WHITELISTED_FILES_KEYWORD];
 
-        if (false === is_array($whitelistedFiles)) {
+        if (!is_array($whitelistedFiles)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected whitelisted files to be an array of strings, found "%s" instead.',
-                    gettype($whitelistedFiles)
-                )
+                    gettype($whitelistedFiles),
+                ),
             );
         }
 
         foreach ($whitelistedFiles as $index => $file) {
-            if (false === is_string($file)) {
+            if (!is_string($file)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected whitelisted files to be an array of string, the "%d" element is not.',
-                        $index
-                    )
+                        $index,
+                    ),
                 );
             }
 
-            if (false === $this->fileSystem->isAbsolutePath($file)) {
+            if (!$this->fileSystem->isAbsolutePath($file)) {
                 $file = $dirPath.DIRECTORY_SEPARATOR.$file;
             }
 
@@ -419,19 +419,19 @@ final class ConfigurationFactory
      */
     private static function retrieveFinders(array $config): array
     {
-        if (false === array_key_exists(self::FINDER_KEYWORD, $config)) {
+        if (!array_key_exists(self::FINDER_KEYWORD, $config)) {
             return [];
         }
 
         $finders = $config[self::FINDER_KEYWORD];
 
-        if (false === is_array($finders)) {
+        if (!is_array($finders)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected finders to be an array of "%s", found "%s" instead.',
                     Finder::class,
-                    gettype($finders)
-                )
+                    gettype($finders),
+                ),
             );
         }
 
@@ -444,8 +444,8 @@ final class ConfigurationFactory
                 sprintf(
                     'Expected finders to be an array of "%s", the "%d" element is not.',
                     Finder::class,
-                    $index
-                )
+                    $index,
+                ),
             );
         }
 
@@ -467,12 +467,12 @@ final class ConfigurationFactory
         $filesToAppend = [];
 
         foreach ($paths as $path) {
-            if (false === file_exists($path)) {
+            if (!file_exists($path)) {
                 throw new RuntimeException(
                     sprintf(
                         'Could not find the file "%s".',
-                        $path
-                    )
+                        $path,
+                    ),
                 );
             }
 
@@ -489,7 +489,7 @@ final class ConfigurationFactory
             ->in($pathsToSearch)
             ->append($filesToAppend)
             ->filter(
-                static fn (SplFileInfo $fileInfo) => $fileInfo->isLink() ? false : null
+                static fn (SplFileInfo $fileInfo) => $fileInfo->isLink() ? false : null,
             )
             ->sortByName();
 
@@ -510,7 +510,7 @@ final class ConfigurationFactory
                 ? $filePathOrFileInfo->getRealPath()
                 : realpath($filePathOrFileInfo);
 
-            if (false === $filePath) {
+            if (!$filePath) {
                 throw new RuntimeException(
                     sprintf(
                         'Could not find the file "%s".',
@@ -519,7 +519,7 @@ final class ConfigurationFactory
                 );
             }
 
-            if (false === is_readable($filePath)) {
+            if (!is_readable($filePath)) {
                 throw new RuntimeException(
                     sprintf(
                         'Could not read the file "%s".',
@@ -551,13 +551,13 @@ final class ConfigurationFactory
      */
     private static function retrieveInternalSymbols(array $config, string $key): array
     {
-        if (false === array_key_exists($key, $config)) {
+        if (!array_key_exists($key, $config)) {
             return [];
         }
 
         $symbols = $config[$key];
 
-        if (false === is_array($symbols)) {
+        if (!is_array($symbols)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Expected "%s" to be an array of strings, got "%s" instead.',
@@ -568,7 +568,7 @@ final class ConfigurationFactory
         }
 
         foreach ($symbols as $index => $symbol) {
-            if (false === is_string($symbol)) {
+            if (!is_string($symbol)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected "%s" to be an array of strings, got "%s" for the element with the index "%s".',

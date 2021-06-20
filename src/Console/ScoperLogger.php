@@ -154,7 +154,7 @@ class ScoperLogger
         $this->progressBar->finish();
         $this->io->newLine(2);
 
-        if (false === $failed) {
+        if (!$failed) {
             $this->io->success(
                 sprintf(
                     'Successfully prefixed %d files.',

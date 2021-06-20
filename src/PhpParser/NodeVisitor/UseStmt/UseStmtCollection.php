@@ -23,6 +23,7 @@ use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
@@ -127,33 +128,35 @@ final class UseStmtCollection implements IteratorAggregate
     {
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
-                if (false === ($useStatement instanceof UseUse)) {
+                if (!($useStatement instanceof UseUse)) {
                     continue;
                 }
 
                 $type = Use_::TYPE_UNKNOWN !== $use_->type ? $use_->type : $useStatement->type;
 
-                if ($name === $useStatement->getAlias()->toLowerString()) {
-                    if ($isFunctionName) {
-                        if (Use_::TYPE_FUNCTION === $type) {
-                            return UseStmtManipulator::getOriginalName($useStatement);
-                        }
+                if ($name !== $useStatement->getAlias()->toLowerString()) {
+                    continue;
+                }
 
-                        continue;
-                    }
-
-                    if ($isConstantName) {
-                        if (Use_::TYPE_CONSTANT === $type) {
-                            return UseStmtManipulator::getOriginalName($useStatement);
-                        }
-
-                        continue;
-                    }
-
-                    if (Use_::TYPE_NORMAL === $type) {
-                        // Match the alias
+                if ($isFunctionName) {
+                    if (Use_::TYPE_FUNCTION === $type) {
                         return UseStmtManipulator::getOriginalName($useStatement);
                     }
+
+                    continue;
+                }
+
+                if ($isConstantName) {
+                    if (Use_::TYPE_CONSTANT === $type) {
+                        return UseStmtManipulator::getOriginalName($useStatement);
+                    }
+
+                    continue;
+                }
+
+                if (Use_::TYPE_NORMAL === $type) {
+                    // Match the alias
+                    return UseStmtManipulator::getOriginalName($useStatement);
                 }
             }
         }
@@ -171,17 +174,17 @@ final class UseStmtCollection implements IteratorAggregate
             return self::isFuncCallFunctionName($node);
         }
 
-        if (false === ($parentNode instanceof Function_)) {
+        if (!($parentNode instanceof Function_)) {
             return false;
         }
-        /* @var Function_ $parentNode */
 
-        return $node instanceof NamedIdentifier && $node->getOriginalNode() === $parentNode->name;
+        return $node instanceof NamedIdentifier
+            && $node->getOriginalNode() === $parentNode->name;
     }
 
     private static function isFuncCallFunctionName(Name $name): bool
     {
-        if ($name instanceof Name\FullyQualified) {
+        if ($name instanceof FullyQualified) {
             $name = OriginalNameResolver::getOriginalName($name);
         }
 
@@ -201,7 +204,7 @@ final class UseStmtCollection implements IteratorAggregate
             return false;
         }
 
-        if ($name instanceof Name\FullyQualified) {
+        if ($name instanceof FullyQualified) {
             $name = OriginalNameResolver::getOriginalName($name);
         }
 

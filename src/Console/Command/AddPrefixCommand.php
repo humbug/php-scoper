@@ -156,15 +156,15 @@ final class AddPrefixCommand implements Command, CommandAware
     {
         $outputDir = $io->getStringOption(self::OUTPUT_DIR_OPT);
 
-        if (false === $this->fileSystem->isAbsolutePath($outputDir)) {
+        if (!$this->fileSystem->isAbsolutePath($outputDir)) {
             $outputDir = getcwd().DIRECTORY_SEPARATOR.$outputDir;
         }
 
-        if (false === $this->fileSystem->exists($outputDir)) {
+        if (!$this->fileSystem->exists($outputDir)) {
             return $outputDir;
         }
 
-        if (false === is_writable($outputDir)) {
+        if (!is_writable($outputDir)) {
             throw new RuntimeException(
                 sprintf(
                     'Expected "<comment>%s</comment>" to be writeable.',

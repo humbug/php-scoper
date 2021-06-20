@@ -45,7 +45,7 @@ final class JsonFileScoper implements Scoper
 
         $decodedJson = json_decode($contents, false);
 
-        if (false === ($decodedJson instanceof stdClass)) {
+        if (!($decodedJson instanceof stdClass)) {
             throw new LogicException(
                 sprintf(
                     'Expected the decoded JSON to be an stdClass instance, got "%s" instead',
