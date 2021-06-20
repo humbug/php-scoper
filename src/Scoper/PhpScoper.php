@@ -50,7 +50,7 @@ final class PhpScoper implements Scoper
      */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
-        if (false === $this->isPhpFile($filePath, $contents)) {
+        if (!$this->isPhpFile($filePath, $contents)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 

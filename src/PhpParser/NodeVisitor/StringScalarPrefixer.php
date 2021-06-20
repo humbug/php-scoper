@@ -255,7 +255,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $parentNode = ParentNodeAppender::getParent($parentNode);
 
-        /** @var Array_ $arrayNode */
+        if (!($parentNode instanceof Array_)) {
+            return $string;
+        }
+
         $arrayNode = $parentNode;
         $parentNode = ParentNodeAppender::getParent($parentNode);
 
@@ -286,7 +289,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         return ('spl_autoload_register' === $functionName
                 && array_key_exists(0, $arrayNode->items)
                 && $arrayItemNode === $arrayNode->items[0]
-                && false === $this->reflector->isClassInternal($normalizedValue)
+                && !$this->reflector->isClassInternal($normalizedValue)
             )
             ? $this->createPrefixedString($string)
             : $string;
@@ -300,19 +303,14 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return false;
         }
 
-        /** @var Arg $parent */
         $argParent = ParentNodeAppender::getParent($parent);
 
         if (!($argParent instanceof FuncCall)) {
             return false;
         }
 
-        /* @var FuncCall $argParent */
         if (!($argParent->name instanceof Name)
-            || (
-                'define' !== (string) $argParent->name
-                && 'defined' !== (string) $argParent->name
-            )
+            || !in_array((string) $argParent->name, ['define', 'defined'], true)
         ) {
             return false;
         }

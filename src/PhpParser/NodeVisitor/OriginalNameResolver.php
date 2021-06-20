@@ -18,7 +18,7 @@ final class OriginalNameResolver
 
     public static function getOriginalName(Name $name): Name
     {
-        if (false === self::hasOriginalName($name)) {
+        if (!self::hasOriginalName($name)) {
             return $name;
         }
 

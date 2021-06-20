@@ -122,7 +122,7 @@ final class InitCommand implements Command
                 false
             );
 
-            if (false === $canDeleteFile) {
+            if (!$canDeleteFile) {
                 $io->writeln('Skipped file generation.');
 
                 return $configFile;
@@ -132,7 +132,7 @@ final class InitCommand implements Command
         } else {
             $createConfig = $io->confirm('No configuration file found. Do you want to create one?');
 
-            if (false === $createConfig) {
+            if (!$createConfig) {
                 return null;
             }
         }
@@ -142,7 +142,7 @@ final class InitCommand implements Command
 
     private function makeAbsolutePath(string $path): string
     {
-        if (false === $this->fileSystem->isAbsolutePath($path)) {
+        if (!$this->fileSystem->isAbsolutePath($path)) {
             $path = getcwd().DIRECTORY_SEPARATOR.$path;
         }
 

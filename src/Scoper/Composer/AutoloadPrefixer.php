@@ -56,7 +56,7 @@ final class AutoloadPrefixer
 
     private static function prefixAutoloadStatements(stdClass $autoload, string $prefix, Whitelist $whitelist): stdClass
     {
-        if (false === isset($autoload->{'psr-4'}) && false === isset($autoload->{'psr-0'})) {
+        if (!isset($autoload->{'psr-4'}) && !isset($autoload->{'psr-0'})) {
             return $autoload;
         }
 
@@ -149,7 +149,7 @@ final class AutoloadPrefixer
             '/'
         );
 
-        if (false === is_array($path)) {
+        if (!is_array($path)) {
             if ('/' !== substr($path, -1)) {
                 $path .= '/';
             }

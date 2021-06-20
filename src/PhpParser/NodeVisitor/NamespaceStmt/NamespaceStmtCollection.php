@@ -92,7 +92,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
 
     private function getNodeNamespaceName(Node $node): ?Name
     {
-        if (false === ParentNodeAppender::hasParent($node)) {
+        if (!ParentNodeAppender::hasParent($node)) {
             return null;
         }
 
