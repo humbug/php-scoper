@@ -43,7 +43,8 @@
     "bin": ["bin/php-scoper"],
     "autoload": {
         "files": [
-            "src/functions.php"
+            "src/functions.php",
+            "vendor-hotfix/Configuration.php"
         ],
         "psr-4": {
             "Humbug\\PhpScoper\\": "src/"
