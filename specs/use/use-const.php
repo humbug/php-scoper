@@ -136,4 +136,21 @@ use const Foo\BAR;
 
 PHP
     ],
+
+    'Constant use statement for a namespaced constant which has NOT been whitelisted' => [
+        'whitelist' => ['Foo\Ba*'],
+        'payload' => <<<'PHP'
+<?php
+
+use const Foo\BAR;
+
+----
+<?php
+
+namespace Humbug;
+
+use const Humbug\Foo\BAR;
+
+PHP
+    ],
 ];
