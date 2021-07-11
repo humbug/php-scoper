@@ -52,32 +52,6 @@ use const SORT_STRING;
 
 final class ConfigurationFactory
 {
-    private const PREFIX_KEYWORD = 'prefix';
-    private const WHITELISTED_FILES_KEYWORD = 'files-whitelist';
-    private const FINDER_KEYWORD = 'finders';
-    private const PATCHERS_KEYWORD = 'patchers';
-    private const WHITELIST_KEYWORD = 'whitelist';
-    private const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
-    private const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'whitelist-global-classes';
-    private const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
-    private const CLASSES_INTERNAL_SYMBOLS_KEYWORD = 'excluded-classes';
-    private const FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-functions';
-    private const CONSTANTS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-constants';
-
-    private const KEYWORDS = [
-        self::PREFIX_KEYWORD,
-        self::WHITELISTED_FILES_KEYWORD,
-        self::FINDER_KEYWORD,
-        self::PATCHERS_KEYWORD,
-        self::WHITELIST_KEYWORD,
-        self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-        self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-        self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
-        self::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
-        self::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
-        self::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
-    ];
-
     private Filesystem $fileSystem;
 
     public function __construct(Filesystem $fileSystem)
@@ -160,7 +134,7 @@ final class ConfigurationFactory
 
     public function createWithPrefix(Configuration $config, string $prefix): Configuration
     {
-        $prefix = self::retrievePrefix([self::PREFIX_KEYWORD => $prefix]);
+        $prefix = self::retrievePrefix([ConfigurationKeys::PREFIX_KEYWORD => $prefix]);
 
         return new Configuration(
             $config->getPath(),
@@ -232,7 +206,7 @@ final class ConfigurationFactory
 
     private static function validateConfigKey(string $key): void
     {
-        if (in_array($key, self::KEYWORDS, true)) {
+        if (in_array($key, ConfigurationKeys::KEYWORDS, true)) {
             return;
         }
 
@@ -246,7 +220,7 @@ final class ConfigurationFactory
 
     private static function retrievePrefix(array $config): string
     {
-        $prefix = trim((string) ($config[self::PREFIX_KEYWORD] ?? ''));
+        $prefix = trim((string) ($config[ConfigurationKeys::PREFIX_KEYWORD] ?? ''));
 
         if ('' === $prefix) {
             return self::generateRandomPrefix();
@@ -260,11 +234,11 @@ final class ConfigurationFactory
      */
     private static function retrievePatchers(array $config): array
     {
-        if (!array_key_exists(self::PATCHERS_KEYWORD, $config)) {
+        if (!array_key_exists(ConfigurationKeys::PATCHERS_KEYWORD, $config)) {
             return [];
         }
 
-        $patchers = $config[self::PATCHERS_KEYWORD];
+        $patchers = $config[ConfigurationKeys::PATCHERS_KEYWORD];
 
         if (!is_array($patchers)) {
             throw new InvalidArgumentException(
@@ -293,10 +267,10 @@ final class ConfigurationFactory
 
     private static function retrieveWhitelist(array $config): Whitelist
     {
-        if (!array_key_exists(self::WHITELIST_KEYWORD, $config)) {
+        if (!array_key_exists(ConfigurationKeys::WHITELIST_KEYWORD, $config)) {
             $whitelist = [];
         } else {
-            $whitelist = $config[self::WHITELIST_KEYWORD];
+            $whitelist = $config[ConfigurationKeys::WHITELIST_KEYWORD];
 
             if (!is_array($whitelist)) {
                 throw new InvalidArgumentException(
@@ -321,48 +295,48 @@ final class ConfigurationFactory
             }
         }
 
-        if (!array_key_exists(self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD, $config)) {
+        if (!array_key_exists(ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD, $config)) {
             $whitelistGlobalConstants = true;
         } else {
-            $whitelistGlobalConstants = $config[self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD];
+            $whitelistGlobalConstants = $config[ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD];
 
             if (!is_bool($whitelistGlobalConstants)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
-                        self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
+                        ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
                         gettype($whitelistGlobalConstants),
                     ),
                 );
             }
         }
 
-        if (!array_key_exists(self::WHITELIST_GLOBAL_CLASSES_KEYWORD, $config)) {
+        if (!array_key_exists(ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD, $config)) {
             $whitelistGlobalClasses = true;
         } else {
-            $whitelistGlobalClasses = $config[self::WHITELIST_GLOBAL_CLASSES_KEYWORD];
+            $whitelistGlobalClasses = $config[ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD];
 
             if (!is_bool($whitelistGlobalClasses)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
-                        self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
+                        ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD,
                         gettype($whitelistGlobalClasses),
                     ),
                 );
             }
         }
 
-        if (!array_key_exists(self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
+        if (!array_key_exists(ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
             $whitelistGlobalFunctions = true;
         } else {
-            $whitelistGlobalFunctions = $config[self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD];
+            $whitelistGlobalFunctions = $config[ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD];
 
             if (!is_bool($whitelistGlobalFunctions)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
-                        self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+                        ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
                         gettype($whitelistGlobalFunctions),
                     ),
                 );
@@ -382,11 +356,11 @@ final class ConfigurationFactory
      */
     private function retrieveWhitelistedFiles(string $dirPath, array $config): array
     {
-        if (!array_key_exists(self::WHITELISTED_FILES_KEYWORD, $config)) {
+        if (!array_key_exists(ConfigurationKeys::WHITELISTED_FILES_KEYWORD, $config)) {
             return [];
         }
 
-        $whitelistedFiles = $config[self::WHITELISTED_FILES_KEYWORD];
+        $whitelistedFiles = $config[ConfigurationKeys::WHITELISTED_FILES_KEYWORD];
 
         if (!is_array($whitelistedFiles)) {
             throw new InvalidArgumentException(
@@ -422,11 +396,11 @@ final class ConfigurationFactory
      */
     private static function retrieveFinders(array $config): array
     {
-        if (!array_key_exists(self::FINDER_KEYWORD, $config)) {
+        if (!array_key_exists(ConfigurationKeys::FINDER_KEYWORD, $config)) {
             return [];
         }
 
-        $finders = $config[self::FINDER_KEYWORD];
+        $finders = $config[ConfigurationKeys::FINDER_KEYWORD];
 
         if (!is_array($finders)) {
             throw new InvalidArgumentException(
@@ -543,9 +517,9 @@ final class ConfigurationFactory
     private static function retrieveAllInternalSymbols(array $config): array
     {
         return [
-            self::retrieveInternalSymbols($config, self::CLASSES_INTERNAL_SYMBOLS_KEYWORD),
-            self::retrieveInternalSymbols($config, self::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD),
-            self::retrieveInternalSymbols($config, self::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD),
+            self::retrieveInternalSymbols($config, ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD),
+            self::retrieveInternalSymbols($config, ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD),
+            self::retrieveInternalSymbols($config, ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD),
         ];
     }
 
