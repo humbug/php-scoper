@@ -119,7 +119,13 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         );
         self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
         self::assertEquals(
-            Whitelist::create(false, false, false, 'Foo', 'Bar\*'),
+            Whitelist::create(
+                false,
+                false,
+                false,
+                'Foo',
+                'Bar\*',
+            ),
             $configuration->getWhitelist()
         );
     }
