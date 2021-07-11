@@ -62,6 +62,7 @@ class PhpScoperSpecTest extends TestCase
         'title',
         'prefix',
         'whitelist',
+        'excluded-namespaces',
         'whitelist-global-constants',
         'whitelist-global-classes',
         'whitelist-global-functions',
@@ -324,6 +325,7 @@ class PhpScoperSpecTest extends TestCase
                 $fixtureSet['whitelist-global-constants'] ?? $meta['whitelist-global-constants'],
                 $fixtureSet['whitelist-global-classes'] ?? $meta['whitelist-global-classes'],
                 $fixtureSet['whitelist-global-functions'] ?? $meta['whitelist-global-functions'],
+                $fixtureSet['excluded-namespaces'] ?? $meta['excluded-namespaces'],
                 ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
             ),
             $fixtureSet['excluded-classes'] ?? $meta['excluded-classes'],

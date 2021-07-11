@@ -41,6 +41,8 @@ use function is_file;
 use function is_link;
 use function is_readable;
 use function is_string;
+use function preg_last_error_msg;
+use function preg_match as native_preg_match;
 use function random_bytes;
 use function readlink as native_readlink;
 use function realpath;
@@ -56,6 +58,7 @@ final class ConfigurationFactory
     private const WHITELISTED_FILES_KEYWORD = 'files-whitelist';
     private const FINDER_KEYWORD = 'finders';
     private const PATCHERS_KEYWORD = 'patchers';
+    private const EXCLUDE_NAMESPACES_KEYWORD = 'exclude-namespaces';
     private const WHITELIST_KEYWORD = 'whitelist';
     private const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
     private const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'whitelist-global-classes';
@@ -69,6 +72,7 @@ final class ConfigurationFactory
         self::WHITELISTED_FILES_KEYWORD,
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
+        self::EXCLUDE_NAMESPACES_KEYWORD,
         self::WHITELIST_KEYWORD,
         self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
         self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
@@ -290,10 +294,12 @@ final class ConfigurationFactory
 
     private static function retrieveWhitelist(array $config): Whitelist
     {
-        if (!array_key_exists(self::WHITELIST_KEYWORD, $config)) {
+        $excludedNamespaces = self::retrieveExcludedNamespaces($config);
+
+        if (!array_key_exists(self::EXCLUDE_NAMESPACES_KEYWORD, $config)) {
             $whitelist = [];
         } else {
-            $whitelist = $config[self::WHITELIST_KEYWORD];
+            $whitelist = $config[self::EXCLUDE_NAMESPACES_KEYWORD];
 
             if (!is_array($whitelist)) {
                 throw new InvalidArgumentException(
@@ -370,6 +376,7 @@ final class ConfigurationFactory
             $whitelistGlobalConstants,
             $whitelistGlobalClasses,
             $whitelistGlobalFunctions,
+            $excludedNamespaces,
             ...$whitelist,
         );
     }
@@ -586,5 +593,67 @@ final class ConfigurationFactory
     private static function generateRandomPrefix(): string
     {
         return '_PhpScoper'.bin2hex(random_bytes(6));
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function retrieveExcludedNamespaces(array $config): array
+    {
+        $key = self::EXCLUDE_NAMESPACES_KEYWORD;
+
+        if (!array_key_exists($key, $config)) {
+            return [];
+        }
+
+        $regexes = $config[$key];
+
+        if (!is_array($regexes)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected "%s" to be an array of strings (regexes), got "%s" instead.',
+                    $key,
+                    gettype($regexes),
+                ),
+            );
+        }
+
+        foreach ($regexes as $index => $regex) {
+            if (!is_string($regex)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected "%s" to be an array of strings (regexes), got "%s" for the element with the index "%s".',
+                        $key,
+                        gettype($regex),
+                        $index,
+                    ),
+                );
+            }
+
+            $errorMessage = self::validateRegex($regex);
+
+            if (null !== $errorMessage) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected "%s" to be an array of valid regexes. The element "%s" with the index "%s" is not: %s.',
+                        $key,
+                        $regex,
+                        $index,
+                        $errorMessage,
+                    ),
+                );
+            }
+        }
+
+        return array_values(array_unique($regexes, SORT_STRING));
+    }
+
+    private static function validateRegex(string $regex): ?string
+    {
+        if (@native_preg_match($regex, '') !== false) {
+            return null;
+        }
+
+        return preg_last_error_msg();
     }
 }

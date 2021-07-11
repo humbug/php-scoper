@@ -34,9 +34,11 @@ use function str_replace;
 use function strpos;
 use function strtolower;
 use function trim;
+use function Safe\preg_match;
 
 final class Whitelist implements Countable
 {
+    private array $excludedNamespaces;
     private array $original;
     private array $symbols;
     private array $constants;
@@ -50,10 +52,14 @@ final class Whitelist implements Countable
     private array $whitelistedFunctions = [];
     private array $whitelistedClasses = [];
 
+    /**
+     * @param string[] $excludedNamespaces
+     */
     public static function create(
         bool $whitelistGlobalConstants,
         bool $whitelistGlobalClasses,
         bool $whitelistGlobalFunctions,
+        array $excludedNamespaces,
         string ...$elements
     ): self {
         $symbols = [];
@@ -102,6 +108,7 @@ final class Whitelist implements Countable
             $whitelistGlobalConstants,
             $whitelistGlobalClasses,
             $whitelistGlobalFunctions,
+            $excludedNamespaces,
             array_unique($original),
             array_flip($symbols),
             array_flip($constants),
@@ -118,6 +125,7 @@ final class Whitelist implements Countable
     }
 
     /**
+     * @param string[] $excludedNamespaces
      * @param string[] $original
      * @param string[] $patterns
      * @param string[] $namespaces
@@ -126,6 +134,7 @@ final class Whitelist implements Countable
         bool $whitelistGlobalConstants,
         bool $whitelistGlobalClasses,
         bool $whitelistGlobalFunctions,
+        array $excludedNamespaces,
         array $original,
         array $symbols,
         array $constants,
@@ -135,6 +144,7 @@ final class Whitelist implements Countable
         $this->whitelistGlobalConstants = $whitelistGlobalConstants;
         $this->whitelistGlobalClasses = $whitelistGlobalClasses;
         $this->whitelistGlobalFunctions = $whitelistGlobalFunctions;
+        $this->excludedNamespaces = $excludedNamespaces;
         $this->original = $original;
         $this->symbols = $symbols;
         $this->constants = $constants;
@@ -144,10 +154,23 @@ final class Whitelist implements Countable
 
     public function belongsToWhitelistedNamespace(string $name): bool
     {
-        $nameNamespace = $this->retrieveNameNamespace($name);
+        $nameNamespace = $this->retrieveNamespaceName($name);
 
         foreach ($this->namespaces as $namespace) {
             if ('' === $namespace || 0 === strpos($nameNamespace, $namespace)) {
+                return true;
+            }
+        }
+
+        return $this->belongsToExcludedNamespace($name);
+    }
+
+    public function belongsToExcludedNamespace(string $name): bool
+    {
+        $namespace = $this->retrieveNamespaceName($name);
+
+        foreach ($this->excludedNamespaces as $excludedNamespace) {
+            if (preg_match($excludedNamespace, $namespace)) {
                 return true;
             }
         }
@@ -317,7 +340,7 @@ final class Whitelist implements Countable
         return implode('\\', $parts);
     }
 
-    private function retrieveNameNamespace(string $name): string
+    private function retrieveNamespaceName(string $name): string
     {
         $name = strtolower($name);
 

@@ -83,7 +83,7 @@ PHP
     ],
 
     'Declaration in the global namespace with the global namespace which is namespaced whitelisted' => [
-        'whitelist' => ['\*'],
+        'excluded-namespace' => ['/^$/'],
         'payload' => <<<'PHP'
 <?php
 
@@ -137,7 +137,8 @@ PHP
     ],
 
     'Declaration of a whitelisted class in the global namespace which is whitelisted' => [
-        'whitelist' => ['A', '\*'],
+        'whitelist' => ['A'],
+        'excluded-namespace' => ['/^$/'],
         'registered-classes' => [
             ['A', 'Humbug\A'],
         ],
@@ -218,7 +219,7 @@ PHP
     ],
 
     'Declaration in a whitelisted namespace' => [
-        'whitelist' => ['Foo\*'],
+        'excluded-namespace' => ['/^Foo$/'],
         'payload' => <<<'PHP'
 <?php
 
@@ -277,6 +278,7 @@ PHP
 
     'Declaration of a namespaced class whitelisted with a pattern' => [
         'whitelist' => ['Foo\A*'],
+        'excluded-namespace' => ['/^Foo$/'],
         'registered-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
             ['Foo\AA', 'Humbug\Foo\AA'],
