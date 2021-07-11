@@ -72,6 +72,8 @@ class ConfigurationFactoryTest extends FileSystemTestCase
 
     public function test_it_can_create_a_complete_configuration(): void
     {
+        // TODO: add test to ensure the config is really a complete one otherwise
+        //  it is easy to forget to add a key when adding a new config entry key
         self::dumpStandardConfigFile(
             <<<'PHP'
             <?php

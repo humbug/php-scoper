@@ -29,6 +29,7 @@ use function array_unique;
 use function array_unshift;
 use function array_values;
 use function bin2hex;
+use function count;
 use function dirname;
 use function file_exists;
 use function gettype;
@@ -48,24 +49,25 @@ use function readlink as native_readlink;
 use function realpath;
 use function Safe\file_get_contents;
 use function Safe\sprintf;
+use function str_contains;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 use const SORT_STRING;
 
 final class ConfigurationFactory
 {
-    private const PREFIX_KEYWORD = 'prefix';
-    private const WHITELISTED_FILES_KEYWORD = 'files-whitelist';
-    private const FINDER_KEYWORD = 'finders';
-    private const PATCHERS_KEYWORD = 'patchers';
-    private const EXCLUDE_NAMESPACES_KEYWORD = 'exclude-namespaces';
-    private const WHITELIST_KEYWORD = 'whitelist';
-    private const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
-    private const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'whitelist-global-classes';
-    private const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
-    private const CLASSES_INTERNAL_SYMBOLS_KEYWORD = 'excluded-classes';
-    private const FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-functions';
-    private const CONSTANTS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-constants';
+    public const PREFIX_KEYWORD = 'prefix';
+    public const WHITELISTED_FILES_KEYWORD = 'files-whitelist';
+    public const FINDER_KEYWORD = 'finders';
+    public const PATCHERS_KEYWORD = 'patchers';
+    public const EXCLUDE_NAMESPACES_KEYWORD = 'exclude-namespaces';
+    public const WHITELIST_KEYWORD = 'whitelist';
+    public const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
+    public const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'whitelist-global-classes';
+    public const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
+    public const CLASSES_INTERNAL_SYMBOLS_KEYWORD = 'excluded-classes';
+    public const FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-functions';
+    public const CONSTANTS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-constants';
 
     private const KEYWORDS = [
         self::PREFIX_KEYWORD,
@@ -80,10 +82,14 @@ final class ConfigurationFactory
     ];
 
     private Filesystem $fileSystem;
+    private ConfigurationWhitelistFactory $configurationWhitelistFactory;
 
-    public function __construct(Filesystem $fileSystem)
-    {
+    public function __construct(
+        Filesystem $fileSystem,
+        ConfigurationWhitelistFactory $configurationWhitelistFactory
+    ) {
         $this->fileSystem = $fileSystem;
+        $this->configurationWhitelistFactory = $configurationWhitelistFactory;
     }
 
     /**
@@ -113,7 +119,7 @@ final class ConfigurationFactory
 
         array_unshift($patchers, new SymfonyPatcher());
 
-        $whitelist = self::retrieveWhitelist($config);
+        $whitelist = $this->configurationWhitelistFactory->createWhitelist($config);
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
@@ -290,95 +296,6 @@ final class ConfigurationFactory
         }
 
         return $patchers;
-    }
-
-    private static function retrieveWhitelist(array $config): Whitelist
-    {
-        $excludedNamespaces = self::retrieveExcludedNamespaces($config);
-
-        if (!array_key_exists(self::EXCLUDE_NAMESPACES_KEYWORD, $config)) {
-            $whitelist = [];
-        } else {
-            $whitelist = $config[self::EXCLUDE_NAMESPACES_KEYWORD];
-
-            if (!is_array($whitelist)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected whitelist to be an array of strings, found "%s" instead.',
-                        gettype($whitelist),
-                    ),
-                );
-            }
-
-            foreach ($whitelist as $index => $className) {
-                if (is_string($className)) {
-                    continue;
-                }
-
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected whitelist to be an array of string, the "%d" element is not.',
-                        $index,
-                    ),
-                );
-            }
-        }
-
-        if (!array_key_exists(self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD, $config)) {
-            $whitelistGlobalConstants = true;
-        } else {
-            $whitelistGlobalConstants = $config[self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD];
-
-            if (!is_bool($whitelistGlobalConstants)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected %s to be a boolean, found "%s" instead.',
-                        self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-                        gettype($whitelistGlobalConstants),
-                    ),
-                );
-            }
-        }
-
-        if (!array_key_exists(self::WHITELIST_GLOBAL_CLASSES_KEYWORD, $config)) {
-            $whitelistGlobalClasses = true;
-        } else {
-            $whitelistGlobalClasses = $config[self::WHITELIST_GLOBAL_CLASSES_KEYWORD];
-
-            if (!is_bool($whitelistGlobalClasses)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected %s to be a boolean, found "%s" instead.',
-                        self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-                        gettype($whitelistGlobalClasses),
-                    ),
-                );
-            }
-        }
-
-        if (!array_key_exists(self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
-            $whitelistGlobalFunctions = true;
-        } else {
-            $whitelistGlobalFunctions = $config[self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD];
-
-            if (!is_bool($whitelistGlobalFunctions)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected %s to be a boolean, found "%s" instead.',
-                        self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
-                        gettype($whitelistGlobalFunctions),
-                    ),
-                );
-            }
-        }
-
-        return Whitelist::create(
-            $whitelistGlobalConstants,
-            $whitelistGlobalClasses,
-            $whitelistGlobalFunctions,
-            $excludedNamespaces,
-            ...$whitelist,
-        );
     }
 
     /**
@@ -593,67 +510,5 @@ final class ConfigurationFactory
     private static function generateRandomPrefix(): string
     {
         return '_PhpScoper'.bin2hex(random_bytes(6));
-    }
-
-    /**
-     * @return string[]
-     */
-    private static function retrieveExcludedNamespaces(array $config): array
-    {
-        $key = self::EXCLUDE_NAMESPACES_KEYWORD;
-
-        if (!array_key_exists($key, $config)) {
-            return [];
-        }
-
-        $regexes = $config[$key];
-
-        if (!is_array($regexes)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected "%s" to be an array of strings (regexes), got "%s" instead.',
-                    $key,
-                    gettype($regexes),
-                ),
-            );
-        }
-
-        foreach ($regexes as $index => $regex) {
-            if (!is_string($regex)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected "%s" to be an array of strings (regexes), got "%s" for the element with the index "%s".',
-                        $key,
-                        gettype($regex),
-                        $index,
-                    ),
-                );
-            }
-
-            $errorMessage = self::validateRegex($regex);
-
-            if (null !== $errorMessage) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected "%s" to be an array of valid regexes. The element "%s" with the index "%s" is not: %s.',
-                        $key,
-                        $regex,
-                        $index,
-                        $errorMessage,
-                    ),
-                );
-            }
-        }
-
-        return array_values(array_unique($regexes, SORT_STRING));
-    }
-
-    private static function validateRegex(string $regex): ?string
-    {
-        if (@native_preg_match($regex, '') !== false) {
-            return null;
-        }
-
-        return preg_last_error_msg();
     }
 }

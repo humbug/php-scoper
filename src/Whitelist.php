@@ -53,12 +53,13 @@ final class Whitelist implements Countable
     private array $whitelistedClasses = [];
 
     /**
-     * @param string[] $excludedNamespaces
+     * @param string[] $excludedNamespaceRegexes
      */
     public static function create(
         bool $whitelistGlobalConstants,
         bool $whitelistGlobalClasses,
         bool $whitelistGlobalFunctions,
+        array $excludedNamespaceRegexes,
         array $excludedNamespaces,
         string ...$elements
     ): self {
@@ -108,7 +109,7 @@ final class Whitelist implements Countable
             $whitelistGlobalConstants,
             $whitelistGlobalClasses,
             $whitelistGlobalFunctions,
-            $excludedNamespaces,
+            $excludedNamespaceRegexes,
             array_unique($original),
             array_flip($symbols),
             array_flip($constants),
