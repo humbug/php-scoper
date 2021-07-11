@@ -73,6 +73,9 @@ final class ConfigurationFactory
         self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
         self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
         self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+        self::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
+        self::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
+        self::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
     ];
 
     private Filesystem $fileSystem;
