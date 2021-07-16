@@ -35,7 +35,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function provideWhitelists(): Generator
+    public static function provideWhitelists(): iterable
     {
         yield 'empty whitelist' => [
             Whitelist::create(true, true, true),

@@ -103,7 +103,7 @@ class YamlScoperTest extends TestCase
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(0);
     }
 
-    public function provideYamlFilesExtensions(): Generator
+    public static function provideYamlFilesExtensions(): iterable
     {
         yield ['file.yaml', true];
         yield ['file.yml', true];
@@ -114,7 +114,7 @@ class YamlScoperTest extends TestCase
         yield ['file', false];
     }
 
-    public function provideYamlFiles(): Generator
+    public static function provideYamlFiles(): iterable
     {
         yield 'empty' => [
             '',
