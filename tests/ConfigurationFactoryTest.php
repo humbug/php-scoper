@@ -85,6 +85,9 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 'whitelist-global-classes' => false,
                 'whitelist-global-functions' => false,
                 'whitelist' => ['Foo', 'Bar\*'],
+                'excluded-classes' => ['Stringeable'],
+                'excluded-functions' => ['str_contains'],
+                'excluded-constants' => ['PHP_EOL'],
             ];
             PHP,
         );
@@ -106,7 +109,13 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         );
         self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
         self::assertEquals(
-            Whitelist::create(false, false, false, 'Foo', 'Bar\*'),
+            Whitelist::create(
+                false,
+                false,
+                false,
+                'Foo',
+                'Bar\*',
+            ),
             $configuration->getWhitelist()
         );
     }
