@@ -57,7 +57,7 @@ class FunctionsTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function providePaths(): Generator
+    public static function providePaths(): iterable
     {
         yield [
             [],
@@ -136,7 +136,7 @@ class FunctionsTest extends TestCase
         ];
     }
 
-    public function provideGenerators(): Generator
+    public static function provideGenerators(): iterable
     {
         yield [
             [],

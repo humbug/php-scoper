@@ -99,7 +99,7 @@ class XmlScoperTest extends TestCase
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(0);
     }
 
-    public function provideXmlFilesExtensions(): Generator
+    public static function provideXmlFilesExtensions(): iterable
     {
         yield ['file.xml', true];
         yield ['file.XML', true];
@@ -108,7 +108,7 @@ class XmlScoperTest extends TestCase
         yield ['file', false];
     }
 
-    public function provideXmlFiles(): Generator
+    public static function provideXmlFiles(): iterable
     {
         yield 'empty' => [
             '',

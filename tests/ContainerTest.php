@@ -52,7 +52,7 @@ class ContainerTest extends TestCase
         );
     }
 
-    public function provideServiceGetter(): Generator
+    public static function provideServiceGetter(): iterable
     {
         foreach ((new ReflectionClass(Container::class))->getMethods() as $methodReflection) {
             yield [$methodReflection->getName()];

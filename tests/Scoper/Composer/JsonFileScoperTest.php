@@ -84,7 +84,7 @@ class JsonFileScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function provideComposerFiles(): Generator
+    public static function provideComposerFiles(): iterable
     {
         yield [
             <<<'JSON'
@@ -158,7 +158,7 @@ JSON
         self::assertSame($expected, $actual);
     }
 
-    public function providePSR0ComposerFiles(): Generator
+    public static function providePSR0ComposerFiles(): iterable
     {
         yield [
             <<<'JSON'
