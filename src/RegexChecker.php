@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use function count;
 use function current;
 use function preg_last_error;
-use function preg_match as native_preg_match;
 use function preg_last_error_msg;
-use function count;
+use function preg_match as native_preg_match;
 use function Safe\sprintf;
 use function str_contains;
 use function strlen;

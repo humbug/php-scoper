@@ -6,9 +6,12 @@ namespace Humbug\PhpScoper;
 
 use InvalidArgumentException;
 use function array_key_exists;
+use function array_keys;
 use function array_values;
 use function gettype;
 use function is_array;
+use function is_bool;
+use function is_string;
 use function Safe\sprintf;
 
 final class ConfigurationWhitelistFactory

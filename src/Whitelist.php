@@ -28,13 +28,13 @@ use function explode;
 use function implode;
 use function preg_match as native_preg_match;
 use function Safe\array_flip;
+use function Safe\preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
 use function strpos;
 use function strtolower;
 use function trim;
-use function Safe\preg_match;
 
 final class Whitelist implements Countable
 {
