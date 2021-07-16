@@ -26,45 +26,35 @@ use function Safe\array_flip;
 class WhitelistTest extends TestCase
 {
     /**
-     * @dataProvider provideWhitelists
+     * @dataProvider provideExposedElements
      */
     public function test_it_can_be_created_from_a_list_of_strings(
-        array $whitelist,
+        array $exposedElements,
+        array $expectedOriginalElements,
         array $expectedNamespaces,
         array $expectedSymbols,
-        array $expectedConstants
+        array $expectedConstants,
+        array $exposedSymbolsPatterns
     ): void {
-        $whitelistObject = Whitelist::create(true, true, true, ...$whitelist);
+        $expected = new Whitelist(
+            true,
+            true,
+            true,
+            $expectedOriginalElements,
+            $expectedSymbols,
+            $expectedConstants,
+            $exposedSymbolsPatterns,
+            $expectedNamespaces,
+        );
 
-        $whitelistReflection = new ReflectionClass(Whitelist::class);
+        $actual = Whitelist::create(
+            true,
+            true,
+            true,
+            ...$exposedElements,
+        );
 
-        $whitelistSymbolReflection = $whitelistReflection->getProperty('symbols');
-        $whitelistSymbolReflection->setAccessible(true);
-        $actualSymbols = $whitelistSymbolReflection->getValue($whitelistObject);
-
-        $whitelistNamespaceReflection = $whitelistReflection->getProperty('namespaces');
-        $whitelistNamespaceReflection->setAccessible(true);
-        $actualNamespaces = $whitelistNamespaceReflection->getValue($whitelistObject);
-
-        $whitelistConstantReflection = $whitelistReflection->getProperty('constants');
-        $whitelistConstantReflection->setAccessible(true);
-        $actualConstants = $whitelistConstantReflection->getValue($whitelistObject);
-
-        self::assertTrue($whitelistObject->exposeGlobalConstants());
-        self::assertTrue($whitelistObject->exposeGlobalClasses());
-        self::assertTrue($whitelistObject->exposeGlobalFunctions());
-        self::assertSame($expectedNamespaces, $actualNamespaces);
-        self::assertSame($expectedSymbols, array_flip($actualSymbols));
-        self::assertSame($expectedConstants, array_flip($actualConstants));
-
-        $whitelistObject = Whitelist::create(false, false, false, ...$whitelist);
-
-        self::assertFalse($whitelistObject->exposeGlobalConstants());
-        self::assertFalse($whitelistObject->exposeGlobalClasses());
-        self::assertFalse($whitelistObject->exposeGlobalFunctions());
-        self::assertSame($expectedNamespaces, $actualNamespaces);
-        self::assertSame($expectedSymbols, array_flip($actualSymbols));
-        self::assertSame($expectedConstants, array_flip($actualConstants));
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -72,7 +62,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_constant_is_a_whitelisted_global_constant(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedConstant($constant);
+        $actual = $whitelist->isExposedConstantFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -82,7 +72,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_class_is_a_whitelisted_global_class(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedClass($constant);
+        $actual = $whitelist->isExposedClassFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -92,7 +82,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_function_is_a_whitelisted_global_function(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedFunction($constant);
+        $actual = $whitelist->isExposedFunctionFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -154,7 +144,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_symbol_is_whitelisted(Whitelist $whitelist, string $symbol, bool $caseSensitive, bool $expected): void
     {
-        $actual = $whitelist->isSymbolWhitelisted($symbol, $caseSensitive);
+        $actual = $whitelist->isSymbolExposed($symbol, $caseSensitive);
 
         self::assertSame($expected, $actual);
     }
@@ -164,7 +154,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_symbol_belongs_to_a_whitelisted_namespace(Whitelist $whitelist, string $symbol, bool $expected): void
     {
-        $actual = $whitelist->belongsToWhitelistedNamespace($symbol);
+        $actual = $whitelist->belongsToExcludedNamespace($symbol);
 
         self::assertSame($expected, $actual);
     }
@@ -174,7 +164,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $namespace, bool $expected): void
     {
-        $actual = $whitelist->isWhitelistedNamespace($namespace);
+        $actual = $whitelist->isExcludedNamespace($namespace);
 
         self::assertSame($expected, $actual);
     }
@@ -189,23 +179,71 @@ class WhitelistTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public static function provideWhitelists(): iterable
+    public static function provideExposedElements(): iterable
     {
-        yield [[], [], [], []];
+        yield 'no elements' => [[], [], [], [], [], []];
 
-        yield [['Acme\Foo'], [], ['acme\foo'], ['acme\Foo']];
+        yield 'nominal class' => [
+            ['Acme\Foo'],
+            ['Acme\Foo'],
+            [],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
+            [],
+        ];
 
-        yield [['Acme\Foo\*'], ['acme\foo'], [], []];
+        yield 'incorrect class' => [
+            ['\Acme\Foo'],
+            ['Acme\Foo'],
+            [],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
+            [],
+        ];
 
-        yield [['\*'], [''], [], []];
-
-        yield [['*'], [''], [], []];
-
-        yield [
-            ['Acme\Foo', 'Acme\Foo\*', '\*'],
-            ['acme\foo', ''],
+        yield 'excluded namespace (pattern)' => [
+            ['Acme\Foo\*'],
+            ['Acme\Foo\*'],
             ['acme\foo'],
-            ['acme\Foo'],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'incorrect excluded namespace (pattern)' => [
+            ['\Acme\Foo\*'],
+            ['Acme\Foo\*'],
+            ['acme\foo'],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'nominal global namespace exclude' => [
+            ['*'],
+            ['*'],
+            [''],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'incorrect global namespace exclude' => [
+            ['\*'],
+            ['*'],
+            [''],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Foo\*', '\*'],
+            ['Acme\Foo', 'Acme\Foo\*', '*'],
+            ['acme\foo', ''],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
+            [],
         ];
     }
 

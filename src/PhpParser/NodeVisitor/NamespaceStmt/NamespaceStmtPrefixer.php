@@ -73,7 +73,7 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     {
         $name = $namespace->name;
 
-        if ($this->whitelist->isWhitelistedNamespace((string) $name)) {
+        if ($this->whitelist->isExcludedNamespace((string) $name)) {
             return false;
         }
 
