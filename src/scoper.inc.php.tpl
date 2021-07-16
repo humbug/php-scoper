@@ -87,15 +87,15 @@ return [
     // List of classes to consider as internal i.e. to leave untouched.
     //
     // For more see https://github.com/humbug/php-scoper#excluded-symbols
-    'system-classes' => [],
+    'excluded-classes' => [],
 
     // List of functions to consider as internal i.e. to leave untouched.
     //
     // For more see https://github.com/humbug/php-scoper#excluded-symbols
-    'system-functions' => [],
+    'excluded-functions' => [],
 
     // List of constants to consider as internal i.e. to leave untouched.
     //
     // For more see https://github.com/humbug/php-scoper#excluded-symbols
-    'system-constants' => [],
+    'excluded-constants' => [],
 ];
