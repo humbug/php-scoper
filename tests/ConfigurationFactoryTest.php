@@ -81,9 +81,9 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             return [
                 'prefix' => 'MyPrefix',
                 'files-whitelist' => ['file1', 'file2'],
-                'whitelist-global-constants' => false,
-                'whitelist-global-classes' => false,
-                'whitelist-global-functions' => false,
+                'expose-global-constants' => false,
+                'expose-global-classes' => false,
+                'expose-global-functions' => false,
                 'whitelist' => ['Foo', 'Bar\*'],
                 'excluded-constants' => [],
                 'excluded-classes' => [],

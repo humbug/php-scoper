@@ -43,17 +43,17 @@ final class Whitelist implements Countable
     private array $namespaces;
     private array $patterns;
 
-    private bool $whitelistGlobalConstants;
-    private bool $whitelistGlobalClasses;
-    private bool $whitelistGlobalFunctions;
+    private bool $exposeGlobalConstants;
+    private bool $exposeGlobalClasses;
+    private bool $exposeGlobalFunctions;
 
     private array $whitelistedFunctions = [];
     private array $whitelistedClasses = [];
 
     public static function create(
-        bool $whitelistGlobalConstants,
-        bool $whitelistGlobalClasses,
-        bool $whitelistGlobalFunctions,
+        bool $exposeGlobalConstants,
+        bool $exposeGlobalClasses,
+        bool $exposeGlobalFunctions,
         string ...$elements
     ): self {
         $symbols = [];
@@ -99,9 +99,9 @@ final class Whitelist implements Countable
         }
 
         return new self(
-            $whitelistGlobalConstants,
-            $whitelistGlobalClasses,
-            $whitelistGlobalFunctions,
+            $exposeGlobalConstants,
+            $exposeGlobalClasses,
+            $exposeGlobalFunctions,
             array_unique($original),
             array_flip($symbols),
             array_flip($constants),
@@ -123,18 +123,18 @@ final class Whitelist implements Countable
      * @param string[] $namespaces
      */
     private function __construct(
-        bool $whitelistGlobalConstants,
-        bool $whitelistGlobalClasses,
-        bool $whitelistGlobalFunctions,
+        bool $exposeGlobalConstants,
+        bool $exposeGlobalClasses,
+        bool $exposeGlobalFunctions,
         array $original,
         array $symbols,
         array $constants,
         array $patterns,
         array $namespaces
     ) {
-        $this->whitelistGlobalConstants = $whitelistGlobalConstants;
-        $this->whitelistGlobalClasses = $whitelistGlobalClasses;
-        $this->whitelistGlobalFunctions = $whitelistGlobalFunctions;
+        $this->exposeGlobalConstants = $exposeGlobalConstants;
+        $this->exposeGlobalClasses = $exposeGlobalClasses;
+        $this->exposeGlobalFunctions = $exposeGlobalFunctions;
         $this->original = $original;
         $this->symbols = $symbols;
         $this->constants = $constants;
@@ -189,14 +189,14 @@ final class Whitelist implements Countable
     /**
      * @internal
      */
-    public function whitelistGlobalFunctions(): bool
+    public function exposeGlobalFunctions(): bool
     {
-        return $this->whitelistGlobalFunctions;
+        return $this->exposeGlobalFunctions;
     }
 
     public function isGlobalWhitelistedFunction(string $functionName): bool
     {
-        return $this->whitelistGlobalFunctions && !strpos($functionName, '\\');
+        return $this->exposeGlobalFunctions && !strpos($functionName, '\\');
     }
 
     public function recordWhitelistedFunction(FullyQualified $original, FullyQualified $alias): void
@@ -212,27 +212,27 @@ final class Whitelist implements Countable
     /**
      * @internal
      */
-    public function whitelistGlobalConstants(): bool
+    public function exposeGlobalConstants(): bool
     {
-        return $this->whitelistGlobalConstants;
+        return $this->exposeGlobalConstants;
     }
 
     public function isGlobalWhitelistedConstant(string $constantName): bool
     {
-        return $this->whitelistGlobalConstants && !strpos($constantName, '\\');
+        return $this->exposeGlobalConstants && !strpos($constantName, '\\');
     }
 
     /**
      * @internal
      */
-    public function whitelistGlobalClasses(): bool
+    public function exposeGlobalClasses(): bool
     {
-        return $this->whitelistGlobalClasses;
+        return $this->exposeGlobalClasses;
     }
 
     public function isGlobalWhitelistedClass(string $className): bool
     {
-        return $this->whitelistGlobalClasses && !strpos($className, '\\');
+        return $this->exposeGlobalClasses && !strpos($className, '\\');
     }
 
     public function recordWhitelistedClass(FullyQualified $original, FullyQualified $alias): void

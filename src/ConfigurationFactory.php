@@ -295,58 +295,58 @@ final class ConfigurationFactory
             }
         }
 
-        if (!array_key_exists(ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD, $config)) {
-            $whitelistGlobalConstants = true;
+        if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD, $config)) {
+            $exposeGlobalConstants = true;
         } else {
-            $whitelistGlobalConstants = $config[ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD];
+            $exposeGlobalConstants = $config[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD];
 
-            if (!is_bool($whitelistGlobalConstants)) {
+            if (!is_bool($exposeGlobalConstants)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
-                        ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-                        gettype($whitelistGlobalConstants),
+                        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+                        gettype($exposeGlobalConstants),
                     ),
                 );
             }
         }
 
-        if (!array_key_exists(ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD, $config)) {
-            $whitelistGlobalClasses = true;
+        if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD, $config)) {
+            $exposeGlobalClasses = true;
         } else {
-            $whitelistGlobalClasses = $config[ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD];
+            $exposeGlobalClasses = $config[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD];
 
-            if (!is_bool($whitelistGlobalClasses)) {
+            if (!is_bool($exposeGlobalClasses)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
-                        ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-                        gettype($whitelistGlobalClasses),
+                        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+                        gettype($exposeGlobalClasses),
                     ),
                 );
             }
         }
 
-        if (!array_key_exists(ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
-            $whitelistGlobalFunctions = true;
+        if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
+            $exposeGlobalFunctions = true;
         } else {
-            $whitelistGlobalFunctions = $config[ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD];
+            $exposeGlobalFunctions = $config[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD];
 
-            if (!is_bool($whitelistGlobalFunctions)) {
+            if (!is_bool($exposeGlobalFunctions)) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected %s to be a boolean, found "%s" instead.',
-                        ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
-                        gettype($whitelistGlobalFunctions),
+                        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+                        gettype($exposeGlobalFunctions),
                     ),
                 );
             }
         }
 
         return Whitelist::create(
-            $whitelistGlobalConstants,
-            $whitelistGlobalClasses,
-            $whitelistGlobalFunctions,
+            $exposeGlobalConstants,
+            $exposeGlobalClasses,
+            $exposeGlobalFunctions,
             ...$whitelist,
         );
     }

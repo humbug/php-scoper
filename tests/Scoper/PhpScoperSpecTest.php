@@ -63,9 +63,9 @@ class PhpScoperSpecTest extends TestCase
         'title',
         ConfigurationKeys::PREFIX_KEYWORD,
         ConfigurationKeys::WHITELIST_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
         ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
         ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
@@ -76,9 +76,9 @@ class PhpScoperSpecTest extends TestCase
     private const SPECS_SPEC_KEYS = [
         ConfigurationKeys::PREFIX_KEYWORD,
         ConfigurationKeys::WHITELIST_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
         ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
         ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
@@ -322,9 +322,9 @@ class PhpScoperSpecTest extends TestCase
             $payloadParts[0],   // Input
             $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
             Whitelist::create(
-                $fixtureSet[ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD],
-                $fixtureSet[ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD],
-                $fixtureSet[ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD],
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD],
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD],
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD],
                 ...($fixtureSet[ConfigurationKeys::WHITELIST_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_KEYWORD])
             ),
             $fixtureSet[ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD],
@@ -354,8 +354,8 @@ class PhpScoperSpecTest extends TestCase
     ): string {
         $formattedWhitelist = $this->formatSimpleList($whitelist->toArray());
 
-        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->whitelistGlobalConstants());
-        $formattedWhitelistGlobalFunctions = $this->convertBoolToString($whitelist->whitelistGlobalFunctions());
+        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->exposeGlobalConstants());
+        $formattedWhitelistGlobalFunctions = $this->convertBoolToString($whitelist->exposeGlobalFunctions());
 
         $whitelist->getRecordedWhitelistedFunctions();
         $whitelist->getRecordedWhitelistedClasses();
