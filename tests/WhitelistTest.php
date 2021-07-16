@@ -189,7 +189,7 @@ class WhitelistTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function provideWhitelists(): Generator
+    public static function provideWhitelists(): iterable
     {
         yield [[], [], [], []];
 
@@ -209,7 +209,7 @@ class WhitelistTest extends TestCase
         ];
     }
 
-    public function provideGlobalConstantNames(): Generator
+    public static function provideGlobalConstantNames(): iterable
     {
         foreach ([true, false] as $exposeGlobalClasses) {
             foreach ([true, false] as $exposeGlobalFunctions) {
@@ -263,7 +263,7 @@ class WhitelistTest extends TestCase
         }
     }
 
-    public function provideGlobalClassNames(): Generator
+    public static function provideGlobalClassNames(): iterable
     {
         foreach ([true, false] as $exposeGlobalConstants) {
             foreach ([true, false] as $exposeGlobalFunctions) {
@@ -317,7 +317,7 @@ class WhitelistTest extends TestCase
         }
     }
 
-    public function provideGlobalFunctionNames(): Generator
+    public static function provideGlobalFunctionNames(): iterable
     {
         foreach ([true, false] as $exposeGlobalConstants) {
             foreach ([true, false] as $exposeGlobalClasses) {
@@ -371,7 +371,7 @@ class WhitelistTest extends TestCase
         }
     }
 
-    public function provideSymbolNames(): Generator
+    public static function provideSymbolNames(): iterable
     {
         yield [
             Whitelist::create(true, true, true),
@@ -598,7 +598,7 @@ class WhitelistTest extends TestCase
         ];
     }
 
-    public function provideNamespacedSymbolWhitelists(): Generator
+    public static function provideNamespacedSymbolWhitelists(): iterable
     {
         yield [
             Whitelist::create(true, true, true),
@@ -703,7 +703,7 @@ class WhitelistTest extends TestCase
         ];
     }
 
-    public function provideNamespaceWhitelists(): Generator
+    public static function provideNamespaceWhitelists(): iterable
     {
         yield [
             Whitelist::create(true, true, true),
@@ -796,7 +796,7 @@ class WhitelistTest extends TestCase
         ];
     }
 
-    public function provideWhitelistToConvert(): Generator
+    public static function provideWhitelistToConvert(): iterable
     {
         yield [
             Whitelist::create(true, true, true),

@@ -52,7 +52,7 @@ class ReflectorTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function provideClasses(): Generator
+    public static function provideClasses(): iterable
     {
         yield 'PHP internal class' => [
             'DateTime',
@@ -82,7 +82,7 @@ class ReflectorTest extends TestCase
         ];
     }
 
-    public function provideFunctions(): Generator
+    public static function provideFunctions(): iterable
     {
         yield 'PHP internal function' => [
             'class_exists',
@@ -126,7 +126,7 @@ class ReflectorTest extends TestCase
         ];
     }
 
-    public function provideConstants(): Generator
+    public static function provideConstants(): iterable
     {
         yield 'PHP internal constant' => [
             'PHP_VERSION',

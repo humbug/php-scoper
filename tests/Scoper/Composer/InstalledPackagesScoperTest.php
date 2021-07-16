@@ -84,7 +84,7 @@ class InstalledPackagesScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function provideInstalledPackagesFiles(): Generator
+    public static function provideInstalledPackagesFiles(): iterable
     {
         yield [
             <<<'JSON'

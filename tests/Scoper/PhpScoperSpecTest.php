@@ -210,7 +210,7 @@ class PhpScoperSpecTest extends TestCase
         $this->assertSameRecordedSymbols($expectedRegisteredFunctions, $actualRecordedWhitelistedFunctions, $specMessage);
     }
 
-    public function provideValidFiles(): Generator
+    public static function provideValidFiles(): iterable
     {
         $sourceDir = self::SECONDARY_SPECS_PATH;
 
@@ -233,7 +233,7 @@ class PhpScoperSpecTest extends TestCase
                 unset($fixtures['meta']);
 
                 foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield from $this->parseSpecFile(
+                    yield from self::parseSpecFile(
                         basename($sourceDir).'/'.$file->getRelativePathname(),
                         $meta,
                         $fixtureTitle,
@@ -278,7 +278,7 @@ class PhpScoperSpecTest extends TestCase
      * @param string|int   $fixtureTitle
      * @param string|array $fixtureSet
      */
-    private function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): Generator
+    private static function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): iterable
     {
         $spec = sprintf(
             '[%s] %s',
