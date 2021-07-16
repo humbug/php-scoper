@@ -38,29 +38,31 @@ use function trim;
 
 final class Whitelist implements Countable
 {
-    private array $excludedNamespaces;
     private array $original;
     private array $symbols;
     private array $constants;
     private array $namespaces;
-    private array $patterns;
+    private array $excludedNamespaceRegexes;
+    private array $excludedNamespaceNames;
 
+    private array $patterns;
     private bool $whitelistGlobalConstants;
     private bool $whitelistGlobalClasses;
-    private bool $whitelistGlobalFunctions;
 
+    private bool $whitelistGlobalFunctions;
     private array $whitelistedFunctions = [];
     private array $whitelistedClasses = [];
 
     /**
      * @param string[] $excludedNamespaceRegexes
+     * @param string[] $excludedNamespaceNames
      */
     public static function create(
         bool $whitelistGlobalConstants,
         bool $whitelistGlobalClasses,
         bool $whitelistGlobalFunctions,
         array $excludedNamespaceRegexes,
-        array $excludedNamespaces,
+        array $excludedNamespaceNames,
         string ...$elements
     ): self {
         $symbols = [];
@@ -110,6 +112,7 @@ final class Whitelist implements Countable
             $whitelistGlobalClasses,
             $whitelistGlobalFunctions,
             $excludedNamespaceRegexes,
+            $excludedNamespaceNames,
             array_unique($original),
             array_flip($symbols),
             array_flip($constants),
@@ -126,7 +129,7 @@ final class Whitelist implements Countable
     }
 
     /**
-     * @param string[] $excludedNamespaces
+     * @param string[] $excludedNamespaceRegexes
      * @param string[] $original
      * @param string[] $patterns
      * @param string[] $namespaces
@@ -135,7 +138,8 @@ final class Whitelist implements Countable
         bool $whitelistGlobalConstants,
         bool $whitelistGlobalClasses,
         bool $whitelistGlobalFunctions,
-        array $excludedNamespaces,
+        array $excludedNamespaceRegexes,
+        array $excludedNamespaceNames,
         array $original,
         array $symbols,
         array $constants,
@@ -145,7 +149,8 @@ final class Whitelist implements Countable
         $this->whitelistGlobalConstants = $whitelistGlobalConstants;
         $this->whitelistGlobalClasses = $whitelistGlobalClasses;
         $this->whitelistGlobalFunctions = $whitelistGlobalFunctions;
-        $this->excludedNamespaces = $excludedNamespaces;
+        $this->excludedNamespaceRegexes = $excludedNamespaceRegexes;
+        $this->excludedNamespaceNames = $excludedNamespaceNames;
         $this->original = $original;
         $this->symbols = $symbols;
         $this->constants = $constants;
@@ -155,7 +160,7 @@ final class Whitelist implements Countable
 
     public function belongsToWhitelistedNamespace(string $name): bool
     {
-        $nameNamespace = $this->retrieveNamespaceName($name);
+        $nameNamespace = $this->extractNamespaceName($name);
 
         foreach ($this->namespaces as $namespace) {
             if ('' === $namespace || 0 === strpos($nameNamespace, $namespace)) {
@@ -168,9 +173,9 @@ final class Whitelist implements Countable
 
     public function belongsToExcludedNamespace(string $name): bool
     {
-        $namespace = $this->retrieveNamespaceName($name);
+        $namespace = $this->extractNamespaceName($name);
 
-        foreach ($this->excludedNamespaces as $excludedNamespace) {
+        foreach ($this->excludedNamespaceRegexes as $excludedNamespace) {
             if (preg_match($excludedNamespace, $namespace)) {
                 return true;
             }
@@ -341,7 +346,7 @@ final class Whitelist implements Countable
         return implode('\\', $parts);
     }
 
-    private function retrieveNamespaceName(string $name): string
+    private function extractNamespaceName(string $name): string
     {
         $name = strtolower($name);
 
