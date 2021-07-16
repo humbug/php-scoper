@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Error;
 use Generator;
+use Humbug\PhpScoper\ConfigurationKeys;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper;
@@ -60,27 +61,27 @@ class PhpScoperSpecTest extends TestCase
         'minPhpVersion',
         'maxPhpVersion',
         'title',
-        'prefix',
-        'whitelist',
-        'whitelist-global-constants',
-        'expose-global-classes',
-        'expose-global-functions',
-        'excluded-constants',
-        'excluded-classes',
-        'excluded-functions',
+        ConfigurationKeys::PREFIX_KEYWORD,
+        ConfigurationKeys::WHITELIST_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+        ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
         'registered-classes',
         'registered-functions',
     ];
 
     private const SPECS_SPEC_KEYS = [
-        'prefix',
-        'whitelist',
-        'whitelist-global-constants',
-        'expose-global-classes',
-        'expose-global-functions',
-        'excluded-constants',
-        'excluded-classes',
-        'excluded-functions',
+        ConfigurationKeys::PREFIX_KEYWORD,
+        ConfigurationKeys::WHITELIST_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+        ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
         'registered-classes',
         'registered-functions',
         'payload',
@@ -319,16 +320,16 @@ class PhpScoperSpecTest extends TestCase
             $file,
             $spec,
             $payloadParts[0],   // Input
-            $fixtureSet['prefix'] ?? $meta['prefix'],
+            $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
             Whitelist::create(
-                $fixtureSet['whitelist-global-constants'] ?? $meta['whitelist-global-constants'],
-                $fixtureSet['expose-global-classes'] ?? $meta['expose-global-classes'],
-                $fixtureSet['expose-global-functions'] ?? $meta['expose-global-functions'],
-                ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD],
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD],
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD],
+                ...($fixtureSet[ConfigurationKeys::WHITELIST_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_KEYWORD])
             ),
-            $fixtureSet['excluded-classes'] ?? $meta['excluded-classes'],
-            $fixtureSet['excluded-functions'] ?? $meta['excluded-functions'],
-            $fixtureSet['excluded-constants'] ?? $meta['excluded-constants'],
+            $fixtureSet[ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD],
+            $fixtureSet[ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD],
+            $fixtureSet[ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD],
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
             $fixtureSet['registered-classes'] ?? $meta['registered-classes'],
             $fixtureSet['registered-functions'] ?? $meta['registered-functions'],
