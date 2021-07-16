@@ -19,8 +19,8 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'whitelist-global-constants' => false,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
         'excluded-constants' => [],
         'excluded-classes' => [],
         'excluded-functions' => [],
@@ -62,7 +62,7 @@ PHP
     ],
 
     'Global function call with whitelisted global functions' => [
-        'whitelist-global-functions' => true,
+        'expose-global-functions' => true,
         'registered-functions' => [
             ['main', 'Humbug\main'],
         ],

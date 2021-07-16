@@ -77,12 +77,12 @@ return [
     // If `true` then the user defined classes belonging to the global namespace will not be prefixed.
     //
     // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
-    'whitelist-global-classes' => true,
+    'expose-global-classes' => true,
 
     // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
     //
     // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
-    'whitelist-global-functions' => true,
+    'expose-global-functions' => true,
 
     // List of classes to consider as internal i.e. to leave untouched.
     //

@@ -58,8 +58,8 @@ final class ConfigurationFactory
     private const PATCHERS_KEYWORD = 'patchers';
     private const WHITELIST_KEYWORD = 'whitelist';
     private const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
-    private const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'whitelist-global-classes';
-    private const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
+    private const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'expose-global-classes';
+    private const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'expose-global-functions';
     private const CLASSES_INTERNAL_SYMBOLS_KEYWORD = 'excluded-classes';
     private const FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-functions';
     private const CONSTANTS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-constants';

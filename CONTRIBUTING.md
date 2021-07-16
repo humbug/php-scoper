@@ -28,8 +28,8 @@ return [
         // Default configuration value for this file
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => false,
-        'whitelist-global-functions' => true,
+        'expose-global-constants' => false,
+        'expose-global-functions' => true,
     ],
 
     // List of specifications
