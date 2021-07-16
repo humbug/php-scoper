@@ -110,8 +110,8 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         Whitelist $whitelist,
         Reflector $reflector
     ): bool {
-        return !$whitelist->isGlobalWhitelistedConstant($name)
-            && !$whitelist->isSymbolWhitelisted($name, true)
+        return !$whitelist->isExposedConstantFromGlobalNamespace($name)
+            && !$whitelist->isSymbolExposed($name, true)
             && !$reflector->isConstantInternal($name);
     }
 

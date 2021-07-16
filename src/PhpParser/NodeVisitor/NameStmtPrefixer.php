@@ -310,7 +310,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             null === $namespaceName
             && !$originalName->isFullyQualified()
             && !($parentNode instanceof ConstFetch)
-            && !$this->whitelist->isSymbolWhitelisted($resolvedName->toString())
+            && !$this->whitelist->isSymbolExposed($resolvedName->toString())
             && !$this->reflector->isFunctionInternal($resolvedName->toString())
             && !$this->reflector->isClassInternal($resolvedName->toString())
         );
@@ -343,8 +343,8 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             // things. For example the whitelisted namespaced constant could be
             // used via a partial import (in which case it is a regular import not
             // a constant one) which may not be prefixed.
-            if ($whitelist->isGlobalWhitelistedConstant($resolvedName->toString())
-                || $whitelist->isSymbolWhitelisted($resolvedName->toString(), true)
+            if ($whitelist->isExposedConstantFromGlobalNamespace($resolvedName->toString())
+                || $whitelist->isSymbolExposed($resolvedName->toString(), true)
             ) {
                 return Use_::TYPE_CONSTANT === $useStmtType;
             }
@@ -386,7 +386,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     {
         $resolvedNameString = $resolvedName->toString();
 
-        if ($this->whitelist->isSymbolWhitelisted($resolvedNameString, true)) {
+        if ($this->whitelist->isSymbolExposed($resolvedNameString, true)) {
             return $resolvedName;
         }
 
@@ -403,7 +403,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $resolvedName;
         }
 
-        if ($this->whitelist->isGlobalWhitelistedConstant($resolvedNameString)) {
+        if ($this->whitelist->isExposedConstantFromGlobalNamespace($resolvedNameString)) {
             // Unlike classes & functions, whitelisted are not prefixed with aliases registered in scoper-autoload.php
             return new FullyQualified(
                 $resolvedNameString,

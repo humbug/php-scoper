@@ -152,8 +152,8 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         return (
             !$this->reflector->isFunctionInternal($nameString)
             && (
-                $this->whitelist->isGlobalWhitelistedFunction($nameString)
-                || $this->whitelist->isSymbolWhitelisted($nameString)
+                $this->whitelist->isExposedFunctionFromGlobalNamespace($nameString)
+                || $this->whitelist->isSymbolExposed($nameString)
             )
         );
     }

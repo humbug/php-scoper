@@ -67,8 +67,8 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             return $node;
         }
 
-        if ($this->whitelist->isGlobalWhitelistedClass((string) $resolvedName)
-            || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
+        if ($this->whitelist->isExposedClassFromGlobalNamespace((string) $resolvedName)
+            || $this->whitelist->isSymbolExposed((string) $resolvedName)
         ) {
             $this->whitelist->recordWhitelistedClass(
                 $resolvedName,

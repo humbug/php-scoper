@@ -216,8 +216,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         return
             (
-                $this->whitelist->isSymbolWhitelisted($string->value, true)
-                || $this->whitelist->isGlobalWhitelistedConstant($string->value)
+                $this->whitelist->isSymbolExposed($string->value, true)
+                || $this->whitelist->isExposedConstantFromGlobalNamespace($string->value)
                 || $this->reflector->isConstantInternal($normalizedValue)
             )
             ? $string

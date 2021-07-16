@@ -142,7 +142,7 @@ final class XmlScoper implements Scoper
                 : str_replace($class, $prefixedClass, $stringToScope)
             ;
 
-            if ($whitelist->isSymbolWhitelisted($class) || $whitelist->isGlobalWhitelistedClass($class)) {
+            if ($whitelist->isSymbolExposed($class) || $whitelist->isExposedClassFromGlobalNamespace($class)) {
                 $whitelist->recordWhitelistedClass(
                     new FullyQualified($class),
                     new FullyQualified($prefixedClass)

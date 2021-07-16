@@ -28,7 +28,6 @@ use function explode;
 use function implode;
 use function ltrim;
 use function preg_match as native_preg_match;
-use function rtrim;
 use function Safe\array_flip;
 use function Safe\sprintf;
 use function Safe\substr;
@@ -185,7 +184,7 @@ final class Whitelist implements Countable
         return $this->exposeGlobalFunctions;
     }
 
-    public function isGlobalWhitelistedFunction(string $functionName): bool
+    public function isExposedFunctionFromGlobalNamespace(string $functionName): bool
     {
         return $this->exposeGlobalFunctions && !strpos($functionName, '\\');
     }
@@ -208,7 +207,7 @@ final class Whitelist implements Countable
         return $this->exposeGlobalConstants;
     }
 
-    public function isGlobalWhitelistedConstant(string $constantName): bool
+    public function isExposedConstantFromGlobalNamespace(string $constantName): bool
     {
         return $this->exposeGlobalConstants && !strpos($constantName, '\\');
     }
@@ -221,7 +220,7 @@ final class Whitelist implements Countable
         return $this->exposeGlobalClasses;
     }
 
-    public function isGlobalWhitelistedClass(string $className): bool
+    public function isExposedClassFromGlobalNamespace(string $className): bool
     {
         return $this->exposeGlobalClasses && !strpos($className, '\\');
     }
@@ -237,15 +236,15 @@ final class Whitelist implements Countable
     }
 
     /**
-     * Tells if a given symbol is whitelisted. Note however that it does not account for when:.
+     * Tells if a given symbol is exposed. Note however that it does not account for when:
      *
-     * - The symbol belongs to the global namespace and the symbols of the global namespace of this type are whitelisted
-     * - Belongs to a whitelisted namespace
+     * - The symbol belongs to the global namespace and the symbols of the global namespace of this type are exposed
+     * - Belongs to an excluded namespace
      *
      * @param bool $constant Unlike other symbols, constants _can_ be case insensitive but 99% are not so we leave out
      *                       the case where they are not case sensitive.
      */
-    public function isSymbolWhitelisted(string $name, bool $constant = false): bool
+    public function isSymbolExposed(string $name, bool $constant = false): bool
     {
         if (!$constant && array_key_exists(strtolower($name), $this->exposedSymbols)) {
             return true;

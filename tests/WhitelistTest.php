@@ -26,10 +26,11 @@ use function Safe\array_flip;
 class WhitelistTest extends TestCase
 {
     /**
-     * @dataProvider provideWhitelists
+     * @dataProvider provideExposedElements
      */
     public function test_it_can_be_created_from_a_list_of_strings(
         array $exposedElements,
+        array $expectedOriginalElements,
         array $expectedNamespaces,
         array $expectedSymbols,
         array $expectedConstants,
@@ -39,7 +40,7 @@ class WhitelistTest extends TestCase
             true,
             true,
             true,
-            $exposedElements,
+            $expectedOriginalElements,
             $expectedSymbols,
             $expectedConstants,
             $exposedSymbolsPatterns,
@@ -61,7 +62,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_constant_is_a_whitelisted_global_constant(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedConstant($constant);
+        $actual = $whitelist->isExposedConstantFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -71,7 +72,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_class_is_a_whitelisted_global_class(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedClass($constant);
+        $actual = $whitelist->isExposedClassFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -81,7 +82,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_function_is_a_whitelisted_global_function(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedFunction($constant);
+        $actual = $whitelist->isExposedFunctionFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -143,7 +144,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_symbol_is_whitelisted(Whitelist $whitelist, string $symbol, bool $caseSensitive, bool $expected): void
     {
-        $actual = $whitelist->isSymbolWhitelisted($symbol, $caseSensitive);
+        $actual = $whitelist->isSymbolExposed($symbol, $caseSensitive);
 
         self::assertSame($expected, $actual);
     }
@@ -178,23 +179,70 @@ class WhitelistTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public static function provideWhitelists(): iterable
+    public static function provideExposedElements(): iterable
     {
-        yield 'no elements' => [[], [], [], [], []];
+        yield 'no elements' => [[], [], [], [], [], []];
 
-        yield [['Acme\Foo'], [], ['acme\foo'], ['acme\Foo'], []];
+        yield 'nominal class' => [
+            ['Acme\Foo'],
+            ['Acme\Foo'],
+            [],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
+            [],
+        ];
 
-        yield [['Acme\Foo\*'], ['acme\foo'], [], [], []];
+        yield 'incorrect class' => [
+            ['\Acme\Foo'],
+            ['Acme\Foo'],
+            [],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
+            [],
+        ];
 
-        yield [['\*'], [''], [], [], []];
-
-        yield [['*'], [''], [], [], []];
-
-        yield [
-            ['Acme\Foo', 'Acme\Foo\*', '\*'],
-            ['acme\foo', ''],
+        yield 'excluded namespace (pattern)' => [
+            ['Acme\Foo\*'],
+            ['Acme\Foo\*'],
             ['acme\foo'],
-            ['acme\Foo'],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'incorrect excluded namespace (pattern)' => [
+            ['\Acme\Foo\*'],
+            ['Acme\Foo\*'],
+            ['acme\foo'],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'nominal global namespace exclude' => [
+            ['*'],
+            ['*'],
+            [''],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'incorrect global namespace exclude' => [
+            ['\*'],
+            ['*'],
+            [''],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Foo\*', '\*'],
+            ['Acme\Foo', 'Acme\Foo\*', '*'],
+            ['acme\foo', ''],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
             [],
         ];
     }
