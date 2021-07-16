@@ -63,7 +63,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         // If is whitelisted
-        if ($this->whitelist->belongsToWhitelistedNamespace((string) $use->name)) {
+        if ($this->whitelist->belongsToExcludedNamespace((string) $use->name)) {
             return false;
         }
 
@@ -110,8 +110,8 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         Whitelist $whitelist,
         Reflector $reflector
     ): bool {
-        return !$whitelist->isGlobalWhitelistedConstant($name)
-            && !$whitelist->isSymbolWhitelisted($name, true)
+        return !$whitelist->isExposedConstantFromGlobalNamespace($name)
+            && !$whitelist->isSymbolExposed($name, true)
             && !$reflector->isConstantInternal($name);
     }
 

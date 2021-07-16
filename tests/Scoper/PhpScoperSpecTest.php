@@ -64,9 +64,9 @@ class PhpScoperSpecTest extends TestCase
         ConfigurationKeys::PREFIX_KEYWORD,
         ConfigurationKeys::WHITELIST_KEYWORD,
         ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
         ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
         ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
@@ -78,9 +78,9 @@ class PhpScoperSpecTest extends TestCase
         ConfigurationKeys::PREFIX_KEYWORD,
         ConfigurationKeys::WHITELIST_KEYWORD,
         ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-        ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
         ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
         ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
@@ -212,7 +212,7 @@ class PhpScoperSpecTest extends TestCase
         $this->assertSameRecordedSymbols($expectedRegisteredFunctions, $actualRecordedWhitelistedFunctions, $specMessage);
     }
 
-    public function provideValidFiles(): Generator
+    public static function provideValidFiles(): iterable
     {
         $sourceDir = self::SECONDARY_SPECS_PATH;
 
@@ -235,7 +235,7 @@ class PhpScoperSpecTest extends TestCase
                 unset($fixtures['meta']);
 
                 foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield from $this->parseSpecFile(
+                    yield from self::parseSpecFile(
                         basename($sourceDir).'/'.$file->getRelativePathname(),
                         $meta,
                         $fixtureTitle,
@@ -280,7 +280,7 @@ class PhpScoperSpecTest extends TestCase
      * @param string|int   $fixtureTitle
      * @param string|array $fixtureSet
      */
-    private function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): Generator
+    private static function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): iterable
     {
         $spec = sprintf(
             '[%s] %s',
@@ -324,9 +324,9 @@ class PhpScoperSpecTest extends TestCase
             $payloadParts[0],   // Input
             $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
             Whitelist::create(
-                $fixtureSet[ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD],
-                $fixtureSet[ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD],
-                $fixtureSet[ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD],
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD],
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD],
+                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD],
                 $fixtureSet[ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD] ?? $meta[ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD],
                 ...($fixtureSet[ConfigurationKeys::WHITELIST_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_KEYWORD])
             ),
@@ -357,8 +357,8 @@ class PhpScoperSpecTest extends TestCase
     ): string {
         $formattedWhitelist = $this->formatSimpleList($whitelist->toArray());
 
-        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->whitelistGlobalConstants());
-        $formattedWhitelistGlobalFunctions = $this->convertBoolToString($whitelist->whitelistGlobalFunctions());
+        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->exposeGlobalConstants());
+        $formattedWhitelistGlobalFunctions = $this->convertBoolToString($whitelist->exposeGlobalFunctions());
 
         $whitelist->getRecordedWhitelistedFunctions();
         $whitelist->getRecordedWhitelistedClasses();

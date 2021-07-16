@@ -13,9 +13,9 @@ final class ConfigurationKeys
     public const PATCHERS_KEYWORD = 'patchers';
     public const EXCLUDE_NAMESPACES_KEYWORD = 'exclude-namespaces';
     public const WHITELIST_KEYWORD = 'whitelist';
-    public const WHITELIST_GLOBAL_CONSTANTS_KEYWORD = 'whitelist-global-constants';
-    public const WHITELIST_GLOBAL_CLASSES_KEYWORD = 'whitelist-global-classes';
-    public const WHITELIST_GLOBAL_FUNCTIONS_KEYWORD = 'whitelist-global-functions';
+    public const EXPOSE_GLOBAL_CONSTANTS_KEYWORD = 'expose-global-constants';
+    public const EXPOSE_GLOBAL_CLASSES_KEYWORD = 'expose-global-classes';
+    public const EXPOSE_GLOBAL_FUNCTIONS_KEYWORD = 'expose-global-functions';
     public const CLASSES_INTERNAL_SYMBOLS_KEYWORD = 'excluded-classes';
     public const FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-functions';
     public const CONSTANTS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-constants';
@@ -27,9 +27,9 @@ final class ConfigurationKeys
         self::PATCHERS_KEYWORD,
         self::EXCLUDE_NAMESPACES_KEYWORD,
         self::WHITELIST_KEYWORD,
-        self::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
-        self::WHITELIST_GLOBAL_CLASSES_KEYWORD,
-        self::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+        self::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        self::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        self::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         self::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
         self::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
         self::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,

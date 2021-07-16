@@ -99,7 +99,7 @@ final class YamlScoper implements Scoper
 
                 $prefixedClass = $prefix.$separator.$class;
 
-                $scopedContents .= $whitelist->belongsToWhitelistedNamespace($class.$separator.'__UnknownService__')
+                $scopedContents .= $whitelist->belongsToExcludedNamespace($class.$separator.'__UnknownService__')
                     ? $stringToScope
                     : str_replace($class, $prefixedClass, $stringToScope)
                 ;
@@ -114,12 +114,12 @@ final class YamlScoper implements Scoper
 
             $prefixedClass = $prefix.$separator.$class;
 
-            $scopedContents .= $whitelist->belongsToWhitelistedNamespace($class)
+            $scopedContents .= $whitelist->belongsToExcludedNamespace($class)
                 ? $stringToScope
                 : str_replace($class, $prefixedClass, $stringToScope)
             ;
 
-            if ($whitelist->isSymbolWhitelisted($class) || $whitelist->isGlobalWhitelistedClass($class)) {
+            if ($whitelist->isSymbolExposed($class) || $whitelist->isExposedClassFromGlobalNamespace($class)) {
                 $whitelist->recordWhitelistedClass(
                     new FullyQualified($class),
                     new FullyQualified($prefixedClass)

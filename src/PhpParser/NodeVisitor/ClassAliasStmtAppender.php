@@ -130,10 +130,10 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     {
         $resolvedNameString = (string) $resolvedName;
 
-        return !$this->whitelist->belongsToWhitelistedNamespace($resolvedNameString)
+        return !$this->whitelist->belongsToExcludedNamespace($resolvedNameString)
             && (
-                $this->whitelist->isSymbolWhitelisted($resolvedNameString)
-                || $this->whitelist->isGlobalWhitelistedClass($resolvedNameString)
+                $this->whitelist->isSymbolExposed($resolvedNameString)
+                || $this->whitelist->isExposedClassFromGlobalNamespace($resolvedNameString)
             );
     }
 

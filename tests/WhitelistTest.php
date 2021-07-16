@@ -26,45 +26,35 @@ use function Safe\array_flip;
 class WhitelistTest extends TestCase
 {
     /**
-     * @dataProvider provideWhitelists
+     * @dataProvider provideExposedElements
      */
     public function test_it_can_be_created_from_a_list_of_strings(
-        array $whitelist,
+        array $exposedElements,
+        array $expectedOriginalElements,
         array $expectedNamespaces,
         array $expectedSymbols,
-        array $expectedConstants
+        array $expectedConstants,
+        array $exposedSymbolsPatterns
     ): void {
-        $whitelistObject = Whitelist::create(true, true, true, ...$whitelist);
+        $expected = new Whitelist(
+            true,
+            true,
+            true,
+            $expectedOriginalElements,
+            $expectedSymbols,
+            $expectedConstants,
+            $exposedSymbolsPatterns,
+            $expectedNamespaces,
+        );
 
-        $whitelistReflection = new ReflectionClass(Whitelist::class);
+        $actual = Whitelist::create(
+            true,
+            true,
+            true,
+            ...$exposedElements,
+        );
 
-        $whitelistSymbolReflection = $whitelistReflection->getProperty('symbols');
-        $whitelistSymbolReflection->setAccessible(true);
-        $actualSymbols = $whitelistSymbolReflection->getValue($whitelistObject);
-
-        $whitelistNamespaceReflection = $whitelistReflection->getProperty('namespaces');
-        $whitelistNamespaceReflection->setAccessible(true);
-        $actualNamespaces = $whitelistNamespaceReflection->getValue($whitelistObject);
-
-        $whitelistConstantReflection = $whitelistReflection->getProperty('constants');
-        $whitelistConstantReflection->setAccessible(true);
-        $actualConstants = $whitelistConstantReflection->getValue($whitelistObject);
-
-        self::assertTrue($whitelistObject->whitelistGlobalConstants());
-        self::assertTrue($whitelistObject->whitelistGlobalClasses());
-        self::assertTrue($whitelistObject->whitelistGlobalFunctions());
-        self::assertSame($expectedNamespaces, $actualNamespaces);
-        self::assertSame($expectedSymbols, array_flip($actualSymbols));
-        self::assertSame($expectedConstants, array_flip($actualConstants));
-
-        $whitelistObject = Whitelist::create(false, false, false, ...$whitelist);
-
-        self::assertFalse($whitelistObject->whitelistGlobalConstants());
-        self::assertFalse($whitelistObject->whitelistGlobalClasses());
-        self::assertFalse($whitelistObject->whitelistGlobalFunctions());
-        self::assertSame($expectedNamespaces, $actualNamespaces);
-        self::assertSame($expectedSymbols, array_flip($actualSymbols));
-        self::assertSame($expectedConstants, array_flip($actualConstants));
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -72,7 +62,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_constant_is_a_whitelisted_global_constant(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedConstant($constant);
+        $actual = $whitelist->isExposedConstantFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -82,7 +72,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_class_is_a_whitelisted_global_class(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedClass($constant);
+        $actual = $whitelist->isExposedClassFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -92,7 +82,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_function_is_a_whitelisted_global_function(Whitelist $whitelist, string $constant, bool $expected): void
     {
-        $actual = $whitelist->isGlobalWhitelistedFunction($constant);
+        $actual = $whitelist->isExposedFunctionFromGlobalNamespace($constant);
 
         self::assertSame($expected, $actual);
     }
@@ -154,7 +144,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_symbol_is_whitelisted(Whitelist $whitelist, string $symbol, bool $caseSensitive, bool $expected): void
     {
-        $actual = $whitelist->isSymbolWhitelisted($symbol, $caseSensitive);
+        $actual = $whitelist->isSymbolExposed($symbol, $caseSensitive);
 
         self::assertSame($expected, $actual);
     }
@@ -164,7 +154,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_symbol_belongs_to_a_whitelisted_namespace(Whitelist $whitelist, string $symbol, bool $expected): void
     {
-        $actual = $whitelist->belongsToWhitelistedNamespace($symbol);
+        $actual = $whitelist->belongsToExcludedNamespace($symbol);
 
         self::assertSame($expected, $actual);
     }
@@ -174,7 +164,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $namespace, bool $expected): void
     {
-        $actual = $whitelist->isWhitelistedNamespace($namespace);
+        $actual = $whitelist->isExcludedNamespace($namespace);
 
         self::assertSame($expected, $actual);
     }
@@ -189,73 +179,121 @@ class WhitelistTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function provideWhitelists(): Generator
+    public static function provideExposedElements(): iterable
     {
-        yield [[], [], [], []];
+        yield 'no elements' => [[], [], [], [], [], []];
 
-        yield [['Acme\Foo'], [], ['acme\foo'], ['acme\Foo']];
+        yield 'nominal class' => [
+            ['Acme\Foo'],
+            ['Acme\Foo'],
+            [],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
+            [],
+        ];
 
-        yield [['Acme\Foo\*'], ['acme\foo'], [], []];
+        yield 'incorrect class' => [
+            ['\Acme\Foo'],
+            ['Acme\Foo'],
+            [],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
+            [],
+        ];
 
-        yield [['\*'], [''], [], []];
-
-        yield [['*'], [''], [], []];
-
-        yield [
-            ['Acme\Foo', 'Acme\Foo\*', '\*'],
-            ['acme\foo', ''],
+        yield 'excluded namespace (pattern)' => [
+            ['Acme\Foo\*'],
+            ['Acme\Foo\*'],
             ['acme\foo'],
-            ['acme\Foo'],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'incorrect excluded namespace (pattern)' => [
+            ['\Acme\Foo\*'],
+            ['Acme\Foo\*'],
+            ['acme\foo'],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'nominal global namespace exclude' => [
+            ['*'],
+            ['*'],
+            [''],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'incorrect global namespace exclude' => [
+            ['\*'],
+            ['*'],
+            [''],
+            [],
+            [],
+            [],
+        ];
+
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Foo\*', '\*'],
+            ['Acme\Foo', 'Acme\Foo\*', '*'],
+            ['acme\foo', ''],
+            ['acme\foo' => 0],
+            ['acme\Foo' => 0],
+            [],
         ];
     }
 
-    public function provideGlobalConstantNames(): Generator
+    public static function provideGlobalConstantNames(): iterable
     {
-        foreach ([true, false] as $whitelistGlobalClasses) {
-            foreach ([true, false] as $whitelistGlobalFunctions) {
+        foreach ([true, false] as $exposeGlobalClasses) {
+            foreach ([true, false] as $exposeGlobalFunctions) {
                 yield [
-                    Whitelist::create(true, $whitelistGlobalClasses, $whitelistGlobalFunctions),
+                    Whitelist::create(true, $exposeGlobalClasses, $exposeGlobalFunctions),
                     'PHP_SCOPER_VERSION',
                     true,
                 ];
 
                 yield [
-                    Whitelist::create(false, $whitelistGlobalClasses, $whitelistGlobalFunctions),
+                    Whitelist::create(false, $exposeGlobalClasses, $exposeGlobalFunctions),
                     'PHP_SCOPER_VERSION',
                     false,
                 ];
                 yield [
-                    Whitelist::create(true, $whitelistGlobalClasses, $whitelistGlobalFunctions, 'PHP_SCOPER_VERSION'),
+                    Whitelist::create(true, $exposeGlobalClasses, $exposeGlobalFunctions, 'PHP_SCOPER_VERSION'),
                     'PHP_SCOPER_VERSION',
                     true,
                 ];
 
                 yield [
-                    Whitelist::create(false, $whitelistGlobalClasses, $whitelistGlobalFunctions, 'PHP_SCOPER_VERSION'),
+                    Whitelist::create(false, $exposeGlobalClasses, $exposeGlobalFunctions, 'PHP_SCOPER_VERSION'),
                     'PHP_SCOPER_VERSION',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create(true, $whitelistGlobalClasses, $whitelistGlobalFunctions),
+                    Whitelist::create(true, $exposeGlobalClasses, $exposeGlobalFunctions),
                     'Humbug\PHP_SCOPER_VERSION',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create(false, $whitelistGlobalClasses, $whitelistGlobalFunctions),
+                    Whitelist::create(false, $exposeGlobalClasses, $exposeGlobalFunctions),
                     'Humbug\PHP_SCOPER_VERSION',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create(true, $whitelistGlobalClasses, $whitelistGlobalFunctions, 'Humbug\PHP_SCOPER_VERSION'),
+                    Whitelist::create(true, $exposeGlobalClasses, $exposeGlobalFunctions, 'Humbug\PHP_SCOPER_VERSION'),
                     'Humbug\PHP_SCOPER_VERSION',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create(false, $whitelistGlobalClasses, $whitelistGlobalFunctions, 'Humbug\PHP_SCOPER_VERSION'),
+                    Whitelist::create(false, $exposeGlobalClasses, $exposeGlobalFunctions, 'Humbug\PHP_SCOPER_VERSION'),
                     'Humbug\PHP_SCOPER_VERSION',
                     false,
                 ];
@@ -263,53 +301,53 @@ class WhitelistTest extends TestCase
         }
     }
 
-    public function provideGlobalClassNames(): Generator
+    public static function provideGlobalClassNames(): iterable
     {
-        foreach ([true, false] as $whitelistGlobalConstants) {
-            foreach ([true, false] as $whitelistGlobalFunctions) {
+        foreach ([true, false] as $exposeGlobalConstants) {
+            foreach ([true, false] as $exposeGlobalFunctions) {
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, true, $whitelistGlobalFunctions),
+                    Whitelist::create($exposeGlobalConstants, true, $exposeGlobalFunctions),
                     'Foo',
                     true,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, false, $whitelistGlobalFunctions),
+                    Whitelist::create($exposeGlobalConstants, false, $exposeGlobalFunctions),
                     'Foo',
                     false,
                 ];
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, true, $whitelistGlobalFunctions, 'Foo'),
+                    Whitelist::create($exposeGlobalConstants, true, $exposeGlobalFunctions, 'Foo'),
                     'Foo',
                     true,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, false, $whitelistGlobalFunctions, 'Foo'),
+                    Whitelist::create($exposeGlobalConstants, false, $exposeGlobalFunctions, 'Foo'),
                     'Foo',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, true, $whitelistGlobalFunctions),
+                    Whitelist::create($exposeGlobalConstants, true, $exposeGlobalFunctions),
                     'Acme\Foo',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, false, $whitelistGlobalFunctions),
+                    Whitelist::create($exposeGlobalConstants, false, $exposeGlobalFunctions),
                     'Acme\Foo',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, true, $whitelistGlobalFunctions, 'Acme\Foo'),
+                    Whitelist::create($exposeGlobalConstants, true, $exposeGlobalFunctions, 'Acme\Foo'),
                     'Acme\Foo',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, false, $whitelistGlobalFunctions, 'Acme\Foo'),
+                    Whitelist::create($exposeGlobalConstants, false, $exposeGlobalFunctions, 'Acme\Foo'),
                     'Acme\Foo',
                     false,
                 ];
@@ -317,53 +355,53 @@ class WhitelistTest extends TestCase
         }
     }
 
-    public function provideGlobalFunctionNames(): Generator
+    public static function provideGlobalFunctionNames(): iterable
     {
-        foreach ([true, false] as $whitelistGlobalConstants) {
-            foreach ([true, false] as $whitelistGlobalClasses) {
+        foreach ([true, false] as $exposeGlobalConstants) {
+            foreach ([true, false] as $exposeGlobalClasses) {
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, true),
+                    Whitelist::create($exposeGlobalConstants, $exposeGlobalClasses, true),
                     'foo',
                     true,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, false),
+                    Whitelist::create($exposeGlobalConstants, $exposeGlobalClasses, false),
                     'foo',
                     false,
                 ];
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, true, 'foo'),
+                    Whitelist::create($exposeGlobalConstants, $exposeGlobalClasses, true, 'foo'),
                     'foo',
                     true,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, false, 'foo'),
+                    Whitelist::create($exposeGlobalConstants, $exposeGlobalClasses, false, 'foo'),
                     'foo',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, true),
+                    Whitelist::create($exposeGlobalConstants, $exposeGlobalClasses, true),
                     'Acme\foo',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, false),
+                    Whitelist::create($exposeGlobalConstants, $exposeGlobalClasses, false),
                     'Acme\foo',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, true, 'Acme\foo'),
+                    Whitelist::create($exposeGlobalConstants, $exposeGlobalClasses, true, 'Acme\foo'),
                     'Acme\foo',
                     false,
                 ];
 
                 yield [
-                    Whitelist::create($whitelistGlobalConstants, $whitelistGlobalClasses, false, 'Acme\foo'),
+                    Whitelist::create($exposeGlobalConstants, $exposeGlobalClasses, false, 'Acme\foo'),
                     'Acme\foo',
                     false,
                 ];
@@ -371,7 +409,7 @@ class WhitelistTest extends TestCase
         }
     }
 
-    public function provideSymbolNames(): Generator
+    public static function provideSymbolNames(): iterable
     {
         yield [
             Whitelist::create(true, true, true),
@@ -598,7 +636,7 @@ class WhitelistTest extends TestCase
         ];
     }
 
-    public function provideNamespacedSymbolWhitelists(): Generator
+    public static function provideNamespacedSymbolWhitelists(): iterable
     {
         yield [
             Whitelist::create(true, true, true),
@@ -703,7 +741,7 @@ class WhitelistTest extends TestCase
         ];
     }
 
-    public function provideNamespaceWhitelists(): Generator
+    public static function provideNamespaceWhitelists(): iterable
     {
         yield [
             Whitelist::create(true, true, true),
@@ -796,7 +834,7 @@ class WhitelistTest extends TestCase
         ];
     }
 
-    public function provideWhitelistToConvert(): Generator
+    public static function provideWhitelistToConvert(): iterable
     {
         yield [
             Whitelist::create(true, true, true),
