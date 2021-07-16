@@ -157,9 +157,9 @@ return [
     'patchers' => [],                       // callable[]
     'files-whitelist' => [],                // string[]
     'whitelist' => [],                      // string[]
-    'whitelist-global-constants' => true,   // bool
-    'whitelist-global-classes' => true,     // bool
-    'whitelist-global-functions' => true,   // bool
+    'expose-global-constants' => true,   // bool
+    'expose-global-classes' => true,     // bool
+    'expose-global-functions' => true,   // bool
     'excluded-constants' => [],             // string[]
     'excluded-classes' => [],               // string[]
     'excluded-functions' => [],             // string[]
@@ -337,9 +337,9 @@ setting for them to be prefixed as usual unless explicitly whitelisted:
 // scoper.inc.php
 
 return [
-    'whitelist-global-constants' => false,
-    'whitelist-global-classes' => false,
-    'whitelist-global-functions' => false,
+    'expose-global-constants' => false,
+    'expose-global-classes' => false,
+    'expose-global-functions' => false,
 ];
 ```
 

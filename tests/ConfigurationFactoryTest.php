@@ -17,7 +17,9 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
+use function array_keys;
 use function KevinGH\Box\FileSystem\dump_file;
+use function Safe\sprintf;
 use function Safe\touch;
 use const DIRECTORY_SEPARATOR;
 
@@ -79,17 +81,27 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             return [
                 'prefix' => 'MyPrefix',
                 'files-whitelist' => ['file1', 'file2'],
-                'whitelist-global-constants' => false,
-                'whitelist-global-classes' => false,
-                'whitelist-global-functions' => false,
+                'expose-global-constants' => false,
+                'expose-global-classes' => false,
+                'expose-global-functions' => false,
                 'whitelist' => ['Foo', 'Bar\*'],
-                'excluded-classes' => ['Stringeable'],
-                'excluded-functions' => ['str_contains'],
-                'excluded-constants' => ['PHP_EOL'],
+                'excluded-constants' => [],
+                'excluded-classes' => [],
+                'excluded-functions' => [],
+                'patchers' => [],
+                'finders' => [],
             ];
             PHP,
         );
         touch('file1');
+
+        $rawConfig = include $this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php';
+
+        self::assertEqualsCanonicalizing(
+            ConfigurationKeys::KEYWORDS,
+            array_keys($rawConfig),
+            'The complete config must contain all the known configuration keys',
+        );
 
         $configuration = $this->createConfigFromStandardFile();
 
