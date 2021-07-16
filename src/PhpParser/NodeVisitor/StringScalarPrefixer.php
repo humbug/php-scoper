@@ -108,7 +108,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $normalizedValue = ltrim($string->value, '\\');
 
-        if ($this->whitelist->belongsToWhitelistedNamespace($string->value)) {
+        if ($this->whitelist->belongsToExcludedNamespace($string->value)) {
             return $string;
         }
 

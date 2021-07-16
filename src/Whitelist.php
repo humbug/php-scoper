@@ -26,7 +26,9 @@ use function array_values;
 use function count;
 use function explode;
 use function implode;
+use function ltrim;
 use function preg_match as native_preg_match;
+use function rtrim;
 use function Safe\array_flip;
 use function Safe\sprintf;
 use function Safe\substr;
@@ -37,11 +39,30 @@ use function trim;
 
 final class Whitelist implements Countable
 {
-    private array $original;
-    private array $symbols;
-    private array $constants;
-    private array $namespaces;
-    private array $patterns;
+    /**
+     * @var list<string>
+     */
+    private array $originalElements;
+
+    /**
+     * @var array<string, mixed>
+     */
+    private array $exposedSymbols;
+
+    /**
+     * @var array<string, mixed>
+     */
+    private array $exposedConstants;
+
+    /**
+     * @var list<string>
+     */
+    private array $excludedNamespaceNames;
+
+    /**
+     * @var list<string>
+     */
+    private array $exposedSymbolsPatterns;
 
     private bool $exposeGlobalConstants;
     private bool $exposeGlobalClasses;
@@ -54,47 +75,30 @@ final class Whitelist implements Countable
         bool $exposeGlobalConstants,
         bool $exposeGlobalClasses,
         bool $exposeGlobalFunctions,
-        string ...$elements
+        string ...$exposedElements
     ): self {
-        $symbols = [];
-        $constants = [];
-        $namespaces = [];
-        $patterns = [];
-        $original = [];
+        $exposedSymbols = [];
+        $exposedConstants = [];
+        $exposedNamespaceNames = [];
+        $exposedSymbolsPatterns = [];
+        $originalElements = [];
 
-        foreach ($elements as $element) {
-            if (isset($element[0]) && '\\' === $element[0]) {
-                $element = substr($element, 1);
-            }
+        foreach ($exposedElements as $element) {
+            $element = ltrim(trim($element), '\\');
 
-            if ('' === trim($element)) {
-                throw new InvalidArgumentException(sprintf('Invalid whitelist element "%s": cannot accept an empty string', $element));
-            }
+            self::assertValidElement($element);
 
-            $original[] = $element;
+            $originalElements[] = $element;
 
             if ('\*' === substr($element, -2)) {
-                $namespaces[] = strtolower(substr($element, 0, -2));
+                $exposedNamespaceNames[] = strtolower(substr($element, 0, -2));
             } elseif ('*' === $element) {
-                $namespaces[] = '';
+                $exposedNamespaceNames[] = '';
             } elseif (false !== strpos($element, '*')) {
-                self::assertValidPattern($element);
-
-                $patterns[] = sprintf(
-                    '/^%s$/u',
-                    str_replace(
-                        '\\',
-                        '\\\\',
-                        str_replace(
-                            '*',
-                            '.*',
-                            $element
-                        )
-                    )
-                );
+                $exposedSymbolsPatterns[] = self::createExposePattern($element);
             } else {
-                $symbols[] = strtolower($element);
-                $constants[] = self::lowerConstantName($element);
+                $exposedSymbols[] = strtolower($element);
+                $exposedConstants[] = self::lowerCaseConstantName($element);
             }
         }
 
@@ -102,80 +106,67 @@ final class Whitelist implements Countable
             $exposeGlobalConstants,
             $exposeGlobalClasses,
             $exposeGlobalFunctions,
-            array_unique($original),
-            array_flip($symbols),
-            array_flip($constants),
-            array_unique($patterns),
-            array_unique($namespaces)
+            array_unique($originalElements),
+            array_flip($exposedSymbols),
+            array_flip($exposedConstants),
+            array_unique($exposedSymbolsPatterns),
+            array_unique($exposedNamespaceNames)
         );
     }
 
-    private static function assertValidPattern(string $element): void
-    {
-        if (1 !== native_preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
-            throw new InvalidArgumentException(sprintf('Invalid whitelist pattern "%s".', $element));
-        }
-    }
-
     /**
-     * @param string[] $original
-     * @param string[] $patterns
-     * @param string[] $namespaces
+     * @param list<string>       $originalElements
+     * @param array<string, int> $exposedSymbols
+     * @param array<string, int> $exposedConstants
+     * @param list<string>       $exposedSymbolsPatterns
+     * @param list<string>       $excludedNamespaceNames
      */
-    private function __construct(
+    public function __construct(
         bool $exposeGlobalConstants,
         bool $exposeGlobalClasses,
         bool $exposeGlobalFunctions,
-        array $original,
-        array $symbols,
-        array $constants,
-        array $patterns,
-        array $namespaces
+        array $originalElements,
+        array $exposedSymbols,
+        array $exposedConstants,
+        array $exposedSymbolsPatterns,
+        array $excludedNamespaceNames
     ) {
         $this->exposeGlobalConstants = $exposeGlobalConstants;
         $this->exposeGlobalClasses = $exposeGlobalClasses;
         $this->exposeGlobalFunctions = $exposeGlobalFunctions;
-        $this->original = $original;
-        $this->symbols = $symbols;
-        $this->constants = $constants;
-        $this->namespaces = $namespaces;
-        $this->patterns = $patterns;
+        $this->originalElements = $originalElements;
+        $this->exposedSymbols = $exposedSymbols;
+        $this->exposedConstants = $exposedConstants;
+        $this->excludedNamespaceNames = $excludedNamespaceNames;
+        $this->exposedSymbolsPatterns = $exposedSymbolsPatterns;
     }
 
-    public function belongsToWhitelistedNamespace(string $name): bool
+    public function belongsToExcludedNamespace(string $name): bool
     {
-        $nameNamespace = $this->retrieveNameNamespace($name);
-
-        foreach ($this->namespaces as $namespace) {
-            if ('' === $namespace || 0 === strpos($nameNamespace, $namespace)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->isExcludedNamespace(
+            $this->extractNameNamespace($name),
+        );
     }
 
-    public function isWhitelistedNamespace(string $name): bool
+    public function isExcludedNamespace(string $name): bool
     {
-        $name = strtolower($name);
+        $name = strtolower(ltrim($name, '\\'));
 
-        if (0 === strpos($name, '\\')) {
-            $name = substr($name, 1);
-        }
-
-        foreach ($this->namespaces as $namespace) {
-            if ('' === $namespace) {
+        foreach ($this->excludedNamespaceNames as $excludedNamespaceName) {
+            if ('' === $excludedNamespaceName) {
                 return true;
             }
 
-            if ('' !== $namespace && 0 !== strpos($name, $namespace)) {
+            if ('' !== $excludedNamespaceName
+                && 0 !== strpos($name, $excludedNamespaceName)
+            ) {
                 continue;
             }
 
             $nameParts = explode('\\', $name);
 
-            foreach (explode('\\', $namespace) as $index => $namespacePart) {
-                if ($nameParts[$index] !== $namespacePart) {
+            foreach (explode('\\', $excludedNamespaceName) as $index => $excludedNamespacePart) {
+                if ($nameParts[$index] !== $excludedNamespacePart) {
                     return false;
                 }
             }
@@ -256,15 +247,15 @@ final class Whitelist implements Countable
      */
     public function isSymbolWhitelisted(string $name, bool $constant = false): bool
     {
-        if (!$constant && array_key_exists(strtolower($name), $this->symbols)) {
+        if (!$constant && array_key_exists(strtolower($name), $this->exposedSymbols)) {
             return true;
         }
 
-        if ($constant && array_key_exists(self::lowerConstantName($name), $this->constants)) {
+        if ($constant && array_key_exists(self::lowerCaseConstantName($name), $this->exposedConstants)) {
             return true;
         }
 
-        foreach ($this->patterns as $pattern) {
+        foreach ($this->exposedSymbolsPatterns as $pattern) {
             $pattern = !$constant ? $pattern.'i' : $pattern;
 
             if (1 === native_preg_match($pattern, $name)) {
@@ -277,22 +268,10 @@ final class Whitelist implements Countable
 
     /**
      * @return string[]
-     *
-     * @deprecated To be replaced by getWhitelistedClasses
      */
-    public function getClassWhitelistArray(): array
-    {
-        return array_filter(
-            $this->original,
-            static function (string $name): bool {
-                return '*' !== $name && '\*' !== substr($name, -2);
-            }
-        );
-    }
-
     public function toArray(): array
     {
-        return $this->original;
+        return $this->originalElements;
     }
 
     public function count(): int
@@ -300,11 +279,50 @@ final class Whitelist implements Countable
         return count($this->whitelistedFunctions) + count($this->whitelistedClasses);
     }
 
+    private static function assertValidElement(string $element): void
+    {
+        if ('' !== $element) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'Invalid whitelist element "%s": cannot accept an empty string',
+                $element,
+            ),
+        );
+    }
+
+    private static function createExposePattern(string $element): string
+    {
+        self::assertValidPattern($element);
+
+        return sprintf(
+            '/^%s$/u',
+            str_replace(
+                '\\',
+                '\\\\',
+                str_replace(
+                    '*',
+                    '.*',
+                    $element,
+                ),
+            ),
+        );
+    }
+
+    private static function assertValidPattern(string $element): void
+    {
+        if (1 !== native_preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
+            throw new InvalidArgumentException(sprintf('Invalid whitelist pattern "%s".', $element));
+        }
+    }
+
     /**
      * Transforms the constant FQ name "Acme\Foo\X" to "acme\foo\X" since the namespace remains case insensitive for
      * constants regardless of whether or not constants actually are case insensitive.
      */
-    private static function lowerConstantName(string $name): string
+    private static function lowerCaseConstantName(string $name): string
     {
         $parts = explode('\\', $name);
 
@@ -317,7 +335,7 @@ final class Whitelist implements Countable
         return implode('\\', $parts);
     }
 
-    private function retrieveNameNamespace(string $name): string
+    private function extractNameNamespace(string $name): string
     {
         $name = strtolower($name);
 

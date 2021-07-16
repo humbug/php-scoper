@@ -29,42 +29,31 @@ class WhitelistTest extends TestCase
      * @dataProvider provideWhitelists
      */
     public function test_it_can_be_created_from_a_list_of_strings(
-        array $whitelist,
+        array $exposedElements,
         array $expectedNamespaces,
         array $expectedSymbols,
-        array $expectedConstants
+        array $expectedConstants,
+        array $exposedSymbolsPatterns
     ): void {
-        $whitelistObject = Whitelist::create(true, true, true, ...$whitelist);
+        $expected = new Whitelist(
+            true,
+            true,
+            true,
+            $exposedElements,
+            $expectedSymbols,
+            $expectedConstants,
+            $exposedSymbolsPatterns,
+            $expectedNamespaces,
+        );
 
-        $whitelistReflection = new ReflectionClass(Whitelist::class);
+        $actual = Whitelist::create(
+            true,
+            true,
+            true,
+            ...$exposedElements,
+        );
 
-        $whitelistSymbolReflection = $whitelistReflection->getProperty('symbols');
-        $whitelistSymbolReflection->setAccessible(true);
-        $actualSymbols = $whitelistSymbolReflection->getValue($whitelistObject);
-
-        $whitelistNamespaceReflection = $whitelistReflection->getProperty('namespaces');
-        $whitelistNamespaceReflection->setAccessible(true);
-        $actualNamespaces = $whitelistNamespaceReflection->getValue($whitelistObject);
-
-        $whitelistConstantReflection = $whitelistReflection->getProperty('constants');
-        $whitelistConstantReflection->setAccessible(true);
-        $actualConstants = $whitelistConstantReflection->getValue($whitelistObject);
-
-        self::assertTrue($whitelistObject->exposeGlobalConstants());
-        self::assertTrue($whitelistObject->exposeGlobalClasses());
-        self::assertTrue($whitelistObject->exposeGlobalFunctions());
-        self::assertSame($expectedNamespaces, $actualNamespaces);
-        self::assertSame($expectedSymbols, array_flip($actualSymbols));
-        self::assertSame($expectedConstants, array_flip($actualConstants));
-
-        $whitelistObject = Whitelist::create(false, false, false, ...$whitelist);
-
-        self::assertFalse($whitelistObject->exposeGlobalConstants());
-        self::assertFalse($whitelistObject->exposeGlobalClasses());
-        self::assertFalse($whitelistObject->exposeGlobalFunctions());
-        self::assertSame($expectedNamespaces, $actualNamespaces);
-        self::assertSame($expectedSymbols, array_flip($actualSymbols));
-        self::assertSame($expectedConstants, array_flip($actualConstants));
+        self::assertEquals($expected, $actual);
     }
 
     /**
@@ -164,7 +153,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_symbol_belongs_to_a_whitelisted_namespace(Whitelist $whitelist, string $symbol, bool $expected): void
     {
-        $actual = $whitelist->belongsToWhitelistedNamespace($symbol);
+        $actual = $whitelist->belongsToExcludedNamespace($symbol);
 
         self::assertSame($expected, $actual);
     }
@@ -174,7 +163,7 @@ class WhitelistTest extends TestCase
      */
     public function test_it_can_tell_if_a_namespace_is_whitelisted(Whitelist $whitelist, string $namespace, bool $expected): void
     {
-        $actual = $whitelist->isWhitelistedNamespace($namespace);
+        $actual = $whitelist->isExcludedNamespace($namespace);
 
         self::assertSame($expected, $actual);
     }
@@ -191,21 +180,22 @@ class WhitelistTest extends TestCase
 
     public function provideWhitelists(): Generator
     {
-        yield [[], [], [], []];
+        yield 'no elements' => [[], [], [], [], []];
 
-        yield [['Acme\Foo'], [], ['acme\foo'], ['acme\Foo']];
+        yield [['Acme\Foo'], [], ['acme\foo'], ['acme\Foo'], []];
 
-        yield [['Acme\Foo\*'], ['acme\foo'], [], []];
+        yield [['Acme\Foo\*'], ['acme\foo'], [], [], []];
 
-        yield [['\*'], [''], [], []];
+        yield [['\*'], [''], [], [], []];
 
-        yield [['*'], [''], [], []];
+        yield [['*'], [''], [], [], []];
 
         yield [
             ['Acme\Foo', 'Acme\Foo\*', '\*'],
             ['acme\foo', ''],
             ['acme\foo'],
             ['acme\Foo'],
+            [],
         ];
     }
 

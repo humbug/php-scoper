@@ -93,7 +93,7 @@ final class AutoloadPrefixer
         $loader = [];
 
         foreach ($autoload as $namespace => $paths) {
-            $newNamespace = $whitelist->isWhitelistedNamespace($namespace)
+            $newNamespace = $whitelist->isExcludedNamespace($namespace)
                 ? $namespace
                 : sprintf('%s\\%s', $prefix, $namespace)
             ;
@@ -216,7 +216,7 @@ final class AutoloadPrefixer
     {
         return array_map(
             static function (string $provider) use ($prefix, $whitelist): string {
-                return $whitelist->isWhitelistedNamespace($provider)
+                return $whitelist->isExcludedNamespace($provider)
                     ? $provider
                     : sprintf('%s\\%s', $prefix, $provider)
                 ;

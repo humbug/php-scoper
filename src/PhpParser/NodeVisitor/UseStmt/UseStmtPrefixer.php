@@ -63,7 +63,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         // If is whitelisted
-        if ($this->whitelist->belongsToWhitelistedNamespace((string) $use->name)) {
+        if ($this->whitelist->belongsToExcludedNamespace((string) $use->name)) {
             return false;
         }
 
