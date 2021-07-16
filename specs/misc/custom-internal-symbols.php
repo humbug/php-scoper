@@ -18,7 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => false,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
         'excluded-constants' => [],
@@ -47,7 +47,7 @@ return [
     PHP,
 
     'Known non-internal symbols with global whitelisting (sanity check)' => [
-        'whitelist-global-constants' => true,
+        'expose-global-constants' => true,
         'expose-global-classes' => true,
         'expose-global-functions' => true,
         'payload' => <<<'PHP'

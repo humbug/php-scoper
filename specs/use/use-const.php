@@ -18,7 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => false,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
         'excluded-constants' => [],
@@ -44,7 +44,7 @@ PHP
     ,
 
     'Constant use statement for a constant belonging to the global namespace with global whitelisting enabled' => [
-        'whitelist-global-constants' => true,
+        'expose-global-constants' => true,
         'payload' => <<<'PHP'
             <?php
             

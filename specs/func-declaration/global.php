@@ -18,7 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => false,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
         'excluded-constants' => [],
@@ -165,7 +165,7 @@ PHP
     ],
 
     'Function declaration in the global namespace with globally whitelisted constants' => [
-        'whitelist-global-constants' => true,
+        'expose-global-constants' => true,
         'registered-functions' => [
             ['foo', 'Humbug\foo'],
         ],
