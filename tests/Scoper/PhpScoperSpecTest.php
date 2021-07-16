@@ -353,8 +353,8 @@ class PhpScoperSpecTest extends TestCase
     ): string {
         $formattedWhitelist = $this->formatSimpleList($whitelist->toArray());
 
-        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->whitelistGlobalConstants());
-        $formattedWhitelistGlobalFunctions = $this->convertBoolToString($whitelist->whitelistGlobalFunctions());
+        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->exposeGlobalConstants());
+        $formattedWhitelistGlobalFunctions = $this->convertBoolToString($whitelist->exposeGlobalFunctions());
 
         $whitelist->getRecordedWhitelistedFunctions();
         $whitelist->getRecordedWhitelistedClasses();
