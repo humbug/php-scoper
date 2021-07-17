@@ -30,28 +30,28 @@ final class ConfigurationWhitelistFactory
             $excludedNamespaceNames,
         ] = $this->retrieveExcludedNamespaces($config);
 
-        $whitelist = self::retrieveWhitelistValues($config);
+        $exposedElements = self::retrieveExposedElements($config);
 
-        $whitelistGlobalConstants = self::retrieveGlobalWhitelist(
+        $exposeGlobalConstants = self::retrieveExposeGlobalSymbol(
             $config,
-            ConfigurationKeys::WHITELIST_GLOBAL_CONSTANTS_KEYWORD,
+            ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
         );
-        $whitelistGlobalClasses = self::retrieveGlobalWhitelist(
+        $exposeGlobalClasses = self::retrieveExposeGlobalSymbol(
             $config,
-            ConfigurationKeys::WHITELIST_GLOBAL_CLASSES_KEYWORD,
+            ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
         );
-        $whitelistGlobalFunctions = self::retrieveGlobalWhitelist(
+        $exposeGlobalFunctions = self::retrieveExposeGlobalSymbol(
             $config,
-            ConfigurationKeys::WHITELIST_GLOBAL_FUNCTIONS_KEYWORD,
+            ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         );
 
         return Whitelist::create(
-            $whitelistGlobalConstants,
-            $whitelistGlobalClasses,
-            $whitelistGlobalFunctions,
+            $exposeGlobalConstants,
+            $exposeGlobalClasses,
+            $exposeGlobalFunctions,
             $excludedNamespaceRegexes,
             $excludedNamespaceNames,
-            ...$whitelist,
+            ...$exposedElements,
         );
     }
 
@@ -63,7 +63,7 @@ final class ConfigurationWhitelistFactory
         $key = ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD;
 
         if (!array_key_exists($key, $config)) {
-            return [];
+            return [[], []];
         }
 
         $regexesAndNamespaceNames = $config[$key];
@@ -94,7 +94,7 @@ final class ConfigurationWhitelistFactory
                 );
             }
 
-            if ($this->regexChecker->isRegexLike($regexOrNamespaceName)) {
+            if (!$this->regexChecker->isRegexLike($regexOrNamespaceName)) {
                 $namespaceNames[$regexOrNamespaceName] = null;
 
                 continue;
@@ -126,7 +126,7 @@ final class ConfigurationWhitelistFactory
     /**
      * return list<string>
      */
-    private static function retrieveWhitelistValues(array $config): array
+    private static function retrieveExposedElements(array $config): array
     {
         $key = ConfigurationKeys::WHITELIST_KEYWORD;
 
@@ -139,7 +139,8 @@ final class ConfigurationWhitelistFactory
         if (!is_array($whitelist)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Expected whitelist to be an array of strings, found "%s" instead.',
+                    'Expected "%s" to be an array of strings, found "%s" instead.',
+                    $key,
                     gettype($whitelist),
                 ),
             );
@@ -161,10 +162,10 @@ final class ConfigurationWhitelistFactory
         return array_values($whitelist);
     }
 
-    private static function retrieveGlobalWhitelist(array $config, string $key): bool
+    private static function retrieveExposeGlobalSymbol(array $config, string $key): bool
     {
         if (!array_key_exists($key, $config)) {
-            return true;
+            return false;
         }
 
         $value = $config[$key];

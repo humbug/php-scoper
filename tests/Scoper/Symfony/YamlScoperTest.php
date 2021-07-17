@@ -61,7 +61,14 @@ class YamlScoperTest extends TestCase
     {
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $contents = '';
 
@@ -116,9 +123,17 @@ class YamlScoperTest extends TestCase
 
     public static function provideYamlFiles(): iterable
     {
+        $emptyWhitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+        );
+
         yield 'empty' => [
             '',
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             '',
             [],
         ];
@@ -132,7 +147,7 @@ services:
     Symfony\Component\Console\Output\OutputInterface: '@Symfony\Component\Console\Output\ConsoleOutput'
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 services:
     Humbug\Symfony\Component\Console\Style\SymfonyStyle: ~
@@ -157,6 +172,8 @@ YAML
                 true,
                 true,
                 true,
+                [],
+                [],
                 'Symfony\Component\Console\*'
             ),
             <<<'YAML'
@@ -179,7 +196,7 @@ services:
     "Symfony\\Component\\Console\\Output\\OutputInterface": "@Symfony\\Component\\Console\\Output\\ConsoleOutput"
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 services:
     "Humbug\\Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -198,7 +215,7 @@ services:
     "Symfony\\Component\\Console\\Input\\InputInterface": '@Symfony\Component\Console\Style\SymfonyStyle'
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 services:
     "Humbug\\Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -218,7 +235,7 @@ services:
         resource: "../src"
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 services:
     Humbug\Acme\Controller\:
@@ -245,6 +262,8 @@ YAML
                 true,
                 true,
                 true,
+                [],
+                [],
                 'Acme\Controller\*'
             ),
             <<<'YAML'
@@ -266,7 +285,7 @@ services:
     Acme\Foo: '@Acme\Bar\Acme\Foo'
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 services:
     Humbug\Acme\Foo: '@Humbug\Acme\Foo\Bar'
@@ -287,6 +306,8 @@ YAML
                 true,
                 true,
                 true,
+                [],
+                [],
                 'Acme\Foo\*'
             ),
             <<<'YAML'
@@ -305,7 +326,7 @@ services:
         - '@Acme\Bar'
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 services:
     Humbug\Acme\Foo:
@@ -329,6 +350,8 @@ YAML
                 true,
                 true,
                 true,
+                [],
+                [],
                 'Acme\Foo\*'
             ),
             <<<'YAML'
@@ -354,7 +377,7 @@ services:
             - { name: my_tag, id: 'Acme\Baz' }
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 services:
     foo:
@@ -390,6 +413,8 @@ YAML
                 true,
                 true,
                 true,
+                [],
+                [],
                 'Acme\Foo\*'
             ),
             <<<'YAML'
@@ -419,7 +444,14 @@ services:
         - '@Acme\Bar'
 YAML
             ,
-            Whitelist::create(true, true, true, 'Acme\Foo'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                [],
+                [],
+                'Acme\Foo',
+            ),
             <<<'YAML'
 services:
     Humbug\Acme\Foo:
@@ -440,7 +472,7 @@ services:
     Closure: ~
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 services:
     Foo:
@@ -462,7 +494,14 @@ services:
         - '@Emca\Bar'
 YAML
             ,
-            Whitelist::create(true, true, true, 'Acme\*'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                [],
+                [],
+                'Acme\*',
+            ),
             <<<'YAML'
 services:
     Acme\Foo:
@@ -509,7 +548,7 @@ services:
 
 YAML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'YAML'
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.

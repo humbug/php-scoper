@@ -43,6 +43,8 @@ final class ConfigurationTest extends TestCase
                 false,
                 false,
                 false,
+                [],
+                [],
             ),
             [],
             [],

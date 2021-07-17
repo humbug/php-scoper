@@ -38,7 +38,13 @@ class ScoperAutoloadGeneratorTest extends TestCase
     public static function provideWhitelists(): iterable
     {
         yield 'empty whitelist' => [
-            Whitelist::create(true, true, true),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                [],
+                [],
+            ),
             <<<'PHP'
 <?php
 
@@ -53,7 +59,13 @@ PHP
 
         yield 'whitelist with whitelisted global functions recorded' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true);
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    [],
+                    [],
+                );
 
                 $whitelist->recordWhitelistedFunction(
                     new FullyQualified('foo'),
@@ -94,7 +106,13 @@ PHP
 
         yield 'whitelist with whitelisted namespaced functions recorded' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true);
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    [],
+                    [],
+                );
 
                 $whitelist->recordWhitelistedFunction(
                     new FullyQualified('Acme\foo'),
@@ -154,7 +172,15 @@ PHP
         ];
 
         yield 'whitelist with whitelisted classes but none recorded' => [
-            Whitelist::create(true, true, true, 'A\Foo', 'B\Bar'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                [],
+                [],
+                'A\Foo',
+                'B\Bar'
+            ),
             <<<'PHP'
 <?php
 
@@ -169,7 +195,15 @@ PHP
 
         yield 'whitelist with whitelisted classes recorded' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true, 'A\Foo', 'B\Bar');
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    [],
+                    [],
+                    'A\Foo',
+                    'B\Bar'
+                );
 
                 $whitelist->recordWhitelistedClass(
                     new FullyQualified('A\Foo'),
@@ -198,7 +232,13 @@ PHP
 
         yield 'whitelist with whitelisted global classes recorded' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true);
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    [],
+                    [],
+                );
 
                 $whitelist->recordWhitelistedClass(
                     new FullyQualified('Foo'),
@@ -235,7 +275,15 @@ PHP
 
         yield 'complete whitelist' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true, 'A\Foo', 'B\Bar');
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    [],
+                    [],
+                    'A\Foo',
+                    'B\Bar',
+                );
 
                 $whitelist->recordWhitelistedClass(
                     new FullyQualified('A\Foo'),
@@ -334,7 +382,13 @@ PHP
         // https://github.com/humbug/php-scoper/issues/267
         yield '__autoload global function with no namespaced functions' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true);
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    [],
+                    [],
+                );
 
                 $whitelist->recordWhitelistedFunction(
                     new FullyQualified('__autoload'),
@@ -366,7 +420,13 @@ PHP
         // https://github.com/humbug/php-scoper/issues/267
         yield '__autoload global function with namespaced functions' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true);
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    [],
+                    [],
+                );
 
                 $whitelist->recordWhitelistedFunction(
                     new FullyQualified('__autoload'),

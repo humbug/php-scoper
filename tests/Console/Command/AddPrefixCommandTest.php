@@ -17,12 +17,14 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\ConfigurationFactory;
+use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
+use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\ScoperFactory;
 use Humbug\PhpScoper\Whitelist;
@@ -192,7 +194,13 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(
+                        false,
+                        false,
+                        false,
+                        [],
+                        [],
+                    )
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -255,7 +263,13 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         Argument::any(),
-                        Whitelist::create(true, true, true)
+                        Whitelist::create(
+                            false,
+                            false,
+                            false,
+                            [],
+                            [],
+                        ),
                     )
                     ->willReturn($prefixedContents)
                 ;
@@ -268,7 +282,14 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         Argument::any(),
-                        Whitelist::create(true, true, true)
+
+                        Whitelist::create(
+                            false,
+                            false,
+                            false,
+                            [],
+                            [],
+                        ),
                     )
                     ->willThrow(new RootRuntimeException('Scoping of the file failed'))
                 ;
@@ -328,7 +349,14 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+
+                    Whitelist::create(
+                        false,
+                        false,
+                        false,
+                        [],
+                        [],
+                    ),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -389,7 +417,13 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(
+                        false,
+                        false,
+                        false,
+                        [],
+                        [],
+                    ),
                 )
                 ->willReturn($prefixedFileContents)
             ;
@@ -443,7 +477,13 @@ EOF;
                     }
                 ),
                 Argument::any(),
-                Whitelist::create(true, true, true)
+                Whitelist::create(
+                    false,
+                    false,
+                    false,
+                    [],
+                    [],
+                ),
             )
             ->willReturn('')
         ;
@@ -501,7 +541,13 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(
+                        false,
+                        false,
+                        false,
+                        [],
+                        [],
+                    ),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -562,7 +608,13 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(
+                        false,
+                        false,
+                        false,
+                        [],
+                        [],
+                    ),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -624,7 +676,13 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(
+                        false,
+                        false,
+                        false,
+                        [],
+                        [],
+                    ),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -725,7 +783,13 @@ EOF;
 
                         return true;
                     }),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(
+                        false,
+                        false,
+                        false,
+                        [],
+                        [],
+                    ),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -811,7 +875,13 @@ EOF;
                     $fileContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(
+                        false,
+                        false,
+                        false,
+                        [],
+                        [],
+                    ),
                 )
                 ->willThrow($scopingException = new RuntimeException('Could not scope file'))
             ;
@@ -855,7 +925,12 @@ EOF;
                     $fileSystem,
                     new DummyScoperFactory(new FakeParser(), $scoper),
                     $innerApp,
-                    new ConfigurationFactory($fileSystem),
+                    new ConfigurationFactory(
+                        $fileSystem,
+                        new ConfigurationWhitelistFactory(
+                            new RegexChecker(),
+                        ),
+                    ),
                 ),
             ),
         );

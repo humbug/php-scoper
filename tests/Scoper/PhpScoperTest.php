@@ -96,7 +96,14 @@ class PhpScoperTest extends TestCase
         $prefix = 'Humbug';
         $filePath = 'file.php';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $contents = <<<'PHP'
         <?php
@@ -124,7 +131,14 @@ class PhpScoperTest extends TestCase
         $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
@@ -156,7 +170,14 @@ class PhpScoperTest extends TestCase
         $prefix = 'Humbug';
         $filePath = 'file';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $contents = <<<'PHP'
         <?php
@@ -184,7 +205,14 @@ class PhpScoperTest extends TestCase
         $prefix = 'Humbug';
         $filePath = 'hello';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $contents = <<<'PHP'
         #!/usr/bin/env php
@@ -215,7 +243,14 @@ class PhpScoperTest extends TestCase
 
         $patchers = [create_fake_patcher()];
 
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $contents = <<<'PHP'
         #!/usr/bin/env bash
@@ -261,7 +296,14 @@ class PhpScoperTest extends TestCase
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         try {
             $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
@@ -286,7 +328,14 @@ class PhpScoperTest extends TestCase
 
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist)

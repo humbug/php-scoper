@@ -34,9 +34,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     {
         parent::setUp();
 
-        $this->configFactory = new ConfigurationFactory(
-            new Filesystem(),
-        );
+        $this->configFactory = (new Container())->getConfigurationFactory();
     }
 
     public function test_it_can_be_created_without_a_file(): void
@@ -45,7 +43,13 @@ class ConfigurationFactoryTest extends FileSystemTestCase
 
         self::assertSame([], $configuration->getWhitelistedFilesWithContents());
         self::assertEquals(
-            Whitelist::create(true, true, true),
+            Whitelist::create(
+                false,
+                false,
+                false,
+                [],
+                [],
+            ),
             $configuration->getWhitelist(),
         );
         self::assertNull($configuration->getPath());
@@ -86,6 +90,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 'expose-global-constants' => false,
                 'expose-global-classes' => false,
                 'expose-global-functions' => false,
+                'exclude-namespaces' => ['PHPUnit\Runner'],
                 'whitelist' => ['Foo', 'Bar\*'],
                 'excluded-constants' => [],
                 'excluded-classes' => [],
@@ -125,6 +130,8 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 false,
                 false,
                 false,
+                [],
+                ['PHPUnit\Runner'],
                 'Foo',
                 'Bar\*',
             ),

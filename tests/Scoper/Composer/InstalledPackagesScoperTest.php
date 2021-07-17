@@ -44,7 +44,14 @@ class InstalledPackagesScoperTest extends TestCase
         $fileContents = '';
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         /** @var ObjectProphecy<Scoper> $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -77,7 +84,14 @@ class InstalledPackagesScoperTest extends TestCase
 
         $prefix = 'Foo';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
 

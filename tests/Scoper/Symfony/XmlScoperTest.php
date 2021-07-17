@@ -61,7 +61,14 @@ class XmlScoperTest extends TestCase
     {
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $contents = '';
 
@@ -110,9 +117,17 @@ class XmlScoperTest extends TestCase
 
     public static function provideXmlFiles(): iterable
     {
+        $emptyWhitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+        );
+        
         yield 'empty' => [
             '',
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             '',
             [],
         ];
@@ -179,7 +194,7 @@ class XmlScoperTest extends TestCase
 
 XML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'XML'
 <?xml version="1.0" ?>
 
@@ -263,7 +278,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -308,6 +323,8 @@ XML
                 true,
                 true,
                 true,
+                [],
+                [],
                 'Acme\Foo\*'
             ),
             <<<'XML'
@@ -348,7 +365,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -387,7 +404,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'XML'
 <!-- app/config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -426,7 +443,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -462,7 +479,14 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true, 'Acme\Foo'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                [],
+                [],
+                'Acme\Foo',
+            ),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -501,7 +525,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            $emptyWhitelist,
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -543,7 +567,14 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true, 'Acme\*'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                [],
+                [],
+                'Acme\*',
+            ),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>

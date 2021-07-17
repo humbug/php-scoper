@@ -71,7 +71,14 @@ class PatchScoperTest extends TestCase
             },
         ];
 
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            [],
+            [],
+            'Foo',
+        );
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
