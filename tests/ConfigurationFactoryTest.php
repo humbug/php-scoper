@@ -85,9 +85,9 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 'expose-global-classes' => false,
                 'expose-global-functions' => false,
                 'whitelist' => ['Foo', 'Bar\*'],
-                'excluded-constants' => [],
-                'excluded-classes' => [],
-                'excluded-functions' => [],
+                'exclude-constants' => [],
+                'exclude-classes' => [],
+                'exclude-functions' => [],
                 'patchers' => [],
                 'finders' => [],
             ];

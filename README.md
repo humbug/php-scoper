@@ -38,7 +38,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelisted files](#whitelisted-files)
-    - [Excluded Symbols](#excluded-symbols)
+    - [Excluded Symbols](#exclude-symbols)
     - [Whitelist][whitelist]
         - [Constants & functions from the global namespace](#constants--classes--functions-from-the-global-namespace)
         - [Symbols](#symbols)
@@ -160,9 +160,9 @@ return [
     'expose-global-constants' => true,   // bool
     'expose-global-classes' => true,     // bool
     'expose-global-functions' => true,   // bool
-    'excluded-constants' => [],             // string[]
-    'excluded-classes' => [],               // string[]
-    'excluded-functions' => [],             // string[]
+    'exclude-constants' => [],             // string[]
+    'exclude-classes' => [],               // string[]
+    'exclude-functions' => [],             // string[]
 ];
 ```
 
@@ -302,9 +302,9 @@ Symbols can be marked as excluded as follows:
 // scoper.inc.php
 
 return [
-    'excluded-classes' => ['Stringeable'],
-    'excluded-functions' => ['str_contains'],
-    'excluded-constants' => ['PHP_EOL'],
+    'exclude-classes' => ['Stringeable'],
+    'exclude-functions' => ['str_contains'],
+    'exclude-constants' => ['PHP_EOL'],
 ];
 ```
 
