@@ -39,11 +39,7 @@ final class ConfigurationTest extends TestCase
             [],
             [],
             [],
-            Whitelist::create(
-                false,
-                false,
-                false,
-            ),
+            Whitelist::create(),
             [],
             [],
             [],

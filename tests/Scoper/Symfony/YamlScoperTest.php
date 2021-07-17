@@ -118,7 +118,7 @@ class YamlScoperTest extends TestCase
     {
         yield 'empty' => [
             '',
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             '',
             [],
         ];
@@ -132,7 +132,7 @@ services:
     Symfony\Component\Console\Output\OutputInterface: '@Symfony\Component\Console\Output\ConsoleOutput'
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 services:
     Humbug\Symfony\Component\Console\Style\SymfonyStyle: ~
@@ -179,7 +179,7 @@ services:
     "Symfony\\Component\\Console\\Output\\OutputInterface": "@Symfony\\Component\\Console\\Output\\ConsoleOutput"
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 services:
     "Humbug\\Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -198,7 +198,7 @@ services:
     "Symfony\\Component\\Console\\Input\\InputInterface": '@Symfony\Component\Console\Style\SymfonyStyle'
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 services:
     "Humbug\\Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -218,7 +218,7 @@ services:
         resource: "../src"
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 services:
     Humbug\Acme\Controller\:
@@ -266,7 +266,7 @@ services:
     Acme\Foo: '@Acme\Bar\Acme\Foo'
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 services:
     Humbug\Acme\Foo: '@Humbug\Acme\Foo\Bar'
@@ -305,7 +305,7 @@ services:
         - '@Acme\Bar'
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 services:
     Humbug\Acme\Foo:
@@ -354,7 +354,7 @@ services:
             - { name: my_tag, id: 'Acme\Baz' }
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 services:
     foo:
@@ -440,7 +440,7 @@ services:
     Closure: ~
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 services:
     Foo:
@@ -509,7 +509,7 @@ services:
 
 YAML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'YAML'
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
