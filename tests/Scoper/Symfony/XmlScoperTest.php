@@ -112,7 +112,7 @@ class XmlScoperTest extends TestCase
     {
         yield 'empty' => [
             '',
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             '',
             [],
         ];
@@ -179,7 +179,7 @@ class XmlScoperTest extends TestCase
 
 XML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'XML'
 <?xml version="1.0" ?>
 
@@ -263,7 +263,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -348,7 +348,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -387,7 +387,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'XML'
 <!-- app/config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -426,7 +426,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -501,7 +501,7 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true),
+            Whitelist::create(),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>

@@ -71,9 +71,9 @@ final class Whitelist implements Countable
     private array $whitelistedClasses = [];
 
     public static function create(
-        bool $exposeGlobalConstants,
-        bool $exposeGlobalClasses,
-        bool $exposeGlobalFunctions,
+        bool $exposeGlobalConstants = false,
+        bool $exposeGlobalClasses = false,
+        bool $exposeGlobalFunctions = false,
         string ...$exposedElements
     ): self {
         $exposedSymbols = [];
