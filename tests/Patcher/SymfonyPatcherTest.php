@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
 
 /**

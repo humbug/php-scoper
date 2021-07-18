@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Error;
-use Generator;
 use Humbug\PhpScoper\ConfigurationKeys;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;

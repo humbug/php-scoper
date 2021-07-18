@@ -296,7 +296,7 @@ final class ConfigurationFactory
         }
 
         if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD, $config)) {
-            $exposeGlobalConstants = true;
+            $exposeGlobalConstants = false;
         } else {
             $exposeGlobalConstants = $config[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD];
 
@@ -312,7 +312,7 @@ final class ConfigurationFactory
         }
 
         if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD, $config)) {
-            $exposeGlobalClasses = true;
+            $exposeGlobalClasses = false;
         } else {
             $exposeGlobalClasses = $config[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD];
 
@@ -328,7 +328,7 @@ final class ConfigurationFactory
         }
 
         if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
-            $exposeGlobalFunctions = true;
+            $exposeGlobalFunctions = false;
         } else {
             $exposeGlobalFunctions = $config[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD];
 

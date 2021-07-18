@@ -18,16 +18,13 @@ use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\ConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
-use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\ScoperFactory;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
-use PhpParser\Parser;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -192,7 +189,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -255,7 +252,7 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         Argument::any(),
-                        Whitelist::create(true, true, true)
+                        Whitelist::create(),
                     )
                     ->willReturn($prefixedContents)
                 ;
@@ -268,7 +265,7 @@ EOF;
                         $inputContents,
                         'MyPrefix',
                         Argument::any(),
-                        Whitelist::create(true, true, true)
+                        Whitelist::create(),
                     )
                     ->willThrow(new RootRuntimeException('Scoping of the file failed'))
                 ;
@@ -328,7 +325,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -389,7 +386,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(),
                 )
                 ->willReturn($prefixedFileContents)
             ;
@@ -443,7 +440,7 @@ EOF;
                     }
                 ),
                 Argument::any(),
-                Whitelist::create(true, true, true)
+                Whitelist::create(),
             )
             ->willReturn('')
         ;
@@ -501,7 +498,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -562,7 +559,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -624,7 +621,7 @@ EOF;
                     $inputContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -725,7 +722,7 @@ EOF;
 
                         return true;
                     }),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -811,7 +808,7 @@ EOF;
                     $fileContents,
                     'MyPrefix',
                     Argument::any(),
-                    Whitelist::create(true, true, true)
+                    Whitelist::create(),
                 )
                 ->willThrow($scopingException = new RuntimeException('Could not scope file'))
             ;
