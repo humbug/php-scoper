@@ -67,10 +67,10 @@ function (int $x) {
 function (int $x) : int {
     return $x;
 };
-function (Foo $x) : \X\Bar {
+function (Foo $x) : Bar {
     return $x;
 };
-function (DateTimeImmutable $x) : \Closure {
+function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 static function ($x) {
@@ -82,10 +82,10 @@ static function (int $x) {
 static function (int $x) : int {
     return $x;
 };
-static function (Foo $x) : \X\Bar {
+static function (Foo $x) : Bar {
     return $x;
 };
-static function (DateTimeImmutable $x) : \Closure {
+static function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 
@@ -134,10 +134,10 @@ function (int $x) {
 function (int $x) : int {
     return $x;
 };
-function (Foo $x) : \X\Bar {
+function (Foo $x) : Bar {
     return $x;
 };
-function (DateTimeImmutable $x) : \Closure {
+function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 static function ($x) {
@@ -149,10 +149,10 @@ static function (int $x) {
 static function (int $x) : int {
     return $x;
 };
-static function (Foo $x) : \X\Bar {
+static function (Foo $x) : Bar {
     return $x;
 };
-static function (DateTimeImmutable $x) : \Closure {
+static function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 
@@ -203,10 +203,10 @@ function (int $x) {
 function (int $x) : int {
     return $x;
 };
-function (Foo $x) : \X\Bar {
+function (Foo $x) : Bar {
     return $x;
 };
-function (DateTimeImmutable $x) : \Closure {
+function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 static function ($x) {
@@ -218,10 +218,10 @@ static function (int $x) {
 static function (int $x) : int {
     return $x;
 };
-static function (Foo $x) : \X\Bar {
+static function (Foo $x) : Bar {
     return $x;
 };
-static function (DateTimeImmutable $x) : \Closure {
+static function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 

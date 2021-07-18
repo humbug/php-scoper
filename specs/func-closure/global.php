@@ -51,7 +51,7 @@ function ($x) {
 function (int $x) : int {
     return $x;
 };
-function (Foo $x) : \Bar {
+function (Foo $x) : Bar {
     return $x;
 };
 function (\DateTimeImmutable $x) : \Closure {
@@ -63,7 +63,7 @@ static function ($x) {
 static function (int $x) : int {
     return $x;
 };
-static function (Foo $x) : \Bar {
+static function (Foo $x) : Bar {
     return $x;
 };
 static function (\DateTimeImmutable $x) : \Closure {
@@ -104,7 +104,7 @@ function (int $x) {
 function (int $x) : int {
     return $x;
 };
-function (Foo $x) : \Bar {
+function (Foo $x) : Bar {
     return $x;
 };
 function (\DateTimeImmutable $x) : \Closure {
@@ -119,7 +119,7 @@ static function (int $x) {
 static function (int $x) : int {
     return $x;
 };
-static function (Foo $x) : \Bar {
+static function (Foo $x) : Bar {
     return $x;
 };
 static function (\DateTimeImmutable $x) : \Closure {
@@ -162,7 +162,7 @@ function (int $x) {
 function (int $x) : int {
     return $x;
 };
-function (\Humbug\Foo $x) : \Bar {
+function (\Humbug\Foo $x) : \Humbug\Bar {
     return $x;
 };
 function (\DateTimeImmutable $x) : \Closure {
@@ -177,7 +177,7 @@ static function (int $x) {
 static function (int $x) : int {
     return $x;
 };
-static function (\Humbug\Foo $x) : \Bar {
+static function (\Humbug\Foo $x) : \Humbug\Bar {
     return $x;
 };
 static function (\DateTimeImmutable $x) : \Closure {

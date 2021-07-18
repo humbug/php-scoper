@@ -58,10 +58,10 @@ function (int $x) {
 function (int $x) : int {
     return $x;
 };
-function (Foo $x) : \Acme\Bar {
+function (Foo $x) : Bar {
     return $x;
 };
-function (DateTimeImmutable $x) : \Acme\Closure {
+function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 static function ($x) {
@@ -73,10 +73,10 @@ static function (int $x) {
 static function (int $x) : int {
     return $x;
 };
-static function (Foo $x) : \Acme\Bar {
+static function (Foo $x) : Bar {
     return $x;
 };
-static function (DateTimeImmutable $x) : \Acme\Closure {
+static function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 
@@ -116,10 +116,10 @@ function (int $x) {
 function (int $x) : int {
     return $x;
 };
-function (Foo $x) : \Acme\Bar {
+function (Foo $x) : Bar {
     return $x;
 };
-function (DateTimeImmutable $x) : \Acme\Closure {
+function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 static function ($x) {
@@ -131,10 +131,10 @@ static function (int $x) {
 static function (int $x) : int {
     return $x;
 };
-static function (Foo $x) : \Acme\Bar {
+static function (Foo $x) : Bar {
     return $x;
 };
-static function (DateTimeImmutable $x) : \Acme\Closure {
+static function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 
@@ -146,7 +146,7 @@ PHP
             'Acme\Foo',
             'Acme\Bar',
             'Acme\Humbug\Acme\DateTimeImmutable',
-            'Acme\Humbug\Acme\Closure',
+            'Acme\HumbugClosure',
         ],
         'payload' => <<<'PHP'
 <?php
@@ -178,10 +178,10 @@ function (int $x) {
 function (int $x) : int {
     return $x;
 };
-function (Foo $x) : \Acme\Bar {
+function (Foo $x) : Bar {
     return $x;
 };
-function (DateTimeImmutable $x) : \Acme\Closure {
+function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 static function ($x) {
@@ -193,10 +193,10 @@ static function (int $x) {
 static function (int $x) : int {
     return $x;
 };
-static function (Foo $x) : \Acme\Bar {
+static function (Foo $x) : Bar {
     return $x;
 };
-static function (DateTimeImmutable $x) : \Acme\Closure {
+static function (DateTimeImmutable $x) : Closure {
     return $x;
 };
 
