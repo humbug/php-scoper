@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\ConfigurationKeys;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use function array_values;
