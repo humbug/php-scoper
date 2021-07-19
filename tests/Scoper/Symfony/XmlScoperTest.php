@@ -60,7 +60,12 @@ class XmlScoperTest extends TestCase
     {
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create(
+            true,
+            true,
+            true,
+            'Foo',
+        );
 
         $contents = '';
 
@@ -461,7 +466,12 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true, 'Acme\Foo'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\Foo',
+            ),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -542,7 +552,12 @@ XML
 </container>
 XML
             ,
-            Whitelist::create(true, true, true, 'Acme\*'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\*',
+            ),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>

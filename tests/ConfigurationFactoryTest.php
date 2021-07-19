@@ -33,9 +33,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     {
         parent::setUp();
 
-        $this->configFactory = new ConfigurationFactory(
-            new Filesystem(),
-        );
+        $this->configFactory = (new Container())->getConfigurationFactory();
     }
 
     public function test_it_can_be_created_without_a_file(): void

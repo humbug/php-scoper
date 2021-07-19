@@ -2695,9 +2695,7 @@ BANNER;
     {
         self::checkIfDefaultValue($logger, $raw, self::PHP_SCOPER_KEY, self::PHP_SCOPER_CONFIG);
 
-        $configFactory = new ConfigurationFactory(
-            new Filesystem(),
-        );
+        $configFactory = (new Container())->getConfigurationFactory();
 
         if (!isset($raw->{self::PHP_SCOPER_KEY})) {
             $configFilePath = make_path_absolute(self::PHP_SCOPER_CONFIG, $basePath);

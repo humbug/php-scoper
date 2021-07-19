@@ -34,12 +34,9 @@ class NullScoperTest extends TestCase
     {
         $filePath = 'file';
         $contents = $expected = 'File content';
-
         $prefix = 'Humbug';
-
         $patchers = [create_fake_patcher()];
-
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create();
 
         $scoper = new NullScoper();
 

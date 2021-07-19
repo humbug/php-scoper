@@ -28,6 +28,7 @@ use function implode;
 use function ltrim;
 use function preg_match as native_preg_match;
 use function Safe\array_flip;
+use function Safe\preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
@@ -77,7 +78,7 @@ final class Whitelist implements Countable
     ): self {
         $exposedSymbols = [];
         $exposedConstants = [];
-        $exposedNamespaceNames = [];
+        $excludedNamespaceNames = [];
         $exposedSymbolsPatterns = [];
         $originalElements = [];
 
@@ -89,9 +90,9 @@ final class Whitelist implements Countable
             $originalElements[] = $element;
 
             if ('\*' === substr($element, -2)) {
-                $exposedNamespaceNames[] = strtolower(substr($element, 0, -2));
+                $excludedNamespaceNames[] = strtolower(substr($element, 0, -2));
             } elseif ('*' === $element) {
-                $exposedNamespaceNames[] = '';
+                $excludedNamespaceNames[] = '';
             } elseif (false !== strpos($element, '*')) {
                 $exposedSymbolsPatterns[] = self::createExposePattern($element);
             } else {
@@ -108,7 +109,7 @@ final class Whitelist implements Countable
             array_flip($exposedSymbols),
             array_flip($exposedConstants),
             array_unique($exposedSymbolsPatterns),
-            array_unique($exposedNamespaceNames)
+            array_unique($excludedNamespaceNames),
         );
     }
 

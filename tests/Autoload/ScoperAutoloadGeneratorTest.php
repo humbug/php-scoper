@@ -153,7 +153,13 @@ PHP
         ];
 
         yield 'whitelist with whitelisted classes but none recorded' => [
-            Whitelist::create(true, true, true, 'A\Foo', 'B\Bar'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'A\Foo',
+                'B\Bar'
+            ),
             <<<'PHP'
 <?php
 
@@ -168,7 +174,13 @@ PHP
 
         yield 'whitelist with whitelisted classes recorded' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true, 'A\Foo', 'B\Bar');
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    'A\Foo',
+                    'B\Bar'
+                );
 
                 $whitelist->recordWhitelistedClass(
                     new FullyQualified('A\Foo'),
@@ -234,7 +246,13 @@ PHP
 
         yield 'complete whitelist' => [
             (static function () {
-                $whitelist = Whitelist::create(true, true, true, 'A\Foo', 'B\Bar');
+                $whitelist = Whitelist::create(
+                    true,
+                    true,
+                    true,
+                    'A\Foo',
+                    'B\Bar',
+                );
 
                 $whitelist->recordWhitelistedClass(
                     new FullyQualified('A\Foo'),

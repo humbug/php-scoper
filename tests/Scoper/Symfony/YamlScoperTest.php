@@ -60,7 +60,7 @@ class YamlScoperTest extends TestCase
     {
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
+        $whitelist = Whitelist::create();
 
         $contents = '';
 
@@ -418,7 +418,12 @@ services:
         - '@Acme\Bar'
 YAML
             ,
-            Whitelist::create(true, true, true, 'Acme\Foo'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\Foo',
+            ),
             <<<'YAML'
 services:
     Humbug\Acme\Foo:
@@ -461,7 +466,12 @@ services:
         - '@Emca\Bar'
 YAML
             ,
-            Whitelist::create(true, true, true, 'Acme\*'),
+            Whitelist::create(
+                true,
+                true,
+                true,
+                'Acme\*',
+            ),
             <<<'YAML'
 services:
     Acme\Foo:
