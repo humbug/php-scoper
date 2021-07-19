@@ -70,10 +70,6 @@ final class Whitelist implements Countable
     private array $whitelistedFunctions = [];
     private array $whitelistedClasses = [];
 
-    /**
-     * @param string[] $excludedNamespaceRegexes
-     * @param string[] $excludedNamespaceNames
-     */
     public static function create(
         bool $exposeGlobalConstants = false,
         bool $exposeGlobalClasses = false,

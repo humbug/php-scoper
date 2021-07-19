@@ -29,7 +29,6 @@ use function array_unique;
 use function array_unshift;
 use function array_values;
 use function bin2hex;
-use function count;
 use function dirname;
 use function file_exists;
 use function gettype;
@@ -42,14 +41,11 @@ use function is_file;
 use function is_link;
 use function is_readable;
 use function is_string;
-use function preg_last_error_msg;
-use function preg_match as native_preg_match;
 use function random_bytes;
 use function readlink as native_readlink;
 use function realpath;
 use function Safe\file_get_contents;
 use function Safe\sprintf;
-use function str_contains;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 use const SORT_STRING;
@@ -57,14 +53,10 @@ use const SORT_STRING;
 final class ConfigurationFactory
 {
     private Filesystem $fileSystem;
-    private ConfigurationWhitelistFactory $configurationWhitelistFactory;
 
-    public function __construct(
-        Filesystem $fileSystem,
-        ConfigurationWhitelistFactory $configurationWhitelistFactory
-    ) {
+    public function __construct(Filesystem $fileSystem)
+    {
         $this->fileSystem = $fileSystem;
-        $this->configurationWhitelistFactory = $configurationWhitelistFactory;
     }
 
     /**
@@ -94,7 +86,7 @@ final class ConfigurationFactory
 
         array_unshift($patchers, new SymfonyPatcher());
 
-        $whitelist = $this->configurationWhitelistFactory->createWhitelist($config);
+        $whitelist = self::retrieveWhitelist($config);
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
@@ -271,6 +263,92 @@ final class ConfigurationFactory
         }
 
         return $patchers;
+    }
+
+    private static function retrieveWhitelist(array $config): Whitelist
+    {
+        if (!array_key_exists(ConfigurationKeys::WHITELIST_KEYWORD, $config)) {
+            $whitelist = [];
+        } else {
+            $whitelist = $config[ConfigurationKeys::WHITELIST_KEYWORD];
+
+            if (!is_array($whitelist)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected whitelist to be an array of strings, found "%s" instead.',
+                        gettype($whitelist),
+                    ),
+                );
+            }
+
+            foreach ($whitelist as $index => $className) {
+                if (is_string($className)) {
+                    continue;
+                }
+
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected whitelist to be an array of string, the "%d" element is not.',
+                        $index,
+                    ),
+                );
+            }
+        }
+
+        if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD, $config)) {
+            $exposeGlobalConstants = false;
+        } else {
+            $exposeGlobalConstants = $config[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD];
+
+            if (!is_bool($exposeGlobalConstants)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected %s to be a boolean, found "%s" instead.',
+                        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+                        gettype($exposeGlobalConstants),
+                    ),
+                );
+            }
+        }
+
+        if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD, $config)) {
+            $exposeGlobalClasses = false;
+        } else {
+            $exposeGlobalClasses = $config[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD];
+
+            if (!is_bool($exposeGlobalClasses)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected %s to be a boolean, found "%s" instead.',
+                        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+                        gettype($exposeGlobalClasses),
+                    ),
+                );
+            }
+        }
+
+        if (!array_key_exists(ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD, $config)) {
+            $exposeGlobalFunctions = false;
+        } else {
+            $exposeGlobalFunctions = $config[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD];
+
+            if (!is_bool($exposeGlobalFunctions)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected %s to be a boolean, found "%s" instead.',
+                        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+                        gettype($exposeGlobalFunctions),
+                    ),
+                );
+            }
+        }
+
+        return Whitelist::create(
+            $exposeGlobalConstants,
+            $exposeGlobalClasses,
+            $exposeGlobalFunctions,
+            ...$whitelist,
+        );
     }
 
     /**

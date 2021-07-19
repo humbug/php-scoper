@@ -17,13 +17,11 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\ConfigurationFactory;
-use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
-use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
@@ -854,12 +852,7 @@ EOF;
                     $fileSystem,
                     new DummyScoperFactory(new FakeParser(), $scoper),
                     $innerApp,
-                    new ConfigurationFactory(
-                        $fileSystem,
-                        new ConfigurationWhitelistFactory(
-                            new RegexChecker(),
-                        ),
-                    ),
+                    new ConfigurationFactory($fileSystem),
                 ),
             ),
         );
