@@ -18,10 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'exclude-namespaces' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
+        'expose-global-constants' => true,
+        'expose-global-classes' => false,
+        'expose-global-functions' => true,
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
@@ -96,7 +95,7 @@ PHP
     ,
 
     'Declaration in the global namespace with global classes whitelisted' => [
-        'whitelist-global-classes' => true,
+        'expose-global-classes' => true,
         'registered-classes' => [
             ['A', 'Humbug\A'],
             ['B', 'Humbug\B'],

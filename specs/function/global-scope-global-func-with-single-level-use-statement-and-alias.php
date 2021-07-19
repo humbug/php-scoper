@@ -18,10 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'exclude-namespaces' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => false,
+        'expose-global-constants' => true,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
@@ -47,7 +46,7 @@ PHP
     ,
 
     'Global function call imported with a use statement in the global scope with global functions whitelisted' => [
-        'whitelist-global-functions' => true,
+        'expose-global-functions' => true,
         'registered-functions' => [
             ['main', 'Humbug\main'],
         ],
@@ -86,7 +85,7 @@ PHP
     ,
 
     'Global FQ function call imported with a use statement in the global scope with global functions whitelisted' => [
-        'whitelist-global-functions' => true,
+        'expose-global-functions' => true,
         'registered-functions' => [
             ['foo', 'Humbug\foo'],
         ],
