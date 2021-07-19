@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
-use Symfony\Component\Filesystem\Filesystem;
 use function array_keys;
 use function KevinGH\Box\FileSystem\dump_file;
 use function Safe\touch;

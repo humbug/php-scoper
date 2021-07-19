@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\ConfigurationFactory;
+use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
@@ -852,7 +853,10 @@ EOF;
                     $fileSystem,
                     new DummyScoperFactory(new FakeParser(), $scoper),
                     $innerApp,
-                    new ConfigurationFactory($fileSystem),
+                    new ConfigurationFactory(
+                        $fileSystem,
+                        new ConfigurationWhitelistFactory(),
+                    ),
                 ),
             ),
         );
