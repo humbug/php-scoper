@@ -15,7 +15,7 @@ declare(strict_types=1);
 return [
     'meta' => [
         'minPhpVersion' => 70400,
-        'title' => 'Arrow function in a namespace',
+        'title' => 'Arrow function in a namespace with use statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
@@ -23,9 +23,9 @@ return [
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => false,
-        'excluded-constants' => [],
-        'excluded-classes' => [],
-        'excluded-functions' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -34,6 +34,11 @@ return [
 <?php
 
 namespace Acme;
+
+use X\Foo;
+use X\Bar;
+use DateTimeImmutable;
+use Closure;
 
 fn ($x) => $x;
 fn (int $x) => $x;
@@ -45,6 +50,10 @@ fn (DateTimeImmutable $x): Closure => $x;
 
 namespace Humbug\Acme;
 
+use Humbug\X\Foo;
+use Humbug\X\Bar;
+use DateTimeImmutable;
+use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
@@ -62,6 +71,11 @@ PHP
 
 namespace Acme;
 
+use X\Foo;
+use X\Bar;
+use DateTimeImmutable;
+use Closure;
+
 fn ($x) => $x;
 fn (int $x) => $x;
 fn (int $x): int => $x;
@@ -72,6 +86,10 @@ fn (DateTimeImmutable $x): Closure => $x;
 
 namespace Humbug\Acme;
 
+use Humbug\X\Foo;
+use Humbug\X\Bar;
+use DateTimeImmutable;
+use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;
@@ -83,15 +101,18 @@ PHP
 
     'Global function call in the global scope with whitelisted symbols' => [
         'whitelist' => [
-            'Acme\Foo',
-            'Acme\Bar',
-            'Acme\Humbug\Acme\DateTimeImmutable',
-            'Acme\Humbug\Acme\Closure',
+            'X\Foo',
+            'X\Bar',
         ],
         'payload' => <<<'PHP'
 <?php
 
 namespace Acme;
+
+use X\Foo;
+use X\Bar;
+use DateTimeImmutable;
+use Closure;
 
 fn ($x) => $x;
 fn (int $x) => $x;
@@ -103,6 +124,10 @@ fn (DateTimeImmutable $x): Closure => $x;
 
 namespace Humbug\Acme;
 
+use Humbug\X\Foo;
+use Humbug\X\Bar;
+use DateTimeImmutable;
+use Closure;
 fn($x) => $x;
 fn(int $x) => $x;
 fn(int $x): int => $x;

@@ -91,16 +91,16 @@ return [
 
     // List of classes to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#excluded-symbols
-    'excluded-classes' => [],
+    // For more see https://github.com/humbug/php-scoper#exclude-symbols
+    'exclude-classes' => [],
 
     // List of functions to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#excluded-symbols
-    'excluded-functions' => [],
+    // For more see https://github.com/humbug/php-scoper#exclude-symbols
+    'exclude-functions' => [],
 
     // List of constants to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#excluded-symbols
-    'excluded-constants' => [],
+    // For more see https://github.com/humbug/php-scoper#exclude-symbols
+    'exclude-constants' => [],
 ];

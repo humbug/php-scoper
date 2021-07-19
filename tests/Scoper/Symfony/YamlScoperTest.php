@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
-use Generator;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
@@ -133,7 +132,7 @@ class YamlScoperTest extends TestCase
 
         yield 'empty' => [
             '',
-            $emptyWhitelist,
+            Whitelist::create(),
             '',
             [],
         ];
@@ -147,7 +146,7 @@ services:
     Symfony\Component\Console\Output\OutputInterface: '@Symfony\Component\Console\Output\ConsoleOutput'
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 services:
     Humbug\Symfony\Component\Console\Style\SymfonyStyle: ~
@@ -196,7 +195,7 @@ services:
     "Symfony\\Component\\Console\\Output\\OutputInterface": "@Symfony\\Component\\Console\\Output\\ConsoleOutput"
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 services:
     "Humbug\\Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -215,7 +214,7 @@ services:
     "Symfony\\Component\\Console\\Input\\InputInterface": '@Symfony\Component\Console\Style\SymfonyStyle'
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 services:
     "Humbug\\Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -235,7 +234,7 @@ services:
         resource: "../src"
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 services:
     Humbug\Acme\Controller\:
@@ -285,7 +284,7 @@ services:
     Acme\Foo: '@Acme\Bar\Acme\Foo'
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 services:
     Humbug\Acme\Foo: '@Humbug\Acme\Foo\Bar'
@@ -326,7 +325,7 @@ services:
         - '@Acme\Bar'
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 services:
     Humbug\Acme\Foo:
@@ -377,7 +376,7 @@ services:
             - { name: my_tag, id: 'Acme\Baz' }
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 services:
     foo:
@@ -472,7 +471,7 @@ services:
     Closure: ~
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 services:
     Foo:
@@ -548,7 +547,7 @@ services:
 
 YAML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'YAML'
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.

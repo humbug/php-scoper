@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper;
 use Countable;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
-use function array_filter;
 use function array_key_exists;
 use function array_map;
 use function array_pop;
@@ -81,11 +80,11 @@ final class Whitelist implements Countable
      * @param string[] $excludedNamespaceNames
      */
     public static function create(
-        bool $exposeGlobalConstants,
-        bool $exposeGlobalClasses,
-        bool $exposeGlobalFunctions,
-        array $excludedNamespaceRegexes,
-        array $excludedNamespaceNames,
+        bool $exposeGlobalConstants = false,
+        bool $exposeGlobalClasses = false,
+        bool $exposeGlobalFunctions = false,
+        array $excludedNamespaceRegexes = [],
+        array $excludedNamespaceNames = [],
         string ...$exposedElements
     ): self {
         $exposedSymbols = [];

@@ -22,6 +22,7 @@ use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
@@ -76,6 +77,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         Class_::class,
         ClassConstFetch::class,
         ClassMethod::class,
+        Closure::class,
         FuncCall::class,
         Function_::class,
         Instanceof_::class,

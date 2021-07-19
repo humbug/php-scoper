@@ -22,9 +22,9 @@ return [
         'whitelist-global-constants' => false,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => false,
-        'excluded-constants' => [],
-        'excluded-classes' => [],
-        'excluded-functions' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -71,9 +71,9 @@ return [
     ],
 
     'Declared internal symbols' => [
-        'excluded-classes' => ['Foo'],
-        'excluded-functions' => ['baz'],
-        'excluded-constants' => ['BAR'],
+        'exclude-classes' => ['Foo'],
+        'exclude-functions' => ['baz'],
+        'exclude-constants' => ['BAR'],
         'payload' => <<<'PHP'
             <?php
             

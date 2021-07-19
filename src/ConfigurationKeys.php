@@ -16,9 +16,9 @@ final class ConfigurationKeys
     public const EXPOSE_GLOBAL_CONSTANTS_KEYWORD = 'expose-global-constants';
     public const EXPOSE_GLOBAL_CLASSES_KEYWORD = 'expose-global-classes';
     public const EXPOSE_GLOBAL_FUNCTIONS_KEYWORD = 'expose-global-functions';
-    public const CLASSES_INTERNAL_SYMBOLS_KEYWORD = 'excluded-classes';
-    public const FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-functions';
-    public const CONSTANTS_INTERNAL_SYMBOLS_KEYWORD = 'excluded-constants';
+    public const CLASSES_INTERNAL_SYMBOLS_KEYWORD = 'exclude-classes';
+    public const FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD = 'exclude-functions';
+    public const CONSTANTS_INTERNAL_SYMBOLS_KEYWORD = 'exclude-constants';
 
     public const KEYWORDS = [
         self::PREFIX_KEYWORD,

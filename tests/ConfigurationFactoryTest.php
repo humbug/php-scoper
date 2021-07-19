@@ -19,7 +19,6 @@ use InvalidArgumentException;
 use Symfony\Component\Filesystem\Filesystem;
 use function array_keys;
 use function KevinGH\Box\FileSystem\dump_file;
-use function Safe\sprintf;
 use function Safe\touch;
 use const DIRECTORY_SEPARATOR;
 
@@ -43,13 +42,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
 
         self::assertSame([], $configuration->getWhitelistedFilesWithContents());
         self::assertEquals(
-            Whitelist::create(
-                false,
-                false,
-                false,
-                [],
-                [],
-            ),
+            Whitelist::create(),
             $configuration->getWhitelist(),
         );
         self::assertNull($configuration->getPath());
@@ -92,9 +85,9 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 'expose-global-functions' => false,
                 'exclude-namespaces' => ['PHPUnit\Runner'],
                 'whitelist' => ['Foo', 'Bar\*'],
-                'excluded-constants' => [],
-                'excluded-classes' => [],
-                'excluded-functions' => [],
+                'exclude-constants' => [],
+                'exclude-classes' => [],
+                'exclude-functions' => [],
                 'patchers' => [],
                 'finders' => [],
             ];

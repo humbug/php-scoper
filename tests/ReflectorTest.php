@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
 
 /**

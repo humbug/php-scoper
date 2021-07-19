@@ -14,11 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Generator;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
-use function Safe\array_flip;
 
 /**
  * @covers \Humbug\PhpScoper\Whitelist
@@ -95,13 +92,7 @@ class WhitelistTest extends TestCase
 
     public function test_it_can_record_whitelisted_functions(): void
     {
-        $whitelist = Whitelist::create(
-            true,
-            true,
-            true,
-            [],
-            [],
-        );
+        $whitelist = Whitelist::create();
 
         $whitelist->recordWhitelistedFunction(
             new FullyQualified('Acme\Foo'),
@@ -127,13 +118,7 @@ class WhitelistTest extends TestCase
 
     public function test_it_can_record_whitelisted_classes(): void
     {
-        $whitelist = Whitelist::create(
-            true,
-            true,
-            true,
-            [],
-            [],
-        );
+        $whitelist = Whitelist::create();
 
         $whitelist->recordWhitelistedClass(
             new FullyQualified('Acme\foo'),
@@ -631,13 +616,7 @@ class WhitelistTest extends TestCase
     public static function provideSymbolNames(): iterable
     {
         yield [
-            Whitelist::create(
-                true,
-                true,
-                true,
-                [],
-                [],
-            ),
+            Whitelist::create(),
             'Acme\Foo',
             false,
             false,
@@ -1081,13 +1060,7 @@ class WhitelistTest extends TestCase
     public static function provideNamespacedSymbolWhitelists(): iterable
     {
         yield [
-            Whitelist::create(
-                true,
-                true,
-                true,
-                [],
-                [],
-            ),
+            Whitelist::create(),
             'Acme\Foo',
             false,
         ];
@@ -1320,13 +1293,7 @@ class WhitelistTest extends TestCase
     public static function provideNamespaceWhitelists(): iterable
     {
         yield [
-            Whitelist::create(
-                true,
-                true,
-                true,
-                [],
-                [],
-            ),
+            Whitelist::create(),
             'Acme\Foo',
             false,
         ];
@@ -1517,13 +1484,7 @@ class WhitelistTest extends TestCase
     public static function provideWhitelistToConvert(): iterable
     {
         yield [
-            Whitelist::create(
-                true,
-                true,
-                true,
-                [],
-                [],
-            ),
+            Whitelist::create(),
             [],
         ];
 

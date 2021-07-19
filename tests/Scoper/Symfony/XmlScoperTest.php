@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
-use Generator;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
@@ -124,10 +123,10 @@ class XmlScoperTest extends TestCase
             [],
             [],
         );
-        
+
         yield 'empty' => [
             '',
-            $emptyWhitelist,
+            Whitelist::create(),
             '',
             [],
         ];
@@ -194,7 +193,7 @@ class XmlScoperTest extends TestCase
 
 XML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'XML'
 <?xml version="1.0" ?>
 
@@ -278,7 +277,7 @@ XML
 </container>
 XML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -365,7 +364,7 @@ XML
 </container>
 XML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -404,7 +403,7 @@ XML
 </container>
 XML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'XML'
 <!-- app/config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -443,7 +442,7 @@ XML
 </container>
 XML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -525,7 +524,7 @@ XML
 </container>
 XML
             ,
-            $emptyWhitelist,
+            Whitelist::create(),
             <<<'XML'
 <!-- config/services.xml -->
 <?xml version="1.0" encoding="UTF-8" ?>
