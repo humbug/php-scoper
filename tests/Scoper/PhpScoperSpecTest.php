@@ -16,8 +16,10 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Error;
 use Humbug\PhpScoper\ConfigurationKeys;
+use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
@@ -30,6 +32,7 @@ use function array_diff;
 use function array_filter;
 use function array_keys;
 use function array_map;
+use function array_pop;
 use function array_slice;
 use function array_values;
 use function basename;
@@ -322,12 +325,9 @@ class PhpScoperSpecTest extends TestCase
             $spec,
             $payloadParts[0],   // Input
             $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
-            Whitelist::create(
-                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD],
-                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD],
-                $fixtureSet[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD] ?? $meta[ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD],
-                $fixtureSet[ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD] ?? $meta[ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD],
-                ...($fixtureSet[ConfigurationKeys::WHITELIST_KEYWORD] ?? $meta[ConfigurationKeys::WHITELIST_KEYWORD])
+            self::createWhitelist(
+                is_string($fixtureSet) ? [] : $fixtureSet,
+                $meta,
             ),
             $fixtureSet[ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD],
             $fixtureSet[ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD],
@@ -338,6 +338,25 @@ class PhpScoperSpecTest extends TestCase
             $meta['minPhpVersion'] ?? null,
             $meta['maxPhpVersion'] ?? null,
         ];
+    }
+
+    private static function createWhitelist(array $fixtureSet, array $meta): Whitelist
+    {
+        $configKeys = [
+            ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+            ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+            ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+            ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
+            ConfigurationKeys::WHITELIST_KEYWORD,
+        ];
+
+        $config = [];
+
+        foreach ($configKeys as $key) {
+            $config[$key] = $fixtureSet[$key] ?? $meta[$key];
+        }
+
+        return (new ConfigurationWhitelistFactory(new RegexChecker()))->createWhitelist($config);
     }
 
     /**

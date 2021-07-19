@@ -18,13 +18,13 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'excluded-namespaces' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'excluded-constants' => [],
-        'excluded-classes' => [],
-        'excluded-functions' => [],
+        'exclude-namespaces' => [],
+        'expose-global-constants' => true,
+        'expose-global-classes' => false,
+        'expose-global-functions' => true,
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
         'registered-classes' => [],
         'registered-functions' => [],
     ],
@@ -53,7 +53,7 @@ PHP
     ,
 
     'Declaration in the global namespace with global classes whitelisted' => [
-        'whitelist-global-classes' => true,
+        'expose-global-classes' => true,
         'registered-classes' => [
             ['A', 'Humbug\A'],
         ],
@@ -83,7 +83,7 @@ PHP
     ],
 
     'Declaration in the global namespace with the global namespace which is namespaced whitelisted' => [
-        'excluded-namespace' => ['/^$/'],
+        'exclude-namespaces' => ['/^$/'],
         'payload' => <<<'PHP'
 <?php
 
@@ -138,7 +138,7 @@ PHP
 
     'Declaration of a whitelisted class in the global namespace which is whitelisted' => [
         'whitelist' => ['A'],
-        'excluded-namespace' => ['/^$/'],
+        'exclude-namespaces' => ['/^$/'],
         'registered-classes' => [
             ['A', 'Humbug\A'],
         ],
@@ -191,7 +191,7 @@ PHP
     ,
 
     'Declaration in a namespace with global classes whitelisted' => [
-        'whitelist-global-classes' => true,
+        'expose-global-classes' => true,
         'payload' => <<<'PHP'
 <?php
 
@@ -219,7 +219,7 @@ PHP
     ],
 
     'Declaration in a whitelisted namespace' => [
-        'excluded-namespace' => ['/^Foo$/'],
+        'exclude-namespaces' => ['/^Foo$/'],
         'payload' => <<<'PHP'
 <?php
 
@@ -278,7 +278,7 @@ PHP
 
     'Declaration of a namespaced class whitelisted with a pattern' => [
         'whitelist' => ['Foo\A*'],
-        'excluded-namespace' => ['/^Foo$/'],
+        'exclude-namespaces' => ['/^Foo$/'],
         'registered-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
             ['Foo\AA', 'Humbug\Foo\AA'],

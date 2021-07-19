@@ -19,7 +19,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'excluded-namespaces' => [],
+        'exclude-namespaces' => [],
         'whitelist-global-constants' => true,
         'whitelist-global-classes' => false,
         'whitelist-global-functions' => true,
