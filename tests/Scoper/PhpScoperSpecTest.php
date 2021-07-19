@@ -19,8 +19,10 @@ use Humbug\PhpScoper\ConfigurationKeys;
 use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
@@ -29,8 +31,10 @@ use Throwable;
 use UnexpectedValueException;
 use function array_diff;
 use function array_filter;
+use function array_key_exists;
 use function array_keys;
 use function array_map;
+use function array_merge;
 use function array_slice;
 use function array_values;
 use function basename;
@@ -63,6 +67,7 @@ class PhpScoperSpecTest extends TestCase
         'title',
         ConfigurationKeys::PREFIX_KEYWORD,
         ConfigurationKeys::WHITELIST_KEYWORD,
+        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
@@ -76,6 +81,7 @@ class PhpScoperSpecTest extends TestCase
     private const SPECS_SPEC_KEYS = [
         ConfigurationKeys::PREFIX_KEYWORD,
         ConfigurationKeys::WHITELIST_KEYWORD,
+        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
@@ -322,6 +328,7 @@ class PhpScoperSpecTest extends TestCase
             $payloadParts[0],   // Input
             $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
             self::createWhitelist(
+                $file,
                 is_string($fixtureSet) ? [] : $fixtureSet,
                 $meta,
             ),
@@ -336,19 +343,39 @@ class PhpScoperSpecTest extends TestCase
         ];
     }
 
-    private static function createWhitelist(array $fixtureSet, array $meta): Whitelist
+    /**
+     * @param string|array $fixtureSet
+     */
+    private static function createWhitelist(string $file, $fixtureSet, array $meta): Whitelist
     {
         $configKeys = [
             ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
             ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
             ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+            ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
             ConfigurationKeys::WHITELIST_KEYWORD,
         ];
+
+        if (is_string($fixtureSet)) {
+            $fixtureSet = [];
+        }
+
+        $mergedConfig = array_merge($meta, $fixtureSet);
 
         $config = [];
 
         foreach ($configKeys as $key) {
-            $config[$key] = $fixtureSet[$key] ?? $meta[$key];
+            if (!array_key_exists($key, $mergedConfig)) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Missing the key "%s" for the file "%s"',
+                        $key,
+                        $file,
+                    ),
+                );
+            }
+
+            $config[$key] = $mergedConfig[$key];
         }
 
         return (new ConfigurationWhitelistFactory())->createWhitelist($config);
