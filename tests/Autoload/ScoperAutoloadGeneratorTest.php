@@ -157,8 +157,6 @@ PHP
                 true,
                 true,
                 true,
-                [],
-                [],
                 'A\Foo',
                 'B\Bar'
             ),
@@ -180,8 +178,6 @@ PHP
                     true,
                     true,
                     true,
-                    [],
-                    [],
                     'A\Foo',
                     'B\Bar'
                 );
@@ -254,8 +250,6 @@ PHP
                     true,
                     true,
                     true,
-                    [],
-                    [],
                     'A\Foo',
                     'B\Bar',
                 );

@@ -54,14 +54,7 @@ class FileWhitelistScoperTest extends TestCase
         $contents = 'Original file content';
         $prefix = 'Humbug';
         $patchers = [];
-        $whitelist = Whitelist::create(
-            true,
-            true,
-            true,
-            [],
-            [],
-            'Foo',
-        );
+        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
             ->scope($notWhitelistedFilePath, $contents, $prefix, $patchers, $whitelist)

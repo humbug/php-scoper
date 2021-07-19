@@ -47,8 +47,6 @@ class InstalledPackagesScoperTest extends TestCase
             true,
             true,
             true,
-            [],
-            [],
             'Foo',
         );
 
@@ -87,8 +85,6 @@ class InstalledPackagesScoperTest extends TestCase
             true,
             true,
             true,
-            [],
-            [],
             'Foo',
         );
 

@@ -60,14 +60,7 @@ class YamlScoperTest extends TestCase
     {
         $prefix = 'Humbug';
         $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create(
-            true,
-            true,
-            true,
-            [],
-            [],
-            'Foo',
-        );
+        $whitelist = Whitelist::create();
 
         $contents = '';
 
@@ -122,14 +115,6 @@ class YamlScoperTest extends TestCase
 
     public static function provideYamlFiles(): iterable
     {
-        $emptyWhitelist = Whitelist::create(
-            true,
-            true,
-            true,
-            [],
-            [],
-        );
-
         yield 'empty' => [
             '',
             Whitelist::create(),
@@ -171,8 +156,6 @@ YAML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Symfony\Component\Console\*'
             ),
             <<<'YAML'
@@ -261,8 +244,6 @@ YAML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\Controller\*'
             ),
             <<<'YAML'
@@ -305,8 +286,6 @@ YAML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\Foo\*'
             ),
             <<<'YAML'
@@ -349,8 +328,6 @@ YAML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\Foo\*'
             ),
             <<<'YAML'
@@ -412,8 +389,6 @@ YAML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\Foo\*'
             ),
             <<<'YAML'
@@ -447,8 +422,6 @@ YAML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\Foo',
             ),
             <<<'YAML'
@@ -497,8 +470,6 @@ YAML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\*',
             ),
             <<<'YAML'

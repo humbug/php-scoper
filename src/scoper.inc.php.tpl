@@ -54,11 +54,6 @@ return [
         },
     ],
 
-    'exclude-namespaces' => [
-        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
-        // '~^$~',                        // The root namespace only
-    ],
-
     // PHP-Scoper's goal is to make sure that all code for a project lies in a distinct PHP namespace. However, you
     // may want to share a common API between the bundled code of your PHAR and the consumer code. For example if
     // you have a PHPUnit PHAR with isolated code, you still want the PHAR to be able to understand the

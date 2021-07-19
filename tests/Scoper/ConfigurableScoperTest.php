@@ -53,14 +53,7 @@ class ConfigurableScoperTest extends TestCase
         $contents = 'Original file content';
         $prefix = 'Humbug';
         $patchers = [];
-        $whitelist = Whitelist::create(
-            true,
-            true,
-            true,
-            [],
-            [],
-            'Foo',
-        );
+        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
@@ -87,14 +80,7 @@ class ConfigurableScoperTest extends TestCase
         $contents = 'Original file content';
         $prefix = 'Humbug';
         $patchers = [];
-        $whitelist = Whitelist::create(
-            true,
-            true,
-            true,
-            [],
-            [],
-            'Foo',
-        );
+        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), $contents, $prefix, $patchers, $whitelist)

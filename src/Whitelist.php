@@ -56,11 +56,6 @@ final class Whitelist implements Countable
     /**
      * @var list<string>
      */
-    private array $excludedNamespaceRegexes;
-
-    /**
-     * @var list<string>
-     */
     private array $excludedNamespaceNames;
 
     /**
@@ -83,12 +78,11 @@ final class Whitelist implements Countable
         bool $exposeGlobalConstants = false,
         bool $exposeGlobalClasses = false,
         bool $exposeGlobalFunctions = false,
-        array $excludedNamespaceRegexes = [],
-        array $excludedNamespaceNames = [],
         string ...$exposedElements
     ): self {
         $exposedSymbols = [];
         $exposedConstants = [];
+        $excludedNamespaceNames = [];
         $exposedSymbolsPatterns = [];
         $originalElements = [];
 
@@ -120,7 +114,6 @@ final class Whitelist implements Countable
             array_flip($exposedConstants),
             array_unique($exposedSymbolsPatterns),
             array_unique($excludedNamespaceNames),
-            array_unique($excludedNamespaceRegexes),
         );
     }
 
@@ -130,7 +123,6 @@ final class Whitelist implements Countable
      * @param array<string, int> $exposedConstants
      * @param list<string>       $exposedSymbolsPatterns
      * @param list<string>       $excludedNamespaceNames
-     * @param list<string>       $excludedNamespaceRegexes
      */
     public function __construct(
         bool $exposeGlobalConstants,
@@ -140,8 +132,7 @@ final class Whitelist implements Countable
         array $exposedSymbols,
         array $exposedConstants,
         array $exposedSymbolsPatterns,
-        array $excludedNamespaceNames,
-        array $excludedNamespaceRegexes
+        array $excludedNamespaceNames
     ) {
         $this->exposeGlobalConstants = $exposeGlobalConstants;
         $this->exposeGlobalClasses = $exposeGlobalClasses;
@@ -151,7 +142,6 @@ final class Whitelist implements Countable
         $this->exposedConstants = $exposedConstants;
         $this->excludedNamespaceNames = $excludedNamespaceNames;
         $this->exposedSymbolsPatterns = $exposedSymbolsPatterns;
-        $this->excludedNamespaceRegexes = $excludedNamespaceRegexes;
     }
 
     public function belongsToExcludedNamespace(string $name): bool
@@ -185,12 +175,6 @@ final class Whitelist implements Countable
             }
 
             return true;
-        }
-
-        foreach ($this->excludedNamespaceRegexes as $excludedNamespace) {
-            if (preg_match($excludedNamespace, $name)) {
-                return true;
-            }
         }
 
         return false;
