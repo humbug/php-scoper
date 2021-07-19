@@ -35,7 +35,6 @@ use function file_exists;
 use function gettype;
 use function in_array;
 use function is_array;
-use function is_bool;
 use function is_callable;
 use function is_dir;
 use function is_file;
