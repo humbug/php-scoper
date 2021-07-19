@@ -64,8 +64,6 @@ class XmlScoperTest extends TestCase
             true,
             true,
             true,
-            [],
-            [],
             'Foo',
         );
 
@@ -116,14 +114,6 @@ class XmlScoperTest extends TestCase
 
     public static function provideXmlFiles(): iterable
     {
-        $emptyWhitelist = Whitelist::create(
-            true,
-            true,
-            true,
-            [],
-            [],
-        );
-
         yield 'empty' => [
             '',
             Whitelist::create(),
@@ -322,8 +312,6 @@ XML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\Foo\*'
             ),
             <<<'XML'
@@ -482,8 +470,6 @@ XML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\Foo',
             ),
             <<<'XML'
@@ -570,8 +556,6 @@ XML
                 true,
                 true,
                 true,
-                [],
-                [],
                 'Acme\*',
             ),
             <<<'XML'
