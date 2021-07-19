@@ -35,7 +35,6 @@ use function array_key_exists;
 use function array_keys;
 use function array_map;
 use function array_merge;
-use function array_pop;
 use function array_slice;
 use function array_values;
 use function basename;
