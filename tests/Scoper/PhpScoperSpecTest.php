@@ -19,7 +19,6 @@ use Humbug\PhpScoper\ConfigurationKeys;
 use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
@@ -352,7 +351,7 @@ class PhpScoperSpecTest extends TestCase
             $config[$key] = $fixtureSet[$key] ?? $meta[$key];
         }
 
-        return (new ConfigurationWhitelistFactory(new RegexChecker()))->createWhitelist($config);
+        return (new ConfigurationWhitelistFactory())->createWhitelist($config);
     }
 
     /**

@@ -15,13 +15,6 @@ use function Safe\sprintf;
 
 final class ConfigurationWhitelistFactory
 {
-    private RegexChecker $regexChecker;
-
-    public function __construct(RegexChecker $regexChecker)
-    {
-        $this->regexChecker = $regexChecker;
-    }
-
     public function createWhitelist(array $config): Whitelist
     {
         $exposedElements = self::retrieveExposedElements($config);

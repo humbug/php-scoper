@@ -16,9 +16,7 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->factory = new ConfigurationWhitelistFactory(
-            new RegexChecker(),
-        );
+        $this->factory = new ConfigurationWhitelistFactory();
     }
 
     /**

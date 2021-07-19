@@ -23,7 +23,6 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
-use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
@@ -856,9 +855,7 @@ EOF;
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,
-                        new ConfigurationWhitelistFactory(
-                            new RegexChecker(),
-                        ),
+                        new ConfigurationWhitelistFactory(),
                     ),
                 ),
             ),

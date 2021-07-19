@@ -40,9 +40,7 @@ final class Container
         if (!isset($this->configFactory)) {
             $this->configFactory = new ConfigurationFactory(
                 $this->getFileSystem(),
-                new ConfigurationWhitelistFactory(
-                    new RegexChecker(),
-                ),
+                new ConfigurationWhitelistFactory(),
             );
         }
 
