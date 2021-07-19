@@ -19,9 +19,9 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'exclude-namespaces' => [],
-        'whitelist-global-constants' => false,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => false,
+        'expose-global-constants' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
@@ -45,7 +45,7 @@ PHP
     ,
 
     'Constant use statement for a constant belonging to the global namespace with global constant whitelisting' => [
-        'whitelist-global-constants' => true,
+        'expose-global-constants' => true,
         'payload' => <<<'PHP'
             <?php
             

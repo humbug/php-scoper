@@ -20,9 +20,9 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'exclude-namespaces' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => false,
+        'expose-global-constants' => true,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
@@ -55,8 +55,8 @@ PHP
     ,
 
     'Global function call in the global scope with global symbols whitelisted' => [
-        'whitelist-global-classes' => true,
-        'whitelist-global-functions' => true,
+        'expose-global-classes' => true,
+        'expose-global-functions' => true,
         'payload' => <<<'PHP'
 <?php
 

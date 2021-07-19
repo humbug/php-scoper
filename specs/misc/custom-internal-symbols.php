@@ -19,9 +19,9 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
         'exclude-namespaces' => [],
-        'whitelist-global-constants' => false,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => false,
+        'expose-global-constants' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
@@ -48,9 +48,9 @@ return [
     PHP,
 
     'Known non-internal symbols with global whitelisting (sanity check)' => [
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => true,
-        'whitelist-global-functions' => true,
+        'expose-global-constants' => true,
+        'expose-global-classes' => true,
+        'expose-global-functions' => true,
         'payload' => <<<'PHP'
             <?php
             

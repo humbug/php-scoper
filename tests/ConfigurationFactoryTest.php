@@ -79,6 +79,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             return [
                 'prefix' => 'MyPrefix',
                 'files-whitelist' => ['file1', 'file2'],
+                'exclude-namespaces' => ['PHPUnit\Runner'],
                 'expose-global-constants' => false,
                 'expose-global-classes' => false,
                 'expose-global-functions' => false,
