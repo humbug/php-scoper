@@ -32,7 +32,6 @@ use function array_diff;
 use function array_filter;
 use function array_keys;
 use function array_map;
-use function array_pop;
 use function array_slice;
 use function array_values;
 use function basename;

@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\ConfigurationWhitelistFactory;
-use Humbug\PhpScoper\RegexChecker;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 /**
  * @covers \Humbug\PhpScoper\ConfigurationWhitelistFactory

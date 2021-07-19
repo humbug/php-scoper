@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\RegexChecker;
 use PHPUnit\Framework\TestCase;
 
 /**

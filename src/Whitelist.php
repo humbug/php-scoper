@@ -28,7 +28,6 @@ use function implode;
 use function ltrim;
 use function preg_match as native_preg_match;
 use function Safe\array_flip;
-use function Safe\preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
