@@ -18,9 +18,10 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'exclude-namespaces' => [],
+        'whitelist-global-constants' => false,
+        'whitelist-global-classes' => false,
+        'whitelist-global-functions' => true,
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
@@ -72,7 +73,7 @@ PHP
     ],
 
     'Simple whitelisted function with global functions non whitelisted' => [
-        'expose-global-functions' => false,
+        'whitelist-global-functions' => false,
         'whitelist' => ['foo'],
         'registered-functions' => [
             ['foo', 'Humbug\foo'],
@@ -165,7 +166,7 @@ PHP
     ],
 
     'Function declaration in the global namespace with globally whitelisted constants' => [
-        'expose-global-constants' => true,
+        'whitelist-global-constants' => true,
         'registered-functions' => [
             ['foo', 'Humbug\foo'],
         ],
