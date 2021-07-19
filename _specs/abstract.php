@@ -277,11 +277,8 @@ PHP
     ],
 
     'Declaration of a namespaced class whitelisted with a pattern' => [
-        'whitelist' => ['Foo\A*'],
-        'exclude-namespaces' => ['/^Foo$/'],
+        'exclude-namespaces' => ['/^Foo\A.*$/'],
         'registered-classes' => [
-            ['Foo\A', 'Humbug\Foo\A'],
-            ['Foo\AA', 'Humbug\Foo\AA'],
             ['Foo\A\B', 'Humbug\Foo\A\B'],
         ],
         'payload' => <<<'PHP'
@@ -312,11 +309,9 @@ abstract class A
     {
     }
 }
-\class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 abstract class AA
 {
 }
-\class_alias('Humbug\\Foo\\AA', 'Foo\\AA', \false);
 abstract class B
 {
 }
@@ -362,7 +357,7 @@ PHP
     ],
 
     'Declaration of a class belonging to a whitelisted namespace' => [
-        'whitelist' => ['\*'],
+        'exclude-namespaces' => ['/^$/'],
         'payload' => <<<'PHP'
 <?php
 

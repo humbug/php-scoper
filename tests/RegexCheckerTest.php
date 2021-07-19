@@ -49,6 +49,11 @@ final class RegexCheckerTest extends TestCase
             true,
         ];
 
+        yield 'empty regex with flags' => [
+            '//ui',
+            true,
+        ];
+
         yield 'two letters non-regex' => [
             '/~',
             false,
@@ -66,6 +71,16 @@ final class RegexCheckerTest extends TestCase
 
         yield 'minimal fake regex' => [
             '////',
+            false,
+        ];
+
+        yield 'regular regex with flags' => [
+            '/foo/iu',
+            true,
+        ];
+
+        yield 'regular regex with invalid flags' => [
+            '/foo/NOPE',
             false,
         ];
     }

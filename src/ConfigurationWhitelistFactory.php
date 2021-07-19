@@ -100,21 +100,25 @@ final class ConfigurationWhitelistFactory
                 continue;
             }
 
-            $errorMessage = $this->regexChecker->validateRegex($regexOrNamespaceName);
+            $excludeNamespaceRegex = $regexOrNamespaceName;
+
+            $errorMessage = $this->regexChecker->validateRegex($excludeNamespaceRegex);
 
             if (null !== $errorMessage) {
                 throw new InvalidArgumentException(
                     sprintf(
                         'Expected "%s" to be an array of valid regexes. The element "%s" with the index "%s" is not: %s.',
                         $key,
-                        $regexOrNamespaceName,
+                        $excludeNamespaceRegex,
                         $index,
                         $errorMessage,
                     ),
                 );
             }
 
-            $regexes[$regexOrNamespaceName] = null;
+            // Ensure namespace comparisons are always case-insensitive
+            $excludeNamespaceRegex .= 'i';
+            $regexes[$excludeNamespaceRegex] = null;
         }
 
         return [

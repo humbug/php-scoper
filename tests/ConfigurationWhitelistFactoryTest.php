@@ -114,7 +114,7 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
                 false,
                 false,
                 false,
-                ['~^PHPUnit\\Runner(\\.*)?$~'],
+                ['~^PHPUnit\\Runner(\\.*)?$~i'],
                 [],
             ),
         ];
@@ -172,7 +172,7 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
                 true,
                 true,
                 true,
-                ['~^PHPUnit\\Runner(\\.*)?$~',],
+                ['~^PHPUnit\\Runner(\\.*)?$~i',],
                 ['PHPUnit\Internal',],
                 'PHPUnit\Runner\*',
                 'Acme\Foo',
