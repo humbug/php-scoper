@@ -301,8 +301,7 @@ e2e_024: $(PHPSCOPER) fixtures/set024/vendor
 		--output-dir=../../build/set024 \
 		--force \
 		--no-interaction \
-		--stop-on-failure \
-		--no-config
+		--stop-on-failure
 	composer --working-dir=build/set024 dump-autoload
 
 	php build/set024/main.php > build/set024/output
@@ -343,7 +342,6 @@ e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
 	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set027-laravel \
 		--output-dir=../../build/set027-laravel \
-		--no-config \
 		--force \
 		--no-interaction \
 		--stop-on-failure
