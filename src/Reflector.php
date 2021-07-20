@@ -78,6 +78,8 @@ final class Reflector
         'T_MATCH',
         'T_NULLSAFE_OBJECT_OPERATOR',
         'T_ATTRIBUTE',
+        // Added in PHP 8.1
+        'T_ENUM',
     ];
 
     /**
