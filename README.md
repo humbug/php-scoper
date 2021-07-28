@@ -38,7 +38,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Finders and paths](#finders-and-paths)
     - [Patchers](#patchers)
     - [Whitelisted files](#whitelisted-files)
-    - [Excluded Symbols](#exclude-symbols)
+    - [Excluded Symbols](#excluded-symbols)
     - [Whitelist][whitelist]
         - [Constants & functions from the global namespace](#constants--classes--functions-from-the-global-namespace)
         - [Symbols](#symbols)
