@@ -76,31 +76,31 @@ return [
 
     // If `true` then the user defined constants belonging to the global namespace will not be prefixed.
     //
-    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    // For more see https://github.com/humbug/php-scoper#constants--classes--functions-from-the-global-namespace
     'expose-global-constants' => true,
 
     // If `true` then the user defined classes belonging to the global namespace will not be prefixed.
     //
-    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    // For more see https://github.com/humbug/php-scoper#constants--classes--functions-from-the-global-namespace
     'expose-global-classes' => true,
 
     // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
     //
-    // For more see https://github.com/humbug/php-scoper#constants--constants--functions-from-the-global-namespace
+    // For more see https://github.com/humbug/php-scoper#constants--classes--functions-from-the-global-namespace
     'expose-global-functions' => true,
 
     // List of classes to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#exclude-symbols
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'exclude-classes' => [],
 
     // List of functions to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#exclude-symbols
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'exclude-functions' => [],
 
     // List of constants to consider as internal i.e. to leave untouched.
     //
-    // For more see https://github.com/humbug/php-scoper#exclude-symbols
+    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'exclude-constants' => [],
 ];
