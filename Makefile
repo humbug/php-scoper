@@ -25,12 +25,6 @@ clean:	 ## Clean all created artifacts
 clean:
 	git clean --exclude=.idea/ -ffdx
 
-update-root-version: ## Check the lastest GitHub release and update COMPOSER_ROOT_VERSION accordingly
-update-root-version:
-	rm .composer-root-version || true
-	$(MAKE) .composer-root-version
-
-
 .PHONY: cs
 CODE_SNIFFER=vendor-bin/code-sniffer/vendor/bin/phpcs
 CODE_SNIFFER_FIX=vendor-bin/code-sniffer/vendor/bin/phpcbf

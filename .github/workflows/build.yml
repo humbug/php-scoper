@@ -113,20 +113,6 @@ jobs:
                     tools: 'composer:v2'
                     coverage: 'none'
 
-            -   name: Get composer cache directory
-                id: composercache
-                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            -   name: Cache composer dependencies
-                uses: actions/cache@v2
-                with:
-                    path: ${{ steps.composercache.outputs.dir }}
-                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
-                    restore-keys: |
-                        composer-${{ runner.os }}-${{ matrix.php }}-
-                        composer-${{ runner.os }}-
-                        composer-
-
             -   uses: "ramsey/composer-install@v1"
 
             -   name: Build PHAR
