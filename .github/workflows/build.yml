@@ -69,10 +69,6 @@ jobs:
                     - 'e2e_032'
                 php: [ '7.4', '8.0' ]
                 tools: [ 'composer:v2' ]
-                include:
-                    -   php: '7.4'
-                        e2e: 'check-composer-root-version'
-                        tools: 'composer:v2'
 
         steps:
             -   uses: actions/checkout@v2
