@@ -61,10 +61,7 @@
 
     "config": {
         "bin-dir": "bin",
-        "sort-packages": true,
-        "platform": {
-            "php": "7.4.0"
-        }
+        "sort-packages": true
     },
     "extra": {
         "bamarni-bin": {
