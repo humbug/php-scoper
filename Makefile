@@ -47,7 +47,7 @@ phpstan: $(PHPSTAN)
 .PHONY: build
 build:	 ## Build the PHAR
 BOX=bin/box
-build: bin/php-scoper.phar --ansi
+build: bin/php-scoper.phar
 
 
 #
