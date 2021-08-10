@@ -40,7 +40,6 @@
     "replace": {
         "humbug/php-scoper": "self.version"
     },
-
     "bin": ["bin/php-scoper"],
     "autoload": {
         "files": [
@@ -72,7 +71,7 @@
             "bin-links": false
         },
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "0.14-dev"
         }
     }
 }
