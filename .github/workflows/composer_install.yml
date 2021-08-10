@@ -31,5 +31,4 @@ jobs:
                     php-version: ${{ matrix.package }}
 
             -
-                name: Install dependencies
-                run: composer install --ansi
+                uses: "ramsey/composer-install@v1"
