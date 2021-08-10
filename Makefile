@@ -82,7 +82,7 @@ PHPSCOPER=bin/php-scoper.phar
 .PHONY: e2e_004
 e2e_004: ## Run end-to-end tests for the fixture set 004 — Source code case
 e2e_004: $(PHPSCOPER)
-	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set004
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set004 --ansi
 
 	php build/set004/bin/greet.phar > build/set004/output
 	diff fixtures/set004/expected-output build/set004/output
@@ -90,7 +90,7 @@ e2e_004: $(PHPSCOPER)
 .PHONY: e2e_005
 e2e_005: ## Run end-to-end tests for the fixture set 005 — Third-party code case
 e2e_005: $(PHPSCOPER) fixtures/set005/vendor
-	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set005
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set005 --ansi
 
 	php build/set005/bin/greet.phar > build/set005/output
 	diff fixtures/set005/expected-output build/set005/output
@@ -98,7 +98,7 @@ e2e_005: $(PHPSCOPER) fixtures/set005/vendor
 .PHONY: e2e_011
 e2e_011: ## Run end-to-end tests for the fixture set 011 — Whitelist case
 e2e_011: $(PHPSCOPER) fixtures/set011/vendor
-	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set011
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set011 --ansi
 	cp -R fixtures/set011/tests/ build/set011/tests/
 
 	php build/set011/bin/greet.phar > build/set011/output
@@ -116,7 +116,7 @@ e2e_013: $(PHPSCOPER)
 .PHONY: e2e_014
 e2e_014: ## Run end-to-end tests for the fixture set 014 — Source code case with PSR-0
 e2e_014: $(PHPSCOPER)
-	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set014
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set014 --ansi
 
 	php build/set014/bin/greet.phar > build/set014/output
 	diff fixtures/set014/expected-output build/set014/output
@@ -124,7 +124,7 @@ e2e_014: $(PHPSCOPER)
 .PHONY: e2e_015
 e2e_015: ## Run end-to-end tests for the fixture set 015 — Third-party code case with PSR-0
 e2e_015: $(PHPSCOPER) fixtures/set015/vendor
-	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set015
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set015 --ansi
 
 	php build/set015/bin/greet.phar > build/set015/output
 	diff fixtures/set015/expected-output build/set015/output
@@ -262,7 +262,7 @@ e2e_0211: $(PHPSCOPER) fixtures/set021-composer-2/vendor
 .PHONY: e2e_022
 e2e_022: ## Run end-to-end tests for the fixture set 022 — Whitelist the project code with namespace whitelisting
 e2e_022: $(PHPSCOPER) fixtures/set022/vendor
-	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set022
+	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set022 --ansi
 	cp -R fixtures/set022/tests/ build/set022/tests/
 
 	php build/set022/bin/greet.phar > build/set022/output
@@ -589,7 +589,7 @@ fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 	@echo fixtures/set029-easy-rdf/composer.lock is not up to date.
 
 bin/php-scoper.phar: bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
-	$(BOX) compile
+	$(BOX) compile --ansi
 	touch -c $@
 
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
