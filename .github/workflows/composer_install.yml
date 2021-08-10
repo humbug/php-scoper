@@ -20,3 +20,18 @@ jobs:
             -
                 name: Install dependencies
                 run: composer install
+
+    composer_install_with_flags:
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v2
+
+            -
+                name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 7.4
+
+            -
+                name: Install dependencies
+                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
