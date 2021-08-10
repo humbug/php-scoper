@@ -19,7 +19,7 @@ jobs:
 
             -
                 name: Install dependencies
-                run: composer install
+                run: composer install --ansi
 
     composer_install_with_flags:
         runs-on: ubuntu-latest
@@ -34,4 +34,4 @@ jobs:
 
             -
                 name: Install dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist --ansi
