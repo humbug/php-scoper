@@ -5,6 +5,11 @@ on:
         branches: [ master ]
     pull_request:
 
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    # see https://getcomposer.org/doc/articles/troubleshooting.md#dependencies-on-the-root-package
+    COMPOSER_ROOT_VERSION: 'dev-main'
+
 jobs:
     composer_install:
         runs-on: ubuntu-latest
