@@ -30,5 +30,4 @@ jobs:
                 with:
                     php-version: ${{ matrix.package }}
 
-            -
-                uses: "ramsey/composer-install@v1"
+            -   uses: "ramsey/composer-install@v1"
