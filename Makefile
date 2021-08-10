@@ -228,7 +228,7 @@ e2e_0210: $(PHPSCOPER) fixtures/set021-composer-1/vendor
 		--no-interaction \
 		--stop-on-failure \
 		--no-config
-	composer --working-dir=build/set021-composer-1 dump-autoload
+	composer --working-dir=build/set021-composer-1 dump-autoload --ansi
 
 	php fixtures/set021-composer-1/vendor/composer/composer/bin/composer licenses \
 		--no-plugins \
@@ -334,7 +334,7 @@ e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
 		--force \
 		--no-interaction \
 		--stop-on-failure
-	composer --working-dir=build/set027-laravel dump-autoload --no-dev
+	composer --working-dir=build/set027-laravel dump-autoload --no-dev --ansi
 
 	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
@@ -435,31 +435,31 @@ tb: bin/php-scoper.phar  vendor
 #---------------------------------------------------------------------------
 
 vendor: composer.lock
-	/bin/bash -c 'composer install'
+	/bin/bash -c 'composer install --ansi'
 	touch -c $@
 
 vendor/bamarni: composer.lock
-	/bin/bash -c 'composer install'
+	/bin/bash -c 'composer install --ansi'
 	touch -c $@
 
 bin/phpunit: composer.lock
-	/bin/bash -c 'composer install'
+	/bin/bash -c 'composer install --ansi'
 	touch -c $@
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
-	composer bin covers-validator install
+	composer bin covers-validator install --ansi
 	touch -c $@
 
 vendor-bin/code-sniffer/vendor: vendor-bin/code-sniffer/composer.lock vendor/bamarni
-	composer bin code-sniffer install
+	composer bin code-sniffer install --ansi
 	touch -c $@
 
 vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock vendor/bamarni
-	composer bin phpstan install
+	composer bin phpstan install --ansi
 	touch -c $@
 
 fixtures/set005/vendor: fixtures/set005/composer.lock
-	composer --working-dir=fixtures/set005 install
+	composer --working-dir=fixtures/set005 install --ansi
 	touch -c $@
 
 fixtures/set011/vendor:
@@ -467,35 +467,35 @@ fixtures/set011/vendor:
 	touch -c $@
 
 fixtures/set015/vendor: fixtures/set015/composer.lock
-	composer --working-dir=fixtures/set015 install
+	composer --working-dir=fixtures/set015 install --ansi
 	touch -c $@
 
 fixtures/set016-symfony-finder/vendor: fixtures/set016-symfony-finder/composer.lock
-	composer --working-dir=fixtures/set016-symfony-finder install
+	composer --working-dir=fixtures/set016-symfony-finder install --ansi
 	touch -c $@
 
 fixtures/set017-symfony-di/vendor: fixtures/set017-symfony-di/composer.lock
-	composer --working-dir=fixtures/set017-symfony-di install
+	composer --working-dir=fixtures/set017-symfony-di install --ansi
 	touch -c $@
 
 fixtures/set018-nikic-parser/vendor: fixtures/set018-nikic-parser/composer.lock
-	composer --working-dir=fixtures/set018-nikic-parser install
+	composer --working-dir=fixtures/set018-nikic-parser install --ansi
 	touch -c $@
 
 fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer.lock
-	composer --working-dir=fixtures/set019-symfony-console install
+	composer --working-dir=fixtures/set019-symfony-console install --ansi
 	touch -c $@
 
 fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
-	composer --working-dir=fixtures/set020-infection install
+	composer --working-dir=fixtures/set020-infection install --ansi
 	touch -c $@
 
 fixtures/set021-composer-1/vendor: fixtures/set021-composer-1/composer.lock
-	composer --working-dir=fixtures/set021-composer-1 install
+	composer --working-dir=fixtures/set021-composer-1 install --ansi
 	touch -c $@
 
 fixtures/set021-composer-2/vendor: fixtures/set021-composer-2/composer.lock
-	composer --working-dir=fixtures/set021-composer-2 install
+	composer --working-dir=fixtures/set021-composer-2 install --ansi
 	touch -c $@
 
 fixtures/set022/vendor: fixtures/set022/composer.json
@@ -503,15 +503,15 @@ fixtures/set022/vendor: fixtures/set022/composer.json
 	touch -c $@
 
 fixtures/set023/vendor: fixtures/set023/composer.lock
-	composer --working-dir=fixtures/set023 install
+	composer --working-dir=fixtures/set023 install --ansi
 	touch -c $@
 
 fixtures/set024/vendor: fixtures/set024/composer.lock
-	composer --working-dir=fixtures/set024 install
+	composer --working-dir=fixtures/set024 install --ansi
 	touch -c $@
 
 fixtures/set025/vendor: fixtures/set025/composer.lock
-	composer --working-dir=fixtures/set025 install
+	composer --working-dir=fixtures/set025 install --ansi
 	touch -c $@
 
 fixtures/set026/vendor:
