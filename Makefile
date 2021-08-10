@@ -434,16 +434,16 @@ tb: bin/php-scoper.phar  vendor
 # Rules from files
 #---------------------------------------------------------------------------
 
-vendor: composer.lock .composer-root-version
-	/bin/bash -c 'source .composer-root-version && composer install'
+vendor: composer.lock
+	/bin/bash -c 'composer install'
 	touch -c $@
 
-vendor/bamarni: composer.lock .composer-root-version
-	/bin/bash -c 'source .composer-root-version && composer install'
+vendor/bamarni: composer.lock
+	/bin/bash -c 'composer install'
 	touch -c $@
 
-bin/phpunit: composer.lock .composer-root-version
-	/bin/bash -c 'source .composer-root-version && composer install'
+bin/phpunit: composer.lock
+	/bin/bash -c 'composer install'
 	touch -c $@
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
@@ -612,8 +612,4 @@ $(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
 
 $(PHPSTAN): vendor-bin/phpstan/vendor
 	composer bin phpstan install
-	touch -c $@
-
-.composer-root-version:
-	php bin/dump-composer-root-version.php
 	touch -c $@
