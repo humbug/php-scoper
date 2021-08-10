@@ -1,6 +1,5 @@
 /bin/
 !/bin/php-scoper
-!/bin/root-version.php
 /.box_dump/
 /box.json
 /build/
