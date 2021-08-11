@@ -24,7 +24,7 @@
         "composer/package-versions-deprecated": "^1.8",
         "fidry/console": "^0.2.0",
         "jetbrains/phpstorm-stubs": "^v2021.1",
-        "nikic/php-parser": "^v4.10",
+        "nikic/php-parser": "^4.12",
         "symfony/console": "^5.2",
         "symfony/filesystem": "^5.2",
         "symfony/finder": "^5.2",
