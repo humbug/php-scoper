@@ -28,6 +28,9 @@ jobs:
                 with:
                     php-version: "${{ matrix.php }}"
 
+            # set branch alias to allow install humbug/box that depends on 0.14
+            -   run: composer config extra.branch-alias.dev-master 0.14-dev
+
             -   name: Install dependencies
                 # see https://github.com/ramsey/composer-install
                 uses: "ramsey/composer-install@v1"

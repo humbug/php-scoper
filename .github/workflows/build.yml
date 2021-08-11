@@ -31,6 +31,9 @@ jobs:
                     tools: ${{ matrix.tools }}"
                     coverage: none
 
+            # set branch alias to allow install humbug/box that depends on 0.14
+            -   run: composer config extra.branch-alias.dev-master 0.14-dev
+
             -   name: Install dependencies
                 # see https://github.com/ramsey/composer-install
                 uses: "ramsey/composer-install@v1"
@@ -89,6 +92,9 @@ jobs:
                     tools: ${{ matrix.tools }}
                     coverage: pcov
 
+            # set branch alias to allow install humbug/box that depends on 0.14
+            -   run: composer config extra.branch-alias.dev-master 0.14-dev
+
             -   name: Install dependencies
                 # see https://github.com/ramsey/composer-install
                 uses: "ramsey/composer-install@v1"
@@ -116,6 +122,9 @@ jobs:
                     ini-values: 'phar.readonly=0'
                     tools: 'composer:v2'
                     coverage: 'none'
+
+            # set branch alias to allow install humbug/box that depends on 0.14
+            -   run: composer config extra.branch-alias.dev-master 0.14-dev
 
             -   name: Install dependencies
                 # see https://github.com/ramsey/composer-install

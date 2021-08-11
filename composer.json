@@ -72,7 +72,7 @@
             "bin-links": false
         },
         "branch-alias": {
-            "dev-master": "1.0-dev"
+            "dev-master": "0.14-dev"
         }
     }
 }
