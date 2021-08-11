@@ -7,6 +7,11 @@ on:
     release:
         types: [ created ]
 
+env:
+    # see https://github.com/composer/composer/issues/9368#issuecomment-718112361
+    # see https://getcomposer.org/doc/articles/troubleshooting.md#dependencies-on-the-root-package
+    COMPOSER_ROOT_VERSION: 'dev-master'
+
 jobs:
     unit-tests:
         runs-on: ubuntu-latest
@@ -25,27 +30,10 @@ jobs:
                     php-version: ${{ matrix.php }}
                     tools: ${{ matrix.tools }}"
                     coverage: none
-            -   name: Get composer cache directory
-                id: composercache
-                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            -   name: Cache composer dependencies
-                uses: actions/cache@v2
-                with:
-                    path: ${{ steps.composercache.outputs.dir }}
-                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
-                    restore-keys: |
-                        composer-${{ runner.os }}-${{ matrix.php }}-
-                        composer-${{ runner.os }}-
-                        composer-
-
-            -   name: Set composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
 
             -   name: Install dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+                # see https://github.com/ramsey/composer-install
+                uses: "ramsey/composer-install@v1"
 
             -   name: Run tests
                 run: make tu
@@ -101,27 +89,9 @@ jobs:
                     tools: ${{ matrix.tools }}
                     coverage: pcov
 
-            -   name: Get composer cache directory
-                id: composercache
-                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            -   name: Cache composer dependencies
-                uses: actions/cache@v2
-                with:
-                    path: ${{ steps.composercache.outputs.dir }}
-                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
-                    restore-keys: |
-                        composer-${{ runner.os }}-${{ matrix.php }}-
-                        composer-${{ runner.os }}-
-                        composer-
-
-            -   name: Set composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
             -   name: Install dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+                # see https://github.com/ramsey/composer-install
+                uses: "ramsey/composer-install@v1"
 
             -   name: Install tree
                 if: matrix.e2e == 'e2e_032'
@@ -147,27 +117,9 @@ jobs:
                     tools: 'composer:v2'
                     coverage: 'none'
 
-            -   name: Get composer cache directory
-                id: composercache
-                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            -   name: Cache composer dependencies
-                uses: actions/cache@v2
-                with:
-                    path: ${{ steps.composercache.outputs.dir }}
-                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
-                    restore-keys: |
-                        composer-${{ runner.os }}-${{ matrix.php }}-
-                        composer-${{ runner.os }}-
-                        composer-
-
-            -   name: Set composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
             -   name: Install dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+                # see https://github.com/ramsey/composer-install
+                uses: "ramsey/composer-install@v1"
 
             -   name: Build PHAR
                 run: make build
