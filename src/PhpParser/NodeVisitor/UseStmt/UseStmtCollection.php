@@ -28,6 +28,8 @@ use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use Traversable;
+
 use function array_key_exists;
 use function count;
 use function implode;
@@ -107,7 +109,7 @@ final class UseStmtCollection implements IteratorAggregate
         );
     }
 
-    public function getIterator(): iterable
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->nodes);
     }
