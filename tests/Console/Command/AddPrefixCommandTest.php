@@ -111,6 +111,7 @@ Options:
 
 Available commands:
   add-prefix  Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.
+  completion  Dump the shell completion script
   help        Display help for a command
   init        Generates a configuration file.
   list        List commands
