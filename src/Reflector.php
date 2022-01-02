@@ -63,6 +63,9 @@ final class Reflector
 
     private const MISSING_FUNCTIONS = [];
 
+    /**
+     * Basically mirrors https://github.com/nikic/PHP-Parser/blob/9aebf377fcdf205b2156cb78c0bd6e7b2003f106/lib/PhpParser/Lexer.php#L430
+     */
     private const MISSING_CONSTANTS = [
         'STDIN',
         'STDOUT',
@@ -80,6 +83,9 @@ final class Reflector
         'T_ATTRIBUTE',
         // Added in PHP 8.1
         'T_ENUM',
+        'T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG',
+        'T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG',
+        'T_READONLY',
     ];
 
     /**
