@@ -49,7 +49,7 @@ final class RegexChecker
 
         $parts = explode($firstCharacter, $value);
 
-        if (count($parts) !== 3) {
+        if (false === $parts || count($parts) !== 3) {
             return false;
         }
 
