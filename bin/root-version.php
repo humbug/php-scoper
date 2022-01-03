@@ -14,51 +14,94 @@ declare(strict_types=1);
 
 function get_last_tag_name(): string
 {
-    $gitHubToken = getenv('GITHUB_TOKEN');
+    $responseContent = request_tags();
+
+    echo '–––'.PHP_EOL;
+    echo $responseContent;
+    echo PHP_EOL;
+
+    $lastRelease = parse_tag($responseContent);
+
+    echo 'Latest tag found: '.$lastRelease;
+    echo PHP_EOL;
+
+    return $lastRelease;
+}
+
+function request_tags(): string
+{
+    $gitHubToken = getenv('PHP_SCOPER_GITHUB_TOKEN');
 
     $headerOption = false === $gitHubToken || '' === $gitHubToken
         ? ''
         : "-H \"Authorization: token $gitHubToken\""
     ;
 
-    $lastReleaseEndpointContents = shell_exec(
-        <<<BASH
-curl -s $headerOption https://api.github.com/repos/humbug/php-scoper/releases/latest
-BASH
-    );
+    $command = <<<BASH
+    curl -s $headerOption https://api.github.com/repos/humbug/php-scoper/tags?per_page=1
+    BASH;
 
-    if (null === $lastReleaseEndpointContents) {
+    echo 'cURL command:'.PHP_EOL;
+    echo '$ '.$command;
+    echo PHP_EOL;
+
+    $responseContent = shell_exec($command);
+
+    if (null === $responseContent) {
         throw new RuntimeException('Could not retrieve the last release endpoint.');
     }
 
-    $contents = json_decode($lastReleaseEndpointContents, false, 512, JSON_PRETTY_PRINT);
+    return $responseContent;
+}
 
-    if (JSON_ERROR_NONE !== json_last_error()) {
-        // TODO: switch to safe json parsing in the future
-        throw new RuntimeException(
-            sprintf(
-                'Could not parse the request contents: "%d: %s"',
-                json_last_error(),
-                json_last_error_msg()
-            )
-        );
-    }
+function parse_tag(string $responseContent): string
+{
+    $decodedContent = json_decode(
+        $responseContent,
+        false,
+        512,
+        JSON_PRETTY_PRINT & JSON_THROW_ON_ERROR,
+    );
 
-    if (false === isset($contents->tag_name) || false === is_string($contents->tag_name)) {
+    if (!is_array($decodedContent)) {
         throw new RuntimeException(
             sprintf(
                 'No tag name could be found in: %s',
-                $lastReleaseEndpointContents
+                $responseContent
             ),
-            100
+            100,
         );
     }
 
-    if ('' !== $lastRelease = trim($contents->tag_name)) {
-        return $lastRelease;
+    $lastReleaseInfo = current($decodedContent);
+
+    if (false === $lastReleaseInfo) {
+        throw new RuntimeException(
+            sprintf(
+                'No tag name could be found in: %s',
+                $responseContent
+            ),
+            100,
+        );
     }
 
-    throw new RuntimeException('Invalid tag name found.');
+    if (!($lastReleaseInfo->name) || !is_string($lastReleaseInfo->name)) {
+        throw new RuntimeException(
+            sprintf(
+                'No tag name could be found in: %s',
+                $responseContent
+            ),
+            100,
+        );
+    }
+
+    $lastRelease = trim($lastReleaseInfo->name);
+
+    if ('' === $lastRelease) {
+        throw new RuntimeException('Invalid tag name found.');
+    }
+
+    return $lastRelease;
 }
 
 function get_composer_root_version(string $lastTagName): string
