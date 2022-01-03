@@ -44,7 +44,7 @@ if ($composerRootVersion !== $currentRootVersion) {
     file_put_contents(
         'php://stderr',
         sprintf(
-            'Expected the COMPOSER_ROOT_VERSION to be "%s" but got "%s" instead.'.PHP_EOL,
+            'Expected the COMPOSER_ROOT_VERSION value to be "%s" but got "%s" instead.'.PHP_EOL,
             $composerRootVersion,
             $currentRootVersion
         )

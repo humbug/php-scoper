@@ -17,9 +17,12 @@ require_once __DIR__.'/root-version.php';
 try {
     $composerRootVersion = get_composer_root_version(get_last_tag_name());
 } catch (RuntimeException $exception) {
-    if (false !== getenv('TRAVIS') && false === getenv('GITHUB_TOKEN')) {
-        // Ignore this PR to avoid too many builds to fail untimely or locally due to API rate limits because the last
-        // release version could not be retrieved.
+    if (false !== getenv('CI') && false === getenv('PHP_SCOPER_GITHUB_TOKEN')) {
+        // Ignore this PR to avoid too many builds to fail untimely or locally
+        // due to API rate limits because the last release version could not be
+        // retrieved.
+        echo 'Skipped to avoid saturating limit';
+
         return;
     }
 
@@ -34,14 +37,13 @@ file_put_contents(
     __DIR__.'/../.composer-root-version',
     sprintf(
         <<<'BASH'
-#!/usr/bin/env bash
-
-export COMPOSER_ROOT_VERSION='%s'
-
-BASH
-        ,
-        $composerRootVersion
-    )
+        #!/usr/bin/env bash
+        
+        export COMPOSER_ROOT_VERSION='%s'
+        
+        BASH,
+        $composerRootVersion,
+    ),
 );
 
 file_put_contents(
@@ -52,6 +54,6 @@ file_put_contents(
             'COMPOSER_ROOT_VERSION: \'%s\'',
             $composerRootVersion
         ),
-        file_get_contents($scrutinizerPath)
-    )
+        file_get_contents($scrutinizerPath),
+    ),
 );

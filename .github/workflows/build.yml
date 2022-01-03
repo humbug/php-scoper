@@ -8,6 +8,25 @@ on:
         types: [ created ]
 
 jobs:
+    root-version:
+        runs-on: ubuntu-latest
+        name: Check COMPOSER_ROOT_VERSION value
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.1'
+                    tools: composer
+                    coverage: none
+
+            -   name: Check COMPOSER_ROOT_VERSION
+                run: make check-composer-root-version
+
     unit-tests:
         runs-on: ubuntu-latest
         name: Unit tests (PHP ${{ matrix.php }})
@@ -31,6 +50,7 @@ jobs:
                     tools: composer
                     coverage: none
 
+            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
             -   name: Configure composer root version
                 run: |
                     source .composer-root-version
@@ -79,9 +99,6 @@ jobs:
                     - '7.4'
                     - '8.0'
                     - '8.1'
-                include:
-                    -   php: '7.4'
-                        e2e: 'check-composer-root-version'
 
         steps:
             -   name: Checkout
@@ -131,6 +148,7 @@ jobs:
                     tools: composer
                     coverage: none
 
+            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
             -   name: Configure composer root version
                 run: |
                     source .composer-root-version
@@ -167,7 +185,7 @@ jobs:
             -   name: Upload php-scoper.phar
                 uses: actions/upload-release-asset@v1
                 env:
-                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    GITHUB_TOKEN: ${{ secrets.PHP_SCOPER_GITHUB_TOKEN }}
                 with:
                     upload_url: ${{ github.event.release.upload_url }}
                     asset_path: php-scoper.phar
