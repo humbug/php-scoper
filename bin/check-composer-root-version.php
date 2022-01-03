@@ -15,7 +15,7 @@ declare(strict_types=1);
 require_once __DIR__.'/root-version.php';
 
 try {
-    $composerRootVersion = get_composer_root_version(get_last_tag_name());
+    $expectedComposerRootVersion = get_composer_root_version(get_last_tag_name());
 } catch (RuntimeException $exception) {
     if (false !== getenv('TRAVIS') && false === getenv('GITHUB_TOKEN')) {
         // Ignore this PR to avoid too many builds to fail untimely or locally due to API rate limits because the last
@@ -40,12 +40,12 @@ preg_match(
 
 $currentRootVersion = $matches['version'];
 
-if ($composerRootVersion !== $currentRootVersion) {
+if ($expectedComposerRootVersion !== $currentRootVersion) {
     file_put_contents(
         'php://stderr',
         sprintf(
             'Expected the COMPOSER_ROOT_VERSION value to be "%s" but got "%s" instead.'.PHP_EOL,
-            $composerRootVersion,
+            $expectedComposerRootVersion,
             $currentRootVersion
         )
     );
