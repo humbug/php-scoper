@@ -10,49 +10,43 @@ on:
 jobs:
     unit-tests:
         runs-on: ubuntu-latest
-        name: "Unit-Tests: ${{ matrix.php }} - ${{ matrix.tools }}"
+        name: Unit tests (PHP ${{ matrix.php }})
         strategy:
             fail-fast: false
             matrix:
-                php: [ "7.4", "8.0" ]
-                tools: [ "composer:v1", "composer:v2" ]
+                php:
+                    - '7.4'
+                    - '8.0'
+                    - '8.1'
         steps:
-            -   uses: actions/checkout@v2
+            -   name: Checkout
+                uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: ${{ matrix.php }}
-                    tools: ${{ matrix.tools }}"
+                    tools: composer
                     coverage: none
-            -   name: Get composer cache directory
-                id: composercache
-                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
-            -   name: Cache composer dependencies
-                uses: actions/cache@v2
-                with:
-                    path: ${{ steps.composercache.outputs.dir }}
-                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
-                    restore-keys: |
-                        composer-${{ runner.os }}-${{ matrix.php }}-
-                        composer-${{ runner.os }}-
-                        composer-
-
-            -   name: Set composer root version
+            -   name: Configure composer root version
                 run: |
                     source .composer-root-version
                     echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
 
-            -   name: Install dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    composer-options: '--prefer-dist'
 
             -   name: Run tests
                 run: make tu
 
     e2e-tests:
         runs-on: ubuntu-latest
-        name: "e2e-Tests: ${{ matrix.e2e }} - ${{ matrix.php }} - ${{ matrix.tools }}"
+        name: 'e2e Test ${{ matrix.e2e }} (PHP: ${{ matrix.php }})'
         strategy:
             fail-fast: false
             matrix:
@@ -81,15 +75,17 @@ jobs:
                     - 'e2e_030'
                     - 'e2e_031'
                     - 'e2e_032'
-                php: [ '7.4', '8.0' ]
-                tools: [ 'composer:v2' ]
+                php:
+                    - '7.4'
+                    - '8.0'
+                    - '8.1'
                 include:
                     -   php: '7.4'
                         e2e: 'check-composer-root-version'
-                        tools: 'composer:v2'
 
         steps:
-            -   uses: actions/checkout@v2
+            -   name: Checkout
+                uses: actions/checkout@v2
                 with:
                     fetch-depth: 0
 
@@ -97,31 +93,19 @@ jobs:
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: ${{ matrix.php }}
-                    ini-values: "phar.readonly=0"
-                    tools: ${{ matrix.tools }}
+                    ini-values: phar.readonly=0
+                    tools: composer
                     coverage: pcov
 
-            -   name: Get composer cache directory
-                id: composercache
-                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            -   name: Cache composer dependencies
-                uses: actions/cache@v2
-                with:
-                    path: ${{ steps.composercache.outputs.dir }}
-                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
-                    restore-keys: |
-                        composer-${{ runner.os }}-${{ matrix.php }}-
-                        composer-${{ runner.os }}-
-                        composer-
-
-            -   name: Set composer root version
+            -   name: Configure composer root version
                 run: |
                     source .composer-root-version
                     echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
 
-            -   name: Install dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    composer-options: '--prefer-dist'
 
             -   name: Install tree
                 if: matrix.e2e == 'e2e_032'
@@ -133,41 +117,29 @@ jobs:
     build-phar:
         runs-on: ubuntu-latest
         name: Build PHAR
-
         steps:
-            -   uses: actions/checkout@v2
+            -   name: Checkout
+                uses: actions/checkout@v2
                 with:
                     fetch-depth: 0
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '7.4'
-                    ini-values: 'phar.readonly=0'
-                    tools: 'composer:v2'
-                    coverage: 'none'
+                    php-version: ${{ matrix.php }}
+                    ini-values: phar.readonly=0
+                    tools: composer
+                    coverage: none
 
-            -   name: Get composer cache directory
-                id: composercache
-                run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-            -   name: Cache composer dependencies
-                uses: actions/cache@v2
-                with:
-                    path: ${{ steps.composercache.outputs.dir }}
-                    key: composer-${{ runner.os }}-${{ matrix.php }}-${{ hashFiles('composer.*') }}
-                    restore-keys: |
-                        composer-${{ runner.os }}-${{ matrix.php }}-
-                        composer-${{ runner.os }}-
-                        composer-
-
-            -   name: Set composer root version
+            -   name: Configure composer root version
                 run: |
                     source .composer-root-version
                     echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
 
-            -   name: Install dependencies
-                run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    composer-options: '--prefer-dist'
 
             -   name: Build PHAR
                 run: make build
@@ -182,9 +154,9 @@ jobs:
         runs-on: ubuntu-latest
         name: Publish the PHAR
         needs:
-            - unit-tests
-            - e2e-tests
-            - build-phar
+            - 'unit-tests'
+            - 'e2e-tests'
+            - 'build-phar'
         if: github.event_name == 'release'
         steps:
             -   uses: actions/download-artifact@v1
