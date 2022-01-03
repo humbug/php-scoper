@@ -143,7 +143,7 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: ${{ matrix.php }}
+                    php-version: '7.4'
                     ini-values: phar.readonly=0
                     tools: composer
                     coverage: none
