@@ -135,13 +135,19 @@ PHP
 
             $statements = array_map(
                 static function (string $statement) use ($eol): string {
+                    $parts = explode($eol, $statement);
+
+                    if (false === $parts) {
+                        return '';
+                    }
+
                     return implode(
                         $eol,
                         array_map(
                             static function (string $statement): string {
                                 return str_repeat(' ', 4).$statement;
                             },
-                            explode($eol, $statement)
+                            $parts
                         )
                     );
                 },
