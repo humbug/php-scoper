@@ -54,11 +54,6 @@ return [
         },
     ],
 
-    'exclude-namespaces' => [
-        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
-        // '~^$~',                        // The root namespace only
-    ],
-
     // PHP-Scoper's goal is to make sure that all code for a project lies in a distinct PHP namespace. However, you
     // may want to share a common API between the bundled code of your PHAR and the consumer code. For example if
     // you have a PHPUnit PHAR with isolated code, you still want the PHAR to be able to understand the
@@ -88,6 +83,31 @@ return [
     //
     // For more see https://github.com/humbug/php-scoper#constants--classes--functions-from-the-global-namespace
     'expose-global-functions' => true,
+
+    // TODO
+    'expose-namespaces' => [
+        // 'Acme\Foo'                     // The Acme\Foo namespace (and sub-namespaces)
+        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
+        // '~^$~',                        // The root namespace only
+    ],
+
+    // TODO
+    'expose-classes' => [],
+
+    // TODO
+    'expose-functions' => [],
+
+    // TODO
+    'expose-constants' => [],
+
+    // List of symbols to consider internal i.e. to leave untouched.
+    //
+    // For more see TODO
+    'exclude-namespaces' => [
+        // 'Acme\Foo'                     // The Acme\Foo namespace (and sub-namespaces)
+        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
+        // '~^$~',                        // The root namespace only
+    ],
 
     // List of classes to consider as internal i.e. to leave untouched.
     //
