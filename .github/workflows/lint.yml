@@ -12,7 +12,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [ '7.4' ]
+                php: [ '8.1' ]
                 check:
                     -   name: CS
                         command: make cs
