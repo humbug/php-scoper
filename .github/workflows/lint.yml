@@ -8,11 +8,11 @@ on:
 jobs:
     tests:
         runs-on: ubuntu-latest
-        name: Lint ${{ matrix.check }}
+        name: Lint ${{ matrix.check.name }}
         strategy:
             fail-fast: false
             matrix:
-                php: [ '7.4' ]
+                php: [ '8.1' ]
                 check:
                     -   name: CS
                         command: make cs
@@ -39,6 +39,18 @@ jobs:
             -   name: Install Composer dependencies
                 uses: ramsey/composer-install@v1
                 with:
+                    composer-options: '--prefer-dist'
+
+            -   name: Install Composer CodeSniffer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    working-directory: 'vendor-bin/code-sniffer'
+                    composer-options: '--prefer-dist'
+
+            -   name: Install Composer PHPStan dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    working-directory: 'vendor-bin/phpstan'
                     composer-options: '--prefer-dist'
 
             -   name: Run ${{ matrix.check.name }}
