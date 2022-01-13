@@ -42,10 +42,16 @@ jobs:
                     composer-options: '--prefer-dist'
 
             -   name: Install Composer CodeSniffer dependencies
-                run: composer bin code-sniffer install --prefer-dist
+                uses: ramsey/composer-install@v1
+                with:
+                    working-directory: 'vendor-bin/code-sniffer'
+                    composer-options: '--prefer-dist'
 
             -   name: Install Composer PHPStan dependencies
-                run: composer bin phpstan install --prefer-dist
+                uses: ramsey/composer-install@v1
+                with:
+                    working-directory: 'vendor-bin/phpstan'
+                    composer-options: '--prefer-dist'
 
             -   name: Run ${{ matrix.check.name }}
                 run: ${{ matrix.check.command }}
