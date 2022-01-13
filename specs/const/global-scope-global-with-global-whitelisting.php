@@ -17,7 +17,6 @@ return [
         'title' => 'Global constant usage in the global scope with the global constants whitelisted',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
         'exclude-namespaces' => [],
         'expose-global-constants' => true,
         'expose-global-classes' => false,

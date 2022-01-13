@@ -17,7 +17,6 @@ return [
         'title' => 'Function declarations in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
         'exclude-namespaces' => [],
         'expose-global-constants' => false,
         'expose-global-classes' => false,

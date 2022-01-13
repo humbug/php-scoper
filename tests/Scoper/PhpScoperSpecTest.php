@@ -67,7 +67,6 @@ class PhpScoperSpecTest extends TestCase
         'maxPhpVersion',
         'title',
         ConfigurationKeys::PREFIX_KEYWORD,
-        ConfigurationKeys::WHITELIST_KEYWORD,
         ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
@@ -81,7 +80,6 @@ class PhpScoperSpecTest extends TestCase
 
     private const SPECS_SPEC_KEYS = [
         ConfigurationKeys::PREFIX_KEYWORD,
-        ConfigurationKeys::WHITELIST_KEYWORD,
         ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,

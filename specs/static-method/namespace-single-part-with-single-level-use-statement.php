@@ -18,7 +18,6 @@ return [
                    .'use statement in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
         'exclude-namespaces' => [],
         'expose-global-constants' => true,
         'expose-global-classes' => false,

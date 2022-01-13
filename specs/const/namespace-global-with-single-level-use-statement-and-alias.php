@@ -17,7 +17,6 @@ return [
         'title' => 'Global constant imported with an aliased use statement used in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
         'exclude-namespaces' => [],
         'expose-global-constants' => false,
         'expose-global-classes' => false,

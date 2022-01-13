@@ -17,7 +17,6 @@ return [
         'title' => 'Single-level namespaced constant call in the global scope which is imported via a use statement',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
         'exclude-namespaces' => [],
         'expose-global-constants' => false,
         'expose-global-classes' => false,

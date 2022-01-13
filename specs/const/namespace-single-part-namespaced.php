@@ -17,7 +17,6 @@ return [
         'title' => 'Single-level namespaced constant call in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
         'exclude-namespaces' => [],
         'expose-global-constants' => false,
         'expose-global-classes' => false,

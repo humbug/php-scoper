@@ -17,7 +17,6 @@ return [
         'title' => 'Two-parts namespaced constant call in the global scope with a single-level use statement',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
         'exclude-namespaces' => [],
         'expose-global-constants' => false,
         'expose-global-classes' => false,
