@@ -77,17 +77,23 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             return [
                 'prefix' => 'MyPrefix',
                 'files-whitelist' => ['file1', 'file2'],
-                'exclude-namespaces' => ['PHPUnit\Runner'],
+                'patchers' => [],
+                'finders' => [],
+                
+                'whitelist' => ['Foo', 'Bar\*'],
+                
                 'expose-global-constants' => false,
                 'expose-global-classes' => false,
                 'expose-global-functions' => false,
+                'expose-namespaces' => ['PHPUnit\Runner'],
+                'expose-constants' => [],
+                'expose-classes' => [],
+                'expose-functions' => [],
+                
                 'exclude-namespaces' => ['PHPUnit\Runner'],
-                'whitelist' => ['Foo', 'Bar\*'],
                 'exclude-constants' => [],
                 'exclude-classes' => [],
                 'exclude-functions' => [],
-                'patchers' => [],
-                'finders' => [],
             ];
             PHP,
         );
