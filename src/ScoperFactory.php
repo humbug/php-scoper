@@ -68,7 +68,7 @@ class ScoperFactory
                 $whitelist,
             ),
             $prefix,
-            $configuration->getPatchers(),
+            $configuration->getPatcher(),
         );
     }
 }

@@ -3,5 +3,10 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^0.7",
         "slevomat/coding-standard": "^7.0",
         "squizlabs/php_codesniffer": "^3.4"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }

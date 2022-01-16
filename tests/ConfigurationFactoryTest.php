@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
+use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use function array_keys;
@@ -49,11 +50,11 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
         self::assertSame([], $configuration->getFilesWithContents());
         self::assertEquals(
-            [
+            new PatcherChain([
                 new ComposerPatcher(),
                 new SymfonyPatcher(),
-            ],
-            $configuration->getPatchers(),
+            ]),
+            $configuration->getPatcher(),
         );
     }
 
@@ -129,11 +130,11 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             $configuration->getWhitelistedFilesWithContents(),
         );
         self::assertEquals(
-            [
+            new PatcherChain([
                 new ComposerPatcher(),
                 new SymfonyPatcher(),
-            ],
-            $configuration->getPatchers(),
+            ]),
+            $configuration->getPatcher(),
         );
         self::assertEquals(
             Whitelist::create(

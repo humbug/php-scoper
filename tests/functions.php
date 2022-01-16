@@ -85,13 +85,6 @@ function remove_dir(string $path): void
     (new Filesystem())->remove($path);
 }
 
-function create_fake_patcher(): Closure
-{
-    return static function (): void {
-        throw new LogicException('Did not expect to be called');
-    };
-}
-
 /**
  * @private
  */

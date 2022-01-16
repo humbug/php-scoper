@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use function array_reduce;
@@ -23,24 +24,21 @@ final class PatchScoper implements Scoper
 {
     private Scoper $decoratedScoper;
     private string $prefix;
-    // TODO: introduce a typehint for patchers
-    private array $patchers;
+    private Patcher $patcher;
 
-    public function __construct(Scoper $decoratedScoper, string $prefix, array $patchers)
+    public function __construct(Scoper $decoratedScoper, string $prefix, Patcher $patcher)
     {
         $this->decoratedScoper = $decoratedScoper;
         $this->prefix = $prefix;
-        $this->patchers = $patchers;
+        $this->patcher = $patcher;
     }
 
     public function scope(string $filePath, string $contents): string
     {
-        $prefix = $this->prefix;
-
-        return (string) array_reduce(
-            $this->patchers,
-            static fn (string $contents, callable $patcher) => $patcher($filePath, $prefix, $contents),
-            $this->decoratedScoper->scope(...func_get_args())
+        return ($this->patcher)(
+            $filePath,
+            $this->prefix,
+            $this->decoratedScoper->scope(...func_get_args()),
         );
     }
 }

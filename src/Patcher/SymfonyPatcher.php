@@ -18,7 +18,7 @@ use function Safe\preg_replace;
 use function Safe\sprintf;
 use function strpos;
 
-final class SymfonyPatcher
+final class SymfonyPatcher implements Patcher
 {
     private const PATHS = [
         'src/Symfony/Component/DependencyInjection/Dumper/PhpDumper.php',

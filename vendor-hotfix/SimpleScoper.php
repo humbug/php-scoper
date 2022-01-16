@@ -17,6 +17,8 @@ namespace KevinGH\Box\PhpScoper;
 use Exception;
 use Humbug\PhpScoper\Container as PhpScoperContainer;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
+use Humbug\PhpScoper\Patcher\Patcher;
+use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Scoper as PhpScoper;
 use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
@@ -51,7 +53,7 @@ final class SimpleScoper implements Scoper
             $scoperConfig->getPrefix(),
             $scoperConfig->getFilesWithContents(),
             $scoperConfig->getWhitelistedFilesWithContents(),
-            self::createSerializablePatchers($scoperConfig->getPatchers()),
+            self::createSerializablePatchers($scoperConfig->getPatcher()),
             $scoperConfig->getWhitelist(),
             $scoperConfig->getInternalClasses(),
             $scoperConfig->getInternalFunctions(),
@@ -83,7 +85,7 @@ final class SimpleScoper implements Scoper
             $previousConfig->getPrefix(),
             $previousConfig->getFilesWithContents(),
             $previousConfig->getWhitelistedFilesWithContents(),
-            $previousConfig->getPatchers(),
+            $previousConfig->getPatcher(),
             $whitelist,
             $previousConfig->getInternalClasses(),
             $previousConfig->getInternalFunctions(),
@@ -136,24 +138,28 @@ final class SimpleScoper implements Scoper
     }
 
     /**
-     * @param callable[] $patchers
+     * @param callable[] $patcher
      *
      * @retunr SerializableClosure[]
      */
-    private static function createSerializablePatchers(array $patchers): array
+    private static function createSerializablePatchers(Patcher $patcher): Patcher
     {
-        return array_map(
+        if (!($patcher instanceof PatcherChain)) {
+            return $patcher;
+        }
+
+        $serializablePatchers = array_map(
             static function (callable $patcher): SerializableClosure {
-                if ($patcher instanceof SymfonyPatcher
-                    || $patcher instanceof ComposerPatcher
-                ) {
+                if ($patcher instanceof Patcher) {
                     $patcher = static fn (string $filePath, string $prefix, string $contents) => $patcher($filePath, $prefix, $contents);
                 }
 
                 return new SerializableClosure($patcher);
             },
-            $patchers,
+            $patcher->getPatchers(),
         );
+
+        return new PatcherChain($serializablePatchers);
     }
 
     public function __wakeup()
