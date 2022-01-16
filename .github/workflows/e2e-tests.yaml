@@ -112,14 +112,16 @@ jobs:
                 with:
                     composer-options: '--prefer-dist'
 
+            -   name: (debug) Display structure(before)
+                run: ls -l bin
             -   name: Retrieve built PHAR
                 uses: actions/download-artifact@v2
                 with:
                     name: php-scoper-phar-${{ matrix.php }}
-                    path: bin/
+                    path: bin/php-scoper.phar
 
             -   name: (debug) Display structure
-                run: ls -l
+                run: ls -l bin
 
             -   name: Ensure PHAR will not be rebuilt
                 run: touch bin/php-scoper.phar
