@@ -10,7 +10,7 @@ on:
 jobs:
     build-test-phar:
         runs-on: ubuntu-latest
-        name: Build PHAR
+        name: Build (test) PHAR
         strategy:
             fail-fast: false
             matrix:
