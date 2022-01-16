@@ -8,6 +8,50 @@ on:
         types: [ created ]
 
 jobs:
+    build-test-phar:
+        runs-on: ubuntu-latest
+        name: Build PHAR
+        strategy:
+            fail-fast: false
+            matrix:
+                php:
+                    - '7.4'
+                    - '8.0'
+                    - '8.1'
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    ini-values: phar.readonly=0
+                    tools: composer
+                    coverage: none
+
+            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
+            -   name: Configure composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    composer-options: '--prefer-dist'
+
+            -   name: Build PHAR
+                run: make build
+
+            -   uses: actions/upload-artifact@v1
+                name: Upload the PHAR artifact
+                with:
+                    name: php-scoper-phar-${{ matrix.php }}
+                    path: bin/php-scoper.phar
+
     e2e-tests:
         name: 'e2e Test ${{ matrix.e2e }} (PHP: ${{ matrix.php }})'
         runs-on: ubuntu-latest
@@ -71,7 +115,7 @@ jobs:
             -   name: Retrieve built PHAR
                 uses: actions/download-artifact@v2
                 with:
-                    name: php-scoper-phar
+                    name: php-scoper-phar-${{ matrix.php }}
                     path: bin/php-scoper.phar
 
             -   name: Install tree
