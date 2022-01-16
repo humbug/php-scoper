@@ -7,7 +7,7 @@ MAKEFLAGS += --no-builtin-rules
 PHPBIN=php
 PHPNOGC=php -d zend.enable_gc=0
 IS_PHP8=$(shell php -r "echo version_compare(PHP_VERSION, '8.0.0', '>=') ? 'true' : 'false';")
-
+PHPSCOPER=bin/php-scoper.phar
 SRC_FILES=$(shell find bin/ src/ -type f)
 
 .PHONY: help
@@ -88,7 +88,6 @@ tm: clover.xml
 e2e:	 ## Run end-to-end tests
 e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
 
-PHPSCOPER=bin/php-scoper.phar
 
 .PHONY: e2e_004
 e2e_004: ## Run end-to-end tests for the fixture set 004 — Source code case

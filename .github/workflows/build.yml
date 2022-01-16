@@ -46,7 +46,7 @@ jobs:
             -   uses: actions/upload-artifact@v1
                 name: Upload the PHAR artifact
                 with:
-                    name: php-scoper.phar
+                    name: php-scoper-phar
                     path: bin/php-scoper.phar
 
     publish-phar:
@@ -58,7 +58,7 @@ jobs:
         steps:
             -   uses: actions/download-artifact@v1
                 with:
-                    name: php-scoper.phar
+                    name: php-scoper-phar
                     path: .
 
             -   name: Upload php-scoper.phar
