@@ -287,9 +287,7 @@ class PhpScoperTest extends TestCase
 
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
+            ->willReturn('Scoped content')
         ;
 
         $this->parserProphecy

@@ -40,15 +40,27 @@ final class AutoloadPrefixer
     public static function prefixPackageAutoloadStatements(stdClass $contents, string $prefix, Whitelist $whitelist): stdClass
     {
         if (isset($contents->autoload)) {
-            $contents->autoload = self::prefixAutoloadStatements($contents->autoload, $prefix, $whitelist);
+            $contents->autoload = self::prefixAutoloadStatements(
+                $contents->autoload,
+                $prefix,
+                $whitelist,
+            );
         }
 
         if (isset($contents->{'autoload-dev'})) {
-            $contents->{'autoload-dev'} = self::prefixAutoloadStatements($contents->{'autoload-dev'}, $prefix, $whitelist);
+            $contents->{'autoload-dev'} = self::prefixAutoloadStatements(
+                $contents->{'autoload-dev'},
+                $prefix,
+                $whitelist,
+            );
         }
 
         if (isset($contents->extra->laravel->providers)) {
-            $contents->extra->laravel->providers = self::prefixLaravelProviders($contents->extra->laravel->providers, $prefix, $whitelist);
+            $contents->extra->laravel->providers = self::prefixLaravelProviders(
+                $contents->extra->laravel->providers,
+                $prefix,
+                $whitelist,
+            );
         }
 
         return $contents;

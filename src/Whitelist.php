@@ -157,7 +157,7 @@ final class Whitelist implements Countable
     public function belongsToExcludedNamespace(string $name): bool
     {
         return $this->isExcludedNamespace(
-            $this->extractNameNamespace($name),
+            self::extractNameNamespace($name),
         );
     }
 
@@ -354,7 +354,7 @@ final class Whitelist implements Countable
         return implode('\\', $parts);
     }
 
-    private function extractNameNamespace(string $name): string
+    private static function extractNameNamespace(string $name): string
     {
         $name = strtolower($name);
 

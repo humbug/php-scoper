@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use InvalidArgumentException;
 use LogicException;
 use stdClass;
 use function gettype;
@@ -24,6 +25,7 @@ use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\sprintf;
 use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
 
 final class JsonFileScoper implements Scoper
 {
@@ -43,22 +45,29 @@ final class JsonFileScoper implements Scoper
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
-        $decodedJson = json_decode($contents, false);
-
-        if (!($decodedJson instanceof stdClass)) {
-            throw new LogicException(
-                sprintf(
-                    'Expected the decoded JSON to be an stdClass instance, got "%s" instead',
-                    gettype($decodedJson)
-                )
-            );
-        }
+        $decodedJson = self::decodeContents($contents);
 
         $decodedJson = AutoloadPrefixer::prefixPackageAutoloadStatements($decodedJson, $prefix, $whitelist);
 
         return json_encode(
             $decodedJson,
             JSON_PRETTY_PRINT
+        );
+    }
+
+    private static function decodeContents(string $contents): stdClass
+    {
+        $decodedJson = json_decode($contents, false, 512,  JSON_THROW_ON_ERROR);
+
+        if ($decodedJson instanceof stdClass) {
+            return $decodedJson;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'Expected the decoded JSON to be an stdClass instance, got "%s" instead',
+                gettype($decodedJson),
+            )
         );
     }
 }
