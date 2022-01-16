@@ -273,7 +273,6 @@ class PhpScoperTest extends TestCase
         ];
 
         $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
@@ -307,7 +306,7 @@ class PhpScoperTest extends TestCase
         $i = 0;
         $this->traverserFactoryProphecy
             ->create(Argument::type(PhpScoper::class), $prefix, $whitelist, Argument::that(
-                static function (...$args) use (&$i): bool {
+                static function () use (&$i): bool {
                     ++$i;
 
                     return 1 === $i;
@@ -317,7 +316,7 @@ class PhpScoperTest extends TestCase
         ;
         $this->traverserFactoryProphecy
             ->create(Argument::type(PhpScoper::class), $prefix, $whitelist, Argument::that(
-                static function (...$args) use (&$i): bool {
+                static function () use (&$i): bool {
                     ++$i;
 
                     return 4 === $i;

@@ -141,7 +141,6 @@ class PhpScoperSpecTest extends TestCase
         }
 
         $filePath = 'file.php';
-        $patchers = [create_fake_patcher()];
 
         $scoper = $this->createScoper(
             $internalClasses,

@@ -51,9 +51,6 @@ class ConfigurableScoperTest extends TestCase
     {
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
-        $prefix = 'Humbug';
-        $patchers = [];
-        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $contents)
@@ -78,12 +75,9 @@ class ConfigurableScoperTest extends TestCase
 
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
-        $prefix = 'Humbug';
-        $patchers = [];
-        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope(Argument::any(), $contents, $prefix)
+            ->scope(Argument::any(), $contents)
             ->willReturn($expected = 'scoped contents')
         ;
 
