@@ -116,38 +116,22 @@ jobs:
                 with:
                     composer-options: '--prefer-dist'
 
-            -   name: (debug) Display structure(before)
-                run: ls -l bin
-
             -   name: Retrieve built PHAR
                 uses: actions/download-artifact@v2
                 with:
                     name: php-scoper-phar-${{ matrix.php }}
-                    path: .
-
-            -   name: Display structure root
-                run: ls -l .
-
-            -   name: Display structure bin
-                run: ls -l bin
-
-            -   name: Display structure phar
-                run: ls -l bin/php-scoper.phar
+                    path: bin
 
             -   name: Ensure PHAR will not be rebuilt
                 run: touch -c bin/php-scoper.phar
-
-            # Smoke test
-            -   name: Check that the PHAR works
-                run: bin/php-scoper.phar --version
 
             # See https://github.com/actions/download-artifact#limitations
             # the permissions are not guaranteed to be preserved
             -   name: Ensure PHAR is executable
                 run: chmod 755 bin/php-scoper.phar
 
-            -   name: (debug) Display structure after touch
-                run: ls -l bin
+            -   name: Check that the PHAR works
+                run: bin/php-scoper.phar --version
 
             -   name: Install tree
                 if: matrix.e2e == 'e2e_032'
