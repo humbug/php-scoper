@@ -119,6 +119,9 @@ jobs:
             -   name: (debug) Display structure(before)
                 run: ls -l bin
 
+            -   name: (debug) Display structure(x)
+                run: ls -l bin/php-scoper.phar
+
             -   name: Retrieve built PHAR
                 uses: actions/download-artifact@v2
                 with:
