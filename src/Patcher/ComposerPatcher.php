@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Patcher;
 
 use function Safe\preg_replace;
 use function Safe\sprintf;
+use function str_replace;
 use function strpos;
 
 final class ComposerPatcher

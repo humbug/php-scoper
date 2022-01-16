@@ -54,7 +54,11 @@ final class InstalledPackagesScoper implements Scoper
             throw new InvalidArgumentException('Expected the decoded JSON to contain the list of installed packages');
         }
 
-        $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages, $prefix, $whitelist);
+        $decodedJson->packages = self::prefixLockPackages(
+            $decodedJson->packages,
+            $prefix,
+            $whitelist,
+        );
 
         return json_encode(
             $decodedJson,
@@ -83,7 +87,7 @@ final class InstalledPackagesScoper implements Scoper
      *
      * @return array<string, stdClass>
      */
-    private function prefixLockPackages(array $packages, string $prefix, Whitelist $whitelist): array
+    private static function prefixLockPackages(array $packages, string $prefix, Whitelist $whitelist): array
     {
         return array_map(
             static fn (stdClass $package) => AutoloadPrefixer::prefixPackageAutoloadStatements(

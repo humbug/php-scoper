@@ -27,7 +27,7 @@ final class SymfonyPatcher
 
     public function __invoke(string $filePath, string $prefix, string $contents): string
     {
-        if (!$this->isValidPath($filePath)) {
+        if (!self::isSupportedFile($filePath)) {
             return $contents;
         }
 
@@ -41,7 +41,7 @@ final class SymfonyPatcher
         );
     }
 
-    private function isValidPath(string $filePath): bool
+    private static function isSupportedFile(string $filePath): bool
     {
         foreach (self::PATHS as $path) {
             if (false !== strpos($filePath, $path)) {
