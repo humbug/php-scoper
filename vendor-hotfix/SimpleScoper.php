@@ -119,7 +119,7 @@ final class SimpleScoper implements Scoper
             $this->scoperContainer = new PhpScoperContainer();
         }
 
-        $scoper = $this->scoperContainer
+        $scoper = (new PhpScoperContainer())
             ->getScoperFactory()
             ->createScoper($this->scoperConfig);
 
@@ -154,5 +154,16 @@ final class SimpleScoper implements Scoper
             },
             $patchers,
         );
+    }
+
+    public function __wakeup()
+    {
+        // We need to make sure that a fresh Scoper & PHP-Parser Parser/Lexer
+        // is used within a sub-process.
+        // Otherwise, there is a risk of data corruption or that a compatibility
+        // layer of some sorts (such as the tokens for PHP-Paser) is not
+        // triggered in the sub-process resulting in obscure errors
+        unset($this->scoper);
+        unset($this->scoperContainer);
     }
 }
