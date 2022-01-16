@@ -37,7 +37,6 @@ use function str_replace;
  * @coversNothing
  *
  * @group integration
- * @runTestsInSeparateProcesses
  */
 class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 {
@@ -240,7 +239,7 @@ EOF;
 PhpScoper version TestVersion 28/01/2020
 
  * [NO] /path/to/composer/installed.json
-	Could not parse the file "/path/to/composer/installed.json".: TypeError
+	Could not parse the file "/path/to/composer/installed.json".: InvalidArgumentException
 Stack trace:
 #0
 #1

@@ -16,6 +16,8 @@ namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use InvalidArgumentException;
+use function is_array;
 use function preg_match as native_preg_match;
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -43,12 +45,11 @@ final class InstalledPackagesScoper implements Scoper
 
         $decodedJson = json_decode($contents, false);
 
-        // compatibility with Composer 2
-        if (isset($decodedJson->packages)) {
-            $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages, $prefix, $whitelist);
-        } else {
-            $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix, $whitelist);
+        if (!isset($decodedJson->packages) || !is_array($decodedJson->packages)) {
+            throw new InvalidArgumentException('Expected the decoded JSON to contain the list of installed packages');
         }
+
+        $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages, $prefix, $whitelist);
 
         return json_encode(
             $decodedJson,
