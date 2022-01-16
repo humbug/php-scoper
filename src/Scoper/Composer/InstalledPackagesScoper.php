@@ -58,7 +58,7 @@ final class InstalledPackagesScoper implements Scoper
             throw new InvalidArgumentException('Expected the decoded JSON to contain the list of installed packages');
         }
 
-        $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages, $prefix, $whitelist);
+        $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages);
 
         return json_encode(
             $decodedJson,
