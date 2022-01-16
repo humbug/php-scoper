@@ -46,7 +46,7 @@ jobs:
             -   name: Build PHAR
                 run: make build
 
-            -   uses: actions/upload-artifact@v1
+            -   uses: actions/upload-artifact@v2
                 name: Upload the PHAR artifact
                 with:
                     name: php-scoper-phar-${{ matrix.php }}
@@ -116,7 +116,10 @@ jobs:
                 uses: actions/download-artifact@v2
                 with:
                     name: php-scoper-phar-${{ matrix.php }}
-                    path: bin/php-scoper.phar
+                    path: bin/
+
+            -   name: (debug) Display structure
+                run: ls -l
 
             -   name: Ensure PHAR will not be rebuilt
                 run: touch bin/php-scoper.phar
