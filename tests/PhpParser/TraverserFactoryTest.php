@@ -30,7 +30,7 @@ class TraverserFactoryTest extends TestCase
     {
         $prefix = 'Humbug';
         $whitelist = Whitelist::create();
-        $traverserFactory = new TraverserFactory(new Reflector([], [], []));
+        $traverserFactory = new TraverserFactory(Reflector::createEmpty());
 
         $phpScoper = new PhpScoper(
             new FakeParser(),

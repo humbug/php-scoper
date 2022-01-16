@@ -121,6 +121,11 @@ final class Reflector
         );
     }
 
+    public static function createEmpty(): self
+    {
+        return new self([], [], []);
+    }
+
     /**
      * @param array<string, true> $classes
      * @param array<string, true> $functions
