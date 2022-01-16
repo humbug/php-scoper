@@ -55,7 +55,7 @@ jobs:
     e2e-tests:
         name: 'e2e Test ${{ matrix.e2e }} (PHP: ${{ matrix.php }})'
         runs-on: ubuntu-latest
-        needs: build-phar
+        needs: build-test-phar
         strategy:
             fail-fast: false
             matrix:
