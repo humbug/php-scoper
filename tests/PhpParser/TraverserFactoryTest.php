@@ -35,7 +35,9 @@ class TraverserFactoryTest extends TestCase
         $phpScoper = new PhpScoper(
             new FakeParser(),
             new FakeScoper(),
-            (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor()
+            (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
+            $prefix,
+            $whitelist,
         );
 
         $firstTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);

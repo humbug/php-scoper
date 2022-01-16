@@ -31,7 +31,7 @@ final class FileWhitelistScoper implements Scoper
         $this->filePaths = array_flip($filePaths);
     }
 
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         if (array_key_exists($filePath, $this->filePaths)) {
             return $contents;

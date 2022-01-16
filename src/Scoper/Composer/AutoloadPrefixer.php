@@ -31,35 +31,43 @@ use function strpos;
  */
 final class AutoloadPrefixer
 {
+    private string $prefix;
+    private Whitelist $whitelist;
+
+    public function __construct(string $prefix, Whitelist $whitelist)
+    {
+        $this->prefix = $prefix;
+        $this->whitelist = $whitelist;
+    }
+
     /**
      * @param stdClass $contents Decoded JSON
-     * @param string   $prefix
      *
      * @return stdClass Prefixed decoded JSON
      */
-    public static function prefixPackageAutoloadStatements(stdClass $contents, string $prefix, Whitelist $whitelist): stdClass
+    public function prefixPackageAutoloadStatements(stdClass $contents): stdClass
     {
         if (isset($contents->autoload)) {
             $contents->autoload = self::prefixAutoloadStatements(
                 $contents->autoload,
-                $prefix,
-                $whitelist,
+                $this->prefix,
+                $this->whitelist,
             );
         }
 
         if (isset($contents->{'autoload-dev'})) {
             $contents->{'autoload-dev'} = self::prefixAutoloadStatements(
                 $contents->{'autoload-dev'},
-                $prefix,
-                $whitelist,
+                $this->prefix,
+                $this->whitelist,
             );
         }
 
         if (isset($contents->extra->laravel->providers)) {
             $contents->extra->laravel->providers = self::prefixLaravelProviders(
                 $contents->extra->laravel->providers,
-                $prefix,
-                $whitelist,
+                $this->prefix,
+                $this->whitelist,
             );
         }
 

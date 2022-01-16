@@ -42,13 +42,12 @@ class InstalledPackagesScoperTest extends TestCase
         $filePath = 'file.php';
         $fileContents = '';
         $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create();
 
         /** @var ObjectProphecy<Scoper> $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
-            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $fileContents)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -56,9 +55,12 @@ class InstalledPackagesScoperTest extends TestCase
         /** @var Scoper $decoratedScoper */
         $decoratedScoper = $decoratedScoperProphecy->reveal();
 
-        $scoper = new InstalledPackagesScoper($decoratedScoper);
+        $scoper = new InstalledPackagesScoper(
+            $decoratedScoper,
+            new AutoloadPrefixer($prefix, $whitelist),
+        );
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
 
@@ -71,14 +73,16 @@ class InstalledPackagesScoperTest extends TestCase
     public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
     {
         $filePath = 'composer/installed.json';
-
-        $scoper = new InstalledPackagesScoper(new FakeScoper());
-
         $prefix = 'Foo';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create();
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
+        $scoper = new InstalledPackagesScoper(
+            new FakeScoper(),
+            new AutoloadPrefixer($prefix, $whitelist)
+        );
+
+
+        $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
     }

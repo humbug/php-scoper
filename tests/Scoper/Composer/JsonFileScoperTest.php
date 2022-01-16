@@ -42,7 +42,6 @@ class JsonFileScoperTest extends TestCase
         $filePath = 'file.php';
         $fileContents = '';
         $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create(
             true,
             true,
@@ -55,7 +54,7 @@ class JsonFileScoperTest extends TestCase
         /** @var ObjectProphecy<Scoper> $decoratedScoperProphecy */
         $decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $decoratedScoperProphecy
-            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $fileContents)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -63,9 +62,12 @@ class JsonFileScoperTest extends TestCase
         /** @var Scoper $decoratedScoper */
         $decoratedScoper = $decoratedScoperProphecy->reveal();
 
-        $scoper = new JsonFileScoper($decoratedScoper);
+        $scoper = new JsonFileScoper(
+            $decoratedScoper,
+            new AutoloadPrefixer($prefix, $whitelist),
+        );
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
 
@@ -78,11 +80,7 @@ class JsonFileScoperTest extends TestCase
     public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
     {
         $filePath = 'composer.json';
-
-        $scoper = new JsonFileScoper(new FakeScoper());
-
         $prefix = 'Foo';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create(
             true,
             true,
@@ -92,7 +90,12 @@ class JsonFileScoperTest extends TestCase
             'Foo',
         );
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
+        $scoper = new JsonFileScoper(
+            new FakeScoper(),
+            new AutoloadPrefixer($prefix, $whitelist),
+        );
+
+        $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
     }
@@ -159,11 +162,7 @@ JSON
     public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
     {
         $filePath = 'composer.json';
-
-        $scoper = new JsonFileScoper(new FakeScoper());
-
         $prefix = 'Foo';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create(
             true,
             true,
@@ -173,7 +172,13 @@ JSON
             'Foo',
         );
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
+        $scoper = new JsonFileScoper(
+            new FakeScoper(),
+            new AutoloadPrefixer($prefix, $whitelist)
+        );
+
+
+        $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
     }

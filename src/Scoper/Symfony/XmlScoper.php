@@ -34,20 +34,35 @@ final class XmlScoper implements Scoper
     private const FILE_PATH_PATTERN = '/\.xml$/i';
 
     private Scoper $decoratedScoper;
+    private string $prefix;
+    private Whitelist $whitelist;
 
-    public function __construct(Scoper $decoratedScoper)
-    {
+    public function __construct(
+        Scoper $decoratedScoper,
+        string $prefix,
+        Whitelist $whitelist
+    ) {
         $this->decoratedScoper = $decoratedScoper;
+        $this->prefix = $prefix;
+        $this->whitelist = $whitelist;
     }
 
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         if (1 !== native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
-        $contents = self::scopeClasses($contents, $prefix, $whitelist);
-        $contents = self::scopeNamespaces($contents, $prefix, $whitelist);
+        $contents = self::scopeClasses(
+            $contents,
+            $this->prefix,
+            $this->whitelist
+        );
+        $contents = self::scopeNamespaces(
+            $contents,
+            $this->prefix,
+            $this->whitelist
+        );
 
         return $contents;
     }
