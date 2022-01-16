@@ -2849,22 +2849,8 @@ BANNER;
             )
         );
 
-        $scoper = new SerializablePhpScoper(
-            static function () use ($whitelistedFiles, $phpScoperConfig): Scoper {
-                $scoper = (new Container())
-                    ->getScoperFactory()
-                    ->createScoper($phpScoperConfig);
-
-                if ([] !== $whitelistedFiles) {
-                    return new FileWhitelistScoper($scoper, ...$whitelistedFiles);
-                }
-
-                return $scoper;
-            }
-        );
-
         return new PhpScoperCompactor(
-            new SimpleScoper($phpScoperConfig)
+            new SimpleScoper($phpScoperConfig, ...$whitelistedFiles)
         );
     }
 

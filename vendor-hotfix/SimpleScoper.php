@@ -78,8 +78,6 @@ final class SimpleScoper implements Scoper
     {
         $previousConfig = $this->scoperConfig;
 
-        var_dump($whitelist);die;
-
         $this->scoperConfig = new PhpScoperConfiguration(
             $previousConfig->getPath(),
             $previousConfig->getPrefix(),
