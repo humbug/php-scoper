@@ -125,11 +125,14 @@ jobs:
                     name: php-scoper-phar-${{ matrix.php }}
                     path: .
 
-            -   name: (debug) Display structure(x)
-                run: ls -l bin/php-scoper.phar
+            -   name: Display structure root
+                run: ls -l .
 
-            -   name: (debug) Display structure
+            -   name: Display structure bin
                 run: ls -l bin
+
+            -   name: Display structure phar
+                run: ls -l bin/php-scoper.phar
 
             -   name: Ensure PHAR will not be rebuilt
                 run: touch -c bin/php-scoper.phar
