@@ -32,9 +32,7 @@ final class PatchScoper implements Scoper
     {
         return (string) array_reduce(
             $patchers,
-            static function (string $contents, callable $patcher) use ($filePath, $prefix): string {
-                return $patcher($filePath, $prefix, $contents);
-            },
+            static fn (string $contents, callable $patcher) => $patcher($filePath, $prefix, $contents),
             $this->decoratedScoper->scope(...func_get_args())
         );
     }

@@ -50,7 +50,7 @@ final class YamlScoper implements Scoper
             return $contents;
         }
 
-        $contents = $this->replaceClasses(
+        $contents = self::replaceClasses(
             array_filter($matches['singleClass']),
             array_filter($matches['singleSeparator']),
             $prefix,
@@ -58,7 +58,7 @@ final class YamlScoper implements Scoper
             $whitelist
         );
 
-        $contents = $this->replaceClasses(
+        $contents = self::replaceClasses(
             array_filter($matches['class']),
             array_filter($matches['separator']),
             $prefix,
@@ -73,7 +73,7 @@ final class YamlScoper implements Scoper
      * @param string[] $classes
      * @param string[] $separators
      */
-    private function replaceClasses(
+    private static function replaceClasses(
         array $classes,
         array $separators,
         string $prefix,

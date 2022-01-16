@@ -16,10 +16,17 @@ namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
+use InvalidArgumentException;
+use stdClass;
+use function array_map;
+use function gettype;
+use function is_array;
 use function preg_match as native_preg_match;
 use function Safe\json_decode;
 use function Safe\json_encode;
+use function Safe\sprintf;
 use const JSON_PRETTY_PRINT;
+use const JSON_THROW_ON_ERROR;
 
 final class InstalledPackagesScoper implements Scoper
 {
@@ -41,14 +48,13 @@ final class InstalledPackagesScoper implements Scoper
             return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
         }
 
-        $decodedJson = json_decode($contents, false);
+        $decodedJson = self::decodeContents($contents);
 
-        // compatibility with Composer 2
-        if (isset($decodedJson->packages)) {
-            $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages, $prefix, $whitelist);
-        } else {
-            $decodedJson = $this->prefixLockPackages((array) $decodedJson, $prefix, $whitelist);
+        if (!isset($decodedJson->packages) || !is_array($decodedJson->packages)) {
+            throw new InvalidArgumentException('Expected the decoded JSON to contain the list of installed packages');
         }
+
+        $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages, $prefix, $whitelist);
 
         return json_encode(
             $decodedJson,
@@ -56,12 +62,36 @@ final class InstalledPackagesScoper implements Scoper
         );
     }
 
-    private function prefixLockPackages(array $packages, string $prefix, Whitelist $whitelist): array
+    private static function decodeContents(string $contents): stdClass
     {
-        foreach ($packages as $index => $package) {
-            $packages[$index] = AutoloadPrefixer::prefixPackageAutoloadStatements($package, $prefix, $whitelist);
+        $decodedJson = json_decode($contents, false, 512,  JSON_THROW_ON_ERROR);
+
+        if ($decodedJson instanceof stdClass) {
+            return $decodedJson;
         }
 
-        return $packages;
+        throw new InvalidArgumentException(
+            sprintf(
+                'Expected the decoded JSON to be an stdClass instance, got "%s" instead',
+                gettype($decodedJson),
+            )
+        );
+    }
+
+    /**
+     * @param array<string, stdClass> $packages
+     *
+     * @return array<string, stdClass>
+     */
+    private function prefixLockPackages(array $packages, string $prefix, Whitelist $whitelist): array
+    {
+        return array_map(
+            static fn (stdClass $package) => AutoloadPrefixer::prefixPackageAutoloadStatements(
+                $package,
+                $prefix,
+                $whitelist,
+            ),
+            $packages,
+        );
     }
 }

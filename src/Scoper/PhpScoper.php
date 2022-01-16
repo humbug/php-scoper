@@ -50,7 +50,7 @@ final class PhpScoper implements Scoper
      */
     public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
     {
-        if (!$this->isPhpFile($filePath, $contents)) {
+        if (!self::isPhpFile($filePath, $contents)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
@@ -68,7 +68,7 @@ final class PhpScoper implements Scoper
         return $prettyPrinter->prettyPrintFile($statements)."\n";
     }
 
-    private function isPhpFile(string $filePath, string $contents): bool
+    private static function isPhpFile(string $filePath, string $contents): bool
     {
         if (1 === native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
             return true;
