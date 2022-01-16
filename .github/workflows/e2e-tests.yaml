@@ -118,6 +118,9 @@ jobs:
                     name: php-scoper-phar-${{ matrix.php }}
                     path: bin/php-scoper.phar
 
+            -   name: Ensure PHAR will not be rebuilt
+                run: touch bin/php-scoper.phar
+
             -   name: Install tree
                 if: matrix.e2e == 'e2e_032'
                 run: sudo apt-get install -y tree
