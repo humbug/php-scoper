@@ -67,6 +67,10 @@
         "sort-packages": true,
         "platform": {
             "php": "7.4.0"
+        },
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
+            "composer/package-versions-deprecated": true
         }
     },
     "extra": {
