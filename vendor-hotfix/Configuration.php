@@ -2849,8 +2849,6 @@ BANNER;
             )
         );
 
-        $prefix = $phpScoperConfig->getPrefix() ?? unique_id('_HumbugBox');
-
         $scoper = new SerializablePhpScoper(
             static function () use ($whitelistedFiles, $phpScoperConfig): Scoper {
                 $scoper = (new Container())
@@ -2866,12 +2864,7 @@ BANNER;
         );
 
         return new PhpScoperCompactor(
-            new SimpleScoper(
-                $scoper,
-                $prefix,
-                $phpScoperConfig->getWhitelist(),
-                $phpScoperConfig->getPatchers()
-            )
+            new SimpleScoper($phpScoperConfig)
         );
     }
 
