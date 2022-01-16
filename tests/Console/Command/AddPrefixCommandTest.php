@@ -21,6 +21,7 @@ use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
+use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\RegexChecker;
@@ -735,9 +736,10 @@ EOF;
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        self::assertCount(2, $patchersFound);
-        self::assertEquals(new SymfonyPatcher(), $patchersFound[0]);
-        self::assertEquals('Hello world!', $patchersFound[1]());
+        self::assertCount(3, $patchersFound);
+        self::assertEquals(new ComposerPatcher(), $patchersFound[0]);
+        self::assertEquals(new SymfonyPatcher(), $patchersFound[1]);
+        self::assertEquals('Hello world!', $patchersFound[2]());
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
 

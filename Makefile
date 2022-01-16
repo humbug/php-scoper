@@ -86,7 +86,7 @@ tm: clover.xml
 
 .PHONY: e2e
 e2e:	 ## Run end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_0210 e2e_0211 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
 
 PHPSCOPER=bin/php-scoper.phar
 
@@ -230,45 +230,25 @@ e2e_020: $(PHPSCOPER) fixtures/set020-infection/vendor clover.xml
 
 	diff build/set020-infection/expected-output build/set020-infection/output
 
-.PHONY: e2e_0210
-e2e_0210: ## Run end-to-end tests for the fixture set 021 — Composer 1
-e2e_0210: $(PHPSCOPER) fixtures/set021-composer-1/vendor
-	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer-1 \
-		--output-dir=../../build/set021-composer-1 \
+
+.PHONY: e2e_021
+e2e_021: ## Run end-to-end tests for the fixture set 021 — Composer 2
+e2e_021: $(PHPSCOPER) fixtures/set021-composer2/vendor
+	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer2 \
+		--output-dir=../../build/set021-composer2 \
 		--force \
 		--no-interaction \
-		--stop-on-failure \
-		--no-config
-	composer --working-dir=build/set021-composer-1 dump-autoload
+		--stop-on-failure
+	composer --working-dir=build/set021-composer2 dump-autoload
 
-	php fixtures/set021-composer-1/vendor/composer/composer/bin/composer licenses \
+	php fixtures/set021-composer2/vendor/composer/composer/bin/composer licenses \
 		--no-plugins \
-		> build/set021-composer-1/expected-output
-	php build/set021-composer-1/vendor/composer/composer/bin/composer licenses \
+		> build/set021-composer2/expected-output
+	php build/set021-composer2/vendor/composer/composer/bin/composer licenses \
 		--no-plugins \
-		> build/set021-composer-1/output
+		> build/set021-composer2/output
 
-	diff build/set021-composer-1/expected-output build/set021-composer-1/output
-
-.PHONY: e2e_0211
-e2e_0211: ## Run end-to-end tests for the fixture set 021 — Composer 2
-e2e_0211: $(PHPSCOPER) fixtures/set021-composer-2/vendor
-	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer-2 \
-		--output-dir=../../build/set021-composer-2 \
-		--force \
-		--no-interaction \
-		--stop-on-failure \
-		--no-config
-	composer --working-dir=build/set021-composer-2 dump-autoload
-
-	php fixtures/set021-composer-2/vendor/composer/composer/bin/composer licenses \
-		--no-plugins \
-		> build/set021-composer-2/expected-output
-	php build/set021-composer-2/vendor/composer/composer/bin/composer licenses \
-		--no-plugins \
-		> build/set021-composer-2/output
-
-	diff build/set021-composer-2/expected-output build/set021-composer-2/output
+	diff build/set021-composer2/expected-output build/set021-composer2/output
 
 .PHONY: e2e_022
 e2e_022: ## Run end-to-end tests for the fixture set 022 — Whitelist the project code with namespace whitelisting
@@ -501,12 +481,8 @@ fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
 	composer --working-dir=fixtures/set020-infection install
 	touch -c $@
 
-fixtures/set021-composer-1/vendor: fixtures/set021-composer-1/composer.lock
-	composer --working-dir=fixtures/set021-composer-1 install
-	touch -c $@
-
-fixtures/set021-composer-2/vendor: fixtures/set021-composer-2/composer.lock
-	composer --working-dir=fixtures/set021-composer-2 install
+fixtures/set021-composer2/vendor: fixtures/set021-composer2/composer.lock
+	composer --working-dir=fixtures/set021-composer2 install
 	touch -c $@
 
 fixtures/set022/vendor: fixtures/set022/composer.json
@@ -577,9 +553,6 @@ fixtures/set019-symfony-console/composer.lock: fixtures/set019-symfony-console/c
 
 fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
 	@echo fixtures/set020-infection/composer.lock is not up to date.
-
-fixtures/set021-composer/composer.lock: fixtures/set021-composer/composer.json
-	@echo fixtures/set021-composer/composer.lock is not up to date.
 
 fixtures/set023/composer.lock: fixtures/set023/composer.json
 	@echo fixtures/set023/composer.lock is not up to date.

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use function array_keys;
@@ -47,7 +48,13 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         self::assertNull($configuration->getPath());
         self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
         self::assertSame([], $configuration->getFilesWithContents());
-        self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
+        self::assertEquals(
+            [
+                new ComposerPatcher(),
+                new SymfonyPatcher(),
+            ],
+            $configuration->getPatchers(),
+        );
     }
 
     public function test_it_cannot_create_a_configuration_with_an_invalid_key(): void
@@ -121,7 +128,13 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             ],
             $configuration->getWhitelistedFilesWithContents(),
         );
-        self::assertEquals([new SymfonyPatcher()], $configuration->getPatchers());
+        self::assertEquals(
+            [
+                new ComposerPatcher(),
+                new SymfonyPatcher(),
+            ],
+            $configuration->getPatchers(),
+        );
         self::assertEquals(
             Whitelist::create(
                 false,
