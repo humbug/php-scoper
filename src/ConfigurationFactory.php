@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use RuntimeException;
@@ -92,6 +93,7 @@ final class ConfigurationFactory
         $patchers = self::retrievePatchers($config);
 
         array_unshift($patchers, new SymfonyPatcher());
+        array_unshift($patchers, new ComposerPatcher());
 
         $whitelist = $this->configurationWhitelistFactory->createWhitelist($config);
 
