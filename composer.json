@@ -38,7 +38,8 @@
         "phpunit/phpunit": "^9.0"
     },
     "replace": {
-        "humbug/php-scoper": "self.version"
+        "humbug/php-scoper": "self.version",
+        "symfony/polyfill-php73": "*"
     },
 
     "bin": ["bin/php-scoper"],
