@@ -105,7 +105,6 @@ final class ConsoleScoper
                 $inputFilePath,
                 $inputContents,
                 $outputFilePath,
-                $config,
                 $stopOnFailure,
                 $logger,
             );
@@ -190,7 +189,6 @@ final class ConsoleScoper
         string $inputFilePath,
         string $inputContents,
         string $outputFilePath,
-        Configuration $config,
         bool $stopOnFailure,
         ScoperLogger $logger
     ): void {
@@ -198,9 +196,6 @@ final class ConsoleScoper
             $scoppedContent = $scoper->scope(
                 $inputFilePath,
                 $inputContents,
-                $config->getPrefix(),
-                $config->getPatchers(),
-                $config->getWhitelist(),
             );
         } catch (Throwable $throwable) {
             $exception = new ParsingException(

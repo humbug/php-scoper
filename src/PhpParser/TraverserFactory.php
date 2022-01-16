@@ -48,11 +48,7 @@ class TraverserFactory
             ['preserveOriginalNames' => true],
         );
         $identifierResolver = new IdentifierResolver($nameResolver);
-        $stringNodePrefixer = new StringNodePrefixer(
-            $scoper,
-            $prefix,
-            $whitelist,
-        );
+        $stringNodePrefixer = new StringNodePrefixer($scoper);
 
         self::addVisitors(
             $traverser,
