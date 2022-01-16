@@ -61,7 +61,7 @@ final class Container
     public function getParser(): Parser
     {
         if (!isset($this->parser)) {
-            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7, new Lexer());
+            $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Lexer());
         }
 
         return $this->parser;

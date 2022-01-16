@@ -43,10 +43,14 @@ jobs:
             -   name: Build PHAR
                 run: make build
 
-            -   uses: actions/upload-artifact@v1
+            # Smoke test
+            -   name: Ensure the PHAR works
+                run: bin/php-scoper.phar --version
+
+            -   uses: actions/upload-artifact@v2
                 name: Upload the PHAR artifact
                 with:
-                    name: php-scoper.phar
+                    name: php-scoper-phar
                     path: bin/php-scoper.phar
 
     publish-phar:
@@ -56,13 +60,13 @@ jobs:
             - 'build-phar'
         if: github.event_name == 'release'
         steps:
-            -   uses: actions/download-artifact@v1
+            -   uses: actions/download-artifact@v2
                 with:
-                    name: php-scoper.phar
+                    name: php-scoper-phar
                     path: .
 
             -   name: Upload php-scoper.phar
-                uses: actions/upload-release-asset@v1
+                uses: actions/upload-release-asset@v2
                 env:
                     GITHUB_TOKEN: ${{ secrets.PHP_SCOPER_GITHUB_TOKEN }}
                 with:

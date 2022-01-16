@@ -14,26 +14,52 @@ declare(strict_types=1);
 
 namespace KevinGH\Box\PhpScoper;
 
+use Exception;
+use Humbug\PhpScoper\Container as PhpScoperContainer;
+use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
+use Humbug\PhpScoper\Patcher\PatcherChain;
+use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Scoper as PhpScoper;
+use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
 use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Configuration as PhpScoperConfiguration;
+use Opis\Closure\SerializableClosure;
+use Serializable;
+use function array_map;
+use function count;
+use function var_dump;
 
 /**
  * @private
  */
 final class SimpleScoper implements Scoper
 {
-    private $scoper;
-    private $prefix;
-    private $whitelist;
-    private Patcher $patcher;
+    private PhpScoperConfiguration $scoperConfig;
+    private PhpScoperContainer $scoperContainer;
+    private PhpScoper $scoper;
 
-    public function __construct(PhpScoper $scoper, string $prefix, Whitelist $whitelist, Patcher $patcher)
-    {
-        $this->scoper = $scoper;
-        $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
-        $this->patcher = $patcher;
+    /**
+     * @var list<string>
+     */
+    private array $whitelistedFilePaths;
+
+    public function __construct(
+        PhpScoperConfiguration $scoperConfig,
+        string ...$whitelistedFilePaths
+    ) {
+        $this->scoperConfig = new PhpScoperConfiguration(
+            $scoperConfig->getPath(),
+            $scoperConfig->getPrefix(),
+            $scoperConfig->getFilesWithContents(),
+            $scoperConfig->getWhitelistedFilesWithContents(),
+            self::createSerializablePatchers($scoperConfig->getPatcher()),
+            $scoperConfig->getWhitelist(),
+            $scoperConfig->getInternalClasses(),
+            $scoperConfig->getInternalFunctions(),
+            $scoperConfig->getInternalConstants(),
+        );
+        $this->whitelistedFilePaths = $whitelistedFilePaths;
     }
 
     /**
@@ -41,7 +67,7 @@ final class SimpleScoper implements Scoper
      */
     public function scope(string $filePath, string $contents): string
     {
-        return $this->scoper->scope(
+        return $this->getScoper()->scope(
             $filePath,
             $contents,
         );
@@ -52,7 +78,21 @@ final class SimpleScoper implements Scoper
      */
     public function changeWhitelist(Whitelist $whitelist): void
     {
-        $this->whitelist = $whitelist;
+        $previousConfig = $this->scoperConfig;
+
+        $this->scoperConfig = new PhpScoperConfiguration(
+            $previousConfig->getPath(),
+            $previousConfig->getPrefix(),
+            $previousConfig->getFilesWithContents(),
+            $previousConfig->getWhitelistedFilesWithContents(),
+            $previousConfig->getPatcher(),
+            $whitelist,
+            $previousConfig->getInternalClasses(),
+            $previousConfig->getInternalFunctions(),
+            $previousConfig->getInternalConstants(),
+        );
+
+        unset($this->scoper);
     }
 
     /**
@@ -60,7 +100,7 @@ final class SimpleScoper implements Scoper
      */
     public function getWhitelist(): Whitelist
     {
-        return $this->whitelist;
+        return $this->scoperConfig->getWhitelist();
     }
 
     /**
@@ -68,6 +108,68 @@ final class SimpleScoper implements Scoper
      */
     public function getPrefix(): string
     {
-        return $this->prefix;
+        return $this->scoperConfig->getPrefix();
+    }
+
+    private function getScoper(): PhpScoper
+    {
+        if (isset($this->scoper)) {
+            return $this->scoper;
+        }
+
+        if (!isset($this->scoperContainer)) {
+            $this->scoperContainer = new PhpScoperContainer();
+        }
+
+        $scoper = (new PhpScoperContainer())
+            ->getScoperFactory()
+            ->createScoper($this->scoperConfig);
+
+        if (count($this->whitelistedFilePaths) !== 0) {
+            $scoper = new FileWhitelistScoper(
+                $scoper,
+                ...$this->whitelistedFilePaths,
+            );
+        }
+
+        $this->scoper = $scoper;
+
+        return $this->scoper;
+    }
+
+    /**
+     * @param callable[] $patcher
+     *
+     * @retunr SerializableClosure[]
+     */
+    private static function createSerializablePatchers(Patcher $patcher): Patcher
+    {
+        if (!($patcher instanceof PatcherChain)) {
+            return $patcher;
+        }
+
+        $serializablePatchers = array_map(
+            static function (callable $patcher): SerializableClosure {
+                if ($patcher instanceof Patcher) {
+                    $patcher = static fn (string $filePath, string $prefix, string $contents) => $patcher($filePath, $prefix, $contents);
+                }
+
+                return new SerializableClosure($patcher);
+            },
+            $patcher->getPatchers(),
+        );
+
+        return new PatcherChain($serializablePatchers);
+    }
+
+    public function __wakeup()
+    {
+        // We need to make sure that a fresh Scoper & PHP-Parser Parser/Lexer
+        // is used within a sub-process.
+        // Otherwise, there is a risk of data corruption or that a compatibility
+        // layer of some sorts (such as the tokens for PHP-Paser) is not
+        // triggered in the sub-process resulting in obscure errors
+        unset($this->scoper);
+        unset($this->scoperContainer);
     }
 }

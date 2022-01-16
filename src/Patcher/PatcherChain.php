@@ -29,4 +29,14 @@ final class PatcherChain implements Patcher
             $contents,
         );
     }
+
+    /**
+     * @internal
+     *
+     * @return array<(callable(string, string, string): string)|Patcher>
+     */
+    public function getPatchers(): array
+    {
+        return $this->patchers;
+    }
 }

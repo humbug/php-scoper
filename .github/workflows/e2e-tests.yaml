@@ -1,4 +1,4 @@
-name: Tests
+name: End-to-End Tests
 
 on:
     push:
@@ -8,32 +8,9 @@ on:
         types: [ created ]
 
 jobs:
-    root-version:
+    build-test-phar:
         runs-on: ubuntu-latest
-        name: Check COMPOSER_ROOT_VERSION value
-        strategy:
-            fail-fast: false
-            matrix:
-                php: [ '8.1' ]
-        steps:
-            -   name: Checkout
-                uses: actions/checkout@v2
-                with:
-                    fetch-depth: 0
-
-            -   name: Setup PHP
-                uses: shivammathur/setup-php@v2
-                with:
-                    php-version: ${{ matrix.php }}
-                    tools: composer
-                    coverage: none
-
-            -   name: Check COMPOSER_ROOT_VERSION
-                run: make check-composer-root-version
-
-    unit-tests:
-        runs-on: ubuntu-latest
-        name: Unit tests (PHP ${{ matrix.php }})
+        name: Build (test) PHAR
         strategy:
             fail-fast: false
             matrix:
@@ -51,6 +28,7 @@ jobs:
                 uses: shivammathur/setup-php@v2
                 with:
                     php-version: ${{ matrix.php }}
+                    ini-values: phar.readonly=0
                     tools: composer
                     coverage: none
 
@@ -65,12 +43,23 @@ jobs:
                 with:
                     composer-options: '--prefer-dist'
 
-            -   name: Run tests
-                run: make tu
+            -   name: Build PHAR
+                run: make build
+
+            # Smoke test
+            -   name: Ensure the PHAR works
+                run: bin/php-scoper.phar --version
+
+            -   uses: actions/upload-artifact@v2
+                name: Upload the PHAR artifact
+                with:
+                    name: php-scoper-phar-${{ matrix.php }}
+                    path: bin/php-scoper.phar
 
     e2e-tests:
-        runs-on: ubuntu-latest
         name: 'e2e Test ${{ matrix.e2e }} (PHP: ${{ matrix.php }})'
+        runs-on: ubuntu-latest
+        needs: build-test-phar
         strategy:
             fail-fast: false
             matrix:
@@ -126,6 +115,23 @@ jobs:
                 uses: ramsey/composer-install@v1
                 with:
                     composer-options: '--prefer-dist'
+
+            -   name: Retrieve built PHAR
+                uses: actions/download-artifact@v2
+                with:
+                    name: php-scoper-phar-${{ matrix.php }}
+                    path: bin
+
+            -   name: Ensure PHAR will not be rebuilt
+                run: touch -c bin/php-scoper.phar
+
+            # See https://github.com/actions/download-artifact#limitations
+            # the permissions are not guaranteed to be preserved
+            -   name: Ensure PHAR is executable
+                run: chmod 755 bin/php-scoper.phar
+
+            -   name: Check that the PHAR works
+                run: bin/php-scoper.phar --version
 
             -   name: Install tree
                 if: matrix.e2e == 'e2e_032'
