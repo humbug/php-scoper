@@ -34,13 +34,20 @@ final class YamlScoper implements Scoper
     private const FILE_PATH_PATTERN = '/\.ya?ml$/i';
 
     private Scoper $decoratedScoper;
+    private string $prefix;
+    private Whitelist $whitelist;
 
-    public function __construct(Scoper $decoratedScoper)
-    {
+    public function __construct(
+        Scoper $decoratedScoper,
+        string $prefix,
+        Whitelist $whitelist
+    ) {
         $this->decoratedScoper = $decoratedScoper;
+        $this->prefix = $prefix;
+        $this->whitelist = $whitelist;
     }
 
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         if (1 !== native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
             return $this->decoratedScoper->scope(...func_get_args());
@@ -50,20 +57,20 @@ final class YamlScoper implements Scoper
             return $contents;
         }
 
-        $contents = $this->replaceClasses(
+        $contents = self::replaceClasses(
             array_filter($matches['singleClass']),
             array_filter($matches['singleSeparator']),
-            $prefix,
+            $this->prefix,
             $contents,
-            $whitelist
+            $this->whitelist
         );
 
-        $contents = $this->replaceClasses(
+        $contents = self::replaceClasses(
             array_filter($matches['class']),
             array_filter($matches['separator']),
-            $prefix,
+            $this->prefix,
             $contents,
-            $whitelist
+            $this->whitelist
         );
 
         return $contents;
@@ -73,7 +80,7 @@ final class YamlScoper implements Scoper
      * @param string[] $classes
      * @param string[] $separators
      */
-    private function replaceClasses(
+    private static function replaceClasses(
         array $classes,
         array $separators,
         string $prefix,

@@ -82,7 +82,9 @@ class PhpScoperTest extends TestCase
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
-            new TraverserFactory(Reflector::createWithPhpStormStubs())
+            new TraverserFactory(Reflector::createWithPhpStormStubs()),
+            'Humbug',
+            Whitelist::create(),
         );
     }
 
@@ -93,10 +95,7 @@ class PhpScoperTest extends TestCase
 
     public function test_can_scope_a_PHP_file(): void
     {
-        $prefix = 'Humbug';
         $filePath = 'file.php';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
         <?php
@@ -113,7 +112,7 @@ class PhpScoperTest extends TestCase
         
         PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
@@ -123,11 +122,10 @@ class PhpScoperTest extends TestCase
         $filePath = 'file.yaml';
         $fileContents = '';
         $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $fileContents)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -141,10 +139,12 @@ class PhpScoperTest extends TestCase
         $scoper = new PhpScoper(
             new FakeParser(),
             $this->decoratedScoper,
-            $this->traverserFactory
+            $this->traverserFactory,
+            $prefix,
+            $whitelist
         );
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
 
@@ -153,10 +153,7 @@ class PhpScoperTest extends TestCase
 
     public function test_can_scope_a_PHP_file_with_the_wrong_extension(): void
     {
-        $prefix = 'Humbug';
         $filePath = 'file';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
         <?php
@@ -174,17 +171,14 @@ class PhpScoperTest extends TestCase
         
         PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
 
-    public function test_can_scope_PHP_binary_files(): void
+    public function test_can_scope_PHP_executable_files(): void
     {
-        $prefix = 'Humbug';
         $filePath = 'hello';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
         #!/usr/bin/env php
@@ -202,16 +196,15 @@ class PhpScoperTest extends TestCase
         
         PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
 
-    public function test_does_not_scope_a_non_PHP_binary_files(): void
+    public function test_does_not_scope_a_non_PHP_executable_files(): void
     {
         $prefix = 'Humbug';
         $filePath = 'hello';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
@@ -222,7 +215,7 @@ class PhpScoperTest extends TestCase
         PHP;
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $contents)
             ->willReturn(
                 $expected = 'Scoped content'
             )
@@ -236,10 +229,12 @@ class PhpScoperTest extends TestCase
         $scoper = new PhpScoper(
             new FakeParser(),
             $this->decoratedScoper,
-            $this->traverserFactory
+            $this->traverserFactory,
+            $prefix,
+            $whitelist
         );
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 
@@ -256,12 +251,8 @@ class PhpScoperTest extends TestCase
         
         PHP;
 
-        $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
-
         try {
-            $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+            $this->scoper->scope($filePath, $contents);
 
             self::fail('Expected exception to have been thrown.');
         } catch (PhpParserError $error) {
@@ -286,10 +277,8 @@ class PhpScoperTest extends TestCase
         $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
+            ->scope(Argument::any(), Argument::any())
+            ->willReturn('Scoped content')
         ;
 
         $this->parserProphecy
@@ -343,11 +332,13 @@ class PhpScoperTest extends TestCase
         $scoper = new PhpScoper(
             $this->parser,
             new FakeScoper(),
-            $this->traverserFactory
+            $this->traverserFactory,
+            $prefix,
+            $whitelist,
         );
 
         foreach ($files as $file => $contents) {
-            $scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
+            $scoper->scope($file, $contents);
         }
 
         $this->parserProphecy->parse(Argument::cetera())->shouldHaveBeenCalledTimes(2);

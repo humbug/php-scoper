@@ -56,13 +56,13 @@ class ConfigurableScoperTest extends TestCase
         $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $contents)
             ->willReturn($expected = 'Decorated scoper contents')
         ;
 
         $scoper = new ConfigurableScoper($this->decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 
@@ -83,19 +83,19 @@ class ConfigurableScoperTest extends TestCase
         $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope(Argument::any(), $contents, $prefix, $patchers, $whitelist)
+            ->scope(Argument::any(), $contents, $prefix)
             ->willReturn($expected = 'scoped contents')
         ;
 
         $scoper = (new ConfigurableScoper($this->decoratedScoper))->withWhitelistedFiles(...$whitelistedFiles);
 
         foreach ($whitelistedFiles as $whitelistedFile) {
-            $actual = $scoper->scope($whitelistedFile, $contents, $prefix, $patchers, $whitelist);
+            $actual = $scoper->scope($whitelistedFile, $contents);
 
             self::assertSame($contents, $actual);
         }
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 

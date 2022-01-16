@@ -22,19 +22,24 @@ use function func_get_args;
 final class PatchScoper implements Scoper
 {
     private Scoper $decoratedScoper;
+    private string $prefix;
+    // TODO: introduce a typehint for patchers
+    private array $patchers;
 
-    public function __construct(Scoper $decoratedScoper)
+    public function __construct(Scoper $decoratedScoper, string $prefix, array $patchers)
     {
         $this->decoratedScoper = $decoratedScoper;
+        $this->prefix = $prefix;
+        $this->patchers = $patchers;
     }
 
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
+        $prefix = $this->prefix;
+
         return (string) array_reduce(
-            $patchers,
-            static function (string $contents, callable $patcher) use ($filePath, $prefix): string {
-                return $patcher($filePath, $prefix, $contents);
-            },
+            $this->patchers,
+            static fn (string $contents, callable $patcher) => $patcher($filePath, $prefix, $contents),
             $this->decoratedScoper->scope(...func_get_args())
         );
     }

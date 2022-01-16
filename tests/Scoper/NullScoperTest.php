@@ -34,13 +34,10 @@ class NullScoperTest extends TestCase
     {
         $filePath = 'file';
         $contents = $expected = 'File content';
-        $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $scoper = new NullScoper();
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }

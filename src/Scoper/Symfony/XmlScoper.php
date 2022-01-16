@@ -34,31 +34,46 @@ final class XmlScoper implements Scoper
     private const FILE_PATH_PATTERN = '/\.xml$/i';
 
     private Scoper $decoratedScoper;
+    private string $prefix;
+    private Whitelist $whitelist;
 
-    public function __construct(Scoper $decoratedScoper)
-    {
+    public function __construct(
+        Scoper $decoratedScoper,
+        string $prefix,
+        Whitelist $whitelist
+    ) {
         $this->decoratedScoper = $decoratedScoper;
+        $this->prefix = $prefix;
+        $this->whitelist = $whitelist;
     }
 
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         if (1 !== native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
-        $contents = $this->scopeClasses($contents, $prefix, $whitelist);
-        $contents = $this->scopeNamespaces($contents, $prefix, $whitelist);
+        $contents = self::scopeClasses(
+            $contents,
+            $this->prefix,
+            $this->whitelist
+        );
+        $contents = self::scopeNamespaces(
+            $contents,
+            $this->prefix,
+            $this->whitelist
+        );
 
         return $contents;
     }
 
-    private function scopeClasses(string $contents, string $prefix, Whitelist $whitelist): string
+    private static function scopeClasses(string $contents, string $prefix, Whitelist $whitelist): string
     {
         if (1 > native_preg_match_all('/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u', $contents, $matches)) {
             return $contents;
         }
 
-        $contents = $this->replaceClasses(
+        $contents = self::replaceClasses(
             array_filter($matches['singleClass']),
             array_filter($matches['singleSeparator']),
             $prefix,
@@ -66,7 +81,7 @@ final class XmlScoper implements Scoper
             $whitelist
         );
 
-        $contents = $this->replaceClasses(
+        $contents = self::replaceClasses(
             array_filter($matches['class']),
             array_filter($matches['separator']),
             $prefix,
@@ -77,13 +92,13 @@ final class XmlScoper implements Scoper
         return $contents;
     }
 
-    private function scopeNamespaces(string $contents, string $prefix, Whitelist $whitelist): string
+    private static function scopeNamespaces(string $contents, string $prefix, Whitelist $whitelist): string
     {
         if (1 > native_preg_match_all('/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/', $contents, $matches)) {
             return $contents;
         }
 
-        return $this->replaceClasses(
+        return self::replaceClasses(
             array_filter($matches['namespace']),
             array_filter($matches['separator']),
             $prefix,
@@ -96,7 +111,7 @@ final class XmlScoper implements Scoper
      * @param string[] $classes
      * @param string[] $separators
      */
-    private function replaceClasses(
+    private static function replaceClasses(
         array $classes,
         array $separators,
         string $prefix,

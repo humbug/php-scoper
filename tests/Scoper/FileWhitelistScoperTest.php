@@ -57,7 +57,7 @@ class FileWhitelistScoperTest extends TestCase
         $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope($notWhitelistedFilePath, $contents, $prefix, $patchers, $whitelist)
+            ->scope($notWhitelistedFilePath, $contents)
             ->willReturn($scopedContents = 'Decorated scoper contents')
         ;
 
@@ -65,12 +65,12 @@ class FileWhitelistScoperTest extends TestCase
 
         self::assertSame(
             $scopedContents,
-            $scoper->scope($notWhitelistedFilePath, $contents, $prefix, $patchers, $whitelist)
+            $scoper->scope($notWhitelistedFilePath, $contents)
         );
 
         self::assertSame(
             $contents,
-            $scoper->scope($whitelistedFilePath, $contents, $prefix, $patchers, $whitelist)
+            $scoper->scope($whitelistedFilePath, $contents)
         );
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);

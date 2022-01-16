@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Scoper\NullScoper;
@@ -37,15 +38,24 @@ class ScoperFactory
 
     public function createScoper(Configuration $configuration): Scoper
     {
+        $prefix = $configuration->getPrefix();
+        $whitelist = $configuration->getWhitelist();
+
+        $autoloadPrefix = new AutoloadPrefixer($prefix, $whitelist);
+
         return new PatchScoper(
             new PhpScoper(
                 $this->parser,
                 new JsonFileScoper(
                     new InstalledPackagesScoper(
                         new SymfonyScoper(
-                            new NullScoper()
-                        )
-                    )
+                            new NullScoper(),
+                            $prefix,
+                            $whitelist,
+                        ),
+                        $autoloadPrefix
+                    ),
+                    $autoloadPrefix
                 ),
                 new TraverserFactory(
                     Reflector::createWithPhpStormStubs()->withSymbols(
@@ -53,8 +63,12 @@ class ScoperFactory
                         $configuration->getInternalFunctions(),
                         $configuration->getInternalConstants(),
                     ),
-                )
-            )
+                ),
+                $prefix,
+                $whitelist,
+            ),
+            $prefix,
+            $configuration->getPatchers(),
         );
     }
 }

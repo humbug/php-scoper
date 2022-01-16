@@ -20,7 +20,7 @@ use LogicException;
 
 final class FakeScoper implements Scoper
 {
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         throw new LogicException();
     }

@@ -31,21 +31,16 @@ class XmlScoperTest extends TestCase
     use ProphecyTrait;
 
     /**
-     * @var Scoper
-     */
-    private $scoper;
-
-    /**
      * @var ObjectProphecy<Scoper>
      */
     private ObjectProphecy $decoratedScoperProphecy;
 
+    private Scoper $decoratedScoper;
+
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $decoratedScoper = $this->decoratedScoperProphecy->reveal();
-
-        $this->scoper = new XmlScoper($decoratedScoper);
+        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
     public function test_it_is_a_Scoper(): void
@@ -59,7 +54,6 @@ class XmlScoperTest extends TestCase
     public function test_it_can_scope_XML_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create(
             true,
             true,
@@ -72,14 +66,22 @@ class XmlScoperTest extends TestCase
         $contents = '';
 
         if (false === $scoped) {
-            $this->decoratedScoperProphecy->scope(Argument::cetera())->willReturn($expected = 'scoped by decorated scoper');
+            $this->decoratedScoperProphecy
+                ->scope(Argument::cetera())
+                ->willReturn($expected = 'scoped by decorated scoper');
             $scopedCount = 1;
         } else {
             $expected = $contents;
             $scopedCount = 0;
         }
 
-        $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
+        $scoper = new XmlScoper(
+            $this->decoratedScoper,
+            $prefix,
+            $whitelist,
+        );
+
+        $actual = $scoper->scope($file, $contents);
 
         self::assertSame($expected, $actual);
 
@@ -91,11 +93,16 @@ class XmlScoperTest extends TestCase
      */
     public function test_it_scopes_XML_files(string $contents, Whitelist $whitelist, string $expected, array $expectedClasses): void
     {
-        $prefix = 'Humbug';
         $file = 'file.xml';
-        $patchers = [create_fake_patcher()];
+        $prefix = 'Humbug';
 
-        $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
+        $scoper = new XmlScoper(
+            $this->decoratedScoper,
+            $prefix,
+            $whitelist,
+        );
+
+        $actual = $scoper->scope($file, $contents);
 
         self::assertSame($expected, $actual);
 
