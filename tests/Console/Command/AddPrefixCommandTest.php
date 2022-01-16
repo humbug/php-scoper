@@ -21,6 +21,7 @@ use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
+use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\RegexChecker;
@@ -576,6 +577,77 @@ EOF;
         }
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
+    }
+
+    public function test_attempts_to_use_patch_file_in_current_directory(): void
+    {
+        chdir(escape_path($root = self::FIXTURE_PATH.'/set006'));
+
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            '--output-dir' => $this->tmp,
+            '--no-interaction',
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
+        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
+        $this->fileSystemProphecy
+            ->isAbsolutePath(
+                Argument::that(
+                    static function (string $path): bool {
+                        return DIRECTORY_SEPARATOR === $path[0]
+                            && 'scoper.inc.php' === substr($path, -14);
+                    }
+                )
+            )
+            ->willReturn(true);
+
+        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+
+        $expectedFiles = [
+            'scoper.inc.php' => 'f1',
+        ];
+
+        $root = realpath($root);
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+
+            $inputContents = file_get_contents($inputPath);
+
+            $this->scoperProphecy
+                ->scope(
+                    $inputPath,
+                    $inputContents,
+                    'MyPrefix',
+                    Argument::that(static function ($arg) use (&$patchersFound) {
+                        $patchersFound = $arg;
+
+                        return true;
+                    }),
+                    Whitelist::create(),
+                )
+                ->willReturn($prefixedContents)
+            ;
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+        }
+
+        $this->appTester->run($input);
+
+        self::assertSame(0, $this->appTester->getStatusCode());
+
+        self::assertCount(3, $patchersFound);
+        self::assertEquals(new ComposerPatcher(), $patchersFound[0]);
+        self::assertEquals(new SymfonyPatcher(), $patchersFound[1]);
+        self::assertEquals('Hello world!', $patchersFound[2]());
+
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
+
+        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values(): void
