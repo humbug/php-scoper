@@ -19,7 +19,7 @@ use Humbug\PhpScoper\Whitelist;
 
 final class NullScoper implements Scoper
 {
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         return $contents;
     }

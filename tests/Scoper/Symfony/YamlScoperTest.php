@@ -31,21 +31,16 @@ class YamlScoperTest extends TestCase
     use ProphecyTrait;
 
     /**
-     * @var Scoper
-     */
-    private $scoper;
-
-    /**
      * @var ObjectProphecy<Scoper>
      */
     private ObjectProphecy $decoratedScoperProphecy;
 
+    private Scoper $decoratedScoper;
+
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $decoratedScoper = $this->decoratedScoperProphecy->reveal();
-
-        $this->scoper = new YamlScoper($decoratedScoper);
+        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
     public function test_it_is_a_Scoper(): void
@@ -59,20 +54,27 @@ class YamlScoperTest extends TestCase
     public function test_it_can_scope_Yaml_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
         $whitelist = Whitelist::create();
 
         $contents = '';
 
         if (false === $scoped) {
-            $this->decoratedScoperProphecy->scope(Argument::cetera())->willReturn($expected = 'scoped by decorated scoper');
+            $this->decoratedScoperProphecy
+                ->scope(Argument::cetera())
+                ->willReturn($expected = 'scoped by decorated scoper');
             $scopedCount = 1;
         } else {
             $expected = $contents;
             $scopedCount = 0;
         }
 
-        $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
+        $scoper = new YamlScoper(
+            $this->decoratedScoper,
+            $prefix,
+            $whitelist,
+        );
+
+        $actual = $scoper->scope($file, $contents);
 
         self::assertSame($expected, $actual);
 
@@ -90,9 +92,14 @@ class YamlScoperTest extends TestCase
     ): void {
         $prefix = 'Humbug';
         $file = 'file.yaml';
-        $patchers = [create_fake_patcher()];
 
-        $actual = $this->scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
+        $scoper = new YamlScoper(
+            $this->decoratedScoper,
+            $prefix,
+            $whitelist,
+        );
+
+        $actual = $scoper->scope($file, $contents);
 
         self::assertSame($expected, $actual);
 

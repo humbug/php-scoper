@@ -33,19 +33,23 @@ final class InstalledPackagesScoper implements Scoper
     private static string $filePattern = '/composer(\/|\\\\)installed\.json$/';
 
     private Scoper $decoratedScoper;
+    private AutoloadPrefixer $autoloadPrefixer;
 
-    public function __construct(Scoper $decoratedScoper)
-    {
+    public function __construct(
+        Scoper $decoratedScoper,
+        AutoloadPrefixer $autoloadPrefixer
+    ) {
         $this->decoratedScoper = $decoratedScoper;
+        $this->autoloadPrefixer = $autoloadPrefixer;
     }
 
     /**
      * Scopes PHP and JSON files related to Composer.
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         if (1 !== native_preg_match(self::$filePattern, $filePath)) {
-            return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+            return $this->decoratedScoper->scope($filePath, $contents);
         }
 
         $decodedJson = self::decodeContents($contents);
@@ -54,11 +58,7 @@ final class InstalledPackagesScoper implements Scoper
             throw new InvalidArgumentException('Expected the decoded JSON to contain the list of installed packages');
         }
 
-        $decodedJson->packages = self::prefixLockPackages(
-            $decodedJson->packages,
-            $prefix,
-            $whitelist,
-        );
+        $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages);
 
         return json_encode(
             $decodedJson,
@@ -87,14 +87,10 @@ final class InstalledPackagesScoper implements Scoper
      *
      * @return array<string, stdClass>
      */
-    private static function prefixLockPackages(array $packages, string $prefix, Whitelist $whitelist): array
+    private function prefixLockPackages(array $packages): array
     {
         return array_map(
-            static fn (stdClass $package) => AutoloadPrefixer::prefixPackageAutoloadStatements(
-                $package,
-                $prefix,
-                $whitelist,
-            ),
+            fn (stdClass $package) => $this->autoloadPrefixer->prefixPackageAutoloadStatements($package),
             $packages,
         );
     }

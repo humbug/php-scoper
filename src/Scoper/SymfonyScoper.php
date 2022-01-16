@@ -28,10 +28,19 @@ final class SymfonyScoper implements Scoper
 {
     private SymfonyXmlScoper $decoratedScoper;
 
-    public function __construct(Scoper $decoratedScoper)
-    {
+    public function __construct(
+        Scoper $decoratedScoper,
+        string $prefix,
+        Whitelist $whitelist
+    ) {
         $this->decoratedScoper = new SymfonyXmlScoper(
-            new SymfonyYamlScoper($decoratedScoper)
+            new SymfonyYamlScoper(
+                $decoratedScoper,
+                $prefix,
+                $whitelist,
+            ),
+            $prefix,
+            $whitelist,
         );
     }
 
@@ -40,7 +49,7 @@ final class SymfonyScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         return $this->decoratedScoper->scope(...func_get_args());
     }

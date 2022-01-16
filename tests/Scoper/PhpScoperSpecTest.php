@@ -141,16 +141,17 @@ class PhpScoperSpecTest extends TestCase
         }
 
         $filePath = 'file.php';
-        $patchers = [create_fake_patcher()];
 
         $scoper = $this->createScoper(
             $internalClasses,
             $internalFunctions,
             $internalConstants,
+            $prefix,
+            $whitelist,
         );
 
         try {
-            $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+            $actual = $scoper->scope($filePath, $contents);
 
             if (null === $expected) {
                 self::fail('Expected exception to be thrown.');
@@ -271,7 +272,9 @@ class PhpScoperSpecTest extends TestCase
     private function createScoper(
         array $internalClasses,
         array $internalFunctions,
-        array $internalConstants
+        array $internalConstants,
+        string $prefix,
+        Whitelist $whitelist
     ): Scoper
     {
         $phpParser = create_parser();
@@ -287,6 +290,8 @@ class PhpScoperSpecTest extends TestCase
             $phpParser,
             new FakeScoper(),
             new TraverserFactory($reflector),
+            $prefix,
+            $whitelist,
         );
     }
 

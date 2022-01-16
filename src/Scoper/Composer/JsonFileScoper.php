@@ -30,24 +30,28 @@ use const JSON_THROW_ON_ERROR;
 final class JsonFileScoper implements Scoper
 {
     private Scoper $decoratedScoper;
+    private AutoloadPrefixer $autoloadPrefixer;
 
-    public function __construct(Scoper $decoratedScoper)
-    {
+    public function __construct(
+        Scoper $decoratedScoper,
+        AutoloadPrefixer $autoloadPrefixer
+    ) {
         $this->decoratedScoper = $decoratedScoper;
+        $this->autoloadPrefixer = $autoloadPrefixer;
     }
 
     /**
      * Scopes PHP and JSON files related to Composer.
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         if (1 !== native_preg_match('/composer\.json$/', $filePath)) {
-            return $this->decoratedScoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+            return $this->decoratedScoper->scope($filePath, $contents);
         }
 
         $decodedJson = self::decodeContents($contents);
 
-        $decodedJson = AutoloadPrefixer::prefixPackageAutoloadStatements($decodedJson, $prefix, $whitelist);
+        $decodedJson = $this->autoloadPrefixer->prefixPackageAutoloadStatements($decodedJson);
 
         return json_encode(
             $decodedJson,

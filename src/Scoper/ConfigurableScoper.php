@@ -43,7 +43,7 @@ final class ConfigurableScoper implements Scoper
         ;
     }
 
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         return $this->decoratedScoper->scope(...func_get_args());
     }

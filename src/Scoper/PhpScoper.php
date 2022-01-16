@@ -35,12 +35,21 @@ final class PhpScoper implements Scoper
     private Parser $parser;
     private Scoper $decoratedScoper;
     private TraverserFactory $traverserFactory;
+    private string $prefix;
+    private Whitelist $whitelist;
 
-    public function __construct(Parser $parser, Scoper $decoratedScoper, TraverserFactory $traverserFactory)
-    {
+    public function __construct(
+        Parser $parser,
+        Scoper $decoratedScoper,
+        TraverserFactory $traverserFactory,
+        string $prefix,
+        Whitelist $whitelist
+    ) {
         $this->parser = $parser;
         $this->decoratedScoper = $decoratedScoper;
         $this->traverserFactory = $traverserFactory;
+        $this->prefix = $prefix;
+        $this->whitelist = $whitelist;
     }
 
     /**
@@ -48,20 +57,26 @@ final class PhpScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         if (!self::isPhpFile($filePath, $contents)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
-        return $this->scopePhp($contents, $prefix, $whitelist);
+        return $this->scopePhp($contents);
     }
 
-    public function scopePhp(string $php, string $prefix, Whitelist $whitelist): string
+    public function scopePhp(string $php): string
     {
         $statements = $this->parser->parse($php);
 
-        $statements = $this->traverserFactory->create($this, $prefix, $whitelist)->traverse($statements);
+        $statements = $this->traverserFactory
+            ->create(
+                $this,
+                $this->prefix,
+                $this->whitelist
+            )
+            ->traverse($statements);
 
         $prettyPrinter = new Standard();
 

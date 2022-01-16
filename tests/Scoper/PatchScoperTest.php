@@ -71,18 +71,20 @@ class PatchScoperTest extends TestCase
             },
         ];
 
-        $whitelist = Whitelist::create();
-
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $contents)
             ->willReturn('Decorated scoper contents')
         ;
 
         $expected = 'File content after patch 2';
 
-        $scoper = new PatchScoper($this->decoratedScoper);
+        $scoper = new PatchScoper(
+            $this->decoratedScoper,
+            $prefix,
+            $patchers,
+        );
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 

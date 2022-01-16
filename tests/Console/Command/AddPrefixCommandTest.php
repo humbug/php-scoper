@@ -189,9 +189,6 @@ EOF;
                 ->scope(
                     $inputPath,
                     $inputContents,
-                    'MyPrefix',
-                    Argument::any(),
-                    Whitelist::create(),
                 )
                 ->willReturn($prefixedContents)
             ;
@@ -249,26 +246,14 @@ EOF;
 
             if (null !== $prefixedContents) {
                 $this->scoperProphecy
-                    ->scope(
-                        $inputPath,
-                        $inputContents,
-                        'MyPrefix',
-                        Argument::any(),
-                        Whitelist::create(),
-                    )
+                    ->scope($inputPath, $inputContents)
                     ->willReturn($prefixedContents)
                 ;
 
                 $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
             } else {
                 $this->scoperProphecy
-                    ->scope(
-                        $inputPath,
-                        $inputContents,
-                        'MyPrefix',
-                        Argument::any(),
-                        Whitelist::create(),
-                    )
+                    ->scope($inputPath, $inputContents)
                     ->willThrow(new RootRuntimeException('Scoping of the file failed'))
                 ;
 
@@ -322,13 +307,7 @@ EOF;
             $inputContents = file_get_contents($inputPath);
 
             $this->scoperProphecy
-                ->scope(
-                    $inputPath,
-                    $inputContents,
-                    'MyPrefix',
-                    Argument::any(),
-                    Whitelist::create(),
-                )
+                ->scope($inputPath, $inputContents)
                 ->willReturn($prefixedContents)
             ;
 
@@ -383,13 +362,7 @@ EOF;
             $prefixedFileContents = 'Random string';
 
             $this->scoperProphecy
-                ->scope(
-                    $inputPath,
-                    $inputContents,
-                    'MyPrefix',
-                    Argument::any(),
-                    Whitelist::create(),
-                )
+                ->scope($inputPath, $inputContents)
                 ->willReturn($prefixedFileContents)
             ;
 
@@ -407,57 +380,6 @@ EOF;
         $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
-    }
-
-    public function test_applies_a_random_prefix_when_none_given(): void
-    {
-        $input = [
-            'add-prefix',
-            'paths' => [
-                self::FIXTURE_PATH.'/set002/original',
-            ],
-            '--output-dir' => $this->tmp,
-            '--no-interaction',
-            '--no-config' => null,
-        ];
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldBeCalled();
-        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldBeCalled();
-
-        $this->scoperProphecy
-            ->scope(
-                Argument::any(),
-                Argument::any(),
-                Argument::that(
-                    function (string $prefix): bool {
-                        $this->assertMatchesRegularExpression(
-                            '/^\_PhpScoper[a-z0-9]{12}$/',
-                            $prefix
-                        );
-
-                        return true;
-                    }
-                ),
-                Argument::any(),
-                Whitelist::create(),
-            )
-            ->willReturn('')
-        ;
-
-        $this->appTester->run($input);
-
-        self::assertSame(0, $this->appTester->getStatusCode());
-
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalled();
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalled();
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalled();
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled();
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalled();
     }
 
     public function test_scope_the_current_working_directory_if_no_path_given(): void
@@ -495,13 +417,7 @@ EOF;
             $inputContents = file_get_contents($inputPath);
 
             $this->scoperProphecy
-                ->scope(
-                    $inputPath,
-                    $inputContents,
-                    'MyPrefix',
-                    Argument::any(),
-                    Whitelist::create(),
-                )
+                ->scope($inputPath, $inputContents)
                 ->willReturn($prefixedContents)
             ;
 
@@ -556,13 +472,7 @@ EOF;
             $inputContents = file_get_contents($inputPath);
 
             $this->scoperProphecy
-                ->scope(
-                    $inputPath,
-                    $inputContents,
-                    'MyPrefix',
-                    Argument::any(),
-                    Whitelist::create(),
-                )
+                ->scope($inputPath, $inputContents)
                 ->willReturn($prefixedContents)
             ;
 
@@ -618,13 +528,7 @@ EOF;
             $inputContents = file_get_contents($inputPath);
 
             $this->scoperProphecy
-                ->scope(
-                    $inputPath,
-                    $inputContents,
-                    'MyPrefix',
-                    Argument::any(),
-                    Whitelist::create(),
-                )
+                ->scope($inputPath, $inputContents)
                 ->willReturn($prefixedContents)
             ;
 
@@ -673,77 +577,6 @@ EOF;
         }
 
         $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
-    }
-
-    public function test_attempts_to_use_patch_file_in_current_directory(): void
-    {
-        chdir(escape_path($root = self::FIXTURE_PATH.'/set006'));
-
-        $input = [
-            'add-prefix',
-            '--prefix' => 'MyPrefix',
-            '--output-dir' => $this->tmp,
-            '--no-interaction',
-        ];
-
-        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
-        $this->fileSystemProphecy->isAbsolutePath('scoper.inc.php')->willReturn(false);
-        $this->fileSystemProphecy
-            ->isAbsolutePath(
-                Argument::that(
-                    static function (string $path): bool {
-                        return DIRECTORY_SEPARATOR === $path[0]
-                            && 'scoper.inc.php' === substr($path, -14);
-                    }
-                )
-            )
-            ->willReturn(true);
-
-        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
-        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
-
-        $expectedFiles = [
-            'scoper.inc.php' => 'f1',
-        ];
-
-        $root = realpath($root);
-
-        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
-
-            $inputContents = file_get_contents($inputPath);
-
-            $this->scoperProphecy
-                ->scope(
-                    $inputPath,
-                    $inputContents,
-                    'MyPrefix',
-                    Argument::that(static function ($arg) use (&$patchersFound) {
-                        $patchersFound = $arg;
-
-                        return true;
-                    }),
-                    Whitelist::create(),
-                )
-                ->willReturn($prefixedContents)
-            ;
-
-            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
-        }
-
-        $this->appTester->run($input);
-
-        self::assertSame(0, $this->appTester->getStatusCode());
-
-        self::assertCount(3, $patchersFound);
-        self::assertEquals(new ComposerPatcher(), $patchersFound[0]);
-        self::assertEquals(new SymfonyPatcher(), $patchersFound[1]);
-        self::assertEquals('Hello world!', $patchersFound[2]());
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values(): void
@@ -813,7 +646,7 @@ EOF;
                     Argument::any(),
                     Whitelist::create(),
                 )
-                ->willThrow($scopingException = new RuntimeException('Could not scope file'))
+                ->willThrow(new RuntimeException('Could not scope file'))
             ;
 
             $this->fileSystemProphecy->dumpFile($outputPath, $fileContents)->shouldBeCalled();

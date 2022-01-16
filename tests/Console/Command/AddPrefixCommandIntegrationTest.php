@@ -43,9 +43,6 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase
 {
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
 
-    /**
-     * @var ApplicationTester
-     */
     private ApplicationTester $appTester;
 
     protected function setUp(): void
