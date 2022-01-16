@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Patcher\PatcherChain;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -38,7 +39,7 @@ final class ConfigurationTest extends TestCase
             $prefix,
             [],
             [],
-            [],
+            new PatcherChain([]),
             Whitelist::create(),
             [],
             [],

@@ -19,7 +19,7 @@ use function Safe\sprintf;
 use function str_replace;
 use function strpos;
 
-final class ComposerPatcher
+final class ComposerPatcher implements Patcher
 {
     private const PATHS = [
         'src/Composer/Package/Loader/ArrayLoader.php',

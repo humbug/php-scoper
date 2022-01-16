@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Humbug\PhpScoper\Patcher\DummyPatcher;
+use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\Assert;
@@ -22,6 +24,7 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
+use function Safe\sprintf;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PatchScoper
@@ -53,35 +56,19 @@ class PatchScoperTest extends TestCase
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
         $prefix = 'Humbug';
-
-        $patchers = [
-            static function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
-                Assert::assertSame($filePath, $patcherFilePath);
-                Assert::assertSame($prefix, $patcherPrefix);
-                Assert::assertSame('Decorated scoper contents', $contents);
-
-                return 'File content after patch 1';
-            },
-            static function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
-                Assert::assertSame($filePath, $patcherFilePath);
-                Assert::assertSame($prefix, $patcherPrefix);
-                Assert::assertSame('File content after patch 1', $contents);
-
-                return 'File content after patch 2';
-            },
-        ];
+        $patcher = new DummyPatcher();
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $contents)
             ->willReturn('Decorated scoper contents')
         ;
 
-        $expected = 'File content after patch 2';
+        $expected = 'patchedContent<Decorated scoper contents>';
 
         $scoper = new PatchScoper(
             $this->decoratedScoper,
             $prefix,
-            $patchers,
+            $patcher,
         );
 
         $actual = $scoper->scope($filePath, $contents);

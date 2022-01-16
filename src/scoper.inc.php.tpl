@@ -47,7 +47,7 @@ return [
     //
     // For more see: https://github.com/humbug/php-scoper#patchers
     'patchers' => [
-        function (string $filePath, string $prefix, string $contents): string {
+        static function (string $filePath, string $prefix, string $contents): string {
             // Change the contents here.
 
             return $contents;

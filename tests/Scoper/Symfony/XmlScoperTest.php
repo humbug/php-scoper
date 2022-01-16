@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use function Humbug\PhpScoper\create_fake_patcher;
 use function is_a;
 
 /**

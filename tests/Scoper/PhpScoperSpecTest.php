@@ -42,7 +42,6 @@ use function basename;
 use function count;
 use function current;
 use function explode;
-use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 use function implode;
 use function is_array;

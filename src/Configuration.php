@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Patcher\Patcher;
 use InvalidArgumentException;
 use function Safe\preg_match;
 use function Safe\sprintf;
@@ -26,7 +27,7 @@ final class Configuration
     private string $prefix;
     private array $filesWithContents;
     private array $whitelistedFilesWithContents;
-    private array $patchers;
+    private Patcher $patcher;
     private Whitelist $whitelist;
 
     /**
@@ -53,8 +54,6 @@ final class Configuration
      * @param array<string, array{string, string}> $whitelistedFilesWithContents Array of tuple
      *                                            with the first argument being the file path and
      *                                            the second its contents
-     * @param callable[]  $patchers               List of closures which can alter the content of
-     *                                            the files being scoped.
      * @param Whitelist   $whitelist              List of classes that will not be scoped.
      *                                            returning a boolean which if `true` means the
      *                                            class should be scoped
@@ -68,7 +67,7 @@ final class Configuration
         string $prefix,
         array $filesWithContents,
         array $whitelistedFilesWithContents,
-        array $patchers,
+        Patcher $patcher,
         Whitelist $whitelist,
         array $internalClasses,
         array $internalFunctions,
@@ -79,7 +78,7 @@ final class Configuration
         $this->path = $path;
         $this->prefix = $prefix;
         $this->filesWithContents = $filesWithContents;
-        $this->patchers = $patchers;
+        $this->patcher = $patcher;
         $this->whitelist = $whitelist;
         $this->whitelistedFilesWithContents = $whitelistedFilesWithContents;
         $this->internalClasses = $internalClasses;
@@ -105,12 +104,9 @@ final class Configuration
         return $this->filesWithContents;
     }
 
-    /**
-     * @return callable[]
-     */
-    public function getPatchers(): array
+    public function getPatcher(): Patcher
     {
-        return $this->patchers;
+        return $this->patcher;
     }
 
     public function getWhitelist(): Whitelist

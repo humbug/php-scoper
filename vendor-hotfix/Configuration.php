@@ -2870,7 +2870,7 @@ BANNER;
                 $scoper,
                 $prefix,
                 $phpScoperConfig->getWhitelist(),
-                $phpScoperConfig->getPatchers()
+                $phpScoperConfig->getPatcher()
             )
         );
     }

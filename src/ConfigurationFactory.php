@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
+use Humbug\PhpScoper\Patcher\Patcher;
+use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use RuntimeException;
@@ -30,7 +32,6 @@ use function array_unique;
 use function array_unshift;
 use function array_values;
 use function bin2hex;
-use function count;
 use function dirname;
 use function file_exists;
 use function gettype;
@@ -42,14 +43,11 @@ use function is_file;
 use function is_link;
 use function is_readable;
 use function is_string;
-use function preg_last_error_msg;
-use function preg_match as native_preg_match;
 use function random_bytes;
 use function readlink as native_readlink;
 use function realpath;
 use function Safe\file_get_contents;
 use function Safe\sprintf;
-use function str_contains;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 use const SORT_STRING;
@@ -106,7 +104,7 @@ final class ConfigurationFactory
             $prefix,
             $filesWithContents,
             self::retrieveFilesWithContents($whitelistedFiles),
-            $patchers,
+            new PatcherChain($patchers),
             $whitelist,
             ...self::retrieveAllInternalSymbols($config),
         );
@@ -133,7 +131,7 @@ final class ConfigurationFactory
                 $filesWithContents,
             ),
             $config->getWhitelistedFilesWithContents(),
-            $config->getPatchers(),
+            $config->getPatcher(),
             $config->getWhitelist(),
             $config->getInternalClasses(),
             $config->getInternalFunctions(),
@@ -150,7 +148,7 @@ final class ConfigurationFactory
             $prefix,
             $config->getFilesWithContents(),
             $config->getWhitelistedFilesWithContents(),
-            $config->getPatchers(),
+            $config->getPatcher(),
             $config->getWhitelist(),
             $config->getInternalClasses(),
             $config->getInternalFunctions(),
@@ -239,7 +237,7 @@ final class ConfigurationFactory
     }
 
     /**
-     * @return callable[]
+     * @return array<(callable(string,string,string): string)|Patcher>
      */
     private static function retrievePatchers(array $config): array
     {
