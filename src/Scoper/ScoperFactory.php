@@ -12,16 +12,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Scoper;
 
+use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
-use Humbug\PhpScoper\Scoper\NullScoper;
-use Humbug\PhpScoper\Scoper\PatchScoper;
-use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use PhpParser\Parser;
 
 /**

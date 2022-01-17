@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
-
 final class NullScoper implements Scoper
 {
     public function scope(string $filePath, string $contents): string

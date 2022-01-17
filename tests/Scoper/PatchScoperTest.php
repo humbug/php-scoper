@@ -15,16 +15,11 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Patcher\DummyPatcher;
-use Humbug\PhpScoper\Patcher\Patcher;
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
-use function Safe\sprintf;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PatchScoper

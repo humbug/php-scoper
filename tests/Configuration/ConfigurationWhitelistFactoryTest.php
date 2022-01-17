@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
-use Humbug\PhpScoper\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\RegexChecker;
+use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 /**
- * @covers \Humbug\PhpScoper\ConfigurationWhitelistFactory
+ * @covers \Humbug\PhpScoper\Configuration\ConfigurationWhitelistFactory
  */
 final class ConfigurationWhitelistFactoryTest extends TestCase
 {

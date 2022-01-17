@@ -12,10 +12,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
-use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
@@ -35,6 +34,7 @@ use function bin2hex;
 use function dirname;
 use function file_exists;
 use function gettype;
+use function Humbug\PhpScoper\chain;
 use function in_array;
 use function is_array;
 use function is_callable;

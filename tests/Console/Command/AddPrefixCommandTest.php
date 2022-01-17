@@ -16,16 +16,14 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
-use Humbug\PhpScoper\ConfigurationFactory;
-use Humbug\PhpScoper\ConfigurationWhitelistFactory;
+use Humbug\PhpScoper\Configuration\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\ConfigurationWhitelistFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Humbug\PhpScoper\Patcher\ComposerPatcher;
-use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\RegexChecker;
-use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use Prophecy\Argument;
@@ -41,7 +39,6 @@ use function Safe\chdir;
 use function Safe\file_get_contents;
 use function Safe\realpath;
 use function Safe\sprintf;
-use function substr;
 use const DIRECTORY_SEPARATOR;
 
 /**

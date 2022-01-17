@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Scalar\String_;
 use function Safe\substr;

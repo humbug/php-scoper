@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use LogicException;
 use PhpParser\Error as PhpParserError;

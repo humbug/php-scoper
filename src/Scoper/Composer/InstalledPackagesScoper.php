@@ -14,8 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Scoper\Scoper;
 use InvalidArgumentException;
 use stdClass;
 use function array_map;

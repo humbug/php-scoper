@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
 use PHPUnit\Framework\TestCase;
 use function is_a;
 
