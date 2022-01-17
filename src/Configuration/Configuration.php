@@ -12,9 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Patcher\Patcher;
+use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use function Safe\preg_match;
 use function Safe\sprintf;

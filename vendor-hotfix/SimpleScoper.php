@@ -14,21 +14,16 @@ declare(strict_types=1);
 
 namespace KevinGH\Box\PhpScoper;
 
-use Exception;
+use Humbug\PhpScoper\Configuration\Configuration as PhpScoperConfiguration;
 use Humbug\PhpScoper\Container as PhpScoperContainer;
-use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
-use Humbug\PhpScoper\Patcher\SymfonyPatcher;
-use Humbug\PhpScoper\Scoper as PhpScoper;
 use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
+use Humbug\PhpScoper\Scoper\Scoper as PhpScoper;
 use Humbug\PhpScoper\Whitelist;
-use Humbug\PhpScoper\Configuration as PhpScoperConfiguration;
 use Opis\Closure\SerializableClosure;
-use Serializable;
 use function array_map;
 use function count;
-use function var_dump;
 
 /**
  * @private

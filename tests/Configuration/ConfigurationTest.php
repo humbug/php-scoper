@@ -12,14 +12,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Patcher\PatcherChain;
+use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\ConfigurationFactory
+ * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
  */
 final class ConfigurationTest extends TestCase
 {

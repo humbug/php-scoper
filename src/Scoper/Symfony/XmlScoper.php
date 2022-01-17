@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
-use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
 use function array_filter;

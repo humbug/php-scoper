@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;

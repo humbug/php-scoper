@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Configuration\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\ConfigurationWhitelistFactory;
+use Humbug\PhpScoper\Scoper\ScoperFactory;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;

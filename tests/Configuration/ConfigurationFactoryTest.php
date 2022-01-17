@@ -12,11 +12,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\Container;
+use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
+use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use function array_keys;
 use function KevinGH\Box\FileSystem\dump_file;
@@ -24,7 +27,7 @@ use function Safe\touch;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @covers \Humbug\PhpScoper\ConfigurationFactory
+ * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
  */
 class ConfigurationFactoryTest extends FileSystemTestCase
 {

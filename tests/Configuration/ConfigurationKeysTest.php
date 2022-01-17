@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use function array_values;
 
 /**
- * @covers \Humbug\PhpScoper\ConfigurationKeys
+ * @covers \Humbug\PhpScoper\Configuration\ConfigurationKeys
  */
 final class ConfigurationKeysTest extends TestCase
 {

@@ -6,18 +6,14 @@ namespace Humbug\PhpScoper;
 
 use function array_pop;
 use function count;
-use function current;
-use function end;
 use function explode;
 use function in_array;
 use function preg_last_error;
 use function preg_last_error_msg;
 use function preg_match as native_preg_match;
 use function Safe\sprintf;
-use function str_contains;
 use function str_split;
 use function strlen;
-use function trim;
 
 // TODO: move this under a Configuration namespace
 final class RegexChecker

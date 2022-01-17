@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\RegexChecker;
+use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use function array_key_exists;
 use function array_keys;
