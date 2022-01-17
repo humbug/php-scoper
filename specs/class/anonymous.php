@@ -477,4 +477,23 @@ new class($a, $b) extends A
 
 PHP
     ,
+
+    'Declaration in the global namespace which is excluded' => [
+        'expose-global-classes' => false,
+        'exclude-namespaces' => ['^$'],
+        'payload' => <<<'PHP'
+            <?php
+            
+            new class() {};
+            ----
+            <?php
+            
+            namespace Humbug;
+            
+            new class
+            {
+            };
+
+            PHP,
+    ],
 ];
