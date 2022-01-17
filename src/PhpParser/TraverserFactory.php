@@ -107,6 +107,7 @@ class TraverserFactory
                 new NodeVisitor\ConstStmtReplacer(
                     $whitelist,
                     $identifierResolver,
+                    $this->reflector,
                 ),
             ],
         );

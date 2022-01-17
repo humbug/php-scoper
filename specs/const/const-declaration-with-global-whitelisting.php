@@ -51,7 +51,7 @@ define(\Acme\BAR_CONST, foo());
 
 namespace Humbug;
 
-const FOO_CONST = foo();
+\define('FOO_CONST', foo());
 \define('BAR_CONST', foo());
 \define('Humbug\\Acme\\BAR_CONST', foo());
 \define(\FOO_CONST, foo());
@@ -76,7 +76,7 @@ define(\Acme\BAR_CONST, foo());
 <?php
 
 namespace {
-    const FOO_CONST = \foo();
+    \define('FOO_CONST', \foo());
     \define('BAR_CONST', \foo());
     \define('Acme\\BAR_CONST', \foo());
     \define(\FOO_CONST, \foo());
