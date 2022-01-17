@@ -15,8 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
@@ -31,17 +30,14 @@ use PhpParser\NodeVisitorAbstract;
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
     private string $prefix;
-    private Whitelist $whitelist;
-    private Reflector $reflector;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist,
-        Reflector $reflector
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
-        $this->reflector = $reflector;
-        $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -57,30 +53,26 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
     {
         $useType = self::findUseType($use);
 
-        // If is already from the prefix namespace
-        if ($this->prefix === $use->name->getFirst()) {
+        $alreadyPrefixed = $this->prefix === $use->name->getFirst();
+
+        if ($alreadyPrefixed) {
             return false;
         }
 
-        // If is whitelisted
-        if ($this->whitelist->belongsToExcludedNamespace((string) $use->name)) {
+        if ($this->enrichedReflector->belongsToExcludedNamespace((string) $use->name)) {
             return false;
         }
 
         if (Use_::TYPE_FUNCTION === $useType) {
-            return !$this->reflector->isFunctionInternal((string) $use->name);
+            return !$this->enrichedReflector->isInternalFunction((string) $use->name);
         }
 
         if (Use_::TYPE_CONSTANT === $useType) {
-            return self::shouldPrefixConstantUseStmt(
-                $use->name->toString(),
-                $this->whitelist,
-                $this->reflector,
-            );
+            return $this->enrichedReflector->isExposedConstant((string) $use->name);
         }
 
         return Use_::TYPE_NORMAL !== $useType
-            || !$this->reflector->isClassInternal((string) $use->name);
+            || !$this->enrichedReflector->isInternalClass((string) $use->name);
     }
 
     private static function prefixStmt(UseUse $use, string $prefix): void
@@ -103,16 +95,6 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         UseStmtManipulator::setOriginalName($use, $previousName);
 
         $use->name = $prefixedName;
-    }
-
-    private static function shouldPrefixConstantUseStmt(
-        string $name,
-        Whitelist $whitelist,
-        Reflector $reflector
-    ): bool {
-        return !$whitelist->isExposedConstantFromGlobalNamespace($name)
-            && !$whitelist->isSymbolExposed($name, true)
-            && !$reflector->isConstantInternal($name);
     }
 
     /**

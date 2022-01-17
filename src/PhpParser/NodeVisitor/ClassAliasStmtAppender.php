@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
@@ -30,7 +30,7 @@ use PhpParser\NodeVisitorAbstract;
 use function array_reduce;
 
 /**
- * Appends a `class_alias` to the whitelisted classes.
+ * Appends a `class_alias` statement to the exposed classes.
  *
  * ```
  * namespace A;
@@ -57,17 +57,17 @@ use function array_reduce;
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
     private string $prefix;
-    private Whitelist $whitelist;
     private IdentifierResolver $identifierResolver;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist,
-        IdentifierResolver $identifierResolver
+        IdentifierResolver $identifierResolver,
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
         $this->identifierResolver = $identifierResolver;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function afterTraverse(array $nodes): array
@@ -115,26 +115,21 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
 
         $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
-        if (!($resolvedName instanceof FullyQualified)
-            || !$this->shouldAppendStmt($resolvedName)
+        if ($resolvedName instanceof FullyQualified
+            && $this->shouldAppendStmt($resolvedName)
         ) {
-            return $stmts;
+            $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
         }
-
-        $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
 
         return $stmts;
     }
 
-    private function shouldAppendStmt(Name $resolvedName): bool
+    private function shouldAppendStmt(FullyQualified $resolvedName): bool
     {
         $resolvedNameString = (string) $resolvedName;
 
-        return !$this->whitelist->belongsToExcludedNamespace($resolvedNameString)
-            && (
-                $this->whitelist->isSymbolExposed($resolvedNameString)
-                || $this->whitelist->isExposedClassFromGlobalNamespace($resolvedNameString)
-            );
+        return !$this->enrichedReflector->belongsToExcludedNamespace($resolvedNameString)
+            && $this->enrichedReflector->isExposedClass($resolvedName);
     }
 
     private static function createAliasStmt(

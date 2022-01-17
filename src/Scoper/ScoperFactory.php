@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Parser;
 
 /**
@@ -28,10 +29,12 @@ use PhpParser\Parser;
 class ScoperFactory
 {
     private Parser $parser;
+    private Reflector $reflector;
 
-    public function __construct(Parser $parser)
+    public function __construct(Parser $parser, Reflector $reflector)
     {
         $this->parser = $parser;
+        $this->reflector = $reflector;
     }
 
     public function createScoper(Configuration $configuration): Scoper
@@ -40,6 +43,17 @@ class ScoperFactory
         $whitelist = $configuration->getWhitelist();
 
         $autoloadPrefix = new AutoloadPrefixer($prefix, $whitelist);
+
+        $configuredReflector = $this->reflector->withSymbols(
+            $configuration->getInternalClasses(),
+            $configuration->getInternalFunctions(),
+            $configuration->getInternalConstants(),
+        );
+
+        $enrichedReflector = new EnrichedReflector(
+            $configuredReflector,
+            $configuration->getWhitelist(),
+        );
 
         return new PatchScoper(
             new PhpScoper(
@@ -55,13 +69,7 @@ class ScoperFactory
                     ),
                     $autoloadPrefix
                 ),
-                new TraverserFactory(
-                    Reflector::createWithPhpStormStubs()->withSymbols(
-                        $configuration->getInternalClasses(),
-                        $configuration->getInternalFunctions(),
-                        $configuration->getInternalConstants(),
-                    ),
-                ),
+                new TraverserFactory($enrichedReflector),
                 $prefix,
                 $whitelist,
             ),

@@ -17,8 +17,8 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -30,7 +30,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Records the user functions registered in the global namespace which have been whitelisted and whitelisted functions.
+ * Records the user functions which are exposed.
  *
  * @private
  */
@@ -38,19 +38,19 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
     private IdentifierResolver $identifierResolver;
-    private Whitelist $whitelist;
-    private Reflector $reflector;
+    private EnrichedReflector $enrichedReflector;
+    private SymbolsRegistry $symbolsRegistry;
 
     public function __construct(
         string $prefix,
         IdentifierResolver $identifierResolver,
-        Whitelist $whitelist,
-        Reflector $reflector
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
     ) {
         $this->prefix = $prefix;
         $this->identifierResolver = $identifierResolver;
-        $this->whitelist = $whitelist;
-        $this->reflector = $reflector;
+        $this->enrichedReflector = $enrichedReflector;
+        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     public function enterNode(Node $node): Node
@@ -64,9 +64,9 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         $resolvedName = $this->retrieveResolvedName($node);
 
         if (null !== $resolvedName
-            && $this->isFunctionWhitelisted($resolvedName)
+            && $this->enrichedReflector->isExposedFunction($resolvedName)
         ) {
-            $this->whitelist->recordWhitelistedFunction(
+            $this->symbolsRegistry->recordFunction(
                 $resolvedName,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );
@@ -143,18 +143,5 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         $resolvedName = $this->identifierResolver->resolveString($string);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
-    }
-
-    private function isFunctionWhitelisted(FullyQualified $name): bool
-    {
-        $nameString = (string) $name;
-
-        return (
-            !$this->reflector->isFunctionInternal($nameString)
-            && (
-                $this->whitelist->isExposedFunctionFromGlobalNamespace($nameString)
-                || $this->whitelist->isSymbolExposed($nameString)
-            )
-        );
     }
 }

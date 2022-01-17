@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
@@ -38,17 +38,17 @@ use PhpParser\NodeVisitorAbstract;
 final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {
     private string $prefix;
-    private Whitelist $whitelist;
     private NamespaceStmtCollection $namespaceStatements;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist,
-        NamespaceStmtCollection $namespaceStatements
+        NamespaceStmtCollection $namespaceStatements,
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
         $this->namespaceStatements = $namespaceStatements;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -73,7 +73,7 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
     {
         $name = $namespace->name;
 
-        if ($this->whitelist->isExcludedNamespace((string) $name)) {
+        if ($this->enrichedReflector->isExcludedNamespace((string) $name)) {
             return false;
         }
 

@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
 use Humbug\PhpScoper\Scoper\Scoper as PhpScoper;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
 use Opis\Closure\SerializableClosure;
 use function array_map;
@@ -71,7 +72,7 @@ final class SimpleScoper implements Scoper
     /**
      * {@inheritdoc}
      */
-    public function changeWhitelist(Whitelist $whitelist): void
+    public function setSymbolsRegistry(SymbolsRegistry $registry): void
     {
         $previousConfig = $this->scoperConfig;
 
@@ -81,7 +82,7 @@ final class SimpleScoper implements Scoper
             $previousConfig->getFilesWithContents(),
             $previousConfig->getWhitelistedFilesWithContents(),
             $previousConfig->getPatcher(),
-            $whitelist,
+            $registry,
             $previousConfig->getInternalClasses(),
             $previousConfig->getInternalFunctions(),
             $previousConfig->getInternalConstants(),
@@ -93,7 +94,7 @@ final class SimpleScoper implements Scoper
     /**
      * {@inheritdoc}
      */
-    public function getWhitelist(): Whitelist
+    public function getSymbolsRegistry(): SymbolsRegistry
     {
         return $this->scoperConfig->getWhitelist();
     }

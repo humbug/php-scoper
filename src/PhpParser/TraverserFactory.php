@@ -19,6 +19,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor as PhpParserNodeVisitor;
@@ -31,12 +32,16 @@ class TraverserFactory
 {
     private Reflector $reflector;
 
-    public function __construct(Reflector $reflector)
+    public function __construct(EnrichedReflector $reflector)
     {
         $this->reflector = $reflector;
     }
 
-    public function create(PhpScoper $scoper, string $prefix, Whitelist $whitelist): NodeTraverserInterface
+    public function create(
+        PhpScoper $scoper,
+        string $prefix,
+        Whitelist $whitelist
+    ): NodeTraverserInterface
     {
         $traverser = new NodeTraverser();
 

@@ -15,9 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
@@ -28,7 +29,7 @@ use UnexpectedValueException;
 use function count;
 
 /**
- * Replaces const declaration by define when the constant is whitelisted.
+ * Replaces constants `const` declarations by `define` when the constant is exposed.
  *
  * ```
  * const DUMMY_CONST = 'foo';
@@ -46,15 +47,15 @@ use function count;
  */
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
-    private Whitelist $whitelist;
     private IdentifierResolver $identifierResolver;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
-        Whitelist $whitelist,
-        IdentifierResolver $identifierResolver
+        IdentifierResolver $identifierResolver,
+        EnrichedReflector $enrichedReflector
     ) {
-        $this->whitelist = $whitelist;
         $this->identifierResolver = $identifierResolver;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -80,24 +81,32 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
             $constant->name,
         );
 
-        if (!$this->whitelist->isSymbolExposed((string) $resolvedConstantName, true)) {
+        if (!$this->enrichedReflector->isExposedConstant((string) $resolvedConstantName)) {
             return null;
         }
 
         if (count($const->consts) > 1) {
             throw new UnexpectedValueException(
-                'Whitelisting a constant declared in a grouped constant statement (e.g. `const FOO = \'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant declaration statements',
+                'Exposing a constant declared in a grouped constant statement (e.g. `const FOO = \'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant declaration statements',
             );
         }
 
+        return self::createDefineNode(
+            (string) $resolvedConstantName,
+            $constant->value,
+        );
+    }
+
+    private static function createDefineNode(string $resolvedConstantName, Expr $value): Node
+    {
         return new Expression(
             new FuncCall(
                 new FullyQualified('define'),
                 [
                     new Arg(
-                        new String_((string) $resolvedConstantName)
+                        new String_($resolvedConstantName)
                     ),
-                    new Arg($constant->value),
+                    new Arg($value),
                 ],
             ),
         );

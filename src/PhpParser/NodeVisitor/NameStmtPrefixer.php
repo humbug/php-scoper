@@ -17,8 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -92,23 +91,20 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     ];
 
     private string $prefix;
-    private Whitelist $whitelist;
     private NamespaceStmtCollection $namespaceStatements;
     private UseStmtCollection $useStatements;
-    private Reflector $reflector;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist,
         NamespaceStmtCollection $namespaceStatements,
         UseStmtCollection $useStatements,
-        Reflector $reflector
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
         $this->namespaceStatements = $namespaceStatements;
         $this->useStatements = $useStatements;
-        $this->reflector = $reflector;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -168,7 +164,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 $resolvedName,
                 $parentNode,
                 $useStatement,
-                $this->whitelist,
+                $this->enrichedReflector,
             )
         ) {
             return $originalName;
@@ -178,9 +174,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $resolvedName;
         }
 
-        // Do not prefix if the Name is inside of the current namespace
+        // Do not prefix if the Name is inside the current namespace
         $currentNamespace = $this->namespaceStatements->getCurrentNamespaceName();
 
+        // TODO: review this block
         if (
             self::doesNameBelongToNamespace(
                 $originalName,
@@ -270,11 +267,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return false;
         }
 
+        $alreadyPrefixed = $this->prefix === $resolvedName->getFirst();
+
         return (
-            // Is already prefixed
-            $this->prefix === $resolvedName->getFirst()
-            // The namespace node is whitelisted
-            || $this->whitelist->belongsToExcludedNamespace((string) $resolvedName)
+            $alreadyPrefixed
+            || $this->enrichedReflector->belongsToExcludedNamespace((string) $resolvedName)
         );
     }
 
@@ -307,14 +304,15 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         Node $parentNode,
         ?Name $namespaceName
     ): bool {
+        $belongsToGlobalNamespace = null === $namespaceName;
+
         return (
-            // In the global scope
-            null === $namespaceName
+            $belongsToGlobalNamespace
             && !$originalName->isFullyQualified()
             && !($parentNode instanceof ConstFetch)
-            && !$this->whitelist->isSymbolExposed($resolvedName->toString())
-            && !$this->reflector->isFunctionInternal($resolvedName->toString())
-            && !$this->reflector->isClassInternal($resolvedName->toString())
+            && !$this->enrichedReflector->isSymbolExposed($resolvedName->toString())
+            && !$this->enrichedReflector->isInternalFunction($resolvedName->toString())
+            && !$this->enrichedReflector->isInternalClass($resolvedName->toString())
         );
     }
 
@@ -323,7 +321,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         Name $resolvedName,
         Node $parentNode,
         ?Name $useStatementName,
-        Whitelist $whitelist
+        EnrichedReflector $enrichedReflector
     ): bool {
         if (
             null === $useStatementName
@@ -341,17 +339,15 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         [$useStmtAlias, $useStmtType] = self::getUseStmtAliasAndType($useStatementName);
 
         if ($parentNode instanceof ConstFetch) {
-            // If a constant is whitelisted, it can be that letting a non FQ breaks
-            // things. For example the whitelisted namespaced constant could be
+            // If a constant is exposed, it can be that letting a non FQ breaks
+            // things. For example the exposed namespaced constant could be
             // used via a partial import (in which case it is a regular import not
             // a constant one) which may not be prefixed.
-            if ($whitelist->isExposedConstantFromGlobalNamespace($resolvedName->toString())
-                || $whitelist->isSymbolExposed($resolvedName->toString(), true)
-            ) {
+            if ($enrichedReflector->isExposedConstant($resolvedName->toString())) {
                 return Use_::TYPE_CONSTANT === $useStmtType;
             }
 
-            return null !== $useStatementName;
+            return true;
         }
 
         if (null === $useStmtAlias) {
@@ -380,7 +376,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         return (
             !$isClassNode
             || !$resolvedName->isFullyQualified()
-            || !$this->reflector->isClassInternal($resolvedName->toString())
+            || !$this->enrichedReflector->isInternalClass($resolvedName->toString())
         );
     }
 
@@ -388,11 +384,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     {
         $resolvedNameString = $resolvedName->toString();
 
-        if ($this->whitelist->isSymbolExposed($resolvedNameString, true)) {
+        if ($this->enrichedReflector->isExposedConstant($resolvedNameString)) {
             return $resolvedName;
         }
 
-        if ($this->reflector->isConstantInternal($resolvedNameString)) {
+        if ($this->enrichedReflector->isInternalConstant($resolvedNameString)) {
             return new FullyQualified(
                 $resolvedNameString,
                 $resolvedName->getAttributes(),
@@ -405,8 +401,8 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return $resolvedName;
         }
 
-        if ($this->whitelist->isExposedConstantFromGlobalNamespace($resolvedNameString)) {
-            // Unlike classes & functions, whitelisted are not prefixed with aliases registered in scoper-autoload.php
+        if ($this->enrichedReflector->isExposedConstantFromGlobalNamespace($resolvedNameString)) {
+            // Unlike classes & functions, exposed constants are not prefixed with aliases registered in scoper-autoload.php
             return new FullyQualified(
                 $resolvedNameString,
                 $resolvedName->getAttributes(),
@@ -418,7 +414,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private function prefixFuncCallNode(Name $originalName, Name $resolvedName): ?Name
     {
-        if ($this->reflector->isFunctionInternal($originalName->toString())) {
+        if ($this->enrichedReflector->isInternalFunction($originalName->toString())) {
             return new FullyQualified(
                 $originalName->toString(),
                 $originalName->getAttributes(),

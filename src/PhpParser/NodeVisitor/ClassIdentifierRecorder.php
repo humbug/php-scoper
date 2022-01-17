@@ -16,7 +16,8 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
@@ -25,7 +26,7 @@ use PhpParser\Node\Stmt\Trait_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Records the user classes registered in the global namespace which have been whitelisted and whitelisted classes.
+ * Records the user classes which are exposed.
  *
  * @private
  */
@@ -33,16 +34,19 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
     private IdentifierResolver $identifierResolver;
-    private Whitelist $whitelist;
+    private EnrichedReflector $enrichedReflector;
+    private SymbolsRegistry $symbolsRegistry;
 
     public function __construct(
         string $prefix,
         IdentifierResolver $identifierResolver,
-        Whitelist $whitelist
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
     ) {
         $this->prefix = $prefix;
         $this->identifierResolver = $identifierResolver;
-        $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
+        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     public function enterNode(Node $node): Node
@@ -67,10 +71,8 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             return $node;
         }
 
-        if ($this->whitelist->isExposedClassFromGlobalNamespace((string) $resolvedName)
-            || $this->whitelist->isSymbolExposed((string) $resolvedName)
-        ) {
-            $this->whitelist->recordWhitelistedClass(
+        if ($this->enrichedReflector->isExposedClass($resolvedName)) {
+            $this->symbolsRegistry->recordClass(
                 $resolvedName,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );

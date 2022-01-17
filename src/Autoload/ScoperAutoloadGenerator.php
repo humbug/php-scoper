@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node\Name\FullyQualified;
 use function array_map;
 use function array_unshift;
@@ -31,18 +31,18 @@ final class ScoperAutoloadGenerator
 {
     private static string $eol;
     
-    private Whitelist $whitelist;
+    private SymbolsRegistry $symbolsRegistry;
 
-    public function __construct(Whitelist $whitelist)
+    public function __construct(SymbolsRegistry $symbolsRegistry)
     {
         self::$eol = chr(10);
 
-        $this->whitelist = $whitelist;
+        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     public function dump(): string
     {
-        $whitelistedFunctions = $this->whitelist->getRecordedWhitelistedFunctions();
+        $whitelistedFunctions = $this->symbolsRegistry->getRecordedFunctions();
 
         $hasNamespacedFunctions = self::hasNamespacedFunctions(
             $whitelistedFunctions
@@ -51,7 +51,7 @@ final class ScoperAutoloadGenerator
         $statements = implode(
             self::$eol,
                 self::createClassAliasStatements(
-                    $this->whitelist->getRecordedWhitelistedClasses(),
+                    $this->symbolsRegistry->getRecordedClasses(),
                     $hasNamespacedFunctions
                 )
         )
@@ -105,7 +105,7 @@ final class ScoperAutoloadGenerator
      * @return string[]
      */
     private static function createClassAliasStatements(
-        array $whitelistedClasses,
+        array $exposedClasses,
         bool $hasNamespacedFunctions
     ): array
     {
@@ -127,7 +127,7 @@ final class ScoperAutoloadGenerator
                     $prefixedClass
                 );
             },
-            $whitelistedClasses
+            $exposedClasses
         );
 
         if (count($statements) === 0) {
@@ -165,7 +165,7 @@ final class ScoperAutoloadGenerator
         array_unshift(
             $statements,
             <<<'EOF'
-            // Aliases for the whitelisted classes. For more information see:
+            // Aliases for the exposed classes. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
             EOF,
         );
@@ -177,7 +177,7 @@ final class ScoperAutoloadGenerator
      * @return string[]
      */
     private static function createFunctionAliasStatements(
-        array $whitelistedFunctions,
+        array $exposedFunctions,
         bool $hasNamespacedFunctions
     ): array
     {
@@ -221,7 +221,7 @@ final class ScoperAutoloadGenerator
                 $alias
             );
         },
-        $whitelistedFunctions
+        $exposedFunctions
     );
 
     if ([] === $statements) {
@@ -231,7 +231,7 @@ final class ScoperAutoloadGenerator
     array_unshift(
         $statements,
         <<<'EOF'
-        // Functions whitelisting. For more information see:
+        // Exposed functions. For more information see:
         // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
         EOF
         );
