@@ -29,41 +29,49 @@ use function strpos;
 
 final class ScoperAutoloadGenerator
 {
+    private const EXPOSED_FUNCTIONS_DOC = <<<'EOF'
+    // Functions whitelisting. For more information see:
+    // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
+    EOF;
+
+    private const EXPOSED_CLASSES_DOC = <<<'EOF'
+    // Aliases for the whitelisted classes. For more information see:
+    // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
+    EOF;
+
     private static string $eol;
     
-    private Whitelist $whitelist;
+    private Whitelist $registry;
 
-    public function __construct(Whitelist $whitelist)
+    public function __construct(Whitelist $registry)
     {
         self::$eol = chr(10);
 
-        $this->whitelist = $whitelist;
+        $this->registry = $registry;
     }
 
     public function dump(): string
     {
-        $whitelistedFunctions = $this->whitelist->getRecordedWhitelistedFunctions();
+        $exposedFunctions = $this->registry->getRecordedWhitelistedFunctions();
 
-        $hasNamespacedFunctions = self::hasNamespacedFunctions(
-            $whitelistedFunctions
-        );
+        $hasNamespacedFunctions = self::hasNamespacedFunctions($exposedFunctions);
 
         $statements = implode(
-            self::$eol,
-                self::createClassAliasStatements(
-                    $this->whitelist->getRecordedWhitelistedClasses(),
-                    $hasNamespacedFunctions
-                )
-        )
+                self::$eol,
+                self::createClassAliasStatementsSection(
+                    $this->registry->getRecordedWhitelistedClasses(),
+                    $hasNamespacedFunctions,
+                ),
+            )
             .self::$eol
             .self::$eol
         ;
         $statements .= implode(
             self::$eol,
             self::createFunctionAliasStatements(
-                $whitelistedFunctions,
-                $hasNamespacedFunctions
-            )
+                $exposedFunctions,
+                $hasNamespacedFunctions,
+            ),
         );
 
         if ($hasNamespacedFunctions) {
@@ -98,116 +106,129 @@ final class ScoperAutoloadGenerator
             PHP;
         }
 
-        return self::cleanAutoload($dump);
+        return self::removeUnnecessaryLineReturns($dump);
     }
 
     /**
-     * @return string[]
+     * @param list<array{string, string}> $exposedClasses
+     *
+     * @return list<string>
      */
-    private static function createClassAliasStatements(
-        array $whitelistedClasses,
+    private static function createClassAliasStatementsSection(
+        array $exposedClasses,
         bool $hasNamespacedFunctions
     ): array
     {
-        $statements = array_map(
-            static function (array $pair): string {
-                /**
-                 * @var string $originalClass
-                 * @var string $prefixedClass
-                 */
-                [$originalClass, $prefixedClass] = $pair;
-
-                return sprintf(
-                    <<<'PHP'
-                    if (!class_exists('%1$s', false) && !interface_exists('%1$s', false) && !trait_exists('%1$s', false)) {
-                        spl_autoload_call('%2$s');
-                    }
-                    PHP,
-                    $originalClass,
-                    $prefixedClass
-                );
-            },
-            $whitelistedClasses
-        );
+        $statements = self::createClassAliasStatements($exposedClasses);
 
         if (count($statements) === 0) {
             return $statements;
         }
 
         if ($hasNamespacedFunctions) {
-            $eol = self::$eol;
-
-            $statements = array_map(
-                static function (string $statement) use ($eol): string {
-                    $parts = explode($eol, $statement);
-
-                    if (false === $parts) {
-                        return '';
-                    }
-
-                    return implode(
-                        $eol,
-                        array_map(
-                            static function (string $statement): string {
-                                return str_repeat(' ', 4).$statement;
-                            },
-                            $parts
-                        )
-                    );
-                },
-                $statements
-            );
-
-            array_unshift($statements, 'namespace {');
-            $statements[] = '}'.self::$eol;
+            $statements = self::wrapStatementsInNamespaceBlock($statements);
         }
 
-        array_unshift(
-            $statements,
-            <<<'EOF'
-            // Aliases for the whitelisted classes. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
-            EOF,
-        );
+        array_unshift($statements, self::EXPOSED_CLASSES_DOC);
 
         return $statements;
     }
 
     /**
-     * @return string[]
+     * @param list<array{string, string}> $exposedClasses
+     *
+     * @return list<string>
+     */
+    private static function createClassAliasStatements(array $exposedClasses): array
+    {
+        return array_map(
+            static fn (array $pair) => self::createClassAliasStatement(...$pair),
+            $exposedClasses
+        );
+    }
+
+    private static function createClassAliasStatement(
+        string $original,
+        string $alias
+    ): string
+    {
+        return sprintf(
+            <<<'PHP'
+            if (!class_exists('%1$s', false) && !interface_exists('%1$s', false) && !trait_exists('%1$s', false)) {
+                spl_autoload_call('%2$s');
+            }
+            PHP,
+            $original,
+            $alias
+        );
+    }
+
+    /**
+     * @param list<string> $statements
+     *
+     * @return list<string>
+     */
+    private static function wrapStatementsInNamespaceBlock(array $statements): array
+    {
+        $indent = str_repeat(' ', 4);
+        $indentLine = static fn (string $line) => $indent.$line;
+
+        $statements = array_map(
+            static function (string $statement) use ($indentLine): string {
+                $parts = explode(self::$eol, $statement);
+
+                if (false === $parts) {
+                    return $statement;
+                }
+
+                return implode(
+                    self::$eol,
+                    array_map($indentLine, $parts),
+                );
+            },
+            $statements,
+        );
+
+        array_unshift($statements, 'namespace {');
+        $statements[] = '}'.self::$eol;
+
+        return $statements;
+    }
+
+    /**
+     * @param list<array{string, string}> $exposedFunctions
+     *
+     * @return list<string>
      */
     private static function createFunctionAliasStatements(
-        array $whitelistedFunctions,
+        array $exposedFunctions,
         bool $hasNamespacedFunctions
     ): array
     {
         $statements = array_map(
-            static function (array $node) use ($hasNamespacedFunctions): string {
-                $original = new FullyQualified($node[0]);
-                $alias = new FullyQualified($node[1]);
+            static fn (array $pair) => self::createFunctionAliasStatement(
+                $hasNamespacedFunctions,
+                ...$pair
+            ),
+            $exposedFunctions,
+        );
 
-                if ($hasNamespacedFunctions) {
-                    $namespace = $original->slice(0, -1);
-                    $functionName = null === $namespace ? $original->toString() : (string) $original->slice(1);
+        if ([] === $statements) {
+            return $statements;
+        }
 
-                    return sprintf(
-                        <<<'PHP'
-                        namespace %s{
-                            if (!function_exists('%s')) {
-                                function %s(%s) {
-                                    return \%s(...func_get_args());
-                                }
-                            }
-                        }
-                        PHP,
-                    null === $namespace ? '' : $namespace->toString().' ',
-                    $original->toString(),
-                    $functionName,
-                    '__autoload' === $functionName ? '$className' : '',
-                    $alias->toString()
-                );
-            }
+        array_unshift($statements, self::EXPOSED_FUNCTIONS_DOC);
 
+        return $statements;
+    }
+
+    private static function createFunctionAliasStatement(
+        bool $hasNamespacedFunctions,
+        string $original,
+        string $alias
+    ): string
+    {
+        if (!$hasNamespacedFunctions) {
             return sprintf(
                 <<<'PHP'
                 if (!function_exists('%1$s')) {
@@ -217,36 +238,48 @@ final class ScoperAutoloadGenerator
                 }
                 PHP,
                 $original,
-                '__autoload' === (string) $original ? '$className' : '',
-                $alias
+                '__autoload' === $original ? '$className' : '',
+                $alias,
             );
-        },
-        $whitelistedFunctions
-    );
+        }
 
-    if ([] === $statements) {
-        return $statements;
-    }
+        // When the function is namespaced we need to wrap the function
+        // declaration within its namespace
+        // TODO: consider grouping the declarations within the same namespace
+        //  i.e. that if there is Acme\foo and Acme\bar that only one
+        //  namespace Acme statement is used
 
-    array_unshift(
-        $statements,
-        <<<'EOF'
-        // Functions whitelisting. For more information see:
-        // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
-        EOF
+        $originalFQ = new FullyQualified($original);
+        $namespace = $originalFQ->slice(0, -1);
+        $functionName = null === $namespace ? $original : (string) $originalFQ->slice(1);
+
+        return sprintf(
+            <<<'PHP'
+            namespace %s{
+                if (!function_exists('%s')) {
+                    function %s(%s) {
+                        return \%s(...func_get_args());
+                    }
+                }
+            }
+            PHP,
+            null === $namespace ? '' : $namespace->toString().' ',
+            $original,
+            $functionName,
+            '__autoload' === $functionName ? '$className' : '',
+            $alias,
         );
-
-        return $statements;
     }
 
+    /**
+     * @param list<array{string, string}> $functions
+     */
     private static function hasNamespacedFunctions(array $functions): bool
     {
         foreach ($functions as [$original, $alias]) {
-            /**
-             * @var string $original
-             * @var string $alias
-             */
-            if (false !== strpos($original, '\\')) {
+            $containsBackslash = false !== strpos($original, '\\');
+
+            if ($containsBackslash) {
                 return true;
             }
         }
@@ -254,7 +287,7 @@ final class ScoperAutoloadGenerator
         return false;
     }
 
-    private static function cleanAutoload(string $dump): string
+    private static function removeUnnecessaryLineReturns(string $dump): string
     {
         $cleanedDump = $dump;
 
