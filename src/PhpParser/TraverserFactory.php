@@ -19,6 +19,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor as PhpParserNodeVisitor;
@@ -38,6 +39,11 @@ class TraverserFactory
 
     public function create(PhpScoper $scoper, string $prefix, Whitelist $whitelist): NodeTraverserInterface
     {
+        $enrichedReflector = new EnrichedReflector(
+            $this->reflector,
+            $whitelist,
+        );
+
         $traverser = new NodeTraverser();
 
         $namespaceStatements = new NamespaceStmtCollection();
@@ -69,8 +75,7 @@ class TraverserFactory
                 ),
                 new NodeVisitor\UseStmt\UseStmtPrefixer(
                     $prefix,
-                    $whitelist,
-                    $this->reflector,
+                    $enrichedReflector,
                 ),
 
                 new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
@@ -101,14 +106,13 @@ class TraverserFactory
 
                 new NodeVisitor\ClassAliasStmtAppender(
                     $prefix,
-                    $whitelist,
+                    $enrichedReflector,
                     $identifierResolver,
                 ),
                 new NodeVisitor\MultiConstStmtReplacer(),
                 new NodeVisitor\ConstStmtReplacer(
-                    $whitelist,
                     $identifierResolver,
-                    $this->reflector,
+                    $enrichedReflector,
                 ),
             ],
         );
