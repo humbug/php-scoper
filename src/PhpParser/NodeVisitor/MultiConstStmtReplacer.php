@@ -74,6 +74,8 @@ final class MultiConstStmtReplacer extends NodeVisitorAbstract
             $node->consts,
         );
 
+        // Workaround to replace the statement.
+        // See https://github.com/nikic/PHP-Parser/issues/507
         return new If_(
             new ConstFetch(new Name('true')),
             ['stmts' => $newStatements]
