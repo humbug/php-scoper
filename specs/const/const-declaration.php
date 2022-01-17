@@ -57,6 +57,7 @@ if (!defined('FOO_CONST')) {
 if (!defined('Acme\BAR_CONST')) {
     define(\Acme\BAR_CONST, foo());
 }
+const PHP_VERSION = 81400;
 ----
 <?php
 
@@ -79,6 +80,7 @@ if (!\defined('Humbug\\FOO_CONST')) {
 if (!\defined('Humbug\\Acme\\BAR_CONST')) {
     \define(\Humbug\Acme\BAR_CONST, foo());
 }
+\define('PHP_VERSION', 81400);
 
 PHP
     ],
@@ -349,6 +351,57 @@ if (!\defined('Humbug\\FOO_CONST')) {
 }
 if (!\defined('Acme\\BAR_CONST')) {
     \define(\Acme\BAR_CONST, foo());
+}
+
+PHP
+    ],
+
+    'Token compatibility regression test' => [
+        'exclude-constants' => ['NEW_TOKEN', 'ANOTHER_NEW_TOKEN'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace {
+    const NEW_TOKEN = 501;
+}
+
+namespace PHPParser {
+    class Lexer {
+        function isNewToken(int $token): bool {
+            return NEW_TOKEN === $token;
+        }
+        
+        function isAnotherNewToken(int $token): bool {
+            if (!\defined('ANOTHER_NEW_TOKEN')) {
+                \define('ANOTHER_NEW_TOKEN', 502);
+            }
+        
+            return ANOTHER_NEW_TOKEN === $token;
+        }
+    }
+}
+
+----
+<?php
+
+namespace Humbug;
+
+\define('NEW_TOKEN', 501);
+namespace Humbug\PHPParser;
+
+class Lexer
+{
+    function isNewToken(int $token) : bool
+    {
+        return \NEW_TOKEN === $token;
+    }
+    function isAnotherNewToken(int $token) : bool
+    {
+        if (!\defined('ANOTHER_NEW_TOKEN')) {
+            \define('ANOTHER_NEW_TOKEN', 502);
+        }
+        return \ANOTHER_NEW_TOKEN === $token;
+    }
 }
 
 PHP
