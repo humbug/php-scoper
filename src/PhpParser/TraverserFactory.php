@@ -104,6 +104,7 @@ class TraverserFactory
                     $whitelist,
                     $identifierResolver,
                 ),
+                new NodeVisitor\MultiConstStmtReplacer(),
                 new NodeVisitor\ConstStmtReplacer(
                     $whitelist,
                     $identifierResolver,
