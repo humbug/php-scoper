@@ -10,6 +10,7 @@ use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
@@ -122,7 +123,7 @@ final class ConsoleScoper
         );
 
         if (null !== $vendorDir) {
-            $autoload = (new ScoperAutoloadGenerator($config->getWhitelist()))->dump();
+            $autoload = (new ScoperAutoloadGenerator(SymbolsRegistry::fromWhitelist($config->getWhitelist())))->dump();
 
             $this->fileSystem->dumpFile(
                 $vendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
