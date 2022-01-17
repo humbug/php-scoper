@@ -64,7 +64,10 @@ const PHP_VERSION = 81400;
 namespace Humbug;
 
 const FOO_CONST = foo();
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('Humbug\\BAR_CONST')) {
     \define('Humbug\\BAR_CONST', foo());
 }
@@ -112,7 +115,10 @@ if (!defined('Acme\BAR_CONST')) {
 
 namespace {
     const FOO_CONST = \foo();
-    const X = 'x', Y = '';
+    if (\true) {
+        const X = 'x';
+        const Y = '';
+    }
     if (!\defined('BAR_CONST')) {
         \define('BAR_CONST', \foo());
     }
@@ -168,7 +174,10 @@ if (!defined('Emca\BAZ')) {
 namespace Humbug;
 
 \define('FOO_CONST', foo());
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('BAR_CONST')) {
     \define('BAR_CONST', foo());
 }
@@ -194,13 +203,22 @@ if (!\defined('Emca\\BAZ')) {
 PHP
     ],
 
-    'Whitelisted grouped constants declaration in the global namespace' => [    // TODO? Not supported
+    'Whitelisted grouped constants declaration in the global namespace' => [
         'whitelist' => ['X'],
         'payload' => <<<'PHP'
 <?php
 
 const X = 'x', Y = '';
 ----
+<?php
+
+namespace Humbug;
+
+if (\true) {
+    \define('X', 'x');
+    const Y = '';
+}
+
 PHP
     ],
 
@@ -234,7 +252,10 @@ if (!defined('Acme\BAR_CONST')) {
 namespace Humbug\Acme;
 
 const FOO_CONST = foo();
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('Humbug\\BAR_CONST')) {
     \define('Humbug\\BAR_CONST', foo());
 }
@@ -285,7 +306,10 @@ if (!defined('Acme\BAR_CONST')) {
 namespace Acme;
 
 const FOO_CONST = foo();
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('Humbug\\BAR_CONST')) {
     \define('Humbug\\BAR_CONST', foo());
 }
@@ -336,7 +360,10 @@ if (!defined('Acme\BAR_CONST')) {
 namespace Humbug\Acme;
 
 const FOO_CONST = foo();
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('Humbug\\BAR_CONST')) {
     \define('Humbug\\BAR_CONST', foo());
 }
