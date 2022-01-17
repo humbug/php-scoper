@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node\Name\FullyQualified;
 use function array_map;
 use function array_unshift;
@@ -29,21 +29,23 @@ use function strpos;
 
 final class ScoperAutoloadGenerator
 {
+    // TODO: doc link
     private const EXPOSED_FUNCTIONS_DOC = <<<'EOF'
-    // Functions whitelisting. For more information see:
+    // Exposed functions. For more information see:
     // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
     EOF;
 
+    // TODO: doc link
     private const EXPOSED_CLASSES_DOC = <<<'EOF'
-    // Aliases for the whitelisted classes. For more information see:
+    // Exposed classes. For more information see:
     // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
     EOF;
 
     private static string $eol;
     
-    private Whitelist $registry;
+    private SymbolsRegistry $registry;
 
-    public function __construct(Whitelist $registry)
+    public function __construct(SymbolsRegistry $registry)
     {
         self::$eol = chr(10);
 
@@ -52,14 +54,14 @@ final class ScoperAutoloadGenerator
 
     public function dump(): string
     {
-        $exposedFunctions = $this->registry->getRecordedWhitelistedFunctions();
+        $exposedFunctions = $this->registry->getRecordedFunctions();
 
         $hasNamespacedFunctions = self::hasNamespacedFunctions($exposedFunctions);
 
         $statements = implode(
                 self::$eol,
                 self::createClassAliasStatementsSection(
-                    $this->registry->getRecordedWhitelistedClasses(),
+                    $this->registry->getRecordedClasses(),
                     $hasNamespacedFunctions,
                 ),
             )

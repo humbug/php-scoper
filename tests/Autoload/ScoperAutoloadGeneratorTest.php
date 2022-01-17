@@ -14,28 +14,28 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Autoload;
 
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
 
 class ScoperAutoloadGeneratorTest extends TestCase
 {
     /**
-     * @dataProvider provideWhitelists
+     * @dataProvider provideRegistry
      */
-    public function test_generate_the_autoload(Whitelist $whitelist, string $expected): void
+    public function test_generate_the_autoload(SymbolsRegistry $registry, string $expected): void
     {
-        $generator = new ScoperAutoloadGenerator($whitelist);
+        $generator = new ScoperAutoloadGenerator($registry);
 
         $actual = $generator->dump();
 
         self::assertSame($expected, $actual);
     }
 
-    public static function provideWhitelists(): iterable
+    public static function provideRegistry(): iterable
     {
-        yield 'empty whitelist' => [
-            Whitelist::create(),
+        yield 'empty registry' => [
+            new SymbolsRegistry(),
             <<<'PHP'
             <?php
             
@@ -48,22 +48,14 @@ class ScoperAutoloadGeneratorTest extends TestCase
             PHP
         ];
 
-        yield 'whitelist with whitelisted global functions recorded' => [
-            (static function () {
-                $whitelist = Whitelist::create();
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('foo'),
-                    new FullyQualified('Humbug\foo')
-                );
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('bar'),
-                    new FullyQualified('Humbug\bar')
-                );
-
-                return $whitelist;
-            })(),
+        yield 'global functions recorded' => [
+            self::createRegistry(
+                [
+                    'foo' => 'Humbug\foo',
+                    'bar' => 'Humbug\bar',
+                ],
+                [],
+            ),
             <<<'PHP'
             <?php
             
@@ -71,7 +63,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             
             $loader = require_once __DIR__.'/autoload.php';
             
-            // Functions whitelisting. For more information see:
+            // Exposed functions. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
             if (!function_exists('foo')) {
                 function foo() {
@@ -89,27 +81,15 @@ class ScoperAutoloadGeneratorTest extends TestCase
             PHP
         ];
 
-        yield 'whitelist with whitelisted namespaced functions recorded' => [
-            (static function () {
-                $whitelist = Whitelist::create();
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('Acme\foo'),
-                    new FullyQualified('Humbug\Acme\foo')
-                );
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('Acme\bar'),
-                    new FullyQualified('Humbug\Acme\bar')
-                );
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('Emca\baz'),
-                    new FullyQualified('Humbug\Emca\baz')
-                );
-
-                return $whitelist;
-            })(),
+        yield 'namespaced functions recorded' => [
+            self::createRegistry(
+                [
+                    'Acme\foo' => 'Humbug\Acme\foo',
+                    'Acme\bar' => 'Humbug\Acme\bar',
+                    'Emca\baz' => 'Humbug\Emca\baz',
+                ],
+                [],
+            ),
             <<<'PHP'
             <?php
             
@@ -119,7 +99,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 $loader = require_once __DIR__.'/autoload.php';
             }
             
-            // Functions whitelisting. For more information see:
+            // Exposed functions. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
             namespace Acme {
                 if (!function_exists('Acme\foo')) {
@@ -150,15 +130,12 @@ class ScoperAutoloadGeneratorTest extends TestCase
             PHP
         ];
 
-        yield 'whitelist with whitelisted classes but none recorded' => [
-            Whitelist::create(
-                true,
-                true,
-                true,
+        yield 'classes recorded' => [
+            self::createRegistry(
                 [],
-                [],
-                'A\Foo',
-                'B\Bar'
+                [
+                    'A\Foo' => 'Humbug\A\Foo',
+                ],
             ),
             <<<'PHP'
             <?php
@@ -167,38 +144,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             
             $loader = require_once __DIR__.'/autoload.php';
             
-            return $loader;
-            
-            PHP
-        ];
-
-        yield 'whitelist with whitelisted classes recorded' => [
-            (static function () {
-                $whitelist = Whitelist::create(
-                    true,
-                    true,
-                    true,
-                    [],
-                    [],
-                    'A\Foo',
-                    'B\Bar'
-                );
-
-                $whitelist->recordWhitelistedClass(
-                    new FullyQualified('A\Foo'),
-                    new FullyQualified('Humbug\A\Foo')
-                );
-
-                return $whitelist;
-            })(),
-            <<<'PHP'
-            <?php
-            
-            // scoper-autoload.php @generated by PhpScoper
-            
-            $loader = require_once __DIR__.'/autoload.php';
-            
-            // Aliases for the whitelisted classes. For more information see:
+            // Exposed classes. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
             if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
                 spl_autoload_call('Humbug\A\Foo');
@@ -209,22 +155,14 @@ class ScoperAutoloadGeneratorTest extends TestCase
             PHP
         ];
 
-        yield 'whitelist with whitelisted global classes recorded' => [
-            (static function () {
-                $whitelist = Whitelist::create();
-
-                $whitelist->recordWhitelistedClass(
-                    new FullyQualified('Foo'),
-                    new FullyQualified('Humbug\Foo')
-                );
-
-                $whitelist->recordWhitelistedClass(
-                    new FullyQualified('Bar'),
-                    new FullyQualified('Humbug\Bar')
-                );
-
-                return $whitelist;
-            })(),
+        yield 'global classes recorded' => [
+            self::createRegistry(
+                [],
+                [
+                    'Foo' => 'Humbug\Foo',
+                    'Bar' => 'Humbug\Bar',
+                ],
+            ),
             <<<'PHP'
             <?php
             
@@ -232,7 +170,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             
             $loader = require_once __DIR__.'/autoload.php';
             
-            // Aliases for the whitelisted classes. For more information see:
+            // Exposed classes. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
             if (!class_exists('Foo', false) && !interface_exists('Foo', false) && !trait_exists('Foo', false)) {
                 spl_autoload_call('Humbug\Foo');
@@ -246,50 +184,19 @@ class ScoperAutoloadGeneratorTest extends TestCase
             PHP
         ];
 
-        yield 'complete whitelist' => [
-            (static function () {
-                $whitelist = Whitelist::create(
-                    true,
-                    true,
-                    true,
-                    [],
-                    [],
-                    'A\Foo',
-                    'B\Bar',
-                );
-
-                $whitelist->recordWhitelistedClass(
-                    new FullyQualified('A\Foo'),
-                    new FullyQualified('Humbug\A\Foo')
-                );
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('foo'),
-                    new FullyQualified('Humbug\foo')
-                );
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('bar'),
-                    new FullyQualified('Humbug\bar')
-                );
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('Acme\foo'),
-                    new FullyQualified('Humbug\Acme\foo')
-                );
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('Acme\bar'),
-                    new FullyQualified('Humbug\Acme\bar')
-                );
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('Emca\baz'),
-                    new FullyQualified('Humbug\Emca\baz')
-                );
-
-                return $whitelist;
-            })(),
+        yield 'nominal' => [
+            self::createRegistry(
+                [
+                    'foo' => 'Humbug\foo',
+                    'bar' => 'Humbug\bar',
+                    'Acme\foo' => 'Humbug\Acme\foo',
+                    'Acme\bar' => 'Humbug\Acme\bar',
+                    'Emca\baz' => 'Humbug\Emca\baz',
+                ],
+                [
+                    'A\Foo' => 'Humbug\A\Foo',
+                ],
+            ),
             <<<'PHP'
             <?php
             
@@ -299,7 +206,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 $loader = require_once __DIR__.'/autoload.php';
             }
             
-            // Aliases for the whitelisted classes. For more information see:
+            // Exposed classes. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
             namespace {
                 if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
@@ -307,7 +214,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 }
             }
             
-            // Functions whitelisting. For more information see:
+            // Exposed functions. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
             namespace {
                 if (!function_exists('foo')) {
@@ -354,16 +261,12 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
         // https://github.com/humbug/php-scoper/issues/267
         yield '__autoload global function with no namespaced functions' => [
-            (static function () {
-                $whitelist = Whitelist::create();
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('__autoload'),
-                    new FullyQualified('Humbug\__autoload')
-                );
-
-                return $whitelist;
-            })(),
+            self::createRegistry(
+                [
+                    '__autoload' => 'Humbug\__autoload',
+                ],
+                [],
+            ),
             <<<'PHP'
             <?php
             
@@ -371,7 +274,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             
             $loader = require_once __DIR__.'/autoload.php';
             
-            // Functions whitelisting. For more information see:
+            // Exposed functions. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
             if (!function_exists('__autoload')) {
                 function __autoload($className) {
@@ -386,20 +289,13 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
         // https://github.com/humbug/php-scoper/issues/267
         yield '__autoload global function with namespaced functions' => [
-            (static function () {
-                $whitelist = Whitelist::create();
-
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('__autoload'),
-                    new FullyQualified('Humbug\__autoload')
-                );
-                $whitelist->recordWhitelistedFunction(
-                    new FullyQualified('Acme\foo'),
-                    new FullyQualified('Humbug\Acme\foo')
-                );
-
-                return $whitelist;
-            })(),
+            self::createRegistry(
+                [
+                    '__autoload' => 'Humbug\__autoload',
+                    'Acme\foo' => 'Humbug\Acme\foo',
+                ],
+                [],
+            ),
             <<<'PHP'
             <?php
             
@@ -409,7 +305,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 $loader = require_once __DIR__.'/autoload.php';
             }
             
-            // Functions whitelisting. For more information see:
+            // Exposed functions. For more information see:
             // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
             namespace {
                 if (!function_exists('__autoload')) {
@@ -432,5 +328,33 @@ class ScoperAutoloadGeneratorTest extends TestCase
             
             PHP
         ];
+    }
+
+    /**
+     * @param array<string, string> $functions
+     * @param array<string, string> $classes
+     */
+    private static function createRegistry(
+        array $functions,
+        array $classes
+    ): SymbolsRegistry
+    {
+        $registry = new SymbolsRegistry();
+
+        foreach ($functions as $original => $alias) {
+            $registry->recordFunction(
+                new FullyQualified($original),
+                new FullyQualified($alias),
+            );
+        }
+
+        foreach ($classes as $original => $alias) {
+            $registry->recordClass(
+                new FullyQualified($original),
+                new FullyQualified($alias),
+            );
+        }
+
+        return $registry;
     }
 }
