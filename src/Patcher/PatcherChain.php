@@ -14,7 +14,7 @@ final class PatcherChain implements Patcher
     private array $patchers;
 
     /**
-     * @param array<callable(string, string, string): string> $patchers
+     * @param array<(callable(string, string, string): string)|Patcher> $patchers
      */
     public function __construct(array $patchers = [])
     {
