@@ -103,7 +103,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
         );
     }
 
-    private static function createConstDefineNode(string $name, Expr $value): ?Node
+    private static function createConstDefineNode(string $name, Expr $value): Node
     {
         return new Expression(
             new FuncCall(
