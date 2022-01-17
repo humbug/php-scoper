@@ -56,31 +56,28 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
     private function shouldPrefixUseStmt(UseUse $use): bool
     {
         $useType = self::findUseType($use);
+        $nameString = $use->name->toString();
 
-        // If is already from the prefix namespace
-        if ($this->prefix === $use->name->getFirst()) {
+        $alreadyPrefixed = $this->prefix === $use->name->getFirst();
+
+        if ($alreadyPrefixed) {
             return false;
         }
 
-        // If is whitelisted
-        if ($this->whitelist->belongsToExcludedNamespace((string) $use->name)) {
+        if ($this->whitelist->belongsToExcludedNamespace($nameString)) {
             return false;
         }
 
         if (Use_::TYPE_FUNCTION === $useType) {
-            return !$this->reflector->isFunctionInternal((string) $use->name);
+            return !$this->reflector->isFunctionInternal($nameString);
         }
 
         if (Use_::TYPE_CONSTANT === $useType) {
-            return self::shouldPrefixConstantUseStmt(
-                $use->name->toString(),
-                $this->whitelist,
-                $this->reflector,
-            );
+            return !$this->isExposedConstant($nameString);
         }
 
         return Use_::TYPE_NORMAL !== $useType
-            || !$this->reflector->isClassInternal((string) $use->name);
+            || !$this->reflector->isClassInternal($nameString);
     }
 
     private static function prefixStmt(UseUse $use, string $prefix): void
@@ -105,16 +102,6 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         $use->name = $prefixedName;
     }
 
-    private static function shouldPrefixConstantUseStmt(
-        string $name,
-        Whitelist $whitelist,
-        Reflector $reflector
-    ): bool {
-        return !$whitelist->isExposedConstantFromGlobalNamespace($name)
-            && !$whitelist->isSymbolExposed($name, true)
-            && !$reflector->isConstantInternal($name);
-    }
-
     /**
      * Finds the type of the use statement.
      *
@@ -132,5 +119,12 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         return $use->type;
+    }
+
+    private function isExposedConstant(string $name): bool
+    {
+        return $this->reflector->isConstantInternal($name)
+            || $this->whitelist->isExposedConstantFromGlobalNamespace($name)
+            || $this->whitelist->isSymbolExposed($name, true);
     }
 }
