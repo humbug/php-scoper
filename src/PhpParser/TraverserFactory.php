@@ -100,6 +100,7 @@ class TraverserFactory
                     $prefix,
                     $whitelist,
                     $this->reflector,
+                    $enrichedReflector,
                 ),
                 new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
                 new NodeVisitor\EvalPrefixer($stringNodePrefixer),

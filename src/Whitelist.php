@@ -91,6 +91,7 @@ final class Whitelist implements Countable
         $exposedConstants = [];
         $exposedSymbolsPatterns = [];
         $originalElements = [];
+        $excludedNamespaceNames = array_map('strtolower', $excludedNamespaceNames);
 
         foreach ($exposedElements as $element) {
             $element = ltrim(trim($element), '\\');

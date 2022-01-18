@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -63,6 +64,14 @@ use function strtolower;
  */
 final class StringScalarPrefixer extends NodeVisitorAbstract
 {
+    private const IGNORED_FUNCTIONS = [
+        'date',
+        'date_create',
+        'date_create_from_format',
+        'gmdate',
+    ];
+
+    // Function for which we know the argument IS a FQCN
     private const SPECIAL_FUNCTION_NAMES = [
         'class_alias',
         'class_exists',
@@ -80,15 +89,23 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'datetimeimmutable',
     ];
 
+    private const CLASS_LIKE_PATTERN = '/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u';
+
     private string $prefix;
     private Whitelist $whitelist;
     private Reflector $reflector;
+    private EnrichedReflector $enrichedReflector;
 
-    public function __construct(string $prefix, Whitelist $whitelist, Reflector $reflector)
-    {
+    public function __construct(
+        string $prefix,
+        Whitelist $whitelist,
+        Reflector $reflector,
+        EnrichedReflector $enrichedReflector
+    ) {
         $this->prefix = $prefix;
         $this->whitelist = $whitelist;
         $this->reflector = $reflector;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -101,14 +118,14 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function prefixStringScalar(String_ $string): String_
     {
         if (!(ParentNodeAppender::hasParent($string) && is_string($string->value))
-            || 1 !== native_preg_match('/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u', $string->value)
+            || 1 !== native_preg_match(self::CLASS_LIKE_PATTERN, $string->value)
         ) {
             return $string;
         }
 
         $normalizedValue = ltrim($string->value, '\\');
 
-        if ($this->whitelist->belongsToExcludedNamespace($string->value)) {
+        if ($this->enrichedReflector->belongsToExcludedNamespace($string->value)) {
             return $string;
         }
 
@@ -138,7 +155,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return $string;
         }
 
-        // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
+        // If belongs to the global namespace then we cannot differentiate the
+        // value from a symbol and a regular string hence we leave it alone
         return $this->belongsToTheGlobalNamespace($string)
             ? $string
             : $this->createPrefixedString($string);
@@ -182,11 +200,11 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function prefixFunctionStringArg(String_ $string, FuncCall $functionNode, string $normalizedValue): String_
     {
-        // In the case of a function call, we allow to prefix strings which could be classes belonging to the global
-        // namespace in some cases
+        // In the case of a function call, we allow prefixing strings which
+        // could be classes belonging to the global namespace in some cases
         $functionName = $functionNode->name instanceof Name ? (string) $functionNode->name : null;
 
-        if (in_array($functionName, ['date_create', 'date', 'gmdate', 'date_create_from_format'], true)) {
+        if (in_array($functionName, self::IGNORED_FUNCTIONS, true)) {
             return $string;
         }
 
@@ -195,7 +213,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         if ('function_exists' === $functionName) {
-            return $this->reflector->isFunctionInternal($normalizedValue)
+            return $this->enrichedReflector->isFunctionExcluded($normalizedValue)
                 ? $string
                 : $this->createPrefixedString($string);
         }
@@ -209,17 +227,12 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                 return $string;
             }
 
-            return $this->reflector->isClassInternal($normalizedValue)
+            return $this->enrichedReflector->isClassExcluded($normalizedValue)
                 ? $string
                 : $this->createPrefixedString($string);
         }
 
-        return
-            (
-                $this->whitelist->isSymbolExposed($string->value, true)
-                || $this->whitelist->isExposedConstantFromGlobalNamespace($string->value)
-                || $this->reflector->isConstantInternal($normalizedValue)
-            )
+        return $this->enrichedReflector->isExposedConstant($normalizedValue)
             ? $string
             : $this->createPrefixedString($string);
     }

@@ -76,7 +76,7 @@ define(\Acme\BAR_CONST, foo());
 <?php
 
 namespace {
-    \define('FOO_CONST', \foo());
+    const FOO_CONST = \foo();
     \define('BAR_CONST', \foo());
     \define('Acme\\BAR_CONST', \foo());
     \define(\FOO_CONST, \foo());
