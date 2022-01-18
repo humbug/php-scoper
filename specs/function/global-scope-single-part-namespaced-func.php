@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Namespaced function call' => <<<'PHP'
@@ -66,7 +66,7 @@ PHP
 
     'Whitelisted namespaced function call' => [
         'whitelist' => ['PHPUnit\main'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'
@@ -85,7 +85,7 @@ PHP
 
     'FQ whitelisted namespaced function call' => [
         'whitelist' => ['PHPUnit\main'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'

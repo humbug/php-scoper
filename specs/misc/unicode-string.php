@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     // https://github.com/humbug/php-scoper/issues/464

@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -59,7 +59,7 @@ PHP
 
     'Declaration in the global namespace with global classes whitelisted' => [
         'expose-global-classes' => true,
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -134,7 +134,7 @@ PHP
 
     'Declaration of a whitelisted class' => [
         'whitelist' => ['Foo\A'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
@@ -163,7 +163,7 @@ PHP
 
     'Declaration of a whitelisted class whitelisted with a pattern' => [
         'whitelist' => ['Foo\A*'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
             ['Foo\AA', 'Humbug\Foo\AA'],
             ['Foo\A\B', 'Humbug\Foo\A\B'],
@@ -273,7 +273,7 @@ PHP
             'Foo\A',
             'Bar\B',
         ],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
             ['Bar\B', 'Humbug\Bar\B'],
         ],

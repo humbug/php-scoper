@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Static method call statement of a class via a use statement' => <<<'PHP'
@@ -112,7 +112,7 @@ PHP
 
     'Static method call statement of a whitelisted class via a use statement' => [
         'whitelist' => ['X\Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

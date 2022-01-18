@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'

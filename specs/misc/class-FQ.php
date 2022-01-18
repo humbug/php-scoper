@@ -32,13 +32,13 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Different kind of whitelisted class constant calls in the global scope' => [
         'whitelist' => ['Foo\Bar', 'Foo\Bar\Poz'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
             ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
         ],
@@ -200,7 +200,7 @@ PHP
             'A\Aoz',
             'A\Aoo\Aoz\Poz',
         ],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
             ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
 

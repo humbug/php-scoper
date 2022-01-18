@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -54,7 +54,7 @@ PHP
 
     'Declaration in the global namespace with global classes whitelisted' => [
         'expose-global-classes' => true,
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -114,7 +114,7 @@ PHP
 
     'Declaration of a whitelisted final class' => [
         'whitelist' => ['Foo\A'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'

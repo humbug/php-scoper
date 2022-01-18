@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'string' => <<<'PHP'
@@ -187,7 +187,7 @@ PHP
 
      'string with whitelisted function' => [
          'whitelist' => ['Acme\foo'],
-         'registered-functions' => [
+         'expected-recorded-functions' => [
              ['Acme\foo', 'Humbug\Acme\foo'],
          ],
          'payload' => <<<'PHP'

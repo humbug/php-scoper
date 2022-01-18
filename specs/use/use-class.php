@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
@@ -123,7 +123,7 @@ PHP
 
     'Use statement of a whitelisted class belonging to the global scope' => [
         'whitelist' => ['Foo'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
@@ -172,7 +172,7 @@ PHP
     'Use statement of an exposed class belonging to the global scope which has been excluded' => [
         'exclude-namespaces' => ['/^$/'],
         'whitelist' => ['Foo'],
-        'registered-classes' => [],
+        'expected-recorded-classes' => [],
         'payload' => <<<'PHP'
 <?php
 
@@ -247,7 +247,7 @@ PHP
 
     'Use statement of two-level class which has been whitelisted' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
