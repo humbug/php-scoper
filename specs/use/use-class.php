@@ -169,11 +169,10 @@ namespace {
 PHP
     ],
 
-    'Use statement of a whitelisted class belonging to the global scope which has been whitelisted' => [
-        'whitelist' => ['Foo', '\*'],
-        'registered-classes' => [
-            ['Foo', 'Humbug\Foo'],
-        ],
+    'Use statement of an exposed class belonging to the global scope which has been excluded' => [
+        'exclude-namespaces' => ['/^$/'],
+        'whitelist' => ['Foo'],
+        'registered-classes' => [],
         'payload' => <<<'PHP'
 <?php
 

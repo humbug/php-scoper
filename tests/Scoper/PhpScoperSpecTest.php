@@ -409,8 +409,9 @@ class PhpScoperSpecTest extends TestCase
     ): string {
         $formattedWhitelist = $this->formatSimpleList($whitelist->toArray());
 
-        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->exposeGlobalConstants());
         $formattedWhitelistGlobalFunctions = $this->convertBoolToString($whitelist->exposeGlobalFunctions());
+        $formattedWhitelistGlobalClasses = $this->convertBoolToString($whitelist->exposeGlobalClasses());
+        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->exposeGlobalConstants());
 
         $whitelist->getRecordedWhitelistedFunctions();
         $whitelist->getRecordedWhitelistedClasses();
@@ -439,8 +440,9 @@ $file
 $titleSeparator
 INPUT
 whitelist: $formattedWhitelist
-whitelist global constants: $formattedWhitelistGlobalConstants
 whitelist global functions: $formattedWhitelistGlobalFunctions
+whitelist global classes: $formattedWhitelistGlobalClasses
+whitelist global constants: $formattedWhitelistGlobalConstants
 $titleSeparator
 $contents
 
