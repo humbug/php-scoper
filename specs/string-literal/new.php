@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'FQCN string argument' => <<<'PHP'
@@ -165,7 +165,7 @@ PHP
 
     'FQC constant call on whitelisted class' => [
         'whitelist' => ['Symfony\Component\Yaml\Ya_1'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'

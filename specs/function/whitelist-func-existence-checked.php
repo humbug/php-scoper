@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Non whitelisted global function call' => <<<'PHP'
@@ -52,7 +52,7 @@ PHP
 
     'Whitelisted global function call' => [
         'whitelist' => ['main'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -71,7 +71,7 @@ PHP
 
     'Global function call with whitelisted global functions' => [
         'expose-global-functions' => true,
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -104,7 +104,7 @@ PHP
 
     'Whitelisted namespaced function call' => [
         'whitelist' => ['Acme\main'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['Acme\main', 'Humbug\Acme\main'],
         ],
         'payload' => <<<'PHP'

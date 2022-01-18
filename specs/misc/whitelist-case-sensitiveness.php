@@ -32,13 +32,13 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Class whitelists are case insensitive' => [
         'whitelist' => ['acme\foo'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Acme\Foo', 'Humbug\Acme\Foo'],
         ],
         'payload' => <<<'PHP'

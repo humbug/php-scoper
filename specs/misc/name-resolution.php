@@ -32,12 +32,12 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Internal class & function with the same name' => [
-        'registered-functions' => [],
+        'expected-recorded-functions' => [],
         'payload' => <<<'PHP'
 <?php
 
@@ -69,7 +69,7 @@ PHP
     ],
 
     'Internal class & const with the same name' => [
-        'registered-functions' => [],
+        'expected-recorded-functions' => [],
         'payload' => <<<'PHP'
 <?php
 

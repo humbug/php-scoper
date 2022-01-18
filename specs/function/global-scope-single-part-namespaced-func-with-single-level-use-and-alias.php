@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
@@ -112,7 +112,7 @@ PHP
 
     'Whitelisted namespaced function call imported with a partial use statement in the global scope' => [
         'whitelist' => ['Foo\main'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['Foo\main', 'Humbug\Foo\main'],
         ],
         'payload' => <<<'PHP'

@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'New statement call of a namespaced class' => [
@@ -90,7 +90,7 @@ PHP
 
     'New statement call of a whitelisted namespaced class' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -121,7 +121,7 @@ PHP
 
     'FQ new statement call of a whitelisted namespaced class' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Static method call statement of a namespaced class partially imported with an aliased use statement' => <<<'PHP'
@@ -173,7 +173,7 @@ PHP
 
     'Static method call statement of a whitelisted namespaced class partially imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -216,7 +216,7 @@ PHP
 
     'Static method call statement of a whitelisted namespaced class imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -289,7 +289,7 @@ PHP
 
     'FQ static method call statement of a whitelisted namespaced class imported with an aliased use statement' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
