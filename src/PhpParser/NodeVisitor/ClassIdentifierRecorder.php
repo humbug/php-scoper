@@ -21,8 +21,8 @@ use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
 use UnexpectedValueException;
 
@@ -58,9 +58,9 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
 
         $parent = ParentNodeAppender::getParent($node);
 
-        if ($parent instanceof Trait_
-            || !($parent instanceof ClassLike)
-        ) {
+        $isClassOrInterface = $parent instanceof Class_ || $parent instanceof Interface_;
+
+        if (!$isClassOrInterface) {
             return $node;
         }
 
