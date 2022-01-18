@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
@@ -57,16 +57,16 @@ use function array_reduce;
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
     private string $prefix;
-    private Whitelist $whitelist;
+    private EnrichedReflector $enrichedReflector;
     private IdentifierResolver $identifierResolver;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist,
+        EnrichedReflector $enrichedReflector,
         IdentifierResolver $identifierResolver
     ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
         $this->identifierResolver = $identifierResolver;
     }
 
@@ -120,21 +120,12 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
         if ($resolvedName instanceof FullyQualified
-            && $this->isExposedClass((string) $resolvedName)
+            && $this->enrichedReflector->isExposedClass((string) $resolvedName)
         ) {
             $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
         }
 
         return $stmts;
-    }
-
-    private function isExposedClass(string $resolvedName): bool
-    {
-        return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
-            && (
-                $this->whitelist->isExposedClassFromGlobalNamespace($resolvedName)
-                || $this->whitelist->isSymbolExposed($resolvedName)
-            );
     }
 
     private static function createAliasStmt(

@@ -15,8 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -46,18 +45,15 @@ use function count;
  */
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
-    private Whitelist $whitelist;
     private IdentifierResolver $identifierResolver;
-    private Reflector $reflector;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
-        Whitelist $whitelist,
         IdentifierResolver $identifierResolver,
-        Reflector $reflector
+        EnrichedReflector $enrichedReflector
     ) {
-        $this->whitelist = $whitelist;
         $this->identifierResolver = $identifierResolver;
-        $this->reflector = $reflector;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -86,7 +82,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
             $constant->name,
         );
 
-        if (!$this->isExposedConstant((string) $resolvedConstantName)) {
+        if (!$this->enrichedReflector->isExposedConstant((string) $resolvedConstantName)) {
             // No replacement
             return null;
         }
@@ -116,16 +112,5 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                 ],
             ),
         );
-    }
-
-    private function isExposedConstant(string $name): bool
-    {
-        // Special case: internal constants must be treated as exposed symbols.
-        //
-        // Example: when declaring a new internal constant for compatibility
-        // reasons, it must remain un-prefixed.
-        return $this->reflector->isConstantInternal($name)
-            || $this->whitelist->isExposedConstantFromGlobalNamespace($name)
-            || $this->whitelist->isSymbolExposed($name, true);
     }
 }

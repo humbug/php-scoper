@@ -15,8 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
@@ -31,17 +30,14 @@ use PhpParser\NodeVisitorAbstract;
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
     private string $prefix;
-    private Whitelist $whitelist;
-    private Reflector $reflector;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist,
-        Reflector $reflector
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
-        $this->reflector = $reflector;
-        $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -64,20 +60,20 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
             return false;
         }
 
-        if ($this->whitelist->belongsToExcludedNamespace($nameString)) {
+        if ($this->enrichedReflector->belongsToExcludedNamespace($nameString)) {
             return false;
         }
 
         if (Use_::TYPE_FUNCTION === $useType) {
-            return !$this->reflector->isFunctionInternal($nameString);
+            return !$this->enrichedReflector->isFunctionInternal($nameString);
         }
 
         if (Use_::TYPE_CONSTANT === $useType) {
-            return !$this->isExposedConstant($nameString);
+            return !$this->enrichedReflector->isExposedConstant($nameString);
         }
 
         return Use_::TYPE_NORMAL !== $useType
-            || !$this->reflector->isClassInternal($nameString);
+            || !$this->enrichedReflector->isClassInternal($nameString);
     }
 
     private static function prefixStmt(UseUse $use, string $prefix): void
@@ -119,12 +115,5 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         }
 
         return $use->type;
-    }
-
-    private function isExposedConstant(string $name): bool
-    {
-        return $this->reflector->isConstantInternal($name)
-            || $this->whitelist->isExposedConstantFromGlobalNamespace($name)
-            || $this->whitelist->isSymbolExposed($name, true);
     }
 }
