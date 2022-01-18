@@ -32,12 +32,12 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Simple function declaration' => [
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -59,7 +59,7 @@ PHP
 
     'Simple whitelisted function' => [
         'whitelist' => ['foo'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -82,7 +82,7 @@ PHP
     'Simple whitelisted function with global functions non whitelisted' => [
         'expose-global-functions' => false,
         'whitelist' => ['foo'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -104,10 +104,10 @@ PHP
 
     'Function declaration in the global namespace' => [
         'whitelist' => ['X\Y', 'BAR_CONST'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -174,7 +174,7 @@ PHP
 
     'Function declaration in the global namespace with globally whitelisted constants' => [
         'expose-global-constants' => true,
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -195,10 +195,10 @@ PHP
 
     'Function declaration in the global namespace with use statements' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -286,10 +286,10 @@ PHP
 
     'Function declarations with return types in the global namespace with use statements' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'

@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Simple function declaration' => <<<'PHP'
@@ -57,7 +57,7 @@ PHP
 
     'Simple whitelisted function' => [
         'whitelist' => ['Acme\foo'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['Acme\foo', 'Humbug\Acme\foo'],
         ],
         'payload' => <<<'PHP'
@@ -81,7 +81,7 @@ PHP
 
     'Function declaration in a namespace' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -168,7 +168,7 @@ PHP
 
     'Function declaration in a namespace with whitelisted classes' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -255,7 +255,7 @@ PHP
 
     'Function declaration in a namespace with use statements' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -417,7 +417,7 @@ PHP
 
     'Function declarations with return types in a namespace with use statements' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'

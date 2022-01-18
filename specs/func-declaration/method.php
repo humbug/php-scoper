@@ -32,13 +32,13 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Method declarations' => [
         'whitelist' => ['X\Y', 'BAR_CONST'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -126,7 +126,7 @@ PHP
 
     'Method declarations with return types' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'

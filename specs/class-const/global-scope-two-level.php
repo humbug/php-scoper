@@ -32,8 +32,8 @@ return [
         'exclude-classes' => [],
         'exclude-functions' => [],
 
-        'registered-classes' => [],
-        'registered-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Constant call on a namespaced class' => [
@@ -90,7 +90,7 @@ PHP
 
     'Constant call on a whitelisted namespaced class' => [
         'whitelist' => ['PHPUnit\Command'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
@@ -121,7 +121,7 @@ PHP
 
     'FQ constant call on a whitelisted namespaced class' => [
         'whitelist' => ['PHPUnit\Command'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
