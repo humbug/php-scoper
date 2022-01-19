@@ -33,14 +33,36 @@ final class EnrichedReflector
         return $this->reflector->isFunctionInternal($name);
     }
 
+    public function isFunctionExcluded(string $name): bool
+    {
+        return $this->reflector->isFunctionInternal($name)
+            || $this->whitelist->belongsToExcludedNamespace($name);
+    }
+
     public function isClassInternal(string $name): bool
     {
         return $this->reflector->isClassInternal($name);
     }
 
+    public function isClassExcluded(string $name): bool
+    {
+        return $this->reflector->isClassInternal($name)
+            || $this->whitelist->belongsToExcludedNamespace($name);
+    }
+
     public function isConstantInternal(string $name): bool
     {
         return $this->reflector->isConstantInternal($name);
+    }
+
+    public function isExposedFunction(string $resolvedName): bool
+    {
+        return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
+            && !$this->reflector->isFunctionInternal($resolvedName)
+            && (
+                $this->whitelist->isExposedFunctionFromGlobalNamespace($resolvedName)
+                || $this->whitelist->isSymbolExposed($resolvedName)
+            );
     }
 
     public function isExposedClass(string $resolvedName): bool
@@ -58,8 +80,11 @@ final class EnrichedReflector
         //
         // Example: when declaring a new internal constant for compatibility
         // reasons, it must remain un-prefixed.
-        return $this->reflector->isConstantInternal($name)
-            || $this->whitelist->isExposedConstantFromGlobalNamespace($name)
-            || $this->whitelist->isSymbolExposed($name, true);
+        return !$this->whitelist->belongsToExcludedNamespace($name)
+            && (
+                $this->reflector->isConstantInternal($name)
+                || $this->whitelist->isExposedConstantFromGlobalNamespace($name)
+                || $this->whitelist->isSymbolExposed($name, true)
+            );
     }
 }

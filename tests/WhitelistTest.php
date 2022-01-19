@@ -276,7 +276,7 @@ class WhitelistTest extends TestCase
             [],
             [],
             [],
-            ['PHPUnit\Runner'],
+            ['phpunit\runner'],
             [],
             [],
             [],

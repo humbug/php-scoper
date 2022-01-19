@@ -98,8 +98,7 @@ class TraverserFactory
                 ),
                 new NodeVisitor\StringScalarPrefixer(
                     $prefix,
-                    $whitelist,
-                    $this->reflector,
+                    $enrichedReflector,
                 ),
                 new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
                 new NodeVisitor\EvalPrefixer($stringNodePrefixer),
