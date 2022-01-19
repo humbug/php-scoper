@@ -126,18 +126,18 @@ PHP
     'Namespaced function call from excluded namespace' => [
         'exclude-namespaces' => ['Acme'],
         'payload' => <<<'PHP'
-<?php
-
-namespace Acme;
-
-function_exists('Acme\main');
-----
-<?php
-
-namespace Acme;
-
-\function_exists('Acme\\main');
-
-PHP
+        <?php
+        
+        namespace Acme;
+        
+        function_exists('Acme\main');
+        ----
+        <?php
+        
+        namespace Acme;
+        
+        \function_exists('Acme\\main');
+        
+        PHP,
     ],
 ];

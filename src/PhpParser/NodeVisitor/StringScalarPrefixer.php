@@ -14,9 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -123,13 +121,14 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             return $string;
         }
 
-        // From this point either the symbol belongs to the global namespace or the symbol belongs to the symbol
-        // namespace is whitelisted
+        // From this point either the symbol belongs to the global namespace or
+        // the symbol belongs to namespace a non-excluded namespace
 
         $parentNode = ParentNodeAppender::getParent($string);
 
-        // The string scalar either has a class form or a simple string which can either be a symbol from the global
-        // namespace or a completely unrelated string.
+        // The string scalar either has a class form or a simple string which
+        // can either be a symbol from the global namespace or a completely
+        // unrelated string.
 
         if ($parentNode instanceof Arg) {
             return $this->prefixStringArg($string, $parentNode, $normalizedValue);
