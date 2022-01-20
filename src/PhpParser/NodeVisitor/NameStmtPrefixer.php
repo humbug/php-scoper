@@ -218,9 +218,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             // Continue
         }
 
-        // Functions have a fallback auto-loading so we cannot prefix them when
-        // the name is ambiguous
-        // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
         if ($parentNode instanceof FuncCall) {
             $prefixedName = $this->prefixFuncCallNode($originalName, $resolvedName);
 
@@ -395,19 +392,21 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 : null;
         }
 
-        // Constants have an auto-loading fallback, so we cannot prefix them
-        // when the name is ambiguous
+        // Constants have an auto-loading fallback, so as a rule we cannot
+        // prefix them when the name is ambiguous.
         // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
-        // HOWEVER, there is _very_ high chances that if a user explicitly
-        // register a constant to be exposed or that the constant is internal
-        // that it is the constant in question.
-//        if (!$this->enrichedReflector->isExposedConstant($resolvedNameString)
-//            // If it belongs to the global namespace the assumption above is
-//            // has too high chances to be wrong
-//            && !$this->whitelist->isExposedConstantFromGlobalNamespace($resolvedNameString)
-//        ) {
-//            return $resolvedName;
-//        }
+        //
+        // HOWEVER. However. There is _very_ high chances that if a user
+        // explicitly register a constant to be exposed or that the constant
+        // is internal that it is the constant in question and not the one
+        // relative to the namespace.
+        // Indeed it would otherwise mean that the user has for example Acme\FOO
+        // and \FOO in the codebase AND decide to expose \FOO.
+        // It is not only unlikely but sketchy, hence should not be an issue
+        // in practice.
+
+        // We distinguish exposed from internal here as internal are a much safer
+        // bet.
         if ($this->enrichedReflector->isConstantInternal($resolvedNameString)) {
             return new FullyQualified(
                 $resolvedNameString,
@@ -435,6 +434,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
      */
     private function prefixFuncCallNode(Name $originalName, Name $resolvedName): ?Name
     {
+        // TODO: similar to const
+        // Functions have a fallback auto-loading so we cannot prefix them when
+        // the name is ambiguous
+        // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
+
         if ($this->reflector->isFunctionInternal($originalName->toString())) {
             return new FullyQualified(
                 $originalName->toString(),
