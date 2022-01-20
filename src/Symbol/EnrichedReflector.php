@@ -57,6 +57,7 @@ final class EnrichedReflector
 
     public function isConstantExcluded(string $name): bool
     {
+        // TODO: double check not sure that internal should mean excluded for constants
         return $this->reflector->isConstantInternal($name)
             || $this->whitelist->belongsToExcludedNamespace($name);
     }

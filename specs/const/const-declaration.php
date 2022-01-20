@@ -408,6 +408,22 @@ namespace PHPParser {
     }
 }
 
+namespace FQ_PHPParser {
+    class Lexer {
+        function isNewToken(int $token): bool {
+            return \NEW_TOKEN === $token;
+        }
+        
+        function isAnotherNewToken(int $token): bool {
+            if (!\defined('ANOTHER_NEW_TOKEN')) {
+                \define('ANOTHER_NEW_TOKEN', 502);
+            }
+        
+            return \ANOTHER_NEW_TOKEN === $token;
+        }
+    }
+}
+
 ----
 <?php
 
@@ -415,6 +431,22 @@ namespace Humbug;
 
 \define('NEW_TOKEN', 501);
 namespace Humbug\PHPParser;
+
+class Lexer
+{
+    function isNewToken(int $token) : bool
+    {
+        return \NEW_TOKEN === $token;
+    }
+    function isAnotherNewToken(int $token) : bool
+    {
+        if (!\defined('ANOTHER_NEW_TOKEN')) {
+            \define('ANOTHER_NEW_TOKEN', 502);
+        }
+        return \ANOTHER_NEW_TOKEN === $token;
+    }
+}
+namespace Humbug\FQ_PHPParser;
 
 class Lexer
 {

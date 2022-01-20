@@ -379,53 +379,60 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         );
     }
 
+    /**
+     * @return Name|null Returns the name to use (prefixed or not). Otherwise
+     *                   it was not possible to resolve the name and the name
+     *                   will end up being prefixed the "regular" way (prefix
+     *                   added)
+     */
     private function prefixConstFetchNode(Name $resolvedName): ?Name
     {
         $resolvedNameString = $resolvedName->toString();
 
-        $before = $this->whitelist->isSymbolExposed($resolvedNameString, true);
-        $now = $this->enrichedReflector->isExposedConstant($resolvedNameString);
-
-        if ($before) {
-            return $resolvedName;
-        }
-
-        $before = $this->reflector->isConstantInternal($resolvedNameString);
-        $now = $this->enrichedReflector->isConstantExcluded($resolvedNameString);
-
-        if ($before) {
-            return new FullyQualified(
-                $resolvedNameString,
-                $resolvedName->getAttributes(),
-            );
-        }
-
-        if ($before) {
-            return new FullyQualified(
-                $resolvedNameString,
-                $resolvedName->getAttributes(),
-            );
+        if ($resolvedName->isFullyQualified()) {
+            return $this->enrichedReflector->isExposedConstant($resolvedNameString)
+                ? $resolvedName
+                : null;
         }
 
         // Constants have an auto-loading fallback, so we cannot prefix them
         // when the name is ambiguous
         // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
-        if (!$resolvedName->isFullyQualified()) {
-            return $resolvedName;
-        }
-
-        if ($this->enrichedReflector->isExposedConstant($resolvedNameString)) {
-            // Unlike classes & functions, whitelisted are not prefixed with
-            // aliases registered in scoper-autoload.php
+        // HOWEVER, there is _very_ high chances that if a user explicitly
+        // register a constant to be exposed or that the constant is internal
+        // that it is the constant in question.
+//        if (!$this->enrichedReflector->isExposedConstant($resolvedNameString)
+//            // If it belongs to the global namespace the assumption above is
+//            // has too high chances to be wrong
+//            && !$this->whitelist->isExposedConstantFromGlobalNamespace($resolvedNameString)
+//        ) {
+//            return $resolvedName;
+//        }
+        if ($this->enrichedReflector->isConstantInternal($resolvedNameString)) {
             return new FullyQualified(
                 $resolvedNameString,
                 $resolvedName->getAttributes(),
             );
         }
 
-        return null;
+        if ($this->enrichedReflector->isExposedConstant($resolvedNameString)) {
+            return $this->whitelist->isExposedConstantFromGlobalNamespace($resolvedNameString)
+                ? $resolvedName
+                : new FullyQualified(
+                    $resolvedNameString,
+                    $resolvedName->getAttributes(),
+                );
+        }
+
+        return $resolvedName;
     }
 
+    /**
+     * @return Name|null Returns the name to use (prefixed or not). Otherwise
+     *                   it was not possible to resolve the name and the name
+     *                   will end up being prefixed the "regular" way (prefix
+     *                   added)
+     */
     private function prefixFuncCallNode(Name $originalName, Name $resolvedName): ?Name
     {
         if ($this->reflector->isFunctionInternal($originalName->toString())) {

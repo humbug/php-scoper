@@ -19,7 +19,7 @@ return [
         'prefix' => 'Humbug',
         'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
         'expose-namespaces' => [],
