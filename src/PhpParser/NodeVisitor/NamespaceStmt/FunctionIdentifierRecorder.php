@@ -18,6 +18,7 @@ use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -39,18 +40,18 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
     private string $prefix;
     private IdentifierResolver $identifierResolver;
     private Whitelist $whitelist;
-    private Reflector $reflector;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
         IdentifierResolver $identifierResolver,
         Whitelist $whitelist,
-        Reflector $reflector
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
         $this->identifierResolver = $identifierResolver;
         $this->whitelist = $whitelist;
-        $this->reflector = $reflector;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -64,7 +65,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         $resolvedName = $this->retrieveResolvedName($node);
 
         if (null !== $resolvedName
-            && $this->isFunctionWhitelisted($resolvedName)
+            && $this->enrichedReflector->isExposedFunction($resolvedName->toString())
         ) {
             $this->whitelist->recordWhitelistedFunction(
                 $resolvedName,
@@ -143,18 +144,5 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         $resolvedName = $this->identifierResolver->resolveString($string);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
-    }
-
-    private function isFunctionWhitelisted(FullyQualified $name): bool
-    {
-        $nameString = (string) $name;
-
-        return (
-            !$this->reflector->isFunctionInternal($nameString)
-            && (
-                $this->whitelist->isExposedFunctionFromGlobalNamespace($nameString)
-                || $this->whitelist->isSymbolExposed($nameString)
-            )
-        );
     }
 }

@@ -82,7 +82,7 @@ class TraverserFactory
                     $prefix,
                     $identifierResolver,
                     $whitelist,
-                    $this->reflector,
+                    $enrichedReflector,
                 ),
                 new NodeVisitor\ClassIdentifierRecorder(
                     $prefix,
