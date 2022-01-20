@@ -55,6 +55,12 @@ final class EnrichedReflector
         return $this->reflector->isConstantInternal($name);
     }
 
+    public function isConstantExcluded(string $name): bool
+    {
+        return $this->reflector->isConstantInternal($name)
+            || $this->whitelist->belongsToExcludedNamespace($name);
+    }
+
     public function isExposedFunction(string $resolvedName): bool
     {
         return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
@@ -65,13 +71,28 @@ final class EnrichedReflector
             );
     }
 
+    public function isExposedFunctionFromGlobalNamespace(string $resolvedName): bool
+    {
+        return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
+            && !$this->reflector->isFunctionInternal($resolvedName)
+            && $this->whitelist->isExposedFunctionFromGlobalNamespace($resolvedName);
+    }
+
     public function isExposedClass(string $resolvedName): bool
     {
         return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
+            && !$this->reflector->isClassInternal($resolvedName)
             && (
                 $this->whitelist->isExposedClassFromGlobalNamespace($resolvedName)
                 || $this->whitelist->isSymbolExposed($resolvedName)
             );
+    }
+
+    public function isExposedClassFromGlobalNamespace(string $resolvedName): bool
+    {
+        return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
+            && !$this->reflector->isClassInternal($resolvedName)
+            && $this->whitelist->isExposedClassFromGlobalNamespace($resolvedName);
     }
 
     public function isExposedConstant(string $name): bool

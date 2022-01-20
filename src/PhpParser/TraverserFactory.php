@@ -95,6 +95,7 @@ class TraverserFactory
                     $namespaceStatements,
                     $useStatements,
                     $this->reflector,
+                    $enrichedReflector,
                 ),
                 new NodeVisitor\StringScalarPrefixer(
                     $prefix,
