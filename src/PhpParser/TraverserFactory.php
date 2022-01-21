@@ -91,10 +91,8 @@ class TraverserFactory
                 ),
                 new NodeVisitor\NameStmtPrefixer(
                     $prefix,
-                    $whitelist,
                     $namespaceStatements,
                     $useStatements,
-                    $this->reflector,
                     $enrichedReflector,
                 ),
                 new NodeVisitor\StringScalarPrefixer(

@@ -18,9 +18,7 @@ use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\UseStmtName;
-use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\ClassConstFetch;
@@ -45,13 +43,8 @@ use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Alias;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Precedence;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeVisitorAbstract;
-use UnexpectedValueException;
-use function count;
-use function get_class;
 use function in_array;
-use function Safe\sprintf;
 use function strtolower;
 
 /**
@@ -94,25 +87,19 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     ];
 
     private string $prefix;
-    private Whitelist $whitelist;
     private NamespaceStmtCollection $namespaceStatements;
     private UseStmtCollection $useStatements;
-    private Reflector $reflector;
     private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist,
         NamespaceStmtCollection $namespaceStatements,
         UseStmtCollection $useStatements,
-        Reflector $reflector,
         EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
         $this->namespaceStatements = $namespaceStatements;
         $this->useStatements = $useStatements;
-        $this->reflector = $reflector;
         $this->enrichedReflector = $enrichedReflector;
     }
 
@@ -415,7 +402,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         if ($this->enrichedReflector->isExposedConstant($resolvedNameString)) {
-            return $this->whitelist->isExposedConstantFromGlobalNamespace($resolvedNameString)
+            return $this->enrichedReflector->isExposedConstantFromGlobalNamespace($resolvedNameString)
                 ? $resolvedName
                 : new FullyQualified(
                     $resolvedNameString,
@@ -434,61 +421,33 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
      */
     private function prefixFuncCallNode(Name $originalName, Name $resolvedName): ?Name
     {
-        // TODO: similar to const
         // Functions have a fallback auto-loading so we cannot prefix them when
         // the name is ambiguous
         // See https://wiki.php.net/rfc/fallback-to-root-scope-deprecation
+        //
+        // See prefixConstFetchNode() for more details as to why we can still
+        // take the risk under some circumstances.
+        $resolvedNameString = $resolvedName->toString();
 
-        if ($this->reflector->isFunctionInternal($originalName->toString())) {
+        if ($resolvedName->isFullyQualified()) {
+            return $this->enrichedReflector->isFunctionExcluded($resolvedNameString)
+                ? $resolvedName
+                : null;
+        }
+
+        if ($this->enrichedReflector->isFunctionInternal($resolvedNameString)) {
             return new FullyQualified(
                 $originalName->toString(),
                 $originalName->getAttributes(),
             );
         }
 
-        if (!$resolvedName->isFullyQualified()) {
-            return $resolvedName;
+        if ($this->enrichedReflector->isExposedFunction($resolvedNameString)) {
+            return $this->enrichedReflector->isExposedFunctionFromGlobalNamespace($resolvedNameString)
+                ? $resolvedName
+                : null;
         }
 
-        return null;
-    }
-
-    /**
-     * @return array{string|null, Use_::TYPE_*}
-     */
-    private static function getUseStmtAliasAndType(Name $name): array
-    {
-        $use = ParentNodeAppender::getParent($name);
-
-        if (!($use instanceof UseUse)) {
-            throw new UnexpectedValueException(
-                sprintf(
-                    'Unexpected use statement name parent "%s"',
-                    get_class($use),
-                ),
-            );
-        }
-
-        $useParent = ParentNodeAppender::getParent($use);
-
-        if (!($useParent instanceof Use_)) {
-            throw new UnexpectedValueException(
-                sprintf(
-                    'Unexpected UseUse parent "%s"',
-                    get_class($useParent),
-                ),
-            );
-        }
-
-        $alias = $use->alias;
-
-        if (null !== $alias) {
-            $alias = (string) $alias;
-        }
-
-        return [
-            $alias,
-            $useParent->type,
-        ];
+        return $resolvedName;
     }
 }

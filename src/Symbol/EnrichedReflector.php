@@ -109,4 +109,9 @@ final class EnrichedReflector
                 || $this->whitelist->isSymbolExposed($name, true)
             );
     }
+
+    public function isExposedConstantFromGlobalNamespace(string $constantName): bool
+    {
+        return $this->whitelist->isExposedConstantFromGlobalNamespace($constantName);
+    }
 }
