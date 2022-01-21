@@ -1,0 +1,280 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Humbug\PhpScoper\Symbol;
+
+use Humbug\PhpScoper\RegexChecker;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @covers \Humbug\PhpScoper\Symbol\NamespaceRegistry
+ */
+class NamespaceRegistryTest extends TestCase
+{
+    private RegexChecker $regexChecker;
+
+    protected function setUp(): void
+    {
+        $this->regexChecker = new RegexChecker();
+    }
+
+    /**
+     * @dataProvider provideNamespacedSymbol
+     *
+     * @param string[] $namespaceRegexes
+     * @param string[] $namespaceNames
+     */
+    public function test_it_can_tell_if_a_symbol_belongs_to_a_registered_namespace(
+        array $namespaceRegexes,
+        array $namespaceNames,
+        string $symbol,
+        bool $expected
+    ): void
+    {
+        // Sanity check
+        $this->validateRegexes($namespaceRegexes);
+
+        $registeredNamespaces = NamespaceRegistry::create(
+            $namespaceRegexes,
+            $namespaceNames,
+        );
+
+        $actual = $registeredNamespaces->belongsToRegisteredNamespace($symbol);
+
+        self::assertSame($expected, $actual);
+    }
+
+    public static function provideNamespacedSymbol(): iterable
+    {
+        foreach (self::provideNamespaceNames() as $title => [$namespaceNames, $symbol, $expected]) {
+            yield '[name only] '.$title => [
+                [],
+                $namespaceNames,
+                $symbol,
+                $expected,
+            ];
+        }
+
+        foreach (self::provideNamespaceRegex() as $title => [$namespaceRegexes, $symbol, $expected]) {
+            yield '[regex only] '.$title => [
+                $namespaceRegexes,
+                [],
+                $symbol,
+                $expected,
+            ];
+        }
+
+        foreach (self::provideNamespaceNameAndRegex() as $title => $set) {
+            yield '[name & regex] '.$title => $set;
+        }
+    }
+
+    private static function provideNamespaceNames(): iterable
+    {
+        yield 'no registered namespace; symbol belonging to global namespace' => [
+            [],
+            'Acme',
+            false,
+        ];
+
+        yield 'no registered namespace; symbol belonging to a namespace' => [
+            [],
+            'Acme\Foo',
+            false,
+        ];
+
+        yield 'global namespace; symbol belonging to global namespace' => [
+            [''],
+            'Acme',
+            true,
+        ];
+
+        yield 'global namespace; symbol belonging to a namespace' => [
+            [''],
+            'Acme\Foo',
+            true,
+        ];
+
+        yield 'one level namespace name; symbol belonging to global namespace' => [
+            ['Acme'],
+            'Acme',
+            false,
+        ];
+
+        yield 'one level namespace name; symbol belonging to the namespace' => [
+            ['Acme'],
+            'Acme\Foo',
+            true,
+        ];
+
+        yield 'one level namespace name; symbol belonging to the namespace (different case)' => [
+            ['Acme'],
+            'ACME\Foo',
+            true,
+        ];
+
+        yield 'one level namespace name; symbol belonging to another namespace' => [
+            ['Acme'],
+            'Emca\Foo',
+            false,
+        ];
+
+        yield 'one level namespace name; symbol belonging to a sub-namespace' => [
+            ['Acme'],
+            'Acme\Foo\Bar',
+            true,
+        ];
+
+        yield 'two level namespace name; symbol belonging to the parent namespace' => [
+            ['PHPUnit\Framework'],
+            'PHPUnit\TestCase',
+            false,
+        ];
+
+        yield 'two level namespace name; symbol belonging to the namespace' => [
+            ['PHPUnit\Framework'],
+            'PHPUnit\Framework\TestCase',
+            true,
+        ];
+
+        yield 'two level namespace name; symbol belonging to a sub-namespace' => [
+            ['PHPUnit\Framework'],
+            'PHPUnit\Framework\Test\TestCase',
+            true,
+        ];
+
+        yield 'two level namespace name; symbol belonging to a sub-namespace (different case)' => [
+            ['PHPUnit\Framework'],
+            'PHPUNIT\FRAMEWORK\TEST\TestCase',
+            true,
+        ];
+    }
+
+    private static function provideNamespaceRegex(): iterable
+    {
+        yield 'no registered namespace; symbol belonging to global namespace' => [
+            [],
+            'Acme',
+            false,
+        ];
+
+        yield 'no registered namespace; symbol belonging to a namespace' => [
+            [],
+            'Acme\Foo',
+            false,
+        ];
+
+        yield 'global namespace; symbol belonging to global namespace' => [
+            ['/^$/'],
+            'Acme',
+            true,
+        ];
+
+        yield 'global namespace; symbol belonging to a namespace' => [
+            ['/^$/'],
+            'Acme\Foo',
+            false,
+        ];
+
+        yield 'one level namespace name; symbol belonging to global namespace' => [
+            ['/^Acme$/'],
+            'Acme',
+            false,
+        ];
+
+        yield 'one level namespace name; symbol belonging to the namespace' => [
+            ['/^Acme$/'],
+            'Acme\Foo',
+            true,
+        ];
+
+        yield 'one level namespace name; symbol belonging to the namespace (different case)' => [
+            ['/^Acme$/'],
+            'ACME\Foo',
+            false,
+        ];
+
+        yield 'one level namespace name; symbol belonging to the namespace (different case; case insensitive flag)' => [
+            ['/^Acme$/i'],
+            'ACME\Foo',
+            true,
+        ];
+
+        yield 'one level namespace name; symbol belonging to another namespace' => [
+            ['/^Acme$/'],
+            'Emca\Foo',
+            false,
+        ];
+
+        yield 'one level namespace name; symbol belonging to a sub-namespace' => [
+            ['/^Acme$/'],
+            'Acme\Foo\Bar',
+            false,
+        ];
+
+        yield 'one level namespace name allowing sub-namespaces; symbol belonging to a sub-namespace' => [
+            ['/^Acme\\\\.*$/'],
+            'Acme\Foo\Bar',
+            true,
+        ];
+    }
+
+    private static function provideNamespaceNameAndRegex(): iterable
+    {
+        yield 'empty' => [
+            [],
+            [],
+            'Acme',
+            false,
+        ];
+
+        yield 'matches the name but not the regex' => [
+            ['/^Acme$/'],
+            ['acme'],
+            'acme\Foo',
+            true,
+        ];
+
+        yield 'matches the regex but not the name' => [
+            ['/^Acme$/'],
+            ['ecma'],
+            'Acme\Foo',
+            true,
+        ];
+
+        yield 'matches both' => [
+            ['/^Acme$/i'],
+            ['Acme$'],
+            'Acme\Foo',
+            true,
+        ];
+    }
+
+    public static function provideNamespaces(): iterable
+    {
+        yield [
+            [],
+            [],
+            '',
+            true,
+        ];
+    }
+
+    private function validateRegexes(array $regexes): void
+    {
+        foreach ($regexes as $regex) {
+            self::assertNull($this->regexChecker->validateRegex($regex));
+        }
+    }
+}

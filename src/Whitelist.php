@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Countable;
+use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
@@ -29,7 +30,6 @@ use function implode;
 use function ltrim;
 use function preg_match as native_preg_match;
 use function Safe\array_flip;
-use function Safe\preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
@@ -57,16 +57,6 @@ final class Whitelist implements Countable
     /**
      * @var list<string>
      */
-    private array $excludedNamespaceRegexes;
-
-    /**
-     * @var list<string>
-     */
-    private array $excludedNamespaceNames;
-
-    /**
-     * @var list<string>
-     */
     private array $exposedSymbolsPatterns;
 
     private bool $exposeGlobalConstants;
@@ -75,6 +65,8 @@ final class Whitelist implements Countable
 
     private array $whitelistedFunctions = [];
     private array $whitelistedClasses = [];
+
+    private NamespaceRegistry $excludedNamespaces;
 
     /**
      * @param string[] $excludedNamespaceRegexes
@@ -151,51 +143,21 @@ final class Whitelist implements Countable
         $this->originalElements = $originalElements;
         $this->exposedSymbols = $exposedSymbols;
         $this->exposedConstants = $exposedConstants;
-        $this->excludedNamespaceNames = $excludedNamespaceNames;
         $this->exposedSymbolsPatterns = $exposedSymbolsPatterns;
-        $this->excludedNamespaceRegexes = $excludedNamespaceRegexes;
+        $this->excludedNamespaces = NamespaceRegistry::create(
+            $excludedNamespaceRegexes,
+            $excludedNamespaceNames,
+        );
     }
 
     public function belongsToExcludedNamespace(string $name): bool
     {
-        return $this->isExcludedNamespace(
-            self::extractNameNamespace($name),
-        );
+        return $this->excludedNamespaces->belongsToRegisteredNamespace($name);
     }
 
     public function isExcludedNamespace(string $name): bool
     {
-        $name = strtolower(ltrim($name, '\\'));
-
-        foreach ($this->excludedNamespaceNames as $excludedNamespaceName) {
-            if ('' === $excludedNamespaceName) {
-                return true;
-            }
-
-            if ('' !== $excludedNamespaceName
-                && 0 !== strpos($name, $excludedNamespaceName)
-            ) {
-                continue;
-            }
-
-            $nameParts = explode('\\', $name);
-
-            foreach (explode('\\', $excludedNamespaceName) as $index => $excludedNamespacePart) {
-                if ($nameParts[$index] !== $excludedNamespacePart) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        foreach ($this->excludedNamespaceRegexes as $excludedNamespace) {
-            if (preg_match($excludedNamespace, $name)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->excludedNamespaces->isRegisteredNamespace($name);
     }
 
     /**
@@ -371,20 +333,5 @@ final class Whitelist implements Countable
         $parts[] = $lastPart;
 
         return implode('\\', $parts);
-    }
-
-    private static function extractNameNamespace(string $name): string
-    {
-        $name = strtolower($name);
-
-        if (0 === strpos($name, '\\')) {
-            $name = substr($name, 1);
-        }
-
-        $nameParts = explode('\\', $name);
-
-        array_pop($nameParts);
-
-        return [] === $nameParts ? '' : implode('\\', $nameParts);
     }
 }
