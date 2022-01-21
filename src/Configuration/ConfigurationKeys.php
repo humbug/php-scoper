@@ -16,6 +16,7 @@ final class ConfigurationKeys
     public const EXPOSE_GLOBAL_CONSTANTS_KEYWORD = 'expose-global-constants';
     public const EXPOSE_GLOBAL_CLASSES_KEYWORD = 'expose-global-classes';
     public const EXPOSE_GLOBAL_FUNCTIONS_KEYWORD = 'expose-global-functions';
+
     public const EXPOSE_NAMESPACES_KEYWORD = 'expose-namespaces';
     public const EXPOSE_CLASSES_SYMBOLS_KEYWORD = 'expose-classes';
     public const EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD = 'expose-functions';
