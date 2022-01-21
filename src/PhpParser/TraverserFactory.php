@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
@@ -21,7 +22,6 @@ use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor as PhpParserNodeVisitor;
 use PhpParser\NodeVisitor\NameResolver;
@@ -41,13 +41,13 @@ class TraverserFactory
     public function create(
         PhpScoper $scoper,
         string $prefix,
-        Whitelist $whitelist,
+        SymbolsConfiguration $symbolsConfiguration,
         SymbolsRegistry $symbolsRegistry
     ): NodeTraverserInterface
     {
         $enrichedReflector = new EnrichedReflector(
             $this->reflector,
-            $whitelist,
+            $symbolsConfiguration,
         );
 
         $traverser = new NodeTraverser();

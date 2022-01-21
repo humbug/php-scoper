@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
 use function array_key_exists;
+use function array_keys;
 use function array_map;
 use function array_pop;
 use function array_unique;
@@ -158,6 +159,38 @@ final class Whitelist implements Countable
     public function isExcludedNamespace(string $name): bool
     {
         return $this->excludedNamespaces->isRegisteredNamespace($name);
+    }
+
+    /**
+     * @internal
+     */
+    public function getExcludedNamespaces(): NamespaceRegistry
+    {
+        return $this->excludedNamespaces;
+    }
+
+    /**
+     * @internal
+     */
+    public function getExposedSymbols(): array
+    {
+        return array_keys($this->exposedSymbols);
+    }
+
+    /**
+     * @internal
+     */
+    public function getExposedConstants(): array
+    {
+        return array_keys($this->exposedConstants);
+    }
+
+    /**
+     * @internal
+     */
+    public function getExposedSymbolsPatterns(): array
+    {
+        return $this->exposedSymbolsPatterns;
     }
 
     /**

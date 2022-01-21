@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
@@ -31,8 +32,6 @@ class TraverserFactoryTest extends TestCase
     {
         $prefix = 'Humbug';
         $whitelist = Whitelist::create();
-        $traverserFactory = new TraverserFactory(Reflector::createEmpty());
-
         $phpScoper = new PhpScoper(
             new FakeParser(),
             new FakeScoper(),
@@ -40,18 +39,22 @@ class TraverserFactoryTest extends TestCase
             $prefix,
             $whitelist,
         );
+        $symbolsConfiguration = SymbolsConfiguration::fromWhitelist($whitelist);
+        $symbolsRegistry = new SymbolsRegistry();
+
+        $traverserFactory = new TraverserFactory(Reflector::createEmpty());
 
         $firstTraverser = $traverserFactory->create(
             $phpScoper,
             $prefix,
-            $whitelist,
-            new SymbolsRegistry(),
+            $symbolsConfiguration,
+            $symbolsRegistry,
         );
         $secondTraverser = $traverserFactory->create(
             $phpScoper,
             $prefix,
-            $whitelist,
-            new SymbolsRegistry(),
+            SymbolsConfiguration::fromWhitelist($whitelist),
+            $symbolsRegistry,
         );
 
         self::assertNotSame($firstTraverser, $secondTraverser);
