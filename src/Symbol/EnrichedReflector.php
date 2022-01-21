@@ -55,6 +55,13 @@ final class EnrichedReflector
         return $this->reflector->isConstantInternal($name);
     }
 
+    public function isConstantExcluded(string $name): bool
+    {
+        // TODO: double check not sure that internal should mean excluded for constants
+        return $this->reflector->isConstantInternal($name)
+            || $this->whitelist->belongsToExcludedNamespace($name);
+    }
+
     public function isExposedFunction(string $resolvedName): bool
     {
         return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
@@ -65,13 +72,28 @@ final class EnrichedReflector
             );
     }
 
+    public function isExposedFunctionFromGlobalNamespace(string $resolvedName): bool
+    {
+        return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
+            && !$this->reflector->isFunctionInternal($resolvedName)
+            && $this->whitelist->isExposedFunctionFromGlobalNamespace($resolvedName);
+    }
+
     public function isExposedClass(string $resolvedName): bool
     {
         return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
+            && !$this->reflector->isClassInternal($resolvedName)
             && (
                 $this->whitelist->isExposedClassFromGlobalNamespace($resolvedName)
                 || $this->whitelist->isSymbolExposed($resolvedName)
             );
+    }
+
+    public function isExposedClassFromGlobalNamespace(string $resolvedName): bool
+    {
+        return !$this->whitelist->belongsToExcludedNamespace($resolvedName)
+            && !$this->reflector->isClassInternal($resolvedName)
+            && $this->whitelist->isExposedClassFromGlobalNamespace($resolvedName);
     }
 
     public function isExposedConstant(string $name): bool
@@ -86,5 +108,10 @@ final class EnrichedReflector
                 || $this->whitelist->isExposedConstantFromGlobalNamespace($name)
                 || $this->whitelist->isSymbolExposed($name, true)
             );
+    }
+
+    public function isExposedConstantFromGlobalNamespace(string $constantName): bool
+    {
+        return $this->whitelist->isExposedConstantFromGlobalNamespace($constantName);
     }
 }

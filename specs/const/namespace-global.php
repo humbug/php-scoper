@@ -52,6 +52,9 @@ DUMMY_CONST;
 PHP
     ,
 
+    // In theory this case CAN be wrong. There is however a very high chance it
+    // is not as it implies having both A\DUMMY_CONST and DUMMY_CONST in the
+    // codebase with only DUMMY_CONST exposed.
     'Whitelisted constant call in a namespace' => [
         'whitelist' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
@@ -65,7 +68,7 @@ DUMMY_CONST;
 
 namespace Humbug\A;
 
-DUMMY_CONST;
+\DUMMY_CONST;
 
 PHP
     ],
