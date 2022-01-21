@@ -12,8 +12,8 @@ parameters:
           path: 'src/Scoper/PhpScoper.php'
         - message: '#Reflector::createSymbolList\(\)#'
           path: 'src/Reflector.php'
-        - message: '#NameStmtPrefixer::getUseStmtAliasAndType\(\) should return#'
-          path: 'src/PhpParser/NodeVisitor/NameStmtPrefixer.php'
+        - message: '#UseStmtName::getUseStmtAliasAndType\(\) should return#'
+          path: 'src/PhpParser/UseStmtName.php'
         - message: '#UseStmtManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/UseStmt/UseStmtManipulator.php'
         - message: '#IdentifierResolver::resolveIdentifier\(\) should return#'
@@ -27,5 +27,3 @@ parameters:
         - message: '#NamespaceManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/NamespaceStmt/NamespaceManipulator.php'
         # TODO: this one is really strange and may be worth investigating
-        - message: '#Right side of \&\& is always false\.#'
-          path: 'src/PhpParser/NodeVisitor/NameStmtPrefixer.php'

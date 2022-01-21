@@ -108,7 +108,7 @@ final class UseStmtCollection implements IteratorAggregate
     }
 
     /**
-     * @var iterable<string, list<Use_[]>>
+     * @return iterable<string, list<Use_[]>>
      */
     public function getIterator(): iterable
     {
