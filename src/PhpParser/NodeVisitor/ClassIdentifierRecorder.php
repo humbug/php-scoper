@@ -16,16 +16,18 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
+use UnexpectedValueException;
 
 /**
- * Records the user classes registered in the global namespace which have been whitelisted and whitelisted classes.
+ * Records the user classes which are exposed.
  *
  * @private
  */
@@ -34,15 +36,18 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
     private string $prefix;
     private IdentifierResolver $identifierResolver;
     private Whitelist $whitelist;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
         IdentifierResolver $identifierResolver,
-        Whitelist $whitelist
+        Whitelist $whitelist,
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
         $this->identifierResolver = $identifierResolver;
         $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -53,12 +58,14 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
 
         $parent = ParentNodeAppender::getParent($node);
 
-        if (!($parent instanceof ClassLike) || $parent instanceof Trait_) {
+        $isClassOrInterface = $parent instanceof Class_ || $parent instanceof Interface_;
+
+        if (!$isClassOrInterface) {
             return $node;
         }
 
         if (null === $parent->name) {
-            return $node;
+            throw new UnexpectedValueException('Expected the class/interface statement to have a name but none found');
         }
 
         $resolvedName = $this->identifierResolver->resolveIdentifier($node);
@@ -67,9 +74,7 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             return $node;
         }
 
-        if ($this->whitelist->isExposedClassFromGlobalNamespace((string) $resolvedName)
-            || $this->whitelist->isSymbolExposed((string) $resolvedName)
-        ) {
+        if ($this->enrichedReflector->isExposedClass((string) $resolvedName)) {
             $this->whitelist->recordWhitelistedClass(
                 $resolvedName,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),

@@ -480,7 +480,7 @@ PHP
 
     'Declaration in the global namespace which is excluded' => [
         'expose-global-classes' => false,
-        'exclude-namespaces' => ['^$'],
+        'exclude-namespaces' => ['/^$/'],
         'payload' => <<<'PHP'
             <?php
             
@@ -488,11 +488,11 @@ PHP
             ----
             <?php
             
-            namespace Humbug;
-            
-            new class
-            {
-            };
+            namespace {
+                new class
+                {
+                };
+            }
 
             PHP,
     ],

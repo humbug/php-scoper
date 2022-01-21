@@ -143,12 +143,10 @@ abstract class A
 PHP
     ],
 
-    'Declaration of a whitelisted class in the global namespace which is whitelisted' => [
+    'Declaration of a whitelisted class in the global namespace which is excluded' => [
         'whitelist' => ['A'],
         'exclude-namespaces' => ['/^$/'],
-        'expected-recorded-classes' => [
-            ['A', 'Humbug\A'],
-        ],
+        'expected-recorded-classes' => [],
         'payload' => <<<'PHP'
 <?php
 
@@ -171,6 +169,36 @@ namespace {
 
 PHP
     ],
+
+    // TODO: add as we add support for exposed namespaces
+//    'Declaration of a whitelisted class in the global namespace which is exposed' => [
+//        'whitelist' => ['A'],
+//        'expose-namespaces' => ['/^$/'],
+//        'registered-classes' => [
+//            ['A', 'Humbug\A'],
+//        ],
+//        'payload' => <<<'PHP'
+//<?php
+//
+//abstract class A {
+//    public function a() {}
+//    abstract public function b();
+//}
+//----
+//<?php
+//
+//namespace {
+//    abstract class A
+//    {
+//        public function a()
+//        {
+//        }
+//        public abstract function b();
+//    }
+//}
+//
+//PHP
+//    ],
 
     'Declaration in a namespace' => <<<'PHP'
 <?php
