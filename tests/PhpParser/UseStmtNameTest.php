@@ -6,6 +6,8 @@ namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
+use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Whitelist;
 use LogicException;
 use PhpParser\Node\Name;
@@ -175,7 +177,10 @@ final class UseStmtNameTest extends TestCase
         $traverser->addVisitor(
             new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
                 'Humbug',
-                Whitelist::create(),
+                new EnrichedReflector(
+                    Reflector::createWithPhpStormStubs(),
+                    Whitelist::create(),
+                ),
                 $namespaceStatements,
             ),
         );

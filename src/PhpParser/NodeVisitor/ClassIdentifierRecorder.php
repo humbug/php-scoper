@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
@@ -35,18 +35,18 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
     private IdentifierResolver $identifierResolver;
-    private Whitelist $whitelist;
+    private SymbolsRegistry $symbolsRegistry;
     private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
         IdentifierResolver $identifierResolver,
-        Whitelist $whitelist,
+        SymbolsRegistry $symbolsRegistry,
         EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
         $this->identifierResolver = $identifierResolver;
-        $this->whitelist = $whitelist;
+        $this->symbolsRegistry = $symbolsRegistry;
         $this->enrichedReflector = $enrichedReflector;
     }
 
@@ -75,7 +75,7 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         }
 
         if ($this->enrichedReflector->isExposedClass((string) $resolvedName)) {
-            $this->whitelist->recordWhitelistedClass(
+            $this->symbolsRegistry->recordClass(
                 $resolvedName,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );

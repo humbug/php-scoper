@@ -114,4 +114,9 @@ final class EnrichedReflector
     {
         return $this->whitelist->isExposedConstantFromGlobalNamespace($constantName);
     }
+
+    public function isExcludedNamespace(string $name): bool
+    {
+        return $this->whitelist->isExcludedNamespace($name);
+    }
 }

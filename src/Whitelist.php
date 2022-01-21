@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Countable;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use InvalidArgumentException;
 use PhpParser\Node\Name\FullyQualified;
 use function array_key_exists;
@@ -297,6 +298,23 @@ final class Whitelist implements Countable
     public function count(): int
     {
         return count($this->whitelistedFunctions) + count($this->whitelistedClasses);
+    }
+
+    public function registerFromRegistry(SymbolsRegistry $registry): void
+    {
+        foreach ($registry->getRecordedClasses() as [$original, $alias]) {
+            $this->recordWhitelistedClass(
+                new FullyQualified($original),
+                new FullyQualified($alias),
+            );
+        }
+
+        foreach ($registry->getRecordedFunctions() as [$original, $alias]) {
+            $this->recordWhitelistedFunction(
+                new FullyQualified($original),
+                new FullyQualified($alias),
+            );
+        }
     }
 
     private static function assertValidElement(string $element): void

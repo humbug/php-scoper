@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\PhpParser;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
@@ -40,8 +41,18 @@ class TraverserFactoryTest extends TestCase
             $whitelist,
         );
 
-        $firstTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);
-        $secondTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);
+        $firstTraverser = $traverserFactory->create(
+            $phpScoper,
+            $prefix,
+            $whitelist,
+            new SymbolsRegistry(),
+        );
+        $secondTraverser = $traverserFactory->create(
+            $phpScoper,
+            $prefix,
+            $whitelist,
+            new SymbolsRegistry(),
+        );
 
         self::assertNotSame($firstTraverser, $secondTraverser);
     }
