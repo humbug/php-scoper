@@ -39,7 +39,7 @@ final class UseStmtName
         $prefixLength = count($start);
 
         for ($index = 0; $index < $prefixLength; ++$index) {
-            if ($array[$index] !== $start[$index]) {
+            if (!isset($array[$index]) || $array[$index] !== $start[$index]) {
                 return false;
             }
         }
