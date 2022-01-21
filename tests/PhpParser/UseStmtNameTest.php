@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
@@ -179,7 +180,7 @@ final class UseStmtNameTest extends TestCase
                 'Humbug',
                 new EnrichedReflector(
                     Reflector::createWithPhpStormStubs(),
-                    Whitelist::create(),
+                    SymbolsConfiguration::create(),
                 ),
                 $namespaceStatements,
             ),

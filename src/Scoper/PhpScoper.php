@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
@@ -71,13 +72,15 @@ final class PhpScoper implements Scoper
         $statements = $this->parser->parse($php);
 
         $whitelist = $this->whitelist;
+
+        $symbolsConfiguration = SymbolsConfiguration::fromWhitelist($whitelist);
         $symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
 
         $statements = $this->traverserFactory
             ->create(
                 $this,
                 $this->prefix,
-                $whitelist,
+                $symbolsConfiguration,
                 $symbolsRegistry,
             )
             ->traverse($statements);

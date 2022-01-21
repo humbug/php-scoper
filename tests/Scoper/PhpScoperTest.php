@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
@@ -272,6 +273,7 @@ class PhpScoperTest extends TestCase
 
         $prefix = 'Humbug';
         $whitelist = Whitelist::create();
+        $symbolsConfig = SymbolsConfiguration::fromWhitelist($whitelist);
 
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any())
@@ -303,7 +305,7 @@ class PhpScoperTest extends TestCase
 
         $i = 0;
         $this->traverserFactoryProphecy
-            ->create(Argument::type(PhpScoper::class), $prefix, $whitelist, Argument::that(
+            ->create(Argument::type(PhpScoper::class), $prefix, $symbolsConfig, Argument::that(
                 static function () use (&$i): bool {
                     ++$i;
 
@@ -313,7 +315,7 @@ class PhpScoperTest extends TestCase
             ->willReturn($firstTraverser)
         ;
         $this->traverserFactoryProphecy
-            ->create(Argument::type(PhpScoper::class), $prefix, $whitelist, Argument::that(
+            ->create(Argument::type(PhpScoper::class), $prefix, $symbolsConfig, Argument::that(
                 static function () use (&$i): bool {
                     ++$i;
 
