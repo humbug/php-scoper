@@ -15,7 +15,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node\Name\FullyQualified;
 use function array_filter;
 use function func_get_args;
@@ -32,19 +33,23 @@ use function strpos;
 final class YamlScoper implements Scoper
 {
     private const FILE_PATH_PATTERN = '/\.ya?ml$/i';
+    private const CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
     private Scoper $decoratedScoper;
     private string $prefix;
-    private Whitelist $whitelist;
+    private EnrichedReflector $enrichedReflector;
+    private SymbolsRegistry $symbolsRegistry;
 
     public function __construct(
         Scoper $decoratedScoper,
         string $prefix,
-        Whitelist $whitelist
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
     ) {
         $this->decoratedScoper = $decoratedScoper;
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
+        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     public function scope(string $filePath, string $contents): string
@@ -53,7 +58,7 @@ final class YamlScoper implements Scoper
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
-        if (1 > native_preg_match_all('/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u', $contents, $matches)) {
+        if (1 > native_preg_match_all(self::CLASS_PATTERN, $contents, $matches)) {
             return $contents;
         }
 
@@ -62,7 +67,8 @@ final class YamlScoper implements Scoper
             array_filter($matches['singleSeparator']),
             $this->prefix,
             $contents,
-            $this->whitelist
+            $this->enrichedReflector,
+            $this->symbolsRegistry,
         );
 
         $contents = self::replaceClasses(
@@ -70,7 +76,8 @@ final class YamlScoper implements Scoper
             array_filter($matches['separator']),
             $this->prefix,
             $contents,
-            $this->whitelist
+            $this->enrichedReflector,
+            $this->symbolsRegistry,
         );
 
         return $contents;
@@ -85,7 +92,8 @@ final class YamlScoper implements Scoper
         array $separators,
         string $prefix,
         string $contents,
-        Whitelist $whitelist
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
     ): string {
         if ([] === $classes) {
             return $contents;
@@ -106,7 +114,7 @@ final class YamlScoper implements Scoper
 
                 $prefixedClass = $prefix.$separator.$class;
 
-                $scopedContents .= $whitelist->belongsToExcludedNamespace($class.$separator.'__UnknownService__')
+                $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class.$separator.'__UnknownService__')
                     ? $stringToScope
                     : str_replace($class, $prefixedClass, $stringToScope)
                 ;
@@ -121,13 +129,13 @@ final class YamlScoper implements Scoper
 
             $prefixedClass = $prefix.$separator.$class;
 
-            $scopedContents .= $whitelist->belongsToExcludedNamespace($class)
+            $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class)
                 ? $stringToScope
                 : str_replace($class, $prefixedClass, $stringToScope)
             ;
 
-            if ($whitelist->isSymbolExposed($class) || $whitelist->isExposedClassFromGlobalNamespace($class)) {
-                $whitelist->recordWhitelistedClass(
+            if ($enrichedReflector->isExposedClass($class)) {
+                $symbolsRegistry->recordClass(
                     new FullyQualified($class),
                     new FullyQualified($prefixedClass)
                 );

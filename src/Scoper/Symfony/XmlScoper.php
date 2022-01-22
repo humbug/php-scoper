@@ -15,7 +15,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node\Name\FullyQualified;
 use function array_filter;
 use function func_get_args;
@@ -32,19 +33,24 @@ use function strpos;
 final class XmlScoper implements Scoper
 {
     private const FILE_PATH_PATTERN = '/\.xml$/i';
+    private const NAMESPACE_PATTERN = '/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/';
+    private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
     private Scoper $decoratedScoper;
     private string $prefix;
-    private Whitelist $whitelist;
+    private EnrichedReflector $enrichedReflector;
+    private SymbolsRegistry $symbolsRegistry;
 
     public function __construct(
         Scoper $decoratedScoper,
         string $prefix,
-        Whitelist $whitelist
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
     ) {
         $this->decoratedScoper = $decoratedScoper;
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
+        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     public function scope(string $filePath, string $contents): string
@@ -56,20 +62,27 @@ final class XmlScoper implements Scoper
         $contents = self::scopeClasses(
             $contents,
             $this->prefix,
-            $this->whitelist
+            $this->enrichedReflector,
+            $this->symbolsRegistry,
         );
         $contents = self::scopeNamespaces(
             $contents,
             $this->prefix,
-            $this->whitelist
+            $this->enrichedReflector,
+            $this->symbolsRegistry,
         );
 
         return $contents;
     }
 
-    private static function scopeClasses(string $contents, string $prefix, Whitelist $whitelist): string
+    private static function scopeClasses(
+        string $contents,
+        string $prefix,
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
+    ): string
     {
-        if (1 > native_preg_match_all('/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u', $contents, $matches)) {
+        if (1 > native_preg_match_all(self::SINGLE_CLASS_PATTERN, $contents, $matches)) {
             return $contents;
         }
 
@@ -78,7 +91,8 @@ final class XmlScoper implements Scoper
             array_filter($matches['singleSeparator']),
             $prefix,
             $contents,
-            $whitelist
+            $enrichedReflector,
+            $symbolsRegistry,
         );
 
         $contents = self::replaceClasses(
@@ -86,15 +100,21 @@ final class XmlScoper implements Scoper
             array_filter($matches['separator']),
             $prefix,
             $contents,
-            $whitelist
+            $enrichedReflector,
+            $symbolsRegistry,
         );
 
         return $contents;
     }
 
-    private static function scopeNamespaces(string $contents, string $prefix, Whitelist $whitelist): string
+    private static function scopeNamespaces(
+        string $contents,
+        string $prefix,
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
+    ): string
     {
-        if (1 > native_preg_match_all('/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/', $contents, $matches)) {
+        if (1 > native_preg_match_all(self::NAMESPACE_PATTERN, $contents, $matches)) {
             return $contents;
         }
 
@@ -103,7 +123,8 @@ final class XmlScoper implements Scoper
             array_filter($matches['separator']),
             $prefix,
             $contents,
-            $whitelist
+            $enrichedReflector,
+            $symbolsRegistry,
         );
     }
 
@@ -116,7 +137,8 @@ final class XmlScoper implements Scoper
         array $separators,
         string $prefix,
         string $contents,
-        Whitelist $whitelist
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
     ): string {
         if ([] === $classes) {
             return $contents;
@@ -137,7 +159,7 @@ final class XmlScoper implements Scoper
 
                 $prefixedClass = $prefix.$separator.$class;
 
-                $scopedContents .= $whitelist->belongsToExcludedNamespace($class.$separator.'__UnknownService__')
+                $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class.$separator.'__UnknownService__')
                     ? $stringToScope
                     : str_replace($class, $prefixedClass, $stringToScope)
                 ;
@@ -152,15 +174,15 @@ final class XmlScoper implements Scoper
 
             $prefixedClass = $prefix.$separator.$class;
 
-            $scopedContents .= $whitelist->belongsToExcludedNamespace($class)
+            $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class)
                 ? $stringToScope
                 : str_replace($class, $prefixedClass, $stringToScope)
             ;
 
-            if ($whitelist->isSymbolExposed($class) || $whitelist->isExposedClassFromGlobalNamespace($class)) {
-                $whitelist->recordWhitelistedClass(
+            if ($enrichedReflector->isExposedClass($class)) {
+                $symbolsRegistry->recordClass(
                     new FullyQualified($class),
-                    new FullyQualified($prefixedClass)
+                    new FullyQualified($prefixedClass),
                 );
             }
         }

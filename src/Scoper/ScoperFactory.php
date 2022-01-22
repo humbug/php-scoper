@@ -15,11 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Parser;
 
 /**
@@ -41,6 +44,20 @@ class ScoperFactory
 
         $autoloadPrefix = new AutoloadPrefixer($prefix, $whitelist);
 
+        $reflector = Reflector::createWithPhpStormStubs()->withSymbols(
+            $configuration->getInternalClasses(),
+            $configuration->getInternalFunctions(),
+            $configuration->getInternalConstants(),
+        );
+
+        $symbolsConfiguration = SymbolsConfiguration::fromWhitelist($whitelist);
+        $symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
+
+        $enrichedReflector = new EnrichedReflector(
+            $reflector,
+            $symbolsConfiguration,
+        );
+
         return new PatchScoper(
             new PhpScoper(
                 $this->parser,
@@ -49,21 +66,16 @@ class ScoperFactory
                         new SymfonyScoper(
                             new NullScoper(),
                             $prefix,
-                            $whitelist,
+                            $enrichedReflector,
+                            $symbolsRegistry,
                         ),
                         $autoloadPrefix
                     ),
                     $autoloadPrefix
                 ),
-                new TraverserFactory(
-                    Reflector::createWithPhpStormStubs()->withSymbols(
-                        $configuration->getInternalClasses(),
-                        $configuration->getInternalFunctions(),
-                        $configuration->getInternalConstants(),
-                    ),
-                ),
+                new TraverserFactory($enrichedReflector),
                 $prefix,
-                $whitelist,
+                $symbolsRegistry,
             ),
             $prefix,
             $configuration->getPatcher(),
