@@ -8,6 +8,11 @@ use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
 use function func_get_args;
 
+/**
+ * Ensures the symbols registered to the symbols registry (the new API) are
+ * added back to the Whitelist (the old API).
+ * This Compatibility layer should only be required until the Box API is adapted.
+ */
 final class CompatibilityScoper implements Scoper
 {
     private Scoper $decoratedScoper;
