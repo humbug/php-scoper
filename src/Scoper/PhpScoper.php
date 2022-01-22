@@ -37,20 +37,20 @@ final class PhpScoper implements Scoper
     private Scoper $decoratedScoper;
     private TraverserFactory $traverserFactory;
     private string $prefix;
-    private Whitelist $whitelist;
+    private SymbolsRegistry $symbolsRegistry;
 
     public function __construct(
         Parser $parser,
         Scoper $decoratedScoper,
         TraverserFactory $traverserFactory,
         string $prefix,
-        Whitelist $whitelist
+        SymbolsRegistry $symbolsRegistry
     ) {
         $this->parser = $parser;
         $this->decoratedScoper = $decoratedScoper;
         $this->traverserFactory = $traverserFactory;
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
+        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     /**
@@ -71,21 +71,13 @@ final class PhpScoper implements Scoper
     {
         $statements = $this->parser->parse($php);
 
-        $whitelist = $this->whitelist;
-
-        $symbolsConfiguration = SymbolsConfiguration::fromWhitelist($whitelist);
-        $symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
-
         $statements = $this->traverserFactory
             ->create(
                 $this,
                 $this->prefix,
-                $symbolsConfiguration,
-                $symbolsRegistry,
+                $this->symbolsRegistry,
             )
             ->traverse($statements);
-
-        $whitelist->registerFromRegistry($symbolsRegistry);
 
         $prettyPrinter = new Standard();
 

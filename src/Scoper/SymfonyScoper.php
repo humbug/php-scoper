@@ -16,7 +16,8 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Scoper\Symfony\XmlScoper as SymfonyXmlScoper;
 use Humbug\PhpScoper\Scoper\Symfony\YamlScoper as SymfonyYamlScoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
 use function func_get_args;
 
@@ -30,16 +31,19 @@ final class SymfonyScoper implements Scoper
     public function __construct(
         Scoper $decoratedScoper,
         string $prefix,
-        Whitelist $whitelist
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
     ) {
         $this->decoratedScoper = new SymfonyXmlScoper(
             new SymfonyYamlScoper(
                 $decoratedScoper,
                 $prefix,
-                $whitelist,
+                $enrichedReflector,
+                $symbolsRegistry,
             ),
             $prefix,
-            $whitelist,
+            $enrichedReflector,
+            $symbolsRegistry,
         );
     }
 
