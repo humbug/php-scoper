@@ -42,8 +42,6 @@ class ScoperFactory
         $prefix = $configuration->getPrefix();
         $whitelist = $configuration->getWhitelist();
 
-        $autoloadPrefix = new AutoloadPrefixer($prefix, $whitelist);
-
         $reflector = Reflector::createWithPhpStormStubs()->withSymbols(
             $configuration->getInternalClasses(),
             $configuration->getInternalFunctions(),
@@ -58,6 +56,11 @@ class ScoperFactory
             $symbolsConfiguration,
         );
 
+        $autoloadPrefixer = new AutoloadPrefixer(
+            $prefix,
+            $enrichedReflector,
+        );
+
         return new CompatibilityScoper(
             new PatchScoper(
                 new PhpScoper(
@@ -70,9 +73,9 @@ class ScoperFactory
                                 $enrichedReflector,
                                 $symbolsRegistry,
                             ),
-                            $autoloadPrefix
+                            $autoloadPrefixer
                         ),
-                        $autoloadPrefix
+                        $autoloadPrefixer
                     ),
                     new TraverserFactory($enrichedReflector),
                     $prefix,
