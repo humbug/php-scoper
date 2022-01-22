@@ -158,16 +158,15 @@ final class EnrichedReflector
      */
     private function isSymbolExposed(string $name, bool $constant = false): bool
     {
+        $rawExposedSymbols = [
+            ...$this->symbolsConfiguration->getExposedClassNames(),
+            ...$this->symbolsConfiguration->getExposedFunctionNames(),
+            ...$this->symbolsConfiguration->getExposedConstantNames(),
+        ];
+
         $exposedSymbols = array_flip(
             array_unique(
-                array_map(
-                    'strtolower',
-                    [
-                        ...$this->symbolsConfiguration->getExposedClassNames(),
-                        ...$this->symbolsConfiguration->getExposedFunctionNames(),
-                        ...$this->symbolsConfiguration->getExposedConstantNames(),
-                    ],
-                ),
+                array_map('strtolower', $rawExposedSymbols),
             ),
         );
 
@@ -175,7 +174,7 @@ final class EnrichedReflector
             array_unique(
                 array_map(
                     static fn (string $symbolName) => self::lowerCaseConstantName($symbolName),
-                    array_keys($exposedSymbols),
+                    $rawExposedSymbols,
                 ),
             ),
         );
