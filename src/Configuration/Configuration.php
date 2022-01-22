@@ -29,7 +29,7 @@ final class Configuration
     private array $filesWithContents;
     private array $whitelistedFilesWithContents;
     private Patcher $patcher;
-    private Whitelist $whitelist;
+    private SymbolsConfiguration $symbolsConfiguration;
 
     /**
      * @var string[]
@@ -47,21 +47,18 @@ final class Configuration
     private array $internalConstants;
 
     /**
-     * @param string|null $path                   Absolute path to the configuration file loaded.
-     * @param string      $prefix                 The prefix applied.
-     * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
+     * @param string|null                          $path                         Absolute path to the configuration file loaded.
+     * @param string                               $prefix                       The prefix applied.
+     * @param array<string, array{string, string}> $filesWithContents            Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
      * @param array<string, array{string, string}> $whitelistedFilesWithContents Array of tuple
      *                                            with the first argument being the file path and
      *                                            the second its contents
-     * @param Whitelist   $whitelist              List of classes that will not be scoped.
-     *                                            returning a boolean which if `true` means the
-     *                                            class should be scoped
-     *                                            (i.e. is ignored) or scoped otherwise.
-     * @param string[]    $internalClasses
-     * @param string[]    $internalFunctions
-     * @param string[]    $internalConstants
+     * @param SymbolsConfiguration                 $symbolsConfiguration
+     * @param string[]                             $internalClasses
+     * @param string[]                             $internalFunctions
+     * @param string[]                             $internalConstants
      */
     public function __construct(
         ?string $path,
@@ -69,7 +66,7 @@ final class Configuration
         array $filesWithContents,
         array $whitelistedFilesWithContents,
         Patcher $patcher,
-        Whitelist $whitelist,
+        SymbolsConfiguration $symbolsConfiguration,
         array $internalClasses,
         array $internalFunctions,
         array $internalConstants
@@ -80,7 +77,7 @@ final class Configuration
         $this->prefix = $prefix;
         $this->filesWithContents = $filesWithContents;
         $this->patcher = $patcher;
-        $this->whitelist = $whitelist;
+        $this->symbolsConfiguration = $symbolsConfiguration;
         $this->whitelistedFilesWithContents = $whitelistedFilesWithContents;
         $this->internalClasses = $internalClasses;
         $this->internalFunctions = $internalFunctions;
@@ -110,9 +107,9 @@ final class Configuration
         return $this->patcher;
     }
 
-    public function getWhitelist(): Whitelist
+    public function getSymbolsConfiguration(): SymbolsConfiguration
     {
-        return $this->whitelist;
+        return $this->symbolsConfiguration;
     }
 
     /**

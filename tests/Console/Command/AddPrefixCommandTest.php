@@ -22,6 +22,7 @@ use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\PhpParser\FakeParser;
+use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Whitelist;
@@ -683,7 +684,11 @@ EOF;
             new SymfonyCommand(
                 new AddPrefixCommand(
                     $fileSystem,
-                    new DummyScoperFactory(new FakeParser(), $scoper),
+                    new DummyScoperFactory(
+                        new FakeParser(),
+                        Reflector::createEmpty(),
+                        $scoper,
+                    ),
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,

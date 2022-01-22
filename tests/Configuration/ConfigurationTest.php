@@ -41,7 +41,7 @@ final class ConfigurationTest extends TestCase
             [],
             [],
             new PatcherChain([]),
-            Whitelist::create(),
+            SymbolsConfiguration::create(),
             [],
             [],
             [],

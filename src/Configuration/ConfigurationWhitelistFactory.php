@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\RegexChecker;
+use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use function array_key_exists;
@@ -25,7 +26,7 @@ final class ConfigurationWhitelistFactory
         $this->regexChecker = $regexChecker;
     }
 
-    public function createWhitelist(array $config): Whitelist
+    public function createSymbolsConfiguration(array $config): SymbolsConfiguration
     {
         [
             $excludedNamespaceRegexes,
@@ -47,13 +48,15 @@ final class ConfigurationWhitelistFactory
             ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         );
 
-        return Whitelist::create(
-            $exposeGlobalConstants,
-            $exposeGlobalClasses,
-            $exposeGlobalFunctions,
-            $excludedNamespaceRegexes,
-            $excludedNamespaceNames,
-            ...$exposedElements,
+        return SymbolsConfiguration::fromWhitelist(
+            Whitelist::create(
+                $exposeGlobalConstants,
+                $exposeGlobalClasses,
+                $exposeGlobalFunctions,
+                $excludedNamespaceRegexes,
+                $excludedNamespaceNames,
+                ...$exposedElements,
+            ),
         );
     }
 
@@ -119,6 +122,7 @@ final class ConfigurationWhitelistFactory
             }
 
             // Ensure namespace comparisons are always case-insensitive
+            // TODO: double check that we are not adding it twice or that adding it twice does not break anything
             $excludeNamespaceRegex .= 'i';
             $regexes[$excludeNamespaceRegex] = null;
         }

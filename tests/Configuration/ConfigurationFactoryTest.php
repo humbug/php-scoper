@@ -46,8 +46,8 @@ class ConfigurationFactoryTest extends FileSystemTestCase
 
         self::assertSame([], $configuration->getWhitelistedFilesWithContents());
         self::assertEquals(
-            Whitelist::create(),
-            $configuration->getWhitelist(),
+            SymbolsConfiguration::create(),
+            $configuration->getSymbolsConfiguration(),
         );
         self::assertNull($configuration->getPath());
         self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
@@ -140,16 +140,18 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             $configuration->getPatcher(),
         );
         self::assertEquals(
-            Whitelist::create(
-                false,
-                false,
-                false,
-                [],
-                ['PHPUnit\Runner'],
-                'Foo',
-                'Bar\*',
+            SymbolsConfiguration::fromWhitelist(
+                Whitelist::create(
+                    false,
+                    false,
+                    false,
+                    [],
+                    ['PHPUnit\Runner'],
+                    'Foo',
+                    'Bar\*',
+                ),
             ),
-            $configuration->getWhitelist()
+            $configuration->getSymbolsConfiguration(),
         );
     }
 

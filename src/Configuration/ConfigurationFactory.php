@@ -94,7 +94,7 @@ final class ConfigurationFactory
         array_unshift($patchers, new SymfonyPatcher());
         array_unshift($patchers, new ComposerPatcher());
 
-        $whitelist = $this->configurationWhitelistFactory->createWhitelist($config);
+        $symbolsConfiguration = $this->configurationWhitelistFactory->createSymbolsConfiguration($config);
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
@@ -106,7 +106,7 @@ final class ConfigurationFactory
             $filesWithContents,
             self::retrieveFilesWithContents($whitelistedFiles),
             new PatcherChain($patchers),
-            $whitelist,
+            $symbolsConfiguration,
             ...self::retrieveAllInternalSymbols($config),
         );
     }
@@ -133,7 +133,7 @@ final class ConfigurationFactory
             ),
             $config->getWhitelistedFilesWithContents(),
             $config->getPatcher(),
-            $config->getWhitelist(),
+            $config->getSymbolsConfiguration(),
             $config->getInternalClasses(),
             $config->getInternalFunctions(),
             $config->getInternalConstants(),
@@ -150,7 +150,7 @@ final class ConfigurationFactory
             $config->getFilesWithContents(),
             $config->getWhitelistedFilesWithContents(),
             $config->getPatcher(),
-            $config->getWhitelist(),
+            $config->getSymbolsConfiguration(),
             $config->getInternalClasses(),
             $config->getInternalFunctions(),
             $config->getInternalConstants(),
