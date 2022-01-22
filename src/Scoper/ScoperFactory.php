@@ -58,27 +58,31 @@ class ScoperFactory
             $symbolsConfiguration,
         );
 
-        return new PatchScoper(
-            new PhpScoper(
-                $this->parser,
-                new JsonFileScoper(
-                    new InstalledPackagesScoper(
-                        new SymfonyScoper(
-                            new NullScoper(),
-                            $prefix,
-                            $enrichedReflector,
-                            $symbolsRegistry,
+        return new CompatibilityScoper(
+            new PatchScoper(
+                new PhpScoper(
+                    $this->parser,
+                    new JsonFileScoper(
+                        new InstalledPackagesScoper(
+                            new SymfonyScoper(
+                                new NullScoper(),
+                                $prefix,
+                                $enrichedReflector,
+                                $symbolsRegistry,
+                            ),
+                            $autoloadPrefix
                         ),
                         $autoloadPrefix
                     ),
-                    $autoloadPrefix
+                    new TraverserFactory($enrichedReflector),
+                    $prefix,
+                    $symbolsRegistry,
                 ),
-                new TraverserFactory($enrichedReflector),
                 $prefix,
-                $symbolsRegistry,
+                $configuration->getPatcher(),
             ),
-            $prefix,
-            $configuration->getPatcher(),
+            $whitelist,
+            $symbolsRegistry,
         );
     }
 }

@@ -18,8 +18,8 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -31,29 +31,30 @@ class TraverserFactoryTest extends TestCase
     public function test_creates_a_new_traverser_at_each_call(): void
     {
         $prefix = 'Humbug';
-        $whitelist = Whitelist::create();
         $phpScoper = new PhpScoper(
             new FakeParser(),
             new FakeScoper(),
             (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
             $prefix,
-            $whitelist,
+            new SymbolsRegistry(),
         );
-        $symbolsConfiguration = SymbolsConfiguration::fromWhitelist($whitelist);
         $symbolsRegistry = new SymbolsRegistry();
 
-        $traverserFactory = new TraverserFactory(Reflector::createEmpty());
+        $traverserFactory = new TraverserFactory(
+            new EnrichedReflector(
+                Reflector::createEmpty(),
+                SymbolsConfiguration::create(),
+            ),
+        );
 
         $firstTraverser = $traverserFactory->create(
             $phpScoper,
             $prefix,
-            $symbolsConfiguration,
             $symbolsRegistry,
         );
         $secondTraverser = $traverserFactory->create(
             $phpScoper,
             $prefix,
-            SymbolsConfiguration::fromWhitelist($whitelist),
             $symbolsRegistry,
         );
 

@@ -17,9 +17,12 @@ namespace Humbug\PhpScoper\Scoper;
 use Error;
 use Humbug\PhpScoper\Configuration\ConfigurationKeys;
 use Humbug\PhpScoper\Configuration\ConfigurationWhitelistFactory;
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\RegexChecker;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
@@ -139,12 +142,16 @@ class PhpScoperSpecTest extends TestCase
 
         $filePath = 'file.php';
 
+        $symbolsConfig = SymbolsConfiguration::fromWhitelist($whitelist);
+        $symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
+
         $scoper = self::createScoper(
             $internalClasses,
             $internalFunctions,
             $internalConstants,
             $prefix,
-            $whitelist,
+            $symbolsConfig,
+            $symbolsRegistry,
         );
 
         try {
@@ -206,6 +213,8 @@ class PhpScoperSpecTest extends TestCase
             $file,
             $spec,
             $contents,
+            $symbolsConfig,
+            $symbolsRegistry,
             $whitelist,
             $expected,
             $actual,
@@ -215,13 +224,13 @@ class PhpScoperSpecTest extends TestCase
 
         self::assertSame($expected, $actual, $specMessage);
 
-        $actualRecordedWhitelistedClasses = $whitelist->getRecordedWhitelistedClasses();
+        $actualRecordedExposedClasses = $symbolsRegistry->getRecordedClasses();
 
-        self::assertSameRecordedSymbols($expectedRegisteredClasses, $actualRecordedWhitelistedClasses, $specMessage);
+        self::assertSameRecordedSymbols($expectedRegisteredClasses, $actualRecordedExposedClasses, $specMessage);
 
-        $actualRecordedWhitelistedFunctions = $whitelist->getRecordedWhitelistedFunctions();
+        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedFunctions();
 
-        self::assertSameRecordedSymbols($expectedRegisteredFunctions, $actualRecordedWhitelistedFunctions, $specMessage);
+        self::assertSameRecordedSymbols($expectedRegisteredFunctions, $actualRecordedExposedFunctions, $specMessage);
     }
 
     public static function provideValidFiles(): iterable
@@ -271,7 +280,8 @@ class PhpScoperSpecTest extends TestCase
         array $internalFunctions,
         array $internalConstants,
         string $prefix,
-        Whitelist $whitelist
+        SymbolsConfiguration $symbolsConfiguration,
+        SymbolsRegistry $symbolsRegistry
     ): Scoper
     {
         $phpParser = create_parser();
@@ -283,12 +293,17 @@ class PhpScoperSpecTest extends TestCase
                 $internalConstants,
             );
 
+        $enrichedReflector = new EnrichedReflector(
+            $reflector,
+            $symbolsConfiguration,
+        );
+
         return new PhpScoper(
             $phpParser,
             new FakeScoper(),
-            new TraverserFactory($reflector),
+            new TraverserFactory($enrichedReflector),
             $prefix,
-            $whitelist,
+            $symbolsRegistry,
         );
     }
 
@@ -401,6 +416,8 @@ class PhpScoperSpecTest extends TestCase
         string $file,
         string $spec,
         string $contents,
+        SymbolsConfiguration $symbolsConfiguration,
+        SymbolsRegistry $symbolsRegistry,
         Whitelist $whitelist,
         ?string $expected,
         ?string $actual,
@@ -409,15 +426,15 @@ class PhpScoperSpecTest extends TestCase
     ): string {
         $formattedWhitelist = self::formatSimpleList($whitelist->toArray());
 
-        $formattedWhitelistGlobalClasses = self::convertBoolToString($whitelist->exposeGlobalClasses());
-        $formattedWhitelistGlobalConstants = self::convertBoolToString($whitelist->exposeGlobalConstants());
-        $formattedWhitelistGlobalFunctions = self::convertBoolToString($whitelist->exposeGlobalFunctions());
+        $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
+        $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
+        $formattedExposeGlobalFunctions = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalFunctions());
 
         $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
         $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
 
-        $formattedActualRegisteredClasses = self::formatTupleList($whitelist->getRecordedWhitelistedClasses());
-        $formattedActualRegisteredFunctions = self::formatTupleList($whitelist->getRecordedWhitelistedFunctions());
+        $formattedActualRegisteredClasses = self::formatTupleList($symbolsRegistry->getRecordedClasses());
+        $formattedActualRegisteredFunctions = self::formatTupleList($symbolsRegistry->getRecordedFunctions());
 
         $titleSeparator = str_repeat(
             '=',
@@ -437,9 +454,9 @@ class PhpScoperSpecTest extends TestCase
         $titleSeparator
         INPUT
         whitelist: $formattedWhitelist
-        whitelist global classes: $formattedWhitelistGlobalClasses
-        whitelist global functions: $formattedWhitelistGlobalFunctions
-        whitelist global constants: $formattedWhitelistGlobalConstants
+        whitelist global classes: $formattedExposeGlobalClasses
+        whitelist global functions: $formattedExposeGlobalFunctions
+        whitelist global constants: $formattedExposeGlobalConstants
         $titleSeparator
         $contents
         

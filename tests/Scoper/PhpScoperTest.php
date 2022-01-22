@@ -18,7 +18,8 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use LogicException;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Name;
@@ -35,30 +36,21 @@ class PhpScoperTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var Scoper
-     */
-    private $scoper;
+    private Scoper $scoper;
 
     /**
      * @var ObjectProphecy<Scoper>
      */
     private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @var Scoper
-     */
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     /**
      * @var ObjectProphecy<TraverserFactory>
      */
     private ObjectProphecy $traverserFactoryProphecy;
 
-    /**
-     * @var TraverserFactory
-     */
-    private $traverserFactory;
+    private TraverserFactory $traverserFactory;
 
     /**
      * @var ObjectProphecy<Parser>
@@ -81,9 +73,14 @@ class PhpScoperTest extends TestCase
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
-            new TraverserFactory(Reflector::createWithPhpStormStubs()),
+            new TraverserFactory(
+                new EnrichedReflector(
+                    Reflector::createEmpty(),
+                    SymbolsConfiguration::create(),
+                ),
+            ),
             'Humbug',
-            Whitelist::create(),
+            new SymbolsRegistry(),
         );
     }
 
@@ -121,13 +118,10 @@ class PhpScoperTest extends TestCase
         $filePath = 'file.yaml';
         $fileContents = '';
         $prefix = 'Humbug';
-        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
+            ->willReturn($expected = 'Scoped content')
         ;
 
         $this->traverserFactoryProphecy
@@ -140,14 +134,16 @@ class PhpScoperTest extends TestCase
             $this->decoratedScoper,
             $this->traverserFactory,
             $prefix,
-            $whitelist
+            new SymbolsRegistry(),
         );
 
         $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
 
-        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->decoratedScoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
     }
 
     public function test_can_scope_a_PHP_file_with_the_wrong_extension(): void
@@ -204,7 +200,6 @@ class PhpScoperTest extends TestCase
     {
         $prefix = 'Humbug';
         $filePath = 'hello';
-        $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
         #!/usr/bin/env bash
@@ -215,9 +210,7 @@ class PhpScoperTest extends TestCase
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $contents)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
+            ->willReturn($expected = 'Scoped content')
         ;
 
         $this->traverserFactoryProphecy
@@ -230,14 +223,16 @@ class PhpScoperTest extends TestCase
             $this->decoratedScoper,
             $this->traverserFactory,
             $prefix,
-            $whitelist
+            new SymbolsRegistry(),
         );
 
         $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 
-        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->decoratedScoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
     }
 
     public function test_cannot_scope_an_invalid_PHP_file(): void
@@ -272,8 +267,6 @@ class PhpScoperTest extends TestCase
         ];
 
         $prefix = 'Humbug';
-        $whitelist = Whitelist::create();
-        $symbolsConfig = SymbolsConfiguration::fromWhitelist($whitelist);
 
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any())
@@ -295,54 +288,69 @@ class PhpScoperTest extends TestCase
 
         /** @var ObjectProphecy<NodeTraverserInterface> $firstTraverserProphecy */
         $firstTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
+        $firstTraverserProphecy->traverse($file1Stmts)->willReturn([]);
         /** @var NodeTraverserInterface $firstTraverser */
         $firstTraverser = $firstTraverserProphecy->reveal();
 
         /** @var ObjectProphecy<NodeTraverserInterface> $secondTraverserProphecy */
         $secondTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
+        $secondTraverserProphecy->traverse($file2Stmts)->willReturn([]);
         /** @var NodeTraverserInterface $secondTraverser */
         $secondTraverser = $secondTraverserProphecy->reveal();
 
         $i = 0;
         $this->traverserFactoryProphecy
-            ->create(Argument::type(PhpScoper::class), $prefix, $symbolsConfig, Argument::that(
-                static function () use (&$i): bool {
-                    ++$i;
+            ->create(
+                Argument::type(PhpScoper::class),
+                $prefix,
+                Argument::that(
+                    static function () use (&$i): bool {
+                        ++$i;
 
-                    return 1 === $i;
-                }
-            ))
+                        return 1 === $i;
+                    }
+                ),
+            )
             ->willReturn($firstTraverser)
         ;
         $this->traverserFactoryProphecy
-            ->create(Argument::type(PhpScoper::class), $prefix, $symbolsConfig, Argument::that(
-                static function () use (&$i): bool {
-                    ++$i;
+            ->create(
+                Argument::type(PhpScoper::class),
+                $prefix,
+                Argument::that(
+                    static function () use (&$i): bool {
+                        ++$i;
 
-                    return 4 === $i;
-                }
-            ))
+                        return 4 === $i;
+                    }
+                ),
+            )
             ->willReturn($secondTraverser)
         ;
-
-        $firstTraverserProphecy->traverse($file1Stmts)->willReturn([]);
-        $secondTraverserProphecy->traverse($file2Stmts)->willReturn([]);
 
         $scoper = new PhpScoper(
             $this->parser,
             new FakeScoper(),
             $this->traverserFactory,
             $prefix,
-            $whitelist,
+            new SymbolsRegistry(),
         );
 
         foreach ($files as $file => $contents) {
             $scoper->scope($file, $contents);
         }
 
-        $this->parserProphecy->parse(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $this->traverserFactoryProphecy->create(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $firstTraverserProphecy->traverse(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $secondTraverserProphecy->traverse(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->parserProphecy
+            ->parse(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(2);
+        $this->traverserFactoryProphecy
+            ->create(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(2);
+        $firstTraverserProphecy
+            ->traverse(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
+        $secondTraverserProphecy
+            ->traverse(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
     }
 }
