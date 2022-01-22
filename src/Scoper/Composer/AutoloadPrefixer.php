@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
 use stdClass;
 use function array_map;
@@ -32,12 +34,14 @@ use function strpos;
 final class AutoloadPrefixer
 {
     private string $prefix;
-    private Whitelist $whitelist;
+    private EnrichedReflector $enrichedReflector;
 
-    public function __construct(string $prefix, Whitelist $whitelist)
-    {
+    public function __construct(
+        string $prefix,
+        EnrichedReflector $enrichedReflector
+    ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     /**
@@ -51,7 +55,7 @@ final class AutoloadPrefixer
             $contents->autoload = self::prefixAutoloadStatements(
                 $contents->autoload,
                 $this->prefix,
-                $this->whitelist,
+                $this->enrichedReflector,
             );
         }
 
@@ -59,7 +63,7 @@ final class AutoloadPrefixer
             $contents->{'autoload-dev'} = self::prefixAutoloadStatements(
                 $contents->{'autoload-dev'},
                 $this->prefix,
-                $this->whitelist,
+                $this->enrichedReflector,
             );
         }
 
@@ -67,14 +71,18 @@ final class AutoloadPrefixer
             $contents->extra->laravel->providers = self::prefixLaravelProviders(
                 $contents->extra->laravel->providers,
                 $this->prefix,
-                $this->whitelist,
+                $this->enrichedReflector,
             );
         }
 
         return $contents;
     }
 
-    private static function prefixAutoloadStatements(stdClass $autoload, string $prefix, Whitelist $whitelist): stdClass
+    private static function prefixAutoloadStatements(
+        stdClass $autoload,
+        string $prefix,
+        EnrichedReflector $enrichedReflector
+    ): stdClass
     {
         if (!isset($autoload->{'psr-4'}) && !isset($autoload->{'psr-0'})) {
             return $autoload;
@@ -102,18 +110,26 @@ final class AutoloadPrefixer
         unset($autoload->{'psr-0'});
 
         if (isset($autoload->{'psr-4'})) {
-            $autoload->{'psr-4'} = self::prefixAutoload((array) $autoload->{'psr-4'}, $prefix, $whitelist);
+            $autoload->{'psr-4'} = self::prefixAutoload(
+                (array) $autoload->{'psr-4'},
+                $prefix,
+                $enrichedReflector,
+            );
         }
 
         return $autoload;
     }
 
-    private static function prefixAutoload(array $autoload, string $prefix, Whitelist $whitelist): array
+    private static function prefixAutoload(
+        array $autoload,
+        string $prefix,
+        EnrichedReflector $enrichedReflector
+    ): array
     {
         $loader = [];
 
         foreach ($autoload as $namespace => $paths) {
-            $newNamespace = $whitelist->isExcludedNamespace($namespace)
+            $newNamespace = $enrichedReflector->isExcludedNamespace($namespace)
                 ? $namespace
                 : sprintf('%s\\%s', $prefix, $namespace)
             ;
@@ -232,16 +248,17 @@ final class AutoloadPrefixer
         return $psr0Path;
     }
 
-    private static function prefixLaravelProviders(array $providers, string $prefix, Whitelist $whitelist): array
+    private static function prefixLaravelProviders(
+        array $providers,
+        string $prefix,
+        EnrichedReflector $enrichedReflector
+    ): array
     {
         return array_map(
-            static function (string $provider) use ($prefix, $whitelist): string {
-                return $whitelist->isExcludedNamespace($provider)
-                    ? $provider
-                    : sprintf('%s\\%s', $prefix, $provider)
-                ;
-            },
-            $providers
+            static fn (string $provider) => $enrichedReflector->isExcludedNamespace($provider)
+                ? $provider
+                : sprintf('%s\\%s', $prefix, $provider),
+            $providers,
         );
     }
 }

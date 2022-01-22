@@ -14,9 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
+use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -31,6 +33,38 @@ class InstalledPackagesScoperTest extends TestCase
 {
     use ProphecyTrait;
 
+    private const PREFIX = 'Foo';
+
+    private AutoloadPrefixer $autoloadPrefixer;
+
+    private Scoper $scopedWithoutDecoratedScoper;
+
+    /**
+     * @var ObjectProphecy<Scoper>
+     */
+    private ObjectProphecy $decoratedScoperProphecy;
+
+    private Scoper $decoratedScoper;
+
+    protected function setUp(): void
+    {
+        $this->autoloadPrefixer = new AutoloadPrefixer(
+            self::PREFIX,
+            new EnrichedReflector(
+                Reflector::createEmpty(),
+                SymbolsConfiguration::create(),
+            ),
+        );
+
+        $this->scopedWithoutDecoratedScoper = new InstalledPackagesScoper(
+            new FakeScoper(),
+            $this->autoloadPrefixer,
+        );
+
+        $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
+        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
+    }
+
     public function test_it_is_a_Scoper(): void
     {
         self::assertTrue(is_a(InstalledPackagesScoper::class, Scoper::class, true));
@@ -40,30 +74,23 @@ class InstalledPackagesScoperTest extends TestCase
     {
         $filePath = 'file.php';
         $fileContents = '';
-        $prefix = 'Humbug';
-        $whitelist = Whitelist::create();
 
-        /** @var ObjectProphecy<Scoper> $decoratedScoperProphecy */
-        $decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $decoratedScoperProphecy
+        $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
-        ;
-        /** @var Scoper $decoratedScoper */
-        $decoratedScoper = $decoratedScoperProphecy->reveal();
+            ->willReturn($expected = 'Scoped content');
 
         $scoper = new InstalledPackagesScoper(
-            $decoratedScoper,
-            new AutoloadPrefixer($prefix, $whitelist),
+            $this->decoratedScoper,
+            $this->autoloadPrefixer,
         );
 
         $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
 
-        $decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->decoratedScoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
     }
 
     /**
@@ -71,17 +98,10 @@ class InstalledPackagesScoperTest extends TestCase
      */
     public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
     {
-        $filePath = 'composer/installed.json';
-        $prefix = 'Foo';
-        $whitelist = Whitelist::create();
-
-        $scoper = new InstalledPackagesScoper(
-            new FakeScoper(),
-            new AutoloadPrefixer($prefix, $whitelist)
+        $actual = $this->scopedWithoutDecoratedScoper->scope(
+            'composer/installed.json',
+            $fileContents,
         );
-
-
-        $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
     }
