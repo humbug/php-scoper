@@ -35,6 +35,8 @@ class JsonFileScoperTest extends TestCase
 
     private const PREFIX = 'Foo';
 
+    private AutoloadPrefixer $autoloadPrefixer;
+
     private Scoper $scopedWithoutDecoratedScoper;
 
     /**
@@ -46,14 +48,17 @@ class JsonFileScoperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->enrichedReflector = new EnrichedReflector(
-            Reflector::createEmpty(),
-            SymbolsConfiguration::create(),
+        $this->autoloadPrefixer = new AutoloadPrefixer(
+            self::PREFIX,
+            new EnrichedReflector(
+                Reflector::createEmpty(),
+                SymbolsConfiguration::create(),
+            ),
         );
 
         $this->scopedWithoutDecoratedScoper = new JsonFileScoper(
             new FakeScoper(),
-            new AutoloadPrefixer(self::PREFIX, $this->enrichedReflector)
+            $this->autoloadPrefixer,
         );
 
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -79,7 +84,7 @@ class JsonFileScoperTest extends TestCase
 
         $scoper = new JsonFileScoper(
             $this->decoratedScoper,
-            new AutoloadPrefixer($prefix, $this->enrichedReflector),
+            $this->autoloadPrefixer,
         );
 
         $actual = $scoper->scope($filePath, $fileContents);
