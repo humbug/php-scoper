@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolRegistry
  */
-class SymbolRegistryTest extends TestCase
+class ConstantRegistryTest extends TestCase
 {
     private RegexChecker $regexChecker;
 
@@ -45,7 +45,7 @@ class SymbolRegistryTest extends TestCase
         // Sanity check
         $this->validateRegexes($regexes);
 
-        $registry = SymbolRegistry::create(
+        $registry = SymbolRegistry::createForConstants(
             $names,
             $regexes,
         );
@@ -84,61 +84,67 @@ class SymbolRegistryTest extends TestCase
     {
         yield 'no name registered' => [
             [],
-            'Pest',
+            'Box',
             false,
         ];
 
         yield 'name registered; exact match' => [
-            ['Pest'],
-            'Pest',
+            ['BOX'],
+            'BOX',
             true,
         ];
 
         yield 'name registered; different case' => [
-            ['Pest'],
-            'PEST',
-            true,
+            ['Box'],
+            'BOX',
+            false,
         ];
 
         yield 'name registered; different name' => [
-            ['Pest'],
+            ['Humbug\BOX'],
             'TestCase',
             false,
         ];
 
         yield 'name registered; name from sub-namespace' => [
-            ['Pest'],
-            'Pest\TestCase',
+            ['Box'],
+            'Box\PARALLEL',
             false,
         ];
 
         yield 'namespaced name registered; exact match' => [
-            ['PHPUnit\TestCase'],
-            'PHPUnit\TestCase',
+            ['Humbug\BOX'],
+            'Humbug\BOX',
+            true,
+        ];
+
+        yield 'namespaced name registered; different namespace case' => [
+            ['Humbug\BOX'],
+            'HUMBUG\BOX',
             true,
         ];
 
         yield 'namespaced name registered; different case' => [
-            ['PHPUnit\TestCase'],
-            'PHPUNIT\TESTCASE',
-            true,
+            ['Humbug\BOX'],
+            'Humbug\Box',
+            false,
         ];
 
         yield 'namespaced name registered; different name' => [
-            ['PHPUnit\TestCase'],
-            'PHPUnit\Framework',
+            ['Humbug\BOX'],
+            'Humbug\PARALLEL',
             false,
         ];
 
         yield 'namespaced name registered; name from sub-namespace' => [
-            ['PHPUnit\TestCase'],
-            'PHPUnit\Framework\TestCase',
+            ['Humbug\BOX'],
+            'Humbug\BOX\PARALLEL',
             false,
         ];
 
         yield 'namespaced name registered; name from parent namespace' => [
-            ['PHPUnit\TestCase'],
-            'PHPUnit',
+            ['Humbug\BOX'],
+            'Humbug',
             false,
         ];
     }
