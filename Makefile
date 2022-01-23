@@ -53,7 +53,7 @@ phpstan: $(PHPSTAN)
 .PHONY: build
 build:	 ## Build the PHAR
 BOX=bin/box
-build: bin/php-scoper.phar
+build: $(PHPSCOPER)
 
 
 #
@@ -417,8 +417,8 @@ e2e_032: $(PHPSCOPER)
 .PHONY: tb
 BLACKFIRE=blackfire
 tb:	 ## Run Blackfire profiling
-tb: bin/php-scoper.phar  vendor
-	$(BLACKFIRE) --new-reference run $(PHPBIN) bin/php-scoper.phar add-prefix --output-dir=build/php-scoper --force --quiet
+tb: $(PHPSCOPER) vendor
+	$(BLACKFIRE) --new-reference run $(PHPBIN) $(PHPSCOPER) add-prefix --output-dir=build/php-scoper --force --quiet
 
 #
 # Rules from files
@@ -581,7 +581,11 @@ fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
 fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 	@echo fixtures/set029-easy-rdf/composer.lock is not up to date.
 
-$(PHPSCOPER): $(BOX) bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
+vendor-hotfix:
+	composer dump-autoload
+	touch -c $@
+
+$(PHPSCOPER): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
 	$(BOX) compile
 	touch -c $@
 

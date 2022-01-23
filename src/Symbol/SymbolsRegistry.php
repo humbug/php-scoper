@@ -52,6 +52,28 @@ final class SymbolsRegistry implements Countable
 
         return $registry;
     }
+
+    public static function createFromRegistries(array $symbolsRegistries): self
+    {
+        $symbolsRegistry = new SymbolsRegistry();
+
+        foreach ($symbolsRegistries as $symbolsRegistryToMerge) {
+            $symbolsRegistry->merge($symbolsRegistryToMerge);
+        }
+
+        return $symbolsRegistry;
+    }
+
+    public function merge(self $symbolsRegistry): void
+    {
+        foreach ($symbolsRegistry->getRecordedFunctions() as [$original, $alias]) {
+            $this->recordedFunctions[$original] = [$original, $alias];
+        }
+
+        foreach ($symbolsRegistry->getRecordedClasses() as [$original, $alias]) {
+            $this->recordedClasses[$original] = [$original, $alias];
+        }
+    }
     
     public function recordFunction(FullyQualified $original, FullyQualified $alias): void
     {

@@ -15,14 +15,12 @@ declare(strict_types=1);
 namespace KevinGH\Box\PhpScoper;
 
 use Humbug\PhpScoper\Configuration\Configuration as PhpScoperConfiguration;
-use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Container as PhpScoperContainer;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
 use Humbug\PhpScoper\Scoper\Scoper as PhpScoper;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use Humbug\PhpScoper\Whitelist;
 use Opis\Closure\SerializableClosure;
 use function array_map;
 use function count;
@@ -36,7 +34,6 @@ final class SimpleScoper implements Scoper
     private PhpScoperContainer $scoperContainer;
     private PhpScoper $scoper;
     private SymbolsRegistry $symbolsRegistry;
-    private Whitelist $whitelist;
 
     /**
      * @var list<string>
@@ -60,11 +57,6 @@ final class SimpleScoper implements Scoper
         );
         $this->whitelistedFilePaths = $whitelistedFilePaths;
         $this->symbolsRegistry = new SymbolsRegistry();
-        // This is incorrect as it does not keep the config from SymbolsConfiguration
-        // however this is entirely temporary and in Box, except for debugging
-        // purposes (where we export the whitelist), only the symbols registry
-        // is important.
-        $this->whitelist = Whitelist::create();
     }
 
     /**
@@ -81,10 +73,9 @@ final class SimpleScoper implements Scoper
     /**
      * {@inheritdoc}
      */
-    public function changeWhitelist(Whitelist $whitelist): void
+    public function changeSymbolsRegistry(SymbolsRegistry $symbolsRegistry): void
     {
-        $this->whitelist = $whitelist;
-        $this->symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
+        $this->symbolsRegistry = $symbolsRegistry;
 
         unset($this->scoper);
     }
@@ -92,11 +83,9 @@ final class SimpleScoper implements Scoper
     /**
      * {@inheritdoc}
      */
-    public function getWhitelist(): Whitelist
+    public function getSymbolsRegistry(): SymbolsRegistry
     {
-        $this->whitelist->registerFromRegistry($this->symbolsRegistry);
-
-        return $this->whitelist;
+        return $this->symbolsRegistry;
     }
 
     /**
