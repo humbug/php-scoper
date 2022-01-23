@@ -14,9 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
-use PHPUnit\Framework\Assert;
+use Humbug\PhpScoper\Patcher\DummyPatcher;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -53,36 +51,22 @@ class PatchScoperTest extends TestCase
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
         $prefix = 'Humbug';
-
-        $patchers = [
-            static function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
-                Assert::assertSame($filePath, $patcherFilePath);
-                Assert::assertSame($prefix, $patcherPrefix);
-                Assert::assertSame('Decorated scoper contents', $contents);
-
-                return 'File content after patch 1';
-            },
-            static function (string $patcherFilePath, string $patcherPrefix, string $contents) use ($filePath, $prefix): string {
-                Assert::assertSame($filePath, $patcherFilePath);
-                Assert::assertSame($prefix, $patcherPrefix);
-                Assert::assertSame('File content after patch 1', $contents);
-
-                return 'File content after patch 2';
-            },
-        ];
-
-        $whitelist = Whitelist::create();
+        $patcher = new DummyPatcher();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $contents)
             ->willReturn('Decorated scoper contents')
         ;
 
-        $expected = 'File content after patch 2';
+        $expected = 'patchedContent<Decorated scoper contents>';
 
-        $scoper = new PatchScoper($this->decoratedScoper);
+        $scoper = new PatchScoper(
+            $this->decoratedScoper,
+            $prefix,
+            $patcher,
+        );
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 

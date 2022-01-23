@@ -17,20 +17,28 @@ return [
         'title' => 'Whitelist case sensitiveness',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Class whitelists are case insensitive' => [
         'whitelist' => ['acme\foo'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Acme\Foo', 'Humbug\Acme\Foo'],
         ],
         'payload' => <<<'PHP'

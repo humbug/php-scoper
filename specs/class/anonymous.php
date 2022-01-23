@@ -17,15 +17,22 @@ return [
         'title' => 'Anonymous class declaration',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -96,7 +103,7 @@ PHP
 
     'Declaration in the global namespace with global classes whitelisted' => [
         'expose-global-classes' => true,
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
             ['B', 'Humbug\B'],
             ['C', 'Humbug\C'],
@@ -241,7 +248,7 @@ PHP
 
     'Declaration in the global namespace with some whitelisted classes' => [
         'whitelist' => ['A', 'C'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
             ['C', 'Humbug\C'],
         ],
@@ -469,4 +476,23 @@ new class($a, $b) extends A
 
 PHP
     ,
+
+    'Declaration in the global namespace which is excluded' => [
+        'expose-global-classes' => false,
+        'exclude-namespaces' => ['/^$/'],
+        'payload' => <<<'PHP'
+            <?php
+            
+            new class() {};
+            ----
+            <?php
+            
+            namespace {
+                new class
+                {
+                };
+            }
+
+            PHP,
+    ],
 ];

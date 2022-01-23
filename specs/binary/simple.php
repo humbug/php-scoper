@@ -17,15 +17,22 @@ return [
         'title' => 'Simple binary file',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Some statements made directly in the global namespace' => <<<'PHP'

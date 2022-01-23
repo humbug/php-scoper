@@ -17,15 +17,23 @@ return [
         'title' => 'Class static property call of a namespaced class in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Constant call on a namespaced class' => <<<'PHP'
@@ -80,7 +88,7 @@ PHP
 
     'Constant call on a whitelisted namespaced class' => [
         'whitelist' => ['PHPUnit\Command'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
@@ -111,7 +119,7 @@ PHP
 
     'FQ constant call on a whitelisted namespaced class' => [
         'whitelist' => ['PHPUnit\Command'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'

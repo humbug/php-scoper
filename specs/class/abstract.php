@@ -17,15 +17,22 @@ return [
         'title' => 'Abstract class declaration',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -53,7 +60,7 @@ PHP
 
     'Declaration in the global namespace with global classes whitelisted' => [
         'expose-global-classes' => true,
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -108,7 +115,7 @@ PHP
 
     'Declaration of a whitelisted class in the global namespace' => [
         'whitelist' => ['A'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -135,12 +142,10 @@ abstract class A
 PHP
     ],
 
-    'Declaration of a whitelisted class in the global namespace which is whitelisted' => [
+    'Declaration of a whitelisted class in the global namespace which is excluded' => [
         'whitelist' => ['A'],
         'exclude-namespaces' => ['/^$/'],
-        'registered-classes' => [
-            ['A', 'Humbug\A'],
-        ],
+        'expected-recorded-classes' => [],
         'payload' => <<<'PHP'
 <?php
 
@@ -163,6 +168,36 @@ namespace {
 
 PHP
     ],
+
+    // TODO: add as we add support for exposed namespaces
+//    'Declaration of a whitelisted class in the global namespace which is exposed' => [
+//        'whitelist' => ['A'],
+//        'expose-namespaces' => ['/^$/'],
+//        'registered-classes' => [
+//            ['A', 'Humbug\A'],
+//        ],
+//        'payload' => <<<'PHP'
+//<?php
+//
+//abstract class A {
+//    public function a() {}
+//    abstract public function b();
+//}
+//----
+//<?php
+//
+//namespace {
+//    abstract class A
+//    {
+//        public function a()
+//        {
+//        }
+//        public abstract function b();
+//    }
+//}
+//
+//PHP
+//    ],
 
     'Declaration in a namespace' => <<<'PHP'
 <?php
@@ -246,7 +281,7 @@ PHP
 
     'Declaration of a whitelisted class in a namespace' => [
         'whitelist' => ['Foo\A'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
@@ -277,7 +312,7 @@ PHP
 
     'Declaration of a namespaced class whitelisted with a pattern' => [
         'exclude-namespaces' => ['/^Foo\\\\A.*$/'],
-        'registered-classes' => [],
+        'expected-recorded-classes' => [],
         'payload' => <<<'PHP'
 <?php
 
@@ -323,7 +358,7 @@ PHP
 
     'Declaration of a whitelisted class in a namespace with FQCN for the whitelist' => [
         'whitelist' => ['\Foo\A'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
@@ -381,7 +416,7 @@ PHP
 
     'Multiple declarations in different namespaces with whitelisted classes' => [
         'whitelist' => ['Foo\WA', 'Bar\WB', 'WC'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\WA', 'Humbug\Foo\WA'],
             ['Bar\WB', 'Humbug\Bar\WB'],
             ['WC', 'Humbug\WC'],

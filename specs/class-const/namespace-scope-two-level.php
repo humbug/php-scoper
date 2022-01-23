@@ -17,15 +17,23 @@ return [
         'title' => 'Class constant call of a namespaced class in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Constant call on a namespaced class' => [
@@ -82,7 +90,7 @@ PHP
 
     'Constant call on a whitelisted namespaced class' => [
         'whitelist' => ['X\PHPUnit\Command'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\PHPUnit\Command', 'Humbug\X\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
@@ -167,7 +175,7 @@ PHP
 
     'FQ constant call on a whitelisted namespaced class' => [
         'whitelist' => ['PHPUnit\Command'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'

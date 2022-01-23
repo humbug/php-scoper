@@ -17,15 +17,23 @@ return [
         'title' => 'Global function call imported with a use statement in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Global function call imported with a use statement in the global scope' => <<<'PHP'
@@ -64,7 +72,7 @@ PHP
 
     'Global function call imported with a use statement in the global scope with global functions whitelisted' => [
         'expose-global-functions' => true,
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -103,7 +111,7 @@ PHP
 
     'Global FQ function call imported with a use statement in the global scope with global functions whitelisted' => [
         'expose-global-functions' => true,
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -125,7 +133,7 @@ PHP
 
     'Uppercase global FQ function call imported with a use statement in the global scope with global functions whitelisted' => [
         'expose-global-functions' => true,
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['MAIN', 'Humbug\MAIN'],
         ],
         'payload' => <<<'PHP'

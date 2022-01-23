@@ -17,15 +17,23 @@ return [
         'title' => 'Global constant usage in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Constant call in a namespace' => <<<'PHP'
@@ -44,6 +52,9 @@ DUMMY_CONST;
 PHP
     ,
 
+    // In theory this case CAN be wrong. There is however a very high chance it
+    // is not as it implies having both A\DUMMY_CONST and DUMMY_CONST in the
+    // codebase with only DUMMY_CONST exposed.
     'Whitelisted constant call in a namespace' => [
         'whitelist' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
@@ -57,7 +68,7 @@ DUMMY_CONST;
 
 namespace Humbug\A;
 
-DUMMY_CONST;
+\DUMMY_CONST;
 
 PHP
     ],

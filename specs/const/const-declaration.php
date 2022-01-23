@@ -17,15 +17,23 @@ return [
         'title' => 'Global constant declaration in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Constants declaration in the global namespace' => [
@@ -49,13 +57,17 @@ if (!defined('FOO_CONST')) {
 if (!defined('Acme\BAR_CONST')) {
     define(\Acme\BAR_CONST, foo());
 }
+const PHP_VERSION = 81400;
 ----
 <?php
 
 namespace Humbug;
 
 const FOO_CONST = foo();
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('Humbug\\BAR_CONST')) {
     \define('Humbug\\BAR_CONST', foo());
 }
@@ -71,6 +83,7 @@ if (!\defined('Humbug\\FOO_CONST')) {
 if (!\defined('Humbug\\Acme\\BAR_CONST')) {
     \define(\Humbug\Acme\BAR_CONST, foo());
 }
+\define('PHP_VERSION', 81400);
 
 PHP
     ],
@@ -102,7 +115,10 @@ if (!defined('Acme\BAR_CONST')) {
 
 namespace {
     const FOO_CONST = \foo();
-    const X = 'x', Y = '';
+    if (\true) {
+        const X = 'x';
+        const Y = '';
+    }
     if (!\defined('BAR_CONST')) {
         \define('BAR_CONST', \foo());
     }
@@ -158,7 +174,10 @@ if (!defined('Emca\BAZ')) {
 namespace Humbug;
 
 \define('FOO_CONST', foo());
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('BAR_CONST')) {
     \define('BAR_CONST', foo());
 }
@@ -184,13 +203,22 @@ if (!\defined('Emca\\BAZ')) {
 PHP
     ],
 
-    'Whitelisted grouped constants declaration in the global namespace' => [    // TODO? Not supported
+    'Whitelisted grouped constants declaration in the global namespace' => [
         'whitelist' => ['X'],
         'payload' => <<<'PHP'
 <?php
 
 const X = 'x', Y = '';
 ----
+<?php
+
+namespace Humbug;
+
+if (\true) {
+    \define('X', 'x');
+    const Y = '';
+}
+
 PHP
     ],
 
@@ -224,7 +252,10 @@ if (!defined('Acme\BAR_CONST')) {
 namespace Humbug\Acme;
 
 const FOO_CONST = foo();
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('Humbug\\BAR_CONST')) {
     \define('Humbug\\BAR_CONST', foo());
 }
@@ -275,7 +306,10 @@ if (!defined('Acme\BAR_CONST')) {
 namespace Acme;
 
 const FOO_CONST = foo();
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('Humbug\\BAR_CONST')) {
     \define('Humbug\\BAR_CONST', foo());
 }
@@ -326,7 +360,10 @@ if (!defined('Acme\BAR_CONST')) {
 namespace Humbug\Acme;
 
 const FOO_CONST = foo();
-const X = 'x', Y = '';
+if (\true) {
+    const X = 'x';
+    const Y = '';
+}
 if (!\defined('Humbug\\BAR_CONST')) {
     \define('Humbug\\BAR_CONST', foo());
 }
@@ -341,6 +378,89 @@ if (!\defined('Humbug\\FOO_CONST')) {
 }
 if (!\defined('Acme\\BAR_CONST')) {
     \define(\Acme\BAR_CONST, foo());
+}
+
+PHP
+    ],
+
+    'Token compatibility regression test' => [
+        'exclude-constants' => ['NEW_TOKEN', 'ANOTHER_NEW_TOKEN'],
+        'payload' => <<<'PHP'
+<?php
+
+namespace {
+    const NEW_TOKEN = 501;
+}
+
+namespace PHPParser {
+    class Lexer {
+        function isNewToken(int $token): bool {
+            return NEW_TOKEN === $token;
+        }
+        
+        function isAnotherNewToken(int $token): bool {
+            if (!\defined('ANOTHER_NEW_TOKEN')) {
+                \define('ANOTHER_NEW_TOKEN', 502);
+            }
+        
+            return ANOTHER_NEW_TOKEN === $token;
+        }
+    }
+}
+
+namespace FQ_PHPParser {
+    class Lexer {
+        function isNewToken(int $token): bool {
+            return \NEW_TOKEN === $token;
+        }
+        
+        function isAnotherNewToken(int $token): bool {
+            if (!\defined('ANOTHER_NEW_TOKEN')) {
+                \define('ANOTHER_NEW_TOKEN', 502);
+            }
+        
+            return \ANOTHER_NEW_TOKEN === $token;
+        }
+    }
+}
+
+----
+<?php
+
+namespace Humbug;
+
+\define('NEW_TOKEN', 501);
+namespace Humbug\PHPParser;
+
+class Lexer
+{
+    function isNewToken(int $token) : bool
+    {
+        return \NEW_TOKEN === $token;
+    }
+    function isAnotherNewToken(int $token) : bool
+    {
+        if (!\defined('ANOTHER_NEW_TOKEN')) {
+            \define('ANOTHER_NEW_TOKEN', 502);
+        }
+        return \ANOTHER_NEW_TOKEN === $token;
+    }
+}
+namespace Humbug\FQ_PHPParser;
+
+class Lexer
+{
+    function isNewToken(int $token) : bool
+    {
+        return \NEW_TOKEN === $token;
+    }
+    function isAnotherNewToken(int $token) : bool
+    {
+        if (!\defined('ANOTHER_NEW_TOKEN')) {
+            \define('ANOTHER_NEW_TOKEN', 502);
+        }
+        return \ANOTHER_NEW_TOKEN === $token;
+    }
 }
 
 PHP

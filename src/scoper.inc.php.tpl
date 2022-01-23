@@ -47,16 +47,11 @@ return [
     //
     // For more see: https://github.com/humbug/php-scoper#patchers
     'patchers' => [
-        function (string $filePath, string $prefix, string $contents): string {
+        static function (string $filePath, string $prefix, string $contents): string {
             // Change the contents here.
 
             return $contents;
         },
-    ],
-
-    'exclude-namespaces' => [
-        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
-        // '~^$~',                        // The root namespace only
     ],
 
     // PHP-Scoper's goal is to make sure that all code for a project lies in a distinct PHP namespace. However, you
@@ -88,6 +83,31 @@ return [
     //
     // For more see https://github.com/humbug/php-scoper#constants--classes--functions-from-the-global-namespace
     'expose-global-functions' => true,
+
+    // TODO
+    'expose-namespaces' => [
+        // 'Acme\Foo'                     // The Acme\Foo namespace (and sub-namespaces)
+        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
+        // '~^$~',                        // The root namespace only
+    ],
+
+    // TODO
+    'expose-classes' => [],
+
+    // TODO
+    'expose-functions' => [],
+
+    // TODO
+    'expose-constants' => [],
+
+    // List of symbols to consider internal i.e. to leave untouched.
+    //
+    // For more see TODO
+    'exclude-namespaces' => [
+        // 'Acme\Foo'                     // The Acme\Foo namespace (and sub-namespaces)
+        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
+        // '~^$~',                        // The root namespace only
+    ],
 
     // List of classes to consider as internal i.e. to leave untouched.
     //

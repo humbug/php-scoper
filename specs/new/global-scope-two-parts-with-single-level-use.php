@@ -17,15 +17,23 @@ return [
         'title' => 'New statement call of a namespaced class imported with a use statement in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'New statement call of a namespaced class partially imported with a use statement' => [
@@ -68,7 +76,7 @@ PHP
 
     'New statement call of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -149,7 +157,7 @@ PHP
 
     'FQ new statement call of a whitelisted namespaced class partially imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -230,7 +238,7 @@ PHP
 
     'New statement call of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -315,7 +323,7 @@ PHP
 
     'FQ new statement call of a whitelisted namespaced class imported with a use statement' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

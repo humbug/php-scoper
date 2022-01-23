@@ -17,15 +17,23 @@ return [
         'title' => 'New statement call of a namespaced class imported with a use statement in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'New statement call of a class via a use statement' => [
@@ -106,7 +114,7 @@ PHP
 
     'New statement call of a whitelisted class via a use statement' => [
         'whitelist' => ['X\Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

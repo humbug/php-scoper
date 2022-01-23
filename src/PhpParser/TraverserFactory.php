@@ -14,12 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor as PhpParserNodeVisitor;
 use PhpParser\NodeVisitor\NameResolver;
@@ -29,14 +31,18 @@ use PhpParser\NodeVisitor\NameResolver;
  */
 class TraverserFactory
 {
-    private Reflector $reflector;
+    private EnrichedReflector $reflector;
 
-    public function __construct(Reflector $reflector)
+    public function __construct(EnrichedReflector $reflector)
     {
         $this->reflector = $reflector;
     }
 
-    public function create(PhpScoper $scoper, string $prefix, Whitelist $whitelist): NodeTraverserInterface
+    public function create(
+        PhpScoper $scoper,
+        string $prefix,
+        SymbolsRegistry $symbolsRegistry
+    ): NodeTraverserInterface
     {
         $traverser = new NodeTraverser();
 
@@ -48,11 +54,7 @@ class TraverserFactory
             ['preserveOriginalNames' => true],
         );
         $identifierResolver = new IdentifierResolver($nameResolver);
-        $stringNodePrefixer = new StringNodePrefixer(
-            $scoper,
-            $prefix,
-            $whitelist,
-        );
+        $stringNodePrefixer = new StringNodePrefixer($scoper);
 
         self::addVisitors(
             $traverser,
@@ -63,7 +65,7 @@ class TraverserFactory
 
                 new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
                     $prefix,
-                    $whitelist,
+                    $this->reflector,
                     $namespaceStatements,
                 ),
 
@@ -73,31 +75,29 @@ class TraverserFactory
                 ),
                 new NodeVisitor\UseStmt\UseStmtPrefixer(
                     $prefix,
-                    $whitelist,
                     $this->reflector,
                 ),
 
                 new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
                     $prefix,
                     $identifierResolver,
-                    $whitelist,
+                    $symbolsRegistry,
                     $this->reflector,
                 ),
                 new NodeVisitor\ClassIdentifierRecorder(
                     $prefix,
                     $identifierResolver,
-                    $whitelist
+                    $symbolsRegistry,
+                    $this->reflector,
                 ),
                 new NodeVisitor\NameStmtPrefixer(
                     $prefix,
-                    $whitelist,
                     $namespaceStatements,
                     $useStatements,
                     $this->reflector,
                 ),
                 new NodeVisitor\StringScalarPrefixer(
                     $prefix,
-                    $whitelist,
                     $this->reflector,
                 ),
                 new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
@@ -105,12 +105,13 @@ class TraverserFactory
 
                 new NodeVisitor\ClassAliasStmtAppender(
                     $prefix,
-                    $whitelist,
+                    $this->reflector,
                     $identifierResolver,
                 ),
+                new NodeVisitor\MultiConstStmtReplacer(),
                 new NodeVisitor\ConstStmtReplacer(
-                    $whitelist,
                     $identifierResolver,
+                    $this->reflector,
                 ),
             ],
         );

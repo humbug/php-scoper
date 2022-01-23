@@ -17,15 +17,23 @@ return [
         'title' => 'Use statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
@@ -115,7 +123,7 @@ PHP
 
     'Use statement of a whitelisted class belonging to the global scope' => [
         'whitelist' => ['Foo'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
@@ -161,11 +169,10 @@ namespace {
 PHP
     ],
 
-    'Use statement of a whitelisted class belonging to the global scope which has been whitelisted' => [
-        'whitelist' => ['Foo', '\*'],
-        'registered-classes' => [
-            ['Foo', 'Humbug\Foo'],
-        ],
+    'Use statement of an exposed class belonging to the global scope which has been excluded' => [
+        'exclude-namespaces' => ['/^$/'],
+        'whitelist' => ['Foo'],
+        'expected-recorded-classes' => [],
         'payload' => <<<'PHP'
 <?php
 
@@ -240,7 +247,7 @@ PHP
 
     'Use statement of two-level class which has been whitelisted' => [
         'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

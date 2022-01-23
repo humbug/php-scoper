@@ -17,15 +17,23 @@ return [
         'title' => 'Whitelisting functions which are never declared but for which the existence is checked',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Non whitelisted global function call' => <<<'PHP'
@@ -44,7 +52,7 @@ PHP
 
     'Whitelisted global function call' => [
         'whitelist' => ['main'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -63,7 +71,7 @@ PHP
 
     'Global function call with whitelisted global functions' => [
         'expose-global-functions' => true,
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -96,7 +104,7 @@ PHP
 
     'Whitelisted namespaced function call' => [
         'whitelist' => ['Acme\main'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['Acme\main', 'Humbug\Acme\main'],
         ],
         'payload' => <<<'PHP'
@@ -113,5 +121,23 @@ namespace Humbug\Acme;
 \function_exists('Humbug\\Acme\\main');
 
 PHP
+    ],
+
+    'Namespaced function call from excluded namespace' => [
+        'exclude-namespaces' => ['Acme'],
+        'payload' => <<<'PHP'
+        <?php
+        
+        namespace Acme;
+        
+        function_exists('Acme\main');
+        ----
+        <?php
+        
+        namespace Acme;
+        
+        \function_exists('Acme\\main');
+        
+        PHP,
     ],
 ];

@@ -17,15 +17,23 @@ return [
         'title' => 'Function declarations in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'exclude-namespaces' => [],
+        'whitelist' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Simple function declaration' => <<<'PHP'
@@ -49,7 +57,7 @@ PHP
 
     'Simple whitelisted function' => [
         'whitelist' => ['Acme\foo'],
-        'registered-functions' => [
+        'expected-recorded-functions' => [
             ['Acme\foo', 'Humbug\Acme\foo'],
         ],
         'payload' => <<<'PHP'
@@ -73,7 +81,7 @@ PHP
 
     'Function declaration in a namespace' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -160,7 +168,7 @@ PHP
 
     'Function declaration in a namespace with whitelisted classes' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -247,7 +255,7 @@ PHP
 
     'Function declaration in a namespace with use statements' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -409,7 +417,7 @@ PHP
 
     'Function declarations with return types in a namespace with use statements' => [
         'whitelist' => ['X\Y'],
-        'registered-classes' => [
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'

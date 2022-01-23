@@ -1,0 +1,141 @@
+name: End-to-End Tests
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+    release:
+        types: [ created ]
+
+jobs:
+    build-test-phar:
+        runs-on: ubuntu-latest
+        name: Build (test) PHAR
+        strategy:
+            fail-fast: false
+            matrix:
+                php:
+                    - '7.4'
+                    - '8.0'
+                    - '8.1'
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    ini-values: phar.readonly=0
+                    tools: composer
+                    coverage: none
+
+            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
+            -   name: Configure composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    composer-options: '--prefer-dist'
+
+            -   name: Build PHAR
+                run: make build
+
+            # Smoke test
+            -   name: Ensure the PHAR works
+                run: bin/php-scoper.phar --version
+
+            -   uses: actions/upload-artifact@v2
+                name: Upload the PHAR artifact
+                with:
+                    name: php-scoper-phar-${{ matrix.php }}
+                    path: bin/php-scoper.phar
+
+    e2e-tests:
+        name: 'e2e Test ${{ matrix.e2e }} (PHP: ${{ matrix.php }})'
+        runs-on: ubuntu-latest
+        needs: build-test-phar
+        strategy:
+            fail-fast: false
+            matrix:
+                e2e:
+                    - 'e2e_004'
+                    - 'e2e_005'
+                    - 'e2e_011'
+                    - 'e2e_013'
+                    - 'e2e_014'
+                    - 'e2e_015'
+                    - 'e2e_016'
+                    - 'e2e_017'
+                    - 'e2e_018'
+                    - 'e2e_019'
+                    - 'e2e_020'
+                    - 'e2e_021'
+                    - 'e2e_022'
+                    - 'e2e_023'
+                    - 'e2e_024'
+                    - 'e2e_025'
+                    - 'e2e_026'
+                    - 'e2e_027'
+                    - 'e2e_028'
+                    - 'e2e_029'
+                    - 'e2e_030'
+                    - 'e2e_031'
+                    - 'e2e_032'
+                php:
+                    - '7.4'
+                    - '8.0'
+                    - '8.1'
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+                with:
+                    fetch-depth: 0
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    ini-values: phar.readonly=0
+                    tools: composer
+                    coverage: pcov
+
+            -   name: Configure composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    composer-options: '--prefer-dist'
+
+            -   name: Retrieve built PHAR
+                uses: actions/download-artifact@v2
+                with:
+                    name: php-scoper-phar-${{ matrix.php }}
+                    path: bin
+
+            -   name: Ensure PHAR will not be rebuilt
+                run: touch -c bin/php-scoper.phar
+
+            # See https://github.com/actions/download-artifact#limitations
+            # the permissions are not guaranteed to be preserved
+            -   name: Ensure PHAR is executable
+                run: chmod 755 bin/php-scoper.phar
+
+            -   name: Check that the PHAR works
+                run: bin/php-scoper.phar --version
+
+            -   name: Install tree
+                if: matrix.e2e == 'e2e_032'
+                run: sudo apt-get install -y tree
+
+            -   name: Run e2e ${{ matrix.e2e }}
+                run: make ${{ matrix.e2e }}
