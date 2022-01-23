@@ -6,6 +6,7 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
 use function array_key_exists;
 use function array_keys;
@@ -74,12 +75,18 @@ final class ConfigurationSymbolsConfigurationFactory
                 $excludedNamespaceRegexes,
             ),
             null,
-            $legacyExposedSymbols,
-            $legacyExposedSymbolsPatterns,
-            $legacyExposedSymbols,
-            $legacyExposedSymbolsPatterns,
-            $legacyExposedConstants,
-            $legacyExposedSymbolsPatterns,
+            SymbolRegistry::create(
+                $legacyExposedSymbols,
+                $legacyExposedSymbolsPatterns,
+            ),
+            SymbolRegistry::create(
+                $legacyExposedSymbols,
+                $legacyExposedSymbolsPatterns,
+            ),
+            SymbolRegistry::createForConstants(
+                $legacyExposedConstants,
+                $legacyExposedSymbolsPatterns,
+            ),
         );
     }
 
