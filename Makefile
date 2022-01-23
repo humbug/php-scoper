@@ -453,6 +453,16 @@ fixtures/set005/vendor: fixtures/set005/composer.lock
 	touch -c $@
 
 fixtures/set011/vendor:
+	composer --working-dir=fixtures/set011 install
+	# Dumping the autoload is not enough when there is a composer.lock. Indeed
+	# without composer.lock, no vendor/composer/installed.json is installed
+	# so Box sees composer.json without composer.lock & installed.json and can
+	# dump the autoload just fine.
+	# However, if there is only composer.lock, the dump-autoload will NOT add
+	# the installed.json file and Box only sees that there is a composer.lock
+	# without installed.json which prevents it to dump the autoload.
+	# TL:DR; If you don't have composer.lock, dump-autoload is enough, otherwise you
+	# need install.
 	composer --working-dir=fixtures/set011 dump-autoload
 	touch -c $@
 
