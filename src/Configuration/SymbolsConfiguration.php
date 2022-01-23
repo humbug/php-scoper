@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
-use Humbug\PhpScoper\Whitelist;
 use function array_unique;
 
 final class SymbolsConfiguration
@@ -56,26 +55,6 @@ final class SymbolsConfiguration
      * @var list<string>
      */
     private array $exposedConstantRegexes;
-
-    public static function fromWhitelist(Whitelist $whitelist): self
-    {
-        $exposedSymbols = $whitelist->getExposedSymbols();
-        $exposedSymbolsPatterns = $whitelist->getExposedSymbolsPatterns();
-
-        return self::create(
-            $whitelist->exposeGlobalConstants(),
-            $whitelist->exposeGlobalClasses(),
-            $whitelist->exposeGlobalFunctions(),
-            $whitelist->getExcludedNamespaces(),
-            null,
-            $exposedSymbols,
-            $exposedSymbolsPatterns,
-            $exposedSymbols,
-            $exposedSymbolsPatterns,
-            $whitelist->getExposedConstants(),
-            $exposedSymbolsPatterns,
-        );
-    }
 
     /**
      * @param string[] $exposedClassNames

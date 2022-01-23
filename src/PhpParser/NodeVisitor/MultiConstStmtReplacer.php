@@ -14,22 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node;
-use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
-use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Const_;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitorAbstract;
-use UnexpectedValueException;
 use function array_map;
 use function count;
 

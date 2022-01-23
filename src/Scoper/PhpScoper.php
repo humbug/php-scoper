@@ -14,10 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
