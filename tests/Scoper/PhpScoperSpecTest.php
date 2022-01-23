@@ -16,8 +16,8 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Error;
 use Humbug\PhpScoper\Configuration\ConfigurationKeys;
-use Humbug\PhpScoper\Configuration\ConfigurationSymbolsConfigurationFactory;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
+use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\RegexChecker;
@@ -407,7 +407,7 @@ class PhpScoperSpecTest extends TestCase
             $config[$key] = $mergedConfig[$key];
         }
 
-        return (new ConfigurationSymbolsConfigurationFactory(new RegexChecker()))->createSymbolsConfiguration($config);
+        return (new SymbolsConfigurationFactory(new RegexChecker()))->createSymbolsConfiguration($config);
     }
 
     /**
