@@ -18,12 +18,16 @@ use function implode;
 use function is_array;
 use function is_bool;
 use function is_string;
+use function ltrim;
 use function Safe\preg_match as native_preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
+use function strpos;
+use function strtolower;
+use function trim;
 
-final class ConfigurationWhitelistFactory
+final class ConfigurationSymbolsConfigurationFactory
 {
     private RegexChecker $regexChecker;
 

@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
-use Humbug\PhpScoper\Configuration\ConfigurationWhitelistFactory;
+use Humbug\PhpScoper\Configuration\ConfigurationSymbolsConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
@@ -692,7 +692,7 @@ EOF;
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,
-                        new ConfigurationWhitelistFactory(
+                        new ConfigurationSymbolsConfigurationFactory(
                             new RegexChecker(),
                         ),
                     ),
