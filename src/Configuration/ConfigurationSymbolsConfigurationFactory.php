@@ -70,8 +70,8 @@ final class ConfigurationSymbolsConfigurationFactory
             $exposeGlobalClasses,
             $exposeGlobalFunctions,
             NamespaceRegistry::create(
-                $excludedNamespaceRegexes,
                 $excludedNamespaceNames,
+                $excludedNamespaceRegexes,
             ),
             null,
             $legacyExposedSymbols,

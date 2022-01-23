@@ -85,7 +85,6 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 false,
                 false,
                 NamespaceRegistry::create(
-                    [],
                     ['PHPUnit\Runner'],
                 ),
             ),
@@ -102,6 +101,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 false,
                 false,
                 NamespaceRegistry::create(
+                    [],
                     ['~^PHPUnit\\Runner(\\.*)?$~i'],
                 ),
             ),
@@ -142,7 +142,6 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 false,
                 false,
                 NamespaceRegistry::create(
-                    [],
                     [
                         'PHPUnit\Internal',
                         'PHPUnit\Runner',
@@ -171,11 +170,11 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 true,
                 NamespaceRegistry::create(
                     [
-                        '~^PHPUnit\\Runner(\\.*)?$~i',
-                    ],
-                    [
                         'PHPUnit\Internal',
                         'PHPUnit\Runner',
+                    ],
+                    [
+                        '~^PHPUnit\\Runner(\\.*)?$~i',
                     ],
                 ),
                 null,
