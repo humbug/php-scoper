@@ -94,6 +94,8 @@ final class SimpleScoper implements Scoper
      */
     public function getWhitelist(): Whitelist
     {
+        $this->whitelist->registerFromRegistry($this->symbolsRegistry);
+
         return $this->whitelist;
     }
 
