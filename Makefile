@@ -8,7 +8,7 @@ PHPBIN=php
 PHPNOGC=php -d zend.enable_gc=0
 IS_PHP8=$(shell php -r "echo version_compare(PHP_VERSION, '8.0.0', '>=') ? 'true' : 'false';")
 PHPSCOPER=bin/php-scoper.phar
-SRC_FILES=$(shell find bin/ src/ -type f)
+SRC_FILES=$(shell find bin/ src/ vendor-hotfix/ -type f)
 
 .PHONY: help
 help:

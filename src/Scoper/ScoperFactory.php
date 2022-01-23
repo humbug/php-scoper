@@ -31,29 +31,30 @@ use PhpParser\Parser;
 class ScoperFactory
 {
     private Parser $parser;
+    private Reflector $reflector;
 
-    public function __construct(Parser $parser)
+    public function __construct(Parser $parser, Reflector $reflector)
     {
         $this->parser = $parser;
+        $this->reflector = $reflector;
     }
 
-    public function createScoper(Configuration $configuration): Scoper
+    public function createScoper(
+        Configuration $configuration,
+        SymbolsRegistry $symbolsRegistry
+    ): Scoper
     {
         $prefix = $configuration->getPrefix();
-        $whitelist = $configuration->getWhitelist();
 
-        $reflector = Reflector::createWithPhpStormStubs()->withSymbols(
+        $configuredReflector = $this->reflector->withSymbols(
             $configuration->getInternalClasses(),
             $configuration->getInternalFunctions(),
             $configuration->getInternalConstants(),
         );
 
-        $symbolsConfiguration = SymbolsConfiguration::fromWhitelist($whitelist);
-        $symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
-
         $enrichedReflector = new EnrichedReflector(
-            $reflector,
-            $symbolsConfiguration,
+            $configuredReflector,
+            $configuration->getSymbolsConfiguration(),
         );
 
         $autoloadPrefixer = new AutoloadPrefixer(
@@ -61,31 +62,27 @@ class ScoperFactory
             $enrichedReflector,
         );
 
-        return new CompatibilityScoper(
-            new PatchScoper(
-                new PhpScoper(
-                    $this->parser,
-                    new JsonFileScoper(
-                        new InstalledPackagesScoper(
-                            new SymfonyScoper(
-                                new NullScoper(),
-                                $prefix,
-                                $enrichedReflector,
-                                $symbolsRegistry,
-                            ),
-                            $autoloadPrefixer
+        return new PatchScoper(
+            new PhpScoper(
+                $this->parser,
+                new JsonFileScoper(
+                    new InstalledPackagesScoper(
+                        new SymfonyScoper(
+                            new NullScoper(),
+                            $prefix,
+                            $enrichedReflector,
+                            $symbolsRegistry,
                         ),
                         $autoloadPrefixer
                     ),
-                    new TraverserFactory($enrichedReflector),
-                    $prefix,
-                    $symbolsRegistry,
+                    $autoloadPrefixer
                 ),
+                new TraverserFactory($enrichedReflector),
                 $prefix,
-                $configuration->getPatcher(),
+                $symbolsRegistry,
             ),
-            $whitelist,
-            $symbolsRegistry,
+            $prefix,
+            $configuration->getPatcher(),
         );
     }
 }

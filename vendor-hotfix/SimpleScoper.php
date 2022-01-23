@@ -15,11 +15,13 @@ declare(strict_types=1);
 namespace KevinGH\Box\PhpScoper;
 
 use Humbug\PhpScoper\Configuration\Configuration as PhpScoperConfiguration;
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Container as PhpScoperContainer;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Scoper\FileWhitelistScoper;
 use Humbug\PhpScoper\Scoper\Scoper as PhpScoper;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
 use Opis\Closure\SerializableClosure;
 use function array_map;
@@ -33,6 +35,8 @@ final class SimpleScoper implements Scoper
     private PhpScoperConfiguration $scoperConfig;
     private PhpScoperContainer $scoperContainer;
     private PhpScoper $scoper;
+    private SymbolsRegistry $symbolsRegistry;
+    private Whitelist $whitelist;
 
     /**
      * @var list<string>
@@ -49,12 +53,18 @@ final class SimpleScoper implements Scoper
             $scoperConfig->getFilesWithContents(),
             $scoperConfig->getWhitelistedFilesWithContents(),
             self::createSerializablePatchers($scoperConfig->getPatcher()),
-            $scoperConfig->getWhitelist(),
+            $scoperConfig->getSymbolsConfiguration(),
             $scoperConfig->getInternalClasses(),
             $scoperConfig->getInternalFunctions(),
             $scoperConfig->getInternalConstants(),
         );
         $this->whitelistedFilePaths = $whitelistedFilePaths;
+        $this->symbolsRegistry = new SymbolsRegistry();
+        // This is incorrect as it does not keep the config from SymbolsConfiguration
+        // however this is entirely temporary and in Box, except for debugging
+        // purposes (where we export the whitelist), only the symbols registry
+        // is important.
+        $this->whitelist = Whitelist::create();
     }
 
     /**
@@ -73,19 +83,8 @@ final class SimpleScoper implements Scoper
      */
     public function changeWhitelist(Whitelist $whitelist): void
     {
-        $previousConfig = $this->scoperConfig;
-
-        $this->scoperConfig = new PhpScoperConfiguration(
-            $previousConfig->getPath(),
-            $previousConfig->getPrefix(),
-            $previousConfig->getFilesWithContents(),
-            $previousConfig->getWhitelistedFilesWithContents(),
-            $previousConfig->getPatcher(),
-            $whitelist,
-            $previousConfig->getInternalClasses(),
-            $previousConfig->getInternalFunctions(),
-            $previousConfig->getInternalConstants(),
-        );
+        $this->whitelist = $whitelist;
+        $this->symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
 
         unset($this->scoper);
     }
@@ -95,7 +94,9 @@ final class SimpleScoper implements Scoper
      */
     public function getWhitelist(): Whitelist
     {
-        return $this->scoperConfig->getWhitelist();
+        $this->whitelist->registerFromRegistry($this->symbolsRegistry);
+
+        return $this->whitelist;
     }
 
     /**
@@ -118,7 +119,10 @@ final class SimpleScoper implements Scoper
 
         $scoper = (new PhpScoperContainer())
             ->getScoperFactory()
-            ->createScoper($this->scoperConfig);
+            ->createScoper(
+                $this->scoperConfig,
+                $this->symbolsRegistry,
+            );
 
         if (count($this->whitelistedFilePaths) !== 0) {
             $scoper = new FileWhitelistScoper(

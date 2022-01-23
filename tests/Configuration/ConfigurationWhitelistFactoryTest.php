@@ -31,7 +31,9 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
         Whitelist $expected
     ): void
     {
-        $actual = $this->factory->createWhitelist($config);
+        $expected = SymbolsConfiguration::fromWhitelist($expected);
+
+        $actual = $this->factory->createSymbolsConfiguration($config);
 
         self::assertEquals($expected, $actual);
     }
@@ -191,7 +193,7 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
         $this->expectException($expectedExceptionClassName);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
-        $this->factory->createWhitelist($config);
+        $this->factory->createSymbolsConfiguration($config);
     }
 
     public static function invalidConfigProvider(): iterable

@@ -98,7 +98,12 @@ final class ConsoleScoper
 
         $logger->outputFileCount(count($files));
 
-        $scoper = $this->scoperFactory->createScoper($config);
+        $symbolsRegistry = new SymbolsRegistry();
+
+        $scoper = $this->scoperFactory->createScoper(
+            $config,
+            $symbolsRegistry,
+        );
 
         foreach ($files as [$inputFilePath, $inputContents, $outputFilePath]) {
             $this->scopeFile(
@@ -123,7 +128,7 @@ final class ConsoleScoper
         );
 
         if (null !== $vendorDir) {
-            $autoload = (new ScoperAutoloadGenerator(SymbolsRegistry::fromWhitelist($config->getWhitelist())))->dump();
+            $autoload = (new ScoperAutoloadGenerator($symbolsRegistry))->dump();
 
             $this->fileSystem->dumpFile(
                 $vendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',

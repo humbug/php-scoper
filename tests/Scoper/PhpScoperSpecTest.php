@@ -122,7 +122,7 @@ class PhpScoperSpecTest extends TestCase
         string $spec,
         string $contents,
         string $prefix,
-        Whitelist $whitelist,
+        SymbolsConfiguration $symbolsConfiguration,
         array $internalClasses,
         array $internalFunctions,
         array $internalConstants,
@@ -142,15 +142,14 @@ class PhpScoperSpecTest extends TestCase
 
         $filePath = 'file.php';
 
-        $symbolsConfig = SymbolsConfiguration::fromWhitelist($whitelist);
-        $symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
+        $symbolsRegistry = new SymbolsRegistry();
 
         $scoper = self::createScoper(
             $internalClasses,
             $internalFunctions,
             $internalConstants,
             $prefix,
-            $symbolsConfig,
+            $symbolsConfiguration,
             $symbolsRegistry,
         );
 
@@ -213,9 +212,8 @@ class PhpScoperSpecTest extends TestCase
             $file,
             $spec,
             $contents,
-            $symbolsConfig,
+            $symbolsConfiguration,
             $symbolsRegistry,
-            $whitelist,
             $expected,
             $actual,
             $expectedRegisteredClasses,
@@ -354,7 +352,7 @@ class PhpScoperSpecTest extends TestCase
             $spec,
             $payloadParts[0],   // Input
             $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
-            self::createWhitelist(
+            self::createSymbolsConfiguration(
                 $file,
                 is_string($fixtureSet) ? [] : $fixtureSet,
                 $meta,
@@ -373,7 +371,11 @@ class PhpScoperSpecTest extends TestCase
     /**
      * @param string|array $fixtureSet
      */
-    private static function createWhitelist(string $file, $fixtureSet, array $meta): Whitelist
+    private static function createSymbolsConfiguration(
+        string $file,
+        $fixtureSet,
+        array $meta
+    ): SymbolsConfiguration
     {
         $configKeys = [
             ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
@@ -405,7 +407,7 @@ class PhpScoperSpecTest extends TestCase
             $config[$key] = $mergedConfig[$key];
         }
 
-        return (new ConfigurationWhitelistFactory(new RegexChecker()))->createWhitelist($config);
+        return (new ConfigurationWhitelistFactory(new RegexChecker()))->createSymbolsConfiguration($config);
     }
 
     /**
@@ -418,13 +420,14 @@ class PhpScoperSpecTest extends TestCase
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,
         SymbolsRegistry $symbolsRegistry,
-        Whitelist $whitelist,
         ?string $expected,
         ?string $actual,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions
     ): string {
-        $formattedWhitelist = self::formatSimpleList($whitelist->toArray());
+        // TODO: restore this
+        //$formattedWhitelist = self::formatSimpleList($whitelist->toArray());
+        $formattedWhitelist = self::formatSimpleList([]);
 
         $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
         $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());

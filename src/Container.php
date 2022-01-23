@@ -27,6 +27,7 @@ final class Container
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
+    private Reflector $reflector;
     private ScoperFactory $scoperFactory;
 
     public function getFileSystem(): Filesystem
@@ -55,7 +56,10 @@ final class Container
     public function getScoperFactory(): ScoperFactory
     {
         if (!isset($this->scoperFactory)) {
-            $this->scoperFactory = new ScoperFactory($this->getParser());
+            $this->scoperFactory = new ScoperFactory(
+                $this->getParser(),
+                $this->getReflector(),
+            );
         }
 
         return $this->scoperFactory;
@@ -68,5 +72,14 @@ final class Container
         }
 
         return $this->parser;
+    }
+
+    public function getReflector(): Reflector
+    {
+        if (!isset($this->reflector)) {
+            $this->reflector = Reflector::createWithPhpStormStubs();
+        }
+
+        return $this->reflector;
     }
 }

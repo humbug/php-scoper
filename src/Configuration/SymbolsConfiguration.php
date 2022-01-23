@@ -86,9 +86,9 @@ final class SymbolsConfiguration
      * @param string[] $exposedConstantRegexes
      */
     public static function create(
-        bool $exposeGlobalConstants = true,
-        bool $exposeGlobalClasses = true,
-        bool $exposeGlobalFunctions = true,
+        bool $exposeGlobalConstants = false,
+        bool $exposeGlobalClasses = false,
+        bool $exposeGlobalFunctions = false,
         ?NamespaceRegistry $excludedNamespaces = null,
         // Does not contain the list of excluded symbols which go to the
         // Reflector (which has no notion of namespaces)
