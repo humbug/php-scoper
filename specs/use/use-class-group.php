@@ -17,7 +17,6 @@ return [
         'title' => 'Use statements for classes with group use statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => true,
         'expose-global-classes' => false,

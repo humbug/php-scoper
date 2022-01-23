@@ -17,7 +17,6 @@ return [
         'title' => 'Class static property call of a namespaced class imported with a use statement in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => true,
         'expose-global-classes' => false,

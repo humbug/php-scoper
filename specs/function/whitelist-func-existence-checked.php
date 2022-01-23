@@ -17,7 +17,6 @@ return [
         'title' => 'Whitelisting functions which are never declared but for which the existence is checked',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,

@@ -17,7 +17,6 @@ return [
         'title' => 'Use statements for constants',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,

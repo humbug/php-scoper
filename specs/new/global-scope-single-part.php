@@ -17,7 +17,6 @@ return [
         'title' => 'New statement call in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => true,
         'expose-global-classes' => false,

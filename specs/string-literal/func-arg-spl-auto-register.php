@@ -17,7 +17,6 @@ return [
         'title' => 'String literal used as a function argument of an spl_auto_register call',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,

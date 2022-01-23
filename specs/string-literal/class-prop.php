@@ -17,7 +17,6 @@ return [
         'title' => 'String value assigned as a private property initial value',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => true,
         'expose-global-classes' => false,

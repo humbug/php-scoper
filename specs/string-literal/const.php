@@ -17,7 +17,6 @@ return [
         'title' => 'String literal assigned as a constant',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,
