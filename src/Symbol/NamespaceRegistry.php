@@ -20,39 +20,39 @@ final class NamespaceRegistry
     /**
      * @var list<string>
      */
-    private array $namespaceRegexes;
+    private array $namespaceNames;
 
     /**
      * @var list<string>
      */
-    private array $namespaceNames;
+    private array $namespaceRegexes;
 
     /**
-     * @param string[] $namespaceRegexes
      * @param string[] $namespaceNames
+     * @param string[] $namespaceRegexes
      */
     public static function create(
-        array $namespaceRegexes = [],
-        array $namespaceNames = []
+        array $namespaceNames = [],
+        array $namespaceRegexes = []
     ): self {
         return new self(
-            array_unique($namespaceRegexes),
             array_unique(
                 array_map('strtolower', $namespaceNames),
             ),
+            array_unique($namespaceRegexes),
         );
     }
 
     /**
-     * @param list<string> $namespaceRegexes
      * @param list<string> $namespaceNames
+     * @param list<string> $namespaceRegexes
      */
     private function __construct(
-        array $namespaceRegexes,
-        array $namespaceNames
+        array $namespaceNames,
+        array $namespaceRegexes
     ) {
-        $this->namespaceRegexes = $namespaceRegexes;
         $this->namespaceNames = $namespaceNames;
+        $this->namespaceRegexes = $namespaceRegexes;
     }
 
     public function belongsToRegisteredNamespace(string $symbolName): bool

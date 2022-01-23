@@ -330,7 +330,6 @@ class XmlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Foo'],
                 ),
             ),
@@ -567,7 +566,6 @@ class XmlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme'],
                 ),
             ),

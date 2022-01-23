@@ -145,7 +145,6 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 false,
                 false,
                 NamespaceRegistry::create(
-                    [],
                     [
                         'PHPUnit\Runner',
                         'Bar',

@@ -36,8 +36,8 @@ class NamespaceRegistryTest extends TestCase
      * @param string[] $namespaceNames
      */
     public function test_it_can_tell_if_a_symbol_belongs_to_a_registered_namespace(
-        array $namespaceRegexes,
         array $namespaceNames,
+        array $namespaceRegexes,
         string $symbol,
         bool $expected
     ): void
@@ -46,8 +46,8 @@ class NamespaceRegistryTest extends TestCase
         $this->validateRegexes($namespaceRegexes);
 
         $registeredNamespaces = NamespaceRegistry::create(
-            $namespaceRegexes,
             $namespaceNames,
+            $namespaceRegexes,
         );
 
         $actual = $registeredNamespaces->belongsToRegisteredNamespace($symbol);
@@ -59,8 +59,8 @@ class NamespaceRegistryTest extends TestCase
     {
         foreach (self::provideNamespaceNames() as $title => [$namespaceNames, $symbol, $expected]) {
             yield '[name only] '.$title => [
-                [],
                 $namespaceNames,
+                [],
                 $symbol,
                 $expected,
             ];
@@ -68,8 +68,8 @@ class NamespaceRegistryTest extends TestCase
 
         foreach (self::provideNamespaceRegex() as $title => [$namespaceRegexes, $symbol, $expected]) {
             yield '[regex only] '.$title => [
-                $namespaceRegexes,
                 [],
+                $namespaceRegexes,
                 $symbol,
                 $expected,
             ];
@@ -240,22 +240,22 @@ class NamespaceRegistryTest extends TestCase
         ];
 
         yield 'matches the name but not the regex' => [
-            ['/^Acme$/'],
             ['acme'],
+            ['/^Acme$/'],
             'acme\Foo',
             true,
         ];
 
         yield 'matches the regex but not the name' => [
-            ['/^Acme$/'],
             ['ecma'],
+            ['/^Acme$/'],
             'Acme\Foo',
             true,
         ];
 
         yield 'matches both' => [
-            ['/^Acme$/i'],
             ['Acme$'],
+            ['/^Acme$/i'],
             'Acme\Foo',
             true,
         ];

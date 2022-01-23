@@ -177,7 +177,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Symfony\Component\Console'],
                 ),
             ),
@@ -260,7 +259,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Controller'],
                 ),
             ),
@@ -301,7 +299,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Foo'],
                 ),
             ),
@@ -342,7 +339,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Foo'],
                 ),
             ),
@@ -402,7 +398,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Foo'],
                 ),
             ),
@@ -482,7 +477,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme'],
                 ),
             ),
