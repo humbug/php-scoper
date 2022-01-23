@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\RegexChecker;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\ConfigurationWhitelistFactory
+ * @covers \Humbug\PhpScoper\Configuration\ConfigurationSymbolsConfigurationFactory
  */
-final class ConfigurationWhitelistFactoryTest extends TestCase
+final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
 {
-    private ConfigurationWhitelistFactory $factory;
+    private ConfigurationSymbolsConfigurationFactory $factory;
 
     protected function setUp(): void
     {
-        $this->factory = new ConfigurationWhitelistFactory(
+        $this->factory = new ConfigurationSymbolsConfigurationFactory(
             new RegexChecker(),
         );
     }
@@ -26,13 +26,11 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
     /**
      * @dataProvider configProvider
      */
-    public function test_it_can_create_a_whitelist_object_from_the_config(
+    public function test_it_can_create_a_symbols_config_object_from_the_config(
         array $config,
-        Whitelist $expected
+        SymbolsConfiguration $expected
     ): void
     {
-        $expected = SymbolsConfiguration::fromWhitelist($expected);
-
         $actual = $this->factory->createSymbolsConfiguration($config);
 
         self::assertEquals($expected, $actual);
@@ -42,38 +40,26 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
     {
         yield 'empty config' => [
             [],
-            Whitelist::create(
-                false,
-                false,
-                false,
-                [],
-                [],
-            ),
+            SymbolsConfiguration::create(),
         ];
 
         yield 'expose global constants' => [
             [
                 ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => true,
             ],
-            Whitelist::create(
+            SymbolsConfiguration::create(
                 true,
-                false,
-                false,
-                [],
-                [],
             ),
         ];
 
+        // TODO: named parameters would be handy here
         yield 'expose global classes' => [
             [
                 ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => true,
             ],
-            Whitelist::create(
+            SymbolsConfiguration::create(
                 false,
                 true,
-                false,
-                [],
-                [],
             ),
         ];
 
@@ -81,12 +67,10 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
             [
                 ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => true,
             ],
-            Whitelist::create(
+            SymbolsConfiguration::create(
                 false,
                 false,
                 true,
-                [],
-                [],
             ),
         ];
 
@@ -96,12 +80,14 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
                     'PHPUnit\Runner',
                 ],
             ],
-            Whitelist::create(
+            SymbolsConfiguration::create(
                 false,
                 false,
                 false,
-                [],
-                ['PHPUnit\Runner'],
+                NamespaceRegistry::create(
+                    [],
+                    ['PHPUnit\Runner'],
+                ),
             ),
         ];
 
@@ -111,12 +97,13 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
                     '~^PHPUnit\\Runner(\\.*)?$~',
                 ],
             ],
-            Whitelist::create(
+            SymbolsConfiguration::create(
                 false,
                 false,
                 false,
-                ['~^PHPUnit\\Runner(\\.*)?$~i'],
-                [],
+                NamespaceRegistry::create(
+                    ['~^PHPUnit\\Runner(\\.*)?$~i'],
+                ),
             ),
         ];
 
@@ -126,13 +113,18 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
                     'Acme\Foo',
                 ],
             ],
-            Whitelist::create(
+            SymbolsConfiguration::create(
                 false,
                 false,
                 false,
+                null,
+                null,
+                ['acme\foo'],
                 [],
+                ['acme\foo'],
                 [],
-                'Acme\Foo',
+                ['acme\Foo'],
+                [],
             ),
         ];
 
@@ -145,13 +137,17 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
                     'PHPUnit\Runner\*',
                 ],
             ],
-            Whitelist::create(
+            SymbolsConfiguration::create(
                 false,
                 false,
                 false,
-                [],
-                ['PHPUnit\Internal'],
-                'PHPUnit\Runner\*',
+                NamespaceRegistry::create(
+                    [],
+                    [
+                        'PHPUnit\Internal',
+                        'PHPUnit\Runner',
+                    ],
+                ),
             ),
         ];
 
@@ -169,14 +165,26 @@ final class ConfigurationWhitelistFactoryTest extends TestCase
                     'Acme\Foo',
                 ],
             ],
-            Whitelist::create(
+            SymbolsConfiguration::create(
                 true,
                 true,
                 true,
-                ['~^PHPUnit\\Runner(\\.*)?$~i',],
-                ['PHPUnit\Internal',],
-                'PHPUnit\Runner\*',
-                'Acme\Foo',
+                NamespaceRegistry::create(
+                    [
+                        '~^PHPUnit\\Runner(\\.*)?$~i',
+                    ],
+                    [
+                        'PHPUnit\Internal',
+                        'PHPUnit\Runner',
+                    ],
+                ),
+                null,
+                ['acme\foo'],
+                [],
+                ['acme\foo'],
+                [],
+                ['acme\Foo'],
+                [],
             ),
         ];
     }

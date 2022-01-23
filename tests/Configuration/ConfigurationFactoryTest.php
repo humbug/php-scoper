@@ -19,7 +19,7 @@ use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use InvalidArgumentException;
 use function array_keys;
 use function KevinGH\Box\FileSystem\dump_file;
@@ -140,16 +140,24 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             $configuration->getPatcher(),
         );
         self::assertEquals(
-            SymbolsConfiguration::fromWhitelist(
-                Whitelist::create(
-                    false,
-                    false,
-                    false,
+            SymbolsConfiguration::create(
+                false,
+                false,
+                false,
+                NamespaceRegistry::create(
                     [],
-                    ['PHPUnit\Runner'],
-                    'Foo',
-                    'Bar\*',
+                    [
+                        'PHPUnit\Runner',
+                        'Bar',
+                    ],
                 ),
+                null,
+                ['foo'],
+                [],
+                ['foo'],
+                [],
+                ['Foo'],
+                [],
             ),
             $configuration->getSymbolsConfiguration(),
         );

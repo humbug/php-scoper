@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
-use Humbug\PhpScoper\Configuration\ConfigurationWhitelistFactory;
+use Humbug\PhpScoper\Configuration\ConfigurationSymbolsConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
@@ -25,7 +25,6 @@ use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -88,34 +87,34 @@ class AddPrefixCommandTest extends FileSystemTestCase
         $this->appTester->run($input);
 
         $expected = <<<'EOF'
-
-    ____  __  ______     _____
-   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
- / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                     /_/
-
-PhpScoper version TestVersion 28/01/2020
-
-Usage:
-  command [options] [arguments]
-
-Options:
-  -h, --help            Display help for the given command. When no command is given display help for the list command
-  -q, --quiet           Do not output any message
-  -V, --version         Display this application version
-      --ansi|--no-ansi  Force (or disable --no-ansi) ANSI output
-  -n, --no-interaction  Do not ask any interactive question
-  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
-
-Available commands:
-  add-prefix  Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.
-  help        Display help for a command
-  init        Generates a configuration file.
-  list        List commands
-
-EOF;
+        
+            ____  __  ______     _____
+           / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+          / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+         / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+        /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                             /_/
+        
+        PhpScoper version TestVersion 28/01/2020
+        
+        Usage:
+          command [options] [arguments]
+        
+        Options:
+          -h, --help            Display help for the given command. When no command is given display help for the list command
+          -q, --quiet           Do not output any message
+          -V, --version         Display this application version
+              --ansi|--no-ansi  Force (or disable --no-ansi) ANSI output
+          -n, --no-interaction  Do not ask any interactive question
+          -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+        
+        Available commands:
+          add-prefix  Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.
+          help        Display help for a command
+          init        Generates a configuration file.
+          list        List commands
+        
+        EOF;
 
         $actual = $this->appTester->getDisplay(true);
 
@@ -136,9 +135,9 @@ EOF;
         $this->appTester->run($input);
 
         $expected = <<<'EOF'
-PhpScoper version TestVersion 28/01/2020
-
-EOF;
+        PhpScoper version TestVersion 28/01/2020
+        
+        EOF;
 
         $actual = $this->appTester->getDisplay(true);
 
@@ -637,13 +636,7 @@ EOF;
             $fileContents = file_get_contents($inputPath);
 
             $this->scoperProphecy
-                ->scope(
-                    $inputPath,
-                    $fileContents,
-                    'MyPrefix',
-                    Argument::any(),
-                    Whitelist::create(),
-                )
+                ->scope($inputPath, $fileContents)
                 ->willThrow(new RuntimeException('Could not scope file'))
             ;
 
@@ -692,7 +685,7 @@ EOF;
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,
-                        new ConfigurationWhitelistFactory(
+                        new ConfigurationSymbolsConfigurationFactory(
                             new RegexChecker(),
                         ),
                     ),

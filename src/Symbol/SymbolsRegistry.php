@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use Countable;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\Node\Name\FullyQualified;
 use function array_values;
 use function count;
@@ -31,27 +30,6 @@ final class SymbolsRegistry implements Countable
      * @var array<string, array{string, string}>
      */
     private array $recordedClasses = [];
-
-    public static function fromWhitelist(Whitelist $whitelist): self
-    {
-        $registry = new self();
-
-        foreach ($whitelist->getRecordedWhitelistedFunctions() as [$original, $alias]) {
-            $registry->recordFunction(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        foreach ($whitelist->getRecordedWhitelistedClasses() as [$original, $alias]) {
-            $registry->recordClass(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        return $registry;
-    }
 
     public static function createFromRegistries(array $symbolsRegistries): self
     {

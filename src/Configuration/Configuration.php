@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Patcher\Patcher;
-use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use function Safe\preg_match;
 use function Safe\sprintf;

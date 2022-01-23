@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
-use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use Humbug\PhpScoper\Whitelist;
 use stdClass;
 use function array_map;
 use function array_merge;
