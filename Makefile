@@ -571,7 +571,7 @@ fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
 fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 	@echo fixtures/set029-easy-rdf/composer.lock is not up to date.
 
-bin/php-scoper.phar: bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
+$(PHPSCOPER): $(BOX) bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
 	$(BOX) compile
 	touch -c $@
 
@@ -584,6 +584,9 @@ clover.xml: $(SRC_FILES) vendor-bin/covers-validator/vendor
 		--coverage-clover=clover.xml \
 		--coverage-xml=dist/infection-coverage/coverage-xml \
 		--log-junit=dist/infection-coverage/junit.xml
+
+$(BOX): vendor
+	touch -c $@
 
 $(CODE_SNIFFER): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
