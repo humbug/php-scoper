@@ -19,6 +19,7 @@ use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -483,7 +484,7 @@ class XmlScoperTest extends TestCase
                 true,
                 null,
                 null,
-                ['Acme\Foo'],
+                SymbolRegistry::create(['Acme\Foo']),
             ),
             <<<'XML'
             <!-- config/services.xml -->

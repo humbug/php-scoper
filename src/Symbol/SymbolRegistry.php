@@ -6,7 +6,10 @@ namespace Humbug\PhpScoper\Symbol;
 
 use function array_key_exists;
 use function array_map;
+use function array_pop;
 use function array_unique;
+use function explode;
+use function implode;
 use function ltrim;
 use function Safe\array_flip;
 use function Safe\preg_match;

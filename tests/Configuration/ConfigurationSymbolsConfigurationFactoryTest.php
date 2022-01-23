@@ -6,6 +6,7 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -119,12 +120,9 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 false,
                 null,
                 null,
-                ['acme\foo'],
-                [],
-                ['acme\foo'],
-                [],
-                ['acme\Foo'],
-                [],
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::createForConstants(['Acme\Foo']),
             ),
         ];
 
@@ -178,12 +176,9 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                     ],
                 ),
                 null,
-                ['acme\foo'],
-                [],
-                ['acme\foo'],
-                [],
-                ['acme\Foo'],
-                [],
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::createForConstants(['Acme\Foo']),
             ),
         ];
     }
