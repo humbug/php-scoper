@@ -67,7 +67,7 @@ final class ComposerOrchestrator
     }
 
     public static function dumpAutoload(
-        Whitelist $whitelist,
+        SymbolsRegistry $symbolsRegistry,
         string $prefix,
         bool $excludeDevFiles,
         IO $io = null
@@ -75,8 +75,6 @@ final class ComposerOrchestrator
         if (null === $io) {
             $io = IO::createNull();
         }
-
-        $symbolsRegistry = SymbolsRegistry::fromWhitelist($whitelist);
 
         $logger = new CompilerLogger($io);
 
@@ -89,8 +87,7 @@ final class ComposerOrchestrator
 
             $autoloadContents = self::generateAutoloadStatements(
                 $symbolsRegistry,
-                $prefix,
-                file_contents($autoloadFile)
+                file_contents($autoloadFile),
             );
 
             dump_file($autoloadFile, $autoloadContents);
@@ -99,7 +96,6 @@ final class ComposerOrchestrator
 
     private static function generateAutoloadStatements(
         SymbolsRegistry $symbolsRegistry,
-        string $prefix,
         string $autoload
     ): string
     {
