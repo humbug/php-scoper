@@ -6,16 +6,22 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
-use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use function array_key_exists;
 use function array_keys;
+use function array_map;
+use function array_pop;
 use function array_values;
+use function explode;
 use function gettype;
+use function implode;
 use function is_array;
 use function is_bool;
 use function is_string;
+use function Safe\preg_match as native_preg_match;
 use function Safe\sprintf;
+use function Safe\substr;
+use function str_replace;
 
 final class ConfigurationWhitelistFactory
 {
@@ -33,7 +39,14 @@ final class ConfigurationWhitelistFactory
             $excludedNamespaceNames,
         ] = $this->retrieveExcludedNamespaces($config);
 
-        $exposedElements = self::retrieveExposedElements($config);
+        $legacyExposedElements = self::retrieveLegacyExposedElements($config);
+
+        [
+            $legacyExposedSymbols,
+            $legacyExposedSymbolsPatterns,
+            $legacyExposedConstants,
+            $excludedNamespaceNames,
+        ] = self::parseLegacyExposedElements($legacyExposedElements, $excludedNamespaceNames);
 
         $exposeGlobalConstants = self::retrieveExposeGlobalSymbol(
             $config,
@@ -48,15 +61,21 @@ final class ConfigurationWhitelistFactory
             ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         );
 
-        return SymbolsConfiguration::fromWhitelist(
-            Whitelist::create(
-                $exposeGlobalConstants,
-                $exposeGlobalClasses,
-                $exposeGlobalFunctions,
+        return SymbolsConfiguration::create(
+            $exposeGlobalConstants,
+            $exposeGlobalClasses,
+            $exposeGlobalFunctions,
+            NamespaceRegistry::create(
                 $excludedNamespaceRegexes,
                 $excludedNamespaceNames,
-                ...$exposedElements,
             ),
+            null,
+            $legacyExposedSymbols,
+            $legacyExposedSymbolsPatterns,
+            $legacyExposedSymbols,
+            $legacyExposedSymbolsPatterns,
+            $legacyExposedConstants,
+            $legacyExposedSymbolsPatterns,
         );
     }
 
@@ -136,7 +155,7 @@ final class ConfigurationWhitelistFactory
     /**
      * return list<string>
      */
-    private static function retrieveExposedElements(array $config): array
+    private static function retrieveLegacyExposedElements(array $config): array
     {
         $key = ConfigurationKeys::WHITELIST_KEYWORD;
 
@@ -170,6 +189,103 @@ final class ConfigurationWhitelistFactory
         }
 
         return array_values($whitelist);
+    }
+
+    /**
+     * @param list<string> $elements
+     * @param list<string> $excludedNamespaceNames
+     */
+    private static function parseLegacyExposedElements(array $elements, array $excludedNamespaceNames): array
+    {
+        $exposedSymbols = [];
+        $exposedConstants = [];
+        $exposedSymbolsPatterns = [];
+        $excludedNamespaceNames = array_map('strtolower', $excludedNamespaceNames);
+
+        foreach ($elements as $element) {
+            $element = ltrim(trim($element), '\\');
+
+            self::assertValidElement($element);
+
+            if ('\*' === substr($element, -2)) {
+                $excludedNamespaceNames[] = strtolower(substr($element, 0, -2));
+            } elseif ('*' === $element) {
+                $excludedNamespaceNames[] = '';
+            } elseif (false !== strpos($element, '*')) {
+                $exposedSymbolsPatterns[] = self::createExposePattern($element);
+            } else {
+                $exposedSymbols[] = strtolower($element);
+                $exposedConstants[] = self::lowerCaseConstantName($element);
+            }
+        }
+
+        return [
+            $exposedSymbols,
+            $exposedSymbolsPatterns,
+            $exposedConstants,
+            $excludedNamespaceNames,
+        ];
+    }
+
+    private static function assertValidElement(string $element): void
+    {
+        if ('' !== $element) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            sprintf(
+                'Invalid whitelist element "%s": cannot accept an empty string',
+                $element,
+            ),
+        );
+    }
+
+    private static function createExposePattern(string $element): string
+    {
+        self::assertValidPattern($element);
+
+        return sprintf(
+            '/^%s$/u',
+            str_replace(
+                '\\',
+                '\\\\',
+                str_replace(
+                    '*',
+                    '.*',
+                    $element,
+                ),
+            ),
+        );
+    }
+
+    private static function assertValidPattern(string $element): void
+    {
+        if (1 !== native_preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid whitelist pattern "%s".',
+                    $element,
+                ),
+            );
+        }
+    }
+
+    /**
+     * Transforms the constant FQ name "Acme\Foo\X" to "acme\foo\X" since the namespace remains case insensitive for
+     * constants regardless of whether or not constants actually are case insensitive.
+     */
+    private static function lowerCaseConstantName(string $name): string
+    {
+        $parts = explode('\\', $name);
+
+        $lastPart = array_pop($parts);
+
+        $parts = array_map('strtolower', $parts);
+
+        $parts[] = $lastPart;
+
+        return implode('\\', $parts);
     }
 
     private static function retrieveExposeGlobalSymbol(array $config, string $key): bool
