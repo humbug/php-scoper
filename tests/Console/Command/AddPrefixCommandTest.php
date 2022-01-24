@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
-use Humbug\PhpScoper\Configuration\ConfigurationSymbolsConfigurationFactory;
+use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
@@ -685,7 +685,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,
-                        new ConfigurationSymbolsConfigurationFactory(
+                        new SymbolsConfigurationFactory(
                             new RegexChecker(),
                         ),
                     ),
