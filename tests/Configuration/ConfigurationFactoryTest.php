@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
 use function array_keys;
 use function KevinGH\Box\FileSystem\dump_file;
@@ -145,19 +146,15 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 false,
                 false,
                 NamespaceRegistry::create(
-                    [],
                     [
                         'PHPUnit\Runner',
                         'Bar',
                     ],
                 ),
                 null,
-                ['foo'],
-                [],
-                ['foo'],
-                [],
-                ['Foo'],
-                [],
+                SymbolRegistry::create(['Foo']),
+                SymbolRegistry::create(['Foo']),
+                SymbolRegistry::createForConstants(['Foo']),
             ),
             $configuration->getSymbolsConfiguration(),
         );

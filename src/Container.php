@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
-use Humbug\PhpScoper\Configuration\ConfigurationSymbolsConfigurationFactory;
+use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
 use PhpParser\Lexer;
 use PhpParser\Parser;
@@ -44,7 +44,7 @@ final class Container
         if (!isset($this->configFactory)) {
             $this->configFactory = new ConfigurationFactory(
                 $this->getFileSystem(),
-                new ConfigurationSymbolsConfigurationFactory(
+                new SymbolsConfigurationFactory(
                     new RegexChecker(),
                 ),
             );

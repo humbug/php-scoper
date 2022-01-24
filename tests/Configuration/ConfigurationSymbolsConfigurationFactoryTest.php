@@ -6,19 +6,20 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\ConfigurationSymbolsConfigurationFactory
+ * @covers \Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory
  */
 final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
 {
-    private ConfigurationSymbolsConfigurationFactory $factory;
+    private SymbolsConfigurationFactory $factory;
 
     protected function setUp(): void
     {
-        $this->factory = new ConfigurationSymbolsConfigurationFactory(
+        $this->factory = new SymbolsConfigurationFactory(
             new RegexChecker(),
         );
     }
@@ -85,7 +86,6 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 false,
                 false,
                 NamespaceRegistry::create(
-                    [],
                     ['PHPUnit\Runner'],
                 ),
             ),
@@ -102,6 +102,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 false,
                 false,
                 NamespaceRegistry::create(
+                    [],
                     ['~^PHPUnit\\Runner(\\.*)?$~i'],
                 ),
             ),
@@ -119,12 +120,9 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 false,
                 null,
                 null,
-                ['acme\foo'],
-                [],
-                ['acme\foo'],
-                [],
-                ['acme\Foo'],
-                [],
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::createForConstants(['Acme\Foo']),
             ),
         ];
 
@@ -142,7 +140,6 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 false,
                 false,
                 NamespaceRegistry::create(
-                    [],
                     [
                         'PHPUnit\Internal',
                         'PHPUnit\Runner',
@@ -171,20 +168,17 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 true,
                 NamespaceRegistry::create(
                     [
-                        '~^PHPUnit\\Runner(\\.*)?$~i',
-                    ],
-                    [
                         'PHPUnit\Internal',
                         'PHPUnit\Runner',
                     ],
+                    [
+                        '~^PHPUnit\\Runner(\\.*)?$~i',
+                    ],
                 ),
                 null,
-                ['acme\foo'],
-                [],
-                ['acme\foo'],
-                [],
-                ['acme\Foo'],
-                [],
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::createForConstants(['Acme\Foo']),
             ),
         ];
     }
@@ -219,7 +213,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => '',
             ],
             InvalidArgumentException::class,
-            'Expected "exclude-namespaces" to be an array of strings, got "string" instead.',
+            'Expected "exclude-namespaces" to be an array of strings, found "string" instead.',
         ];
 
         yield 'exclude namespace is not an array of strings' => [
@@ -227,7 +221,15 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [false],
             ],
             InvalidArgumentException::class,
-            'Expected "exclude-namespaces" to be an array of strings, got "boolean" for the element with the index "0".',
+            'Expected "exclude-namespaces" to be an array of strings, found "bool" for the element with the index "0".',
+        ];
+
+        yield 'exclude namespace is not an array of strings (string index)' => [
+            [
+                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => ['foo' => false],
+            ],
+            InvalidArgumentException::class,
+            'Expected "exclude-namespaces" to be an array of strings, found "bool" for the element with the index "foo".',
         ];
 
         // TODO: need to find a case

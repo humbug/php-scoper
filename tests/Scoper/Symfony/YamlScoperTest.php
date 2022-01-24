@@ -19,6 +19,7 @@ use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -177,7 +178,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Symfony\Component\Console'],
                 ),
             ),
@@ -260,7 +260,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Controller'],
                 ),
             ),
@@ -301,7 +300,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Foo'],
                 ),
             ),
@@ -342,7 +340,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Foo'],
                 ),
             ),
@@ -402,7 +399,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme\Foo'],
                 ),
             ),
@@ -437,7 +433,7 @@ class YamlScoperTest extends TestCase
                 true,
                 null,
                 null,
-                ['Acme\Foo']
+                SymbolRegistry::create(['Acme\Foo']),
             ),
             <<<'YAML'
             services:
@@ -482,7 +478,6 @@ class YamlScoperTest extends TestCase
                 true,
                 true,
                 NamespaceRegistry::create(
-                    [],
                     ['Acme'],
                 ),
             ),

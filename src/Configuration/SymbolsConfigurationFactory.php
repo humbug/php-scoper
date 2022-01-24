@@ -6,13 +6,16 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
+use function array_merge;
 use function array_pop;
 use function array_values;
 use function explode;
+use function get_debug_type;
 use function gettype;
 use function implode;
 use function is_array;
@@ -27,7 +30,7 @@ use function strpos;
 use function strtolower;
 use function trim;
 
-final class ConfigurationSymbolsConfigurationFactory
+final class SymbolsConfigurationFactory
 {
     private RegexChecker $regexChecker;
 
@@ -39,9 +42,12 @@ final class ConfigurationSymbolsConfigurationFactory
     public function createSymbolsConfiguration(array $config): SymbolsConfiguration
     {
         [
-            $excludedNamespaceRegexes,
             $excludedNamespaceNames,
-        ] = $this->retrieveExcludedNamespaces($config);
+            $excludedNamespaceRegexes,
+        ] = $this->retrieveElements(
+            $config,
+            ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
+        );
 
         $legacyExposedElements = self::retrieveLegacyExposedElements($config);
 
@@ -65,95 +71,82 @@ final class ConfigurationSymbolsConfigurationFactory
             ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
         );
 
+        [$exposedClassNames, $exposedClassRegexes] = $this->retrieveElements(
+            $config,
+            ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD,
+        );
+
+        [$exposedFunctionNames, $exposedFunctionRegexes] = $this->retrieveElements(
+            $config,
+            ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD,
+        );
+
+        [$exposedConstantNames, $exposedConstantRegexes] = $this->retrieveElements(
+            $config,
+            ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD,
+        );
+
         return SymbolsConfiguration::create(
             $exposeGlobalConstants,
             $exposeGlobalClasses,
             $exposeGlobalFunctions,
             NamespaceRegistry::create(
-                $excludedNamespaceRegexes,
                 $excludedNamespaceNames,
+                $excludedNamespaceRegexes,
             ),
             null,
-            $legacyExposedSymbols,
-            $legacyExposedSymbolsPatterns,
-            $legacyExposedSymbols,
-            $legacyExposedSymbolsPatterns,
-            $legacyExposedConstants,
-            $legacyExposedSymbolsPatterns,
+            SymbolRegistry::create(
+                array_merge(
+                    $exposedClassNames,
+                    $legacyExposedSymbols,
+                ),
+                array_merge(
+                    $exposedClassRegexes,
+                    $legacyExposedSymbolsPatterns,
+                ),
+            ),
+            SymbolRegistry::create(
+                array_merge(
+                    $exposedFunctionNames,
+                    $legacyExposedSymbols,
+                ),
+                array_merge(
+                    $exposedFunctionRegexes,
+                    $legacyExposedSymbolsPatterns,
+                ),
+            ),
+            SymbolRegistry::createForConstants(
+                array_merge(
+                    $exposedConstantNames,
+                    $legacyExposedConstants,
+                ),
+                array_merge(
+                    $exposedConstantRegexes,
+                    $legacyExposedSymbolsPatterns,
+                ),
+            ),
         );
     }
 
-    /**
-     * @return array{string[], string[]}
-     */
-    private function retrieveExcludedNamespaces(array $config): array
+    private static function retrieveExposeGlobalSymbol(array $config, string $key): bool
     {
-        $key = ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD;
-
         if (!array_key_exists($key, $config)) {
-            return [[], []];
+            return false;
         }
 
-        $regexesAndNamespaceNames = $config[$key];
+        $value = $config[$key];
 
-        if (!is_array($regexesAndNamespaceNames)) {
+        if (!is_bool($value)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Expected "%s" to be an array of strings, got "%s" instead.',
+                    'Expected %s to be a boolean, found "%s" instead.',
                     $key,
-                    gettype($regexesAndNamespaceNames),
+                    gettype($value),
                 ),
             );
         }
 
-        // Store the strings in the keys for avoiding a unique check later on
-        $regexes = [];
-        $namespaceNames = [];
-
-        foreach ($regexesAndNamespaceNames as $index => $regexOrNamespaceName) {
-            if (!is_string($regexOrNamespaceName)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected "%s" to be an array of strings, got "%s" for the element with the index "%s".',
-                        $key,
-                        gettype($regexOrNamespaceName),
-                        $index,
-                    ),
-                );
-            }
-
-            if (!$this->regexChecker->isRegexLike($regexOrNamespaceName)) {
-                $namespaceNames[$regexOrNamespaceName] = null;
-
-                continue;
-            }
-
-            $excludeNamespaceRegex = $regexOrNamespaceName;
-
-            $errorMessage = $this->regexChecker->validateRegex($excludeNamespaceRegex);
-
-            if (null !== $errorMessage) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected "%s" to be an array of valid regexes. The element "%s" with the index "%s" is not: %s.',
-                        $key,
-                        $excludeNamespaceRegex,
-                        $index,
-                        $errorMessage,
-                    ),
-                );
-            }
-
-            // Ensure namespace comparisons are always case-insensitive
-            // TODO: double check that we are not adding it twice or that adding it twice does not break anything
-            $excludeNamespaceRegex .= 'i';
-            $regexes[$excludeNamespaceRegex] = null;
-        }
-
-        return [
-            array_keys($regexes),
-            array_keys($namespaceNames),
-        ];
+        return $value;
     }
 
     /**
@@ -196,6 +189,62 @@ final class ConfigurationSymbolsConfigurationFactory
     }
 
     /**
+     * return array{string[], string[]}
+     */
+    private function retrieveElements(array $config, string $key): array
+    {
+        if (!array_key_exists($key, $config)) {
+            return [[], []];
+        }
+
+        $symbolNamesAndRegexes = $config[$key];
+
+        self::assertIsArrayOfStrings($config[$key], $key);
+
+        // Store the strings in the keys for avoiding a unique check later on
+        $names = [];
+        $regexes = [];
+
+        foreach ($symbolNamesAndRegexes as $index => $nameOrRegex) {
+            if (!$this->regexChecker->isRegexLike($nameOrRegex)) {
+                $names[$nameOrRegex] = null;
+
+                continue;
+            }
+
+            $regex = $nameOrRegex;
+
+            $this->assertValidRegex($regex, $key, (string) $index);
+
+            $errorMessage = $this->regexChecker->validateRegex($regex);
+
+            if (null !== $errorMessage) {
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Expected "%s" to be an array of valid regexes. The element "%s" with the index "%s" is not: %s.',
+                        $key,
+                        $regex,
+                        $index,
+                        $errorMessage,
+                    ),
+                );
+            }
+
+            // Ensure namespace comparisons are always case-insensitive
+            // TODO: double check that we are not adding it twice or that adding it twice does not break anything
+            $regex .= 'i';
+            $regexes[$regex] = null;
+        }
+
+        return [
+            array_keys($names),
+            array_keys($regexes),
+        ];
+    }
+
+    /**
+     * @deprecated
+     *
      * @param list<string> $elements
      * @param list<string> $excludedNamespaceNames
      */
@@ -231,6 +280,59 @@ final class ConfigurationSymbolsConfigurationFactory
         ];
     }
 
+    /**
+     * @psalm-assert string[] $value
+     *
+     * @param mixed $value
+     */
+    private static function assertIsArrayOfStrings($value, string $key): void
+    {
+        if (!is_array($value)) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected "%s" to be an array of strings, found "%s" instead.',
+                    $key,
+                    get_debug_type($value),
+                ),
+            );
+        }
+
+        foreach ($value as $index => $element) {
+            if (is_string($element)) {
+                continue;
+            }
+
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected "%s" to be an array of strings, found "%s" for the element with the index "%s".',
+                    $key,
+                    get_debug_type($element),
+                    $index,
+                ),
+            );
+        }
+    }
+
+    private function assertValidRegex(string $regex, string $key, string $index): void
+    {
+        $errorMessage = $this->regexChecker->validateRegex($regex);
+
+        if (null !== $errorMessage) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected "%s" to be an array of valid regexes. The element "%s" with the index "%s" is not: %s.',
+                    $key,
+                    $regex,
+                    $index,
+                    $errorMessage,
+                ),
+            );
+        }
+    }
+
+    /**
+     * @deprecated
+     */
     private static function assertValidElement(string $element): void
     {
         if ('' !== $element) {
@@ -245,6 +347,9 @@ final class ConfigurationSymbolsConfigurationFactory
         );
     }
 
+    /**
+     * @deprecated
+     */
     private static function createExposePattern(string $element): string
     {
         self::assertValidPattern($element);
@@ -263,6 +368,9 @@ final class ConfigurationSymbolsConfigurationFactory
         );
     }
 
+    /**
+     * @deprecated
+     */
     private static function assertValidPattern(string $element): void
     {
         if (1 !== native_preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
@@ -276,8 +384,7 @@ final class ConfigurationSymbolsConfigurationFactory
     }
 
     /**
-     * Transforms the constant FQ name "Acme\Foo\X" to "acme\foo\X" since the namespace remains case insensitive for
-     * constants regardless of whether or not constants actually are case insensitive.
+     * @deprecated
      */
     private static function lowerCaseConstantName(string $name): string
     {
@@ -290,26 +397,5 @@ final class ConfigurationSymbolsConfigurationFactory
         $parts[] = $lastPart;
 
         return implode('\\', $parts);
-    }
-
-    private static function retrieveExposeGlobalSymbol(array $config, string $key): bool
-    {
-        if (!array_key_exists($key, $config)) {
-            return false;
-        }
-
-        $value = $config[$key];
-
-        if (!is_bool($value)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected %s to be a boolean, found "%s" instead.',
-                    $key,
-                    gettype($value),
-                ),
-            );
-        }
-
-        return $value;
     }
 }

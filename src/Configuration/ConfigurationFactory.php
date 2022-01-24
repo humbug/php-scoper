@@ -56,11 +56,11 @@ use const SORT_STRING;
 final class ConfigurationFactory
 {
     private Filesystem $fileSystem;
-    private ConfigurationSymbolsConfigurationFactory $configurationWhitelistFactory;
+    private SymbolsConfigurationFactory $configurationWhitelistFactory;
 
     public function __construct(
         Filesystem $fileSystem,
-        ConfigurationSymbolsConfigurationFactory $configurationWhitelistFactory
+        SymbolsConfigurationFactory $configurationWhitelistFactory
     ) {
         $this->fileSystem = $fileSystem;
         $this->configurationWhitelistFactory = $configurationWhitelistFactory;
