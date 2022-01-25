@@ -69,6 +69,12 @@ final class RegexCheckerTest extends TestCase
             false,
         ];
 
+        // https://github.com/humbug/php-scoper/pull/596
+        // This is in fact a perfectly valid regex. "\" is used as a delimiter
+        // and "A" is also a valid flag.
+        // However since we are in PHP, manipulating class names, that other
+        // delimiters options are available, we can safely require the user to
+        // not expect this case to work as regex.
         yield 'fake regex (1)' => [
             '\Foo\A',
             false,

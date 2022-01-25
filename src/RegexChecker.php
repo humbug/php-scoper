@@ -44,7 +44,8 @@ final class RegexChecker
         $firstCharacter = $value[0];
 
         if ('\\' === $firstCharacter) {
-            // This is not ideal as not true.
+            // This is not ideal as not true but is good enough for our case.
+            // See https://github.com/humbug/php-scoper/pull/596
             return false;
         }
 
