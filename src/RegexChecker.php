@@ -43,8 +43,7 @@ final class RegexChecker
 
         $firstCharacter = $value[0];
 
-        if ('\\' === $firstCharacter) {
-            // This is not ideal as not true.
+        if (!self::isValidDelimiter($firstCharacter)) {
             return false;
         }
 
@@ -74,6 +73,13 @@ final class RegexChecker
             preg_last_error_msg(),
             preg_last_error(),
         );
+    }
+
+    private static function isValidDelimiter(string $delimiter): bool
+    {
+        // This is not ideal as not true but is good enough for our case.
+        // See https://github.com/humbug/php-scoper/issues/597
+        return '\\' !== $delimiter && native_preg_match('/^\p{L}$/u', $delimiter) === 0;
     }
 
     private static function isValidRegexFlags(string $value): bool
