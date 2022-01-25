@@ -147,7 +147,7 @@ PHP
     ],
 
     'Use statement of a class belonging to the global scope which has been whitelisted' => [
-        'whitelist' => ['\*'],
+        'exclude-namespaces' => ['/^$/'],
         'payload' => <<<'PHP'
 <?php
 

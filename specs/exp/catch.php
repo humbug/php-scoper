@@ -120,7 +120,7 @@ PHP
     ],
 
     'Catch a custom exception class which belongs to the whitelisted root namespace' => [
-        'whitelist' => ['\*'],
+        'exclude-namespaces' => ['/^$/'],
         'payload' => <<<'PHP'
 <?php
 

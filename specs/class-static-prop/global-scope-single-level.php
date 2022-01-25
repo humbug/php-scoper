@@ -55,7 +55,7 @@ PHP
     ,
 
     'Constant call on a class belonging to the global namespace which is whitelisted' => [
-        'whitelist' => ['\*'],
+        'exclude-namespaces' => ['/^$/'],
         'payload' => <<<'PHP'
 <?php
 

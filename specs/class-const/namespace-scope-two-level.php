@@ -146,7 +146,7 @@ PHP
     ],
 
     'Constant call on a namespaced class belonging to a whitelisted namespace (2)' => [
-        'whitelist' => ['\*'],
+        'exclude-namespaces' => ['/^$/'],
         'payload' => <<<'PHP'
 <?php
 
