@@ -43,6 +43,11 @@ final class RegexChecker
 
         $firstCharacter = $value[0];
 
+        if ('\\' === $firstCharacter) {
+            // This is not ideal as not true.
+            return false;
+        }
+
         $parts = explode($firstCharacter, $value);
 
         if (false === $parts || count($parts) !== 3) {
