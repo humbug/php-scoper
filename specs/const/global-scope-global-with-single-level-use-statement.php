@@ -53,7 +53,7 @@ PHP
     ,
 
     'Whitelisted constant call imported with a use statement' => [
-        'whitelist' => ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 

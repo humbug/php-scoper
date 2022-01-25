@@ -82,6 +82,7 @@ class PhpScoperSpecTest extends TestCase
         'expected-recorded-functions',
     ];
 
+    // Keys allowed on a spec level
     private const SPECS_SPEC_KEYS = [
         ConfigurationKeys::PREFIX_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
@@ -99,6 +100,21 @@ class PhpScoperSpecTest extends TestCase
         'expected-recorded-classes',
         'expected-recorded-functions',
         'payload',
+    ];
+
+    // Keys kept and used to build the symbols configuration
+    private const SPECS_CONFIG_KEYS = [
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+        ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
+        ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD,
+        ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD,
+        ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD,
+        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
+        ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
     ];
 
     /**
@@ -332,12 +348,18 @@ class PhpScoperSpecTest extends TestCase
         );
 
         if (is_array($fixtureSet)) {
+            $diff = array_diff(
+                array_keys($fixtureSet),
+                self::SPECS_SPEC_KEYS
+            );
+
+            if ([ConfigurationKeys::WHITELIST_KEYWORD] === array_values($diff)) {
+                $diff = [];
+            }
+
             self::assertSame(
                 [],
-                $diff = array_diff(
-                    array_keys($fixtureSet),
-                    self::SPECS_SPEC_KEYS
-                ),
+                $diff,
                 sprintf(
                     'Expected the keys found in the spec section to be known keys, unknown keys: "%s"',
                     implode('", "', $diff)
@@ -375,14 +397,6 @@ class PhpScoperSpecTest extends TestCase
         array $meta
     ): SymbolsConfiguration
     {
-        $configKeys = [
-            ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
-            ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
-            ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
-            ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
-            ConfigurationKeys::WHITELIST_KEYWORD,
-        ];
-
         if (is_string($fixtureSet)) {
             $fixtureSet = [];
         }
@@ -391,8 +405,12 @@ class PhpScoperSpecTest extends TestCase
 
         $config = [];
 
-        foreach ($configKeys as $key) {
+        foreach (self::SPECS_CONFIG_KEYS as $key) {
             if (!array_key_exists($key, $mergedConfig)) {
+                if ($key === ConfigurationKeys::WHITELIST_KEYWORD) {
+                    continue;
+                }
+
                 throw new InvalidArgumentException(
                     sprintf(
                         'Missing the key "%s" for the file "%s"',

@@ -138,7 +138,7 @@ PHP
     ,
 
     'FQ Constant call on a whitelisted namespaced class partially imported with an aliased use statement' => [
-        'whitelist' => ['Foo\Bar'],
+        'expose-classes' => ['Foo\Bar'],
         'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
@@ -181,7 +181,7 @@ PHP
     ],
 
     'FQ constant call on a whitelisted namespaced class imported with an aliased use statement' => [
-        'whitelist' => ['Foo\Bar'],
+        'expose-classes' => ['Foo\Bar'],
         'payload' => <<<'PHP'
 <?php
 

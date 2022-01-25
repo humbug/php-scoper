@@ -203,7 +203,7 @@ PHP
     ],
 
     'Whitelisted grouped constants declaration in the global namespace' => [
-        'whitelist' => ['X'],
+        'expose-constants' => ['X'],
         'payload' => <<<'PHP'
 <?php
 
@@ -329,7 +329,7 @@ PHP
     ],
 
     'Whitelisted constants declaration in a namespace' => [
-        'whitelist' => ['Acme\BAR_CONST'],
+        'expose-constants' => ['Acme\BAR_CONST'],
         'payload' => <<<'PHP'
 <?php
 

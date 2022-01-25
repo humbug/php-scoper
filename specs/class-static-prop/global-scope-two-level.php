@@ -86,7 +86,7 @@ PHP
     ,
 
     'Constant call on a whitelisted namespaced class' => [
-        'whitelist' => ['PHPUnit\Command'],
+        'expose-classes' => ['PHPUnit\Command'],
         'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
@@ -117,7 +117,7 @@ PHP
     ],
 
     'FQ constant call on a whitelisted namespaced class' => [
-        'whitelist' => ['PHPUnit\Command'],
+        'expose-classes' => ['PHPUnit\Command'],
         'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],

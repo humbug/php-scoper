@@ -106,7 +106,7 @@ PHP
     ],
 
     'Global function call in the global scope with whitelisted symbols' => [
-        'whitelist' => [
+        'expose-functions' => [
             'X\Foo',
             'X\Bar',
         ],

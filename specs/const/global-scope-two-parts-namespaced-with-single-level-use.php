@@ -80,7 +80,7 @@ PHP
     ,
 
     'Whitelisted namespaced constant call with namespace partially imported' => [
-        'whitelist' => ['Foo\Bar\DUMMY_CONST'],
+        'expose-constants' => ['Foo\Bar\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 

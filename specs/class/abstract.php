@@ -114,7 +114,7 @@ PHP
     ],
 
     'Declaration of a whitelisted class in the global namespace' => [
-        'whitelist' => ['A'],
+        'expose-classes' => ['A'],
         'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
@@ -143,7 +143,7 @@ PHP
     ],
 
     'Declaration of a whitelisted class in the global namespace which is excluded' => [
-        'whitelist' => ['A'],
+        'expose-classes' => ['A'],
         'exclude-namespaces' => ['/^$/'],
         'expected-recorded-classes' => [],
         'payload' => <<<'PHP'
@@ -280,7 +280,7 @@ PHP
     ],
 
     'Declaration of a whitelisted class in a namespace' => [
-        'whitelist' => ['Foo\A'],
+        'expose-classes' => ['Foo\A'],
         'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
@@ -357,7 +357,7 @@ PHP
     ],
 
     'Declaration of a whitelisted class in a namespace with FQCN for the whitelist' => [
-        'whitelist' => ['\Foo\A'],
+        'expose-classes' => ['\Foo\A'],
         'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
@@ -415,7 +415,7 @@ PHP
     ],
 
     'Multiple declarations in different namespaces with whitelisted classes' => [
-        'whitelist' => ['Foo\WA', 'Bar\WB', 'WC'],
+        'expose-classes' => ['Foo\WA', 'Bar\WB', 'WC'],
         'expected-recorded-classes' => [
             ['Foo\WA', 'Humbug\Foo\WA'],
             ['Bar\WB', 'Humbug\Bar\WB'],

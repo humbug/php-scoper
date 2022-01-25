@@ -55,7 +55,7 @@ PHP
     ,
 
     'Simple whitelisted function' => [
-        'whitelist' => ['Acme\foo'],
+        'expose-functions' => ['Acme\foo'],
         'expected-recorded-functions' => [
             ['Acme\foo', 'Humbug\Acme\foo'],
         ],
@@ -79,7 +79,7 @@ PHP
     ],
 
     'Function declaration in a namespace' => [
-        'whitelist' => ['X\Y'],
+        'expose-functions' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -166,7 +166,7 @@ PHP
     ],
 
     'Function declaration in a namespace with whitelisted classes' => [
-        'whitelist' => ['X\Y'],
+        'expose-functions' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -253,7 +253,7 @@ PHP
     ],
 
     'Function declaration in a namespace with use statements' => [
-        'whitelist' => ['X\Y'],
+        'expose-functions' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -415,7 +415,7 @@ PHP
     ],
 
     'Function declarations with return types in a namespace with use statements' => [
-        'whitelist' => ['X\Y'],
+        'expose-functions' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],

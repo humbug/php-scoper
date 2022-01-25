@@ -56,7 +56,7 @@ PHP
     ,
 
     'Declaration of a whitelisted class in the global namespace' => [
-        'whitelist' => ['A'],
+        'expose-classes' => ['A'],
         'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
@@ -103,7 +103,7 @@ PHP
     ,
 
     'Declaration of a whitelisted class' => [
-        'whitelist' => ['Foo\A'],
+        'expose-classes' => ['Foo\A'],
         'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],

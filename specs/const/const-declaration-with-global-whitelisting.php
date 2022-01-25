@@ -87,7 +87,7 @@ PHP
     ],
 
     'Whitelisted constants declaration in the global namespace' => [
-        'whitelist' => ['FOO_CONST', 'BAR_CONST', 'Acme\BAR_CONST'],
+        'expose-constants' => ['FOO_CONST', 'BAR_CONST', 'Acme\BAR_CONST'],
         'payload' => <<<'PHP'
 <?php
 
@@ -168,7 +168,7 @@ PHP
     ],
 
     'Whitelisted constants declaration in a namespace' => [
-        'whitelist' => ['Acme\BAR_CONST'],
+        'expose-constants' => ['Acme\BAR_CONST'],
         'payload' => <<<'PHP'
 <?php
 

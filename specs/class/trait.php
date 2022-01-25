@@ -197,7 +197,7 @@ PHP
     ,
 
     'Declaration of a whitelisted trait' => [
-        'whitelist' => ['Foo\A'],
+        'expose-classes' => ['Foo\A'],
         'payload' => <<<'PHP'
 <?php
 

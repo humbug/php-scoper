@@ -68,7 +68,7 @@ PHP
     ,
 
     'Whitelisted namespaced constant call on a whitelisted constant' => [
-        'whitelist' => ['PHPUnit\DUMMY_CONST'],
+        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 
@@ -86,7 +86,7 @@ PHP
     ],
 
     'Whitelisted FQ namespaced constant call on a whitelisted constant' => [
-        'whitelist' => ['PHPUnit\DUMMY_CONST'],
+        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 

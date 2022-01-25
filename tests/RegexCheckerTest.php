@@ -64,8 +64,13 @@ final class RegexCheckerTest extends TestCase
             true,
         ];
 
-        yield 'fake regex' => [
+        yield 'fake regex (0)' => [
             '/Foo/Bar/',
+            false,
+        ];
+
+        yield 'fake regex (1)' => [
+            '\Foo\A',
             false,
         ];
 

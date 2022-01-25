@@ -110,7 +110,7 @@ PHP
     ,
 
     'Whitelisted namespaced function call imported with a partial use statement in the global scope' => [
-        'whitelist' => ['Foo\main'],
+        'expose-classes' => ['Foo\main'],
         'expected-recorded-functions' => [
             ['Foo\main', 'Humbug\Foo\main'],
         ],

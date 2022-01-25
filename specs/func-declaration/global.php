@@ -57,7 +57,7 @@ PHP
     ],
 
     'Simple whitelisted function' => [
-        'whitelist' => ['foo'],
+        'expose-functions' => ['foo'],
         'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
@@ -80,7 +80,7 @@ PHP
 
     'Simple whitelisted function with global functions non whitelisted' => [
         'expose-global-functions' => false,
-        'whitelist' => ['foo'],
+        'expose-functions' => ['foo'],
         'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
@@ -102,7 +102,7 @@ PHP
     ],
 
     'Function declaration in the global namespace' => [
-        'whitelist' => ['X\Y', 'BAR_CONST'],
+        'expose-functions' => ['X\Y', 'BAR_CONST'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -193,7 +193,7 @@ PHP
     ],
 
     'Function declaration in the global namespace with use statements' => [
-        'whitelist' => ['X\Y'],
+        'expose-functions' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -284,7 +284,7 @@ PHP
     ],
 
     'Function declarations with return types in the global namespace with use statements' => [
-        'whitelist' => ['X\Y'],
+        'expose-functions' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],

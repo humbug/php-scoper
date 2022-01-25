@@ -247,7 +247,7 @@ PHP
     ],
 
     'Declaration in the global namespace with some whitelisted classes' => [
-        'whitelist' => ['A', 'C'],
+        'expose-classes' => ['A', 'C'],
         'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
             ['C', 'Humbug\C'],

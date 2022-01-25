@@ -50,7 +50,7 @@ PHP
     ,
 
     'Whitelisted constant call in the global namespace' => [
-        'whitelist' => ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 

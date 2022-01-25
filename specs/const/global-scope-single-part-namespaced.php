@@ -64,7 +64,7 @@ PHP
     ,
 
     'Namespaced constant call on a whitelisted constant' => [
-        'whitelist' => ['PHPUnit\DUMMY_CONST'],
+        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 

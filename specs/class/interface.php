@@ -172,7 +172,7 @@ PHP
     ],
 
     'Declaration of a whitelisted interface' => [
-        'whitelist' => ['Foo\A'],
+        'expose-classes' => ['Foo\A'],
         'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],

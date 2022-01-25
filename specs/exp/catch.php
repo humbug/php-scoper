@@ -98,7 +98,7 @@ PHP
     ,
 
     'Catch a whitelisted custom exception class' => [
-        'whitelist' => ['FooException'],
+        'expose-classes' => ['FooException'],
         'payload' => <<<'PHP'
 <?php
 
@@ -164,7 +164,7 @@ PHP
     ,
 
     'Catch a whitelisted custom exception class in a namespace' => [
-        'whitelist' => ['Acme\FooException'],
+        'expose-classes' => ['Acme\FooException'],
         'payload' => <<<'PHP'
 <?php
 

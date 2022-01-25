@@ -165,7 +165,7 @@ PHP
     ],
 
     'Declaration of a whitelisted class' => [
-        'whitelist' => [
+        'expose-classes' => [
             'Foo\A',
             'Foo\B',
         ],

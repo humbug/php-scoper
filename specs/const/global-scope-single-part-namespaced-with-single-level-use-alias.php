@@ -106,7 +106,7 @@ PHP
     ,
 
     'Whitelisted constant call on an imported single-level namespace' => [
-        'whitelist' => ['Foo\DUMMY_CONST'],
+        'expose-constants' => ['Foo\DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 

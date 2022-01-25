@@ -112,7 +112,7 @@ PHP
     ],
 
     'Declaration of a whitelisted final class' => [
-        'whitelist' => ['Foo\A'],
+        'expose-classes' => ['Foo\A'],
         'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],

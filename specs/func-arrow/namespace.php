@@ -88,7 +88,7 @@ PHP
     ],
 
     'Global function call in the global scope with whitelisted symbols' => [
-        'whitelist' => [
+        'expose-functions' => [
             'Acme\Foo',
             'Acme\Bar',
             'Acme\Humbug\Acme\DateTimeImmutable',

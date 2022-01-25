@@ -36,7 +36,7 @@ return [
     ],
 
     'Method declarations' => [
-        'whitelist' => ['X\Y', 'BAR_CONST'],
+        'expose-classes' => ['X\Y', 'BAR_CONST'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -124,7 +124,7 @@ PHP
     ],
 
     'Method declarations with return types' => [
-        'whitelist' => ['X\Y'],
+        'expose-classes' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],

@@ -55,7 +55,7 @@ PHP
     // is not as it implies having both A\DUMMY_CONST and DUMMY_CONST in the
     // codebase with only DUMMY_CONST exposed.
     'Whitelisted constant call in a namespace' => [
-        'whitelist' => ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 
@@ -89,7 +89,7 @@ PHP
     ,
 
     'Whitelisted FQ constant call in a namespace' => [
-        'whitelist' => ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
 <?php
 

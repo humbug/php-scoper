@@ -95,7 +95,7 @@ PHP
     ,
 
     'Declaration of a whitelisted class' => [
-        'whitelist' => ['Foo\B'],
+        'expose-classes' => ['Foo\B'],
         'expected-recorded-classes' => [
             ['Foo\B', 'Humbug\Foo\B'],
         ],

@@ -132,7 +132,7 @@ PHP
     ],
 
     'Declaration of a whitelisted class' => [
-        'whitelist' => ['Foo\A'],
+        'expose-classes' => ['Foo\A'],
         'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
@@ -268,7 +268,7 @@ PHP
     ,
 
     'Multiple declarations in different namespaces with whitelisted class' => [
-        'whitelist' => [
+        'expose-classes' => [
             'Foo\A',
             'Bar\B',
         ],
