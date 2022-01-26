@@ -12,21 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Symbol\Reflector;
 
+use Humbug\PhpScoper\Symbol\Reflector;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Reflector
+ * @covers \Humbug\PhpScoper\Symbol\Reflector
  */
-class ReflectorTest extends TestCase
+class PhpStormStubsReflectorTest extends TestCase
 {
+    private Reflector $reflector;
+
+    protected function setUp(): void
+    {
+        $this->reflector = Reflector::createWithPhpStormStubs();
+    }
+
     /**
      * @dataProvider provideClasses
      */
     public function test_it_can_identify_internal_classes(string $class, bool $expected): void
     {
-        $actual = (Reflector::createWithPhpStormStubs())->isClassInternal($class);
+        $actual = $this->reflector->isClassInternal($class);
 
         self::assertSame($expected, $actual);
     }
@@ -36,7 +44,7 @@ class ReflectorTest extends TestCase
      */
     public function test_it_can_identify_internal_functions(string $class, bool $expected): void
     {
-        $actual = (Reflector::createWithPhpStormStubs())->isFunctionInternal($class);
+        $actual = $this->reflector->isFunctionInternal($class);
 
         self::assertSame($expected, $actual);
     }
@@ -46,7 +54,7 @@ class ReflectorTest extends TestCase
      */
     public function test_it_can_identify_internal_constants(string $class, bool $expected): void
     {
-        $actual = (Reflector::createWithPhpStormStubs())->isConstantInternal($class);
+        $actual = $this->reflector->isConstantInternal($class);
 
         self::assertSame($expected, $actual);
     }
@@ -55,6 +63,11 @@ class ReflectorTest extends TestCase
     {
         yield 'PHP internal class' => [
             'DateTime',
+            true,
+        ];
+
+        yield 'FQ PHP internal class' => [
+            '\DateTime',
             true,
         ];
 
@@ -85,6 +98,11 @@ class ReflectorTest extends TestCase
     {
         yield 'PHP internal function' => [
             'class_exists',
+            true,
+        ];
+
+        yield 'FQ PHP internal function' => [
+            '\class_exists',
             true,
         ];
 
@@ -128,6 +146,11 @@ class ReflectorTest extends TestCase
     public static function provideConstants(): iterable
     {
         yield 'PHP internal constant' => [
+            'PHP_VERSION',
+            true,
+        ];
+
+        yield '\PHP internal constant' => [
             'PHP_VERSION',
             true,
         ];

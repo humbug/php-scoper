@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
 
-use Humbug\PhpScoper\RegexChecker;
+use Humbug\PhpScoper\Configuration\RegexChecker;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -115,6 +115,18 @@ class SymbolRegistryTest extends TestCase
         yield 'namespaced name registered; exact match' => [
             ['PHPUnit\TestCase'],
             'PHPUnit\TestCase',
+            true,
+        ];
+
+        yield 'FQ namespaced name registered; match' => [
+            ['\PHPUnit\TestCase'],
+            'PHPUnit\TestCase',
+            true,
+        ];
+
+        yield 'namespaced name registered; (FQ) match' => [
+            ['PHPUnit\TestCase'],
+            '\PHPUnit\TestCase',
             true,
         ];
 

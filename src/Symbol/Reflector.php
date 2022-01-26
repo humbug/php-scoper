@@ -14,13 +14,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Symbol;
 
 use JetBrains\PHPStormStub\PhpStormStubsMap;
-use function array_fill_keys;
 use function array_keys;
 use function array_merge;
-use function strtolower;
 
 /**
  * @private
@@ -88,20 +86,9 @@ final class Reflector
         'T_READONLY',
     ];
 
-    /**
-     * @var array<string,true>
-     */
-    private array $classes;
-
-    /**
-     * @var array<string,true>
-     */
-    private array $functions;
-
-    /**
-     * @var array<string,true>
-     */
-    private array $constants;
+    private SymbolRegistry $classes;
+    private SymbolRegistry $functions;
+    private SymbolRegistry $constants;
 
     public static function createWithPhpStormStubs(): self
     {
@@ -114,7 +101,7 @@ final class Reflector
                 array_keys(PhpStormStubsMap::FUNCTIONS),
                 self::MISSING_FUNCTIONS,
             ),
-            self::createSymbolList(
+            self::createConstantSymbolList(
                 array_keys(PhpStormStubsMap::CONSTANTS),
                 self::MISSING_CONSTANTS,
             ),
@@ -123,73 +110,73 @@ final class Reflector
 
     public static function createEmpty(): self
     {
-        return new self([], [], []);
+        return new self(
+            SymbolRegistry::create(),
+            SymbolRegistry::create(),
+            SymbolRegistry::createForConstants(),
+        );
     }
 
-    /**
-     * @param array<string, true> $classes
-     * @param array<string, true> $functions
-     * @param array<string, true> $constants
-     */
-    public function __construct(array $classes, array $functions, array $constants)
-    {
+    private function __construct(
+        SymbolRegistry $classes,
+        SymbolRegistry $functions,
+        SymbolRegistry $constants
+    ) {
         $this->classes = $classes;
         $this->functions = $functions;
         $this->constants = $constants;
     }
 
     /**
-     * @param string[] $classes
-     * @param string[] $functions
-     * @param string[] $constants
+     * @param string[] $classNames
+     * @param string[] $functionNames
+     * @param string[] $constantNames
      */
     public function withSymbols(
-        array $classes,
-        array $functions,
-        array $constants
+        array $classNames,
+        array $functionNames,
+        array $constantNames
     ): self
     {
         return new self(
-            self::createSymbolList(
-                array_keys($this->classes),
-                $classes,
-            ),
-            self::createSymbolList(
-                array_keys($this->functions),
-                $functions,
-            ),
-            self::createSymbolList(
-                array_keys($this->constants),
-                $constants,
-            ),
+            $this->classes->withAdditionalSymbols($classNames),
+            $this->functions->withAdditionalSymbols($functionNames),
+            $this->constants->withAdditionalSymbols($constantNames),
         );
     }
 
     public function isClassInternal(string $name): bool
     {
-        return isset($this->classes[$name]);
+        return $this->classes->matches($name);
     }
 
     public function isFunctionInternal(string $name): bool
     {
-        return isset($this->functions[strtolower($name)]);
+        return $this->functions->matches($name);
     }
 
     public function isConstantInternal(string $name): bool
     {
-        return isset($this->constants[$name]);
+        return $this->constants->matches($name);
     }
 
     /**
-     * @param string[][] $sources
-     *
-     * @return array<string, true>
+     * @param string[] $sources
      */
-    private static function createSymbolList(array ...$sources): array
+    private static function createSymbolList(array ...$sources): SymbolRegistry
     {
-        return array_fill_keys(
+        return SymbolRegistry::create(
             array_merge(...$sources),
-            true
+        );
+    }
+
+    /**
+     * @param string[] $sources
+     */
+    private static function createConstantSymbolList(array ...$sources): SymbolRegistry
+    {
+        return SymbolRegistry::createForConstants(
+            array_merge(...$sources),
         );
     }
 }

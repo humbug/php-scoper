@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
-use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;

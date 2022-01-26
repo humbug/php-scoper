@@ -15,6 +15,7 @@ use function ltrim;
 use function Safe\array_flip;
 use function Safe\preg_match;
 use function strtolower;
+use const SORT_STRING;
 
 final class SymbolRegistry
 {
@@ -40,9 +41,13 @@ final class SymbolRegistry
     ): self {
         return new self(
             array_unique(
-                array_map('strtolower', $names),
+                array_map(
+                    static fn (string $name) => strtolower(ltrim($name, '\\')),
+                    $names,
+                ),
+                SORT_STRING,
             ),
-            array_unique($regexes),
+            array_unique($regexes, SORT_STRING),
             false,
         );
     }
@@ -61,11 +66,14 @@ final class SymbolRegistry
         return new self(
             array_unique(
                 array_map(
-                    static fn (string $name) => self::lowerCaseConstantName($name),
+                    static fn (string $name) => self::lowerCaseConstantName(
+                        ltrim($name, '\\'),
+                    ),
                     $names,
                 ),
+                SORT_STRING,
             ),
-            array_unique($regexes),
+            array_unique($regexes, SORT_STRING),
             true,
         );
     }
@@ -102,6 +110,28 @@ final class SymbolRegistry
         }
 
         return false;
+    }
+
+    /**
+     * @param string[] $names
+     * @param string[] $regexes
+     */
+    public function withAdditionalSymbols(array $names = [], array $regexes = []): self
+    {
+        $args = [
+            [
+                ...$this->getNames(),
+                ...$names,
+            ],
+            [
+                ...$this->getRegexes(),
+                ...$regexes,
+            ],
+        ];
+
+        return $this->constants
+            ? self::createForConstants(...$args)
+            : self::create(...$args);
     }
 
     /**

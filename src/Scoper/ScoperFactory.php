@@ -15,13 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Configuration\Configuration;
-use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Parser;
 
@@ -45,16 +44,17 @@ class ScoperFactory
     ): Scoper
     {
         $prefix = $configuration->getPrefix();
+        $symbolsConfiguration = $configuration->getSymbolsConfiguration();
 
         $configuredReflector = $this->reflector->withSymbols(
-            $configuration->getInternalClasses(),
-            $configuration->getInternalFunctions(),
-            $configuration->getInternalConstants(),
+            $symbolsConfiguration->getExcludedClassNames(),
+            $symbolsConfiguration->getExcludedFunctionNames(),
+            $symbolsConfiguration->getExcludedConstantNames(),
         );
 
         $enrichedReflector = new EnrichedReflector(
             $configuredReflector,
-            $configuration->getSymbolsConfiguration(),
+            $symbolsConfiguration,
         );
 
         $autoloadPrefixer = new AutoloadPrefixer(

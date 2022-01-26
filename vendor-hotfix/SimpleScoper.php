@@ -51,9 +51,6 @@ final class SimpleScoper implements Scoper
             $scoperConfig->getWhitelistedFilesWithContents(),
             self::createSerializablePatchers($scoperConfig->getPatcher()),
             $scoperConfig->getSymbolsConfiguration(),
-            $scoperConfig->getInternalClasses(),
-            $scoperConfig->getInternalFunctions(),
-            $scoperConfig->getInternalConstants(),
         );
         $this->whitelistedFilePaths = $whitelistedFilePaths;
         $this->symbolsRegistry = new SymbolsRegistry();
