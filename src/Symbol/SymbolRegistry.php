@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use function array_key_exists;
+use function array_keys;
 use function array_map;
 use function array_pop;
 use function array_unique;
@@ -26,6 +27,7 @@ final class SymbolRegistry
      * @var list<string>
      */
     private array $regexes;
+
     private bool $constants;
 
     /**
@@ -100,6 +102,26 @@ final class SymbolRegistry
         }
 
         return false;
+    }
+
+    /**
+     * @internal
+     *
+     * @return list<string>
+     */
+    public function getNames(): array
+    {
+        return array_keys($this->names);
+    }
+
+    /**
+     * @internal
+     *
+     * @erturn list<string>
+     */
+    public function getRegexes(): array
+    {
+        return $this->regexes;
     }
 
     /**

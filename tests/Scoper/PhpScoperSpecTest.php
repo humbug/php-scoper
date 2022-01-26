@@ -22,6 +22,7 @@ use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
@@ -67,40 +68,37 @@ class PhpScoperSpecTest extends TestCase
         'maxPhpVersion',
         'title',
         ConfigurationKeys::PREFIX_KEYWORD,
-        ConfigurationKeys::WHITELIST_KEYWORD,
-        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
-        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
-        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
-        ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD,
-        ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD,
-        ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD,
-        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
-        ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
-        ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
+        // SPECS_CONFIG_KEYS included
         'expected-recorded-classes',
         'expected-recorded-functions',
     ];
 
+    // Keys allowed on a spec level
     private const SPECS_SPEC_KEYS = [
         ConfigurationKeys::PREFIX_KEYWORD,
-        ConfigurationKeys::WHITELIST_KEYWORD,
-        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
-        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
-        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
-        ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD,
-        ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD,
-        ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD,
-        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
-        ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
-        ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
+        // SPECS_CONFIG_KEYS included
         'expected-recorded-classes',
         'expected-recorded-functions',
         'payload',
+    ];
+
+    // Keys kept and used to build the symbols configuration
+    private const SPECS_CONFIG_KEYS = [
+        ConfigurationKeys::WHITELIST_KEYWORD,
+
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+
+        ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
+        ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD,
+        ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD,
+        ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD,
+
+        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
+        ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
     ];
 
     /**
@@ -213,6 +211,9 @@ class PhpScoperSpecTest extends TestCase
             $spec,
             $contents,
             $symbolsConfiguration,
+            $internalClasses,
+            $internalFunctions,
+            $internalConstants,
             $symbolsRegistry,
             $expected,
             $actual,
@@ -311,6 +312,23 @@ class PhpScoperSpecTest extends TestCase
      */
     private static function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): iterable
     {
+        static $specMetaKeys;
+        static $specKeys;
+
+        if (!isset($specMetaKeys)) {
+            $specMetaKeys = [
+                ...self::SPECS_META_KEYS,
+                ...self::SPECS_CONFIG_KEYS,
+            ];
+        }
+
+        if (!isset($specKeys)) {
+            $specKeys = [
+                ...self::SPECS_SPEC_KEYS,
+                ...self::SPECS_CONFIG_KEYS,
+            ];
+        }
+
         $spec = sprintf(
             '[%s] %s',
             $meta['title'],
@@ -325,7 +343,7 @@ class PhpScoperSpecTest extends TestCase
             [],
             $diff = array_diff(
                 array_keys($meta),
-                self::SPECS_META_KEYS
+                $specMetaKeys,
             ),
             sprintf(
                 'Expected the keys found in the meta section to be known keys, unknown keys: "%s"',
@@ -338,7 +356,7 @@ class PhpScoperSpecTest extends TestCase
                 [],
                 $diff = array_diff(
                     array_keys($fixtureSet),
-                    self::SPECS_SPEC_KEYS
+                    $specKeys,
                 ),
                 sprintf(
                     'Expected the keys found in the spec section to be known keys, unknown keys: "%s"',
@@ -377,14 +395,6 @@ class PhpScoperSpecTest extends TestCase
         array $meta
     ): SymbolsConfiguration
     {
-        $configKeys = [
-            ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
-            ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
-            ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
-            ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
-            ConfigurationKeys::WHITELIST_KEYWORD,
-        ];
-
         if (is_string($fixtureSet)) {
             $fixtureSet = [];
         }
@@ -393,7 +403,7 @@ class PhpScoperSpecTest extends TestCase
 
         $config = [];
 
-        foreach ($configKeys as $key) {
+        foreach (self::SPECS_CONFIG_KEYS as $key) {
             if (!array_key_exists($key, $mergedConfig)) {
                 throw new InvalidArgumentException(
                     sprintf(
@@ -411,6 +421,9 @@ class PhpScoperSpecTest extends TestCase
     }
 
     /**
+     * @param string[] $internalClasses
+     * @param string[] $internalFunctions
+     * @param string[] $internalConstants
      * @param string[][] $expectedRegisteredClasses
      * @param string[][] $expectedRegisteredFunctions
      */
@@ -419,19 +432,26 @@ class PhpScoperSpecTest extends TestCase
         string $spec,
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,
+        array $internalClasses,
+        array $internalFunctions,
+        array $internalConstants,
         SymbolsRegistry $symbolsRegistry,
         ?string $expected,
         ?string $actual,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions
     ): string {
-        // TODO: restore this
-        //$formattedWhitelist = self::formatSimpleList($whitelist->toArray());
-        $formattedWhitelist = self::formatSimpleList([]);
-
         $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
         $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
         $formattedExposeGlobalFunctions = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalFunctions());
+
+        $formattedClassesToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedClasses());
+        $formattedFunctionsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedFunctions());
+        $formattedConstantsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedConstants());
+
+        $formattedInternalClasses = self::formatSimpleList($internalClasses);
+        $formattedInternalFunctions = self::formatSimpleList($internalFunctions);
+        $formattedInternalConstants = self::formatSimpleList($internalConstants);
 
         $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
         $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
@@ -456,10 +476,17 @@ class PhpScoperSpecTest extends TestCase
         
         $titleSeparator
         INPUT
-        whitelist: $formattedWhitelist
-        whitelist global classes: $formattedExposeGlobalClasses
-        whitelist global functions: $formattedExposeGlobalFunctions
-        whitelist global constants: $formattedExposeGlobalConstants
+        expose global classes: $formattedExposeGlobalClasses
+        expose global functions: $formattedExposeGlobalFunctions
+        expose global constants: $formattedExposeGlobalConstants
+        
+        expose classes: $formattedClassesToExpose
+        expose functions: $formattedFunctionsToExpose
+        expose constants: $formattedConstantsToExpose
+        
+        internal constants: $formattedInternalClasses
+        internal functions: $formattedInternalFunctions
+        internal constants: $formattedInternalConstants
         $titleSeparator
         $contents
         
@@ -493,7 +520,7 @@ class PhpScoperSpecTest extends TestCase
         }
 
         if (1 === count($strings)) {
-            return '['.current($strings).']';
+            return '[ '.current($strings).' ]';
         }
 
         return sprintf(
@@ -543,6 +570,14 @@ class PhpScoperSpecTest extends TestCase
     private static function convertBoolToString(bool $bool): string
     {
         return true === $bool ? 'true' : 'false';
+    }
+
+    private static function formatSymbolRegistry(SymbolRegistry $symbolRegistry): string
+    {
+        return self::formatSimpleList([
+            ...$symbolRegistry->getNames(),
+            ...$symbolRegistry->getRegexes(),
+        ]);
     }
 
     /**
