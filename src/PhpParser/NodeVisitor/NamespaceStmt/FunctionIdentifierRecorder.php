@@ -134,7 +134,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $funcCallName = $argParent->name;
 
-        if (!($funcCallName instanceof FullyQualified)
+        if (!$funcCallName->isFullyQualified()
             || 'function_exists' !== $funcCallName->toString()
         ) {
             return null;
