@@ -21,12 +21,12 @@ final class NamespaceRegistry
     /**
      * @var list<string>
      */
-    private array $namespaceNames;
+    private array $names;
 
     /**
      * @var list<string>
      */
-    private array $namespaceRegexes;
+    private array $regexes;
 
     /**
      * @param string[] $namespaceNames
@@ -53,8 +53,8 @@ final class NamespaceRegistry
         array $namespaceNames,
         array $namespaceRegexes
     ) {
-        $this->namespaceNames = $namespaceNames;
-        $this->namespaceRegexes = $namespaceRegexes;
+        $this->names = $namespaceNames;
+        $this->regexes = $namespaceRegexes;
     }
 
     public function belongsToRegisteredNamespace(string $symbolName): bool
@@ -74,7 +74,7 @@ final class NamespaceRegistry
         $originalNamespaceName = ltrim($namespaceName, '\\');
         $normalizedNamespaceName = strtolower($originalNamespaceName);
 
-        foreach ($this->namespaceNames as $excludedNamespaceName) {
+        foreach ($this->names as $excludedNamespaceName) {
             if ('' === $excludedNamespaceName) {
                 return true;
             }
@@ -94,13 +94,33 @@ final class NamespaceRegistry
             return true;
         }
 
-        foreach ($this->namespaceRegexes as $excludedNamespace) {
+        foreach ($this->regexes as $excludedNamespace) {
             if (preg_match($excludedNamespace, $originalNamespaceName)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @internal
+     *
+     * @return list<string>
+     */
+    public function getNames(): array
+    {
+        return $this->names;
+    }
+
+    /**
+     * @internal
+     *
+     * @return list<string>
+     */
+    public function getRegexes(): array
+    {
+        return $this->regexes;
     }
 
     private static function extractNameNamespace(string $name): string

@@ -79,7 +79,7 @@ PHP
     ],
 
     'Function declaration in a namespace' => [
-        'expose-functions' => ['X\Y'],
+        'expose-classes' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -166,7 +166,7 @@ PHP
     ],
 
     'Function declaration in a namespace with whitelisted classes' => [
-        'expose-functions' => ['X\Y'],
+        'expose-classes' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -253,7 +253,7 @@ PHP
     ],
 
     'Function declaration in a namespace with use statements' => [
-        'expose-functions' => ['X\Y'],
+        'expose-classes' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
@@ -332,7 +332,7 @@ PHP
     ],
 
     'Function declaration in a whitelisted namespace' => [
-        'whitelist' => ['Pi\*'],
+        'exclude-namespaces' => ['/^Pi.*$/'],
         'payload' => <<<'PHP'
 <?php
 
@@ -415,7 +415,7 @@ PHP
     ],
 
     'Function declarations with return types in a namespace with use statements' => [
-        'expose-functions' => ['X\Y'],
+        'expose-classes' => ['X\Y'],
         'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],

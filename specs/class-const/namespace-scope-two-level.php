@@ -119,7 +119,7 @@ PHP
     ],
 
     'Constant call on a namespaced class belonging to a whitelisted namespace' => [
-        'whitelist' => ['X\PHPUnit\*'],
+        'exclude-namespaces' => ['X\PHPUnit'],
         'payload' => <<<'PHP'
 <?php
 

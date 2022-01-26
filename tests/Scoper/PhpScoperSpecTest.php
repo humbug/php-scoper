@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -193,7 +194,7 @@ class PhpScoperSpecTest extends TestCase
                 sprintf(
                     'Could not parse the spec %s: %s',
                     $spec,
-                    $throwable->getMessage()
+                    $throwable->getMessage().$throwable->getTraceAsString()
                 ),
                 0,
                 $throwable
@@ -435,6 +436,9 @@ class PhpScoperSpecTest extends TestCase
         $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
         $formattedExposeGlobalFunctions = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalFunctions());
 
+        $formattedNamespacesToExclude = self::formatNamespaceRegistry($symbolsConfiguration->getExcludedNamespaces());
+        $formattedNamespacesToExpose = self::formatNamespaceRegistry($symbolsConfiguration->getExposedNamespaces());
+
         $formattedClassesToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedClasses());
         $formattedFunctionsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedFunctions());
         $formattedConstantsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedConstants());
@@ -469,6 +473,9 @@ class PhpScoperSpecTest extends TestCase
         expose global classes: $formattedExposeGlobalClasses
         expose global functions: $formattedExposeGlobalFunctions
         expose global constants: $formattedExposeGlobalConstants
+        
+        exclude namespaces: $formattedNamespacesToExclude
+        expose namespaces: $formattedNamespacesToExpose
         
         expose classes: $formattedClassesToExpose
         expose functions: $formattedFunctionsToExpose
@@ -560,6 +567,14 @@ class PhpScoperSpecTest extends TestCase
     private static function convertBoolToString(bool $bool): string
     {
         return true === $bool ? 'true' : 'false';
+    }
+
+    private static function formatNamespaceRegistry(NamespaceRegistry $namespaceRegistry): string
+    {
+        return self::formatSimpleList([
+            ...$namespaceRegistry->getNames(),
+            ...$namespaceRegistry->getRegexes(),
+        ]);
     }
 
     private static function formatSymbolRegistry(SymbolRegistry $symbolRegistry): string
