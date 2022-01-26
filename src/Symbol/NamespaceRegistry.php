@@ -14,6 +14,7 @@ use function Safe\preg_match;
 use function Safe\substr;
 use function strpos;
 use function strtolower;
+use const SORT_STRING;
 
 final class NamespaceRegistry
 {
@@ -38,8 +39,9 @@ final class NamespaceRegistry
         return new self(
             array_unique(
                 array_map('strtolower', $namespaceNames),
+                SORT_STRING,
             ),
-            array_unique($namespaceRegexes),
+            array_unique($namespaceRegexes, SORT_STRING),
         );
     }
 

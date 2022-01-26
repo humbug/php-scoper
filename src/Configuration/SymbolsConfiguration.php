@@ -30,6 +30,26 @@ final class SymbolsConfiguration
     private SymbolRegistry $exposedFunctions;
     private SymbolRegistry $exposedConstants;
 
+    /**
+     * @var string[]
+     */
+    private array $excludedClassNames;
+
+    /**
+     * @var string[]
+     */
+    private array $excludedFunctionNames;
+
+    /**
+     * @var string[]
+     */
+    private array $excludedConstantNames;
+
+    /**
+     * @param string[] $excludedClassNames
+     * @param string[] $excludedFunctionNames
+     * @param string[] $excludedConstantNames
+     */
     public static function create(
         bool $exposeGlobalConstants = false,
         bool $exposeGlobalClasses = false,
@@ -40,7 +60,10 @@ final class SymbolsConfiguration
         ?NamespaceRegistry $exposedNamespaces = null,
         SymbolRegistry $exposedClasses = null,
         SymbolRegistry $exposedFunctions = null,
-        SymbolRegistry $exposedConstants = null
+        SymbolRegistry $exposedConstants = null,
+        array $excludedClassNames = [],
+        array $excludedFunctionNames = [],
+        array $excludedConstantNames = []
     ): self {
         return new self(
             $exposeGlobalConstants,
@@ -51,9 +74,17 @@ final class SymbolsConfiguration
             $exposedClasses ?? SymbolRegistry::create(),
             $exposedFunctions ?? SymbolRegistry::create(),
             $exposedConstants ?? SymbolRegistry::createForConstants(),
+            $excludedClassNames,
+            $excludedFunctionNames,
+            $excludedConstantNames,
         );
     }
 
+    /**
+     * @param string[] $excludedClassNames
+     * @param string[] $excludedFunctionNames
+     * @param string[] $excludedConstantNames
+     */
     private function __construct(
         bool $exposeGlobalConstants,
         bool $exposeGlobalClasses,
@@ -62,7 +93,10 @@ final class SymbolsConfiguration
         NamespaceRegistry $exposedNamespaces,
         SymbolRegistry $exposedClasses,
         SymbolRegistry $exposedFunctions,
-        SymbolRegistry $exposedConstants
+        SymbolRegistry $exposedConstants,
+        array $excludedClassNames,
+        array $excludedFunctionNames,
+        array $excludedConstantNames
     ) {
         $this->exposeGlobalConstants = $exposeGlobalConstants;
         $this->exposeGlobalClasses = $exposeGlobalClasses;
@@ -72,6 +106,9 @@ final class SymbolsConfiguration
         $this->exposedClasses = $exposedClasses;
         $this->exposedFunctions = $exposedFunctions;
         $this->exposedConstants = $exposedConstants;
+        $this->excludedClassNames = $excludedClassNames;
+        $this->excludedFunctionNames = $excludedFunctionNames;
+        $this->excludedConstantNames = $excludedConstantNames;
     }
 
     public function shouldExposeGlobalConstants(): bool
@@ -112,5 +149,29 @@ final class SymbolsConfiguration
     public function getExposedConstants(): SymbolRegistry
     {
         return $this->exposedConstants;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getExcludedClassNames(): array
+    {
+        return $this->excludedClassNames;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getExcludedFunctionNames(): array
+    {
+        return $this->excludedFunctionNames;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getExcludedConstantNames(): array
+    {
+        return $this->excludedConstantNames;
     }
 }

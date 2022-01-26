@@ -125,6 +125,7 @@ final class SymbolsConfigurationFactory
                     $legacyExposedSymbolsPatterns,
                 ),
             ),
+            ...self::retrieveAllExcludedSymbols($config),
         );
     }
 
@@ -239,6 +240,18 @@ final class SymbolsConfigurationFactory
         return [
             array_keys($names),
             array_keys($regexes),
+        ];
+    }
+
+    /**
+     * @return array{string[], string[], string[]}
+     */
+    private static function retrieveAllExcludedSymbols(array $config): array
+    {
+        return [
+            self::retrieveExcludedSymbols($config, ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD),
+            self::retrieveExcludedSymbols($config, ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD),
+            self::retrieveExcludedSymbols($config, ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD),
         ];
     }
 
@@ -397,5 +410,21 @@ final class SymbolsConfigurationFactory
         $parts[] = $lastPart;
 
         return implode('\\', $parts);
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function retrieveExcludedSymbols(array $config, string $key): array
+    {
+        if (!array_key_exists($key, $config)) {
+            return [];
+        }
+
+        $symbols = $config[$key];
+
+        self::assertIsArrayOfStrings($symbols, $key);
+
+        return $symbols;
     }
 }
