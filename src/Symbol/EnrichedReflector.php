@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
-use Humbug\PhpScoper\Reflector;
 use function strpos;
 
 /**

@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
 
-use Humbug\PhpScoper\RegexChecker;
+use Humbug\PhpScoper\Configuration\RegexChecker;
 use PHPUnit\Framework\TestCase;
 
 /**

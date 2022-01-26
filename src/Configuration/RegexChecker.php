@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
 use function array_pop;
 use function count;
@@ -15,7 +15,6 @@ use function Safe\sprintf;
 use function str_split;
 use function strlen;
 
-// TODO: move this under a Configuration namespace
 final class RegexChecker
 {
     // https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php

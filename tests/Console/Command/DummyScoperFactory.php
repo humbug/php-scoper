@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Humbug\PhpScoper\Configuration\Configuration;
-use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Parser;
 

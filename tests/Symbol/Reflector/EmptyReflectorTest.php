@@ -12,12 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Symbol\Reflector;
 
+use Humbug\PhpScoper\Symbol\Reflector;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Reflector
+ * @covers \Humbug\PhpScoper\Symbol\Reflector
  */
 class EmptyReflectorTest extends TestCase
 {
@@ -29,7 +30,7 @@ class EmptyReflectorTest extends TestCase
     }
 
     /**
-     * @dataProvider \Humbug\PhpScoper\PhpStormStubsReflectorTest::provideClasses
+     * @dataProvider \Humbug\PhpScoper\Symbol\Reflector\PhpStormStubsReflectorTest::provideClasses
      */
     public function test_it_can_identify_internal_classes(string $class): void
     {
@@ -39,7 +40,7 @@ class EmptyReflectorTest extends TestCase
     }
 
     /**
-     * @dataProvider \Humbug\PhpScoper\PhpStormStubsReflectorTest::provideFunctions
+     * @dataProvider \Humbug\PhpScoper\Symbol\Reflector\PhpStormStubsReflectorTest::provideFunctions
      */
     public function test_it_can_identify_internal_functions(string $class, bool $expected): void
     {
@@ -49,7 +50,7 @@ class EmptyReflectorTest extends TestCase
     }
 
     /**
-     * @dataProvider \Humbug\PhpScoper\PhpStormStubsReflectorTest::provideConstants
+     * @dataProvider \Humbug\PhpScoper\Symbol\Reflector\PhpStormStubsReflectorTest::provideConstants
      */
     public function test_it_can_identify_internal_constants(string $class, bool $expected): void
     {

@@ -12,12 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Symbol\Reflector;
 
+use Humbug\PhpScoper\Symbol\Reflector;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Reflector
+ * @covers \Humbug\PhpScoper\Symbol\Reflector
  */
 class UserSymbolsReflectorTest extends TestCase
 {
