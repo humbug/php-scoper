@@ -110,6 +110,28 @@ final class SymbolRegistry
     }
 
     /**
+     * @param string[] $names
+     * @param string[] $regexes
+     */
+    public function withAdditionalSymbols(array $names = [], array $regexes = []): self
+    {
+        $args = [
+            [
+                ...$this->getNames(),
+                ...$names,
+            ],
+            [
+                ...$this->getRegexes(),
+                ...$regexes,
+            ],
+        ];
+
+        return $this->constants
+            ? self::createForConstants(...$args)
+            : self::create(...$args);
+    }
+
+    /**
      * @internal
      *
      * @return list<string>
