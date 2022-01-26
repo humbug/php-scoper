@@ -75,6 +75,10 @@ return [
 
     'FQFN string argument on exposed function' => [
         'expose-functions' => ['Acme\foo', 'dump'],
+        'expected-recorded-functions' => [
+            ['Acme\foo', 'Humbug\Acme\foo'],
+            ['dump', 'Humbug\dump'],
+        ],
         'payload' => <<<'PHP'
         <?php
         
