@@ -40,7 +40,10 @@ final class SymbolRegistry
     ): self {
         return new self(
             array_unique(
-                array_map('strtolower', $names),
+                array_map(
+                    static fn (string $name) => strtolower(ltrim($name, '\\')),
+                    $names,
+                ),
             ),
             array_unique($regexes),
             false,
@@ -61,7 +64,9 @@ final class SymbolRegistry
         return new self(
             array_unique(
                 array_map(
-                    static fn (string $name) => self::lowerCaseConstantName($name),
+                    static fn (string $name) => self::lowerCaseConstantName(
+                        ltrim($name, '\\'),
+                    ),
                     $names,
                 ),
             ),

@@ -118,6 +118,18 @@ class SymbolRegistryTest extends TestCase
             true,
         ];
 
+        yield 'FQ namespaced name registered; match' => [
+            ['\PHPUnit\TestCase'],
+            'PHPUnit\TestCase',
+            true,
+        ];
+
+        yield 'namespaced name registered; (FQ) match' => [
+            ['PHPUnit\TestCase'],
+            '\PHPUnit\TestCase',
+            true,
+        ];
+
         yield 'namespaced name registered; different case' => [
             ['PHPUnit\TestCase'],
             'PHPUNIT\TESTCASE',
