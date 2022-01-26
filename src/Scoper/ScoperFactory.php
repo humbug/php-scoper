@@ -45,16 +45,17 @@ class ScoperFactory
     ): Scoper
     {
         $prefix = $configuration->getPrefix();
+        $symbolsConfiguration = $configuration->getSymbolsConfiguration();
 
         $configuredReflector = $this->reflector->withSymbols(
-            $configuration->getInternalClasses(),
-            $configuration->getInternalFunctions(),
-            $configuration->getInternalConstants(),
+            $symbolsConfiguration->getExcludedClassNames(),
+            $symbolsConfiguration->getExcludedFunctionNames(),
+            $symbolsConfiguration->getExcludedConstantNames(),
         );
 
         $enrichedReflector = new EnrichedReflector(
             $configuredReflector,
-            $configuration->getSymbolsConfiguration(),
+            $symbolsConfiguration,
         );
 
         $autoloadPrefixer = new AutoloadPrefixer(

@@ -107,7 +107,6 @@ final class ConfigurationFactory
             self::retrieveFilesWithContents($whitelistedFiles),
             new PatcherChain($patchers),
             $symbolsConfiguration,
-            ...self::retrieveAllInternalSymbols($config),
         );
     }
 
@@ -119,7 +118,7 @@ final class ConfigurationFactory
         $filesWithContents = self::retrieveFilesWithContents(
             chain(
                 self::retrieveFilesFromPaths(
-                    array_unique($paths),
+                    array_unique($paths, SORT_STRING),
                 ),
             ),
         );
@@ -134,9 +133,6 @@ final class ConfigurationFactory
             $config->getWhitelistedFilesWithContents(),
             $config->getPatcher(),
             $config->getSymbolsConfiguration(),
-            $config->getInternalClasses(),
-            $config->getInternalFunctions(),
-            $config->getInternalConstants(),
         );
     }
 
@@ -151,9 +147,6 @@ final class ConfigurationFactory
             $config->getWhitelistedFilesWithContents(),
             $config->getPatcher(),
             $config->getSymbolsConfiguration(),
-            $config->getInternalClasses(),
-            $config->getInternalFunctions(),
-            $config->getInternalConstants(),
         );
     }
 
@@ -431,55 +424,6 @@ final class ConfigurationFactory
         }
 
         return $filesWithContents;
-    }
-
-    /**
-     * @return array{string[], string[], string[]}
-     */
-    private static function retrieveAllInternalSymbols(array $config): array
-    {
-        return [
-            self::retrieveInternalSymbols($config, ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD),
-            self::retrieveInternalSymbols($config, ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD),
-            self::retrieveInternalSymbols($config, ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD),
-        ];
-    }
-
-    /**
-     * @return string[]
-     */
-    private static function retrieveInternalSymbols(array $config, string $key): array
-    {
-        if (!array_key_exists($key, $config)) {
-            return [];
-        }
-
-        $symbols = $config[$key];
-
-        if (!is_array($symbols)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected "%s" to be an array of strings, got "%s" instead.',
-                    $key,
-                    gettype($symbols),
-                ),
-            );
-        }
-
-        foreach ($symbols as $index => $symbol) {
-            if (!is_string($symbol)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected "%s" to be an array of strings, got "%s" for the element with the index "%s".',
-                        $key,
-                        gettype($symbol),
-                        $index,
-                    ),
-                );
-            }
-        }
-
-        return array_values(array_unique($symbols, SORT_STRING));
     }
 
     private static function generateRandomPrefix(): string

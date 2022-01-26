@@ -31,21 +31,6 @@ final class Configuration
     private SymbolsConfiguration $symbolsConfiguration;
 
     /**
-     * @var string[]
-     */
-    private array $internalClasses;
-
-    /**
-     * @var string[]
-     */
-    private array $internalFunctions;
-
-    /**
-     * @var string[]
-     */
-    private array $internalConstants;
-
-    /**
      * @param string|null                          $path                         Absolute path to the configuration file loaded.
      * @param string                               $prefix                       The prefix applied.
      * @param array<string, array{string, string}> $filesWithContents            Array of tuple with the
@@ -55,9 +40,6 @@ final class Configuration
      *                                            with the first argument being the file path and
      *                                            the second its contents
      * @param SymbolsConfiguration                 $symbolsConfiguration
-     * @param string[]                             $internalClasses
-     * @param string[]                             $internalFunctions
-     * @param string[]                             $internalConstants
      */
     public function __construct(
         ?string $path,
@@ -65,10 +47,7 @@ final class Configuration
         array $filesWithContents,
         array $whitelistedFilesWithContents,
         Patcher $patcher,
-        SymbolsConfiguration $symbolsConfiguration,
-        array $internalClasses,
-        array $internalFunctions,
-        array $internalConstants
+        SymbolsConfiguration $symbolsConfiguration
     ) {
         self::validatePrefix($prefix);
 
@@ -78,9 +57,6 @@ final class Configuration
         $this->patcher = $patcher;
         $this->symbolsConfiguration = $symbolsConfiguration;
         $this->whitelistedFilesWithContents = $whitelistedFilesWithContents;
-        $this->internalClasses = $internalClasses;
-        $this->internalFunctions = $internalFunctions;
-        $this->internalConstants = $internalConstants;
     }
 
     public function getPath(): ?string
@@ -117,30 +93,6 @@ final class Configuration
     public function getWhitelistedFilesWithContents(): array
     {
         return $this->whitelistedFilesWithContents;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getInternalClasses(): array
-    {
-        return $this->internalClasses;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getInternalFunctions(): array
-    {
-        return $this->internalFunctions;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getInternalConstants(): array
-    {
-        return $this->internalConstants;
     }
 
     private static function validatePrefix(string $prefix): void

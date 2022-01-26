@@ -15,6 +15,7 @@ use function ltrim;
 use function Safe\array_flip;
 use function Safe\preg_match;
 use function strtolower;
+use const SORT_STRING;
 
 final class SymbolRegistry
 {
@@ -44,8 +45,9 @@ final class SymbolRegistry
                     static fn (string $name) => strtolower(ltrim($name, '\\')),
                     $names,
                 ),
+                SORT_STRING,
             ),
-            array_unique($regexes),
+            array_unique($regexes, SORT_STRING),
             false,
         );
     }
@@ -69,8 +71,9 @@ final class SymbolRegistry
                     ),
                     $names,
                 ),
+                SORT_STRING,
             ),
-            array_unique($regexes),
+            array_unique($regexes, SORT_STRING),
             true,
         );
     }

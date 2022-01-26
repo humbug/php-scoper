@@ -121,9 +121,6 @@ class PhpScoperSpecTest extends TestCase
         string $contents,
         string $prefix,
         SymbolsConfiguration $symbolsConfiguration,
-        array $internalClasses,
-        array $internalFunctions,
-        array $internalConstants,
         ?string $expected,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions,
@@ -143,9 +140,6 @@ class PhpScoperSpecTest extends TestCase
         $symbolsRegistry = new SymbolsRegistry();
 
         $scoper = self::createScoper(
-            $internalClasses,
-            $internalFunctions,
-            $internalConstants,
             $prefix,
             $symbolsConfiguration,
             $symbolsRegistry,
@@ -211,9 +205,6 @@ class PhpScoperSpecTest extends TestCase
             $spec,
             $contents,
             $symbolsConfiguration,
-            $internalClasses,
-            $internalFunctions,
-            $internalConstants,
             $symbolsRegistry,
             $expected,
             $actual,
@@ -275,9 +266,6 @@ class PhpScoperSpecTest extends TestCase
     }
 
     private static function createScoper(
-        array $internalClasses,
-        array $internalFunctions,
-        array $internalConstants,
         string $prefix,
         SymbolsConfiguration $symbolsConfiguration,
         SymbolsRegistry $symbolsRegistry
@@ -285,11 +273,12 @@ class PhpScoperSpecTest extends TestCase
     {
         $phpParser = create_parser();
 
-        $reflector = Reflector::createWithPhpStormStubs()
+        $reflector = Reflector
+            ::createWithPhpStormStubs()
             ->withSymbols(
-                $internalClasses,
-                $internalFunctions,
-                $internalConstants,
+                $symbolsConfiguration->getExcludedClassNames(),
+                $symbolsConfiguration->getExcludedFunctionNames(),
+                $symbolsConfiguration->getExcludedConstantNames(),
             );
 
         $enrichedReflector = new EnrichedReflector(
@@ -375,9 +364,6 @@ class PhpScoperSpecTest extends TestCase
                 is_string($fixtureSet) ? [] : $fixtureSet,
                 $meta,
             ),
-            $fixtureSet[ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD],
-            $fixtureSet[ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD],
-            $fixtureSet[ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD] ?? $meta[ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD],
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
             $fixtureSet['expected-recorded-classes'] ?? $meta['expected-recorded-classes'],
             $fixtureSet['expected-recorded-functions'] ?? $meta['expected-recorded-functions'],
@@ -421,9 +407,6 @@ class PhpScoperSpecTest extends TestCase
     }
 
     /**
-     * @param string[] $internalClasses
-     * @param string[] $internalFunctions
-     * @param string[] $internalConstants
      * @param string[][] $expectedRegisteredClasses
      * @param string[][] $expectedRegisteredFunctions
      */
@@ -432,9 +415,6 @@ class PhpScoperSpecTest extends TestCase
         string $spec,
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,
-        array $internalClasses,
-        array $internalFunctions,
-        array $internalConstants,
         SymbolsRegistry $symbolsRegistry,
         ?string $expected,
         ?string $actual,
@@ -449,9 +429,9 @@ class PhpScoperSpecTest extends TestCase
         $formattedFunctionsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedFunctions());
         $formattedConstantsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedConstants());
 
-        $formattedInternalClasses = self::formatSimpleList($internalClasses);
-        $formattedInternalFunctions = self::formatSimpleList($internalFunctions);
-        $formattedInternalConstants = self::formatSimpleList($internalConstants);
+        $formattedInternalClasses = self::formatSimpleList($symbolsConfiguration->getExcludedClassNames());
+        $formattedInternalFunctions = self::formatSimpleList($symbolsConfiguration->getExcludedFunctionNames());
+        $formattedInternalConstants = self::formatSimpleList($symbolsConfiguration->getExcludedConstantNames());
 
         $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
         $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
@@ -484,9 +464,9 @@ class PhpScoperSpecTest extends TestCase
         expose functions: $formattedFunctionsToExpose
         expose constants: $formattedConstantsToExpose
         
-        internal constants: $formattedInternalClasses
-        internal functions: $formattedInternalFunctions
-        internal constants: $formattedInternalConstants
+        (raw) internal classes: $formattedInternalClasses
+        (raw) internal functions: $formattedInternalFunctions
+        (raw) internal constants: $formattedInternalConstants
         $titleSeparator
         $contents
         
