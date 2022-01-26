@@ -16,12 +16,12 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Error;
 use Humbug\PhpScoper\Configuration\ConfigurationKeys;
+use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\RegexChecker;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;

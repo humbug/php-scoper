@@ -15,8 +15,10 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Symbol\Reflector;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;

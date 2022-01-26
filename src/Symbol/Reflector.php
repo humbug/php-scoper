@@ -14,9 +14,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Symbol;
 
-use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use JetBrains\PHPStormStub\PhpStormStubsMap;
 use function array_keys;
 use function array_merge;

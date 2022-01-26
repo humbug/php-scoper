@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration;
 
-use Humbug\PhpScoper\RegexChecker;
+use Humbug\PhpScoper\Configuration;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\RegexChecker
+ * @covers \Humbug\PhpScoper\Configuration\RegexChecker
  */
 final class RegexCheckerTest extends TestCase
 {
@@ -16,7 +16,7 @@ final class RegexCheckerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->regexChecker = new RegexChecker();
+        $this->regexChecker = new Configuration\RegexChecker();
     }
 
     /**

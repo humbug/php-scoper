@@ -15,13 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Configuration\Configuration;
-use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Parser;
 

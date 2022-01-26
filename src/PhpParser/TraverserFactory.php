@@ -14,11 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
-use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
