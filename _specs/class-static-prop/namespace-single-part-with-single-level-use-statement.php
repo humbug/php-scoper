@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Class constant call of a class imported with a use statement in a namespace',
+        'title' => 'Class static property call of a class imported with a use statement in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => false,
+        'expose-global-constants' => true,
         'expose-global-classes' => false,
-        'expose-global-functions' => false,
+        'expose-global-functions' => true,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -45,7 +45,7 @@ return [
     namespace X {
         use Foo;
         
-        Foo::MAIN_CONST;
+        Foo::$mainStaticProp;
     }
     ----
     <?php
@@ -58,7 +58,7 @@ return [
     namespace Humbug\X;
     
     use Humbug\Foo;
-    Foo::MAIN_CONST;
+    Foo::$mainStaticProp;
     
     PHP,
 
@@ -72,7 +72,7 @@ return [
     namespace X {
         use Command;
         
-        \Command::MAIN_CONST;
+        \Command::$mainStaticProp;
     }
     ----
     <?php
@@ -85,7 +85,7 @@ return [
     namespace Humbug\X;
     
     use Humbug\Command;
-    \Humbug\Command::MAIN_CONST;
+    \Humbug\Command::$mainStaticProp;
     
     PHP,
 
@@ -96,14 +96,14 @@ return [
     
     use Reflector;
     
-    Reflector::MAIN_CONST;
+    Reflector::$mainStaticProp;
     ----
     <?php
     
     namespace Humbug\X;
     
     use Reflector;
-    Reflector::MAIN_CONST;
+    Reflector::$mainStaticProp;
     
     PHP,
 
@@ -114,14 +114,14 @@ return [
     
     use Reflector;
     
-    \Reflector::MAIN_CONST;
+    \Reflector::$mainStaticProp;
     ----
     <?php
     
     namespace Humbug\X;
     
     use Reflector;
-    \Reflector::MAIN_CONST;
+    \Reflector::$mainStaticProp;
     
     PHP,
 
@@ -134,16 +134,16 @@ return [
         
         use Foo;
         
-        Foo::MAIN_CONST;
+        Foo::$mainStaticProp;
         ----
         <?php
         
         namespace Humbug\X;
         
         use Humbug\Foo;
-        Foo::MAIN_CONST;
+        Foo::$mainStaticProp;
         
-        PHP
+        PHP,
     ],
 
     'FQ constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => [
@@ -155,14 +155,14 @@ return [
         
         use Foo;
         
-        \Foo::MAIN_CONST;
+        \Foo::$mainStaticProp;
         ----
         <?php
         
         namespace Humbug\X;
         
         use Humbug\Foo;
-        \Humbug\Foo::MAIN_CONST;
+        \Humbug\Foo::$mainStaticProp;
         
         PHP,
     ],

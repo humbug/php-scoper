@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Class constant call of a class imported with an aliased use statement in a namespace',
+        'title' => 'Class static property call of a class imported with an aliased use statement in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => false,
+        'expose-global-constants' => true,
         'expose-global-classes' => false,
-        'expose-global-functions' => false,
+        'expose-global-functions' => true,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -45,7 +45,7 @@ return [
     namespace A {
         use Foo as X;
         
-        X::MAIN_CONST;
+        X::$mainStaticProp;
     }
     ----
     <?php
@@ -58,7 +58,7 @@ return [
     namespace Humbug\A;
     
     use Humbug\Foo as X;
-    X::MAIN_CONST;
+    X::$mainStaticProp;
     
     PHP,
 
@@ -73,7 +73,7 @@ return [
     namespace A {
         use Foo as X;
         
-        \X::MAIN_CONST;
+        \X::$mainStaticProp;
     }
     ----
     <?php
@@ -89,7 +89,25 @@ return [
     namespace Humbug\A;
     
     use Humbug\Foo as X;
-    \Humbug\X::MAIN_CONST;
+    \Humbug\X::$mainStaticProp;
+    
+    PHP,
+
+    'Constant call on an exposed class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
+    <?php
+    
+    namespace A;
+    
+    use Reflector as X;
+    
+    X::$mainStaticProp;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    use Reflector as X;
+    X::$mainStaticProp;
     
     PHP,
 
@@ -103,7 +121,7 @@ return [
     namespace A {
         use Reflector as X;
         
-        \X::MAIN_CONST;
+        \X::$mainStaticProp;
     }
     ----
     <?php
@@ -116,25 +134,7 @@ return [
     namespace Humbug\A;
     
     use Reflector as X;
-    \Humbug\X::MAIN_CONST;
-    
-    PHP,
-
-    'Constant call on an internal class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    use Reflector as X;
-    
-    X::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    use Reflector as X;
-    X::MAIN_CONST;
+    \Humbug\X::$mainStaticProp;
     
     PHP,
 
@@ -150,7 +150,7 @@ return [
         namespace A {
             use Foo as X;
             
-            \X::MAIN_CONST;
+            \Foo::$mainStaticProp;
         }
         ----
         <?php
@@ -163,7 +163,7 @@ return [
         namespace Humbug\A;
         
         use Humbug\Foo as X;
-        \Humbug\X::MAIN_CONST;
+        \Humbug\Foo::$mainStaticProp;
         
         PHP,
     ],

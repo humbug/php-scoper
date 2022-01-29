@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Class constant call of a class imported with a use statement in a namespace',
+        'title' => 'Class static property call of a class imported with a use statement in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => false,
+        'expose-global-constants' => true,
         'expose-global-classes' => false,
-        'expose-global-functions' => false,
+        'expose-global-functions' => true,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -38,42 +38,11 @@ return [
     'Constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
     <?php
     
-    namespace {
-        class Foo {}
-    }
+    class Command {}
     
-    namespace X {
-        use Foo;
-        
-        Foo::MAIN_CONST;
-    }
-    ----
-    <?php
+    use Command;
     
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\X;
-    
-    use Humbug\Foo;
-    Foo::MAIN_CONST;
-    
-    PHP,
-
-    'FQ constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Command {}
-    }
-    
-    namespace X {
-        use Command;
-        
-        \Command::MAIN_CONST;
-    }
+    Command::$mainStaticProp;
     ----
     <?php
     
@@ -82,46 +51,61 @@ return [
     class Command
     {
     }
-    namespace Humbug\X;
-    
     use Humbug\Command;
-    \Humbug\Command::MAIN_CONST;
+    Command::$mainStaticProp;
+    
+    PHP,
+
+    'FQ constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
+    <?php
+    
+    class Command {}
+    
+    use Command;
+    
+    \Command::$mainStaticProp;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Command
+    {
+    }
+    use Humbug\Command;
+    \Humbug\Command::$mainStaticProp;
     
     PHP,
 
     'Constant call on an internal class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
     <?php
     
-    namespace X;
-    
     use Reflector;
     
-    Reflector::MAIN_CONST;
+    Reflector::$mainStaticProp;
     ----
     <?php
     
-    namespace Humbug\X;
+    namespace Humbug;
     
     use Reflector;
-    Reflector::MAIN_CONST;
+    Reflector::$mainStaticProp;
     
     PHP,
 
     'FQ constant call on an internal class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
     <?php
     
-    namespace X;
-    
     use Reflector;
     
-    \Reflector::MAIN_CONST;
+    \Reflector::$mainStaticProp;
     ----
     <?php
     
-    namespace Humbug\X;
+    namespace Humbug;
     
     use Reflector;
-    \Reflector::MAIN_CONST;
+    \Reflector::$mainStaticProp;
     
     PHP,
 
@@ -130,20 +114,18 @@ return [
         'payload' => <<<'PHP'
         <?php
         
-        namespace X;
-        
         use Foo;
         
-        Foo::MAIN_CONST;
+        Foo::$mainStaticProp;
         ----
         <?php
         
-        namespace Humbug\X;
+        namespace Humbug;
         
         use Humbug\Foo;
-        Foo::MAIN_CONST;
+        Foo::$mainStaticProp;
         
-        PHP
+        PHP,
     ],
 
     'FQ constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => [
@@ -151,18 +133,16 @@ return [
         'payload' => <<<'PHP'
         <?php
         
-        namespace X;
-        
         use Foo;
         
-        \Foo::MAIN_CONST;
+        \Foo::$mainStaticProp;
         ----
         <?php
         
-        namespace Humbug\X;
+        namespace Humbug;
         
         use Humbug\Foo;
-        \Humbug\Foo::MAIN_CONST;
+        \Humbug\Foo::$mainStaticProp;
         
         PHP,
     ],

@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Namespace declarations with braces',
+        'title' => 'Namespace declarations after a hashbang',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
@@ -35,31 +35,17 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'One level namespace' => <<<'PHP'
-<?php
-
-namespace Foo;
-
-----
-<?php
-
-namespace Humbug\Foo;
-
-
-PHP
-    ,
-
-    'Two levels namespace' => <<<'PHP'
-<?php
-
-namespace Foo\Bar;
-
-----
-<?php
-
-namespace Humbug\Foo\Bar;
-
-
-PHP
-    ,
+    <<<'PHP'
+    #!/usr/bin/env php
+    <?php
+    
+    namespace Foo;
+    
+    ----
+    #!/usr/bin/env php
+    <?php 
+    namespace Humbug\Foo;
+    
+    
+    PHP,
 ];
