@@ -113,7 +113,7 @@ commands in the `Makefile` for more information.
 <br />
 <hr />
 
-« [Back to Table of Contents](../README.md#table-of-contents) »
+« [Back to Table of Contents](README.md#table-of-contents) »
 
 
 [node-visitors]: https://github.com/humbug/php-scoper/tree/master/src/PhpParser/NodeVisitor

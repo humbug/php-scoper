@@ -4,15 +4,27 @@ declare(strict_types=1);
 
 use Isolated\Symfony\Component\Finder\Finder;
 
+// You can do your own things here, e.g. collecting symbols to expose dynamically
+// or files to exclude.
+// However beware that this file is executed by PHP-Scoper, hence if you are using
+// the PHAR it will be loaded by the PHAR. So it is highly recommended to avoid
+// to auto-load any code here: it can result in a conflict or even corrupt
+// the PHP-Scoper analysis.
+
 return [
-    // The prefix configuration. If a non null value will be used, a random prefix will be generated.
+    // The prefix configuration. If a non null value is be used, a random prefix
+    // will be generated instead.
+    //
+    // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#prefix
     'prefix' => null,
 
     // By default when running php-scoper add-prefix, it will prefix all relevant code found in the current working
     // directory. You can however define which files should be scoped by defining a collection of Finders in the
     // following configuration key.
     //
-    // For more see: https://github.com/humbug/php-scoper#finders-and-paths
+    // This configuration entry is completely ignored when using Box.
+    //
+    // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#finders-and-paths
     'finders' => [
         Finder::create()->files()->in('src'),
         Finder::create()
@@ -45,7 +57,7 @@ return [
     // support for prefixing such strings. To circumvent that, you can define patchers to manipulate the file to your
     // heart contents.
     //
-    // For more see: https://github.com/humbug/php-scoper#patchers
+    // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers
     'patchers' => [
         static function (string $filePath, string $prefix, string $contents): string {
             // Change the contents here.
@@ -54,73 +66,32 @@ return [
         },
     ],
 
-    // PHP-Scoper's goal is to make sure that all code for a project lies in a distinct PHP namespace. However, you
-    // may want to share a common API between the bundled code of your PHAR and the consumer code. For example if
-    // you have a PHPUnit PHAR with isolated code, you still want the PHAR to be able to understand the
-    // PHPUnit\Framework\TestCase class.
-    //
-    // A way to achieve this is by specifying a list of classes to not prefix with the following configuration key. Note
-    // that this does not work with functions or constants neither with classes belonging to the global namespace.
-    //
-    // Fore more see https://github.com/humbug/php-scoper#whitelist
-    'whitelist' => [
-        // 'PHPUnit\Framework\TestCase',   // A specific class
-        // 'PHPUnit\Framework\*',          // The whole namespace
-        // '*',                            // Everything
-    ],
-
-    // If `true` then the user defined constants belonging to the global namespace will not be prefixed.
-    //
-    // For more see https://github.com/humbug/php-scoper#constants--classes--functions-from-the-global-namespace
-    'expose-global-constants' => true,
-
-    // If `true` then the user defined classes belonging to the global namespace will not be prefixed.
-    //
-    // For more see https://github.com/humbug/php-scoper#constants--classes--functions-from-the-global-namespace
-    'expose-global-classes' => true,
-
-    // If `true` then the user defined functions belonging to the global namespace will not be prefixed.
-    //
-    // For more see https://github.com/humbug/php-scoper#constants--classes--functions-from-the-global-namespace
-    'expose-global-functions' => true,
-
-    // TODO
-    'expose-namespaces' => [
-        // 'Acme\Foo'                     // The Acme\Foo namespace (and sub-namespaces)
-        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
-        // '~^$~',                        // The root namespace only
-    ],
-
-    // TODO
-    'expose-classes' => [],
-
-    // TODO
-    'expose-functions' => [],
-
-    // TODO
-    'expose-constants' => [],
-
     // List of symbols to consider internal i.e. to leave untouched.
     //
-    // For more see TODO
+    // For more information see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#excluded-symbols
     'exclude-namespaces' => [
         // 'Acme\Foo'                     // The Acme\Foo namespace (and sub-namespaces)
-        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework
+        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework (but not sub-namespaces)
         // '~^$~',                        // The root namespace only
+        // '',                            // Any namespace
     ],
-
-    // List of classes to consider as internal i.e. to leave untouched.
-    //
-    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'exclude-classes' => [],
-
-    // List of functions to consider as internal i.e. to leave untouched.
-    //
-    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'exclude-functions' => [],
-
-    // List of constants to consider as internal i.e. to leave untouched.
-    //
-    // For more see https://github.com/humbug/php-scoper#excluded-symbols
     'exclude-constants' => [],
+
+    // List of symbols to expose.
+    //
+    // For more information see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposed-symbols
+    'expose-global-constants' => true,
+    'expose-global-classes' => true,
+    'expose-global-functions' => true,
+    'expose-namespaces' => [
+        // 'Acme\Foo'                     // The Acme\Foo namespace (and sub-namespaces)
+        // '~^PHPUnit\\\\Framework$~',    // The whole namespace PHPUnit\Framework (but not sub-namespaces)
+        // '~^$~',                        // The root namespace only
+        // '',                            // Any namespace
+    ],
+    'expose-classes' => [],
+    'expose-functions' => [],
+    'expose-constants' => [],
 ];
