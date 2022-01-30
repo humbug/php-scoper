@@ -325,7 +325,7 @@ a PHPUnit PHAR with isolated code, you still want the PHAR to be able to
 understand the `PHPUnit\Framework\TestCase` class.
 
 Notes for the rework of the docs which are coming as I'm reviewing the tests:
-- excluded namespaces take precedence over exposing a symbol. For example, exposing the class `Acme\Foo` and excluding the namespace `Acme` will result in the class `Acme\Foo` to NOT be exposed, but excluded instead.
+- excluded namespaces take precedence over exposing a symbol/namespace. For example, exposing the class `Acme\Foo` and excluding the namespace `Acme` will result in the class `Acme\Foo` to NOT be exposed, but excluded instead.
 
 
 ### Constants & Classes & functions from the global namespace

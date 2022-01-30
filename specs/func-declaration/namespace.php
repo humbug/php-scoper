@@ -582,4 +582,28 @@ return [
         
         PHP,
     ],
+
+    'Function declaration in an exposed namespace' => [
+        'expose-namespaces' => ['Acme'],
+        'expected-recorded-functions' => [
+            ['Acme\foo', 'Humbug\Acme\foo'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        namespace Acme;
+        
+        function foo() {}
+        
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+        
+        function foo()
+        {
+        }
+
+        PHP,
+    ],
 ];
