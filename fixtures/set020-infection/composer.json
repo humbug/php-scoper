@@ -1,5 +1,11 @@
 {
     "require": {
         "infection/infection": "^0.18"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "infection/extension-installer": true
+        }
     }
 }
