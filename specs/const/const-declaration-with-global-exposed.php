@@ -194,4 +194,32 @@ return [
         
         PHP,
     ],
+
+    'Exposed constants declaration in an exposed namespace' => [
+        'expose-namespaces' => ['Acme'],
+        'payload' => <<<'PHP'
+        <?php
+        
+        namespace Acme;
+        
+        const FOO_CONST = foo();
+        define('BAR_CONST', foo());
+        define('Acme\BAR_CONST', foo());
+        define(FOO_CONST, foo());
+        define(\FOO_CONST, foo());
+        define(\Acme\BAR_CONST, foo());
+        ----
+        <?php
+        
+        namespace Humbug\Acme;
+        
+        \define('Acme\\FOO_CONST', foo());
+        \define('BAR_CONST', foo());
+        \define('Acme\\BAR_CONST', foo());
+        \define(FOO_CONST, foo());
+        \define(\FOO_CONST, foo());
+        \define(\Acme\BAR_CONST, foo());
+        
+        PHP,
+    ],
 ];

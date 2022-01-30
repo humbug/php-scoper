@@ -32,6 +32,13 @@ final class EnrichedReflector
             ->belongsToRegisteredNamespace($name);
     }
 
+    private function belongsToExposedNamespace(string $name): bool
+    {
+        return $this->symbolsConfiguration
+            ->getExposedNamespaces()
+            ->belongsToRegisteredNamespace($name);
+    }
+
     public function isFunctionInternal(string $name): bool
     {
         return $this->reflector->isFunctionInternal($name);
@@ -75,6 +82,7 @@ final class EnrichedReflector
                 || $this->symbolsConfiguration
                         ->getExposedFunctions()
                         ->matches($resolvedName)
+                || $this->belongsToExposedNamespace($resolvedName)
             );
     }
 
@@ -94,6 +102,7 @@ final class EnrichedReflector
                 || $this->symbolsConfiguration
                     ->getExposedClasses()
                     ->matches($resolvedName)
+                || $this->belongsToExposedNamespace($resolvedName)
             );
     }
 
@@ -117,6 +126,7 @@ final class EnrichedReflector
                 || $this->symbolsConfiguration
                     ->getExposedConstants()
                     ->matches($name)
+                || $this->belongsToExposedNamespace($name)
             );
     }
 

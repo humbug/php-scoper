@@ -48,6 +48,14 @@ final class SymbolsConfigurationFactory
             ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
         );
 
+        [
+            $exposedNamespaceNames,
+            $exposedNamespaceRegexes,
+        ] = $this->retrieveElements(
+            $config,
+            ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
+        );
+
         $legacyExposedElements = self::retrieveLegacyExposedElements($config);
 
         [
@@ -93,7 +101,10 @@ final class SymbolsConfigurationFactory
                 $excludedNamespaceNames,
                 $excludedNamespaceRegexes,
             ),
-            null,
+            NamespaceRegistry::create(
+                $exposedNamespaceNames,
+                $exposedNamespaceRegexes,
+            ),
             SymbolRegistry::create(
                 array_merge(
                     $exposedClassNames,

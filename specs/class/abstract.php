@@ -245,6 +245,37 @@ return [
         PHP,
     ],
 
+    'Declaration in an exposed namespace' => [
+        'expose-namespaces' => ['Foo'],
+        'expected-recorded-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        namespace Foo;
+        
+        abstract class A {
+            public function a() {}
+            abstract public function b();
+        }
+        ----
+        <?php
+        
+        namespace Humbug\Foo;
+        
+        abstract class A
+        {
+            public function a()
+            {
+            }
+            public abstract function b();
+        }
+        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+        
+        PHP,
+    ],
+
     'Declaration of an exposed class in a namespace' => [
         'expose-classes' => ['Foo\A'],
         'expected-recorded-classes' => [

@@ -151,7 +151,9 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                         'Bar',
                     ],
                 ),
-                null,
+                NamespaceRegistry::create(
+                    ['PHPUnit\Runner'],
+                ),
                 SymbolRegistry::create(['Foo']),
                 SymbolRegistry::create(['Foo']),
                 SymbolRegistry::createForConstants(['Foo']),
