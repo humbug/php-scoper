@@ -29,6 +29,8 @@ use function strpos;
 
 final class ScoperAutoloadGenerator
 {
+    // TODO: aliasing functions could be done via a single function to reduce boiler-template.
+
     // TODO: doc link
     private const EXPOSED_FUNCTIONS_DOC = <<<'EOF'
     // Exposed functions. For more information see:
