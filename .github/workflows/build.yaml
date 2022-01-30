@@ -66,11 +66,7 @@ jobs:
                     path: .
 
             -   name: Upload php-scoper.phar
-                uses: actions/upload-release-asset@v2
-                env:
-                    GITHUB_TOKEN: ${{ secrets.PHP_SCOPER_GITHUB_TOKEN }}
+                uses: softprops/action-gh-release@v1
                 with:
-                    upload_url: ${{ github.event.release.upload_url }}
-                    asset_path: php-scoper.phar
-                    asset_name: php-scoper.phar
-                    asset_content_type: application/zip
+                    token: ${{ secrets.PHP_SCOPER_GITHUB_TOKEN }}
+                    files: php-scoper.phar
