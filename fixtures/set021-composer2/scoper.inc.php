@@ -28,7 +28,7 @@ return [
     'whitelist' => [
         'Symfony\\Polyfill\\*',
     ],
-    'files-whitelist' => [
+    'exclude-files' => [
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,
     ],
