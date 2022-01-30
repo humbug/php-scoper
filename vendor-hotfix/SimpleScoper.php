@@ -48,7 +48,7 @@ final class SimpleScoper implements Scoper
             $scoperConfig->getPath(),
             $scoperConfig->getPrefix(),
             $scoperConfig->getFilesWithContents(),
-            $scoperConfig->getWhitelistedFilesWithContents(),
+            $scoperConfig->getExcludedFilesWithContents(),
             self::createSerializablePatchers($scoperConfig->getPatcher()),
             $scoperConfig->getSymbolsConfiguration(),
         );

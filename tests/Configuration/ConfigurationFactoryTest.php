@@ -45,7 +45,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     {
         $configuration = $this->configFactory->create();
 
-        self::assertSame([], $configuration->getWhitelistedFilesWithContents());
+        self::assertSame([], $configuration->getExcludedFilesWithContents());
         self::assertEquals(
             SymbolsConfiguration::create(),
             $configuration->getSymbolsConfiguration(),
@@ -131,7 +131,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                     '',
                 ],
             ],
-            $configuration->getWhitelistedFilesWithContents(),
+            $configuration->getExcludedFilesWithContents(),
         );
         self::assertEquals(
             new PatcherChain([

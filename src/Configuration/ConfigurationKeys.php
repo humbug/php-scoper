@@ -8,7 +8,7 @@ namespace Humbug\PhpScoper\Configuration;
 final class ConfigurationKeys
 {
     public const PREFIX_KEYWORD = 'prefix';
-    public const WHITELISTED_FILES_KEYWORD = 'files-whitelist';
+    public const EXCLUDED_FILES_KEYWORD = 'exclude-files';
     public const FINDER_KEYWORD = 'finders';
     public const PATCHERS_KEYWORD = 'patchers';
     public const WHITELIST_KEYWORD = 'whitelist';
@@ -29,7 +29,7 @@ final class ConfigurationKeys
 
     public const KEYWORDS = [
         self::PREFIX_KEYWORD,
-        self::WHITELISTED_FILES_KEYWORD,
+        self::EXCLUDED_FILES_KEYWORD,
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
         self::WHITELIST_KEYWORD,

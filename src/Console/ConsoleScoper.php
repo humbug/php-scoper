@@ -143,12 +143,12 @@ final class ConsoleScoper
     private static function getFiles(Configuration $config, string $outputDir): array
     {
         $filesWithContent = $config->getFilesWithContents();
-        $whitelistedFilesWithContent = $config->getWhitelistedFilesWithContents();
+        $excludedFilesWithContents = $config->getExcludedFilesWithContents();
 
         $commonPath = get_common_path(
             [
                 ...array_keys($filesWithContent),
-                ...array_keys($whitelistedFilesWithContent),
+                ...array_keys($excludedFilesWithContents),
             ],
         );
 
@@ -165,7 +165,7 @@ final class ConsoleScoper
             ),
             array_map(
                 $mapFiles,
-                $whitelistedFilesWithContent,
+                $excludedFilesWithContents,
             ),
         ];
     }

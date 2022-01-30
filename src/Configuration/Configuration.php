@@ -26,17 +26,17 @@ final class Configuration
     private ?string $path;
     private string $prefix;
     private array $filesWithContents;
-    private array $whitelistedFilesWithContents;
+    private array $excludedFilesWithContents;
     private Patcher $patcher;
     private SymbolsConfiguration $symbolsConfiguration;
 
     /**
-     * @param string|null                          $path                         Absolute path to the configuration file loaded.
-     * @param string                               $prefix                       The prefix applied.
-     * @param array<string, array{string, string}> $filesWithContents            Array of tuple with the
+     * @param string|null                          $path                      Absolute path to the configuration file loaded.
+     * @param string                               $prefix                    The prefix applied.
+     * @param array<string, array{string, string}> $filesWithContents         Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
-     * @param array<string, array{string, string}> $whitelistedFilesWithContents Array of tuple
+     * @param array<string, array{string, string}> $excludedFilesWithContents Array of tuple
      *                                            with the first argument being the file path and
      *                                            the second its contents
      * @param SymbolsConfiguration                 $symbolsConfiguration
@@ -45,7 +45,7 @@ final class Configuration
         ?string $path,
         string $prefix,
         array $filesWithContents,
-        array $whitelistedFilesWithContents,
+        array $excludedFilesWithContents,
         Patcher $patcher,
         SymbolsConfiguration $symbolsConfiguration
     ) {
@@ -56,7 +56,7 @@ final class Configuration
         $this->filesWithContents = $filesWithContents;
         $this->patcher = $patcher;
         $this->symbolsConfiguration = $symbolsConfiguration;
-        $this->whitelistedFilesWithContents = $whitelistedFilesWithContents;
+        $this->excludedFilesWithContents = $excludedFilesWithContents;
     }
 
     public function getPath(): ?string
@@ -90,9 +90,9 @@ final class Configuration
     /**
      * @return array<string, array{string, string}>
      */
-    public function getWhitelistedFilesWithContents(): array
+    public function getExcludedFilesWithContents(): array
     {
-        return $this->whitelistedFilesWithContents;
+        return $this->excludedFilesWithContents;
     }
 
     private static function validatePrefix(string $prefix): void
