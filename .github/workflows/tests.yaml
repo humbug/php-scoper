@@ -11,6 +11,7 @@ jobs:
     root-version:
         runs-on: ubuntu-latest
         name: Check COMPOSER_ROOT_VERSION value
+        if: github.event_name != 'release' && github.event.action != 'created'
         strategy:
             fail-fast: false
             matrix:
