@@ -17,11 +17,10 @@ return [
         'title' => 'Namespace declarations after a hashbang',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -37,17 +36,16 @@ return [
     ],
 
     <<<'PHP'
-#!/usr/bin/env php
-<?php
-
-namespace Foo;
-
-----
-#!/usr/bin/env php
-<?php 
-namespace Humbug\Foo;
-
-
-PHP
-    ,
+    #!/usr/bin/env php
+    <?php
+    
+    namespace Foo;
+    
+    ----
+    #!/usr/bin/env php
+    <?php 
+    namespace Humbug\Foo;
+    
+    
+    PHP,
 ];

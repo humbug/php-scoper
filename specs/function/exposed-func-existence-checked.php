@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global function call imported with an aliased use statement in the global scope',
+        'title' => 'Exposed functions which are never declared but for which the existence is checked',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
@@ -35,23 +35,39 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'Global function call imported with a use statement in the global scope' => <<<'PHP'
+    'Non exposed global function call' => <<<'PHP'
     <?php
     
-    use function main as foo;
-    
-    foo();
+    function_exists('main');
     ----
     <?php
     
     namespace Humbug;
     
-    use function Humbug\main as foo;
-    foo();
+    \function_exists('Humbug\\main');
     
     PHP,
 
-    'Global function call imported with a use statement in the global scope with global functions exposed' => [
+    'Exposed global function call' => [
+        'expose-functions' => ['main'],
+        'expected-recorded-functions' => [
+            ['main', 'Humbug\main'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        function_exists('main');
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        \function_exists('Humbug\\main');
+        
+        PHP,
+    ],
+
+    'Global function call with exposed global functions' => [
         'expose-global-functions' => true,
         'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
@@ -59,54 +75,65 @@ return [
         'payload' => <<<'PHP'
         <?php
         
-        use function main as foo;
-        
-        foo();
+        function_exists('main');
         ----
         <?php
         
         namespace Humbug;
         
-        use function Humbug\main as foo;
-        foo();
+        \function_exists('Humbug\\main');
         
         PHP,
     ],
 
-    'Global FQ function call imported with a use statement in the global scope' => <<<'PHP'
+    'Global function call with non-exposed global functions' => <<<'PHP'
     <?php
     
-    use function main as foo;
-    
-    \foo();
+    function_exists('main');
     ----
     <?php
     
     namespace Humbug;
     
-    use function Humbug\main as foo;
-    \Humbug\foo();
+    \function_exists('Humbug\\main');
     
     PHP,
 
-    'Global FQ function call imported with a use statement in the global scope with global functions exposed' => [
-        'expose-global-functions' => true,
+    'Exposed namespaced function call' => [
+        'expose-functions' => ['Acme\main'],
         'expected-recorded-functions' => [
-            ['foo', 'Humbug\foo'],
+            ['Acme\main', 'Humbug\Acme\main'],
         ],
         'payload' => <<<'PHP'
         <?php
         
-        use function main as foo;
+        namespace Acme;
         
-        \foo();
+        function_exists('Acme\main');
         ----
         <?php
         
-        namespace Humbug;
+        namespace Humbug\Acme;
         
-        use function Humbug\main as foo;
-        \Humbug\foo();
+        \function_exists('Humbug\\Acme\\main');
+        
+        PHP,
+    ],
+
+    'Namespaced function call from excluded namespace' => [
+        'exclude-namespaces' => ['Acme'],
+        'payload' => <<<'PHP'
+        <?php
+        
+        namespace Acme;
+        
+        function_exists('Acme\main');
+        ----
+        <?php
+        
+        namespace Acme;
+        
+        \function_exists('Acme\\main');
         
         PHP,
     ],

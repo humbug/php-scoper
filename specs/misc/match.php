@@ -18,7 +18,6 @@ return [
         'title' => 'Match',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,
@@ -37,33 +36,33 @@ return [
         'expected-recorded-functions' => [],
     ],
     'match' => <<<'PHP'
-<?php declare(strict_types=1);
+    <?php declare(strict_types=1);
+        
+    namespace Acme {
+        use Acme\Foo\Match;
     
-namespace Acme {
-    use Acme\Foo\Match;
-
-    class Foo implements Match {}
-}
-
-namespace Acme\Foo {
-    interface Match {}
-}
+        class Foo implements Match {}
+    }
     
-----
-<?php
-
-declare (strict_types=1);
-namespace Humbug\Acme;
-
-use Humbug\Acme\Foo\Match;
-class Foo implements Match
-{
-}
-namespace Humbug\Acme\Foo;
-
-interface Match
-{
-}
-
-PHP
+    namespace Acme\Foo {
+        interface Match {}
+    }
+        
+    ----
+    <?php
+    
+    declare (strict_types=1);
+    namespace Humbug\Acme;
+    
+    use Humbug\Acme\Foo\Match;
+    class Foo implements Match
+    {
+    }
+    namespace Humbug\Acme\Foo;
+    
+    interface Match
+    {
+    }
+    
+    PHP,
 ];

@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -193,7 +194,7 @@ class PhpScoperSpecTest extends TestCase
                 sprintf(
                     'Could not parse the spec %s: %s',
                     $spec,
-                    $throwable->getMessage()
+                    $throwable->getMessage().$throwable->getTraceAsString()
                 ),
                 0,
                 $throwable
@@ -341,12 +342,18 @@ class PhpScoperSpecTest extends TestCase
         );
 
         if (is_array($fixtureSet)) {
+            $diff = array_diff(
+                array_keys($fixtureSet),
+                $specKeys,
+            );
+
+            if ([ConfigurationKeys::WHITELIST_KEYWORD] === array_values($diff)) {
+                $diff = [];
+            }
+
             self::assertSame(
                 [],
-                $diff = array_diff(
-                    array_keys($fixtureSet),
-                    $specKeys,
-                ),
+                $diff,
                 sprintf(
                     'Expected the keys found in the spec section to be known keys, unknown keys: "%s"',
                     implode('", "', $diff)
@@ -391,6 +398,10 @@ class PhpScoperSpecTest extends TestCase
 
         foreach (self::SPECS_CONFIG_KEYS as $key) {
             if (!array_key_exists($key, $mergedConfig)) {
+                if ($key === ConfigurationKeys::WHITELIST_KEYWORD) {
+                    continue;
+                }
+
                 throw new InvalidArgumentException(
                     sprintf(
                         'Missing the key "%s" for the file "%s"',
@@ -424,6 +435,9 @@ class PhpScoperSpecTest extends TestCase
         $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
         $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
         $formattedExposeGlobalFunctions = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalFunctions());
+
+        $formattedNamespacesToExclude = self::formatNamespaceRegistry($symbolsConfiguration->getExcludedNamespaces());
+        $formattedNamespacesToExpose = self::formatNamespaceRegistry($symbolsConfiguration->getExposedNamespaces());
 
         $formattedClassesToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedClasses());
         $formattedFunctionsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedFunctions());
@@ -459,6 +473,9 @@ class PhpScoperSpecTest extends TestCase
         expose global classes: $formattedExposeGlobalClasses
         expose global functions: $formattedExposeGlobalFunctions
         expose global constants: $formattedExposeGlobalConstants
+        
+        exclude namespaces: $formattedNamespacesToExclude
+        expose namespaces: $formattedNamespacesToExpose
         
         expose classes: $formattedClassesToExpose
         expose functions: $formattedFunctionsToExpose
@@ -550,6 +567,14 @@ class PhpScoperSpecTest extends TestCase
     private static function convertBoolToString(bool $bool): string
     {
         return true === $bool ? 'true' : 'false';
+    }
+
+    private static function formatNamespaceRegistry(NamespaceRegistry $namespaceRegistry): string
+    {
+        return self::formatSimpleList([
+            ...$namespaceRegistry->getNames(),
+            ...$namespaceRegistry->getRegexes(),
+        ]);
     }
 
     private static function formatSymbolRegistry(SymbolRegistry $symbolRegistry): string

@@ -17,11 +17,10 @@ return [
         'title' => 'Class constant call of a class imported with an aliased use statement in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,114 +35,136 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'Constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace A {
-    use Foo as X;
+    'Constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
+    <?php
     
+    namespace {
+        class Foo {}
+    }
+    
+    namespace A {
+        use Foo as X;
+        
+        X::MAIN_CONST;
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\A;
+    
+    use Humbug\Foo as X;
     X::MAIN_CONST;
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\A;
-
-use Humbug\Foo as X;
-X::MAIN_CONST;
-
-PHP
-    ],
-
-    'FQ constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-    class X {}
-}
-
-namespace A {
-    use Foo as X;
     
-    \X::MAIN_CONST;
-}
-----
-<?php
+    PHP,
 
-namespace Humbug;
+    'FQ constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
+    <?php
+    
+    namespace {
+        class Foo {}
+        class X {}
+    }
+    
+    namespace A {
+        use Foo as X;
+        
+        \X::MAIN_CONST;
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    class X
+    {
+    }
+    namespace Humbug\A;
+    
+    use Humbug\Foo as X;
+    \Humbug\X::MAIN_CONST;
+    
+    PHP,
 
-class Foo
-{
-}
-class X
-{
-}
-namespace Humbug\A;
+    'FQ constant call on an internal class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
+    <?php
+    
+    namespace {
+        class X {}
+    }
+    
+    namespace A {
+        use Reflector as X;
+        
+        \X::MAIN_CONST;
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class X
+    {
+    }
+    namespace Humbug\A;
+    
+    use Reflector as X;
+    \Humbug\X::MAIN_CONST;
+    
+    PHP,
 
-use Humbug\Foo as X;
-\Humbug\X::MAIN_CONST;
-
-PHP
-    ],
-
-    'Constant call on a whitelisted class which is imported via an aliased use statement and which belongs to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-use Reflector as X;
-
-X::MAIN_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-use Reflector as X;
-X::MAIN_CONST;
-
-PHP
-    ],
-
-    'FQ constant call on a whitelisted class which is imported via an aliased use statement and which belongs to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class X {}
-}
-
-namespace A {
+    'Constant call on an internal class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
+    <?php
+    
+    namespace A;
+    
     use Reflector as X;
     
-    \X::MAIN_CONST;
-}
-----
-<?php
+    X::MAIN_CONST;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    use Reflector as X;
+    X::MAIN_CONST;
+    
+    PHP,
 
-namespace Humbug;
-
-class X
-{
-}
-namespace Humbug\A;
-
-use Reflector as X;
-\Humbug\X::MAIN_CONST;
-
-PHP
+    'FQ constant call on an exposed class which is imported via an aliased use statement and which belongs to the global namespace' => [
+        'expose-classes' => ['Foo'],
+        'payload' => <<<'PHP'
+        <?php
+        
+        namespace {
+            class X {}
+        }
+        
+        namespace A {
+            use Foo as X;
+            
+            \X::MAIN_CONST;
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class X
+        {
+        }
+        namespace Humbug\A;
+        
+        use Humbug\Foo as X;
+        \Humbug\X::MAIN_CONST;
+        
+        PHP,
     ],
 ];

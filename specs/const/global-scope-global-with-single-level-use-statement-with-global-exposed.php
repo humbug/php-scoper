@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global constant imported with an aliased use statement used in the global scope',
+        'title' => 'Global constant imported with a use statement used in the global scope with the global constants exposed',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => false,
+        'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
         'expose-namespaces' => [],
@@ -35,54 +35,54 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'Constant call imported with an aliased use statement' => <<<'PHP'
+    'Constant call imported with a use statement' => <<<'PHP'
     <?php
     
-    use const DUMMY_CONST as FOO;
+    use const DUMMY_CONST;
     
-    FOO;
+    DUMMY_CONST;
     ----
     <?php
     
     namespace Humbug;
     
-    use const Humbug\DUMMY_CONST as FOO;
-    FOO;
+    use const DUMMY_CONST;
+    DUMMY_CONST;
     
     PHP,
 
-    'Exposed constant call imported with an aliased use statement' => [
+    'Exposed constant call imported with a use statement' => [
         'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
         
-        use const DUMMY_CONST as FOO;
+        use const DUMMY_CONST;
         
-        FOO;
+        DUMMY_CONST;
         ----
         <?php
         
         namespace Humbug;
         
-        use const DUMMY_CONST as FOO;
-        FOO;
+        use const DUMMY_CONST;
+        DUMMY_CONST;
         
         PHP,
     ],
 
-    'Constant FQ call imported with an aliased use statement' => <<<'PHP'
+    'FQ constant call imported with a use statement' => <<<'PHP'
     <?php
     
-    use const DUMMY_CONST as FOO;
+    use const DUMMY_CONST;
     
-    \FOO;
+    \DUMMY_CONST;
     ----
     <?php
     
     namespace Humbug;
     
-    use const Humbug\DUMMY_CONST as FOO;
-    \Humbug\FOO;
+    use const DUMMY_CONST;
+    \DUMMY_CONST;
     
     PHP,
 ];

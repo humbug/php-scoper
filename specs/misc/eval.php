@@ -17,7 +17,6 @@ return [
         'title' => 'Eval',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,
@@ -37,184 +36,178 @@ return [
     ],
 
     'string' => <<<'PHP'
-<?php
-
-eval('
-<?php
-
-use Acme\Foo;
-
-');
-
-----
-<?php
-
-namespace Humbug;
-
-eval('
-<?php 
-namespace Humbug;
-
-use Humbug\\Acme\\Foo;
-');
-
-PHP
-    ,
+    <?php
+    
+    eval('
+    <?php
+    
+    use Acme\Foo;
+    
+    ');
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    eval('
+    <?php 
+    namespace Humbug;
+    
+    use Humbug\\Acme\\Foo;
+    ');
+    
+    PHP,
 
     'string with invalid PHP' => <<<'PHP'
-<?php
-
-eval('invalid PHP');
-
-----
-<?php
-
-namespace Humbug;
-
-eval('invalid PHP');
-
-PHP
-    ,
+    <?php
+    
+    eval('invalid PHP');
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    eval('invalid PHP');
+    
+    PHP,
 
     'concatenated string' => <<<'PHP'
-<?php
-
-eval('<?php'.' echo "Hello!";');
-
-----
-<?php
-
-namespace Humbug;
-
-eval('<?php' . ' echo "Hello!";');
-
-PHP
-    ,
+    <?php
+    
+    eval('<?php'.' echo "Hello!";');
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    eval('<?php' . ' echo "Hello!";');
+    
+    PHP,
 
     'Nowdoc' => <<<'PHP'
-<?php
+    <?php
+    
+    eval(<<<'PHP_NOWDOC'
+    <?php
+    
+    use Acme\Foo;
+    
+    PHP_NOWDOC
+    );
 
-eval(<<<'PHP_NOWDOC'
-<?php
+    eval(<<<'PHP_NOWDOC'
+    <?php
+    
+    use Acme\Foo;
+    PHP_NOWDOC
+    );
 
-use Acme\Foo;
+    ----
+    <?php
 
-PHP_NOWDOC
-);
+    namespace Humbug;
 
-eval(<<<'PHP_NOWDOC'
-<?php
+    eval(<<<'PHP_NOWDOC'
+    <?php
+    
+    namespace Humbug;
+    
+    use Humbug\Acme\Foo;
+    
+    PHP_NOWDOC
+    );
+    eval(<<<'PHP_NOWDOC'
+    <?php
+    
+    namespace Humbug;
+    
+    use Humbug\Acme\Foo;
+    PHP_NOWDOC
+    );
 
-use Acme\Foo;
-PHP_NOWDOC
-);
-
-----
-<?php
-
-namespace Humbug;
-
-eval(<<<'PHP_NOWDOC'
-<?php
-
-namespace Humbug;
-
-use Humbug\Acme\Foo;
-
-PHP_NOWDOC
-);
-eval(<<<'PHP_NOWDOC'
-<?php
-
-namespace Humbug;
-
-use Humbug\Acme\Foo;
-PHP_NOWDOC
-);
-
-PHP
-    ,
+    PHP,
 
     'Nowdoc with invalid PHP' => <<<'PHP'
-<?php
+    <?php
+    
+    eval(<<<'PHP_NOWDOC'
+    Not.php
+    PHP_NOWDOC
+    );
 
-eval(<<<'PHP_NOWDOC'
-Not.php
-PHP_NOWDOC
-);
+    ----
+    <?php
 
-----
-<?php
+    namespace Humbug;
 
-namespace Humbug;
+    eval(<<<'PHP_NOWDOC'
+    Not.php
+    PHP_NOWDOC
+    );
 
-eval(<<<'PHP_NOWDOC'
-Not.php
-PHP_NOWDOC
-);
-
-PHP
-    ,
+    PHP,
 
     'Heredoc' => <<<'PHP'
-<?php
+    <?php
+    
+    eval(<<<PHP_HEREDOC
+    <?php
+    
+    use Acme\Foo;
+    
+    PHP_HEREDOC
+    );
 
-eval(<<<PHP_HEREDOC
-<?php
+    ----
+    <?php
 
-use Acme\Foo;
+    namespace Humbug;
 
-PHP_HEREDOC
-);
+    eval(<<<PHP_HEREDOC
+    <?php
+    
+    namespace Humbug;
+    
+    use Humbug\\Acme\\Foo;
+    
+    PHP_HEREDOC
+    );
 
-----
-<?php
+    PHP,
 
-namespace Humbug;
-
-eval(<<<PHP_HEREDOC
-<?php
-
-namespace Humbug;
-
-use Humbug\\Acme\\Foo;
-
-PHP_HEREDOC
-);
-
-PHP
-    ,
-
-     'string with whitelisted function' => [
-         'whitelist' => ['Acme\foo'],
+     'string with exposed function' => [
+         'expose-functions' => ['Acme\foo'],
          'expected-recorded-functions' => [
              ['Acme\foo', 'Humbug\Acme\foo'],
          ],
          'payload' => <<<'PHP'
-<?php
-
-eval('<?php
-
-namespace Acme;
-
-function foo() {}
-
-');
-
-----
-<?php
-
-namespace Humbug;
-
-eval('<?php
-
-namespace Humbug\\Acme;
-
-function foo()
-{
-}
-');
-
-PHP
+        <?php
+        
+        eval('<?php
+        
+        namespace Acme;
+        
+        function foo() {}
+        
+        ');
+        
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        eval('<?php
+        
+        namespace Humbug\\Acme;
+        
+        function foo()
+        {
+        }
+        ');
+        
+        PHP,
     ],
 ];

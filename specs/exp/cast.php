@@ -17,11 +17,10 @@ return [
         'title' => 'Miscellaneous',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -37,27 +36,26 @@ return [
     ],
 
     'Cast variable' => <<<'PHP'
-<?php
-
-$x = new stdClass();
-
-(bool) $x;
-(int) $x;
-(float) $x;
-(array) $x;
-(object) $x;
-----
-<?php
-
-namespace Humbug;
-
-$x = new \stdClass();
-(bool) $x;
-(int) $x;
-(float) $x;
-(array) $x;
-(object) $x;
-
-PHP
-    ,
+    <?php
+    
+    $x = new stdClass();
+    
+    (bool) $x;
+    (int) $x;
+    (float) $x;
+    (array) $x;
+    (object) $x;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    $x = new \stdClass();
+    (bool) $x;
+    (int) $x;
+    (float) $x;
+    (array) $x;
+    (object) $x;
+    
+    PHP,
 ];

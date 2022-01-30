@@ -14,10 +14,9 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global constant imported with a use statement used in the global scope with the global constants whitelisted',
+        'title' => 'Native constant calls with the global constants exposed',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => true,
         'expose-global-classes' => false,
@@ -36,56 +35,38 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'Constant call imported with a use statement' => <<<'PHP'
-<?php
+    'Internal function in a namespace' => <<<'PHP'
+    <?php
+    
+    namespace Acme;
+    
+    $x = DIRECTORY_SEPARATOR;
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    $x = \DIRECTORY_SEPARATOR;
+    
+    PHP,
 
-use const DUMMY_CONST;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const DUMMY_CONST;
-DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted constant call imported with a use statement' => [
-        'whitelist' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
-<?php
-
-use const DUMMY_CONST;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const DUMMY_CONST;
-DUMMY_CONST;
-
-PHP
-    ],
-
-    'FQ constant call imported with a use statement' => <<<'PHP'
-<?php
-
-use const DUMMY_CONST;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const DUMMY_CONST;
-\DUMMY_CONST;
-
-PHP
-    ,
+    'Namespaced function having the same name as an internal function' => <<<'PHP'
+    <?php
+    
+    namespace Acme;
+    
+    use const Acme\DIRECTORY_SEPARATOR;
+    
+    $x = DIRECTORY_SEPARATOR;
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    use const Humbug\Acme\DIRECTORY_SEPARATOR;
+    $x = DIRECTORY_SEPARATOR;
+    
+    PHP,
 ];

@@ -132,16 +132,21 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $funcCallName = $argParent->name;
-
-        if (!($funcCallName instanceof FullyQualified)
-            || 'function_exists' !== $funcCallName->toString()
-        ) {
+        if (!self::isFunctionExistsCall($argParent)) {
             return null;
         }
 
         $resolvedName = $this->identifierResolver->resolveString($string);
 
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
+    }
+
+    private static function isFunctionExistsCall(FuncCall $node): bool
+    {
+        $name = $node->name;
+
+        return $name instanceof Name
+            && $name->isFullyQualified()
+            && $name->toString() === 'function_exists';
     }
 }

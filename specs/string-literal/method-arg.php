@@ -17,11 +17,10 @@ return [
         'title' => 'String literal used as a method argument',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -37,58 +36,56 @@ return [
     ],
 
     'FQCN string argument' => <<<'PHP'
-<?php
-
-class Foo {
-    function foo($x = 'Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo') {}
-}
-
-(new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
-
-$x = new X();
-
-$x->foo()('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
-
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-    function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo')
-    {
+    <?php
+    
+    class Foo {
+        function foo($x = 'Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo') {}
     }
-}
-(new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
-$x = new X();
-$x->foo()('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
-
-PHP
-    ,
+    
+    (new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+    
+    $x = new X();
+    
+    $x->foo()('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+        function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo')
+        {
+        }
+    }
+    (new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+    $x = new X();
+    $x->foo()('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+    
+    PHP,
 
     'FQCN string argument with a static method' => <<<'PHP'
-<?php
-
-class Foo {
-    static function foo($x = 'Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo') {}
-}
-
-X::foo('Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
-
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-    static function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo')
-    {
+    <?php
+    
+    class Foo {
+        static function foo($x = 'Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo') {}
     }
-}
-X::foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
-
-PHP
-    ,
+    
+    X::foo('Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+        static function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo')
+        {
+        }
+    }
+    X::foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+    
+    PHP,
 ];

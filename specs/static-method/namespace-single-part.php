@@ -17,11 +17,10 @@ return [
         'title' => 'Static method call statement in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -37,64 +36,61 @@ return [
     ],
 
     'Static method call statement of a class' => <<<'PHP'
-<?php
-
-namespace A;
-
-class Foo {}
-
-Foo::main();
-----
-<?php
-
-namespace Humbug\A;
-
-class Foo
-{
-}
-Foo::main();
-
-PHP
-    ,
+    <?php
+    
+    namespace A;
+    
+    class Foo {}
+    
+    Foo::main();
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    class Foo
+    {
+    }
+    Foo::main();
+    
+    PHP,
 
     'FQ static method call statement of a class belonging to the global namespace' => <<<'PHP'
-<?php
+    <?php
+    
+    namespace {
+        class Foo {}
+    }
+    
+    namespace A {
+        \Foo::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\A;
+    
+    \Humbug\Foo::main();
+    
+    PHP,
 
-namespace {
-    class Foo {}
-}
-
-namespace A {
-    \Foo::main();
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\A;
-
-\Humbug\Foo::main();
-
-PHP
-    ,
-
-    'FQ static method call statement of a class belonging to the global namespace which has been whitelisted' => <<<'PHP'
-<?php
-
-namespace A;
-
-\Closure::bind();
-----
-<?php
-
-namespace Humbug\A;
-
-\Closure::bind();
-
-PHP
-    ,
+    'FQ static method call statement of a class belonging to the global namespace which has been exposed' => <<<'PHP'
+    <?php
+    
+    namespace A;
+    
+    \Closure::bind();
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    \Closure::bind();
+    
+    PHP,
 ];

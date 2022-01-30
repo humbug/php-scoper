@@ -17,7 +17,6 @@ return [
         'title' => 'New statement call of a namespaced class in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => true,
         'expose-global-classes' => false,
@@ -36,64 +35,60 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'New statement call of a class' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace X\Foo {
-    class Bar {}
-}
-
-namespace X {
+    'New statement call of a class' => <<<'PHP'
+    <?php
+    
+    namespace X\Foo {
+        class Bar {}
+    }
+    
+    namespace X {
+        new Foo\Bar();
+    }
+    ----
+    <?php
+    
+    namespace Humbug\X\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug\X;
+    
     new Foo\Bar();
-}
-----
-<?php
+    
+    PHP,
 
-namespace Humbug\X\Foo;
-
-class Bar
-{
-}
-namespace Humbug\X;
-
-new Foo\Bar();
-
-PHP
-    ],
-
-    'FQ new statement call of a class' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace X\Foo {
-    class Bar {}
-}
-
-namespace X {
-    new \Foo\Bar();
-}
-----
-<?php
-
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug\X\Foo;
-
-class Bar
-{
-}
-namespace Humbug\X;
-
-new \Humbug\Foo\Bar();
-
-PHP
-    ],
+    'FQ new statement call of a class' => <<<'PHP'
+    <?php
+    
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace X\Foo {
+        class Bar {}
+    }
+    
+    namespace X {
+        new \Foo\Bar();
+    }
+    ----
+    <?php
+    
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug\X\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug\X;
+    
+    new \Humbug\Foo\Bar();
+    
+    PHP,
 ];

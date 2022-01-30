@@ -17,11 +17,10 @@ return [
         'title' => 'Class static property call of a namespaced class in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -37,114 +36,112 @@ return [
     ],
 
     'Constant call on a namespaced class' => <<<'PHP'
-<?php
+    <?php
+    
+    namespace PHPUnit {
+        class Command {}
+    }
+    
+    namespace {
+        PHPUnit\Command::$mainStaticProp;
+    }
+    ----
+    <?php
 
-namespace PHPUnit {
-    class Command {}
-}
+    namespace Humbug\PHPUnit;
 
-namespace {
+    class Command
+    {
+    }
+    namespace Humbug;
+
     PHPUnit\Command::$mainStaticProp;
-}
-----
-<?php
 
-namespace Humbug\PHPUnit;
-
-class Command
-{
-}
-namespace Humbug;
-
-PHPUnit\Command::$mainStaticProp;
-
-PHP
-    ,
+    PHP,
 
     'FQ constant call on a namespaced class' => <<<'PHP'
-<?php
+    <?php
+    
+    namespace PHPUnit {
+        class Command {}
+    }
+    
+    namespace {
+        \PHPUnit\Command::$mainStaticProp;
+    }
+    ----
+    <?php
+    
+    namespace Humbug\PHPUnit;
+    
+    class Command
+    {
+    }
+    namespace Humbug;
+    
+    \Humbug\PHPUnit\Command::$mainStaticProp;
+    
+    PHP,
 
-namespace PHPUnit {
-    class Command {}
-}
-
-namespace {
-    \PHPUnit\Command::$mainStaticProp;
-}
-----
-<?php
-
-namespace Humbug\PHPUnit;
-
-class Command
-{
-}
-namespace Humbug;
-
-\Humbug\PHPUnit\Command::$mainStaticProp;
-
-PHP
-    ,
-
-    'Constant call on a whitelisted namespaced class' => [
-        'whitelist' => ['PHPUnit\Command'],
+    'Constant call on an exposed namespaced class' => [
+        'expose-classes' => ['PHPUnit\Command'],
         'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
-<?php
+        <?php
+        
+        namespace PHPUnit {
+            class Command {}
+        }
+        
+        namespace {
+            PHPUnit\Command::$mainStaticProp;
+        }
+        ----
+        <?php
 
-namespace PHPUnit {
-    class Command {}
-}
+        namespace Humbug\PHPUnit;
 
-namespace {
-    PHPUnit\Command::$mainStaticProp;
-}
-----
-<?php
+        class Command
+        {
+        }
+        \class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
+        namespace Humbug;
 
-namespace Humbug\PHPUnit;
+        \Humbug\PHPUnit\Command::$mainStaticProp;
 
-class Command
-{
-}
-\class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
-namespace Humbug;
-
-\Humbug\PHPUnit\Command::$mainStaticProp;
-
-PHP
+        PHP,
     ],
 
-    'FQ constant call on a whitelisted namespaced class' => [
-        'whitelist' => ['PHPUnit\Command'],
+    'FQ constant call on an exposed namespaced class' => [
+        'expose-classes' => ['PHPUnit\Command'],
         'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace PHPUnit {
-    class Command {}
-}
-
-namespace {
-    \PHPUnit\Command::$mainStaticProp;
-}
-----
-<?php
-
-namespace Humbug\PHPUnit;
-
-class Command
-{
-}
-\class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
-namespace Humbug;
-
-\Humbug\PHPUnit\Command::$mainStaticProp;
-
-PHP
+        <?php
+        
+        namespace PHPUnit {
+            class Command {}
+        }
+        
+        namespace {
+            \PHPUnit\Command::$mainStaticProp;
+        }
+        ----
+        <?php
+        
+        namespace Humbug\PHPUnit;
+        
+        class Command
+        {
+        }
+        \class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
+        namespace Humbug;
+        
+        \Humbug\PHPUnit\Command::$mainStaticProp;
+        
+        PHP,
     ],
 ];

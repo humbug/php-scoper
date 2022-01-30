@@ -14,15 +14,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Static method call statement of a class belonging to the global namespace which has been imported with a '
-                   .'use statement in a namespace',
+        'title' => 'Static method call statement of a class belonging to the global namespace which has been imported with a use statement in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -38,96 +36,92 @@ return [
     ],
 
     'Static method call statement of a class' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace A {
-    use Foo;
+    <?php
     
+    namespace {
+        class Foo {}
+    }
+    
+    namespace A {
+        use Foo;
+        
+        Foo::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\A;
+    
+    use Humbug\Foo;
     Foo::main();
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\A;
-
-use Humbug\Foo;
-Foo::main();
-
-PHP
-    ,
+    
+    PHP,
 
     'FQ static method call statement of a class' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace A {
-    use Foo;
+    <?php
     
-    \Foo::main();
-}
-----
-<?php
+    namespace {
+        class Foo {}
+    }
+    
+    namespace A {
+        use Foo;
+        
+        \Foo::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\A;
+    
+    use Humbug\Foo;
+    \Humbug\Foo::main();
+    
+    PHP,
 
-namespace Humbug;
+    'Static method call statement of a class which has been exposed and belongs to the global namespace' => <<<'PHP'
+    <?php
+    
+    namespace A;
+    
+    use Closure;
+    
+    Closure::bind();
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    use Closure;
+    Closure::bind();
+    
+    PHP,
 
-class Foo
-{
-}
-namespace Humbug\A;
-
-use Humbug\Foo;
-\Humbug\Foo::main();
-
-PHP
-    ,
-
-    'Static method call statement of a class which has been whitelisted and belongs to the global namespace' => <<<'PHP'
-<?php
-
-namespace A;
-
-use Closure;
-
-Closure::bind();
-----
-<?php
-
-namespace Humbug\A;
-
-use Closure;
-Closure::bind();
-
-PHP
-    ,
-
-    'FQ static method call statement of a class which has been whitelisted and belongs to the global namespace' => <<<'PHP'
-<?php
-
-namespace A;
-
-use Closure;
-
-\Closure::bind();
-----
-<?php
-
-namespace Humbug\A;
-
-use Closure;
-\Closure::bind();
-
-PHP
-    ,
+    'FQ static method call statement of a class which has been exposed and belongs to the global namespace' => <<<'PHP'
+    <?php
+    
+    namespace A;
+    
+    use Closure;
+    
+    \Closure::bind();
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    use Closure;
+    \Closure::bind();
+    
+    PHP,
 ];

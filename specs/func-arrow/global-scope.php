@@ -18,9 +18,8 @@ return [
         'title' => 'Arrow function in the global namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
         'expose-namespaces' => [],
@@ -38,76 +37,75 @@ return [
     ],
 
     'Global function call in the global scope' => <<<'PHP'
-<?php
+    <?php
+    
+    fn ($x) => $x;
+    fn (int $x) => $x;
+    fn (int $x): int => $x;
+    fn (Foo $x): Bar => $x;
+    fn (DateTimeImmutable $x): Closure => $x;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    fn($x) => $x;
+    fn(int $x) => $x;
+    fn(int $x): int => $x;
+    fn(Foo $x): Bar => $x;
+    fn(\DateTimeImmutable $x): \Closure => $x;
+    
+    PHP,
 
-fn ($x) => $x;
-fn (int $x) => $x;
-fn (int $x): int => $x;
-fn (Foo $x): Bar => $x;
-fn (DateTimeImmutable $x): Closure => $x;
-----
-<?php
-
-namespace Humbug;
-
-fn($x) => $x;
-fn(int $x) => $x;
-fn(int $x): int => $x;
-fn(Foo $x): Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
-
-PHP
-    ,
-
-    'Global function call in the global scope with global symbols whitelisted' => [
+    'Global function call in the global scope with global symbols exposed' => [
         'expose-global-classes' => true,
         'expose-global-functions' => true,
         'payload' => <<<'PHP'
-<?php
-
-fn ($x) => $x;
-fn (int $x) => $x;
-fn (int $x): int => $x;
-fn (Foo $x): Bar => $x;
-fn (DateTimeImmutable $x): Closure => $x;
-----
-<?php
-
-namespace Humbug;
-
-fn($x) => $x;
-fn(int $x) => $x;
-fn(int $x): int => $x;
-fn(Foo $x): Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
-
-PHP
+        <?php
+        
+        fn ($x) => $x;
+        fn (int $x) => $x;
+        fn (int $x): int => $x;
+        fn (Foo $x): Bar => $x;
+        fn (DateTimeImmutable $x): Closure => $x;
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        fn($x) => $x;
+        fn(int $x) => $x;
+        fn(int $x): int => $x;
+        fn(Foo $x): Bar => $x;
+        fn(\DateTimeImmutable $x): \Closure => $x;
+        
+        PHP,
     ],
 
-    'Global function call in the global scope with whitelisted symbols' => [
-        'whitelist' => [
+    'Global function call in the global scope with exposed symbols' => [
+        'expose-classes' => [
             'Foo',
             'Bar',
         ],
         'payload' => <<<'PHP'
-<?php
-
-fn ($x) => $x;
-fn (int $x) => $x;
-fn (int $x): int => $x;
-fn (Foo $x): Bar => $x;
-fn (DateTimeImmutable $x): Closure => $x;
-----
-<?php
-
-namespace Humbug;
-
-fn($x) => $x;
-fn(int $x) => $x;
-fn(int $x): int => $x;
-fn(\Humbug\Foo $x): \Humbug\Bar => $x;
-fn(\DateTimeImmutable $x): \Closure => $x;
-
-PHP
+        <?php
+        
+        fn ($x) => $x;
+        fn (int $x) => $x;
+        fn (int $x): int => $x;
+        fn (Foo $x): Bar => $x;
+        fn (DateTimeImmutable $x): Closure => $x;
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        fn($x) => $x;
+        fn(int $x) => $x;
+        fn(int $x): int => $x;
+        fn(\Humbug\Foo $x): \Humbug\Bar => $x;
+        fn(\DateTimeImmutable $x): \Closure => $x;
+        
+        PHP,
     ],
 ];

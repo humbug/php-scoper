@@ -17,9 +17,8 @@ return [
         'title' => 'Global function call in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
         'expose-namespaces' => [],
@@ -37,34 +36,32 @@ return [
     ],
 
     'Global function call in a namespace' => <<<'PHP'
-<?php
-
-namespace A;
-
-main();
-----
-<?php
-
-namespace Humbug\A;
-
-main();
-
-PHP
-    ,
+    <?php
+    
+    namespace A;
+    
+    main();
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    main();
+    
+    PHP,
 
     'Global FQ function call in a namespace' => <<<'PHP'
-<?php
-
-namespace A;
-
-\main();
-----
-<?php
-
-namespace Humbug\A;
-
-\Humbug\main();
-
-PHP
-    ,
+    <?php
+    
+    namespace A;
+    
+    \main();
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    \Humbug\main();
+    
+    PHP,
 ];

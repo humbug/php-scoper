@@ -17,7 +17,6 @@ return [
         'title' => 'String literal used as a function argument of an anonymous function',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,
@@ -300,7 +299,7 @@ return [
     PHP,
 
     'FQC constant call on exposed class' => [
-        'whitelist' => ['Symfony\Component\Yaml\Ya_1'],
+        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
         'expected-recorded-classes' => [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],

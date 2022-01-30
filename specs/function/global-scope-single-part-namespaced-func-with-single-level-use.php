@@ -17,11 +17,10 @@ return [
         'title' => 'Namespaced function call imported with a use statement in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -37,88 +36,86 @@ return [
     ],
 
     'Namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
-<?php
-
-class Foo {}
-
-use Foo;
-
-Foo\main();
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-use Humbug\Foo;
-Foo\main();
-
-PHP
-    ,
+    <?php
+    
+    class Foo {}
+    
+    use Foo;
+    
+    Foo\main();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    use Humbug\Foo;
+    Foo\main();
+    
+    PHP,
 
     'FQ namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
-<?php
+    <?php
+    
+    class Foo {}
+    
+    use Foo;
+    
+    \Foo\main();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    use Humbug\Foo;
+    \Humbug\Foo\main();
+    
+    PHP,
 
-class Foo {}
-
-use Foo;
-
-\Foo\main();
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-use Humbug\Foo;
-\Humbug\Foo\main();
-
-PHP
-    ,
-
-    'Whitelisted namespaced function call imported with a partial use statement in the global scope' => [
-        'whitelist' => ['Foo\main'],
+    'Exposed namespaced function call imported with a partial use statement in the global scope' => [
+        'expose-functions' => ['Foo\main'],
         'expected-recorded-functions' => [
             ['Foo\main', 'Humbug\Foo\main'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace Foo {
-    function main() {}
-}
-
-namespace {
-    use Foo;
-    
-    Foo\main();
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-function main()
-{
-}
-namespace Humbug;
-
-use Humbug\Foo;
-Foo\main();
-
-PHP
+        <?php
+        
+        namespace {
+            class Foo {}
+        }
+        
+        namespace Foo {
+            function main() {}
+        }
+        
+        namespace {
+            use Foo;
+            
+            Foo\main();
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+        
+        function main()
+        {
+        }
+        namespace Humbug;
+        
+        use Humbug\Foo;
+        Foo\main();
+        
+        PHP,
     ],
 ];
