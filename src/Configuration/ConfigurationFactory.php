@@ -82,9 +82,9 @@ final class ConfigurationFactory
 
         $prefix = self::retrievePrefix($config);
 
-        $whitelistedFiles = null === $path
+        $excludedFiles = null === $path
             ? []
-            : $this->retrieveWhitelistedFiles(
+            : $this->retrieveExcludedFiles(
                 dirname($path),
                 $config,
             );
@@ -104,7 +104,7 @@ final class ConfigurationFactory
             $path,
             $prefix,
             $filesWithContents,
-            self::retrieveFilesWithContents($whitelistedFiles),
+            self::retrieveFilesWithContents($excludedFiles),
             new PatcherChain($patchers),
             $symbolsConfiguration,
         );
@@ -130,7 +130,7 @@ final class ConfigurationFactory
                 $config->getFilesWithContents(),
                 $filesWithContents,
             ),
-            $config->getWhitelistedFilesWithContents(),
+            $config->getExcludedFilesWithContents(),
             $config->getPatcher(),
             $config->getSymbolsConfiguration(),
         );
@@ -144,7 +144,7 @@ final class ConfigurationFactory
             $config->getPath(),
             $prefix,
             $config->getFilesWithContents(),
-            $config->getWhitelistedFilesWithContents(),
+            $config->getExcludedFilesWithContents(),
             $config->getPatcher(),
             $config->getSymbolsConfiguration(),
         );
@@ -269,28 +269,28 @@ final class ConfigurationFactory
     /**
      * @return string[] Absolute paths
      */
-    private function retrieveWhitelistedFiles(string $dirPath, array $config): array
+    private function retrieveExcludedFiles(string $dirPath, array $config): array
     {
-        if (!array_key_exists(ConfigurationKeys::WHITELISTED_FILES_KEYWORD, $config)) {
+        if (!array_key_exists(ConfigurationKeys::EXCLUDED_FILES_KEYWORD, $config)) {
             return [];
         }
 
-        $whitelistedFiles = $config[ConfigurationKeys::WHITELISTED_FILES_KEYWORD];
+        $excludedFiles = $config[ConfigurationKeys::EXCLUDED_FILES_KEYWORD];
 
-        if (!is_array($whitelistedFiles)) {
+        if (!is_array($excludedFiles)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Expected whitelisted files to be an array of strings, found "%s" instead.',
-                    gettype($whitelistedFiles),
+                    'Expected excluded files to be an array of strings, found "%s" instead.',
+                    gettype($excludedFiles),
                 ),
             );
         }
 
-        foreach ($whitelistedFiles as $index => $file) {
+        foreach ($excludedFiles as $index => $file) {
             if (!is_string($file)) {
                 throw new InvalidArgumentException(
                     sprintf(
-                        'Expected whitelisted files to be an array of string, the "%d" element is not.',
+                        'Expected excluded files to be an array of string, the "%d" element is not.',
                         $index,
                     ),
                 );
@@ -300,10 +300,10 @@ final class ConfigurationFactory
                 $file = $dirPath.DIRECTORY_SEPARATOR.$file;
             }
 
-            $whitelistedFiles[$index] = realpath($file);
+            $excludedFiles[$index] = realpath($file);
         }
 
-        return array_filter($whitelistedFiles);
+        return array_filter($excludedFiles);
     }
 
     /**

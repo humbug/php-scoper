@@ -73,7 +73,7 @@ return [
         Finder::class,
         'Symfony\\Polyfill\\*',
     ],
-    'files-whitelist' => [
+    'exclude-files' => [
         ...$jetBrainStubs,
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,

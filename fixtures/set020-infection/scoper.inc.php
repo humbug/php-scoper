@@ -27,7 +27,7 @@ $polyfillsStubs = array_map(
 );
 
 return [
-    'files-whitelist' => [
+    'exclude-files' => [
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,
     ],

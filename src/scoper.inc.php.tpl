@@ -45,10 +45,11 @@ return [
         ]),
     ],
 
-    // Whitelists a list of files. Unlike the other whitelist related features, this one is about completely leaving
-    // a file untouched.
+    // List of excluded files, i.e. files for which the content will be left untouched.
     // Paths are relative to the configuration file unless if they are already absolute
-    'files-whitelist' => [
+    //
+    // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers
+    'exclude-files' => [
         'src/a-whitelisted-file.php',
     ],
 

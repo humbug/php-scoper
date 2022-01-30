@@ -37,7 +37,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Prefix](docs/configuration.md#prefix)
     - [Finders and paths](docs/configuration.md#finders-and-paths)
     - [Patchers](docs/configuration.md#patchers)
-    - [Whitelisted files](docs/configuration.md#whitelisted-files)
+    - [Excluded files](docs/configuration.md#excluded-files)
     - [Excluded Symbols](docs/configuration.md#excluded-symbols)
     - [Exposed Symbols](docs/configuration.md#exposed-symbols)
         - [Exposing classes](docs/configuration.md#exposing-classes)

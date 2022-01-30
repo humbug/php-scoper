@@ -2838,7 +2838,7 @@ BANNER;
                         return make_path_relative($path, $basePath);
                     },
                     array_keys(
-                        $phpScoperConfig->getWhitelistedFilesWithContents(),
+                        $phpScoperConfig->getExcludedFilesWithContents(),
                     ),
                 )
             )

@@ -3,7 +3,7 @@
 - [Prefix](#prefix)
 - [Finders and paths](#finders-and-paths)
 - [Patchers](#patchers)
-- [Whitelisted files](#whitelisted-files)
+- [Excluded files](#excluded-files)
 - [Excluded Symbols](#excluded-symbols)
 - [Exposed Symbols](#exposed-symbols)
     - [Exposing classes](#exposing-classes)
@@ -169,7 +169,7 @@ return [
 ```
 
 
-### Whitelisted files
+### Excluded files
 
 For the files listed in `files-whitelist`, their content will be left
 untouched during the scoping process.
