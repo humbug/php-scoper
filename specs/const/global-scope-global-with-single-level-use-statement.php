@@ -36,55 +36,53 @@ return [
     ],
 
     'Constant call imported with a use statement' => <<<'PHP'
-<?php
+    <?php
+    
+    use const DUMMY_CONST;
+    
+    DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use const Humbug\DUMMY_CONST;
+    DUMMY_CONST;
+    
+    PHP,
 
-use const DUMMY_CONST;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const Humbug\DUMMY_CONST;
-DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted constant call imported with a use statement' => [
+    'Exposed constant call imported with a use statement' => [
         'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-use const DUMMY_CONST;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const DUMMY_CONST;
-DUMMY_CONST;
-
-PHP
+        <?php
+        
+        use const DUMMY_CONST;
+        
+        DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        use const DUMMY_CONST;
+        DUMMY_CONST;
+        
+        PHP,
     ],
 
     'FQ constant call imported with a use statement' => <<<'PHP'
-<?php
-
-use const DUMMY_CONST;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const Humbug\DUMMY_CONST;
-\Humbug\DUMMY_CONST;
-
-PHP
-    ,
+    <?php
+    
+    use const DUMMY_CONST;
+    
+    \DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use const Humbug\DUMMY_CONST;
+    \Humbug\DUMMY_CONST;
+    
+    PHP,
 ];

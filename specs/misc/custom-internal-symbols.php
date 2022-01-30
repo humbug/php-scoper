@@ -53,27 +53,27 @@ return [
     
     PHP,
 
-    'Known non-internal symbols with global whitelisting (sanity check)' => [
+    'Known non-internal symbols with global symbols exposed (sanity check)' => [
         'expose-global-constants' => true,
         'expose-global-classes' => true,
         'expose-global-functions' => true,
         'payload' => <<<'PHP'
-            <?php
-            
-            use Foo;
-            use const BAR;
-            use function baz;
-            
-            ----
-            <?php
-            
-            namespace Humbug;
-            
-            use Humbug\Foo;
-            use const BAR;
-            use function Humbug\baz;
-            
-            PHP,
+        <?php
+        
+        use Foo;
+        use const BAR;
+        use function baz;
+        
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        use Humbug\Foo;
+        use const BAR;
+        use function Humbug\baz;
+        
+        PHP,
     ],
 
     'Declared internal symbols' => [
@@ -81,21 +81,21 @@ return [
         'exclude-functions' => ['baz'],
         'exclude-constants' => ['BAR'],
         'payload' => <<<'PHP'
-            <?php
-            
-            use Foo;
-            use const BAR;
-            use function baz;
-            
-            ----
-            <?php
-            
-            namespace Humbug;
-            
-            use Foo;
-            use const BAR;
-            use function baz;
-            
-            PHP,
+        <?php
+        
+        use Foo;
+        use const BAR;
+        use function baz;
+        
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        use Foo;
+        use const BAR;
+        use function baz;
+        
+        PHP,
     ],
 ];

@@ -18,7 +18,7 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
         'expose-namespaces' => [],
@@ -36,40 +36,38 @@ return [
     ],
 
     'Global function call imported with a use statement in a namespace' => <<<'PHP'
-<?php
-
-namespace X;
-
-use function main as foo;
-
-foo();
-----
-<?php
-
-namespace Humbug\X;
-
-use function Humbug\main as foo;
-foo();
-
-PHP
-    ,
+    <?php
+    
+    namespace X;
+    
+    use function main as foo;
+    
+    foo();
+    ----
+    <?php
+    
+    namespace Humbug\X;
+    
+    use function Humbug\main as foo;
+    foo();
+    
+    PHP,
 
     'Global FQ function call imported with a use statement in a namespace' => <<<'PHP'
-<?php
-
-namespace X;
-
-use function main as foo;
-
-\foo();
-----
-<?php
-
-namespace Humbug\X;
-
-use function Humbug\main as foo;
-\Humbug\foo();
-
-PHP
-    ,
+    <?php
+    
+    namespace X;
+    
+    use function main as foo;
+    
+    \foo();
+    ----
+    <?php
+    
+    namespace Humbug\X;
+    
+    use function Humbug\main as foo;
+    \Humbug\foo();
+    
+    PHP,
 ];

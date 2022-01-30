@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global constant imported with a use statement used in the global scope with the global constants whitelisted',
+        'title' => 'Global constant imported with a use statement used in the global scope with the global constants exposed',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
         'expose-global-constants' => true,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,55 +36,53 @@ return [
     ],
 
     'Constant call imported with a use statement' => <<<'PHP'
-<?php
+    <?php
+    
+    use const DUMMY_CONST;
+    
+    DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use const DUMMY_CONST;
+    DUMMY_CONST;
+    
+    PHP,
 
-use const DUMMY_CONST;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const DUMMY_CONST;
-DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted constant call imported with a use statement' => [
+    'Exposed constant call imported with a use statement' => [
         'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-use const DUMMY_CONST;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const DUMMY_CONST;
-DUMMY_CONST;
-
-PHP
+        <?php
+        
+        use const DUMMY_CONST;
+        
+        DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        use const DUMMY_CONST;
+        DUMMY_CONST;
+        
+        PHP,
     ],
 
     'FQ constant call imported with a use statement' => <<<'PHP'
-<?php
-
-use const DUMMY_CONST;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-use const DUMMY_CONST;
-\DUMMY_CONST;
-
-PHP
-    ,
+    <?php
+    
+    use const DUMMY_CONST;
+    
+    \DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use const DUMMY_CONST;
+    \DUMMY_CONST;
+    
+    PHP,
 ];

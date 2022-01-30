@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Whitelisting functions which are never declared but for which the existence is checked',
+        'title' => 'Exposed functions which are never declared',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
@@ -35,107 +35,85 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'Non whitelisted global function call' => <<<'PHP'
-<?php
+    'Non exposed global function call' => <<<'PHP'
+    <?php
+    
+    main();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    main();
+    
+    PHP,
 
-function_exists('main');
-----
-<?php
-
-namespace Humbug;
-
-\function_exists('Humbug\\main');
-
-PHP
-    ,
-
-    'Whitelisted global function call' => [
-        'whitelist' => ['main'],
+    'Exposed global function call' => [
+        'expose-functions' => ['main'],
         'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-function_exists('main');
-----
-<?php
-
-namespace Humbug;
-
-\function_exists('Humbug\\main');
-
-PHP
+        <?php
+        
+        main();
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        \Humbug\main();
+        
+        PHP,
     ],
 
-    'Global function call with whitelisted global functions' => [
+    'Global function call with exposed global functions' => [
         'expose-global-functions' => true,
         'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-function_exists('main');
-----
-<?php
-
-namespace Humbug;
-
-\function_exists('Humbug\\main');
-
-PHP
-    ],
-
-    'Global function call with non-whitelisted global functions' => <<<'PHP'
-<?php
-
-function_exists('main');
-----
-<?php
-
-namespace Humbug;
-
-\function_exists('Humbug\\main');
-
-PHP
-    ,
-
-    'Whitelisted namespaced function call' => [
-        'whitelist' => ['Acme\main'],
-        'expected-recorded-functions' => [
-            ['Acme\main', 'Humbug\Acme\main'],
-        ],
-        'payload' => <<<'PHP'
-<?php
-
-namespace Acme;
-
-function_exists('Acme\main');
-----
-<?php
-
-namespace Humbug\Acme;
-
-\function_exists('Humbug\\Acme\\main');
-
-PHP
-    ],
-
-    'Namespaced function call from excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
         <?php
         
-        namespace Acme;
-        
-        function_exists('Acme\main');
+        main();
         ----
         <?php
         
+        namespace Humbug;
+        
+        main();
+        
+        PHP,
+    ],
+
+    'Global function call with non-exposed global functions' => <<<'PHP'
+    <?php
+    
+    main();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    main();
+    
+    PHP,
+
+    'Exposed namespaced function call' => [
+        'expose-functions' => ['Acme\main'],
+        'expected-recorded-functions' => [],   // Nothing registered here since the FQ could not be resolved
+        'payload' => <<<'PHP'
+        <?php
+        
         namespace Acme;
         
-        \function_exists('Acme\\main');
+        main();
+        ----
+        <?php
+        
+        namespace Humbug\Acme;
+        
+        main();
         
         PHP,
     ],

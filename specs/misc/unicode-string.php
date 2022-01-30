@@ -37,26 +37,25 @@ return [
 
     // https://github.com/humbug/php-scoper/issues/464
     'String with unicode' => <<<'PHP'
-<?php
-
-namespace MaxMind\Db;
-
-class Reader {
-    private static $UNICODE = "äßæ";
-    private static $EMOJIS = "👾 🤖";
-}
-
-----
-<?php
-
-namespace Humbug\MaxMind\Db;
-
-class Reader
-{
-    private static $UNICODE = "äßæ";
-    private static $EMOJIS = "👾 🤖";
-}
-
-PHP
-    ,
+    <?php
+    
+    namespace MaxMind\Db;
+    
+    class Reader {
+        private static $UNICODE = "äßæ";
+        private static $EMOJIS = "👾 🤖";
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug\MaxMind\Db;
+    
+    class Reader
+    {
+        private static $UNICODE = "äßæ";
+        private static $EMOJIS = "👾 🤖";
+    }
+    
+    PHP,
 ];

@@ -20,7 +20,7 @@ return [
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,46 +36,44 @@ return [
     ],
 
     'Namespaced constant call' => <<<'PHP'
-<?php
+    <?php
+    
+    PHPUnit\Command\DUMMY_CONST;
+    ----
+    <?php
 
-PHPUnit\Command\DUMMY_CONST;
-----
-<?php
+    namespace Humbug;
 
-namespace Humbug;
+    \Humbug\PHPUnit\Command\DUMMY_CONST;
 
-\Humbug\PHPUnit\Command\DUMMY_CONST;
-
-PHP
-    ,
+    PHP,
 
     'FQ namespaced constant call' => <<<'PHP'
-<?php
+    <?php
+    
+    \PHPUnit\Command\DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    \Humbug\PHPUnit\Command\DUMMY_CONST;
+    
+    PHP,
 
-\PHPUnit\Command\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-\Humbug\PHPUnit\Command\DUMMY_CONST;
-
-PHP
-    ,
-
-    'Namespaced constant call on a whitelisted constant' => [
+    'Namespaced constant call on an exposed constant' => [
         'expose-constants' => ['PHPUnit\Command\DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
+        <?php
+        
+        PHPUnit\Command\DUMMY_CONST;
+        ----
+        <?php
 
-PHPUnit\Command\DUMMY_CONST;
-----
-<?php
+        namespace Humbug;
 
-namespace Humbug;
+        \PHPUnit\Command\DUMMY_CONST;
 
-\PHPUnit\Command\DUMMY_CONST;
-
-PHP
+        PHP,
     ],
 ];

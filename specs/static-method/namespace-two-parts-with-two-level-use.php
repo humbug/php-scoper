@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,158 +36,156 @@ return [
     ],
 
     'Static method call statement of a class via a use statement' => <<<'PHP'
-<?php
-
-namespace X {
-    class Foo {}
-}
-
-namespace X\Foo {
-    class Bar {}
-}
-
-namespace A {
-    use X\Foo;
+    <?php
     
+    namespace X {
+        class Foo {}
+    }
+    
+    namespace X\Foo {
+        class Bar {}
+    }
+    
+    namespace A {
+        use X\Foo;
+        
+        Foo\Bar::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug\X;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\X\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug\A;
+    
+    use Humbug\X\Foo;
     Foo\Bar::main();
-}
-----
-<?php
-
-namespace Humbug\X;
-
-class Foo
-{
-}
-namespace Humbug\X\Foo;
-
-class Bar
-{
-}
-namespace Humbug\A;
-
-use Humbug\X\Foo;
-Foo\Bar::main();
-
-PHP
-    ,
+    
+    PHP,
 
     'FQ static method call statement of a class via a use statement' => <<<'PHP'
-<?php
-
-namespace X {
-    class Foo {}
-}
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace A {
-    use X\Foo;
+    <?php
     
-    \Foo\Bar::main();
-}
-----
-<?php
+    namespace X {
+        class Foo {}
+    }
+    
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace A {
+        use X\Foo;
+        
+        \Foo\Bar::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug\X;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug\A;
+    
+    use Humbug\X\Foo;
+    \Humbug\Foo\Bar::main();
+    
+    PHP,
 
-namespace Humbug\X;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug\A;
-
-use Humbug\X\Foo;
-\Humbug\Foo\Bar::main();
-
-PHP
-    ,
-
-    'Static method call statement of a whitelisted class via a use statement' => [
-        'whitelist' => ['X\Foo\Bar'],
+    'Static method call statement of an exposed class via a use statement' => [
+        'expose-classes' => ['X\Foo\Bar'],
         'expected-recorded-classes' => [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace X {
-    class Foo {}
-}
-
-namespace X\Foo {
-    class Bar {}
-}
-
-namespace A {
-    use X\Foo;
-    
-    Foo\Bar::main();
-}
-----
-<?php
-
-namespace Humbug\X;
-
-class Foo
-{
-}
-namespace Humbug\X\Foo;
-
-class Bar
-{
-}
-\class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
-namespace Humbug\A;
-
-use Humbug\X\Foo;
-Foo\Bar::main();
-
-PHP
+        <?php
+        
+        namespace X {
+            class Foo {}
+        }
+        
+        namespace X\Foo {
+            class Bar {}
+        }
+        
+        namespace A {
+            use X\Foo;
+            
+            Foo\Bar::main();
+        }
+        ----
+        <?php
+        
+        namespace Humbug\X;
+        
+        class Foo
+        {
+        }
+        namespace Humbug\X\Foo;
+        
+        class Bar
+        {
+        }
+        \class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
+        namespace Humbug\A;
+        
+        use Humbug\X\Foo;
+        Foo\Bar::main();
+        
+        PHP,
     ],
 
-    'FQ static method call statement of a non-whitelisted class via a use statement' => [
-        'whitelist' => ['X\Foo\Bar'],
+    'FQ static method call statement of a non-exposed class via a use statement' => [
+        'expose-classes' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
-<?php
-
-namespace X {
-    class Foo {}
-}
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace A {
-    use X\Foo;
-    
-    \Foo\Bar::main();
-}
-----
-<?php
-
-namespace Humbug\X;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug\A;
-
-use Humbug\X\Foo;
-\Humbug\Foo\Bar::main();
-
-PHP
+        <?php
+        
+        namespace X {
+            class Foo {}
+        }
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace A {
+            use X\Foo;
+            
+            \Foo\Bar::main();
+        }
+        ----
+        <?php
+        
+        namespace Humbug\X;
+        
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+        
+        class Bar
+        {
+        }
+        namespace Humbug\A;
+        
+        use Humbug\X\Foo;
+        \Humbug\Foo\Bar::main();
+        
+        PHP,
     ],
 ];

@@ -36,152 +36,147 @@ return [
     ],
 
     'string' => <<<'PHP'
-<?php
-
-$x = '
-<?php
-
-use Acme\Foo;
-
-';
-
-----
-<?php
-
-namespace Humbug;
-
-$x = '
-<?php
-
-use Acme\\Foo;
-
-';
-
-PHP
-    ,
+    <?php
+    
+    $x = '
+    <?php
+    
+    use Acme\Foo;
+    
+    ';
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    $x = '
+    <?php
+    
+    use Acme\\Foo;
+    
+    ';
+    
+    PHP,
 
     'Nowdoc' => <<<'PHP'
-<?php
+    <?php
+    
+    $x = <<<'PHP_NOWDOC'
+    <?php
+    
+    use Acme\Foo;
+    
+    PHP_NOWDOC;
 
-$x = <<<'PHP_NOWDOC'
-<?php
+    $y = <<<'PHP_NOWDOC'
+    <?php
+    
+    use Acme\Foo;
+    PHP_NOWDOC;
 
-use Acme\Foo;
+    ----
+    <?php
 
-PHP_NOWDOC;
+    namespace Humbug;
 
-$y = <<<'PHP_NOWDOC'
-<?php
+    $x = <<<'PHP_NOWDOC'
+    <?php
+    
+    namespace Humbug;
+    
+    use Humbug\Acme\Foo;
+    
+    PHP_NOWDOC;
+    $y = <<<'PHP_NOWDOC'
+    <?php
+    
+    namespace Humbug;
+    
+    use Humbug\Acme\Foo;
+    PHP_NOWDOC
+    ;
 
-use Acme\Foo;
-PHP_NOWDOC;
-
-----
-<?php
-
-namespace Humbug;
-
-$x = <<<'PHP_NOWDOC'
-<?php
-
-namespace Humbug;
-
-use Humbug\Acme\Foo;
-
-PHP_NOWDOC;
-$y = <<<'PHP_NOWDOC'
-<?php
-
-namespace Humbug;
-
-use Humbug\Acme\Foo;
-PHP_NOWDOC
-;
-
-PHP
-    ,
+    PHP,
 
     'Nowdoc with invalid PHP' => <<<'PHP'
-<?php
+    <?php
+    
+    $x = <<<'PHP_NOWDOC'
+    Not.php
+    PHP_NOWDOC;
 
-$x = <<<'PHP_NOWDOC'
-Not.php
-PHP_NOWDOC;
+    ----
+    <?php
 
-----
-<?php
+    namespace Humbug;
 
-namespace Humbug;
+    $x = <<<'PHP_NOWDOC'
+    Not.php
+    PHP_NOWDOC
+    ;
 
-$x = <<<'PHP_NOWDOC'
-Not.php
-PHP_NOWDOC
-;
-
-PHP
-    ,
+    PHP,
 
     'Partial PHP nowdoc' => <<<'PHP'
-<?php
+    <?php
+    
+    $x = <<<'PHP_NOWDOC'
+    use Acme\Foo;
+    PHP_NOWDOC;
 
-$x = <<<'PHP_NOWDOC'
-use Acme\Foo;
-PHP_NOWDOC;
+    ----
+    <?php
 
-----
-<?php
+    namespace Humbug;
 
-namespace Humbug;
+    $x = <<<'PHP_NOWDOC'
+    use Acme\Foo;
+    PHP_NOWDOC
+    ;
 
-$x = <<<'PHP_NOWDOC'
-use Acme\Foo;
-PHP_NOWDOC
-;
-
-PHP
-    ,
+    PHP,
 
     'Empty nowdoc' => <<<'PHP'
-<?php
+    <?php
+    
+    $x = <<<'PHP_NOWDOC'
+    PHP_NOWDOC;
 
-$x = <<<'PHP_NOWDOC'
-PHP_NOWDOC;
+    ----
+    <?php
 
-----
-<?php
+    namespace Humbug;
 
-namespace Humbug;
-
-$x = <<<'PHP_NOWDOC'
-PHP_NOWDOC
-;
-
-PHP
-    ,
-
-    'Heredoc' => <<<'PHP'
-<?php
-
-$x = <<<PHP_HEREDOC
-<?php
-
-use Acme\Foo;
-
-PHP_HEREDOC;
-
-----
-<?php
-
-namespace Humbug;
-
-$x = <<<PHP_HEREDOC
-<?php
-
-use Acme\\Foo;
-
-PHP_HEREDOC
-;
-
-PHP
-    ,
+    $x = <<<'PHP_NOWDOC'
+    PHP_NOWDOC
+    ;
+    
+    PHP
+        ,
+    
+        'Heredoc' => <<<'PHP'
+    <?php
+    
+    $x = <<<PHP_HEREDOC
+    <?php
+    
+    use Acme\Foo;
+    
+    PHP_HEREDOC;
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    $x = <<<PHP_HEREDOC
+    <?php
+    
+    use Acme\\Foo;
+    
+    PHP_HEREDOC
+    ;
+    
+    PHP,
 ];

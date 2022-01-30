@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,31 +36,30 @@ return [
     ],
 
     'FQCN string argument' => <<<'PHP'
-<?php
-
-class Foo {
-    const X = 'Symfony\\Component\\Yaml\\Ya_1';
-    const X = '\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    <?php
     
-    const X = 'HelloWorld';
-}
-
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'HelloWorld';
-}
-
-PHP
-    ,
+    class Foo {
+        const X = 'Symfony\\Component\\Yaml\\Ya_1';
+        const X = '\\Symfony\\Component\\Yaml\\Ya_1';
+        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        
+        const X = 'HelloWorld';
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        const X = 'HelloWorld';
+    }
+    
+    PHP,
 ];

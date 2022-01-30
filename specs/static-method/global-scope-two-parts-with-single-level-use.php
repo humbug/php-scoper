@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,296 +36,292 @@ return [
     ],
 
     'Static method call statement of a namespaced class partially imported with a use statement' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo;
+    <?php
     
+    namespace {
+        class Foo {}
+    }
+    
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace {
+        use Foo;
+        
+        Foo\Bar::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
+    use Humbug\Foo;
     Foo\Bar::main();
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo;
-Foo\Bar::main();
-
-PHP
-    ,
+    
+    PHP,
 
     'Static method call statement of a namespaced class imported with a use statement' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo\Bar;
+    <?php
     
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace {
+        use Foo\Bar;
+        
+        Bar::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
+    use Humbug\Foo\Bar;
     Bar::main();
-}
-----
-<?php
-
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo\Bar;
-Bar::main();
-
-PHP
-    ,
+    
+    PHP,
 
     'FQ static method call statement of a namespaced class partially imported with a use statement' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo;
+    <?php
     
-    \Foo\Bar::main();
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo;
-\Humbug\Foo\Bar::main();
-
-PHP
-    ,
+    namespace {
+        class Foo {}
+    }
+    
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace {
+        use Foo;
+        
+        \Foo\Bar::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
+    use Humbug\Foo;
+    \Humbug\Foo\Bar::main();
+    
+    PHP,
 
     'FQ static method call statement of a namespaced class imported with a use statement' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    class Bar {}
-
-    use Foo\Bar;
+    <?php
     
-    \Bar::main();
-}
-----
-<?php
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace {
+        class Bar {}
+    
+        use Foo\Bar;
+        
+        \Bar::main();
+    }
+    ----
+    <?php
+    
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
+    class Bar
+    {
+    }
+    use Humbug\Foo\Bar;
+    \Humbug\Bar::main();
+    
+    PHP,
 
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-class Bar
-{
-}
-use Humbug\Foo\Bar;
-\Humbug\Bar::main();
-
-PHP
-    ,
-
-    'Static method call statement of a whitelisted namespaced class partially imported with a use statement' => [
-        'whitelist' => ['Foo\Bar'],
+    'Static method call statement of an exposed namespaced class partially imported with a use statement' => [
+        'expose-classes' => ['Foo\Bar'],
         'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo;
-    
-    Foo\Bar::main();
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-namespace Humbug;
-
-use Humbug\Foo;
-Foo\Bar::main();
-
-PHP
+        <?php
+        
+        namespace {
+            class Foo {}
+        }
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace {
+            use Foo;
+            
+            Foo\Bar::main();
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+        
+        class Bar
+        {
+        }
+        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+        namespace Humbug;
+        
+        use Humbug\Foo;
+        Foo\Bar::main();
+        
+        PHP,
     ],
 
-    'SStatic method call statement of a whitelisted namespaced class partially imported with a use statementtatic method call statement of a whitelisted namespaced class imported with a use statement' => [
-        'whitelist' => ['Foo\Bar'],
+    'Static method call statement of an exposed namespaced class partially imported with a use statement static method call statement of an exposed namespaced class imported with a use statement' => [
+        'expose-classes' => ['Foo\Bar'],
         'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo\Bar;
-    
-    Bar::main();
-}
-----
-<?php
-
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-namespace Humbug;
-
-use Humbug\Foo\Bar;
-Bar::main();
-
-PHP
+        <?php
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace {
+            use Foo\Bar;
+            
+            Bar::main();
+        }
+        ----
+        <?php
+        
+        namespace Humbug\Foo;
+        
+        class Bar
+        {
+        }
+        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+        namespace Humbug;
+        
+        use Humbug\Foo\Bar;
+        Bar::main();
+        
+        PHP,
     ],
 
-    'FQ static method call statement of a whitelisted namespaced class partially imported with a use statement' => [
-        'whitelist' => ['Foo\Bar'],
+    'FQ static method call statement of an exposed namespaced class partially imported with a use statement' => [
+        'expose-classes' => ['Foo\Bar'],
         'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo;
-    
-    \Foo\Bar::main();
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-namespace Humbug;
-
-use Humbug\Foo;
-\Humbug\Foo\Bar::main();
-
-PHP
+        <?php
+        
+        namespace {
+            class Foo {}
+        }
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace {
+            use Foo;
+            
+            \Foo\Bar::main();
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+        
+        class Bar
+        {
+        }
+        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+        namespace Humbug;
+        
+        use Humbug\Foo;
+        \Humbug\Foo\Bar::main();
+        
+        PHP,
     ],
 
-    'FQ static method call statement of a whitelisted namespaced class imported with a use statement' => [
-        'whitelist' => ['Foo\Bar'],
+    'FQ static method call statement of an exposed namespaced class imported with a use statement' => [
+        'expose-classes' => ['Foo\Bar'],
         'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    class Bar {}
-
-    use Foo\Bar;
-    
-    \Bar::main();
-}
-----
-<?php
-
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-namespace Humbug;
-
-class Bar
-{
-}
-use Humbug\Foo\Bar;
-\Humbug\Bar::main();
-
-PHP
+        <?php
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace {
+            class Bar {}
+        
+            use Foo\Bar;
+            
+            \Bar::main();
+        }
+        ----
+        <?php
+        
+        namespace Humbug\Foo;
+        
+        class Bar
+        {
+        }
+        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+        namespace Humbug;
+        
+        class Bar
+        {
+        }
+        use Humbug\Foo\Bar;
+        \Humbug\Bar::main();
+        
+        PHP,
     ],
 ];

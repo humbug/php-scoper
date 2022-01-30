@@ -20,7 +20,7 @@ return [
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,70 +36,68 @@ return [
     ],
 
     'Namespaced constant call with namespace partially imported' => <<<'PHP'
-<?php
-
-class Foo {}
-
-use Foo;
-
-Foo\Bar\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-use Humbug\Foo;
-Foo\Bar\DUMMY_CONST;
-
-PHP
-    ,
+    <?php
+    
+    class Foo {}
+    
+    use Foo;
+    
+    Foo\Bar\DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    use Humbug\Foo;
+    Foo\Bar\DUMMY_CONST;
+    
+    PHP,
 
     'FQ namespaced constant call with namespace partially imported' => <<<'PHP'
-<?php
+    <?php
+    
+    class Foo {}
+    
+    use Foo;
+    
+    \Foo\Bar\DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    use Humbug\Foo;
+    \Humbug\Foo\Bar\DUMMY_CONST;
+    
+    PHP,
 
-class Foo {}
-
-use Foo;
-
-\Foo\Bar\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-use Humbug\Foo;
-\Humbug\Foo\Bar\DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted namespaced constant call with namespace partially imported' => [
+    'Exposed namespaced constant call with namespace partially imported' => [
         'expose-constants' => ['Foo\Bar\DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-class Foo {}
-
-use Foo;
-
-Foo\Bar\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-use Humbug\Foo;
-\Foo\Bar\DUMMY_CONST;
-
-PHP
+        <?php
+        
+        class Foo {}
+        
+        use Foo;
+        
+        Foo\Bar\DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class Foo
+        {
+        }
+        use Humbug\Foo;
+        \Foo\Bar\DUMMY_CONST;
+        
+        PHP,
     ],
 ];

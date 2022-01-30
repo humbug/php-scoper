@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Global constant usage in the global scope with the global constants whitelisted',
+        'title' => 'Global constant usage in the global scope with the global constants exposed',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
         'expose-global-constants' => true,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,91 +36,89 @@ return [
     ],
 
     'Constant call in the global namespace' => <<<'PHP'
-<?php
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-\DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted constant call in the global namespace' => <<<'PHP'
-<?php
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-\DUMMY_CONST;
-
-PHP
-    ,
-
-    'Constant call in the global namespace which is whitelisted' => [
-        'exclude-namespaces' => ['/^$/'],
-        'payload' => <<<'PHP'
-<?php
-
-DUMMY_CONST;
-----
-<?php
-
-namespace {
+    <?php
+    
+    DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
     \DUMMY_CONST;
-}
+    
+    PHP,
 
-PHP
+    'Exposed constant call in the global namespace' => [
+        'expose-constants' => ['DUMMY_CONST'],
+        'payload' => <<<'PHP'
+        <?php
+        
+        DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        \DUMMY_CONST;
+        
+        PHP,
+    ],
+
+    'Constant call in the global namespace which is excluded' => [
+        'exclude-namespaces' => [''],
+        'payload' => <<<'PHP'
+        <?php
+        
+        DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace {
+            \DUMMY_CONST;
+        }
+        
+        PHP,
     ],
 
     'Internal constant call in the global namespace' => <<<'PHP'
-<?php
-
-DIRECTORY_SEPARATOR;
-----
-<?php
-
-namespace Humbug;
-
-\DIRECTORY_SEPARATOR;
-
-PHP
-    ,
+    <?php
+    
+    DIRECTORY_SEPARATOR;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    \DIRECTORY_SEPARATOR;
+    
+    PHP,
 
     'FQ constant call in the global namespace' => <<<'PHP'
-<?php
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-\DUMMY_CONST;
-
-PHP
-    ,
+    <?php
+    
+    DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    \DUMMY_CONST;
+    
+    PHP,
 
     'Global constant call in the global scope of a constant which has a use statement for a class importing a class with the same name' => <<<'PHP'
-<?php
-
-use Acme\Inf;
-
-INF;
-----
-<?php
-
-namespace Humbug;
-
-use Humbug\Acme\Inf;
-\INF;
-
-PHP
-    ,
+    <?php
+    
+    use Acme\Inf;
+    
+    INF;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use Humbug\Acme\Inf;
+    \INF;
+    
+    PHP,
 ];

@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Native constant calls with the global constants whitelisted',
+        'title' => 'Native constant calls with the global constants exposed',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
@@ -36,39 +36,37 @@ return [
     ],
 
     'Internal function in a namespace' => <<<'PHP'
-<?php
-
-namespace Acme;
-
-$x = DIRECTORY_SEPARATOR;
-
-----
-<?php
-
-namespace Humbug\Acme;
-
-$x = \DIRECTORY_SEPARATOR;
-
-PHP
-    ,
+    <?php
+    
+    namespace Acme;
+    
+    $x = DIRECTORY_SEPARATOR;
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    $x = \DIRECTORY_SEPARATOR;
+    
+    PHP,
 
     'Namespaced function having the same name as an internal function' => <<<'PHP'
-<?php
-
-namespace Acme;
-
-use const Acme\DIRECTORY_SEPARATOR;
-
-$x = DIRECTORY_SEPARATOR;
-
-----
-<?php
-
-namespace Humbug\Acme;
-
-use const Humbug\Acme\DIRECTORY_SEPARATOR;
-$x = DIRECTORY_SEPARATOR;
-
-PHP
-    ,
+    <?php
+    
+    namespace Acme;
+    
+    use const Acme\DIRECTORY_SEPARATOR;
+    
+    $x = DIRECTORY_SEPARATOR;
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    use const Humbug\Acme\DIRECTORY_SEPARATOR;
+    $x = DIRECTORY_SEPARATOR;
+    
+    PHP,
 ];

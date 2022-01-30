@@ -20,7 +20,7 @@ return [
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,61 +36,59 @@ return [
     ],
 
     'Constant call imported with an aliased use statement' => <<<'PHP'
-<?php
-
-namespace A;
-
-use const DUMMY_CONST as FOO;
-
-FOO;
-----
-<?php
-
-namespace Humbug\A;
-
-use const Humbug\DUMMY_CONST as FOO;
-FOO;
-
-PHP
-    ,
+    <?php
+    
+    namespace A;
+    
+    use const DUMMY_CONST as FOO;
+    
+    FOO;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    use const Humbug\DUMMY_CONST as FOO;
+    FOO;
+    
+    PHP,
 
     'Constant FQ call imported with an aliased use statement' => <<<'PHP'
-<?php
+    <?php
+    
+    namespace A;
+    
+    use const DUMMY_CONST as FOO;
+    
+    \FOO;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    use const Humbug\DUMMY_CONST as FOO;
+    \Humbug\FOO;
+    
+    PHP,
 
-namespace A;
-
-use const DUMMY_CONST as FOO;
-
-\FOO;
-----
-<?php
-
-namespace Humbug\A;
-
-use const Humbug\DUMMY_CONST as FOO;
-\Humbug\FOO;
-
-PHP
-    ,
-
-    'Whitelisted constant call imported with an aliased use statement' => [
+    'Exposed constant call imported with an aliased use statement' => [
         'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-use const DUMMY_CONST as FOO;
-
-\FOO;
-----
-<?php
-
-namespace Humbug\A;
-
-use const DUMMY_CONST as FOO;
-\Humbug\FOO;
-
-PHP
+        <?php
+        
+        namespace A;
+        
+        use const DUMMY_CONST as FOO;
+        
+        \FOO;
+        ----
+        <?php
+        
+        namespace Humbug\A;
+        
+        use const DUMMY_CONST as FOO;
+        \Humbug\FOO;
+        
+        PHP,
     ],
 ];

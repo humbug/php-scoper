@@ -20,7 +20,7 @@ return [
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,73 +36,71 @@ return [
     ],
 
     'Constant call in a namespace' => <<<'PHP'
-<?php
-
-namespace A;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-DUMMY_CONST;
-
-PHP
-    ,
+    <?php
+    
+    namespace A;
+    
+    DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    DUMMY_CONST;
+    
+    PHP,
 
     // In theory this case CAN be wrong. There is however a very high chance it
     // is not as it implies having both A\DUMMY_CONST and DUMMY_CONST in the
     // codebase with only DUMMY_CONST exposed.
-    'Whitelisted constant call in a namespace' => [
+    'Exposed constant call in a namespace' => [
         'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-\DUMMY_CONST;
-
-PHP
+        <?php
+        
+        namespace A;
+        
+        DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug\A;
+        
+        \DUMMY_CONST;
+        
+        PHP,
     ],
 
     'FQ constant call in a namespace' => <<<'PHP'
-<?php
+    <?php
+    
+    namespace A;
+    
+    \DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    \Humbug\DUMMY_CONST;
+    
+    PHP,
 
-namespace A;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-\Humbug\DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted FQ constant call in a namespace' => [
+    'Exposed FQ constant call in a namespace' => [
         'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-\DUMMY_CONST;
-
-PHP
+        <?php
+        
+        namespace A;
+        
+        \DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug\A;
+        
+        \DUMMY_CONST;
+        
+        PHP,
     ],
 ];

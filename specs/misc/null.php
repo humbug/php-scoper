@@ -36,39 +36,38 @@ return [
     ],
 
     'Usages of null' => <<<'PHP'
-<?php
-
-const LOWERCASE_NULL = null;
-const UPPERCASE_NULL = null;
-
-$lowerCaseNull = null;
-$upperCaseNull = null;
-
-function foo($lowerCaseNull = null, $upperCaseNull = NULL) {}
-
-class X {
-    var $lowerCaseNull = null;
-    var $upperCaseNull = NULL;
-}
-
-----
-<?php
-
-namespace Humbug;
-
-const LOWERCASE_NULL = null;
-const UPPERCASE_NULL = null;
-$lowerCaseNull = null;
-$upperCaseNull = null;
-function foo($lowerCaseNull = null, $upperCaseNull = NULL)
-{
-}
-class X
-{
-    var $lowerCaseNull = null;
-    var $upperCaseNull = NULL;
-}
-
-PHP
-    ,
+    <?php
+    
+    const LOWERCASE_NULL = null;
+    const UPPERCASE_NULL = null;
+    
+    $lowerCaseNull = null;
+    $upperCaseNull = null;
+    
+    function foo($lowerCaseNull = null, $upperCaseNull = NULL) {}
+    
+    class X {
+        var $lowerCaseNull = null;
+        var $upperCaseNull = NULL;
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    const LOWERCASE_NULL = null;
+    const UPPERCASE_NULL = null;
+    $lowerCaseNull = null;
+    $upperCaseNull = null;
+    function foo($lowerCaseNull = null, $upperCaseNull = NULL)
+    {
+    }
+    class X
+    {
+        var $lowerCaseNull = null;
+        var $upperCaseNull = NULL;
+    }
+    
+    PHP,
 ];

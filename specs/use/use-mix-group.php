@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,26 +36,25 @@ return [
     ],
 
     <<<'PHP'
-<?php
-
-use A\B\{C\D, function b\c, const D};
-
-D::class;
-c();
-D;
-
-----
-<?php
-
-namespace Humbug;
-
-use Humbug\A\B\C\D;
-use function Humbug\A\B\b\c;
-use const Humbug\A\B\D;
-D::class;
-c();
-D;
-
-PHP
-    ,
+    <?php
+    
+    use A\B\{C\D, function b\c, const D};
+    
+    D::class;
+    c();
+    D;
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use Humbug\A\B\C\D;
+    use function Humbug\A\B\b\c;
+    use const Humbug\A\B\D;
+    D::class;
+    c();
+    D;
+    
+    PHP,
 ];

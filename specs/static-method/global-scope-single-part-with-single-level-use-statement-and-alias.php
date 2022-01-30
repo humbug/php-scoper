@@ -18,9 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
-        'expose-global-constants' => true,
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
         'expose-namespaces' => [],
         'expose-constants' => [],
         'expose-classes' => [],
@@ -36,89 +36,95 @@ return [
     ],
 
     'Static method call statement of a class belonging to the global namespace imported via an aliased use statement' => <<<'PHP'
-<?php
-
-class Foo {}
-
-use Foo as X;
-
-X::main();
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-use Humbug\Foo as X;
-X::main();
-
-PHP
-    ,
+    <?php
+    
+    class Foo {}
+    
+    use Foo as X;
+    
+    X::main();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    use Humbug\Foo as X;
+    X::main();
+    
+    PHP,
 
     'FQ static method call statement of a class belonging to the global namespace imported via an aliased use statement' => <<<'PHP'
-<?php
+    <?php
+    
+    class Foo {}
+    class X {}
+    
+    use Foo as X;
+    
+    \X::main();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    class X
+    {
+    }
+    use Humbug\Foo as X;
+    \Humbug\X::main();
+    
+    PHP,
 
-class Foo {}
-class X {}
+    'Static method call statement of a class belonging to the global namespace which has been exposed' => [
+        'expose-global-classes' => true,
+        'payload' => <<<'PHP'
+        <?php
+        
+        use Closure as X;
+        
+        X::bind();
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        use Closure as X;
+        X::bind();
+        
+        PHP,
+    ],
 
-use Foo as X;
-
-\X::main();
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-class X
-{
-}
-use Humbug\Foo as X;
-\Humbug\X::main();
-
-PHP
-    ,
-
-    'Static method call statement of a class belonging to the global namespace which has been whitelisted' => <<<'PHP'
-<?php
-
-use Closure as X;
-
-X::bind();
-----
-<?php
-
-namespace Humbug;
-
-use Closure as X;
-X::bind();
-
-PHP
-    ,
-
-    'FQ static method call statement of a class belonging to the global namespace which has been whitelisted' => <<<'PHP'
-<?php
-
-class X {}
-
-use Closure as X;
-
-\X::bind();
-----
-<?php
-
-namespace Humbug;
-
-class X
-{
-}
-use Closure as X;
-\Humbug\X::bind();
-
-PHP
-    ,
+    'FQ static method call statement of a class belonging to the global namespace which has been exposed' => [
+        'expose-global-classes' => true,
+        'expected-recorded-classes' => [
+            ['X', 'Humbug\X'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        class X {}
+        
+        use Closure as X;
+        
+        \X::bind();
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class X
+        {
+        }
+        \class_alias('Humbug\\X', 'X', \false);
+        use Closure as X;
+        \Humbug\X::bind();
+        
+        PHP,
+    ],
 ];
