@@ -88,7 +88,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             
             return [
                 'prefix' => 'MyPrefix',
-                'files-whitelist' => ['file1', 'file2'],
+                'exclude-files' => ['file1', 'file2'],
                 'patchers' => [],
                 'finders' => [],
                 
