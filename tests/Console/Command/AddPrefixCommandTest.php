@@ -24,6 +24,7 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
 use Prophecy\Argument;
@@ -78,6 +79,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
         $this->appTester = $this->createAppTester();
     }
 
+    // TODO: move those tests
     public function test_get_help_menu(): void
     {
         $input = [];
@@ -113,6 +115,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
           completion  Dump the shell completion script
           help        Display help for a command
           init        Generates a configuration file.
+          inspect-symbol  Checks the given symbol for a given configuration. Helpful to have an insight on how PHP-Scoper will interpret this symbol
           list        List commands
         
         EOF;
@@ -680,7 +683,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
                     $fileSystem,
                     new DummyScoperFactory(
                         new FakeParser(),
-                        Reflector::createEmpty(),
+                        new EnrichedReflectorFactory(
+                            Reflector::createEmpty(),
+                        ),
                         $scoper,
                     ),
                     $innerApp,
