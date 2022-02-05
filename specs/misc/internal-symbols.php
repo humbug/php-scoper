@@ -298,6 +298,74 @@ return [
 
     PHP,
 
+    // https://youtrack.jetbrains.com/issue/WI-29503
+    'MongoDB patch' => <<<'PHP'
+    <?php
+    
+    namespace Acme;
+    
+    use MongoWriteBatch;
+    use MongoUpdateBatch;
+    use MongoInsertBatch;
+    use MongoDeleteBatch;
+    
+    use function bson_encode;
+    use function bson_decode;
+    
+    use const MONGODB_VERSION;
+    use const MONGODB_STABILITY;
+    
+    new MongoWriteBatch();
+    new \MongoWriteBatch();
+    new MongoUpdateBatch();
+    new \MongoUpdateBatch();
+    new MongoInsertBatch();
+    new \MongoInsertBatch();
+    new MongoDeleteBatch();
+    new \MongoDeleteBatch();
+    
+    bson_encode();
+    \bson_encode();
+    bson_decode();
+    \bson_decode();
+    
+    echo MONGODB_VERSION;
+    echo \MONGODB_VERSION;
+    echo MONGODB_STABILITY;
+    echo \MONGODB_STABILITY;
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    use MongoWriteBatch;
+    use MongoUpdateBatch;
+    use MongoInsertBatch;
+    use MongoDeleteBatch;
+    use function bson_encode;
+    use function bson_decode;
+    use const MONGODB_VERSION;
+    use const MONGODB_STABILITY;
+    new MongoWriteBatch();
+    new \MongoWriteBatch();
+    new MongoUpdateBatch();
+    new \MongoUpdateBatch();
+    new MongoInsertBatch();
+    new \MongoInsertBatch();
+    new MongoDeleteBatch();
+    new \MongoDeleteBatch();
+    bson_encode();
+    \bson_encode();
+    bson_decode();
+    \bson_decode();
+    echo MONGODB_VERSION;
+    echo \MONGODB_VERSION;
+    echo MONGODB_STABILITY;
+    echo \MONGODB_STABILITY;
+
+    PHP,
+
     // https://github.com/humbug/php-scoper/issues/618
     'NULL anti-regression test' => <<<'PHP'
     <?php

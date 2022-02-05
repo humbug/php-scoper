@@ -79,6 +79,10 @@ final class Reflector
         'Swoole\WebSocket\CloseFrame' ,
         'Swoole\WebSocket\Frame' ,
         'Swoole\WebSocket\Server' ,
+
+        // https://youtrack.jetbrains.com/issue/WI-29503
+        'MongoInsertBatch',
+        'MongoDeleteBatch',
     ];
 
     private const MISSING_FUNCTIONS = [
@@ -143,6 +147,10 @@ final class Reflector
         'swoole_timer_stats',
         'swoole_timer_tick',
         'swoole_version',
+
+        // https://youtrack.jetbrains.com/issue/WI-29503
+        'bson_encode',
+        'bson_decode',
     ];
 
     /**
@@ -578,6 +586,10 @@ final class Reflector
         'WEBSOCKET_STATUS_CONNECTION',
         'WEBSOCKET_STATUS_FRAME',
         'WEBSOCKET_STATUS_HANDSHAKE',
+
+        // https://youtrack.jetbrains.com/issue/WI-29503
+        'MONGODB_VERSION',
+        'MONGODB_STABILITY',
     ];
 
     private SymbolRegistry $classes;
