@@ -154,7 +154,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         );
 
         $this->assertExpectedOutput(
-            '',
+            $expected,
             0,
             $extraNormalization,
         );
@@ -283,12 +283,12 @@ EOF;
         );
     }
 
-    private function getNormalizeDisplay(string $display): string
+    private function getNormalizeDisplay(string $display, ?callable $extraNormalization = null): string
     {
         $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmp, '/path/to', $display);
 
-        $display = $this->getBaseNormalizeDisplay($display);
+        $display = $this->getBaseNormalizeDisplay($display, $extraNormalization);
 
         return preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',

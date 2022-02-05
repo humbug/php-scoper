@@ -42,7 +42,7 @@ trait AppTesterAbilities
 
     private function getNormalizeDisplay(
         string $display,
-        ?callable $extraNormalization
+        ?callable $extraNormalization = null
     ): string
     {
         $extraNormalization = $extraNormalization ?? static fn (string $display) => $display;
