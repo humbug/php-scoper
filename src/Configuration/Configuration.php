@@ -64,6 +64,18 @@ final class Configuration
         return $this->path;
     }
 
+    public function withPrefix(string $prefix): self
+    {
+        return new self(
+            $this->path,
+            $prefix,
+            $this->filesWithContents,
+            $this->excludedFilesWithContents,
+            $this->patcher,
+            $this->symbolsConfiguration,
+        );
+    }
+
     public function getPrefix(): string
     {
         return $this->prefix;
