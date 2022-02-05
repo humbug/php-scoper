@@ -111,7 +111,7 @@ final class InspectSymbolCommand implements Command
 
         ChangeableDirectory::changeWorkingDirectory($io);
 
-        $symbol = self::getSymbol($io);
+        $symbol = $io->getStringArgument(self::SYMBOL_ARG);
         $symbolType = self::getSymbolType($io);
         $config = $this->retrieveConfig($io);
 
@@ -128,13 +128,6 @@ final class InspectSymbolCommand implements Command
         );
 
         return ExitCode::SUCCESS;
-    }
-
-    private static function getSymbol(IO $io): string
-    {
-        $symbol = $io->getStringArgument(self::SYMBOL_ARG);
-
-        return ltrim($symbol, '\\');
     }
 
     /**
