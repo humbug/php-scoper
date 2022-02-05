@@ -1,5 +1,5 @@
 {
     "require": {
-        "symfony/finder": "^4.4"
+        "symfony/finder": "^6.0"
     }
 }

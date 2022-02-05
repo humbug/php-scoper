@@ -52,7 +52,7 @@ $polyfillsBootstraps = array_map(
         Finder::create()
             ->files()
             ->in(__DIR__ . '/vendor/symfony/polyfill-*')
-            ->name('bootstrap.php'),
+            ->name('bootstrap*.php'),
         false,
     ),
 );
@@ -71,7 +71,9 @@ $polyfillsStubs = array_map(
 return [
     'whitelist' => [
         Finder::class,
-        'Symfony\\Polyfill\\*',
+    ],
+    'exclude-namespaces' => [
+        'Symfony\Polyfill'
     ],
     'exclude-files' => [
         ...$jetBrainStubs,
