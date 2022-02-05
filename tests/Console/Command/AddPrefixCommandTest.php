@@ -676,7 +676,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
                     new DummyScoperFactory(
                         new FakeParser(),
                         new EnrichedReflectorFactory(
-                            Reflector::createEmpty(),
+                            Reflector::createEmpty()),
                         ),
                         $scoper,
                     ),
