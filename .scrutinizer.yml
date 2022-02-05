@@ -1,7 +1,7 @@
 build:
     environment:
         variables:
-            COMPOSER_ROOT_VERSION: '0.15.99'
+            COMPOSER_ROOT_VERSION: '0.16.99'
 
     nodes:
         analysis:

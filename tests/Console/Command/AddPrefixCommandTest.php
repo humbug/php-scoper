@@ -20,6 +20,8 @@ use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
+use Humbug\PhpScoper\Console\AppTesterAbilities;
+use Humbug\PhpScoper\Console\AppTesterTestCase;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\PhpParser\FakeParser;
@@ -47,16 +49,12 @@ use const DIRECTORY_SEPARATOR;
  * @covers \Humbug\PhpScoper\Console\ConsoleScoper
  * @covers \Humbug\PhpScoper\Console\ConfigLoader
  */
-class AddPrefixCommandTest extends FileSystemTestCase
+class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCase
 {
+    use AppTesterAbilities;
     use ProphecyTrait;
 
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures';
-
-    /**
-     * @var ApplicationTester
-     */
-    private ApplicationTester $appTester;
 
     /**
      * @var ObjectProphecy<Filesystem>
@@ -120,10 +118,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
         
         EOF;
 
-        $actual = $this->appTester->getDisplay(true);
-
-        self::assertSame($expected, $actual);
-        self::assertSame(0, $this->appTester->getStatusCode());
+        $this->assertExpectedOutput($expected, 0);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
     }
@@ -143,10 +138,7 @@ class AddPrefixCommandTest extends FileSystemTestCase
         
         EOF;
 
-        $actual = $this->appTester->getDisplay(true);
-
-        self::assertSame($expected, $actual);
-        self::assertSame(0, $this->appTester->getStatusCode());
+        $this->assertExpectedOutput($expected, 0);
 
         $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
     }

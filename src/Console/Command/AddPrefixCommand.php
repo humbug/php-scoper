@@ -116,7 +116,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     InputOption::VALUE_REQUIRED,
                     sprintf(
                         'Conf,iguration file. Will use "%s" if found by default.',
-                        ConfigurationFactory::DEFAULT_FILE_NAME
+                        ConfigurationFactory::DEFAULT_FILE_NAME,
                     )
                 ),
                 new InputOption(
