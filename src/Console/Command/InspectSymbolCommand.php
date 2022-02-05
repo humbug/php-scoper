@@ -14,41 +14,31 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Application\Application;
 use Fidry\Console\Command\Command;
-use Fidry\Console\Command\CommandAware;
-use Fidry\Console\Command\CommandAwareness;
+use Fidry\Console\Command\CommandRegistry;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\ExitCode;
 use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
-use Humbug\PhpScoper\Console\ConsoleScoper;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use InvalidArgumentException;
-use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Application as DummyApplication;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
-use function array_map;
 use function implode;
 use function in_array;
-use function is_dir;
-use function is_writable;
 use function Safe\getcwd;
 use function Safe\sprintf;
-use const DIRECTORY_SEPARATOR;
 
 /**
  * @private
  */
-final class InspectSymbolCommand implements Command, CommandAware
+final class InspectSymbolCommand implements Command
 {
-    use CommandAwareness;
-
     private const SYMBOL_ARG = 'symbol';
     private const SYMBOL_TYPE_ARG = 'type';
     private const CONFIG_FILE_OPT = 'config';
@@ -152,23 +142,28 @@ final class InspectSymbolCommand implements Command, CommandAware
         return $type;
     }
 
-    /**
-     * @param string[] $paths
-     */
     private function retrieveConfig(IO $io): Configuration
     {
-        // TODO: check that it doesn't trigger the init
         $configLoader = new ConfigLoader(
-            $this->getCommandRegistry(),
+            new CommandRegistry(new DummyApplication()),
             $this->fileSystem,
             $this->configFactory,
         );
 
+        $noConfig = $io->getBooleanOption(self::NO_CONFIG_OPT);
+        $configFilePath = $io->getNullableStringOption(self::CONFIG_FILE_OPT);
+
+        if (null === $configFilePath) {
+            // We do not want the init command to be triggered if there is no
+            // config file.
+            $noConfig = true;
+        }
+
         return $configLoader->loadConfig(
             $io,
             '',
-            $io->getBooleanOption(self::NO_CONFIG_OPT),
-            $io->getNullableStringOption(self::CONFIG_FILE_OPT),
+            $noConfig,
+            $configFilePath,
             self::DEFAULT_CONFIG_FILE_PATH,
             false,
             [],
@@ -206,7 +201,7 @@ final class InspectSymbolCommand implements Command, CommandAware
                 $symbol,
                 $isTypeAny
                     ? 'for all types.'
-                    : 'for type <comment>%s</comment>:',
+                    : sprintf('for type <comment>%s</comment>:', $type),
             ),
         );
 
@@ -214,19 +209,26 @@ final class InspectSymbolCommand implements Command, CommandAware
 
         if (!$isTypeAny) {
             self::printTypedSymbol($io, $symbol, $type, $reflector);
-
-            return;
+        } else {
+            self::printAnyTypeSymbol($io, $symbol, $reflector);
         }
+    }
 
-        foreach (SymbolType::getAllSpecificTypes() as $type) {
+    private static function printAnyTypeSymbol(
+        IO $io,
+        string $symbol,
+        EnrichedReflector $reflector
+    ): void
+    {
+        foreach (SymbolType::getAllSpecificTypes() as $specificType) {
             $io->writeln(
                 sprintf(
                     'As a <comment>%s</comment>:',
-                    $type,
+                    $specificType,
                 ),
             );
 
-            self::printTypedSymbol($io, $symbol, $type, $reflector);
+            self::printTypedSymbol($io, $symbol, $specificType, $reflector);
         }
     }
 
