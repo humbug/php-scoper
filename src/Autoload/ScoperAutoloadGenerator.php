@@ -31,16 +31,14 @@ final class ScoperAutoloadGenerator
 {
     // TODO: aliasing functions could be done via a single function to reduce boiler-template.
 
-    // TODO: doc link
     private const EXPOSED_FUNCTIONS_DOC = <<<'EOF'
     // Exposed functions. For more information see:
-    // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
+    // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
     EOF;
 
-    // TODO: doc link
     private const EXPOSED_CLASSES_DOC = <<<'EOF'
     // Exposed classes. For more information see:
-    // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
+    // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
     EOF;
 
     private static string $eol;
