@@ -31,10 +31,10 @@ class ScoperFactory
     private Parser $parser;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
 
-    public function __construct(Parser $parser, EnrichedReflectorFactory $enrichedEnrichedReflectorFactoryFactory)
+    public function __construct(Parser $parser, EnrichedReflectorFactory $enrichedReflectorFactory)
     {
         $this->parser = $parser;
-        $this->enrichedReflectorFactory = $enrichedEnrichedReflectorFactoryFactory;
+        $this->enrichedReflectorFactory = $enrichedReflectorFactory;
     }
 
     public function createScoper(
