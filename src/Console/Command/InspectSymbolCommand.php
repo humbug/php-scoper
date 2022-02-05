@@ -28,6 +28,7 @@ use InvalidArgumentException;
 use Symfony\Component\Console\Application as DummyApplication;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 use function file_exists;
@@ -170,7 +171,10 @@ final class InspectSymbolCommand implements Command
         }
 
         return $configLoader->loadConfig(
-            $io,
+            new IO(
+                $io->getInput(),
+                new NullOutput(),
+            ),
             '',
             $noConfig,
             $configFilePath,
@@ -225,8 +229,8 @@ final class InspectSymbolCommand implements Command
     private static function printDocBlock(IO $io): void
     {
         $io->writeln([
-            'Internal (configured via the `excluded-*` settings are treated as PHP native symbols, i.e. will remain untouched.',
-            'Exposed symbols will be prefixed but aliased to its original symbol.',
+            'Internal (configured via the `excluded-*` settings) are treated as PHP native symbols, i.e. will remain untouched.',
+            'Exposed symbols (configured via the `expose-*` settings) will be prefixed but aliased to its original symbol.',
             'If a symbol is neither internal or exposed, it will be prefixed and not aliased',
             '',
             'For more information, see:'
