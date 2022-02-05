@@ -21,6 +21,8 @@ use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
+use Traversable;
+
 use function count;
 use function end;
 
@@ -105,7 +107,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return $this->getNodeNamespaceName($parentNode);
     }
 
-    public function getIterator(): iterable
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->nodes);
     }
