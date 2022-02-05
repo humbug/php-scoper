@@ -19,8 +19,7 @@ use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
-use Humbug\PhpScoper\Symbol\EnrichedReflector;
-use Humbug\PhpScoper\Symbol\Reflector;
+use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Parser;
 
@@ -30,12 +29,12 @@ use PhpParser\Parser;
 class ScoperFactory
 {
     private Parser $parser;
-    private Reflector $reflector;
+    private EnrichedReflectorFactory $enrichedReflectorFactory;
 
-    public function __construct(Parser $parser, Reflector $reflector)
+    public function __construct(Parser $parser, EnrichedReflectorFactory $enrichedReflectorFactory)
     {
         $this->parser = $parser;
-        $this->reflector = $reflector;
+        $this->enrichedReflectorFactory = $enrichedReflectorFactory;
     }
 
     public function createScoper(
@@ -45,17 +44,7 @@ class ScoperFactory
     {
         $prefix = $configuration->getPrefix();
         $symbolsConfiguration = $configuration->getSymbolsConfiguration();
-
-        $configuredReflector = $this->reflector->withSymbols(
-            $symbolsConfiguration->getExcludedClassNames(),
-            $symbolsConfiguration->getExcludedFunctionNames(),
-            $symbolsConfiguration->getExcludedConstantNames(),
-        );
-
-        $enrichedReflector = new EnrichedReflector(
-            $configuredReflector,
-            $symbolsConfiguration,
-        );
+        $enrichedReflector = $this->enrichedReflectorFactory->create($symbolsConfiguration);
 
         $autoloadPrefixer = new AutoloadPrefixer(
             $prefix,

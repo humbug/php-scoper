@@ -73,7 +73,7 @@ final class InitCommand implements Command
     {
         ChangeableDirectory::changeWorkingDirectory($io);
 
-        $io->writeln('');
+        $io->newLine();
         $io->writeln(
             $this->formatterHelper->formatSection(
                 'PHP-Scoper configuration generate',

@@ -15,9 +15,9 @@ final class DummyScoperFactory extends ScoperFactory
 {
     private Scoper $scoper;
 
-    public function __construct(Parser $parser, Reflector $reflector, Scoper $scoper)
+    public function __construct(Parser $parser, Reflector $enrichedReflectorFactory, Scoper $scoper)
     {
-        parent::__construct($parser, $reflector);
+        parent::__construct($parser, $enrichedReflectorFactory);
 
         $this->scoper = $scoper;
     }
