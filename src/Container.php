@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use PhpParser\Lexer;
 use PhpParser\Parser;
@@ -31,6 +32,7 @@ final class Container
     private Parser $parser;
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
+    private EnrichedReflectorFactory $enrichedReflectorFactory;
 
     public function getFileSystem(): Filesystem
     {
@@ -60,7 +62,7 @@ final class Container
         if (!isset($this->scoperFactory)) {
             $this->scoperFactory = new ScoperFactory(
                 $this->getParser(),
-                $this->getReflector(),
+                $this->getEnrichedReflectorFactory(),
             );
         }
 
@@ -83,5 +85,16 @@ final class Container
         }
 
         return $this->reflector;
+    }
+
+    public function getEnrichedReflectorFactory(): EnrichedReflectorFactory
+    {
+        if (!isset($this->enrichedReflectorFactory)) {
+            $this->enrichedReflectorFactory = new EnrichedReflectorFactory(
+                $this->getReflector(),
+            );
+        }
+
+        return $this->enrichedReflectorFactory;
     }
 }
