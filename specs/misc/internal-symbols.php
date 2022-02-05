@@ -298,6 +298,28 @@ return [
 
     PHP,
 
+    // https://github.com/humbug/php-scoper/issues/540
+    'Xdebug patch' => <<<'PHP'
+    <?php
+    
+    namespace Acme;
+    
+    use function xdebug_info;
+    
+    xdebug_info();
+    \xdebug_info();
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+
+    use function xdebug_info;
+    xdebug_info();
+    \xdebug_info();
+
+    PHP,
+
     // https://youtrack.jetbrains.com/issue/WI-29503
     'MongoDB patch' => <<<'PHP'
     <?php
