@@ -14,7 +14,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [ '7.4' ]
+                php: [ '7.4', '8.0', '8.1' ]
         steps:
             -   name: Checkout
                 uses: actions/checkout@v2
@@ -39,6 +39,9 @@ jobs:
                 uses: ramsey/composer-install@v1
                 with:
                     composer-options: '--prefer-dist'
+
+            -   name: Configure the PHP platform
+                run: composer config platform.php $(php -r 'echo phpversion();') && composer update --lock
 
             -   name: Build PHAR
                 run: make build
