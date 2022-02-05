@@ -43,9 +43,6 @@
 
     "bin": ["bin/php-scoper"],
     "autoload": {
-        "classmap": [
-            "vendor-hotfix/"
-        ],
         "files": [
             "src/functions.php"
         ],
