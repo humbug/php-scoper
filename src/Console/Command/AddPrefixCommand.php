@@ -50,7 +50,6 @@ final class AddPrefixCommand implements Command, CommandAware
     private const FORCE_OPT = 'force';
     private const STOP_ON_FAILURE_OPT = 'stop-on-failure';
     private const CONFIG_FILE_OPT = 'config';
-    private const DEFAULT_CONFIG_FILE_PATH = 'scoper.inc.php';
     private const NO_CONFIG_OPT = 'no-config';
 
     private Filesystem $fileSystem;
@@ -117,7 +116,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     InputOption::VALUE_REQUIRED,
                     sprintf(
                         'Conf,iguration file. Will use "%s" if found by default.',
-                        self::DEFAULT_CONFIG_FILE_PATH
+                        ConfigurationFactory::DEFAULT_FILE_NAME
                     )
                 ),
                 new InputOption(
@@ -211,7 +210,7 @@ final class AddPrefixCommand implements Command, CommandAware
             $io->getStringOption(self::PREFIX_OPT),
             $io->getBooleanOption(self::NO_CONFIG_OPT),
             $io->getNullableStringOption(self::CONFIG_FILE_OPT),
-            self::DEFAULT_CONFIG_FILE_PATH,
+            ConfigurationFactory::DEFAULT_FILE_NAME,
             $this->init,
             $paths,
             getcwd(),

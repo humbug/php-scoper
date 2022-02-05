@@ -29,10 +29,13 @@ use Symfony\Component\Console\Application as DummyApplication;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\PathUtil\Path;
+use function file_exists;
 use function implode;
 use function in_array;
 use function Safe\getcwd;
 use function Safe\sprintf;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * @private
@@ -42,7 +45,6 @@ final class InspectSymbolCommand implements Command
     private const SYMBOL_ARG = 'symbol';
     private const SYMBOL_TYPE_ARG = 'type';
     private const CONFIG_FILE_OPT = 'config';
-    private const DEFAULT_CONFIG_FILE_PATH = 'scoper.inc.php';
     private const NO_CONFIG_OPT = 'no-config';
 
     private Filesystem $fileSystem;
@@ -89,7 +91,7 @@ final class InspectSymbolCommand implements Command
                     InputOption::VALUE_REQUIRED,
                     sprintf(
                         'Configuration file. Will use "%s" if found by default.',
-                        self::DEFAULT_CONFIG_FILE_PATH
+                        ConfigurationFactory::DEFAULT_FILE_NAME
                     )
                 ),
                 new InputOption(
@@ -116,7 +118,13 @@ final class InspectSymbolCommand implements Command
             $config->getSymbolsConfiguration(),
         );
 
-        self::printSymbol($io, $symbol, $symbolType, $enrichedReflector);
+        self::printSymbol(
+            $io,
+            $symbol,
+            $symbolType,
+            $config->getPath(),
+            $enrichedReflector,
+        );
 
         return ExitCode::SUCCESS;
     }
@@ -150,12 +158,13 @@ final class InspectSymbolCommand implements Command
             $this->configFactory,
         );
 
+        $configFilePath = self::getConfigFilePath($io);
         $noConfig = $io->getBooleanOption(self::NO_CONFIG_OPT);
-        $configFilePath = $io->getNullableStringOption(self::CONFIG_FILE_OPT);
 
         if (null === $configFilePath) {
-            // We do not want the init command to be triggered if there is no
-            // config file.
+            // Unlike when scoping, we do not want a config file to be created
+            // neither bother the user with passing the no-config option if the
+            // file does not exist.
             $noConfig = true;
         }
 
@@ -164,11 +173,28 @@ final class InspectSymbolCommand implements Command
             '',
             $noConfig,
             $configFilePath,
-            self::DEFAULT_CONFIG_FILE_PATH,
-            false,
+            ConfigurationFactory::DEFAULT_FILE_NAME,
+            // We do not want the init command to be triggered if there is no
+            // config file.
+            true,
             [],
             getcwd(),
         );
+    }
+
+    private static function getConfigFilePath(IO $io): ?string
+    {
+        $configPath = $io->getNullableStringOption(self::CONFIG_FILE_OPT);
+
+        if (null !== $configPath) {
+            return $configPath;
+        }
+
+        $defaultConfigPath = Path::normalize(
+            getcwd().DIRECTORY_SEPARATOR.ConfigurationFactory::DEFAULT_FILE_NAME,
+        );
+
+        return file_exists($defaultConfigPath) ? $defaultConfigPath : null;
     }
 
     /**
@@ -178,11 +204,25 @@ final class InspectSymbolCommand implements Command
         IO $io,
         string $symbol,
         string $type,
+        ?string $configPath,
         EnrichedReflector $reflector
     ): void
     {
-        $isTypeAny = SymbolType::ANY_TYPE === $type;
+        self::printDocBlock($io);
+        self::printConfigLoaded($io, $configPath);
+        self::printInspectionHeadline($io, $symbol, $type);
 
+        $io->newLine();
+
+        if (!(SymbolType::ANY_TYPE === $type)) {
+            self::printTypedSymbol($io, $symbol, $type, $reflector);
+        } else {
+            self::printAnyTypeSymbol($io, $symbol, $reflector);
+        }
+    }
+
+    private static function printDocBlock(IO $io): void
+    {
         $io->writeln([
             'Internal (configured via the `excluded-*` settings are treated as PHP native symbols, i.e. will remain untouched.',
             'Exposed symbols will be prefixed but aliased to its original symbol.',
@@ -194,24 +234,40 @@ final class InspectSymbolCommand implements Command
             '<href=https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#excluded-symbols>Doc link for excluded symbols</>',
             '<href=https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposed-symbols>Doc link for exposed symbols</>',
         ]);
+    }
 
+    private static function printConfigLoaded(IO $io, ?string $configPath): void
+    {
+        $io->writeln(
+            null === $configPath
+                ? 'No configuration loaded.'
+                : sprintf(
+                'Loaded the configuration <comment>%s</comment>',
+                $configPath,
+            ),
+        );
+        $io->newLine();
+    }
+
+    /**
+     * @param SymbolType::*_TYPE $type
+     */
+    private static function printInspectionHeadline(
+        IO $io,
+        string $symbol,
+        string $type
+    ): void
+    {
         $io->writeln(
             sprintf(
                 'Inspecting the symbol <comment>%s</comment> %s',
                 $symbol,
-                $isTypeAny
+                SymbolType::ANY_TYPE === $type
                     ? 'for all types.'
                     : sprintf('for type <comment>%s</comment>:', $type),
             ),
         );
 
-        $io->newLine();
-
-        if (!$isTypeAny) {
-            self::printTypedSymbol($io, $symbol, $type, $reflector);
-        } else {
-            self::printAnyTypeSymbol($io, $symbol, $reflector);
-        }
     }
 
     private static function printAnyTypeSymbol(

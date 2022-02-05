@@ -71,7 +71,6 @@ final class InitCommand implements Command
 
     public function execute(IO $io): int
     {
-        die('NOOO');
         ChangeableDirectory::changeWorkingDirectory($io);
 
         $io->newLine();
