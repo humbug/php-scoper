@@ -55,6 +55,8 @@ use const SORT_STRING;
 
 final class ConfigurationFactory
 {
+    public const DEFAULT_FILE_NAME = 'scoper.inc.php';
+
     private Filesystem $fileSystem;
     private SymbolsConfigurationFactory $configurationWhitelistFactory;
 
