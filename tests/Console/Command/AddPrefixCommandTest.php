@@ -26,6 +26,7 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
 use Prophecy\Argument;
@@ -672,7 +673,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
                     $fileSystem,
                     new DummyScoperFactory(
                         new FakeParser(),
-                        Reflector::createEmpty(),
+                        new EnrichedReflectorFactory(Reflector::createEmpty()),
                         $scoper,
                     ),
                     $innerApp,
