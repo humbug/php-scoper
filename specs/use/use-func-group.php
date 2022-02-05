@@ -17,47 +17,52 @@ return [
         'title' => 'Use statements for functions with group statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     <<<'PHP'
-<?php
-
-use function A\{b};
-use function A\{B\c, d};
-use function \A\B\{C\g, e};
-
-b();
-c();
-d();
-g();
-e();
-
-----
-<?php
-
-namespace Humbug;
-
-use function Humbug\A\b;
-use function Humbug\A\B\c;
-use function Humbug\A\d;
-use function Humbug\A\B\C\g;
-use function Humbug\A\B\e;
-b();
-c();
-d();
-g();
-e();
-
-PHP
-    ,
+    <?php
+    
+    use function A\{b};
+    use function A\{B\c, d};
+    use function \A\B\{C\g, e};
+    
+    b();
+    c();
+    d();
+    g();
+    e();
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use function Humbug\A\b;
+    use function Humbug\A\B\c;
+    use function Humbug\A\d;
+    use function Humbug\A\B\C\g;
+    use function Humbug\A\B\e;
+    b();
+    c();
+    d();
+    g();
+    e();
+    
+    PHP,
 ];

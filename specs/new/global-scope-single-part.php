@@ -17,75 +17,73 @@ return [
         'title' => 'New statement call in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
-    'New statement call of a class belonging to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
+    'New statement call of a class belonging to the global namespace' => <<<'PHP'
+    <?php
+    
+    new Foo();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    new Foo();
+    
+    PHP,
 
-new Foo();
-----
-<?php
+    'New statement call of an internal class belonging to the global namespace' => <<<'PHP'
+    <?php
+    
+    new ArrayIterator([]);
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    new \ArrayIterator([]);
+    
+    PHP,
 
-namespace Humbug;
+    'FQ new statement call of a class belonging to the global namespace' => <<<'PHP'
+    <?php
+    
+    new \Foo();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    new \Humbug\Foo();
+    
+    PHP,
 
-new Foo();
-
-PHP
-    ],
-
-    'New statement call of an internal class belonging to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
-
-new ArrayIterator([]);
-----
-<?php
-
-namespace Humbug;
-
-new \ArrayIterator([]);
-
-PHP
-    ],
-
-    'FQ new statement call of a class belonging to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
-
-new \Foo();
-----
-<?php
-
-namespace Humbug;
-
-new \Humbug\Foo();
-
-PHP
-    ],
-
-    'New statement call of an unknown class belonging to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
-
-new Unknown();
-----
-<?php
-
-namespace Humbug;
-
-new Unknown();
-
-PHP
-    ],
+    'New statement call of an unknown class belonging to the global namespace' => <<<'PHP'
+    <?php
+    
+    new Unknown();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    new Unknown();
+    
+    PHP,
 ];

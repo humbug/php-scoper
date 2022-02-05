@@ -17,183 +17,185 @@ return [
         'title' => 'Class constant call of a namespaced class in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
-    'Constant call on a namespaced class' => [
-        'payload' => <<<'PHP'
-<?php
+    'Constant call on a namespaced class' => <<<'PHP'
+    <?php
+    
+    namespace X\PHPUnit {
+        class Command {}
+    }
+    
+    namespace X {
+        PHPUnit\Command::MAIN_CONST;
+    }
+    ----
+    <?php
 
-namespace X\PHPUnit {
-    class Command {}
-}
+    namespace Humbug\X\PHPUnit;
 
-namespace X {
+    class Command
+    {
+    }
+    namespace Humbug\X;
+
     PHPUnit\Command::MAIN_CONST;
-}
-----
-<?php
 
-namespace Humbug\X\PHPUnit;
+    PHP,
 
-class Command
-{
-}
-namespace Humbug\X;
+    'FQ constant call on a namespaced class' => <<<'PHP'
+    <?php
+    
+    namespace PHPUnit {
+        class Command {}
+    }
+    
+    namespace X {
+        \PHPUnit\Command::MAIN_CONST;
+    }
+    ----
+    <?php
+    
+    namespace Humbug\PHPUnit;
+    
+    class Command
+    {
+    }
+    namespace Humbug\X;
+    
+    \Humbug\PHPUnit\Command::MAIN_CONST;
+    
+    PHP,
 
-PHPUnit\Command::MAIN_CONST;
-
-PHP
-    ],
-
-    'FQ constant call on a namespaced class' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace PHPUnit {
-    class Command {}
-}
-
-namespace X {
-    \PHPUnit\Command::MAIN_CONST;
-}
-----
-<?php
-
-namespace Humbug\PHPUnit;
-
-class Command
-{
-}
-namespace Humbug\X;
-
-\Humbug\PHPUnit\Command::MAIN_CONST;
-
-PHP
-    ],
-
-    'Constant call on a whitelisted namespaced class' => [
-        'whitelist' => ['X\PHPUnit\Command'],
-        'registered-classes' => [
+    'Constant call on an exposed namespaced class' => [
+        'expose-classes' => ['X\PHPUnit\Command'],
+        'expected-recorded-classes' => [
             ['X\PHPUnit\Command', 'Humbug\X\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
-<?php
+        <?php
+        
+        namespace X\PHPUnit {
+            class Command {}
+        }
+        
+        namespace X {
+            PHPUnit\Command::MAIN_CONST;
+        }
+        ----
+        <?php
 
-namespace X\PHPUnit {
-    class Command {}
-}
+        namespace Humbug\X\PHPUnit;
 
-namespace X {
-    PHPUnit\Command::MAIN_CONST;
-}
-----
-<?php
+        class Command
+        {
+        }
+        \class_alias('Humbug\\X\\PHPUnit\\Command', 'X\\PHPUnit\\Command', \false);
+        namespace Humbug\X;
 
-namespace Humbug\X\PHPUnit;
+        PHPUnit\Command::MAIN_CONST;
 
-class Command
-{
-}
-\class_alias('Humbug\\X\\PHPUnit\\Command', 'X\\PHPUnit\\Command', \false);
-namespace Humbug\X;
-
-PHPUnit\Command::MAIN_CONST;
-
-PHP
+        PHP,
     ],
 
-    'Constant call on a namespaced class belonging to a whitelisted namespace' => [
-        'whitelist' => ['X\PHPUnit\*'],
+    'Constant call on a namespaced class belonging to an excluded namespace' => [
+        'exclude-namespaces' => ['X\PHPUnit'],
         'payload' => <<<'PHP'
-<?php
+        <?php
+        
+        namespace X\PHPUnit {
+            class Command {}
+        }
+        
+        namespace X {
+            PHPUnit\Command::MAIN_CONST;
+        }
+        ----
+        <?php
 
-namespace X\PHPUnit {
-    class Command {}
-}
+        namespace X\PHPUnit;
 
-namespace X {
-    PHPUnit\Command::MAIN_CONST;
-}
-----
-<?php
+        class Command
+        {
+        }
+        namespace Humbug\X;
 
-namespace X\PHPUnit;
+        \X\PHPUnit\Command::MAIN_CONST;
 
-class Command
-{
-}
-namespace Humbug\X;
-
-\X\PHPUnit\Command::MAIN_CONST;
-
-PHP
+        PHP,
     ],
 
-    'Constant call on a namespaced class belonging to a whitelisted namespace (2)' => [
-        'whitelist' => ['\*'],
+    'Constant call on a namespaced class belonging to an excluded namespace (2)' => [
+        'exclude-namespaces' => ['/^.*$/'],
         'payload' => <<<'PHP'
-<?php
+        <?php
+        
+        namespace X\PHPUnit {
+            class Command {}
+        }
+        
+        namespace X {
+            PHPUnit\Command::MAIN_CONST;
+        }
+        ----
+        <?php
 
-namespace X\PHPUnit {
-    class Command {}
-}
+        namespace X\PHPUnit;
 
-namespace X {
-    PHPUnit\Command::MAIN_CONST;
-}
-----
-<?php
+        class Command
+        {
+        }
+        namespace X;
 
-namespace X\PHPUnit;
+        \X\PHPUnit\Command::MAIN_CONST;
 
-class Command
-{
-}
-namespace X;
-
-\X\PHPUnit\Command::MAIN_CONST;
-
-PHP
+        PHP,
     ],
 
-    'FQ constant call on a whitelisted namespaced class' => [
-        'whitelist' => ['PHPUnit\Command'],
-        'registered-classes' => [
+    'FQ constant call on an exposed namespaced class' => [
+        'expose-classes' => ['PHPUnit\Command'],
+        'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace PHPUnit {
-    class Command {}
-}
-
-namespace X {
-    \PHPUnit\Command::MAIN_CONST;
-}
-----
-<?php
-
-namespace Humbug\PHPUnit;
-
-class Command
-{
-}
-\class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
-namespace Humbug\X;
-
-\Humbug\PHPUnit\Command::MAIN_CONST;
-
-PHP
+        <?php
+        
+        namespace PHPUnit {
+            class Command {}
+        }
+        
+        namespace X {
+            \PHPUnit\Command::MAIN_CONST;
+        }
+        ----
+        <?php
+        
+        namespace Humbug\PHPUnit;
+        
+        class Command
+        {
+        }
+        \class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
+        namespace Humbug\X;
+        
+        \Humbug\PHPUnit\Command::MAIN_CONST;
+        
+        PHP,
     ],
 ];

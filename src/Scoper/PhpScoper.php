@@ -15,8 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
@@ -35,12 +34,21 @@ final class PhpScoper implements Scoper
     private Parser $parser;
     private Scoper $decoratedScoper;
     private TraverserFactory $traverserFactory;
+    private string $prefix;
+    private SymbolsRegistry $symbolsRegistry;
 
-    public function __construct(Parser $parser, Scoper $decoratedScoper, TraverserFactory $traverserFactory)
-    {
+    public function __construct(
+        Parser $parser,
+        Scoper $decoratedScoper,
+        TraverserFactory $traverserFactory,
+        string $prefix,
+        SymbolsRegistry $symbolsRegistry
+    ) {
         $this->parser = $parser;
         $this->decoratedScoper = $decoratedScoper;
         $this->traverserFactory = $traverserFactory;
+        $this->prefix = $prefix;
+        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     /**
@@ -48,27 +56,33 @@ final class PhpScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
-        if (!$this->isPhpFile($filePath, $contents)) {
+        if (!self::isPhpFile($filePath, $contents)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
-        return $this->scopePhp($contents, $prefix, $whitelist);
+        return $this->scopePhp($contents);
     }
 
-    public function scopePhp(string $php, string $prefix, Whitelist $whitelist): string
+    public function scopePhp(string $php): string
     {
         $statements = $this->parser->parse($php);
 
-        $statements = $this->traverserFactory->create($this, $prefix, $whitelist)->traverse($statements);
+        $statements = $this->traverserFactory
+            ->create(
+                $this,
+                $this->prefix,
+                $this->symbolsRegistry,
+            )
+            ->traverse($statements);
 
         $prettyPrinter = new Standard();
 
         return $prettyPrinter->prettyPrintFile($statements)."\n";
     }
 
-    private function isPhpFile(string $filePath, string $contents): bool
+    private static function isPhpFile(string $filePath, string $contents): bool
     {
         if (1 === native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
             return true;

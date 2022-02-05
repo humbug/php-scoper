@@ -7,9 +7,10 @@ namespace Humbug\PhpScoper\Console;
 use Fidry\Console\Application\Application;
 use Fidry\Console\IO;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
-use Humbug\PhpScoper\Configuration;
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\ScoperFactory;
+use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Filesystem\Filesystem;
 use Throwable;
@@ -97,7 +98,12 @@ final class ConsoleScoper
 
         $logger->outputFileCount(count($files));
 
-        $scoper = $this->scoperFactory->createScoper($config);
+        $symbolsRegistry = new SymbolsRegistry();
+
+        $scoper = $this->scoperFactory->createScoper(
+            $config,
+            $symbolsRegistry,
+        );
 
         foreach ($files as [$inputFilePath, $inputContents, $outputFilePath]) {
             $this->scopeFile(
@@ -105,7 +111,6 @@ final class ConsoleScoper
                 $inputFilePath,
                 $inputContents,
                 $outputFilePath,
-                $config,
                 $stopOnFailure,
                 $logger,
             );
@@ -123,7 +128,7 @@ final class ConsoleScoper
         );
 
         if (null !== $vendorDir) {
-            $autoload = (new ScoperAutoloadGenerator($config->getWhitelist()))->dump();
+            $autoload = (new ScoperAutoloadGenerator($symbolsRegistry))->dump();
 
             $this->fileSystem->dumpFile(
                 $vendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
@@ -138,12 +143,12 @@ final class ConsoleScoper
     private static function getFiles(Configuration $config, string $outputDir): array
     {
         $filesWithContent = $config->getFilesWithContents();
-        $whitelistedFilesWithContent = $config->getWhitelistedFilesWithContents();
+        $excludedFilesWithContents = $config->getExcludedFilesWithContents();
 
         $commonPath = get_common_path(
             [
                 ...array_keys($filesWithContent),
-                ...array_keys($whitelistedFilesWithContent),
+                ...array_keys($excludedFilesWithContents),
             ],
         );
 
@@ -160,7 +165,7 @@ final class ConsoleScoper
             ),
             array_map(
                 $mapFiles,
-                $whitelistedFilesWithContent,
+                $excludedFilesWithContents,
             ),
         ];
     }
@@ -190,7 +195,6 @@ final class ConsoleScoper
         string $inputFilePath,
         string $inputContents,
         string $outputFilePath,
-        Configuration $config,
         bool $stopOnFailure,
         ScoperLogger $logger
     ): void {
@@ -198,9 +202,6 @@ final class ConsoleScoper
             $scoppedContent = $scoper->scope(
                 $inputFilePath,
                 $inputContents,
-                $config->getPrefix(),
-                $config->getPatchers(),
-                $config->getWhitelist(),
             );
         } catch (Throwable $throwable) {
             $exception = new ParsingException(

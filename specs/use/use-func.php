@@ -17,107 +17,108 @@ return [
         'title' => 'Use statements for functions',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Use statement for a function belonging to the global namespace' => <<<'PHP'
-<?php
-
-use function foo;
-
-----
-<?php
-
-namespace Humbug;
-
-use function Humbug\foo;
-
-PHP
-    ,
+    <?php
+    
+    use function foo;
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use function Humbug\foo;
+    
+    PHP,
 
     'Use statement for an internal function belonging to the global namespace' => <<<'PHP'
-<?php
-
-use function is_array;
-
-----
-<?php
-
-namespace Humbug;
-
-use function is_array;
-
-PHP
-    ,
+    <?php
+    
+    use function is_array;
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use function is_array;
+    
+    PHP,
 
     'Use statement for a function belonging to the global namespace which has already been prefixed' => <<<'PHP'
-<?php
-
-use function Humbug\foo;
-
-----
-<?php
-
-namespace Humbug;
-
-use function Humbug\foo;
-
-PHP
-    ,
+    <?php
+    
+    use function Humbug\foo;
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use function Humbug\foo;
+    
+    PHP,
 
     'Use statement for a namespaced function' => <<<'PHP'
-<?php
-
-use function Foo\bar;
-
-----
-<?php
-
-namespace Humbug;
-
-use function Humbug\Foo\bar;
-
-PHP
-    ,
+    <?php
+    
+    use function Foo\bar;
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use function Humbug\Foo\bar;
+    
+    PHP,
 
     'Use statement for a namespaced function which has already been prefixed' => <<<'PHP'
-<?php
+    <?php
+    
+    use function Humbug\Foo\bar;
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    use function Humbug\Foo\bar;
+    
+    PHP,
 
-use function Humbug\Foo\bar;
-
-----
-<?php
-
-namespace Humbug;
-
-use function Humbug\Foo\bar;
-
-PHP
-    ,
-
-    'Use statement for a namespaced function which has been whitelisted' => [
-        'whitelist' => ['Foo\bar'],
+    'Use statement for a namespaced function which has been exposed' => [
+        'expose-functions' => ['Foo\bar'],
         'payload' => <<<'PHP'
-<?php
-
-use function Foo\bar;
-
-----
-<?php
-
-namespace Humbug;
-
-use function Humbug\Foo\bar;
-
-PHP
+        <?php
+        
+        use function Foo\bar;
+        
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        use function Humbug\Foo\bar;
+        
+        PHP,
     ],
 ];

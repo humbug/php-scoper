@@ -17,96 +17,27 @@ return [
         'title' => 'Self, static and parent keywords on constants',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Usage for classes in the global scope' => <<<'PHP'
-<?php
-
-class A {
-    protected const FOO = 'FOO';
+    <?php
     
-    private $name;
-    
-    public function __construct(string $name) {
-        $this->name = $name;
-    }
-    
-    public static function test() {
-        self::FOO;
-        static::FOO;
-    }
-    
-    public function getName(): string
-    {
-        return $this->name;
-    }
-}
-
-class B extends A {
-    const FOO = 'BAR';
-    
-    public function __construct(string $name) {
-        parent::__construct($name);
-        
-        parent::FOO;
-    }
-}
-
-B::test();
-echo (new B('yo'))->getName().PHP_EOL;
-
-----
-<?php
-
-namespace Humbug;
-
-class A
-{
-    protected const FOO = 'FOO';
-    private $name;
-    public function __construct(string $name)
-    {
-        $this->name = $name;
-    }
-    public static function test()
-    {
-        self::FOO;
-        static::FOO;
-    }
-    public function getName() : string
-    {
-        return $this->name;
-    }
-}
-class B extends A
-{
-    const FOO = 'BAR';
-    public function __construct(string $name)
-    {
-        parent::__construct($name);
-        parent::FOO;
-    }
-}
-B::test();
-echo (new B('yo'))->getName() . \PHP_EOL;
-
-PHP
-    ,
-
-    'Usage for classes in a namespaced' => <<<'PHP'
-<?php
-
-namespace Foo {
     class A {
         protected const FOO = 'FOO';
         
@@ -126,7 +57,7 @@ namespace Foo {
             return $this->name;
         }
     }
-        
+    
     class B extends A {
         const FOO = 'BAR';
         
@@ -136,53 +67,126 @@ namespace Foo {
             parent::FOO;
         }
     }
-}
-
-namespace {
-    use Foo\B;
-
+    
     B::test();
     echo (new B('yo'))->getName().PHP_EOL;
-}
-
-----
-<?php
-
-namespace Humbug\Foo;
-
-class A
-{
-    protected const FOO = 'FOO';
-    private $name;
-    public function __construct(string $name)
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class A
     {
-        $this->name = $name;
+        protected const FOO = 'FOO';
+        private $name;
+        public function __construct(string $name)
+        {
+            $this->name = $name;
+        }
+        public static function test()
+        {
+            self::FOO;
+            static::FOO;
+        }
+        public function getName() : string
+        {
+            return $this->name;
+        }
     }
-    public static function test()
+    class B extends A
     {
-        self::FOO;
-        static::FOO;
+        const FOO = 'BAR';
+        public function __construct(string $name)
+        {
+            parent::__construct($name);
+            parent::FOO;
+        }
     }
-    public function getName() : string
-    {
-        return $this->name;
-    }
-}
-class B extends A
-{
-    const FOO = 'BAR';
-    public function __construct(string $name)
-    {
-        parent::__construct($name);
-        parent::FOO;
-    }
-}
-namespace Humbug;
+    B::test();
+    echo (new B('yo'))->getName() . \PHP_EOL;
+    
+    PHP,
 
-use Humbug\Foo\B;
-B::test();
-echo (new B('yo'))->getName() . \PHP_EOL;
-
-PHP
-    ,
+    'Usage for classes in a namespaced' => <<<'PHP'
+    <?php
+    
+    namespace Foo {
+        class A {
+            protected const FOO = 'FOO';
+            
+            private $name;
+            
+            public function __construct(string $name) {
+                $this->name = $name;
+            }
+            
+            public static function test() {
+                self::FOO;
+                static::FOO;
+            }
+            
+            public function getName(): string
+            {
+                return $this->name;
+            }
+        }
+            
+        class B extends A {
+            const FOO = 'BAR';
+            
+            public function __construct(string $name) {
+                parent::__construct($name);
+                
+                parent::FOO;
+            }
+        }
+    }
+    
+    namespace {
+        use Foo\B;
+    
+        B::test();
+        echo (new B('yo'))->getName().PHP_EOL;
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug\Foo;
+    
+    class A
+    {
+        protected const FOO = 'FOO';
+        private $name;
+        public function __construct(string $name)
+        {
+            $this->name = $name;
+        }
+        public static function test()
+        {
+            self::FOO;
+            static::FOO;
+        }
+        public function getName() : string
+        {
+            return $this->name;
+        }
+    }
+    class B extends A
+    {
+        const FOO = 'BAR';
+        public function __construct(string $name)
+        {
+            parent::__construct($name);
+            parent::FOO;
+        }
+    }
+    namespace Humbug;
+    
+    use Humbug\Foo\B;
+    B::test();
+    echo (new B('yo'))->getName() . \PHP_EOL;
+    
+    PHP,
 ];

@@ -17,157 +17,160 @@ return [
         'title' => 'Conditional class declaration',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
-<?php
-
-if (true) {
-    class A {}
-}
-----
-<?php
-
-namespace Humbug;
-
-if (\true) {
-    class A
-    {
-    }
-}
-
-PHP
-    ,
-
-    'Declaration of a whitelisted class in the global namespace' => [
-        'whitelist' => ['A'],
-        'registered-classes' => [
-            ['A', 'Humbug\A'],
-        ],
-        'payload' => <<<'PHP'
-<?php
-
-if (true) {
-    class A {}
-}
-----
-<?php
-
-namespace Humbug;
-
-if (\true) {
-    class A
-    {
-    }
-}
-
-PHP
-    ],
-
-    'Declaration in a namespace' => <<<'PHP'
-<?php
-
-namespace Foo;
-
-if (true) {
-    class A {}
-}
-----
-<?php
-
-namespace Humbug\Foo;
-
-if (\true) {
-    class A
-    {
-    }
-}
-
-PHP
-    ,
-
-    'Declaration of a whitelisted class' => [
-        'whitelist' => ['Foo\A'],
-        'registered-classes' => [
-            ['Foo\A', 'Humbug\Foo\A'],
-        ],
-        'payload' => <<<'PHP'
-<?php
-
-namespace Foo;
-
-if (true) {
-    class A {}
-}
-----
-<?php
-
-namespace Humbug\Foo;
-
-if (\true) {
-    class A
-    {
-    }
-}
-
-PHP
-    ],
-
-    'Multiple declarations in different namespaces' => <<<'PHP'
-<?php
-
-namespace X {
+    <?php
+    
     if (true) {
         class A {}
     }
-}
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    if (\true) {
+        class A
+        {
+        }
+    }
+    
+    PHP,
 
-namespace Y {
+    'Declaration of an exposed class in the global namespace' => [
+        'expose-classes' => ['A'],
+        'expected-recorded-classes' => [
+            ['A', 'Humbug\A'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        if (true) {
+            class A {}
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        if (\true) {
+            class A
+            {
+            }
+        }
+        
+        PHP,
+    ],
+
+    'Declaration in a namespace' => <<<'PHP'
+    <?php
+    
+    namespace Foo;
+    
     if (true) {
-        class B {}
+        class A {}
     }
-}
-
-namespace Z {
-    if (true) {
-        class C {}
+    ----
+    <?php
+    
+    namespace Humbug\Foo;
+    
+    if (\true) {
+        class A
+        {
+        }
     }
-}
-----
-<?php
+    
+    PHP,
 
-namespace Humbug\X;
+    'Declaration of an exposed class' => [
+        'expose-classes' => ['Foo\A'],
+        'expected-recorded-classes' => [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        namespace Foo;
+        
+        if (true) {
+            class A {}
+        }
+        ----
+        <?php
+        
+        namespace Humbug\Foo;
+        
+        if (\true) {
+            class A
+            {
+            }
+        }
+        
+        PHP,
+    ],
 
-if (\true) {
-    class A
-    {
+    'Multiple declarations in different namespaces' => <<<'PHP'
+    <?php
+    
+    namespace X {
+        if (true) {
+            class A {}
+        }
     }
-}
-namespace Humbug\Y;
-
-if (\true) {
-    class B
-    {
+    
+    namespace Y {
+        if (true) {
+            class B {}
+        }
     }
-}
-namespace Humbug\Z;
-
-if (\true) {
-    class C
-    {
+    
+    namespace Z {
+        if (true) {
+            class C {}
+        }
     }
-}
-
-PHP
-    ,
+    ----
+    <?php
+    
+    namespace Humbug\X;
+    
+    if (\true) {
+        class A
+        {
+        }
+    }
+    namespace Humbug\Y;
+    
+    if (\true) {
+        class B
+        {
+        }
+    }
+    namespace Humbug\Z;
+    
+    if (\true) {
+        class C
+        {
+        }
+    }
+    
+    PHP,
 ];

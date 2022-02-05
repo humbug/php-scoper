@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
 use function array_key_exists;
 use function func_get_args;
 use function Safe\array_flip;
@@ -31,7 +29,7 @@ final class FileWhitelistScoper implements Scoper
         $this->filePaths = array_flip($filePaths);
     }
 
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         if (array_key_exists($filePath, $this->filePaths)) {
             return $contents;

@@ -46,7 +46,7 @@ final class UseStmtCollection implements IteratorAggregate
     private array $hashes = [];
 
     /**
-     * @var Use_[][]
+     * @var array<string, list<Use_[]>>
      */
     private array $nodes = [
         null => [],
@@ -109,6 +109,9 @@ final class UseStmtCollection implements IteratorAggregate
         );
     }
 
+    /**
+     * @return iterable<string, list<Use_[]>>
+     */
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->nodes);

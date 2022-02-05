@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Whitelist;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Scalar\String_;
 use function Safe\substr;
@@ -26,14 +25,10 @@ use function Safe\substr;
 final class StringNodePrefixer
 {
     private PhpScoper $scoper;
-    private string $prefix;
-    private Whitelist $whitelist;
 
-    public function __construct(PhpScoper $scoper, string $prefix, Whitelist $whitelist)
+    public function __construct(PhpScoper $scoper)
     {
         $this->scoper = $scoper;
-        $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
     }
 
     public function prefixStringValue(String_ $node): void
@@ -41,11 +36,7 @@ final class StringNodePrefixer
         try {
             $lastChar = substr($node->value, -1);
 
-            $newValue = $this->scoper->scopePhp(
-                $node->value,
-                $this->prefix,
-                $this->whitelist,
-            );
+            $newValue = $this->scoper->scopePhp($node->value);
 
             if ("\n" !== $lastChar) {
                 $newValue = substr($newValue, 0, -1);

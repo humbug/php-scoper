@@ -14,10 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use Humbug\PhpScoper\Reflector;
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\Reflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -29,17 +31,32 @@ class TraverserFactoryTest extends TestCase
     public function test_creates_a_new_traverser_at_each_call(): void
     {
         $prefix = 'Humbug';
-        $whitelist = Whitelist::create();
-        $traverserFactory = new TraverserFactory(new Reflector([], [], []));
-
         $phpScoper = new PhpScoper(
             new FakeParser(),
             new FakeScoper(),
-            (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor()
+            (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
+            $prefix,
+            new SymbolsRegistry(),
+        );
+        $symbolsRegistry = new SymbolsRegistry();
+
+        $traverserFactory = new TraverserFactory(
+            new EnrichedReflector(
+                Reflector::createEmpty(),
+                SymbolsConfiguration::create(),
+            ),
         );
 
-        $firstTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);
-        $secondTraverser = $traverserFactory->create($phpScoper, $prefix, $whitelist);
+        $firstTraverser = $traverserFactory->create(
+            $phpScoper,
+            $prefix,
+            $symbolsRegistry,
+        );
+        $secondTraverser = $traverserFactory->create(
+            $phpScoper,
+            $prefix,
+            $symbolsRegistry,
+        );
 
         self::assertNotSame($firstTraverser, $secondTraverser);
     }

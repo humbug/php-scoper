@@ -38,14 +38,16 @@
         "phpunit/phpunit": "^9.0"
     },
     "replace": {
-        "humbug/php-scoper": "self.version"
+        "symfony/polyfill-php73": "*"
     },
 
     "bin": ["bin/php-scoper"],
     "autoload": {
+        "classmap": [
+            "vendor-hotfix/"
+        ],
         "files": [
-            "src/functions.php",
-            "vendor-hotfix/Configuration.php"
+            "src/functions.php"
         ],
         "psr-4": {
             "Humbug\\PhpScoper\\": "src/"
@@ -65,6 +67,10 @@
         "sort-packages": true,
         "platform": {
             "php": "7.4.0"
+        },
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
+            "composer/package-versions-deprecated": true
         }
     },
     "extra": {

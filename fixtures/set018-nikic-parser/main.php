@@ -10,7 +10,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 $code = <<<'CODE'
 <?php
 
-function test($foo)
+function test(int|float $foo)
 {
     var_dump($foo);
 }

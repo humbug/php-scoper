@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -51,18 +49,15 @@ class ConfigurableScoperTest extends TestCase
     {
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
-        $prefix = 'Humbug';
-        $patchers = [];
-        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $contents)
             ->willReturn($expected = 'Decorated scoper contents')
         ;
 
         $scoper = new ConfigurableScoper($this->decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 
@@ -78,24 +73,21 @@ class ConfigurableScoperTest extends TestCase
 
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
-        $prefix = 'Humbug';
-        $patchers = [];
-        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope(Argument::any(), $contents, $prefix, $patchers, $whitelist)
+            ->scope(Argument::any(), $contents)
             ->willReturn($expected = 'scoped contents')
         ;
 
         $scoper = (new ConfigurableScoper($this->decoratedScoper))->withWhitelistedFiles(...$whitelistedFiles);
 
         foreach ($whitelistedFiles as $whitelistedFile) {
-            $actual = $scoper->scope($whitelistedFile, $contents, $prefix, $patchers, $whitelist);
+            $actual = $scoper->scope($whitelistedFile, $contents);
 
             self::assertSame($contents, $actual);
         }
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 

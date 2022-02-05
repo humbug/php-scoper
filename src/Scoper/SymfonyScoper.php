@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Scoper\Symfony\XmlScoper as SymfonyXmlScoper;
 use Humbug\PhpScoper\Scoper\Symfony\YamlScoper as SymfonyYamlScoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
 use function func_get_args;
 
@@ -28,10 +28,22 @@ final class SymfonyScoper implements Scoper
 {
     private SymfonyXmlScoper $decoratedScoper;
 
-    public function __construct(Scoper $decoratedScoper)
-    {
+    public function __construct(
+        Scoper $decoratedScoper,
+        string $prefix,
+        EnrichedReflector $enrichedReflector,
+        SymbolsRegistry $symbolsRegistry
+    ) {
         $this->decoratedScoper = new SymfonyXmlScoper(
-            new SymfonyYamlScoper($decoratedScoper)
+            new SymfonyYamlScoper(
+                $decoratedScoper,
+                $prefix,
+                $enrichedReflector,
+                $symbolsRegistry,
+            ),
+            $prefix,
+            $enrichedReflector,
+            $symbolsRegistry,
         );
     }
 
@@ -40,7 +52,7 @@ final class SymfonyScoper implements Scoper
      *
      * @throws PhpParserError
      */
-    public function scope(string $filePath, string $contents, string $prefix, array $patchers, Whitelist $whitelist): string
+    public function scope(string $filePath, string $contents): string
     {
         return $this->decoratedScoper->scope(...func_get_args());
     }

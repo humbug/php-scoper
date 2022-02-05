@@ -14,107 +14,77 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'Simple binary file',
+        'title' => 'Excerpts of code used for executable PHP files (e.g. for PHPUnit)',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Some statements made directly in the global namespace' => <<<'PHP'
-<?php declare(strict_types=1);
-
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-if (\true) {
-    echo "yo";
-}
-
-if (\false) {
-    echo "oy";
-}
-
-----
-<?php
-
-declare (strict_types=1);
-namespace Humbug;
-
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-if (\true) {
-    echo "yo";
-}
-if (\false) {
-    echo "oy";
-}
-
-PHP
-    ,
+    <?php declare(strict_types=1);
+    
+    if (\true) {
+        echo "yo";
+    }
+    
+    if (\false) {
+        echo "oy";
+    }
+    
+    ----
+    <?php
+    
+    declare (strict_types=1);
+    namespace Humbug;
+    
+    if (\true) {
+        echo "yo";
+    }
+    if (\false) {
+        echo "oy";
+    }
+    
+    PHP,
 
     'Some statements made directly in the global namespace with a shebang' => <<<'PHP'
-#!/usr/bin/env php
-<?php declare(strict_types=1);
-
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-if (\true) {
-    echo "yo";
-}
-
-if (\false) {
-    echo "oy";
-}
-
-----
-#!/usr/bin/env php
-<?php 
-declare (strict_types=1);
-namespace Humbug;
-
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-if (\true) {
-    echo "yo";
-}
-if (\false) {
-    echo "oy";
-}
-
-PHP
-    ,
+    #!/usr/bin/env php
+    <?php declare(strict_types=1);
+    
+    if (\true) {
+        echo "yo";
+    }
+    
+    if (\false) {
+        echo "oy";
+    }
+    
+    ----
+    #!/usr/bin/env php
+    <?php 
+    declare (strict_types=1);
+    namespace Humbug;
+    
+    if (\true) {
+        echo "yo";
+    }
+    if (\false) {
+        echo "oy";
+    }
+    
+    PHP,
 ];

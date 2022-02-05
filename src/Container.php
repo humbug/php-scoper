@@ -14,6 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Humbug\PhpScoper\Configuration\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\RegexChecker;
+use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Symbol\Reflector;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
@@ -24,6 +29,7 @@ final class Container
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
+    private Reflector $reflector;
     private ScoperFactory $scoperFactory;
 
     public function getFileSystem(): Filesystem
@@ -40,7 +46,9 @@ final class Container
         if (!isset($this->configFactory)) {
             $this->configFactory = new ConfigurationFactory(
                 $this->getFileSystem(),
-                new ConfigurationWhitelistFactory(),
+                new SymbolsConfigurationFactory(
+                    new RegexChecker(),
+                ),
             );
         }
 
@@ -50,7 +58,10 @@ final class Container
     public function getScoperFactory(): ScoperFactory
     {
         if (!isset($this->scoperFactory)) {
-            $this->scoperFactory = new ScoperFactory($this->getParser());
+            $this->scoperFactory = new ScoperFactory(
+                $this->getParser(),
+                $this->getReflector(),
+            );
         }
 
         return $this->scoperFactory;
@@ -59,9 +70,18 @@ final class Container
     public function getParser(): Parser
     {
         if (!isset($this->parser)) {
-            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7, new Lexer());
+            $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Lexer());
         }
 
         return $this->parser;
+    }
+
+    public function getReflector(): Reflector
+    {
+        if (!isset($this->reflector)) {
+            $this->reflector = Reflector::createWithPhpStormStubs();
+        }
+
+        return $this->reflector;
     }
 }

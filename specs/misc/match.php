@@ -18,45 +18,51 @@ return [
         'title' => 'Match',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
+
         'expose-global-constants' => false,
         'expose-global-classes' => false,
         'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
     'match' => <<<'PHP'
-<?php declare(strict_types=1);
+    <?php declare(strict_types=1);
+        
+    namespace Acme {
+        use Acme\Foo\Match;
     
-namespace Acme {
-    use Acme\Foo\Match;
-
-    class Foo implements Match {}
-}
-
-namespace Acme\Foo {
-    interface Match {}
-}
+        class Foo implements Match {}
+    }
     
-----
-<?php
-
-declare (strict_types=1);
-namespace Humbug\Acme;
-
-use Humbug\Acme\Foo\Match;
-class Foo implements Match
-{
-}
-namespace Humbug\Acme\Foo;
-
-interface Match
-{
-}
-
-PHP
+    namespace Acme\Foo {
+        interface Match {}
+    }
+        
+    ----
+    <?php
+    
+    declare (strict_types=1);
+    namespace Humbug\Acme;
+    
+    use Humbug\Acme\Foo\Match;
+    class Foo implements Match
+    {
+    }
+    namespace Humbug\Acme\Foo;
+    
+    interface Match
+    {
+    }
+    
+    PHP,
 ];

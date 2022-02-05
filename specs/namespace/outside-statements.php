@@ -17,83 +17,85 @@ return [
         'title' => 'Namespaces with an outside statement',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Declare statement' => <<<'PHP'
-<?php
-
-declare(A='B');
-
-namespace Foo;
-
-----
-<?php
-
-declare (A='B');
-namespace Humbug\Foo;
-
-
-PHP
-    ,
+    <?php
+    
+    declare(A='B');
+    
+    namespace Foo;
+    
+    ----
+    <?php
+    
+    declare (A='B');
+    namespace Humbug\Foo;
+    
+    
+    PHP,
 
     'Comment' => <<<'PHP'
-<?php
-
-/* Comment */
-
-namespace Foo;
-
-----
-<?php
-
-/* Comment */
-namespace Humbug\Foo;
-
-
-PHP
-    ,
+    <?php
+    
+    /* Comment */
+    
+    namespace Foo;
+    
+    ----
+    <?php
+    
+    /* Comment */
+    namespace Humbug\Foo;
+    
+    
+    PHP,
 
     'Simple comment' => <<<'PHP'
-<?php
-
-// Comment
-
-namespace Foo;
-
-----
-<?php
-
-// Comment
-namespace Humbug\Foo;
-
-
-PHP
-    ,
+    <?php
+    
+    // Comment
+    
+    namespace Foo;
+    
+    ----
+    <?php
+    
+    // Comment
+    namespace Humbug\Foo;
+    
+    
+    PHP,
 
     'Doc block' => <<<'PHP'
-<?php
-
-/** Comment */
-
-namespace Foo;
-
-----
-<?php
-
-/** Comment */
-namespace Humbug\Foo;
-
-
-PHP
-    ,
+    <?php
+    
+    /** Comment */
+    
+    namespace Foo;
+    
+    ----
+    <?php
+    
+    /** Comment */
+    namespace Humbug\Foo;
+    
+    
+    PHP,
 ];

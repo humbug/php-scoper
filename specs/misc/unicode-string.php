@@ -17,40 +17,45 @@ return [
         'title' => 'String with unicode',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
+
         'expose-global-constants' => true,
         'expose-global-classes' => false,
         'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     // https://github.com/humbug/php-scoper/issues/464
     'String with unicode' => <<<'PHP'
-<?php
-
-namespace MaxMind\Db;
-
-class Reader {
-    private static $UNICODE = "äßæ";
-    private static $EMOJIS = "👾 🤖";
-}
-
-----
-<?php
-
-namespace Humbug\MaxMind\Db;
-
-class Reader
-{
-    private static $UNICODE = "äßæ";
-    private static $EMOJIS = "👾 🤖";
-}
-
-PHP
-    ,
+    <?php
+    
+    namespace MaxMind\Db;
+    
+    class Reader {
+        private static $UNICODE = "äßæ";
+        private static $EMOJIS = "👾 🤖";
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug\MaxMind\Db;
+    
+    class Reader
+    {
+        private static $UNICODE = "äßæ";
+        private static $EMOJIS = "👾 🤖";
+    }
+    
+    PHP,
 ];

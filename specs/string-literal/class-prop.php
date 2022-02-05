@@ -17,41 +17,46 @@ return [
         'title' => 'String value assigned as a private property initial value',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'exclude-namespaces' => [],
-        'expose-global-constants' => true,
+
+        'expose-global-constants' => false,
         'expose-global-classes' => false,
-        'expose-global-functions' => true,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
         'exclude-constants' => [],
         'exclude-classes' => [],
         'exclude-functions' => [],
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'FQCN string argument' => <<<'PHP'
-<?php
-
-class Foo {
-    private $x = 'Symfony\\Component\\Yaml\\Ya_1';
-    private $x = '\\Symfony\\Component\\Yaml\\Ya_1';
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    private $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-}
-
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-}
-
-PHP
-    ,
+    <?php
+    
+    class Foo {
+        private $x = 'Symfony\\Component\\Yaml\\Ya_1';
+        private $x = '\\Symfony\\Component\\Yaml\\Ya_1';
+        private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        private $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+        private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+    }
+    
+    PHP,
 ];

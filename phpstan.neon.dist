@@ -1,16 +1,27 @@
 parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
-    excludes_analyse:
+
+    excludePaths:
         - src/Console/Command/AddPrefixCommand.php
+
     ignoreErrors:
         - message: '#Cannot cast array\<string\>\|string to string\.#'
           path: 'src/Patcher/SymfonyPatcher.php'
         - message: '#Parameter \#1 \$nodes of method PhpParser\\NodeTraverserInterface::traverse\(\) expects array\<PhpParser\\Node\>, array\<PhpParser\\Node\\Stmt\>\|null given\.#'
           path: 'src/Scoper/PhpScoper.php'
-        - message: '#Parameter \#2 \$input1 of function array_map expects array, array\<int, string\>\|false given\.#'
-          path: 'src/Autoload/ScoperAutoloadGenerator.php'
-        - message: '#Reflector::createSymbolList\(\)#'
-          path: 'src/Reflector.php'
-        - message: '#NameStmtPrefixer::getUseStmtAliasAndType\(\) should return#'
-          path: 'src/PhpParser/NodeVisitor/NameStmtPrefixer.php'
+        - message: '#UseStmtName::getUseStmtAliasAndType\(\) should return#'
+          path: 'src/PhpParser/UseStmtName.php'
+        - message: '#UseStmtManipulator::getOriginalName\(\) should return#'
+          path: 'src/PhpParser/NodeVisitor/UseStmt/UseStmtManipulator.php'
+        - message: '#IdentifierResolver::resolveIdentifier\(\) should return#'
+          path: 'src/PhpParser/NodeVisitor/Resolver/IdentifierResolver.php'
+        - message: '#ParentNodeAppender::getParent\(\) should return#'
+          path: 'src/PhpParser/NodeVisitor/ParentNodeAppender.php'
+        - message: '#ParentNodeAppender::findParent\(\) should return#'
+          path: 'src/PhpParser/NodeVisitor/ParentNodeAppender.php'
+        - message: '#OriginalNameResolver::getOriginalName\(\) should return#'
+          path: 'src/PhpParser/NodeVisitor/OriginalNameResolver.php'
+        - message: '#NamespaceManipulator::getOriginalName\(\) should return#'
+          path: 'src/PhpParser/NodeVisitor/NamespaceStmt/NamespaceManipulator.php'
+        # TODO: this one is really strange and may be worth investigating

@@ -17,9 +17,8 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
-use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
@@ -27,10 +26,11 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
+use UnexpectedValueException;
 use function array_reduce;
 
 /**
- * Appends a `class_alias` to the whitelisted classes.
+ * Appends a `class_alias` statement to the exposed classes.
  *
  * ```
  * namespace A;
@@ -57,16 +57,16 @@ use function array_reduce;
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
     private string $prefix;
-    private Whitelist $whitelist;
+    private EnrichedReflector $enrichedReflector;
     private IdentifierResolver $identifierResolver;
 
     public function __construct(
         string $prefix,
-        Whitelist $whitelist,
+        EnrichedReflector $enrichedReflector,
         IdentifierResolver $identifierResolver
     ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
+        $this->enrichedReflector = $enrichedReflector;
         $this->identifierResolver = $identifierResolver;
     }
 
@@ -97,44 +97,35 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     }
 
     /**
+     * @param Stmt[] $stmts
+     *
      * @return Stmt[]
      */
     private function createNamespaceStmts(array $stmts, Stmt $stmt): array
     {
         $stmts[] = $stmt;
 
-        if (!($stmt instanceof Class_ || $stmt instanceof Interface_)) {
+        $isClassOrInterface = $stmt instanceof Class_ || $stmt instanceof Interface_;
+
+        if (!$isClassOrInterface) {
             return $stmts;
         }
 
         $name = $stmt->name;
 
         if (null === $name) {
-            return $stmts;
+            throw new UnexpectedValueException('Expected the class/interface statement to have a name but none found');
         }
 
         $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
-        if (!($resolvedName instanceof FullyQualified)
-            || !$this->shouldAppendStmt($resolvedName)
+        if ($resolvedName instanceof FullyQualified
+            && $this->enrichedReflector->isExposedClass((string) $resolvedName)
         ) {
-            return $stmts;
+            $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
         }
 
-        $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
-
         return $stmts;
-    }
-
-    private function shouldAppendStmt(Name $resolvedName): bool
-    {
-        $resolvedNameString = (string) $resolvedName;
-
-        return !$this->whitelist->belongsToExcludedNamespace($resolvedNameString)
-            && (
-                $this->whitelist->isSymbolExposed($resolvedNameString)
-                || $this->whitelist->isExposedClassFromGlobalNamespace($resolvedNameString)
-            );
     }
 
     private static function createAliasStmt(

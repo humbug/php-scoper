@@ -6,8 +6,8 @@ namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Command\CommandRegistry;
 use Fidry\Console\IO;
-use Humbug\PhpScoper\Configuration;
-use Humbug\PhpScoper\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;

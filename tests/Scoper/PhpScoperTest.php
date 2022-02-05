@@ -14,11 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\Reflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use LogicException;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Name;
@@ -28,7 +29,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use function Humbug\PhpScoper\create_fake_patcher;
 use function Humbug\PhpScoper\create_parser;
 use function is_a;
 
@@ -36,30 +36,21 @@ class PhpScoperTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var Scoper
-     */
-    private $scoper;
+    private Scoper $scoper;
 
     /**
      * @var ObjectProphecy<Scoper>
      */
     private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @var Scoper
-     */
-    private $decoratedScoper;
+    private Scoper $decoratedScoper;
 
     /**
      * @var ObjectProphecy<TraverserFactory>
      */
     private ObjectProphecy $traverserFactoryProphecy;
 
-    /**
-     * @var TraverserFactory
-     */
-    private $traverserFactory;
+    private TraverserFactory $traverserFactory;
 
     /**
      * @var ObjectProphecy<Parser>
@@ -82,7 +73,14 @@ class PhpScoperTest extends TestCase
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
-            new TraverserFactory(Reflector::createWithPhpStormStubs())
+            new TraverserFactory(
+                new EnrichedReflector(
+                    Reflector::createEmpty(),
+                    SymbolsConfiguration::create(),
+                ),
+            ),
+            'Humbug',
+            new SymbolsRegistry(),
         );
     }
 
@@ -93,10 +91,7 @@ class PhpScoperTest extends TestCase
 
     public function test_can_scope_a_PHP_file(): void
     {
-        $prefix = 'Humbug';
         $filePath = 'file.php';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
         <?php
@@ -113,7 +108,7 @@ class PhpScoperTest extends TestCase
         
         PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
@@ -123,14 +118,10 @@ class PhpScoperTest extends TestCase
         $filePath = 'file.yaml';
         $fileContents = '';
         $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $fileContents, $prefix, $patchers, $whitelist)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
+            ->scope($filePath, $fileContents)
+            ->willReturn($expected = 'Scoped content')
         ;
 
         $this->traverserFactoryProphecy
@@ -141,22 +132,23 @@ class PhpScoperTest extends TestCase
         $scoper = new PhpScoper(
             new FakeParser(),
             $this->decoratedScoper,
-            $this->traverserFactory
+            $this->traverserFactory,
+            $prefix,
+            new SymbolsRegistry(),
         );
 
-        $actual = $scoper->scope($filePath, $fileContents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
 
-        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->decoratedScoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
     }
 
     public function test_can_scope_a_PHP_file_with_the_wrong_extension(): void
     {
-        $prefix = 'Humbug';
         $filePath = 'file';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
         <?php
@@ -174,17 +166,14 @@ class PhpScoperTest extends TestCase
         
         PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
 
-    public function test_can_scope_PHP_binary_files(): void
+    public function test_can_scope_PHP_executable_files(): void
     {
-        $prefix = 'Humbug';
         $filePath = 'hello';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
         #!/usr/bin/env php
@@ -202,17 +191,15 @@ class PhpScoperTest extends TestCase
         
         PHP;
 
-        $actual = $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
 
-    public function test_does_not_scope_a_non_PHP_binary_files(): void
+    public function test_does_not_scope_a_non_PHP_executable_files(): void
     {
         $prefix = 'Humbug';
         $filePath = 'hello';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $contents = <<<'PHP'
         #!/usr/bin/env bash
@@ -222,10 +209,8 @@ class PhpScoperTest extends TestCase
         PHP;
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
+            ->scope($filePath, $contents)
+            ->willReturn($expected = 'Scoped content')
         ;
 
         $this->traverserFactoryProphecy
@@ -236,14 +221,18 @@ class PhpScoperTest extends TestCase
         $scoper = new PhpScoper(
             new FakeParser(),
             $this->decoratedScoper,
-            $this->traverserFactory
+            $this->traverserFactory,
+            $prefix,
+            new SymbolsRegistry(),
         );
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
 
-        $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->decoratedScoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
     }
 
     public function test_cannot_scope_an_invalid_PHP_file(): void
@@ -256,12 +245,8 @@ class PhpScoperTest extends TestCase
         
         PHP;
 
-        $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
-
         try {
-            $this->scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+            $this->scoper->scope($filePath, $contents);
 
             self::fail('Expected exception to have been thrown.');
         } catch (PhpParserError $error) {
@@ -282,14 +267,10 @@ class PhpScoperTest extends TestCase
         ];
 
         $prefix = 'Humbug';
-        $patchers = [create_fake_patcher()];
-        $whitelist = Whitelist::create();
 
         $this->decoratedScoperProphecy
-            ->scope(Argument::any(), Argument::any(), $prefix, $patchers, $whitelist)
-            ->willReturn(
-                $expected = 'Scoped content'
-            )
+            ->scope(Argument::any(), Argument::any())
+            ->willReturn('Scoped content')
         ;
 
         $this->parserProphecy
@@ -307,52 +288,69 @@ class PhpScoperTest extends TestCase
 
         /** @var ObjectProphecy<NodeTraverserInterface> $firstTraverserProphecy */
         $firstTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
+        $firstTraverserProphecy->traverse($file1Stmts)->willReturn([]);
         /** @var NodeTraverserInterface $firstTraverser */
         $firstTraverser = $firstTraverserProphecy->reveal();
 
         /** @var ObjectProphecy<NodeTraverserInterface> $secondTraverserProphecy */
         $secondTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
+        $secondTraverserProphecy->traverse($file2Stmts)->willReturn([]);
         /** @var NodeTraverserInterface $secondTraverser */
         $secondTraverser = $secondTraverserProphecy->reveal();
 
         $i = 0;
         $this->traverserFactoryProphecy
-            ->create(Argument::type(PhpScoper::class), $prefix, $whitelist, Argument::that(
-                static function (...$args) use (&$i): bool {
-                    ++$i;
+            ->create(
+                Argument::type(PhpScoper::class),
+                $prefix,
+                Argument::that(
+                    static function () use (&$i): bool {
+                        ++$i;
 
-                    return 1 === $i;
-                }
-            ))
+                        return 1 === $i;
+                    }
+                ),
+            )
             ->willReturn($firstTraverser)
         ;
         $this->traverserFactoryProphecy
-            ->create(Argument::type(PhpScoper::class), $prefix, $whitelist, Argument::that(
-                static function (...$args) use (&$i): bool {
-                    ++$i;
+            ->create(
+                Argument::type(PhpScoper::class),
+                $prefix,
+                Argument::that(
+                    static function () use (&$i): bool {
+                        ++$i;
 
-                    return 4 === $i;
-                }
-            ))
+                        return 4 === $i;
+                    }
+                ),
+            )
             ->willReturn($secondTraverser)
         ;
-
-        $firstTraverserProphecy->traverse($file1Stmts)->willReturn([]);
-        $secondTraverserProphecy->traverse($file2Stmts)->willReturn([]);
 
         $scoper = new PhpScoper(
             $this->parser,
             new FakeScoper(),
-            $this->traverserFactory
+            $this->traverserFactory,
+            $prefix,
+            new SymbolsRegistry(),
         );
 
         foreach ($files as $file => $contents) {
-            $scoper->scope($file, $contents, $prefix, $patchers, $whitelist);
+            $scoper->scope($file, $contents);
         }
 
-        $this->parserProphecy->parse(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $this->traverserFactoryProphecy->create(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $firstTraverserProphecy->traverse(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $secondTraverserProphecy->traverse(Argument::cetera())->shouldHaveBeenCalledTimes(1);
+        $this->parserProphecy
+            ->parse(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(2);
+        $this->traverserFactoryProphecy
+            ->create(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(2);
+        $firstTraverserProphecy
+            ->traverse(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
+        $secondTraverserProphecy
+            ->traverse(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(1);
     }
 }

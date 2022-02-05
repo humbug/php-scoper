@@ -17,8 +17,8 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -38,19 +38,19 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 {
     private string $prefix;
     private IdentifierResolver $identifierResolver;
-    private Whitelist $whitelist;
-    private Reflector $reflector;
+    private SymbolsRegistry $symbolsRegistry;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
         IdentifierResolver $identifierResolver,
-        Whitelist $whitelist,
-        Reflector $reflector
+        SymbolsRegistry $symbolsRegistry,
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
         $this->identifierResolver = $identifierResolver;
-        $this->whitelist = $whitelist;
-        $this->reflector = $reflector;
+        $this->symbolsRegistry = $symbolsRegistry;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -64,9 +64,9 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         $resolvedName = $this->retrieveResolvedName($node);
 
         if (null !== $resolvedName
-            && $this->isFunctionWhitelisted($resolvedName)
+            && $this->enrichedReflector->isExposedFunction($resolvedName->toString())
         ) {
-            $this->whitelist->recordWhitelistedFunction(
+            $this->symbolsRegistry->recordFunction(
                 $resolvedName,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );
@@ -132,11 +132,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        $funcCallName = $argParent->name;
-
-        if (!($funcCallName instanceof FullyQualified)
-            || 'function_exists' !== $funcCallName->toString()
-        ) {
+        if (!self::isFunctionExistsCall($argParent)) {
             return null;
         }
 
@@ -145,16 +141,12 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         return $resolvedName instanceof FullyQualified ? $resolvedName : null;
     }
 
-    private function isFunctionWhitelisted(FullyQualified $name): bool
+    private static function isFunctionExistsCall(FuncCall $node): bool
     {
-        $nameString = (string) $name;
+        $name = $node->name;
 
-        return (
-            !$this->reflector->isFunctionInternal($nameString)
-            && (
-                $this->whitelist->isExposedFunctionFromGlobalNamespace($nameString)
-                || $this->whitelist->isSymbolExposed($nameString)
-            )
-        );
+        return $name instanceof Name
+            && $name->isFullyQualified()
+            && $name->toString() === 'function_exists';
     }
 }
