@@ -33,6 +33,7 @@ use Webmozart\PathUtil\Path;
 use function file_exists;
 use function implode;
 use function in_array;
+use function ltrim;
 use function Safe\getcwd;
 use function Safe\sprintf;
 use const DIRECTORY_SEPARATOR;
@@ -110,7 +111,7 @@ final class InspectSymbolCommand implements Command
 
         ChangeableDirectory::changeWorkingDirectory($io);
 
-        $symbol = $io->getStringArgument(self::SYMBOL_ARG);
+        $symbol = self::getSymbol($io);
         $symbolType = self::getSymbolType($io);
         $config = $this->retrieveConfig($io);
 
@@ -127,6 +128,13 @@ final class InspectSymbolCommand implements Command
         );
 
         return ExitCode::SUCCESS;
+    }
+
+    private static function getSymbol(IO $io): string
+    {
+        $symbol = $io->getStringArgument(self::SYMBOL_ARG);
+
+        return ltrim($symbol, '\\');
     }
 
     /**
