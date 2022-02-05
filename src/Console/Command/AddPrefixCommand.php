@@ -131,7 +131,7 @@ final class AddPrefixCommand implements Command, CommandAware
 
     public function execute(IO $io): int
     {
-        $io->writeln('');
+        $io->newLine();
 
         ChangeableDirectory::changeWorkingDirectory($io);
 
