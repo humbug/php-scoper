@@ -110,7 +110,7 @@ final class UseStmtCollection implements IteratorAggregate
     }
 
     /**
-     * @return iterable<string, list<Use_[]>>
+     * @return Traversable<string, list<Use_[]>>
      */
     public function getIterator(): Traversable
     {
