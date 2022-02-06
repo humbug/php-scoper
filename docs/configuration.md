@@ -185,7 +185,7 @@ Symbols can be marked as excluded as follows:
 // scoper.inc.php
 
 return [
-    'exclude-namespaces' => ['WP'],
+    'exclude-namespaces' => [ 'WP', '/regex/' ],
     'exclude-classes' => ['Stringeable'],
     'exclude-functions' => ['str_contains'],
     'exclude-constants' => ['PHP_EOL'],
@@ -241,10 +241,10 @@ return [
     'expose-global-classes' => false,
     'expose-global-functions' => false,
 
-    'expose-namespaces' => ['PHPUnit\Framework'],
-    'expose-classes' => ['PHPUnit\Configuration'],
-    'expose-functions' => ['PHPUnit\execute_tests'],
-    'expose-constants' => ['PHPUnit\VERSION'],
+    'expose-namespaces' => ['PHPUnit\Framework', '/regex/'],
+    'expose-classes' => ['PHPUnit\Configuration', '/regex/'],
+    'expose-functions' => ['PHPUnit\execute_tests', '/regex/'],
+    'expose-constants' => ['PHPUnit\VERSION', '/regex/'],
 ];
 ```
 
@@ -395,7 +395,7 @@ namespace Humbug\Acme;
 <br />
 <hr />
 
-« [Installation](installation.md#installation) • [Limitations](limitations.md#limitations) »
+« [Installation](installation.md#installation) • [Further Reading](further-reading.md#further-reading) »
 
 
 [box]: https://github.com/box-project/box
