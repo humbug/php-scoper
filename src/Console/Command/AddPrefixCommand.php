@@ -30,6 +30,7 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use function array_map;
 use function is_dir;
 use function is_writable;
@@ -135,10 +136,16 @@ final class AddPrefixCommand implements Command, CommandAware
 
         ChangeableDirectory::changeWorkingDirectory($io);
 
-        $paths = $this->getPathArguments($io);
-        $outputDir = $this->getOutputDir($io);
+        // Only get current working directory _after_ we changed to the desired
+        // working directory
+        $cwd = getcwd();
 
-        $config = $this->retrieveConfig($io, $paths);
+        $paths = $this->getPathArguments($io, $cwd);
+        $outputDir = $this->getOutputDir($io, $cwd);
+
+        $this->checkOutputDir($io, $outputDir);
+
+        $config = $this->retrieveConfig($io, $paths, $cwd);
 
         $this->getScoper()->scope(
             $io,
@@ -151,31 +158,47 @@ final class AddPrefixCommand implements Command, CommandAware
         return ExitCode::SUCCESS;
     }
 
-    private function getOutputDir(IO $io): string
+    private function getOutputDir(IO $io, string $cwd): string
     {
-        $outputDir = $io->getStringOption(self::OUTPUT_DIR_OPT);
+        return $this->canonicalizePath(
+            $io->getStringOption(self::OUTPUT_DIR_OPT),
+            $cwd,
+        );
+    }
 
-        if (!$this->fileSystem->isAbsolutePath($outputDir)) {
-            $outputDir = getcwd().DIRECTORY_SEPARATOR.$outputDir;
-        }
-
+    private function checkOutputDir(IO $io, string $outputDir): void
+    {
         if (!$this->fileSystem->exists($outputDir)) {
-            return $outputDir;
+            return;
         }
 
-        if (!is_writable($outputDir)) {
+        self::checkPathIsWriteable($outputDir);
+
+        $canDeleteFile = self::canDeleteOutputDir($io, $outputDir);
+
+        if (!$canDeleteFile) {
+            throw new RuntimeException('Cannot delete the output directory. Interrupting the process.');
+        }
+
+        $this->fileSystem->remove($outputDir);
+    }
+
+    private static function checkPathIsWriteable(string $path): void
+    {
+        if (!is_writable($path)) {
             throw new RuntimeException(
                 sprintf(
                     'Expected "<comment>%s</comment>" to be writeable.',
-                    $outputDir
-                )
+                    $path,
+                ),
             );
         }
+    }
 
+    private static function canDeleteOutputDir(IO $io, string $outputDir): bool
+    {
         if ($io->getBooleanOption(self::FORCE_OPT)) {
-            $this->fileSystem->remove($outputDir);
-
-            return $outputDir;
+            return true;
         }
 
         $question = sprintf(
@@ -185,19 +208,13 @@ final class AddPrefixCommand implements Command, CommandAware
             $outputDir,
         );
 
-        $canDeleteFile = $io->confirm($question, false);
-
-        if ($canDeleteFile) {
-            $this->fileSystem->remove($outputDir);
-        }
-
-        return $outputDir;
+        return $io->confirm($question, false);
     }
 
     /**
-     * @param string[] $paths
+     * @param list<non-empty-string> $paths
      */
-    private function retrieveConfig(IO $io, array $paths): Configuration
+    private function retrieveConfig(IO $io, array $paths, string $cwd): Configuration
     {
         $configLoader = new ConfigLoader(
             $this->getCommandRegistry(),
@@ -209,27 +226,44 @@ final class AddPrefixCommand implements Command, CommandAware
             $io,
             $io->getStringOption(self::PREFIX_OPT),
             $io->getBooleanOption(self::NO_CONFIG_OPT),
-            $io->getNullableStringOption(self::CONFIG_FILE_OPT),
+            $this->getConfigFilePath($io, $cwd),
             ConfigurationFactory::DEFAULT_FILE_NAME,
             $this->init,
             $paths,
-            getcwd(),
+            $cwd,
         );
     }
 
     /**
-     * @return list<string> List of absolute paths
+     * @return non-empty-string|null
      */
-    private function getPathArguments(IO $io): array
+    private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $cwd = getcwd();
-        $fileSystem = $this->fileSystem;
+        $configFilePath = $io->getStringOption(self::CONFIG_FILE_OPT);
 
+        return '' === $configFilePath ? null : $this->canonicalizePath($configFilePath, $cwd);
+    }
+
+    /**
+     * @return list<non-empty-string> List of absolute canonical paths
+     */
+    private function getPathArguments(IO $io, string $cwd): array
+    {
         return array_map(
-            static fn (string $path) => $fileSystem->isAbsolutePath($path)
+            fn (string $path) => $this->canonicalizePath($path, $cwd),
+            $io->getStringArrayArgument(self::PATH_ARG),
+        );
+    }
+
+    /**
+     * @return non-empty-string Absolute canonical path
+     */
+    private function canonicalizePath(string $path, string $cwd): string
+    {
+        return Path::canonicalize(
+            $this->fileSystem->isAbsolutePath($path)
                 ? $path
                 : $cwd.DIRECTORY_SEPARATOR.$path,
-            $io->getStringArrayArgument(self::PATH_ARG),
         );
     }
 
