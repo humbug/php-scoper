@@ -76,9 +76,17 @@ return [
         // '~^$~',                        // The root namespace only
         // '',                            // Any namespace
     ],
-    'exclude-classes' => [],
-    'exclude-functions' => [],
-    'exclude-constants' => [],
+    // Warning: regexes are not supported there (yet)
+    // See https://github.com/humbug/php-scoper/issues/634
+    'exclude-classes' => [
+        // 'ReflectionClassConstant',
+    ],
+    'exclude-functions' => [
+        // 'mb_str_split',
+    ],
+    'exclude-constants' => [
+        // 'STDIN',
+    ],
 
     // List of symbols to expose.
     //
