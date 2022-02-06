@@ -12,6 +12,8 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+use function assert;
 use function count;
 use function file_exists;
 use function Safe\sprintf;
@@ -38,7 +40,9 @@ final class ConfigLoader
     }
 
     /**
-     * @param string[] $paths
+     * @param non-empty-string|null $configFilePath Canonical absolute path
+     * @param non-empty-string $defaultConfigFilePath
+     * @param list<non-empty-string> $paths List of canonical absolute paths
      */
     public function loadConfig(
         IO $io,
@@ -52,6 +56,7 @@ final class ConfigLoader
     ): Configuration
     {
         $prefix = trim($prefix);
+        $defaultConfigFilePath = $this->canonicalizePath($defaultConfigFilePath, $cwd);
 
         if ($noConfig) {
             return $this->loadConfigWithoutConfigFile(
@@ -65,7 +70,7 @@ final class ConfigLoader
         if (null === $configFilePath && !$isInitCommandExecuted) {
             $configFilePath = $this->loadDefaultConfig(
                 $io,
-                $this->makeAbsolutePath($defaultConfigFilePath, $cwd),
+                $defaultConfigFilePath,
             );
 
             if (null === $configFilePath) {
@@ -80,11 +85,6 @@ final class ConfigLoader
                     $cwd,
                 );
             }
-        } elseif (null !== $configFilePath) {
-            $configFilePath = $this->makeAbsolutePath(
-                $configFilePath,
-                $cwd,
-            );
         }
 
         self::logConfigFilePathFound($io, $configFilePath);
@@ -93,7 +93,7 @@ final class ConfigLoader
     }
 
     /**
-     * @param string[] $paths
+     * @param list<non-empty-string> $paths
      */
     private function loadConfigWithoutConfigFile(
         IO $io,
@@ -111,7 +111,9 @@ final class ConfigLoader
     }
 
     /**
-     * @return string|null Config file path when found otherwise executes the init command
+     * @param non-empty-string $defaultConfigFilePath
+     *
+     * @return non-empty-string|null Config file path when found otherwise executes the init command
      */
     private function loadDefaultConfig(IO $io, string $defaultConfigFilePath): ?string
     {
@@ -174,7 +176,8 @@ final class ConfigLoader
     }
 
     /**
-     * @param string[] $paths
+     * @param non-empty-string|null $configFilePath
+     * @param list<non-empty-string> $paths
      */
     private function loadConfiguration(
         ?string $configFilePath,
@@ -221,15 +224,21 @@ final class ConfigLoader
         return $config;
     }
 
-    private function makeAbsolutePath(
-        string $path,
-        string $cwd
-    ): string
+    /**
+     * @param non-empty-string $path
+     *
+     * @return non-empty-string Absolute canonical path
+     */
+    private function canonicalizePath(string $path, string $cwd): string
     {
-        if (!$this->fileSystem->isAbsolutePath($path)) {
-            $path = $cwd.DIRECTORY_SEPARATOR.$path;
-        }
+        $canonicalPath = Path::canonicalize(
+            $this->fileSystem->isAbsolutePath($path)
+                ? $path
+                : $cwd.DIRECTORY_SEPARATOR.$path,
+        );
 
-        return $path;
+        assert('' !== $canonicalPath);
+
+        return $canonicalPath;
     }
 }
