@@ -35,6 +35,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 - [Usage](#usage)
 - [Configuration](docs/configuration.md#configuration)
     - [Prefix](docs/configuration.md#prefix)
+    - [Output directory](docs/configuration.md#output-directory)
     - [Finders and paths](docs/configuration.md#finders-and-paths)
     - [Patchers](docs/configuration.md#patchers)
     - [Excluded files](docs/configuration.md#excluded-files)
