@@ -14,10 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
-use function preg_replace;
+use function Safe\preg_replace;
+use function Safe\sprintf;
 use function strpos;
 
-final class SymfonyPatcher
+final class SymfonyPatcher implements Patcher
 {
     private const PATHS = [
         'src/Symfony/Component/DependencyInjection/Dumper/PhpDumper.php',
@@ -26,7 +27,7 @@ final class SymfonyPatcher
 
     public function __invoke(string $filePath, string $prefix, string $contents): string
     {
-        if (false === $this->isValidPath($filePath)) {
+        if (!self::isSupportedFile($filePath)) {
             return $contents;
         }
 
@@ -40,7 +41,7 @@ final class SymfonyPatcher
         );
     }
 
-    private function isValidPath(string $filePath): bool
+    private static function isSupportedFile(string $filePath): bool
     {
         foreach (self::PATHS as $path) {
             if (false !== strpos($filePath, $path)) {

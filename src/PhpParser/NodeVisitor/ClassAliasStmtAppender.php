@@ -14,11 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use function array_reduce;
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
@@ -27,9 +26,11 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
+use UnexpectedValueException;
+use function array_reduce;
 
 /**
- * Appends a `class_alias` to the whitelisted classes.
+ * Appends a `class_alias` statement to the exposed classes.
  *
  * ```
  * namespace A;
@@ -55,20 +56,20 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
-    private $prefix;
-    private $whitelist;
-    private $nameResolver;
+    private string $prefix;
+    private EnrichedReflector $enrichedReflector;
+    private IdentifierResolver $identifierResolver;
 
-    public function __construct(string $prefix, Whitelist $whitelist, FullyQualifiedNameResolver $nameResolver)
-    {
+    public function __construct(
+        string $prefix,
+        EnrichedReflector $enrichedReflector,
+        IdentifierResolver $identifierResolver
+    ) {
         $this->prefix = $prefix;
-        $this->whitelist = $whitelist;
-        $this->nameResolver = $nameResolver;
+        $this->enrichedReflector = $enrichedReflector;
+        $this->identifierResolver = $identifierResolver;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function afterTraverse(array $nodes): array
     {
         $newNodes = [];
@@ -88,61 +89,63 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     {
         $namespace->stmts = array_reduce(
             $namespace->stmts,
-            [$this, 'createNamespaceStmts'],
-            []
+            fn (array $stmts, Stmt $stmt) => $this->createNamespaceStmts($stmts, $stmt),
+            [],
         );
 
         return $namespace;
     }
 
     /**
+     * @param Stmt[] $stmts
+     *
      * @return Stmt[]
      */
     private function createNamespaceStmts(array $stmts, Stmt $stmt): array
     {
         $stmts[] = $stmt;
 
-        if (false === ($stmt instanceof Class_ || $stmt instanceof Interface_)) {
+        $isClassOrInterface = $stmt instanceof Class_ || $stmt instanceof Interface_;
+
+        if (!$isClassOrInterface) {
             return $stmts;
         }
 
-        /** @var Class_|Interface_ $stmt */
-        if (null === $stmt->name) {
-            return $stmts;
+        $name = $stmt->name;
+
+        if (null === $name) {
+            throw new UnexpectedValueException('Expected the class/interface statement to have a name but none found');
         }
 
-        $originalName = $this->nameResolver->resolveName($stmt->name)->getName();
+        $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
-        if (false === ($originalName instanceof FullyQualified)
-            || $this->whitelist->belongsToWhitelistedNamespace((string) $originalName)
-            || (
-                false === $this->whitelist->isSymbolWhitelisted((string) $originalName)
-                && false === $this->whitelist->isGlobalWhitelistedClass((string) $originalName)
-            )
+        if ($resolvedName instanceof FullyQualified
+            && $this->enrichedReflector->isExposedClass((string) $resolvedName)
         ) {
-            return $stmts;
+            $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
         }
-        /* @var FullyQualified $originalName */
-
-        $stmts[] = $this->createAliasStmt($originalName, $stmt);
 
         return $stmts;
     }
 
-    private function createAliasStmt(FullyQualified $originalName, Node $stmt): Expression
+    private static function createAliasStmt(
+        FullyQualified $originalName,
+        Node $stmt,
+        string $prefix
+    ): Expression
     {
         $call = new ClassAliasFuncCall(
-            FullyQualifiedFactory::concat($this->prefix, $originalName),
+            FullyQualifiedFactory::concat($prefix, $originalName),
             $originalName,
-            $stmt->getAttributes()
+            $stmt->getAttributes(),
         );
 
         $expression = new Expression(
             $call,
-            $stmt->getAttributes()
+            $stmt->getAttributes(),
         );
 
-        $call->setAttribute(ParentNodeAppender::PARENT_ATTRIBUTE, $expression);
+        ParentNodeAppender::setParent($call, $expression);
 
         return $expression;
     }

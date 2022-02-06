@@ -13,7 +13,8 @@ declare(strict_types=1);
  */
 
 return [
-    'whitelist' => [
-        'iter\RANG*',   // Use a case mismatch on purpose: function references should be case insensitive
+    'expose-functions' => [
+        // Use a case mismatch on purpose: function references should be case-insensitive
+        'iter\RANGE',
     ],
 ];

@@ -17,70 +17,78 @@ return [
         'title' => 'Global constant imported with a use statement used in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => false,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Constant call imported with a use statement' => <<<'PHP'
-<?php
-
-namespace A;
-
-use const DUMMY_CONST;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-use const Humbug\DUMMY_CONST;
-\Humbug\DUMMY_CONST;
-
-PHP
-    ,
+    <?php
+    
+    namespace A;
+    
+    use const DUMMY_CONST;
+    
+    DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    use const Humbug\DUMMY_CONST;
+    DUMMY_CONST;
+    
+    PHP,
 
     'FQ constant call imported with a use statement' => <<<'PHP'
-<?php
+    <?php
+    
+    namespace A;
+    
+    use const DUMMY_CONST;
+    
+    \DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    use const Humbug\DUMMY_CONST;
+    \Humbug\DUMMY_CONST;
+    
+    PHP,
 
-namespace A;
-
-use const DUMMY_CONST;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-use const Humbug\DUMMY_CONST;
-\Humbug\DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted FQ constant call imported with a use statement' => [
-        'whitelist' => ['DUMMY_CONST'],
+    'Exposed FQ constant call imported with a use statement' => [
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-use const DUMMY_CONST;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-use const DUMMY_CONST;
-\DUMMY_CONST;
-
-PHP
+        <?php
+        
+        namespace A;
+        
+        use const DUMMY_CONST;
+        
+        \DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug\A;
+        
+        use const DUMMY_CONST;
+        \DUMMY_CONST;
+        
+        PHP,
     ],
 ];

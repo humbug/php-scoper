@@ -14,35 +14,50 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use function array_diff;
-use function array_filter;
-use function array_keys;
-use function array_map;
-use function array_slice;
-use function array_values;
-use function basename;
-use function current;
 use Error;
-use function explode;
-use Generator;
-use function Humbug\PhpScoper\create_fake_patcher;
-use function Humbug\PhpScoper\create_parser;
+use Humbug\PhpScoper\Configuration\ConfigurationKeys;
+use Humbug\PhpScoper\Configuration\RegexChecker;
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
+use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Reflector;
-use Humbug\PhpScoper\Scoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\NamespaceRegistry;
+use Humbug\PhpScoper\Symbol\Reflector;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Whitelist;
-use function implode;
-use function is_array;
-use const PHP_EOL;
+use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
-use function sprintf;
-use function strpos;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 use UnexpectedValueException;
-use function usort;
+use function array_diff;
+use function array_filter;
+use function array_key_exists;
+use function array_keys;
+use function array_map;
+use function array_merge;
+use function array_slice;
+use function array_values;
+use function basename;
+use function count;
+use function current;
+use function explode;
+use function Humbug\PhpScoper\create_parser;
+use function implode;
+use function is_array;
+use function is_string;
+use function min;
+use function Safe\preg_split;
+use function Safe\sprintf;
+use function Safe\usort;
+use function str_repeat;
+use function strlen;
+use function strpos;
+use const PHP_EOL;
+use const PHP_VERSION_ID;
 
 class PhpScoperSpecTest extends TestCase
 {
@@ -50,25 +65,41 @@ class PhpScoperSpecTest extends TestCase
     private const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
 
     private const SPECS_META_KEYS = [
+        'minPhpVersion',
+        'maxPhpVersion',
         'title',
-        'prefix',
-        'whitelist',
-        'whitelist-global-constants',
-        'whitelist-global-classes',
-        'whitelist-global-functions',
-        'registered-classes',
-        'registered-functions',
+        ConfigurationKeys::PREFIX_KEYWORD,
+        // SPECS_CONFIG_KEYS included
+        'expected-recorded-classes',
+        'expected-recorded-functions',
     ];
 
+    // Keys allowed on a spec level
     private const SPECS_SPEC_KEYS = [
-        'prefix',
-        'whitelist',
-        'whitelist-global-constants',
-        'whitelist-global-classes',
-        'whitelist-global-functions',
-        'registered-classes',
-        'registered-functions',
+        ConfigurationKeys::PREFIX_KEYWORD,
+        // SPECS_CONFIG_KEYS included
+        'expected-recorded-classes',
+        'expected-recorded-functions',
         'payload',
+    ];
+
+    // Keys kept and used to build the symbols configuration
+    private const SPECS_CONFIG_KEYS = [
+        ConfigurationKeys::WHITELIST_KEYWORD,
+
+        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
+        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
+
+        ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
+        ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD,
+        ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD,
+        ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD,
+
+        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
+        ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
+        ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
     ];
 
     /**
@@ -79,7 +110,7 @@ class PhpScoperSpecTest extends TestCase
     {
         $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
 
-        $this->assertCount(0, $files);
+        self::assertCount(0, $files);
     }
 
     /**
@@ -90,27 +121,43 @@ class PhpScoperSpecTest extends TestCase
         string $spec,
         string $contents,
         string $prefix,
-        Whitelist $whitelist,
+        SymbolsConfiguration $symbolsConfiguration,
         ?string $expected,
         array $expectedRegisteredClasses,
-        array $expectedRegisteredFunctions
+        array $expectedRegisteredFunctions,
+        ?int $minPhpVersion,
+        ?int $maxPhpVersion
     ): void {
+        if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
+            self::markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
+        }
+
+        if (null !== $maxPhpVersion && $maxPhpVersion <= PHP_VERSION_ID) {
+            self::markTestSkipped(sprintf('Max PHP version not matched for spec %s', $spec));
+        }
+
         $filePath = 'file.php';
-        $patchers = [create_fake_patcher()];
-        $scoper = $this->createScoper();
+
+        $symbolsRegistry = new SymbolsRegistry();
+
+        $scoper = self::createScoper(
+            $prefix,
+            $symbolsConfiguration,
+            $symbolsRegistry,
+        );
 
         try {
-            $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+            $actual = $scoper->scope($filePath, $contents);
 
             if (null === $expected) {
-                $this->fail('Expected exception to be thrown.');
+                self::fail('Expected exception to be thrown.');
             }
         } catch (UnexpectedValueException $exception) {
             if (null !== $expected) {
                 throw $exception;
             }
 
-            $this->assertTrue(true);
+            self::assertTrue(true);
 
             return;
         } catch (PhpParserError $error) {
@@ -131,7 +178,7 @@ class PhpScoperSpecTest extends TestCase
             $startLine = $error->getAttributes()['startLine'] - 1;
             $endLine = $error->getAttributes()['endLine'] + 1;
 
-            $this->fail(
+            self::fail(
                 sprintf(
                     'Unexpected parse error found in the following lines: %s%s%s',
                     $error->getMessage(),
@@ -147,36 +194,37 @@ class PhpScoperSpecTest extends TestCase
                 sprintf(
                     'Could not parse the spec %s: %s',
                     $spec,
-                    $throwable->getMessage()
+                    $throwable->getMessage().$throwable->getTraceAsString()
                 ),
                 0,
                 $throwable
             );
         }
 
-        $specMessage = $this->createSpecMessage(
+        $specMessage = self::createSpecMessage(
             $file,
             $spec,
             $contents,
-            $whitelist,
+            $symbolsConfiguration,
+            $symbolsRegistry,
             $expected,
             $actual,
             $expectedRegisteredClasses,
             $expectedRegisteredFunctions
         );
 
-        $this->assertSame($expected, $actual, $specMessage);
+        self::assertSame($expected, $actual, $specMessage);
 
-        $actualRecordedWhitelistedClasses = $whitelist->getRecordedWhitelistedClasses();
+        $actualRecordedExposedClasses = $symbolsRegistry->getRecordedClasses();
 
-        $this->assertSameRecordedSymbols($actualRecordedWhitelistedClasses, $expectedRegisteredClasses, $specMessage);
+        self::assertSameRecordedSymbols($expectedRegisteredClasses, $actualRecordedExposedClasses, $specMessage);
 
-        $actualRecordedWhitelistedFunctions = $whitelist->getRecordedWhitelistedFunctions();
+        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedFunctions();
 
-        $this->assertSameRecordedSymbols($actualRecordedWhitelistedFunctions, $expectedRegisteredFunctions, $specMessage);
+        self::assertSameRecordedSymbols($expectedRegisteredFunctions, $actualRecordedExposedFunctions, $specMessage);
     }
 
-    public function provideValidFiles(): Generator
+    public static function provideValidFiles(): iterable
     {
         $sourceDir = self::SECONDARY_SPECS_PATH;
 
@@ -199,33 +247,52 @@ class PhpScoperSpecTest extends TestCase
                 unset($fixtures['meta']);
 
                 foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield $this->parseSpecFile(
+                    yield from self::parseSpecFile(
                         basename($sourceDir).'/'.$file->getRelativePathname(),
                         $meta,
                         $fixtureTitle,
-                        $fixtureSet
-                    )->current();
+                        $fixtureSet,
+                    );
                 }
             } catch (Throwable $throwable) {
-                $this->fail(
+                self::fail(
                     sprintf(
                         'An error occurred while parsing the file "%s": %s',
                         $file,
-                        $throwable->getMessage()
-                    )
+                        $throwable->getMessage(),
+                    ),
                 );
             }
         }
     }
 
-    private function createScoper(): Scoper
+    private static function createScoper(
+        string $prefix,
+        SymbolsConfiguration $symbolsConfiguration,
+        SymbolsRegistry $symbolsRegistry
+    ): Scoper
     {
         $phpParser = create_parser();
+
+        $reflector = Reflector
+            ::createWithPhpStormStubs()
+            ->withSymbols(
+                $symbolsConfiguration->getExcludedClassNames(),
+                $symbolsConfiguration->getExcludedFunctionNames(),
+                $symbolsConfiguration->getExcludedConstantNames(),
+            );
+
+        $enrichedReflector = new EnrichedReflector(
+            $reflector,
+            $symbolsConfiguration,
+        );
 
         return new PhpScoper(
             $phpParser,
             new FakeScoper(),
-            new TraverserFactory(new Reflector())
+            new TraverserFactory($enrichedReflector),
+            $prefix,
+            $symbolsRegistry,
         );
     }
 
@@ -233,8 +300,25 @@ class PhpScoperSpecTest extends TestCase
      * @param string|int   $fixtureTitle
      * @param string|array $fixtureSet
      */
-    private function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): Generator
+    private static function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): iterable
     {
+        static $specMetaKeys;
+        static $specKeys;
+
+        if (!isset($specMetaKeys)) {
+            $specMetaKeys = [
+                ...self::SPECS_META_KEYS,
+                ...self::SPECS_CONFIG_KEYS,
+            ];
+        }
+
+        if (!isset($specKeys)) {
+            $specKeys = [
+                ...self::SPECS_SPEC_KEYS,
+                ...self::SPECS_CONFIG_KEYS,
+            ];
+        }
+
         $spec = sprintf(
             '[%s] %s',
             $meta['title'],
@@ -245,11 +329,11 @@ class PhpScoperSpecTest extends TestCase
 
         $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
 
-        $this->assertSame(
+        self::assertSame(
             [],
             $diff = array_diff(
                 array_keys($meta),
-                self::SPECS_META_KEYS
+                $specMetaKeys,
             ),
             sprintf(
                 'Expected the keys found in the meta section to be known keys, unknown keys: "%s"',
@@ -258,12 +342,18 @@ class PhpScoperSpecTest extends TestCase
         );
 
         if (is_array($fixtureSet)) {
-            $this->assertSame(
+            $diff = array_diff(
+                array_keys($fixtureSet),
+                $specKeys,
+            );
+
+            if ([ConfigurationKeys::WHITELIST_KEYWORD] === array_values($diff)) {
+                $diff = [];
+            }
+
+            self::assertSame(
                 [],
-                $diff = array_diff(
-                    array_keys($fixtureSet),
-                    self::SPECS_SPEC_KEYS
-                ),
+                $diff,
                 sprintf(
                     'Expected the keys found in the spec section to be known keys, unknown keys: "%s"',
                     implode('", "', $diff)
@@ -275,46 +365,93 @@ class PhpScoperSpecTest extends TestCase
             $file,
             $spec,
             $payloadParts[0],   // Input
-            $fixtureSet['prefix'] ?? $meta['prefix'],
-            Whitelist::create(
-                $fixtureSet['whitelist-global-constants'] ?? $meta['whitelist-global-constants'],
-                $fixtureSet['whitelist-global-classes'] ?? $meta['whitelist-global-classes'],
-                $fixtureSet['whitelist-global-functions'] ?? $meta['whitelist-global-functions'],
-                ...($fixtureSet['whitelist'] ?? $meta['whitelist'])
+            $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
+            self::createSymbolsConfiguration(
+                $file,
+                is_string($fixtureSet) ? [] : $fixtureSet,
+                $meta,
             ),
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
-            $fixtureSet['registered-classes'] ?? $meta['registered-classes'],
-            $fixtureSet['registered-functions'] ?? $meta['registered-functions'],
+            $fixtureSet['expected-recorded-classes'] ?? $meta['expected-recorded-classes'],
+            $fixtureSet['expected-recorded-functions'] ?? $meta['expected-recorded-functions'],
+            $meta['minPhpVersion'] ?? null,
+            $meta['maxPhpVersion'] ?? null,
         ];
+    }
+
+    /**
+     * @param string|array $fixtureSet
+     */
+    private static function createSymbolsConfiguration(
+        string $file,
+        $fixtureSet,
+        array $meta
+    ): SymbolsConfiguration
+    {
+        if (is_string($fixtureSet)) {
+            $fixtureSet = [];
+        }
+
+        $mergedConfig = array_merge($meta, $fixtureSet);
+
+        $config = [];
+
+        foreach (self::SPECS_CONFIG_KEYS as $key) {
+            if (!array_key_exists($key, $mergedConfig)) {
+                if ($key === ConfigurationKeys::WHITELIST_KEYWORD) {
+                    continue;
+                }
+
+                throw new InvalidArgumentException(
+                    sprintf(
+                        'Missing the key "%s" for the file "%s"',
+                        $key,
+                        $file,
+                    ),
+                );
+            }
+
+            $config[$key] = $mergedConfig[$key];
+        }
+
+        return (new SymbolsConfigurationFactory(new RegexChecker()))->createSymbolsConfiguration($config);
     }
 
     /**
      * @param string[][] $expectedRegisteredClasses
      * @param string[][] $expectedRegisteredFunctions
      */
-    private function createSpecMessage(
+    private static function createSpecMessage(
         string $file,
         string $spec,
         string $contents,
-        Whitelist $whitelist,
+        SymbolsConfiguration $symbolsConfiguration,
+        SymbolsRegistry $symbolsRegistry,
         ?string $expected,
         ?string $actual,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions
     ): string {
-        $formattedWhitelist = $this->formatSimpleList($whitelist->toArray());
+        $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
+        $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
+        $formattedExposeGlobalFunctions = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalFunctions());
 
-        $formattedWhitelistGlobalConstants = $this->convertBoolToString($whitelist->whitelistGlobalConstants());
-        $formattedWhitelistGlobalFunctions = $this->convertBoolToString($whitelist->whitelistGlobalFunctions());
+        $formattedNamespacesToExclude = self::formatNamespaceRegistry($symbolsConfiguration->getExcludedNamespaces());
+        $formattedNamespacesToExpose = self::formatNamespaceRegistry($symbolsConfiguration->getExposedNamespaces());
 
-        $whitelist->getRecordedWhitelistedFunctions();
-        $whitelist->getRecordedWhitelistedClasses();
+        $formattedClassesToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedClasses());
+        $formattedFunctionsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedFunctions());
+        $formattedConstantsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedConstants());
 
-        $formattedExpectedRegisteredClasses = $this->formatTupleList($expectedRegisteredClasses);
-        $formattedExpectedRegisteredFunctions = $this->formatTupleList($expectedRegisteredFunctions);
+        $formattedInternalClasses = self::formatSimpleList($symbolsConfiguration->getExcludedClassNames());
+        $formattedInternalFunctions = self::formatSimpleList($symbolsConfiguration->getExcludedFunctionNames());
+        $formattedInternalConstants = self::formatSimpleList($symbolsConfiguration->getExcludedConstantNames());
 
-        $formattedActualRegisteredClasses = $this->formatTupleList($whitelist->getRecordedWhitelistedClasses());
-        $formattedActualRegisteredFunctions = $this->formatTupleList($whitelist->getRecordedWhitelistedFunctions());
+        $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
+        $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
+
+        $formattedActualRegisteredClasses = self::formatTupleList($symbolsRegistry->getRecordedClasses());
+        $formattedActualRegisteredFunctions = self::formatTupleList($symbolsRegistry->getRecordedFunctions());
 
         $titleSeparator = str_repeat(
             '=',
@@ -325,52 +462,62 @@ class PhpScoperSpecTest extends TestCase
         );
 
         return <<<OUTPUT
-$titleSeparator
-SPECIFICATION
-$titleSeparator
-$spec
-$file
-
-$titleSeparator
-INPUT
-whitelist: $formattedWhitelist
-whitelist global constants: $formattedWhitelistGlobalConstants
-whitelist global functions: $formattedWhitelistGlobalFunctions
-$titleSeparator
-$contents
-
-$titleSeparator
-EXPECTED
-$titleSeparator
-$expected
-----------------
-registered classes: $formattedExpectedRegisteredClasses
-registered functions: $formattedExpectedRegisteredFunctions
-
-$titleSeparator
-ACTUAL
-$titleSeparator
-$actual
-----------------
-registered classes: $formattedActualRegisteredClasses
-registered functions: $formattedActualRegisteredFunctions
-
--------------------------------------------------------------------------------
-OUTPUT
-        ;
+        $titleSeparator
+        SPECIFICATION
+        $titleSeparator
+        $spec
+        $file
+        
+        $titleSeparator
+        INPUT
+        expose global classes: $formattedExposeGlobalClasses
+        expose global functions: $formattedExposeGlobalFunctions
+        expose global constants: $formattedExposeGlobalConstants
+        
+        exclude namespaces: $formattedNamespacesToExclude
+        expose namespaces: $formattedNamespacesToExpose
+        
+        expose classes: $formattedClassesToExpose
+        expose functions: $formattedFunctionsToExpose
+        expose constants: $formattedConstantsToExpose
+        
+        (raw) internal classes: $formattedInternalClasses
+        (raw) internal functions: $formattedInternalFunctions
+        (raw) internal constants: $formattedInternalConstants
+        $titleSeparator
+        $contents
+        
+        $titleSeparator
+        EXPECTED
+        $titleSeparator
+        $expected
+        ----------------
+        recorded functions: $formattedExpectedRegisteredFunctions
+        recorded classes: $formattedExpectedRegisteredClasses
+        
+        $titleSeparator
+        ACTUAL
+        $titleSeparator
+        $actual
+        ----------------
+        recorded functions: $formattedActualRegisteredFunctions
+        recorded classes: $formattedActualRegisteredClasses
+        
+        -------------------------------------------------------------------------------
+        OUTPUT;
     }
 
     /**
      * @param string[] $strings
      */
-    private function formatSimpleList(array $strings): string
+    private static function formatSimpleList(array $strings): string
     {
         if (0 === count($strings)) {
             return '[]';
         }
 
         if (1 === count($strings)) {
-            return '['.current($strings).']';
+            return '[ '.current($strings).' ]';
         }
 
         return sprintf(
@@ -390,7 +537,7 @@ OUTPUT
     /**
      * @param string[][] $stringTuples
      */
-    private function formatTupleList(array $stringTuples): string
+    private static function formatTupleList(array $stringTuples): string
     {
         if (0 === count($stringTuples)) {
             return '[]';
@@ -417,29 +564,38 @@ OUTPUT
         );
     }
 
-    private function convertBoolToString(bool $bool): string
+    private static function convertBoolToString(bool $bool): string
     {
         return true === $bool ? 'true' : 'false';
+    }
+
+    private static function formatNamespaceRegistry(NamespaceRegistry $namespaceRegistry): string
+    {
+        return self::formatSimpleList([
+            ...$namespaceRegistry->getNames(),
+            ...$namespaceRegistry->getRegexes(),
+        ]);
+    }
+
+    private static function formatSymbolRegistry(SymbolRegistry $symbolRegistry): string
+    {
+        return self::formatSimpleList([
+            ...$symbolRegistry->getNames(),
+            ...$symbolRegistry->getRegexes(),
+        ]);
     }
 
     /**
      * @param string[][] $expected
      * @param string[][] $actual
      */
-    private function assertSameRecordedSymbols(array $expected, array $actual, string $message): void
+    private static function assertSameRecordedSymbols(array $expected, array $actual, string $message): void
     {
-        $sort = static function (array $a, array $b): int {
-            /*
-             * @var string[] $a
-             * @var string[] $b
-             */
-
-            return $a[0] <=> $b[0];
-        };
+        $sort = static fn (array $a, array $b) => $a[0] <=> $b[0];
 
         usort($expected, $sort);
         usort($actual, $sort);
 
-        $this->assertSame($expected, $actual, $message);
+        self::assertSame($expected, $actual, $message);
     }
 }

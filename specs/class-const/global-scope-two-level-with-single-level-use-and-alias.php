@@ -17,198 +17,202 @@ return [
         'title' => 'Class constant call of a namespaced class imported with an aliased use statement in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
-    'Constant call on a namespaced class partially imported with an aliased use statement' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo as X;
+    'Constant call on a namespaced class partially imported with an aliased use statement' => <<<'PHP'
+    <?php
     
+    namespace {
+        class Foo {}
+    }
+    
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace {
+        use Foo as X;
+        
+        X\Bar::MAIN_CONST;
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
+    use Humbug\Foo as X;
     X\Bar::MAIN_CONST;
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo as X;
-\Humbug\Foo\Bar::MAIN_CONST;
-
-PHP
-    ],
-
-    'Constant call on a namespaced class imported with an aliased use statement' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo\Bar as X;
     
+    PHP,
+
+    'Constant call on a namespaced class imported with an aliased use statement' => <<<'PHP'
+    <?php
+    
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace {
+        use Foo\Bar as X;
+        
+        X::MAIN_CONST;
+    }
+    ----
+    <?php
+    
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
+    use Humbug\Foo\Bar as X;
     X::MAIN_CONST;
-}
-----
-<?php
-
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo\Bar as X;
-\Humbug\Foo\Bar::MAIN_CONST;
-
-PHP
-    ],
-
-    'FQ constant call on a namespaced class imported with an aliased use statement' => [
-        'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace X {
-    class Bar {}
-}
-
-namespace {
-    use Foo as X;
     
-    \X\Bar::MAIN_CONST;
-}
-----
-<?php
+    PHP,
 
-namespace Humbug;
+    'FQ constant call on a namespaced class imported with an aliased use statement' => <<<'PHP'
+    <?php
+    
+    namespace {
+        class Foo {}
+    }
+    
+    namespace X {
+        class Bar {}
+    }
+    
+    namespace {
+        use Foo as X;
+        
+        \X\Bar::MAIN_CONST;
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    class Foo
+    {
+    }
+    namespace Humbug\X;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
+    use Humbug\Foo as X;
+    \Humbug\X\Bar::MAIN_CONST;
+    
+    PHP,
 
-class Foo
-{
-}
-namespace Humbug\X;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo as X;
-\Humbug\X\Bar::MAIN_CONST;
-
-PHP
-    ],
-
-    'FQ Constant call on a whitelisted namespaced class partially imported with an aliased use statement' => [
-        'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+    'FQ Constant call on an exposed namespaced class partially imported with an aliased use statement' => [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo as X;
-    
-    X\Bar::MAIN_CONST;
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-namespace Humbug;
-
-use Humbug\Foo as X;
-\Humbug\Foo\Bar::MAIN_CONST;
-
-PHP
+        <?php
+        
+        namespace {
+            class Foo {}
+        }
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace {
+            use Foo as X;
+            
+            X\Bar::MAIN_CONST;
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+        
+        class Bar
+        {
+        }
+        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+        namespace Humbug;
+        
+        use Humbug\Foo as X;
+        X\Bar::MAIN_CONST;
+        
+        PHP,
     ],
 
-    'FQ constant call on a whitelisted namespaced class imported with an aliased use statement' => [
-        'whitelist' => ['Foo\Bar'],
+    'FQ constant call on an exposed namespaced class imported with an aliased use statement' => [
+        'expose-classes' => ['Foo\Bar'],
         'payload' => <<<'PHP'
-<?php
-
-namespace {
-    class Foo {}
-}
-
-namespace X {
-    class Bar {}
-}
-
-namespace {
-    use Foo as X;
-    
-    \X\Bar::MAIN_CONST;
-}
-----
-<?php
-
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\X;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo as X;
-\Humbug\X\Bar::MAIN_CONST;
-
-PHP
+        <?php
+        
+        namespace {
+            class Foo {}
+        }
+        
+        namespace X {
+            class Bar {}
+        }
+        
+        namespace {
+            use Foo as X;
+            
+            \X\Bar::MAIN_CONST;
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class Foo
+        {
+        }
+        namespace Humbug\X;
+        
+        class Bar
+        {
+        }
+        namespace Humbug;
+        
+        use Humbug\Foo as X;
+        \Humbug\X\Bar::MAIN_CONST;
+        
+        PHP,
     ],
 ];

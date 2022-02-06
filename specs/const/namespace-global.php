@@ -17,79 +17,90 @@ return [
         'title' => 'Global constant usage in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => false,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Constant call in a namespace' => <<<'PHP'
-<?php
+    <?php
+    
+    namespace A;
+    
+    DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    DUMMY_CONST;
+    
+    PHP,
 
-namespace A;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted constant call in a namespace' => [
-        'whitelist' => ['DUMMY_CONST'],
+    // In theory this case CAN be wrong. There is however a very high chance it
+    // is not as it implies having both A\DUMMY_CONST and DUMMY_CONST in the
+    // codebase with only DUMMY_CONST exposed.
+    'Exposed constant call in a namespace' => [
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-DUMMY_CONST;
-
-PHP
+        <?php
+        
+        namespace A;
+        
+        DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug\A;
+        
+        \DUMMY_CONST;
+        
+        PHP,
     ],
 
     'FQ constant call in a namespace' => <<<'PHP'
-<?php
+    <?php
+    
+    namespace A;
+    
+    \DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug\A;
+    
+    \Humbug\DUMMY_CONST;
+    
+    PHP,
 
-namespace A;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-\Humbug\DUMMY_CONST;
-
-PHP
-    ,
-
-    'Whitelisted FQ constant call in a namespace' => [
-        'whitelist' => ['DUMMY_CONST'],
+    'Exposed FQ constant call in a namespace' => [
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
-
-namespace A;
-
-\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug\A;
-
-\DUMMY_CONST;
-
-PHP
+        <?php
+        
+        namespace A;
+        
+        \DUMMY_CONST;
+        ----
+        <?php
+        
+        namespace Humbug\A;
+        
+        \DUMMY_CONST;
+        
+        PHP,
     ],
 ];

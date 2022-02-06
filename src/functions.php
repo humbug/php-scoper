@@ -14,20 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use function array_pop;
-use function count;
-use Humbug\PhpScoper\Console\Application;
-use Humbug\PhpScoper\Console\ApplicationFactory;
 use Iterator;
 use PackageVersions\Versions;
+use function array_pop;
+use function count;
+use function Safe\substr;
 use function str_split;
 use function strrpos;
-use function substr;
-
-function create_application(): Application
-{
-    return (new ApplicationFactory())->create();
-}
 
 function get_php_scoper_version(): string
 {

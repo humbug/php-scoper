@@ -17,12 +17,22 @@ return [
         'title' => 'Use statements',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => true,
+        'expose-global-classes' => false,
+        'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
@@ -110,9 +120,9 @@ use Humbug\Unknown;
 PHP
     ,
 
-    'Use statement of a whitelisted class belonging to the global scope' => [
-        'whitelist' => ['Foo'],
-        'registered-classes' => [
+    'Use statement of an exposed class belonging to the global scope' => [
+        'expose-classes' => ['Foo'],
+        'expected-recorded-classes' => [
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
@@ -136,190 +146,188 @@ use Humbug\Foo;
 PHP
     ],
 
-    'Use statement of a class belonging to the global scope which has been whitelisted' => [
-        'whitelist' => ['\*'],
+    'Use statement of a class belonging to the global scope which has been excluded' => [
+        'exclude-namespaces' => [''],
         'payload' => <<<'PHP'
-<?php
-
-class Foo {}
-
-use Foo;
-
-----
-<?php
-
-namespace {
-    class Foo
-    {
-    }
-    use Foo;
-}
-
-PHP
+        <?php
+        
+        class Foo {}
+        
+        use Foo;
+        
+        ----
+        <?php
+        
+        namespace {
+            class Foo
+            {
+            }
+            use Foo;
+        }
+        
+        PHP,
     ],
 
-    'Use statement of a whitelisted class belonging to the global scope which has been whitelisted' => [
-        'whitelist' => ['Foo', '\*'],
-        'registered-classes' => [
-            ['Foo', 'Humbug\Foo'],
-        ],
+    'Use statement of an exposed class belonging to the global scope which has been excluded' => [
+        'exclude-namespaces' => [''],
+        'expose-classes' => ['Foo'],
+        'expected-recorded-classes' => [],
         'payload' => <<<'PHP'
-<?php
-
-class Foo {}
-
-use Foo;
-
-----
-<?php
-
-namespace {
-    class Foo
-    {
-    }
-    use Foo;
-}
-
-PHP
+        <?php
+        
+        class Foo {}
+        
+        use Foo;
+        
+        ----
+        <?php
+        
+        namespace {
+            class Foo
+            {
+            }
+            use Foo;
+        }
+        
+        PHP,
     ],
 
     'Use statement of two-level class' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo\Bar;
-}
-
-----
-<?php
-
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo\Bar;
-
-PHP
-    ,
+    <?php
+    
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace {
+        use Foo\Bar;
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
+    use Humbug\Foo\Bar;
+    
+    PHP,
 
     'Already prefixed use statement of two-level class' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
+    <?php
+    
+    namespace Foo {
+        class Bar {}
+    }
+    
+    namespace {
+        use Humbug\Foo\Bar;
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug\Foo;
+    
+    class Bar
+    {
+    }
+    namespace Humbug;
+    
     use Humbug\Foo\Bar;
-}
+    
+    PHP,
 
-----
-<?php
-
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Humbug\Foo\Bar;
-
-PHP
-    ,
-
-    'Use statement of two-level class which has been whitelisted' => [
-        'whitelist' => ['Foo\Bar'],
-        'registered-classes' => [
+    'Use statement of two-level class which has been exposed' => [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo\Bar;
-}
-
-----
-<?php
-
-namespace Humbug\Foo;
-
-class Bar
-{
-}
-\class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-namespace Humbug;
-
-use Humbug\Foo\Bar;
-
-PHP
+        <?php
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace {
+            use Foo\Bar;
+        }
+        
+        ----
+        <?php
+        
+        namespace Humbug\Foo;
+        
+        class Bar
+        {
+        }
+        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+        namespace Humbug;
+        
+        use Humbug\Foo\Bar;
+        
+        PHP,
     ],
 
-    'Use statement of two-level class belonging to a whitelisted namespace' => [
-        'whitelist' => ['Foo\*'],
+    'Use statement of two-level class belonging to a excluded namespace' => [
+        'exclude-namespaces' => ['Foo'],
         'payload' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo\Bar;
-}
-
-----
-<?php
-
-namespace Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Foo\Bar;
-
-PHP
+        <?php
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace {
+            use Foo\Bar;
+        }
+        
+        ----
+        <?php
+        
+        namespace Foo;
+        
+        class Bar
+        {
+        }
+        namespace Humbug;
+        
+        use Foo\Bar;
+        
+        PHP,
     ],
 
-    'Use statement of whitelisted two-level class belonging to a whitelisted namespace' => [
-        'whitelist' => ['Foo', 'Foo\*'],
+    'Use statement of exposed two-level class belonging to a excluded namespace' => [
+        'exclude-namespaces' => ['Foo'],
+        'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
-<?php
-
-namespace Foo {
-    class Bar {}
-}
-
-namespace {
-    use Foo\Bar;
-}
-
-----
-<?php
-
-namespace Foo;
-
-class Bar
-{
-}
-namespace Humbug;
-
-use Foo\Bar;
-
-PHP
+        <?php
+        
+        namespace Foo {
+            class Bar {}
+        }
+        
+        namespace {
+            use Foo\Bar;
+        }
+        
+        ----
+        <?php
+        
+        namespace Foo;
+        
+        class Bar
+        {
+        }
+        namespace Humbug;
+        
+        use Foo\Bar;
+        
+        PHP,
     ],
 ];

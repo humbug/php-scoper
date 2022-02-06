@@ -14,25 +14,27 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\PhpParser\StringScoperPrefixer;
-use function ltrim;
+use Humbug\PhpScoper\PhpParser\StringNodePrefixer;
 use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
+use function ltrim;
+use function Safe\substr;
 use function strpos;
-use function substr;
 
 final class NewdocPrefixer extends NodeVisitorAbstract
 {
-    use StringScoperPrefixer;
+    private StringNodePrefixer $stringPrefixer;
 
-    /**
-     * @inheritdoc
-     */
+    public function __construct(StringNodePrefixer $stringPrefixer)
+    {
+        $this->stringPrefixer = $stringPrefixer;
+    }
+
     public function enterNode(Node $node): Node
     {
         if ($node instanceof String_ && $this->isPhpNowdoc($node)) {
-            $this->scopeStringValue($node);
+            $this->stringPrefixer->prefixStringValue($node);
         }
 
         return $node;
@@ -45,8 +47,12 @@ final class NewdocPrefixer extends NodeVisitorAbstract
         }
 
         return 0 === strpos(
-            substr(ltrim($node->value), 0, 5),
-            '<?php'
+            substr(
+                ltrim($node->value),
+                0,
+                5,
+            ),
+            '<?php',
         );
     }
 }

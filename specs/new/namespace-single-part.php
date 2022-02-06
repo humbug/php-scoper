@@ -17,12 +17,22 @@ return [
         'title' => 'New statement call in a namespace',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => true,
+        'expose-global-classes' => false,
+        'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'New statement call of a class' => [
@@ -42,7 +52,7 @@ namespace Humbug\A;
 class Foo
 {
 }
-new \Humbug\A\Foo();
+new Foo();
 
 PHP
     ],

@@ -32,7 +32,7 @@ final class UseStmtManipulator extends NodeVisitorAbstract
 
     public static function getOriginalName(UseUse $use): ?Name
     {
-        if (false === self::hasOriginalName($use)) {
+        if (!self::hasOriginalName($use)) {
             return $use->name;
         }
 

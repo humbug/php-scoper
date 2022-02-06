@@ -14,51 +14,79 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
+use Fidry\Console\Application\Application as FidryApplication;
+use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
+use Humbug\PhpScoper\Console\Command\InitCommand;
+use Humbug\PhpScoper\Console\Command\InspectSymbolCommand;
 use Humbug\PhpScoper\Container;
+use Symfony\Component\Console\Helper\FormatterHelper;
 use function Humbug\PhpScoper\get_php_scoper_version;
-use Symfony\Component\Console\Application as SymfonyApplication;
+use function Safe\sprintf;
+use function strpos;
 use function trim;
 
-final class Application extends SymfonyApplication
+/**
+ * @private
+ */
+final class Application implements FidryApplication
 {
     private const LOGO = <<<'ASCII'
 
-    ____  __  ______     _____                           
+    ____  __  ______     _____
    / __ \/ / / / __ \   / ___/_________  ____  ___  _____
   / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
- / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /    
-/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/     
+ / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
 
 ASCII;
 
-    private $container;
-    private $releaseDate;
+    private const RELEASE_DATE_PLACEHOLDER = '@release-date@';
 
-    /**
-     * {@inheritdoc}
-     */
+    private Container $container;
+    private string $version;
+    private string $releaseDate;
+    private bool $isAutoExitEnabled;
+    private bool $areExceptionsCaught;
+
+    public static function create(): self
+    {
+        return new self(
+            new Container(),
+            get_php_scoper_version(),
+            false === strpos(self::RELEASE_DATE_PLACEHOLDER, '@')
+                ? self::RELEASE_DATE_PLACEHOLDER
+                : '',
+            true,
+            true,
+        );
+    }
+
     public function __construct(
         Container $container,
-        string $name = 'Box',
-        ?string $version = null,
-        string $releaseDate = '@release-date@'
+        string $version,
+        string $releaseDate,
+        bool $isAutoExitEnabled,
+        bool $areExceptionsCaught
     ) {
         $this->container = $container;
-        $this->releaseDate = false === strpos($releaseDate, '@') ? $releaseDate : '';
-
-        parent::__construct($name, $version ?? get_php_scoper_version());
+        $this->version = $version;
+        $this->releaseDate = $releaseDate;
+        $this->isAutoExitEnabled = $isAutoExitEnabled;
+        $this->areExceptionsCaught = $areExceptionsCaught;
     }
 
-    public function getContainer(): Container
+    public function getName(): string
     {
-        return $this->container;
+        return 'PhpScoper';
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
     public function getLongVersion(): string
     {
         return trim(
@@ -71,11 +99,44 @@ ASCII;
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getHelp(): string
     {
-        return self::LOGO.parent::getHelp();
+        return self::LOGO.$this->getLongVersion();
+    }
+
+    public function getCommands(): array
+    {
+        return [
+            new AddPrefixCommand(
+                $this->container->getFileSystem(),
+                $this->container->getScoperFactory(),
+                $this,
+                $this->container->getConfigurationFactory(),
+            ),
+            new InspectSymbolCommand(
+                $this->container->getFileSystem(),
+                $this->container->getConfigurationFactory(),
+                $this->container->getEnrichedReflectorFactory(),
+            ),
+            new InitCommand(
+                $this->container->getFileSystem(),
+                new FormatterHelper(),
+            ),
+        ];
+    }
+
+    public function getDefaultCommand(): string
+    {
+        return 'list';
+    }
+
+    public function isAutoExitEnabled(): bool
+    {
+        return $this->isAutoExitEnabled;
+    }
+
+    public function areExceptionsCaught(): bool
+    {
+        return $this->areExceptionsCaught;
     }
 }

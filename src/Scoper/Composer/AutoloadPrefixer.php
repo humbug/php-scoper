@@ -14,12 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use stdClass;
 use function array_map;
-use Humbug\PhpScoper\Whitelist;
+use function array_merge;
 use function is_array;
 use function is_string;
 use function rtrim;
-use stdClass;
+use function Safe\sprintf;
+use function Safe\substr;
 use function str_replace;
 use function strpos;
 
@@ -28,32 +31,58 @@ use function strpos;
  */
 final class AutoloadPrefixer
 {
+    private string $prefix;
+    private EnrichedReflector $enrichedReflector;
+
+    public function __construct(
+        string $prefix,
+        EnrichedReflector $enrichedReflector
+    ) {
+        $this->prefix = $prefix;
+        $this->enrichedReflector = $enrichedReflector;
+    }
+
     /**
      * @param stdClass $contents Decoded JSON
-     * @param string   $prefix
      *
      * @return stdClass Prefixed decoded JSON
      */
-    public static function prefixPackageAutoloadStatements(stdClass $contents, string $prefix, Whitelist $whitelist): stdClass
+    public function prefixPackageAutoloadStatements(stdClass $contents): stdClass
     {
         if (isset($contents->autoload)) {
-            $contents->autoload = self::prefixAutoloadStatements($contents->autoload, $prefix, $whitelist);
+            $contents->autoload = self::prefixAutoloadStatements(
+                $contents->autoload,
+                $this->prefix,
+                $this->enrichedReflector,
+            );
         }
 
         if (isset($contents->{'autoload-dev'})) {
-            $contents->{'autoload-dev'} = self::prefixAutoloadStatements($contents->{'autoload-dev'}, $prefix, $whitelist);
+            $contents->{'autoload-dev'} = self::prefixAutoloadStatements(
+                $contents->{'autoload-dev'},
+                $this->prefix,
+                $this->enrichedReflector,
+            );
         }
 
         if (isset($contents->extra->laravel->providers)) {
-            $contents->extra->laravel->providers = self::prefixLaravelProviders($contents->extra->laravel->providers, $prefix, $whitelist);
+            $contents->extra->laravel->providers = self::prefixLaravelProviders(
+                $contents->extra->laravel->providers,
+                $this->prefix,
+                $this->enrichedReflector,
+            );
         }
 
         return $contents;
     }
 
-    private static function prefixAutoloadStatements(stdClass $autoload, string $prefix, Whitelist $whitelist): stdClass
+    private static function prefixAutoloadStatements(
+        stdClass $autoload,
+        string $prefix,
+        EnrichedReflector $enrichedReflector
+    ): stdClass
     {
-        if (false === isset($autoload->{'psr-4'}) && false === isset($autoload->{'psr-0'})) {
+        if (!isset($autoload->{'psr-4'}) && !isset($autoload->{'psr-0'})) {
             return $autoload;
         }
 
@@ -79,18 +108,26 @@ final class AutoloadPrefixer
         unset($autoload->{'psr-0'});
 
         if (isset($autoload->{'psr-4'})) {
-            $autoload->{'psr-4'} = self::prefixAutoload((array) $autoload->{'psr-4'}, $prefix, $whitelist);
+            $autoload->{'psr-4'} = self::prefixAutoload(
+                (array) $autoload->{'psr-4'},
+                $prefix,
+                $enrichedReflector,
+            );
         }
 
         return $autoload;
     }
 
-    private static function prefixAutoload(array $autoload, string $prefix, Whitelist $whitelist): array
+    private static function prefixAutoload(
+        array $autoload,
+        string $prefix,
+        EnrichedReflector $enrichedReflector
+    ): array
     {
         $loader = [];
 
         foreach ($autoload as $namespace => $paths) {
-            $newNamespace = $whitelist->isWhitelistedNamespace($namespace)
+            $newNamespace = $enrichedReflector->isExcludedNamespace($namespace)
                 ? $namespace
                 : sprintf('%s\\%s', $prefix, $namespace)
             ;
@@ -146,7 +183,7 @@ final class AutoloadPrefixer
             '/'
         );
 
-        if (false === is_array($path)) {
+        if (!is_array($path)) {
             if ('/' !== substr($path, -1)) {
                 $path .= '/';
             }
@@ -209,16 +246,17 @@ final class AutoloadPrefixer
         return $psr0Path;
     }
 
-    private static function prefixLaravelProviders(array $providers, string $prefix, Whitelist $whitelist): array
+    private static function prefixLaravelProviders(
+        array $providers,
+        string $prefix,
+        EnrichedReflector $enrichedReflector
+    ): array
     {
         return array_map(
-            static function (string $provider) use ($prefix, $whitelist): string {
-                return $whitelist->isWhitelistedNamespace($provider)
-                    ? $provider
-                    : sprintf('%s\\%s', $prefix, $provider)
-                ;
-            },
-            $providers
+            static fn (string $provider) => $enrichedReflector->isExcludedNamespace($provider)
+                ? $provider
+                : sprintf('%s\\%s', $prefix, $provider),
+            $providers,
         );
     }
 }

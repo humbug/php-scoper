@@ -17,48 +17,56 @@ return [
         'title' => 'Native function calls',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => true,
+        'expose-global-classes' => false,
+        'expose-global-functions' => true,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Internal function in a namespace' => <<<'PHP'
-<?php
-
-namespace Acme;
-
-$x = is_array([]);
-
-----
-<?php
-
-namespace Humbug\Acme;
-
-$x = \is_array([]);
-
-PHP
-    ,
+    <?php
+    
+    namespace Acme;
+    
+    $x = is_array([]);
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    $x = \is_array([]);
+    
+    PHP,
 
     'Namespaced function having the same name as an internal function' => <<<'PHP'
-<?php
-
-namespace Acme;
-
-use function Acme\is_array;
-
-$x = is_array([]);
-
-----
-<?php
-
-namespace Humbug\Acme;
-
-use function Humbug\Acme\is_array;
-$x = \Humbug\Acme\is_array([]);
-
-PHP
-    ,
+    <?php
+    
+    namespace Acme;
+    
+    use function Acme\is_array;
+    
+    $x = is_array([]);
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    use function Humbug\Acme\is_array;
+    $x = is_array([]);
+    
+    PHP,
 ];

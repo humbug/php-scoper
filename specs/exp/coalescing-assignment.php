@@ -14,80 +14,88 @@ declare(strict_types=1);
 
 return [
     'meta' => [
+        'minPhpVersion' => 70400,
         'title' => 'Null coalescing assignment operator',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Instance of an internal class' => <<<'PHP'
-<?php
-
-$x ??= new stdClass();
-----
-<?php
-
-namespace Humbug;
-
-$x ??= new \stdClass();
-
-PHP
-    ,
+    <?php
+    
+    $x ??= new stdClass();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    $x ??= new \stdClass();
+    
+    PHP,
 
     'Instance of an internal class in a namespace' => <<<'PHP'
-<?php
-
-namespace Acme;
-
-use stdClass;
-
-$x ??= new stdClass();
-
-----
-<?php
-
-namespace Humbug\Acme;
-
-use stdClass;
-$x ??= new \stdClass();
-
-PHP
-    ,
+    <?php
+    
+    namespace Acme;
+    
+    use stdClass;
+    
+    $x ??= new stdClass();
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    use stdClass;
+    $x ??= new stdClass();
+    
+    PHP,
 
     'Instance of a custom exception class' => <<<'PHP'
-<?php
-
-$x ??= new Foo();
-
-----
-<?php
-
-namespace Humbug;
-
-$x ??= new \Humbug\Foo();
-
-PHP
-    ,
+    <?php
+    
+    $x ??= new Foo();
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    $x ??= new Foo();
+    
+    PHP,
 
     'Instance of a custom exception class in a namespace' => <<<'PHP'
-<?php
-
-namespace Acme;
-
-$x ??= new Foo();
-
-----
-<?php
-
-namespace Humbug\Acme;
-
-$x ??= new \Humbug\Acme\Foo();
-
-PHP
+    <?php
+    
+    namespace Acme;
+    
+    $x ??= new Foo();
+    
+    ----
+    <?php
+    
+    namespace Humbug\Acme;
+    
+    $x ??= new Foo();
+    
+    PHP
     ,
 ];

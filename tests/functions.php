@@ -18,8 +18,16 @@ use Closure;
 use LogicException;
 use PhpParser\Parser;
 use RuntimeException;
-use function sprintf;
 use Symfony\Component\Filesystem\Filesystem;
+use function rand;
+use function Safe\mkdir;
+use function Safe\realpath;
+use function Safe\sprintf;
+use function Safe\substr;
+use function str_replace;
+use function strrpos;
+use function sys_get_temp_dir;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * Creates a temporary directory.
@@ -75,13 +83,6 @@ function remove_dir(string $path): void
     $path = escape_path($path);
 
     (new Filesystem())->remove($path);
-}
-
-function create_fake_patcher(): Closure
-{
-    return static function (): void {
-        throw new LogicException('Did not expect to be called');
-    };
 }
 
 /**

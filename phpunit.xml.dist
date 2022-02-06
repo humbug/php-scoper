@@ -20,15 +20,15 @@ file that was distributed with this source code.
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist>
+    <coverage>
+        <include>
             <directory suffix=".php">./src/</directory>
-            <exclude>
-                <file>src/Console/Application.php</file>
-                <file>src/Console/Configuration.php</file>
-                <file>src/Console/Command/SelfUpdateCommand.php</file>
-                <file>src/functions.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
+        </include>
+        <exclude>
+            <file>src/Console/Application.php</file>
+            <file>src/Console/Configuration.php</file>
+            <file>src/Console/Command/SelfUpdateCommand.php</file>
+            <file>src/functions.php</file>
+        </exclude>
+    </coverage>
 </phpunit>

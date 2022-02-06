@@ -14,21 +14,26 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
-use function array_key_exists;
 use ArrayIterator;
-use function count;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\OriginalNameResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
-use function implode;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
+use Traversable;
+
+use function array_key_exists;
+use function count;
+use function implode;
+use function strtolower;
 
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
@@ -38,12 +43,12 @@ use PhpParser\Node\Stmt\UseUse;
  */
 final class UseStmtCollection implements IteratorAggregate
 {
-    private $hashes = [];
+    private array $hashes = [];
 
     /**
-     * @var Use_[][]
+     * @var array<string, list<Use_[]>>
      */
-    private $nodes = [
+    private array $nodes = [
         null => [],
     ];
 
@@ -62,15 +67,10 @@ final class UseStmtCollection implements IteratorAggregate
      * use Y;
      *
      * will return the use statement for `Bar\Foo`.
-     *
-     * @param Name|null $namespaceName
-     * @param Name      $node
-     *
-     * @return null|Name
      */
     public function findStatementForNode(?Name $namespaceName, Name $node): ?Name
     {
-        $name = strtolower($node->getFirst());
+        $name = self::getName($node);
 
         $parentNode = ParentNodeAppender::findParent($node);
 
@@ -84,8 +84,8 @@ final class UseStmtCollection implements IteratorAggregate
             return null;
         }
 
-        $isFunctionName = $this->isFunctionName($node, $parentNode);
-        $isConstantName = $this->isConstantName($node, $parentNode);
+        $isFunctionName = self::isFunctionName($node, $parentNode);
+        $isConstantName = self::isConstantName($node, $parentNode);
 
         $hash = implode(
             ':',
@@ -105,47 +105,63 @@ final class UseStmtCollection implements IteratorAggregate
             $this->nodes[(string) $namespaceName] ?? [],
             $isFunctionName,
             $isConstantName,
-            $name
+            $name,
         );
     }
 
     /**
-     * @inheritdoc
+     * @return Traversable<string, list<Use_[]>>
      */
-    public function getIterator(): iterable
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->nodes);
+    }
+
+    private static function getName(Name $node): string
+    {
+        return self::getNameFirstPart(
+            OriginalNameResolver::getOriginalName($node),
+        );
+    }
+
+    private static function getNameFirstPart(Name $node): string
+    {
+        return strtolower($node->getFirst());
     }
 
     private function find(array $useStatements, bool $isFunctionName, bool $isConstantName, string $name): ?Name
     {
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
-                if (false === ($useStatement instanceof UseUse)) {
+                if (!($useStatement instanceof UseUse)) {
                     continue;
                 }
 
-                if ($name === $useStatement->getAlias()->toLowerString()) {
-                    if ($isFunctionName) {
-                        if (Use_::TYPE_FUNCTION === $use_->type) {
-                            return UseStmtManipulator::getOriginalName($useStatement);
-                        }
+                $type = Use_::TYPE_UNKNOWN !== $use_->type ? $use_->type : $useStatement->type;
 
-                        continue;
-                    }
+                if ($name !== $useStatement->getAlias()->toLowerString()) {
+                    continue;
+                }
 
-                    if ($isConstantName) {
-                        if (Use_::TYPE_CONSTANT === $use_->type) {
-                            return UseStmtManipulator::getOriginalName($useStatement);
-                        }
-
-                        continue;
-                    }
-
-                    if (Use_::TYPE_NORMAL === $use_->type) {
-                        // Match the alias
+                if ($isFunctionName) {
+                    if (Use_::TYPE_FUNCTION === $type) {
                         return UseStmtManipulator::getOriginalName($useStatement);
                     }
+
+                    continue;
+                }
+
+                if ($isConstantName) {
+                    if (Use_::TYPE_CONSTANT === $type) {
+                        return UseStmtManipulator::getOriginalName($useStatement);
+                    }
+
+                    continue;
+                }
+
+                if (Use_::TYPE_NORMAL === $type) {
+                    // Match the alias
+                    return UseStmtManipulator::getOriginalName($useStatement);
                 }
             }
         }
@@ -153,26 +169,57 @@ final class UseStmtCollection implements IteratorAggregate
         return null;
     }
 
-    private function isFunctionName(Name $node, ?Node $parentNode): bool
+    private static function isFunctionName(Name $node, ?Node $parentNode): bool
     {
-        if (null === $parentNode || 1 !== count($node->parts)) {
+        if (null === $parentNode) {
             return false;
         }
 
         if ($parentNode instanceof FuncCall) {
-            return true;
+            return self::isFuncCallFunctionName($node);
         }
 
-        if (false === ($parentNode instanceof Function_)) {
+        if (!($parentNode instanceof Function_)) {
             return false;
         }
-        /* @var Function_ $parentNode */
 
-        return $node instanceof NamedIdentifier && $node->getOriginalNode() === $parentNode->name;
+        return $node instanceof NamedIdentifier
+            && $node->getOriginalNode() === $parentNode->name;
     }
 
-    private function isConstantName(Name $node, ?Node $parentNode): bool
+    private static function isFuncCallFunctionName(Name $name): bool
     {
-        return $parentNode instanceof ConstFetch && 1 === count($node->parts);
+        if ($name instanceof FullyQualified) {
+            $name = OriginalNameResolver::getOriginalName($name);
+        }
+
+        // If the name has more than one part then any potentially associated
+        // use statement will be a regular use statement.
+        // e.g.:
+        // ```
+        // use Foo
+        // echo Foo\main();
+        // ```
+        return 1 === count($name->parts);
+    }
+
+    private static function isConstantName(Name $name, ?Node $parentNode): bool
+    {
+        if (!($parentNode instanceof ConstFetch)) {
+            return false;
+        }
+
+        if ($name instanceof FullyQualified) {
+            $name = OriginalNameResolver::getOriginalName($name);
+        }
+
+        // If the name has more than one part then any potentially associated
+        // use statement will be a regular use statement.
+        // e.g.:
+        // ```
+        // use Foo
+        // echo Foo\DUMMY_CONST;
+        // ```
+        return 1 === count($name->parts);
     }
 }

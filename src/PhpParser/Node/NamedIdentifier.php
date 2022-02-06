@@ -22,7 +22,7 @@ use PhpParser\Node\Name;
  */
 final class NamedIdentifier extends Name
 {
-    private $originalNode;
+    private Identifier $originalNode;
 
     public static function create(Identifier $node): self
     {

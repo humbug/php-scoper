@@ -8,20 +8,20 @@
     "packages": [
         {
             "name": "nikic/iter",
-            "version": "v2.0.0",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/iter.git",
-                "reference": "1417341030a43fba0764486f7ad49ccc7b76e73f"
+                "reference": "a7f3aa313c1315e14cf1d7e520c0f781f584a42f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/iter/zipball/1417341030a43fba0764486f7ad49ccc7b76e73f",
-                "reference": "1417341030a43fba0764486f7ad49ccc7b76e73f",
+                "url": "https://api.github.com/repos/nikic/iter/zipball/a7f3aa313c1315e14cf1d7e520c0f781f584a42f",
+                "reference": "a7f3aa313c1315e14cf1d7e520c0f781f584a42f",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1"
+                "php": ">=7.1"
             },
             "require-dev": {
                 "phpunit/phpunit": "~7.0"
@@ -55,7 +55,11 @@
                 "generator",
                 "iterator"
             ],
-            "time": "2019-05-12T20:50:16+00:00"
+            "support": {
+                "issues": "https://github.com/nikic/iter/issues",
+                "source": "https://github.com/nikic/iter/tree/v2.1.0"
+            },
+            "time": "2020-09-19T15:58:13+00:00"
         }
     ],
     "packages-dev": [],
@@ -65,5 +69,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.0.0"
 }

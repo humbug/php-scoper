@@ -15,51 +15,118 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
-use Humbug\PhpScoper\Reflector;
 use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\NodeTraverserInterface;
+use PhpParser\NodeVisitor as PhpParserNodeVisitor;
+use PhpParser\NodeVisitor\NameResolver;
 
 /**
  * @private
  */
 class TraverserFactory
 {
-    private $reflector;
+    private EnrichedReflector $reflector;
 
-    public function __construct(Reflector $reflector)
+    public function __construct(EnrichedReflector $reflector)
     {
         $this->reflector = $reflector;
     }
 
-    public function create(PhpScoper $scoper, string $prefix, Whitelist $whitelist): NodeTraverserInterface
+    public function create(
+        PhpScoper $scoper,
+        string $prefix,
+        SymbolsRegistry $symbolsRegistry
+    ): NodeTraverserInterface
     {
         $traverser = new NodeTraverser();
 
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
 
-        $nameResolver = new FullyQualifiedNameResolver($namespaceStatements, $useStatements);
+        $nameResolver = new NameResolver(
+            null,
+            ['preserveOriginalNames' => true],
+        );
+        $identifierResolver = new IdentifierResolver($nameResolver);
+        $stringNodePrefixer = new StringNodePrefixer($scoper);
 
-        $traverser->addVisitor(new NodeVisitor\ParentNodeAppender());
+        self::addVisitors(
+            $traverser,
+            [
+                $nameResolver,
+                new NodeVisitor\ParentNodeAppender(),
+                new NodeVisitor\IdentifierNameAppender($identifierResolver),
 
-        $traverser->addVisitor(new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer($prefix, $whitelist, $namespaceStatements));
+                new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
+                    $prefix,
+                    $this->reflector,
+                    $namespaceStatements,
+                ),
 
-        $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtCollector($namespaceStatements, $useStatements));
-        $traverser->addVisitor(new NodeVisitor\UseStmt\UseStmtPrefixer($prefix, $whitelist, $this->reflector));
+                new NodeVisitor\UseStmt\UseStmtCollector(
+                    $namespaceStatements,
+                    $useStatements,
+                ),
+                new NodeVisitor\UseStmt\UseStmtPrefixer(
+                    $prefix,
+                    $this->reflector,
+                ),
 
-        $traverser->addVisitor(new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder($prefix, $nameResolver, $whitelist, $this->reflector));
-        $traverser->addVisitor(new NodeVisitor\ClassIdentifierRecorder($prefix, $nameResolver, $whitelist));
-        $traverser->addVisitor(new NodeVisitor\NameStmtPrefixer($prefix, $whitelist, $nameResolver, $this->reflector));
-        $traverser->addVisitor(new NodeVisitor\StringScalarPrefixer($prefix, $whitelist, $this->reflector));
-        $traverser->addVisitor(new NodeVisitor\NewdocPrefixer($scoper, $prefix, $whitelist));
-        $traverser->addVisitor(new NodeVisitor\EvalPrefixer($scoper, $prefix, $whitelist));
+                new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
+                    $prefix,
+                    $identifierResolver,
+                    $symbolsRegistry,
+                    $this->reflector,
+                ),
+                new NodeVisitor\ClassIdentifierRecorder(
+                    $prefix,
+                    $identifierResolver,
+                    $symbolsRegistry,
+                    $this->reflector,
+                ),
+                new NodeVisitor\NameStmtPrefixer(
+                    $prefix,
+                    $namespaceStatements,
+                    $useStatements,
+                    $this->reflector,
+                ),
+                new NodeVisitor\StringScalarPrefixer(
+                    $prefix,
+                    $this->reflector,
+                ),
+                new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
+                new NodeVisitor\EvalPrefixer($stringNodePrefixer),
 
-        $traverser->addVisitor(new NodeVisitor\ClassAliasStmtAppender($prefix, $whitelist, $nameResolver));
-        $traverser->addVisitor(new NodeVisitor\ConstStmtReplacer($whitelist, $nameResolver));
+                new NodeVisitor\ClassAliasStmtAppender(
+                    $prefix,
+                    $this->reflector,
+                    $identifierResolver,
+                ),
+                new NodeVisitor\MultiConstStmtReplacer(),
+                new NodeVisitor\ConstStmtReplacer(
+                    $identifierResolver,
+                    $this->reflector,
+                ),
+            ],
+        );
 
         return $traverser;
+    }
+
+    /**
+     * @param PhpParserNodeVisitor[] $nodeVisitors
+     */
+    private static function addVisitors(
+        NodeTraverserInterface $nodeTraverser,
+        array $nodeVisitors
+    ): void
+    {
+        foreach ($nodeVisitors as $nodeVisitor) {
+            $nodeTraverser->addVisitor($nodeVisitor);
+        }
     }
 }

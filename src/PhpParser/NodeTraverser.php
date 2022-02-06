@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use function array_slice;
-use function array_values;
-use function count;
 use Humbug\PhpScoper\PhpParser\Node\NameFactory;
 use PhpParser\Node;
 use PhpParser\Node\Stmt;
@@ -27,15 +24,18 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use PhpParser\NodeTraverser as PhpParserNodeTraverser;
+use function array_map;
+use function array_slice;
+use function array_splice;
+use function array_values;
+use function count;
+use function current;
 
 /**
  * @private
  */
 final class NodeTraverser extends PhpParserNodeTraverser
 {
-    /**
-     * @inheritdoc
-     */
     public function traverse(array $nodes): array
     {
         $nodes = $this->wrapInNamespace($nodes);
@@ -102,10 +102,17 @@ final class NodeTraverser extends PhpParserNodeTraverser
 
         $firstRealStatement = current($realStatements);
 
-        if (false !== $firstRealStatement && false === ($firstRealStatement instanceof Namespace_)) {
+        if (false !== $firstRealStatement
+            && !($firstRealStatement instanceof Namespace_)
+        ) {
             $wrappedStatements = new Namespace_(null, $realStatements);
 
-            array_splice($nodes, $firstRealStatementIndex, count($realStatements), [$wrappedStatements]);
+            array_splice(
+                $nodes,
+                $firstRealStatementIndex,
+                count($realStatements),
+                [$wrappedStatements],
+            );
         }
 
         return $nodes;
@@ -119,11 +126,10 @@ final class NodeTraverser extends PhpParserNodeTraverser
     private function replaceGroupUseStatements(array $nodes): array
     {
         foreach ($nodes as $node) {
-            if (false === ($node instanceof Namespace_)) {
+            if (!($node instanceof Namespace_)) {
                 continue;
             }
 
-            /** @var Namespace_ $node */
             $statements = $node->stmts;
 
             $newStatements = [];
@@ -132,7 +138,12 @@ final class NodeTraverser extends PhpParserNodeTraverser
                 if ($statement instanceof GroupUse) {
                     $uses_ = $this->createUses_($statement);
 
-                    array_splice($newStatements, count($newStatements), 0, $uses_);
+                    array_splice(
+                        $newStatements,
+                        count($newStatements),
+                        0,
+                        $uses_,
+                    );
                 } else {
                     $newStatements[] = $statement;
                 }
@@ -154,19 +165,23 @@ final class NodeTraverser extends PhpParserNodeTraverser
         return array_map(
             static function (UseUse $use) use ($node): Use_ {
                 $newUse = new UseUse(
-                    NameFactory::concat($node->prefix, $use->name, $use->name->getAttributes()),
+                    NameFactory::concat(
+                        $node->prefix,
+                        $use->name,
+                        $use->name->getAttributes(),
+                    ),
                     $use->alias,
                     $use->type,
-                    $use->getAttributes()
+                    $use->getAttributes(),
                 );
 
                 return new Use_(
                     [$newUse],
                     $node->type,
-                    $node->getAttributes()
+                    $node->getAttributes(),
                 );
             },
-            $node->uses
+            $node->uses,
         );
     }
 }

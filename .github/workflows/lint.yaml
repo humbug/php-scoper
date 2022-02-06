@@ -1,0 +1,57 @@
+name: Lint
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+
+jobs:
+    tests:
+        runs-on: ubuntu-latest
+        name: Lint ${{ matrix.check.name }}
+        strategy:
+            fail-fast: false
+            matrix:
+                php: [ '8.1' ]
+                check:
+                    -   name: CS
+                        command: make cs
+                    -   name: PHPStan
+                        command: make phpstan
+
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: "${{ matrix.php }}"
+                    tools: composer
+                    coverage: none
+
+            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
+            -   name: Configure composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    composer-options: '--prefer-dist'
+
+            -   name: Install Composer CodeSniffer dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    working-directory: 'vendor-bin/code-sniffer'
+                    composer-options: '--prefer-dist'
+
+            -   name: Install Composer PHPStan dependencies
+                uses: ramsey/composer-install@v1
+                with:
+                    working-directory: 'vendor-bin/phpstan'
+                    composer-options: '--prefer-dist'
+
+            -   name: Run ${{ matrix.check.name }}
+                run: ${{ matrix.check.command }}

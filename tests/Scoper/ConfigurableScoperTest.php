@@ -14,30 +14,26 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Scoper;
-use Humbug\PhpScoper\Whitelist;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\ConfigurableScoper
  */
 class ConfigurableScoperTest extends TestCase
 {
-    /**
-     * @var Scoper|ObjectProphecy
-     */
-    private $decoratedScoperProphecy;
+    use ProphecyTrait;
 
     /**
-     * @var Scoper
+     * @var ObjectProphecy<Scoper>
      */
-    private $decoratedScoper;
+    private ObjectProphecy $decoratedScoperProphecy;
 
-    /**
-     * @inheritdoc
-     */
+    private Scoper $decoratedScoper;
+
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -46,27 +42,24 @@ class ConfigurableScoperTest extends TestCase
 
     public function test_is_a_Scoper(): void
     {
-        $this->assertTrue(is_a(ConfigurableScoper::class, Scoper::class, true));
+        self::assertTrue(is_a(ConfigurableScoper::class, Scoper::class, true));
     }
 
     public function test_it_scopes_the_files_with_the_decorated_scoper(): void
     {
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
-        $prefix = 'Humbug';
-        $patchers = [];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
 
         $this->decoratedScoperProphecy
-            ->scope($filePath, $contents, $prefix, $patchers, $whitelist)
+            ->scope($filePath, $contents)
             ->willReturn($expected = 'Decorated scoper contents')
         ;
 
         $scoper = new ConfigurableScoper($this->decoratedScoper);
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
@@ -80,26 +73,23 @@ class ConfigurableScoperTest extends TestCase
 
         $filePath = '/path/to/file.php';
         $contents = 'Original file content';
-        $prefix = 'Humbug';
-        $patchers = [];
-        $whitelist = Whitelist::create(true, true, true, 'Foo');
 
         $this->decoratedScoperProphecy
-            ->scope(Argument::any(), $contents, $prefix, $patchers, $whitelist)
+            ->scope(Argument::any(), $contents)
             ->willReturn($expected = 'scoped contents')
         ;
 
         $scoper = (new ConfigurableScoper($this->decoratedScoper))->withWhitelistedFiles(...$whitelistedFiles);
 
         foreach ($whitelistedFiles as $whitelistedFile) {
-            $actual = $scoper->scope($whitelistedFile, $contents, $prefix, $patchers, $whitelist);
+            $actual = $scoper->scope($whitelistedFile, $contents);
 
-            $this->assertSame($contents, $actual);
+            self::assertSame($contents, $actual);
         }
 
-        $actual = $scoper->scope($filePath, $contents, $prefix, $patchers, $whitelist);
+        $actual = $scoper->scope($filePath, $contents);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }

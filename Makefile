@@ -5,9 +5,10 @@ MAKEFLAGS += --no-builtin-rules
 .DEFAULT_GOAL := help
 
 PHPBIN=php
-PHPSTAN_URL=https://github.com/phpstan/phpstan/releases/download/0.12.2/phpstan.phar
-
-SRC_FILES=$(shell find bin/ src/ -type f)
+PHPNOGC=php -d zend.enable_gc=0
+IS_PHP8=$(shell php -r "echo version_compare(PHP_VERSION, '8.0.0', '>=') ? 'true' : 'false';")
+PHPSCOPER=bin/php-scoper.phar
+SRC_FILES=$(shell find bin/ src/ vendor-hotfix/ -type f)
 
 .PHONY: help
 help:
@@ -38,16 +39,21 @@ cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
 	$(PHPNOGC) $(CODE_SNIFFER_FIX) || true
 	$(PHPNOGC) $(CODE_SNIFFER)
 
+.PHONY: cs-check
+cs-check: ## Checks CS
+cs-check: $(CODE_SNIFFER)
+	$(PHPNOGC) $(CODE_SNIFFER)
+
 .PHONY: phpstan
-PHPSTAN=bin/phpstan
+PHPSTAN=vendor-bin/phpstan/vendor/bin/phpstan
 phpstan: ## Runs PHPStan
 phpstan: $(PHPSTAN)
-	$(PHPNOGC) $(PHPSTAN) analyze src --level max
+	$(PHPNOGC) $(PHPSTAN) analyze src --level max --memory-limit=-1
 
 .PHONY: build
 build:	 ## Build the PHAR
 BOX=bin/box
-build: bin/php-scoper.phar
+build: $(PHPSCOPER)
 
 
 #
@@ -71,7 +77,7 @@ tu: bin/phpunit
 
 .PHONY: tc
 tc:	 ## Run PHPUnit tests with test coverage
-tc: bin/phpunit vendor-bin/covers-validator/vendor clover.xml
+tc: bin/phpunit clover.xml
 
 .PHONY: tm
 tm:	 ## Run Infection (Mutation Testing)
@@ -82,7 +88,6 @@ tm: clover.xml
 e2e:	 ## Run end-to-end tests
 e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
 
-PHPSCOPER=bin/php-scoper.phar
 
 .PHONY: e2e_004
 e2e_004: ## Run end-to-end tests for the fixture set 004 — Source code case
@@ -113,6 +118,7 @@ e2e_011: $(PHPSCOPER) fixtures/set011/vendor
 e2e_013: # Run end-to-end tests for the fixture set 013 — The init command
 e2e_013: $(PHPSCOPER)
 	rm -rf build/set013
+	mkdir -p build
 	cp -R fixtures/set013 build/set013
 	$(PHPSCOPER) init --working-dir=build/set013 --no-interaction
 	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
@@ -202,37 +208,46 @@ e2e_020: $(PHPSCOPER) fixtures/set020-infection/vendor clover.xml
 		--no-interaction
 	composer --working-dir=build/set020-infection dump-autoload
 
-	php fixtures/set020-infection/vendor/infection/infection/bin/infection \
-		--coverage=dist/infection-coverage \
+	# We generate the expected output file: we test that the scoping process
+	# does not alter it
+	cd fixtures/set020-infection && php vendor/infection/infection/bin/infection \
+		--coverage=../../dist/infection-coverage \
+		--skip-initial-tests \
+		--only-covered \
+		--no-progress
 		> build/set020-infection/expected-output
 	sed 's/Time.*//' build/set020-infection/expected-output > build/set020-infection/expected-output
 
-	php build/set020-infection/vendor/infection/infection/bin/infection \
-		--coverage=dist/infection-coverage \
+
+	cd build/set020-infection && php vendor/infection/infection/bin/infection \
+		--coverage=../../dist/infection-coverage \
+		--skip-initial-tests \
+		--only-covered \
+		--no-progress
 		> build/set020-infection/output
 	sed 's/Time.*//' build/set020-infection/output > build/set020-infection/output
 
 	diff build/set020-infection/expected-output build/set020-infection/output
 
+
 .PHONY: e2e_021
-e2e_021: ## Run end-to-end tests for the fixture set 021 — Composer
-e2e_021: $(PHPSCOPER) fixtures/set021-composer/vendor
-	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer \
-		--output-dir=../../build/set021-composer \
+e2e_021: ## Run end-to-end tests for the fixture set 021 — Composer 2
+e2e_021: $(PHPSCOPER) fixtures/set021-composer2/vendor
+	$(PHPBIN) $(PHPSCOPER) add-prefix --working-dir=fixtures/set021-composer2 \
+		--output-dir=../../build/set021-composer2 \
 		--force \
 		--no-interaction \
-		--stop-on-failure \
-		--no-config
-	composer --working-dir=build/set021-composer dump-autoload
+		--stop-on-failure
+	composer --working-dir=build/set021-composer2 dump-autoload
 
-	php fixtures/set021-composer/vendor/composer/composer/bin/composer licenses \
+	php fixtures/set021-composer2/vendor/composer/composer/bin/composer licenses \
 		--no-plugins \
-		> build/set021-composer/expected-output
-	php build/set021-composer/vendor/composer/composer/bin/composer licenses \
+		> build/set021-composer2/expected-output
+	php build/set021-composer2/vendor/composer/composer/bin/composer licenses \
 		--no-plugins \
-		> build/set021-composer/output
+		> build/set021-composer2/output
 
-	diff build/set021-composer/expected-output build/set021-composer/output
+	diff build/set021-composer2/expected-output build/set021-composer2/output
 
 .PHONY: e2e_022
 e2e_022: ## Run end-to-end tests for the fixture set 022 — Whitelist the project code with namespace whitelisting
@@ -265,8 +280,7 @@ e2e_024: $(PHPSCOPER) fixtures/set024/vendor
 		--output-dir=../../build/set024 \
 		--force \
 		--no-interaction \
-		--stop-on-failure \
-		--no-config
+		--stop-on-failure
 	composer --working-dir=build/set024 dump-autoload
 
 	php build/set024/main.php > build/set024/output
@@ -302,11 +316,11 @@ e2e_026: $(PHPSCOPER) fixtures/set026/vendor
 
 .PHONY: e2e_027
 e2e_027: ## Run end-to-end tests for the fixture set 027 — Laravel
+ifeq ("$(IS_PHP8)", "true")
 e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
-	php $(PHPSCOPER) add-prefix \
+	$(PHPBIN) $(PHPSCOPER) add-prefix \
 		--working-dir=fixtures/set027-laravel \
 		--output-dir=../../build/set027-laravel \
-		--no-config \
 		--force \
 		--no-interaction \
 		--stop-on-failure
@@ -314,6 +328,10 @@ e2e_027: $(PHPSCOPER) fixtures/set027-laravel/vendor
 
 	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
+else
+e2e_027:
+	echo "SKIP e2e_027: PHP version not supported"
+endif
 
 .PHONY: e2e_028
 e2e_028: ## Run end-to-end tests for the fixture set 028 — Symfony
@@ -351,7 +369,6 @@ e2e_029: $(PHPSCOPER) fixtures/set029-easy-rdf/vendor
 	php build/set029-easy-rdf/main.php > build/set029-easy-rdf/output
 
 	diff fixtures/set029-easy-rdf/expected-output build/set029-easy-rdf/output
-	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
 
 .PHONY: e2e_030
 e2e_030: ## Run end-to-end tests for the fixture set 030 — global function whitelisting
@@ -400,8 +417,8 @@ e2e_032: $(PHPSCOPER)
 .PHONY: tb
 BLACKFIRE=blackfire
 tb:	 ## Run Blackfire profiling
-tb: bin/php-scoper.phar  vendor
-	$(BLACKFIRE) --new-reference run $(PHPBIN) bin/php-scoper.phar add-prefix --output-dir=build/php-scoper --force --quiet
+tb: $(PHPSCOPER) vendor
+	$(BLACKFIRE) --new-reference run $(PHPBIN) $(PHPSCOPER) add-prefix --output-dir=build/php-scoper --force --quiet
 
 #
 # Rules from files
@@ -409,95 +426,109 @@ tb: bin/php-scoper.phar  vendor
 
 vendor: composer.lock .composer-root-version
 	/bin/bash -c 'source .composer-root-version && composer install'
-	touch $@
+	touch -c $@
 
 vendor/bamarni: composer.lock .composer-root-version
 	/bin/bash -c 'source .composer-root-version && composer install'
-	touch $@
+	touch -c $@
 
 bin/phpunit: composer.lock .composer-root-version
 	/bin/bash -c 'source .composer-root-version && composer install'
-	touch $@
+	touch -c $@
 
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock vendor/bamarni
 	composer bin covers-validator install
-	touch $@
+	touch -c $@
 
 vendor-bin/code-sniffer/vendor: vendor-bin/code-sniffer/composer.lock vendor/bamarni
 	composer bin code-sniffer install
-	touch $@
+	touch -c $@
+
+vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock vendor/bamarni
+	composer bin phpstan install
+	touch -c $@
 
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
-	touch $@
+	touch -c $@
 
 fixtures/set011/vendor:
+	composer --working-dir=fixtures/set011 install
+	# Dumping the autoload is not enough when there is a composer.lock. Indeed
+	# without composer.lock, no vendor/composer/installed.json is installed
+	# so Box sees composer.json without composer.lock & installed.json and can
+	# dump the autoload just fine.
+	# However, if there is only composer.lock, the dump-autoload will NOT add
+	# the installed.json file and Box only sees that there is a composer.lock
+	# without installed.json which prevents it to dump the autoload.
+	# TL:DR; If you don't have composer.lock, dump-autoload is enough, otherwise you
+	# need install.
 	composer --working-dir=fixtures/set011 dump-autoload
-	touch $@
+	touch -c $@
 
 fixtures/set015/vendor: fixtures/set015/composer.lock
 	composer --working-dir=fixtures/set015 install
-	touch $@
+	touch -c $@
 
 fixtures/set016-symfony-finder/vendor: fixtures/set016-symfony-finder/composer.lock
 	composer --working-dir=fixtures/set016-symfony-finder install
-	touch $@
+	touch -c $@
 
 fixtures/set017-symfony-di/vendor: fixtures/set017-symfony-di/composer.lock
 	composer --working-dir=fixtures/set017-symfony-di install
-	touch $@
+	touch -c $@
 
 fixtures/set018-nikic-parser/vendor: fixtures/set018-nikic-parser/composer.lock
 	composer --working-dir=fixtures/set018-nikic-parser install
-	touch $@
+	touch -c $@
 
 fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer.lock
 	composer --working-dir=fixtures/set019-symfony-console install
-	touch $@
+	touch -c $@
 
 fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
 	composer --working-dir=fixtures/set020-infection install
-	touch $@
+	touch -c $@
 
-fixtures/set021-composer/vendor: fixtures/set021-composer/composer.lock
-	composer --working-dir=fixtures/set021-composer install
-	touch $@
+fixtures/set021-composer2/vendor: fixtures/set021-composer2/composer.lock
+	composer --working-dir=fixtures/set021-composer2 install
+	touch -c $@
 
 fixtures/set022/vendor: fixtures/set022/composer.json
 	composer --working-dir=fixtures/set022 update
-	touch $@
+	touch -c $@
 
 fixtures/set023/vendor: fixtures/set023/composer.lock
 	composer --working-dir=fixtures/set023 install
-	touch $@
+	touch -c $@
 
 fixtures/set024/vendor: fixtures/set024/composer.lock
 	composer --working-dir=fixtures/set024 install
-	touch $@
+	touch -c $@
 
 fixtures/set025/vendor: fixtures/set025/composer.lock
 	composer --working-dir=fixtures/set025 install
-	touch $@
+	touch -c $@
 
 fixtures/set026/vendor:
 	composer --working-dir=fixtures/set026 update
-	touch $@
+	touch -c $@
 
 fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
 	composer --working-dir=fixtures/set027-laravel install --no-dev
-	touch $@
+	touch -c $@
 
 fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
 	composer --working-dir=fixtures/set028-symfony install --no-dev --no-scripts
-	touch $@
+	touch -c $@
 
 fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
 	composer --working-dir=fixtures/set029-easy-rdf install --no-dev
-	touch $@
+	touch -c $@
 
 fixtures/set030/vendor: fixtures/set030/composer.json
 	composer --working-dir=fixtures/set030 install --no-dev
-	touch $@
+	touch -c $@
 
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
@@ -507,6 +538,9 @@ vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.
 
 vendor-bin/code-sniffer/composer.lock: vendor-bin/code-sniffer/composer.json
 	@echo code-sniffer composer.lock is not up to date
+
+vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
+	@echo phpstan composer.lock is not up to date
 
 fixtures/set005/composer.lock: fixtures/set005/composer.json
 	@echo fixtures/set005/composer.lock is not up to date.
@@ -529,9 +563,6 @@ fixtures/set019-symfony-console/composer.lock: fixtures/set019-symfony-console/c
 fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
 	@echo fixtures/set020-infection/composer.lock is not up to date.
 
-fixtures/set021-composer/composer.lock: fixtures/set021-composer/composer.json
-	@echo fixtures/set021-composer/composer.lock is not up to date.
-
 fixtures/set023/composer.lock: fixtures/set023/composer.json
 	@echo fixtures/set023/composer.lock is not up to date.
 
@@ -550,34 +581,39 @@ fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
 fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 	@echo fixtures/set029-easy-rdf/composer.lock is not up to date.
 
-bin/php-scoper.phar: bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
+vendor-hotfix:
+	composer dump-autoload
+	touch -c $@
+
+$(PHPSCOPER): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
 	$(BOX) compile
-	touch $@
+	touch -c $@
 
 COVERS_VALIDATOR=$(PHPBIN) vendor-bin/covers-validator/bin/covers-validator
-clover.xml: $(SRC_FILES)
+clover.xml: $(SRC_FILES) vendor-bin/covers-validator/vendor
 	$(COVERS_VALIDATOR)
-	php -d zend.enable_gc=0 $(PHPUNIT) \
+	$(PHPNOGC) $(PHPUNIT) \
 		--coverage-html=dist/coverage \
 		--coverage-text \
 		--coverage-clover=clover.xml \
 		--coverage-xml=dist/infection-coverage/coverage-xml \
 		--log-junit=dist/infection-coverage/junit.xml
 
+$(BOX): vendor
+	touch -c $@
+
 $(CODE_SNIFFER): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
-	touch $@
+	touch -c $@
 
 $(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
 	composer bin code-sniffer install
-	touch $@
+	touch -c $@
 
-$(PHPSTAN):
-	rm $@ || true
-	wget $(PHPSTAN_URL) -O $@
-	chmod +x $@
-	touch $@
+$(PHPSTAN): vendor-bin/phpstan/vendor
+	composer bin phpstan install
+	touch -c $@
 
 .composer-root-version:
 	php bin/dump-composer-root-version.php
-	touch $@
+	touch -c $@

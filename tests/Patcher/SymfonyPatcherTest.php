@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -29,10 +28,10 @@ class SymfonyPatcherTest extends TestCase
     {
         $actual = (new SymfonyPatcher())->__invoke($filePath, 'Humbug', $contents);
 
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    public function provideFiles(): Generator
+    public static function provideFiles(): iterable
     {
         $validPaths = [
             'src/Symfony/Component/DependencyInjection/Dumper/PhpDumper.php',
@@ -47,7 +46,7 @@ class SymfonyPatcherTest extends TestCase
             'Dumper/PhpDumper.php',
         ];
 
-        foreach ($this->provideCodeSamples() as [$input, $scopedOutput]) {
+        foreach (self::provideCodeSamples() as [$input, $scopedOutput]) {
             foreach ($validPaths as $path) {
                 yield [$path, $input, $scopedOutput];
             }
@@ -58,7 +57,7 @@ class SymfonyPatcherTest extends TestCase
         }
     }
 
-    private function provideCodeSamples(): Generator
+    private static function provideCodeSamples(): iterable
     {
         yield [
             <<<'PHP'

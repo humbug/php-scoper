@@ -17,77 +17,85 @@ return [
         'title' => 'Namespaced function call statement in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => true,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => false,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Namespaced function call' => <<<'PHP'
-<?php
+    <?php
+    
+    PHPUnit\main();
+    ----
+    <?php
 
-PHPUnit\main();
-----
-<?php
+    namespace Humbug;
 
-namespace Humbug;
+    PHPUnit\main();
 
-\Humbug\PHPUnit\main();
-
-PHP
-    ,
+    PHP,
 
     'FQ namespaced function call' => <<<'PHP'
-<?php
+    <?php
+    
+    \PHPUnit\main();
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    \Humbug\PHPUnit\main();
+    
+    PHP,
 
-\PHPUnit\main();
-----
-<?php
-
-namespace Humbug;
-
-\Humbug\PHPUnit\main();
-
-PHP
-    ,
-
-    'Whitelisted namespaced function call' => [
-        'whitelist' => ['PHPUnit\main'],
-        'registered-functions' => [
+    'Exposed namespaced function call' => [
+        'expose-functions' => ['PHPUnit\main'],
+        'expected-recorded-functions' => [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'
-<?php
+        <?php
+        
+        PHPUnit\main();
+        ----
+        <?php
 
-PHPUnit\main();
-----
-<?php
+        namespace Humbug;
 
-namespace Humbug;
+        \Humbug\PHPUnit\main();
 
-\Humbug\PHPUnit\main();
-
-PHP
+        PHP,
     ],
 
-    'FQ whitelisted namespaced function call' => [
-        'whitelist' => ['PHPUnit\main'],
-        'registered-functions' => [
+    'FQ exposed namespaced function call' => [
+        'expose-functions' => ['PHPUnit\main'],
+        'expected-recorded-functions' => [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'
-<?php
-
-\PHPUnit\main();
-----
-<?php
-
-namespace Humbug;
-
-\Humbug\PHPUnit\main();
-
-PHP
+        <?php
+        
+        \PHPUnit\main();
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        \Humbug\PHPUnit\main();
+        
+        PHP,
     ],
 ];

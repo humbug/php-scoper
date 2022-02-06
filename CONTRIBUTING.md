@@ -28,8 +28,8 @@ return [
         // Default configuration value for this file
         'prefix' => 'Humbug',
         'whitelist' => [],
-        'whitelist-global-constants' => false,
-        'whitelist-global-functions' => true,
+        'expose-global-constants' => false,
+        'expose-global-functions' => true,
     ],
 
     // List of specifications
@@ -113,7 +113,7 @@ commands in the `Makefile` for more information.
 <br />
 <hr />
 
-« [Back to Table of Contents](../README.md#table-of-contents) »
+« [Back to Table of Contents](README.md#table-of-contents) »
 
 
 [node-visitors]: https://github.com/humbug/php-scoper/tree/master/src/PhpParser/NodeVisitor

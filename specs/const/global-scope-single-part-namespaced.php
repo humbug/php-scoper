@@ -17,55 +17,63 @@ return [
         'title' => 'Single-level namespaced constant call in the global scope',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
-        'whitelist' => [],
-        'whitelist-global-constants' => false,
-        'whitelist-global-classes' => false,
-        'whitelist-global-functions' => true,
-        'registered-classes' => [],
-        'registered-functions' => [],
+
+        'expose-global-constants' => false,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     'Namespaced constant call' => <<<'PHP'
-<?php
+    <?php
+    
+    PHPUnit\DUMMY_CONST;
+    ----
+    <?php
 
-PHPUnit\DUMMY_CONST;
-----
-<?php
+    namespace Humbug;
 
-namespace Humbug;
+    \Humbug\PHPUnit\DUMMY_CONST;
 
-\Humbug\PHPUnit\DUMMY_CONST;
-
-PHP
-    ,
+    PHP,
 
     'FQ namespaced constant call' => <<<'PHP'
-<?php
+    <?php
+    
+    \PHPUnit\DUMMY_CONST;
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    \Humbug\PHPUnit\DUMMY_CONST;
+    
+    PHP,
 
-\PHPUnit\DUMMY_CONST;
-----
-<?php
-
-namespace Humbug;
-
-\Humbug\PHPUnit\DUMMY_CONST;
-
-PHP
-    ,
-
-    'Namespaced constant call on a whitelisted constant' => [
-        'whitelist' => ['PHPUnit\DUMMY_CONST'],
+    'Namespaced constant call on an exposed constant' => [
+        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
-<?php
+        <?php
+        
+        PHPUnit\DUMMY_CONST;
+        ----
+        <?php
 
-PHPUnit\DUMMY_CONST;
-----
-<?php
+        namespace Humbug;
 
-namespace Humbug;
+        \PHPUnit\DUMMY_CONST;
 
-\PHPUnit\DUMMY_CONST;
-
-PHP
+        PHP,
     ],
 ];

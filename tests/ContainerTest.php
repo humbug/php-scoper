@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Generator;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -30,7 +29,7 @@ class ContainerTest extends TestCase
     {
         $result = (new Container())->$getterName();
 
-        $this->assertNotNull($result);
+        self::assertNotNull($result);
     }
 
     /**
@@ -41,18 +40,18 @@ class ContainerTest extends TestCase
         $container = new Container();
         $anotherContainer = new Container();
 
-        $this->assertSame(
+        self::assertSame(
             $container->$getterName(),
             $container->$getterName()
         );
 
-        $this->assertNotSame(
+        self::assertNotSame(
             $container->$getterName(),
             $anotherContainer->$getterName()
         );
     }
 
-    public function provideServiceGetter(): Generator
+    public static function provideServiceGetter(): iterable
     {
         foreach ((new ReflectionClass(Container::class))->getMethods() as $methodReflection) {
             yield [$methodReflection->getName()];

@@ -14,13 +14,23 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Humbug\PhpScoper\Console\DisplayNormalizer;
-use function Humbug\PhpScoper\create_application;
+use Fidry\Console\Application\SymfonyApplication;
+use Humbug\PhpScoper\Console\Application;
+use Humbug\PhpScoper\Console\AppTesterAbilities;
+use Humbug\PhpScoper\Console\AppTesterTestCase;
+use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use function str_replace;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use function array_reduce;
+use function iterator_to_array;
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\preg_replace;
+use function Safe\realpath;
+use function str_replace;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * @coversNothing
@@ -28,114 +38,116 @@ use Symfony\Component\Finder\SplFileInfo;
  * @group integration
  * @runTestsInSeparateProcesses
  */
-class AddPrefixCommandIntegrationTest extends FileSystemTestCase
+class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 {
+    use AppTesterAbilities {
+        getNormalizeDisplay as getBaseNormalizeDisplay;
+    }
+
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
 
-    /**
-     * @var ApplicationTester
-     */
-    private $appTester;
-
-    /**
-     * @inheritdoc
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $application = create_application();
-        $application->setAutoExit(false);
-        $application->setCatchExceptions(false);
+        $application = new Application(
+            new Container(),
+            'TestVersion',
+            '28/01/2020',
+            false,
+            false,
+        );
 
-        $this->appTester = new ApplicationTester($application);
+        $this->appTester = new ApplicationTester(
+            new SymfonyApplication($application),
+        );
 
         file_put_contents('scoper.inc.php', '<?php return [];');
     }
 
     public function test_scope_the_given_paths(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '--no-interaction' => null,
             '--no-config' => null,
         ];
 
         $this->appTester->run($input);
 
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->assertFilesAreSame(self::FIXTURE_PATH.'/../scoped', $this->tmp);
+        self::assertFilesAreSame(
+            self::FIXTURE_PATH.'/../scoped',
+            $outputDir,
+        );
     }
 
     public function test_scope_in_quiet_mode(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '--quiet' => null,
         ];
 
         $this->appTester->run($input);
 
-        $expected = '';
-
-        $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
-
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        $this->assertExpectedOutput('', 0);
     }
 
     public function test_scope_in_normal_mode(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '--no-interaction' => null,
         ];
 
         $this->appTester->run($input);
 
         $expected = <<<'EOF'
+        
+        
+            ____  __  ______     _____
+           / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+          / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+         / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+        /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                             /_/
+        
+        PhpScoper version TestVersion 28/01/2020
+        
+         0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+         4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+        
+         [OK] Successfully prefixed 4 files.
+        
+         // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+        
+        
+        EOF;
 
-
-    ____  __  ______     _____
-   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
- / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                     /_/
-
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
-
- 0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
- 4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
-
- [OK] Successfully prefixed 4 files.
-
- // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
-
-
-EOF;
-
-        $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
-
-        // Remove the intermediary states of the progress bar as it might
-        // change depending of the speed of the machine
-        $actual = str_replace(
+        $extraNormalization = static fn (string $display) => str_replace(
             [
                 '
  1/4 [▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░]  25%',
@@ -145,22 +157,27 @@ EOF;
  3/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  75%',
             ],
             ['', '', ''],
-            $actual
+            $display,
         );
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        $this->assertExpectedOutput(
+            $expected,
+            0,
+            $extraNormalization,
+        );
     }
 
     public function test_scope_in_verbose_mode(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '-v' => null,
             '--no-interaction' => null,
         ];
@@ -177,7 +194,7 @@ EOF;
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+PhpScoper version TestVersion 28/01/2020
 
  * [NO] /path/to/composer/installed.json
  * [OK] /path/to/file.php
@@ -192,21 +209,20 @@ PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
 
 EOF;
 
-        $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
-
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+        $this->assertExpectedOutput($expected, 0);
     }
 
     public function test_scope_in_very_verbose_mode(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '-vv' => null,
             '--no-interaction' => null,
         ];
@@ -223,10 +239,10 @@ EOF;
 /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
                                      /_/
 
-PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f
+PhpScoper version TestVersion 28/01/2020
 
  * [NO] /path/to/composer/installed.json
-	Could not parse the file "/path/to/composer/installed.json".: TypeError
+	Could not parse the file "/path/to/composer/installed.json".: InvalidArgumentException
 Stack trace:
 #0
 #1
@@ -262,53 +278,45 @@ Stack trace:
 
 EOF;
 
-        $actual = $this->getNormalizeDisplay($this->appTester->getDisplay(true));
-        $actual = preg_replace('/(Could not parse the file ".+?"\.: \w+).*(\n)/', '$1$2', $actual);
-        $actual = preg_replace('/(#\d+).*(\n)/', '$1$2', $actual);
-        // Remove overly lengthy stack-trace
-        $actual = preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $actual);
+        $extraDisplayNormalization = static function (string $display): string {
+            $display = preg_replace('/(Could not parse the file ".+?"\.: \w+).*(\n)/', '$1$2', $display);
+            $display = preg_replace('/(#\d+).*(\n)/', '$1$2', $display);
+            // Remove overly lengthy stack-trace
+            $display = preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $display);
 
-        $this->assertSame($expected, $actual);
-        $this->assertSame(0, $this->appTester->getStatusCode());
+            return $display;
+        };
+
+        $this->assertExpectedOutput(
+            $expected,
+            0,
+            $extraDisplayNormalization,
+        );
     }
 
-    private function getNormalizeDisplay(string $display): string
+    private function getNormalizeDisplay(string $display, ?callable $extraNormalization = null): string
     {
         $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmp, '/path/to', $display);
-        $display = DisplayNormalizer::normalizeSeparators($display);
-        $display = DisplayNormalizer::normalizeProgressBar($display);
-        $display = preg_replace(
-            '/PHP Scoper version (?:dev\-)?.+/',
-            'PHP Scoper version 12ccf1ac8c7ae8eaf502bd30f95630a112dc713f',
-            $display
-        );
-        $display = preg_replace(
+
+        $display = $this->getBaseNormalizeDisplay($display, $extraNormalization);
+
+        return preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
             '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
             $display
         );
-
-        $lines = explode("\n", $display);
-
-        $lines = array_map(
-            'rtrim',
-            $lines
-        );
-
-        return implode("\n", $lines);
     }
 
-    private function assertFilesAreSame(string $expectedDir, string $actualDir): void
+    private static function assertFilesAreSame(string $expectedDir, string $actualDir): void
     {
-        $expected = $this->collectFiles($expectedDir);
+        $expected = self::collectFiles($expectedDir);
+        $actual = self::collectFiles($actualDir);
 
-        $actual = $this->collectFiles($actualDir);
-
-        $this->assertSame($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
-    private function collectFiles(string $dir): array
+    private static function collectFiles(string $dir): array
     {
         $dir = realpath($dir);
         $finder = new Finder();

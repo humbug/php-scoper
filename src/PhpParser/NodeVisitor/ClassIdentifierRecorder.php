@@ -15,69 +15,69 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\FullyQualifiedNameResolver;
-use Humbug\PhpScoper\Whitelist;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
+use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Trait_;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
+use UnexpectedValueException;
 
 /**
- * Records the user classes registered in the global namespace which have been whitelisted and whitelisted classes.
+ * Records the user classes which are exposed.
  *
  * @private
  */
 final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
-    private $prefix;
-    private $nameResolver;
-    private $whitelist;
+    private string $prefix;
+    private IdentifierResolver $identifierResolver;
+    private SymbolsRegistry $symbolsRegistry;
+    private EnrichedReflector $enrichedReflector;
 
     public function __construct(
         string $prefix,
-        FullyQualifiedNameResolver $nameResolver,
-        Whitelist $whitelist
+        IdentifierResolver $identifierResolver,
+        SymbolsRegistry $symbolsRegistry,
+        EnrichedReflector $enrichedReflector
     ) {
         $this->prefix = $prefix;
-        $this->nameResolver = $nameResolver;
-        $this->whitelist = $whitelist;
+        $this->identifierResolver = $identifierResolver;
+        $this->symbolsRegistry = $symbolsRegistry;
+        $this->enrichedReflector = $enrichedReflector;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function enterNode(Node $node): Node
     {
-        if (false === ($node instanceof Identifier) || false === ParentNodeAppender::hasParent($node)) {
+        if (!($node instanceof Identifier) ||!ParentNodeAppender::hasParent($node)) {
             return $node;
         }
 
         $parent = ParentNodeAppender::getParent($node);
 
-        if (false === ($parent instanceof ClassLike) || $parent instanceof Trait_) {
+        $isClassOrInterface = $parent instanceof Class_ || $parent instanceof Interface_;
+
+        if (!$isClassOrInterface) {
             return $node;
         }
-        /** @var ClassLike $parent */
+
         if (null === $parent->name) {
+            throw new UnexpectedValueException('Expected the class/interface statement to have a name but none found');
+        }
+
+        $resolvedName = $this->identifierResolver->resolveIdentifier($node);
+
+        if (!($resolvedName instanceof FullyQualified)) {
             return $node;
         }
 
-        /** @var Identifier $node */
-        $resolvedName = $this->nameResolver->resolveName($node)->getName();
-
-        if (false === ($resolvedName instanceof FullyQualified)) {
-            return $node;
-        }
-
-        /** @var FullyQualified $resolvedName */
-        if ($this->whitelist->isGlobalWhitelistedClass((string) $resolvedName)
-            || $this->whitelist->isSymbolWhitelisted((string) $resolvedName)
-        ) {
-            $this->whitelist->recordWhitelistedClass(
+        if ($this->enrichedReflector->isExposedClass((string) $resolvedName)) {
+            $this->symbolsRegistry->recordClass(
                 $resolvedName,
-                FullyQualifiedFactory::concat($this->prefix, $resolvedName)
+                FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );
         }
 

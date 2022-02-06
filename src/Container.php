@@ -14,47 +14,65 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
-use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
-use Humbug\PhpScoper\Scoper\NullScoper;
-use Humbug\PhpScoper\Scoper\PatchScoper;
-use Humbug\PhpScoper\Scoper\PhpScoper;
-use Humbug\PhpScoper\Scoper\SymfonyScoper;
+use Humbug\PhpScoper\Configuration\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\RegexChecker;
+use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
+use Humbug\PhpScoper\Symbol\Reflector;
+use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use Symfony\Component\Filesystem\Filesystem;
 
 final class Container
 {
-    private $parser;
-    private $reflector;
-    private $scoper;
+    private Filesystem $filesystem;
+    private ConfigurationFactory $configFactory;
+    private Parser $parser;
+    private Reflector $reflector;
+    private ScoperFactory $scoperFactory;
+    private EnrichedReflectorFactory $enrichedReflectorFactory;
 
-    public function getScoper(): Scoper
+    public function getFileSystem(): Filesystem
     {
-        if (null === $this->scoper) {
-            $this->scoper = new PatchScoper(
-                new PhpScoper(
-                    $this->getParser(),
-                    new JsonFileScoper(
-                        new InstalledPackagesScoper(
-                            new SymfonyScoper(
-                                new NullScoper()
-                            )
-                        )
-                    ),
-                    new TraverserFactory($this->getReflector())
-                )
+        if (!isset($this->filesystem)) {
+            $this->filesystem = new Filesystem();
+        }
+
+        return $this->filesystem;
+    }
+
+    public function getConfigurationFactory(): ConfigurationFactory
+    {
+        if (!isset($this->configFactory)) {
+            $this->configFactory = new ConfigurationFactory(
+                $this->getFileSystem(),
+                new SymbolsConfigurationFactory(
+                    new RegexChecker(),
+                ),
             );
         }
 
-        return $this->scoper;
+        return $this->configFactory;
+    }
+
+    public function getScoperFactory(): ScoperFactory
+    {
+        if (!isset($this->scoperFactory)) {
+            $this->scoperFactory = new ScoperFactory(
+                $this->getParser(),
+                $this->getEnrichedReflectorFactory(),
+            );
+        }
+
+        return $this->scoperFactory;
     }
 
     public function getParser(): Parser
     {
-        if (null === $this->parser) {
-            $this->parser = (new ParserFactory())->create(ParserFactory::ONLY_PHP7);
+        if (!isset($this->parser)) {
+            $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Lexer());
         }
 
         return $this->parser;
@@ -62,10 +80,21 @@ final class Container
 
     public function getReflector(): Reflector
     {
-        if (null === $this->reflector) {
-            $this->reflector = new Reflector();
+        if (!isset($this->reflector)) {
+            $this->reflector = Reflector::createWithPhpStormStubs();
         }
 
         return $this->reflector;
+    }
+
+    public function getEnrichedReflectorFactory(): EnrichedReflectorFactory
+    {
+        if (!isset($this->enrichedReflectorFactory)) {
+            $this->enrichedReflectorFactory = new EnrichedReflectorFactory(
+                $this->getReflector(),
+            );
+        }
+
+        return $this->enrichedReflectorFactory;
     }
 }
