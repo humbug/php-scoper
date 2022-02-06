@@ -49,6 +49,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
         - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
         - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
 - [Recommendations](#recommendations)
+- [Further Reading](docs/further-reading.md#further-reading)
 - [Limitations](docs/limitations.md#limitations)
   - [Dynamic symbols](docs/limitations.md#dynamic-symbols)
   - [Date symbols](docs/limitations.md#date-symbols)
