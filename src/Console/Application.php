@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Console;
 use Fidry\Console\Application\Application as FidryApplication;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
+use Humbug\PhpScoper\Console\Command\InspectSymbolCommand;
 use Humbug\PhpScoper\Container;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use function Humbug\PhpScoper\get_php_scoper_version;
@@ -111,6 +112,11 @@ ASCII;
                 $this->container->getScoperFactory(),
                 $this,
                 $this->container->getConfigurationFactory(),
+            ),
+            new InspectSymbolCommand(
+                $this->container->getFileSystem(),
+                $this->container->getConfigurationFactory(),
+                $this->container->getEnrichedReflectorFactory(),
             ),
             new InitCommand(
                 $this->container->getFileSystem(),

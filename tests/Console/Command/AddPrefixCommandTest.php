@@ -20,10 +20,13 @@ use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
+use Humbug\PhpScoper\Console\AppTesterAbilities;
+use Humbug\PhpScoper\Console\AppTesterTestCase;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\PhpParser\FakeParser;
 use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
 use Prophecy\Argument;
@@ -46,16 +49,12 @@ use const DIRECTORY_SEPARATOR;
  * @covers \Humbug\PhpScoper\Console\ConsoleScoper
  * @covers \Humbug\PhpScoper\Console\ConfigLoader
  */
-class AddPrefixCommandTest extends FileSystemTestCase
+class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCase
 {
+    use AppTesterAbilities;
     use ProphecyTrait;
 
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures';
-
-    /**
-     * @var ApplicationTester
-     */
-    private ApplicationTester $appTester;
 
     /**
      * @var ObjectProphecy<Filesystem>
@@ -72,80 +71,13 @@ class AddPrefixCommandTest extends FileSystemTestCase
         parent::setUp();
 
         $this->fileSystemProphecy = $this->prophesize(Filesystem::class);
+        $this->fileSystemProphecy
+            ->isAbsolutePath('scoper.inc.php')
+            ->willReturn(false);
 
         $this->scoperProphecy = $this->prophesize(Scoper::class);
 
         $this->appTester = $this->createAppTester();
-    }
-
-    public function test_get_help_menu(): void
-    {
-        $input = [];
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
-
-        $this->appTester->run($input);
-
-        $expected = <<<'EOF'
-        
-            ____  __  ______     _____
-           / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-          / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
-         / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-        /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                             /_/
-        
-        PhpScoper version TestVersion 28/01/2020
-        
-        Usage:
-          command [options] [arguments]
-        
-        Options:
-          -h, --help            Display help for the given command. When no command is given display help for the list command
-          -q, --quiet           Do not output any message
-          -V, --version         Display this application version
-              --ansi|--no-ansi  Force (or disable --no-ansi) ANSI output
-          -n, --no-interaction  Do not ask any interactive question
-          -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
-        
-        Available commands:
-          add-prefix  Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.
-          completion  Dump the shell completion script
-          help        Display help for a command
-          init        Generates a configuration file.
-          list        List commands
-        
-        EOF;
-
-        $actual = $this->appTester->getDisplay(true);
-
-        self::assertSame($expected, $actual);
-        self::assertSame(0, $this->appTester->getStatusCode());
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
-    }
-
-    public function test_get_version_menu(): void
-    {
-        $input = [
-            '--version',
-        ];
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldNotBeCalled();
-
-        $this->appTester->run($input);
-
-        $expected = <<<'EOF'
-        PhpScoper version TestVersion 28/01/2020
-        
-        EOF;
-
-        $actual = $this->appTester->getDisplay(true);
-
-        self::assertSame($expected, $actual);
-        self::assertSame(0, $this->appTester->getStatusCode());
-
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldNotHaveBeenCalled();
     }
 
     public function test_scope_the_given_paths(): void
@@ -198,13 +130,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_let_the_file_unchanged_when_cannot_scope_a_file(): void
@@ -263,13 +191,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_do_not_scope_duplicated_given_paths(): void
@@ -316,13 +240,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(3);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_scope_the_given_paths_and_the_ones_found_by_the_finder(): void
@@ -371,13 +291,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(4);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_scope_the_current_working_directory_if_no_path_given(): void
@@ -426,13 +342,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_an_output_directory_can_be_given(): void
@@ -481,13 +393,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_relative_output_directory_are_made_absolute(): void
@@ -537,13 +445,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(2);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     public function test_throws_an_error_when_passing_a_non_existent_config(): void
@@ -574,7 +478,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
             );
         }
 
-        $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldNotHaveBeenCalled();
     }
 
     public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values(): void
@@ -603,7 +509,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
             );
         }
 
-        $this->scoperProphecy->scope(Argument::cetera())->shouldNotHaveBeenCalled();
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldNotHaveBeenCalled();
     }
 
     public function test_can_scope_projects_with_invalid_files(): void
@@ -648,13 +556,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
 
         self::assertSame(0, $this->appTester->getStatusCode());
 
-        $this->fileSystemProphecy->mkdir(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->exists(Argument::cetera())->shouldHaveBeenCalledTimes(1);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotHaveBeenCalled();
-        $this->fileSystemProphecy->dumpFile(Argument::cetera())->shouldHaveBeenCalled(count($expectedFiles));
-
-        $this->scoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(count($expectedFiles));
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
     private function createAppTester(): ApplicationTester
@@ -680,7 +584,9 @@ class AddPrefixCommandTest extends FileSystemTestCase
                     $fileSystem,
                     new DummyScoperFactory(
                         new FakeParser(),
-                        Reflector::createEmpty(),
+                        new EnrichedReflectorFactory(
+                            Reflector::createEmpty(),
+                        ),
                         $scoper,
                     ),
                     $innerApp,

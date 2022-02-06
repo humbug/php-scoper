@@ -40,6 +40,9 @@ jobs:
                 with:
                     composer-options: '--prefer-dist'
 
+            -   name: Configure the PHP platform
+                run: composer config platform.php $(php -r 'echo phpversion();') && composer update --lock
+
             -   name: Build PHAR
                 run: make build
 

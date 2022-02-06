@@ -22,7 +22,7 @@ use const DIRECTORY_SEPARATOR;
 
 final class DisplayNormalizer
 {
-    public static function normalizeSeparators(string $display): string
+    public static function normalizeDirectorySeparators(string $display): string
     {
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\/path\/to(.*\\\\)+/', $display, $match)) {
             $paths = $match[0];
