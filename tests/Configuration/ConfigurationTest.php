@@ -14,8 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\Patcher\FakePatcher;
+use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
-use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -42,10 +43,32 @@ final class ConfigurationTest extends TestCase
             [],
             new PatcherChain([]),
             SymbolsConfiguration::create(),
-            [],
-            [],
-            [],
         );
+    }
+
+    public function test_it_can_create_a_new_instance_with_a_different_prefix(): void
+    {
+        $values = [
+            '/path/to/config',
+            'initialPrefix',
+            ['/path/to/fileA' => ['/path/to/fileA', 'fileAContent']],
+            ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
+            new FakePatcher(),
+            SymbolsConfiguration::create(),
+        ];
+
+        $config = new Configuration(...$values);
+
+        // Sanity check
+        self::assertStateIs($config, ...$values);
+
+        $newConfig = $config->withPrefix('newPrefix');
+
+        $expectedNewConfigValues = $values;
+        $expectedNewConfigValues[1] = 'newPrefix';
+
+        self::assertStateIs($config, ...$values);
+        self::assertStateIs($newConfig, ...$expectedNewConfigValues);
     }
 
     public static function prefixProvider(): iterable
@@ -59,5 +82,31 @@ final class ConfigurationTest extends TestCase
             'App\\\\Foo',
             'Invalid namespace separator sequence. Got "App\\\\Foo"',
         ];
+    }
+
+    private static function assertStateIs(
+        Configuration $configuration,
+        ?string $expectedPath,
+        string $expectedPrefix,
+        array $expectedFilesWithContents,
+        array $expectedExcludedFilesWithContents,
+        Patcher $expectedPatcher,
+        SymbolsConfiguration $expectedSymbolsConfiguration
+    ): void {
+        self::assertSame($expectedPath, $configuration->getPath());
+        self::assertSame($expectedPrefix, $configuration->getPrefix());
+        self::assertEqualsCanonicalizing(
+            $expectedFilesWithContents,
+            $configuration->getFilesWithContents(),
+        );
+        self::assertEqualsCanonicalizing(
+            $expectedExcludedFilesWithContents,
+            $configuration->getExcludedFilesWithContents(),
+        );
+        self::assertEquals($expectedPatcher, $configuration->getPatcher());
+        self::assertEquals(
+            $expectedSymbolsConfiguration,
+            $configuration->getSymbolsConfiguration(),
+        );
     }
 }

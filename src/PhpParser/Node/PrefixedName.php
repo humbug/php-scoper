@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\Node;
 
 use PhpParser\Node\Name\FullyQualified;
 
+// TODO:review
 final class PrefixedName extends FullyQualified
 {
     private FullyQualified $prefixedName;
