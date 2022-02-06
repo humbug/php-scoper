@@ -69,8 +69,8 @@ final class ConfigurationFactory
     }
 
     /**
-     * @param string|null $path  Absolute path to the configuration file.
-     * @param string[]    $paths List of paths to append besides the one configured
+     * @param non-empty-string|null  $path  Absolute canonical path to the configuration file.
+     * @param list<non-empty-string> $paths List of absolute canonical paths to append besides the one configured
      */
     public function create(?string $path = null, array $paths = []): Configuration
     {
@@ -221,15 +221,15 @@ final class ConfigurationFactory
         );
     }
 
+    /**
+     * @return non-empty-string
+     */
     private static function retrievePrefix(array $config): string
     {
         $prefix = trim((string) ($config[ConfigurationKeys::PREFIX_KEYWORD] ?? ''));
 
-        if ('' === $prefix) {
-            return self::generateRandomPrefix();
-        }
+        return '' === $prefix ? self::generateRandomPrefix() : $prefix;
 
-        return $prefix;
     }
 
     /**
@@ -428,6 +428,9 @@ final class ConfigurationFactory
         return $filesWithContents;
     }
 
+    /**
+     * @return non-empty-string
+     */
     private static function generateRandomPrefix(): string
     {
         return '_PhpScoper'.bin2hex(random_bytes(6));

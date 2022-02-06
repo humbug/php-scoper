@@ -30,6 +30,7 @@ use function Safe\file_put_contents;
 use function Safe\preg_replace;
 use function Safe\realpath;
 use function str_replace;
+use const DIRECTORY_SEPARATOR;
 
 /**
  * @coversNothing
@@ -66,13 +67,15 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
     public function test_scope_the_given_paths(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '--no-interaction' => null,
             '--no-config' => null,
         ];
@@ -83,19 +86,21 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
         self::assertFilesAreSame(
             self::FIXTURE_PATH.'/../scoped',
-            $this->tmp,
+            $outputDir,
         );
     }
 
     public function test_scope_in_quiet_mode(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '--quiet' => null,
         ];
 
@@ -106,13 +111,15 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
     public function test_scope_in_normal_mode(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '--no-interaction' => null,
         ];
 
@@ -162,13 +169,15 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
     public function test_scope_in_verbose_mode(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '-v' => null,
             '--no-interaction' => null,
         ];
@@ -205,13 +214,15 @@ EOF;
 
     public function test_scope_in_very_verbose_mode(): void
     {
+        $outputDir = $this->tmp.DIRECTORY_SEPARATOR.'build';
+
         $input = [
             'add-prefix',
             '--prefix' => 'MyPrefix',
             'paths' => [
                 self::FIXTURE_PATH,
             ],
-            '--output-dir' => $this->tmp,
+            '--output-dir' => $outputDir,
             '-vv' => null,
             '--no-interaction' => null,
         ];

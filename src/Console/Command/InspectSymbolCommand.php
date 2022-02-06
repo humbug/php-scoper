@@ -30,13 +30,14 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Filesystem\Filesystem;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
+use function assert;
 use function file_exists;
 use function implode;
 use function in_array;
-use function ltrim;
 use function Safe\getcwd;
 use function Safe\sprintf;
+use function trim;
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -112,9 +113,13 @@ final class InspectSymbolCommand implements Command
 
         ChangeableDirectory::changeWorkingDirectory($io);
 
+        // Only get current working directory _after_ we changed to the desired
+        // working directory
+        $cwd = getcwd();
+
         $symbol = $io->getStringArgument(self::SYMBOL_ARG);
         $symbolType = self::getSymbolType($io);
-        $config = $this->retrieveConfig($io);
+        $config = $this->retrieveConfig($io, $cwd);
 
         $enrichedReflector = $this->enrichedReflectorFactory->create(
             $config->getSymbolsConfiguration(),
@@ -152,7 +157,7 @@ final class InspectSymbolCommand implements Command
         return $type;
     }
 
-    private function retrieveConfig(IO $io): Configuration
+    private function retrieveConfig(IO $io, string $cwd): Configuration
     {
         $configLoader = new ConfigLoader(
             new CommandRegistry(new DummyApplication()),
@@ -160,7 +165,7 @@ final class InspectSymbolCommand implements Command
             $this->configFactory,
         );
 
-        $configFilePath = self::getConfigFilePath($io);
+        $configFilePath = $this->getConfigFilePath($io, $cwd);
         $noConfig = $io->getBooleanOption(self::NO_CONFIG_OPT);
 
         if (null === $configFilePath) {
@@ -187,19 +192,20 @@ final class InspectSymbolCommand implements Command
         );
     }
 
-    private static function getConfigFilePath(IO $io): ?string
+    /**
+     * @return non-empty-string|null
+     */
+    private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $configPath = $io->getNullableStringOption(self::CONFIG_FILE_OPT);
+        $configPath = trim($io->getStringOption(self::CONFIG_FILE_OPT));
 
-        if (null !== $configPath) {
-            return $configPath;
+        if ('' === $configPath) {
+            $configPath = ConfigurationFactory::DEFAULT_FILE_NAME;
         }
 
-        $defaultConfigPath = Path::normalize(
-            getcwd().DIRECTORY_SEPARATOR.ConfigurationFactory::DEFAULT_FILE_NAME,
-        );
+        $configPath = $this->canonicalizePath($configPath, $cwd);
 
-        return file_exists($defaultConfigPath) ? $defaultConfigPath : null;
+        return file_exists($configPath) ? $configPath : null;
     }
 
     /**
@@ -360,5 +366,23 @@ final class InspectSymbolCommand implements Command
     private static function convertBoolToString(bool $bool): string
     {
         return true === $bool ? '<question>true</question>' : '<error>false</error>';
+    }
+
+    /**
+     * @param non-empty-string $path
+     *
+     * @return non-empty-string Absolute canonical path
+     */
+    private function canonicalizePath(string $path, string $cwd): string
+    {
+        $canonicalPath = Path::canonicalize(
+            $this->fileSystem->isAbsolutePath($path)
+                ? $path
+                : $cwd.DIRECTORY_SEPARATOR.$path,
+        );
+
+        assert('' !== $canonicalPath);
+
+        return $canonicalPath;
     }
 }
