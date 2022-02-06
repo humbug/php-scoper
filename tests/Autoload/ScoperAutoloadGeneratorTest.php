@@ -64,7 +64,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             $loader = require_once __DIR__.'/autoload.php';
             
             // Exposed functions. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
+            // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
             if (!function_exists('foo')) {
                 function foo() {
                     return \Humbug\foo(...func_get_args());
@@ -100,7 +100,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             }
             
             // Exposed functions. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
+            // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
             namespace Acme {
                 if (!function_exists('Acme\foo')) {
                     function foo() {
@@ -145,7 +145,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             $loader = require_once __DIR__.'/autoload.php';
             
             // Exposed classes. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
+            // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
             if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
                 spl_autoload_call('Humbug\A\Foo');
             }
@@ -171,7 +171,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             $loader = require_once __DIR__.'/autoload.php';
             
             // Exposed classes. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
+            // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
             if (!class_exists('Foo', false) && !interface_exists('Foo', false) && !trait_exists('Foo', false)) {
                 spl_autoload_call('Humbug\Foo');
             }
@@ -207,7 +207,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             }
             
             // Exposed classes. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#class-whitelisting
+            // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
             namespace {
                 if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
                     spl_autoload_call('Humbug\A\Foo');
@@ -215,7 +215,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             }
             
             // Exposed functions. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
+            // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
             namespace {
                 if (!function_exists('foo')) {
                     function foo() {
@@ -275,7 +275,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             $loader = require_once __DIR__.'/autoload.php';
             
             // Exposed functions. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
+            // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
             if (!function_exists('__autoload')) {
                 function __autoload($className) {
                     return \Humbug\__autoload(...func_get_args());
@@ -306,7 +306,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
             }
             
             // Exposed functions. For more information see:
-            // https://github.com/humbug/php-scoper/blob/master/README.md#functions-whitelisting
+            // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
             namespace {
                 if (!function_exists('__autoload')) {
                     function __autoload($className) {

@@ -91,6 +91,22 @@ final class Configuration
     }
 
     /**
+     * @param non-empty-string $prefix
+     */
+    public function withPrefix(string $prefix): self
+    {
+        return new self(
+            $this->path,
+            $this->outputDir,
+            $prefix,
+            $this->filesWithContents,
+            $this->excludedFilesWithContents,
+            $this->patcher,
+            $this->symbolsConfiguration,
+        );
+    }
+
+    /**
      * @return non-empty-string
      */
     public function getPrefix(): string
