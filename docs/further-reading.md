@@ -1,6 +1,6 @@
 ## Further Reading
 
-- [Further Reading](#further-reading)
+- [Polyfills](#polyfills)
 
 
 ### Polyfills
