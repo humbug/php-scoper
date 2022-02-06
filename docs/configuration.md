@@ -395,7 +395,7 @@ namespace Humbug\Acme;
 <br />
 <hr />
 
-« [Installation](installation.md#installation) • [Limitations](limitations.md#limitations) »
+« [Installation](installation.md#installation) • [Further Reading](further-reading.md#further-reading) »
 
 
 [box]: https://github.com/box-project/box

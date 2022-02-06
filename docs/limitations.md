@@ -229,7 +229,7 @@ If this will work for the classes under `src/JsonMapper/`, it will not for `Json
 <br />
 <hr />
 
-« [Configuration](configuration.md#configuration) • [Table of Contents](../README.md#table-of-contents) »
+« [Further Reading](further-reading.md#further-reading) • [Table of Contents](../README.md#table-of-contents) »
 
 
 [box]: https://github.com/humbug/box
