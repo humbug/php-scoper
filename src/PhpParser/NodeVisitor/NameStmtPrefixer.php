@@ -36,6 +36,7 @@ use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Enum_;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Property;
@@ -73,6 +74,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         ClassConstFetch::class,
         ClassMethod::class,
         Closure::class,
+        Enum_::class,
         FuncCall::class,
         Function_::class,
         Instanceof_::class,

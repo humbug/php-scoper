@@ -1,5 +1,7 @@
 ## Limitations
 
+- [Exposing traits](#exposing-traits)
+- [Exposing enums](#exposing-enums)
 - [Dynamic symbols](#dynamic-symbols)
 - [Date symbols](#date-symbols)
 - [Heredoc values](#heredoc-values)
@@ -9,6 +11,19 @@
 - [Composer Autoloader](#composer-autoloader)
 - [Composer Plugins](#composer-plugins)
 - [PSR-0 Partial support](#psr-0-partial-support)
+
+
+### Exposing traits
+
+Due to the lack of aliasing and inheritance mechanism for traits, no strategy
+has been found at the moment to expose a trait.
+
+
+### Exposing enums
+
+Due to the lack of aliasing mechanism and the fact that enums can be made final,
+hence cannot be extended, no strategy has been found at the moment to expose an
+enum.
 
 
 ### Dynamic symbols

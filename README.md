@@ -52,6 +52,8 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 - [Further Reading](docs/further-reading.md#further-reading)
     - [Polyfills](docs/further-reading.md#polyfills)
 - [Limitations](docs/limitations.md#limitations)
+    - [Exposing traits](docs/limitations.md#exposing-traits)
+    - [Exposing enums](docs/limitations.md#exposing-enums)
     - [Dynamic symbols](docs/limitations.md#dynamic-symbols)
     - [Date symbols](docs/limitations.md#date-symbols)
     - [Heredoc values](docs/limitations.md#heredoc-values)
