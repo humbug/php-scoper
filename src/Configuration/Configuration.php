@@ -23,23 +23,30 @@ final class Configuration
 {
     private const PREFIX_PATTERN = '/^[\p{L}\d_\\\\]+$/u';
 
+    /**
+     * @var non-empty-string|null
+     */
     private ?string $path;
+
+    /**
+     * @var non-empty-string
+     */
     private string $prefix;
+
     private array $filesWithContents;
     private array $excludedFilesWithContents;
     private Patcher $patcher;
     private SymbolsConfiguration $symbolsConfiguration;
 
     /**
-     * @param string|null                          $path                      Absolute path to the configuration file loaded.
-     * @param string                               $prefix                    The prefix applied.
+     * @param non-empty-string|null                $path                      Absolute path to the configuration file loaded.
+     * @param non-empty-string                     $prefix                    The prefix applied.
      * @param array<string, array{string, string}> $filesWithContents         Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
      * @param array<string, array{string, string}> $excludedFilesWithContents Array of tuple
      *                                            with the first argument being the file path and
      *                                            the second its contents
-     * @param SymbolsConfiguration                 $symbolsConfiguration
      */
     public function __construct(
         ?string $path,
@@ -54,16 +61,22 @@ final class Configuration
         $this->path = $path;
         $this->prefix = $prefix;
         $this->filesWithContents = $filesWithContents;
+        $this->excludedFilesWithContents = $excludedFilesWithContents;
         $this->patcher = $patcher;
         $this->symbolsConfiguration = $symbolsConfiguration;
-        $this->excludedFilesWithContents = $excludedFilesWithContents;
     }
 
+    /**
+     * @return non-empty-string|null Absolute canonical path
+     */
     public function getPath(): ?string
     {
         return $this->path;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getPrefix(): string
     {
         return $this->prefix;
@@ -77,6 +90,14 @@ final class Configuration
         return $this->filesWithContents;
     }
 
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public function getExcludedFilesWithContents(): array
+    {
+        return $this->excludedFilesWithContents;
+    }
+
     public function getPatcher(): Patcher
     {
         return $this->patcher;
@@ -85,14 +106,6 @@ final class Configuration
     public function getSymbolsConfiguration(): SymbolsConfiguration
     {
         return $this->symbolsConfiguration;
-    }
-
-    /**
-     * @return array<string, array{string, string}>
-     */
-    public function getExcludedFilesWithContents(): array
-    {
-        return $this->excludedFilesWithContents;
     }
 
     private static function validatePrefix(string $prefix): void

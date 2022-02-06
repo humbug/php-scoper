@@ -49,6 +49,10 @@ final class ConsoleScoper
         $this->scoperFactory = $scoperFactory;
     }
 
+    /**
+     * @param list<non-empty-string> $paths
+     * @param non-empty-string $outputDir
+     */
     public function scope(
         IO $io,
         Configuration $config,
