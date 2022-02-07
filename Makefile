@@ -40,7 +40,7 @@ cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
 	$(PHPNOGC) $(CODE_SNIFFER)
 
 .PHONY: cs-check
-cs-check: ## Checks CS
+cs-check:	## Checks CS
 cs-check: $(CODE_SNIFFER)
 	$(PHPNOGC) $(CODE_SNIFFER)
 
@@ -51,9 +51,14 @@ phpstan: $(PHPSTAN)
 	$(PHPNOGC) $(PHPSTAN) analyze src --level max --memory-limit=-1
 
 .PHONY: build
-build:	 ## Build the PHAR
+build:	 ## Builds the PHAR
 BOX=bin/box
 build: $(PHPSCOPER)
+
+.PHONY: outdated-fixtures
+outdated-fixtures:	## Reports outdated dependencies
+outdated-fixtures: vendor
+	find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'echo "Checking %;" $$(composer install --working-dir=% --ansi && composer outdated --direct --working-dir=% --ansi)'
 
 
 #
