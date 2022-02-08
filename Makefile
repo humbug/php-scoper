@@ -97,6 +97,12 @@ e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e
 .PHONY: e2e_004
 e2e_004: ## Run end-to-end tests for the fixture set 004 — Source code case
 e2e_004: $(PHPSCOPER)
+	# Having those composer files messes up the Box auto-loading detection. This
+	# is a very special case where there is no dependency and for users in practice
+	# it would be recommended to register the files themselves
+	rm fixtures/set004/composer.json || true
+	rm -rf fixtures/set004/vendor || true
+
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set004
 
 	php build/set004/bin/greet.phar > build/set004/output
@@ -131,6 +137,12 @@ e2e_013: $(PHPSCOPER)
 .PHONY: e2e_014
 e2e_014: ## Run end-to-end tests for the fixture set 014 — Source code case with PSR-0
 e2e_014: $(PHPSCOPER)
+	# Having those composer files messes up the Box auto-loading detection. This
+	# is a very special case where there is no dependency and for users in practice
+	# it would be recommended to register the files themselves
+	rm fixtures/set004/composer.json || true
+	rm -rf fixtures/set004/vendor || true
+
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set014
 
 	php build/set014/bin/greet.phar > build/set014/output
