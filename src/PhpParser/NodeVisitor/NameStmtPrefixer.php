@@ -43,6 +43,7 @@ use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Alias;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Precedence;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\UnionType;
 use PhpParser\NodeVisitorAbstract;
 use function in_array;
 use function strtolower;
@@ -84,6 +85,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         StaticCall::class,
         StaticPropertyFetch::class,
         TraitUse::class,
+        UnionType::class,
     ];
 
     private string $prefix;
