@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -62,7 +63,7 @@ class InstalledPackagesScoperTest extends TestCase
         );
 
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
+        $this->decoratedScoper = new ScoperStub();
     }
 
     public function test_it_is_a_Scoper(): void
@@ -96,9 +97,21 @@ class InstalledPackagesScoperTest extends TestCase
     /**
      * @dataProvider provideInstalledPackagesFiles
      */
-    public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
+    public function test_it_prefixes_the_composer_autoloaders(
+        EnrichedReflector $enrichedReflector,
+        string $fileContents,
+        string $expected
+    ): void
     {
-        $actual = $this->scopedWithoutDecoratedScoper->scope(
+        $scoper = new InstalledPackagesScoper(
+            new FakeScoper(),
+            new AutoloadPrefixer(
+                self::PREFIX,
+                $enrichedReflector,
+            ),
+        );
+
+        $actual = $scoper->scope(
             'composer/installed.json',
             $fileContents,
         );
@@ -106,9 +119,23 @@ class InstalledPackagesScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
+    public function test_it_requires_valid_composer2_files(
+        string $contents,
+        string $expectedExceptionMessage
+    ): void
+    {
+
+    }
+
     public static function provideInstalledPackagesFiles(): iterable
     {
+        $emptyEnrichedReflector = new EnrichedReflector(
+            Reflector::createEmpty(),
+            SymbolsConfiguration::create(),
+        );
+
         yield 'fideloper/proxy excerpt' => [
+            $emptyEnrichedReflector,
             <<<'JSON'
             {
                 "packages": [
@@ -236,6 +263,7 @@ class InstalledPackagesScoperTest extends TestCase
         ];
 
         yield 'beberlei/assert excerpt' => [
+            $emptyEnrichedReflector,
             <<<'JSON'
             {
                 "dev": true,
@@ -355,6 +383,143 @@ class InstalledPackagesScoperTest extends TestCase
                         "description": "Thin assertion library for input validation in business models.",
                         "keywords": [],
                         "platform": {}
+                    }
+                ]
+            }
+            JSON,
+        ];
+
+        yield 'fideloper/proxy excerpt with excluded provider' => [
+            new EnrichedReflector(
+                Reflector::createEmpty(),
+                // TODO: named params
+                SymbolsConfiguration::create(
+                    false,
+                    false,
+                    false,
+                    NamespaceRegistry::create(['Fideloper']),
+                )
+            ),
+            <<<'JSON'
+            {
+                "packages": [
+                    {
+                        "name": "fideloper\/proxy",
+                        "version": "4.0.0",
+                        "version_normalized": "4.0.0.0",
+                        "source": {
+                            "type": "git",
+                            "url": "https:\/\/github.com\/fideloper\/TrustedProxy.git",
+                            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a"
+                        },
+                        "dist": {
+                            "type": "zip",
+                            "url": "https:\/\/api.github.com\/repos\/fideloper\/TrustedProxy\/zipball\/cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+                            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+                            "shasum": ""
+                        },
+                        "require": {
+                            "illuminate\/contracts": "~5.0",
+                            "php": ">=5.4.0"
+                        },
+                        "require-dev": {
+                            "illuminate\/http": "~5.6",
+                            "mockery\/mockery": "~1.0",
+                            "phpunit\/phpunit": "^6.0"
+                        },
+                        "time": "2018-02-07T20:20:57+00:00",
+                        "type": "library",
+                        "extra": {
+                            "laravel": {
+                                "providers": [
+                                    "Fideloper\\Proxy\\TrustedProxyServiceProvider"
+                                ]
+                            }
+                        },
+                        "installation-source": "dist",
+                        "autoload": {
+                            "psr-4": {
+                                "Fideloper\\Proxy\\": "src\/"
+                            }
+                        },
+                        "notification-url": "https:\/\/packagist.org\/downloads\/",
+                        "license": [
+                            "MIT"
+                        ],
+                        "authors": [
+                            {
+                                "name": "Chris Fidao",
+                                "email": "fideloper@gmail.com"
+                            }
+                        ],
+                        "description": "Set trusted proxies for Laravel",
+                        "keywords": [
+                            "load balancing",
+                            "proxy",
+                            "trusted proxy"
+                        ]
+                    }
+                ]
+            }
+            JSON,
+            <<<'JSON'
+            {
+                "packages": [
+                    {
+                        "name": "fideloper\/proxy",
+                        "version": "4.0.0",
+                        "version_normalized": "4.0.0.0",
+                        "source": {
+                            "type": "git",
+                            "url": "https:\/\/github.com\/fideloper\/TrustedProxy.git",
+                            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a"
+                        },
+                        "dist": {
+                            "type": "zip",
+                            "url": "https:\/\/api.github.com\/repos\/fideloper\/TrustedProxy\/zipball\/cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+                            "reference": "cf8a0ca4b85659b9557e206c90110a6a4dba980a",
+                            "shasum": ""
+                        },
+                        "require": {
+                            "illuminate\/contracts": "~5.0",
+                            "php": ">=5.4.0"
+                        },
+                        "require-dev": {
+                            "illuminate\/http": "~5.6",
+                            "mockery\/mockery": "~1.0",
+                            "phpunit\/phpunit": "^6.0"
+                        },
+                        "time": "2018-02-07T20:20:57+00:00",
+                        "type": "library",
+                        "extra": {
+                            "laravel": {
+                                "providers": [
+                                    "Fideloper\\Proxy\\TrustedProxyServiceProvider"
+                                ]
+                            }
+                        },
+                        "installation-source": "dist",
+                        "autoload": {
+                            "psr-4": {
+                                "Fideloper\\Proxy\\": "src\/"
+                            }
+                        },
+                        "notification-url": "https:\/\/packagist.org\/downloads\/",
+                        "license": [
+                            "MIT"
+                        ],
+                        "authors": [
+                            {
+                                "name": "Chris Fidao",
+                                "email": "fideloper@gmail.com"
+                            }
+                        ],
+                        "description": "Set trusted proxies for Laravel",
+                        "keywords": [
+                            "load balancing",
+                            "proxy",
+                            "trusted proxy"
+                        ]
                     }
                 ]
             }

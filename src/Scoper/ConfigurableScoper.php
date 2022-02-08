@@ -28,13 +28,11 @@ final class ConfigurableScoper implements Scoper
 
     public function withWhitelistedFiles(string ...$whitelistedFiles): self
     {
-        $self = clone $this;
-
         return count($whitelistedFiles) === 0
-            ? $self
+            ? $this
             : new self(
                 new FileWhitelistScoper(
-                    $self,
+                    clone $this,
                     ...$whitelistedFiles
                 )
             )

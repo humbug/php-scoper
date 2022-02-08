@@ -32,7 +32,7 @@ use function strpos;
  */
 final class XmlScoper implements Scoper
 {
-    private const FILE_PATH_PATTERN = '/\.xml$/i';
+    private const XML_EXTENSION_REGEX = '/\.xml$/i';
     private const NAMESPACE_PATTERN = '/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/';
     private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
@@ -55,7 +55,7 @@ final class XmlScoper implements Scoper
 
     public function scope(string $filePath, string $contents): string
     {
-        if (1 !== native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
+        if (1 !== native_preg_match(self::XML_EXTENSION_REGEX, $filePath)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 

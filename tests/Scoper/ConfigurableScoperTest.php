@@ -93,4 +93,13 @@ class ConfigurableScoperTest extends TestCase
 
         $this->decoratedScoperProphecy->scope(Argument::cetera())->shouldHaveBeenCalledTimes(1);
     }
+
+    public function test_it_returns_itself_if_no_excluded_file_is_provided(): void
+    {
+        $scoper = new ConfigurableScoper(new FakeScoper());
+
+        $configuredScoper = $scoper->withWhitelistedFiles();
+
+        self::assertSame($scoper, $configuredScoper);
+    }
 }
