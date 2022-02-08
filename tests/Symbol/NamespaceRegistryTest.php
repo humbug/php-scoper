@@ -64,6 +64,13 @@ class NamespaceRegistryTest extends TestCase
                 $symbol,
                 $expected,
             ];
+
+            yield '[(polluted) name only] '.$title => [
+                $namespaceNames,
+                [],
+                '\\'.$symbol,
+                $expected,
+            ];
         }
 
         foreach (self::provideNamespaceRegex() as $title => [$namespaceRegexes, $symbol, $expected]) {
@@ -71,6 +78,13 @@ class NamespaceRegistryTest extends TestCase
                 [],
                 $namespaceRegexes,
                 $symbol,
+                $expected,
+            ];
+
+            yield '[(polluted) regex only] '.$title => [
+                [],
+                $namespaceRegexes,
+                '\\'.$symbol,
                 $expected,
             ];
         }

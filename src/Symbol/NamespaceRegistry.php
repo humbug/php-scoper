@@ -89,11 +89,30 @@ final class NamespaceRegistry
         $normalizedNamespaceName = strtolower($originalNamespaceName);
 
         foreach ($this->names as $excludedNamespaceName) {
-            if ('' === $excludedNamespaceName
-                || str_contains($normalizedNamespaceName, $excludedNamespaceName)
-            ) {
+//            if ('' === $excludedNamespaceName
+//                || str_contains($normalizedNamespaceName, $excludedNamespaceName)
+//            ) {
+//                return true;
+//            }
+//            continue;
+
+            if ('' === $excludedNamespaceName) {
                 return true;
             }
+
+            if (0 !== strpos($normalizedNamespaceName, $excludedNamespaceName)) {
+                continue;
+            }
+
+            $nameParts = explode('\\', $normalizedNamespaceName);
+
+            foreach (explode('\\', $excludedNamespaceName) as $index => $excludedNamespacePart) {
+                if ($nameParts[$index] !== $excludedNamespacePart) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         foreach ($this->regexes as $excludedNamespace) {
