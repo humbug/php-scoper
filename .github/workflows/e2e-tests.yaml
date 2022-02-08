@@ -82,7 +82,7 @@ jobs:
                     - 'e2e_025'
                     - 'e2e_026'
                     # TODO: add back
-                    # 
+                    # https://github.com/humbug/php-scoper/issues/646
                     #- 'e2e_027'
                     - 'e2e_028'
                     - 'e2e_029'
