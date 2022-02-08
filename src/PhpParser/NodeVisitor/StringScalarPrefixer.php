@@ -351,7 +351,6 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $previousValueAlreadyPrefixed = $this->prefix === $previousValueParts[0];
 
         if ($previousValueAlreadyPrefixed) {
-            return $previous;
             // Remove the prefix and proceed as usual: this ensures that even
             // if the value was correct-ish it is cleaned up (e.g. of leading
             // backslashes)
