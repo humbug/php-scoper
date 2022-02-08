@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Scoper\Composer;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Scoper\ScoperStub;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
@@ -32,20 +33,13 @@ use function is_a;
  */
 class InstalledPackagesScoperTest extends TestCase
 {
-    use ProphecyTrait;
-
     private const PREFIX = 'Foo';
 
     private AutoloadPrefixer $autoloadPrefixer;
 
     private Scoper $scopedWithoutDecoratedScoper;
 
-    /**
-     * @var ObjectProphecy<Scoper>
-     */
-    private ObjectProphecy $decoratedScoperProphecy;
-
-    private Scoper $decoratedScoper;
+    private ScoperStub $decoratedScoper;
 
     protected function setUp(): void
     {
@@ -62,7 +56,6 @@ class InstalledPackagesScoperTest extends TestCase
             $this->autoloadPrefixer,
         );
 
-        $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = new ScoperStub();
     }
 
@@ -76,9 +69,11 @@ class InstalledPackagesScoperTest extends TestCase
         $filePath = 'file.php';
         $fileContents = '';
 
-        $this->decoratedScoperProphecy
-            ->scope($filePath, $fileContents)
-            ->willReturn($expected = 'Scoped content');
+        $this->decoratedScoper->addConfig(
+            $filePath,
+            $fileContents,
+            $expected = 'Scoped content',
+        );
 
         $scoper = new InstalledPackagesScoper(
             $this->decoratedScoper,
@@ -88,10 +83,6 @@ class InstalledPackagesScoperTest extends TestCase
         $actual = $scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
-
-        $this->decoratedScoperProphecy
-            ->scope(Argument::cetera())
-            ->shouldHaveBeenCalledTimes(1);
     }
 
     /**

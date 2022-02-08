@@ -28,8 +28,6 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  */
 class InspectSymbolCommandIntegrationTest extends FileSystemTestCase
 {
-    private const FIXTURE_PATH = __DIR__.'/../../../fixtures/inspection-symbol';
-
     private const STATIC_CONTENT = <<<'EOL'
 
     Internal (configured via the `excluded-*` settings) are treated as PHP native symbols, i.e. will remain untouched.

@@ -36,6 +36,8 @@ use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @coversNothing
+ *
+ * @group integration
  */
 class AppIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 {
