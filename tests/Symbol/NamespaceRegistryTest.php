@@ -82,6 +82,7 @@ class NamespaceRegistryTest extends TestCase
 
     private static function provideNamespaceNames(): iterable
     {
+        // Global namespace
         yield 'no registered namespace; symbol belonging to global namespace' => [
             [],
             'Acme',
@@ -136,6 +137,7 @@ class NamespaceRegistryTest extends TestCase
             true,
         ];
 
+        // One level namespace namespaced symbol
         yield 'two level namespace name; symbol belonging to the parent namespace' => [
             ['PHPUnit\Framework'],
             'PHPUnit\TestCase',
@@ -156,6 +158,41 @@ class NamespaceRegistryTest extends TestCase
 
         yield 'two level namespace name; symbol belonging to a sub-namespace (different case)' => [
             ['PHPUnit\Framework'],
+            'PHPUNIT\FRAMEWORK\TEST\TestCase',
+            true,
+        ];
+
+        // Two level namespace namespaced symbol
+        yield 'three level namespace name; symbol belonging to the parent namespace' => [
+            ['PHPUnit\TestCase\Framework'],
+            'PHPUnit\TestCase\TestCase',
+            false,
+        ];
+
+        yield 'three level namespace name; symbol belonging to the namespace' => [
+            ['PHPUnit\Framework\TestCase'],
+            'PHPUnit\Framework\TestCase\TestCase',
+            true,
+        ];
+
+        yield 'three level namespace name; symbol belonging to a sub-namespace' => [
+            ['PHPUnit\Framework\TestCase'],
+            'PHPUnit\Framework\TestCase\Test\TestCase',
+            true,
+        ];
+
+        yield 'three level namespace name; symbol belonging to a sub-namespace (different case)' => [
+            ['PHPUnit\Framework\TestCase'],
+            'PHPUNIT\FRAMEWORK\TESTCASE\TEST\TestCase',
+            true,
+        ];
+
+        // Misc
+        yield 'multiple names: at least one matching' => [
+            [
+                'Acme\Framework',
+                'PHPUnit\Framework',
+            ],
             'PHPUNIT\FRAMEWORK\TEST\TestCase',
             true,
         ];

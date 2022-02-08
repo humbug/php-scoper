@@ -153,7 +153,7 @@ return [
             \foo('Symfony\\Component\\Yaml\\Ya_1');
             \foo('\\Symfony\\Component\\Yaml\\Ya_1');
             \foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-            \foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+            \foo('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1');
             \foo('DateTime');
             \foo('Swift');
             \foo(['DateTime', 'autoload']);

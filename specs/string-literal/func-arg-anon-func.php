@@ -236,7 +236,7 @@ return [
             })();
             (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
             })();
-            (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+            (function ($x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
             })();
             (function ($x = 'DateTime') {
             })();
