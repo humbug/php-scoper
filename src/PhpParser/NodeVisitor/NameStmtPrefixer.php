@@ -29,6 +29,7 @@ use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\IntersectionType;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\NullableType;
@@ -43,6 +44,7 @@ use PhpParser\Node\Stmt\TraitUse;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Alias;
 use PhpParser\Node\Stmt\TraitUseAdaptation\Precedence;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\Node\UnionType;
 use PhpParser\NodeVisitorAbstract;
 use function in_array;
 use function strtolower;
@@ -84,6 +86,8 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         StaticCall::class,
         StaticPropertyFetch::class,
         TraitUse::class,
+        UnionType::class,
+        IntersectionType::class,
     ];
 
     private string $prefix;
