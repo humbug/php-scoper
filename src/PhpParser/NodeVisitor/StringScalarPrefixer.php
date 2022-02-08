@@ -150,7 +150,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         // If belongs to the global namespace then we cannot differentiate the
         // value from a symbol and a regular string hence we leave it alone
-        return self::belongsToTheGlobalNamespace($string)
+        return $this->belongsToTheGlobalNamespace($string)
             ? $string
             : $this->createPrefixedString($string);
     }
@@ -215,7 +215,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         if (!$isConstantNode) {
             if ('define' === $functionName
-                && self::belongsToTheGlobalNamespace($string)
+                && $this->belongsToTheGlobalNamespace($string)
             ) {
                 return $string;
             }
@@ -330,15 +330,14 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function createPrefixedStringIfDoesNotBelongToGlobalNamespace(String_ $string): String_
     {
         // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
-        return self::belongsToTheGlobalNamespace($string)
+        return $this->belongsToTheGlobalNamespace($string)
             ? $string
             : $this->createPrefixedString($string);
     }
 
-    private static function belongsToTheGlobalNamespace(String_ $string): bool
+    private function belongsToTheGlobalNamespace(String_ $string): bool
     {
-        return '' === $string->value
-            || 0 === (int) strpos($string->value, '\\', 1);
+        return $this->enrichedReflector->belongsToGlobalNamespace($string->value);
     }
 
     private function createPrefixedString(String_ $previous): String_

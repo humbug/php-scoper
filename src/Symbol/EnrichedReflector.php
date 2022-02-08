@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
+use function ltrim;
+use function str_contains;
 use function strpos;
 
 /**
@@ -132,6 +134,7 @@ final class EnrichedReflector
 
     public function isExposedConstantFromGlobalNamespace(string $constantName): bool
     {
+        // TODO: leverage belongsToGlobalNamespace
         return $this->symbolsConfiguration->shouldExposeGlobalConstants() && !strpos($constantName, '\\');
     }
 
@@ -144,11 +147,21 @@ final class EnrichedReflector
 
     private function _isExposedFunctionFromGlobalNamespace(string $functionName): bool
     {
+        // TODO: leverage belongsToGlobalNamespace
         return $this->symbolsConfiguration->shouldExposeGlobalFunctions() && !strpos($functionName, '\\');
     }
 
     public function _isExposedClassFromGlobalNamespace(string $className): bool
     {
+        // TODO: leverage belongsToGlobalNamespace
         return $this->symbolsConfiguration->shouldExposeGlobalClasses() && !strpos($className, '\\');
+    }
+
+    public function belongsToGlobalNamespace(string $symbolName): bool
+    {
+        return !str_contains(
+            ltrim($symbolName, '\\'),
+            '\\',
+        );
     }
 }
