@@ -34,10 +34,9 @@ final class TemplateFileTest extends TestCase
     {
         $template = file_get_contents(self::TEMPLATE_PATH);
 
-        if (preg_match_all('/\'(.*?)\' => .*/', $template, $matches)) {
-            return $matches[1];
-        }
+        return preg_match_all('/\'(.*?)\' => .*/', $template, $matches)
+            ? $matches[1]
+            : [];
 
-        return [];
     }
 }

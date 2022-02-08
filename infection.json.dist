@@ -10,6 +10,7 @@
     },
     "mutators": {
         "@default": true,
-        "PublicVisibility": false
+        "PublicVisibility": false,
+        "UnwrapArrayUnique": false
     }
 }
