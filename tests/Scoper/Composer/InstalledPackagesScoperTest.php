@@ -21,6 +21,7 @@ use Humbug\PhpScoper\Scoper\ScoperStub;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -37,9 +38,9 @@ class InstalledPackagesScoperTest extends TestCase
 
     private AutoloadPrefixer $autoloadPrefixer;
 
-    private Scoper $scopedWithoutDecoratedScoper;
-
     private ScoperStub $decoratedScoper;
+
+    private Scoper $scoper;
 
     protected function setUp(): void
     {
@@ -51,12 +52,12 @@ class InstalledPackagesScoperTest extends TestCase
             ),
         );
 
-        $this->scopedWithoutDecoratedScoper = new InstalledPackagesScoper(
-            new FakeScoper(),
+        $this->decoratedScoper = new ScoperStub();
+
+        $this->scoper = new InstalledPackagesScoper(
+            $this->decoratedScoper,
             $this->autoloadPrefixer,
         );
-
-        $this->decoratedScoper = new ScoperStub();
     }
 
     public function test_it_is_a_Scoper(): void
@@ -75,12 +76,7 @@ class InstalledPackagesScoperTest extends TestCase
             $expected = 'Scoped content',
         );
 
-        $scoper = new InstalledPackagesScoper(
-            $this->decoratedScoper,
-            $this->autoloadPrefixer,
-        );
-
-        $actual = $scoper->scope($filePath, $fileContents);
+        $actual = $this->scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
     }
@@ -95,7 +91,7 @@ class InstalledPackagesScoperTest extends TestCase
     ): void
     {
         $scoper = new InstalledPackagesScoper(
-            new FakeScoper(),
+            $this->decoratedScoper,
             new AutoloadPrefixer(
                 self::PREFIX,
                 $enrichedReflector,
@@ -110,12 +106,18 @@ class InstalledPackagesScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
+    /**
+     * @dataProvider provideInvalidComposerFiles
+     */
     public function test_it_requires_valid_composer2_files(
         string $contents,
         string $expectedExceptionMessage
     ): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
 
+        $this->scoper->scope('composer/installed.json', $contents);
     }
 
     public static function provideInstalledPackagesFiles(): iterable
@@ -515,6 +517,32 @@ class InstalledPackagesScoperTest extends TestCase
                 ]
             }
             JSON,
+        ];
+    }
+
+    public static function provideInvalidComposerFiles(): iterable
+    {
+        yield 'no packages entry' => [
+            <<<'JSON'
+            {}
+            JSON,
+            'Expected the decoded JSON to contain the list of installed packages',
+        ];
+
+        yield 'packages entry is not an array' => [
+            <<<'JSON'
+            {
+                "packages": "Foo"
+            }
+            JSON,
+            'Expected the decoded JSON to contain the list of installed packages',
+        ];
+
+        yield 'invalid installed.json' => [
+            <<<'JSON'
+            []
+            JSON,
+            'Expected the decoded JSON to be an stdClass instance, got "array" instead',
         ];
     }
 }
