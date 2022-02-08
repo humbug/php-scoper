@@ -59,6 +59,30 @@ return [
     
     PHP,
 
+    'string with invalid PHP' => <<<'PHP'
+    <?php
+    
+    $x = '
+    <?php
+    
+    private foo() {}
+    
+    ';
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    $x = '
+    <?php
+    
+    private foo() {}
+    
+    ';
+    
+    PHP,
+
     'Nowdoc' => <<<'PHP'
     <?php
     
@@ -68,13 +92,6 @@ return [
     use Acme\Foo;
     
     PHP_NOWDOC;
-
-    $y = <<<'PHP_NOWDOC'
-    <?php
-    
-    use Acme\Foo;
-    PHP_NOWDOC;
-
     ----
     <?php
 
@@ -87,13 +104,25 @@ return [
     
     use Humbug\Acme\Foo;
     
-    PHP_NOWDOC;
-    $y = <<<'PHP_NOWDOC'
+    PHP_NOWDOC
+    ;
+
+    PHP,
+
+    'Nowdoc with non PHP' => <<<'PHP'
     <?php
     
+    $x = <<<'PHP_NOWDOC'
+    Not.php
+    PHP_NOWDOC;
+
+    ----
+    <?php
+
     namespace Humbug;
-    
-    use Humbug\Acme\Foo;
+
+    $x = <<<'PHP_NOWDOC'
+    Not.php
     PHP_NOWDOC
     ;
 
@@ -103,7 +132,9 @@ return [
     <?php
     
     $x = <<<'PHP_NOWDOC'
-    Not.php
+    <?php
+
+    static foo() {}
     PHP_NOWDOC;
 
     ----
@@ -112,26 +143,9 @@ return [
     namespace Humbug;
 
     $x = <<<'PHP_NOWDOC'
-    Not.php
-    PHP_NOWDOC
-    ;
-
-    PHP,
-
-    'Partial PHP nowdoc' => <<<'PHP'
     <?php
     
-    $x = <<<'PHP_NOWDOC'
-    use Acme\Foo;
-    PHP_NOWDOC;
-
-    ----
-    <?php
-
-    namespace Humbug;
-
-    $x = <<<'PHP_NOWDOC'
-    use Acme\Foo;
+    static foo() {}
     PHP_NOWDOC
     ;
 
@@ -152,10 +166,9 @@ return [
     PHP_NOWDOC
     ;
     
-    PHP
-        ,
+    PHP,
     
-        'Heredoc' => <<<'PHP'
+    'Heredoc' => <<<'PHP'
     <?php
     
     $x = <<<PHP_HEREDOC

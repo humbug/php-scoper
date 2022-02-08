@@ -8,7 +8,6 @@ use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Patcher\FakePatcher;
 use Humbug\PhpScoper\PhpParser\FakeParser;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
