@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 use ArrayIterator;
 use Countable;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -84,8 +85,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     private function getNodeNamespaceName(Node $node): ?Name
     {
         if (!ParentNodeAppender::hasParent($node)) {
-            throw new InvalidArgumentException('Unexpected case. Please report it.');
-            //return null;
+            throw UnexpectedParsingScenario::create();
         }
 
         $parentNode = ParentNodeAppender::getParent($node);

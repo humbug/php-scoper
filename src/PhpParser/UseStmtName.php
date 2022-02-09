@@ -8,7 +8,6 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use UnexpectedValueException;
 use function count;
 use function get_class;
 use function Safe\sprintf;
@@ -76,7 +75,7 @@ final class UseStmtName
         }
 
         // @codeCoverageIgnoreStart
-        throw new UnexpectedValueException(
+        throw new UnexpectedParsingScenario(
             sprintf(
                 'Unexpected use statement name parent "%s"',
                 get_class($use),
@@ -94,7 +93,7 @@ final class UseStmtName
         }
 
         // @codeCoverageIgnoreStart
-        throw new UnexpectedValueException(
+        throw new UnexpectedParsingScenario(
             sprintf(
                 'Unexpected UseUse parent "%s"',
                 get_class($useParent),

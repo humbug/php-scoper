@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use InvalidArgumentException;
 use PhpParser\Node;
@@ -88,8 +89,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         );
 
         if (null === $prefixedName) {
-            throw new InvalidArgumentException('Unexpected case. Please report it.');
-            //return;
+            throw UnexpectedParsingScenario::create();
         }
 
         // Unlike the new (prefixed name), the previous name will not be

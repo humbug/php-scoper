@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use InvalidArgumentException;
 use PhpParser\Node;
@@ -182,8 +183,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $class = $newNode->class;
 
         if (!($class instanceof Name)) {
-            throw new InvalidArgumentException('Unexpected case. Please report it.');
-            // return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
+            throw UnexpectedParsingScenario::create();
         }
 
         if (in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
@@ -311,15 +311,13 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $parent = ParentNodeAppender::getParent($node);
 
         if (!($parent instanceof Arg)) {
-            throw new InvalidArgumentException('Unexpected case. Please report it');
-            // return false;
+            throw UnexpectedParsingScenario::create();
         }
 
         $argParent = ParentNodeAppender::getParent($parent);
 
         if (!($argParent instanceof FuncCall)) {
-            throw new InvalidArgumentException('Unexpected case. Please report it');
-            // return false;
+            throw UnexpectedParsingScenario::create();
         }
 
         if (!($argParent->name instanceof Name)
