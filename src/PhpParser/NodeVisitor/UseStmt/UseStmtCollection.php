@@ -18,6 +18,7 @@ use ArrayIterator;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\OriginalNameResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use InvalidArgumentException;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
@@ -81,7 +82,8 @@ final class UseStmtCollection implements IteratorAggregate
             // The current node can either be the class like name or one of its elements, e.g. extends or implements.
             // In the first case, the node was original an Identifier.
 
-            return null;
+            throw new InvalidArgumentException('Unexpected case. Please report it.');
+            //return null;
         }
 
         $isFunctionName = self::isFunctionName($node, $parentNode);
@@ -172,7 +174,8 @@ final class UseStmtCollection implements IteratorAggregate
     private static function isFunctionName(Name $node, ?Node $parentNode): bool
     {
         if (null === $parentNode) {
-            return false;
+            throw new InvalidArgumentException('Unexpected case. Please report it.');
+            // return false;
         }
 
         if ($parentNode instanceof FuncCall) {

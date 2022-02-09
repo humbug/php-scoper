@@ -52,27 +52,8 @@ final class UseStmtName
      */
     public function getUseStmtAliasAndType(): array
     {
-        $use = ParentNodeAppender::getParent($this->name);
-
-        if (!($use instanceof UseUse)) {
-            throw new UnexpectedValueException(
-                sprintf(
-                    'Unexpected use statement name parent "%s"',
-                    get_class($use),
-                ),
-            );
-        }
-
-        $useParent = ParentNodeAppender::getParent($use);
-
-        if (!($useParent instanceof Use_)) {
-            throw new UnexpectedValueException(
-                sprintf(
-                    'Unexpected UseUse parent "%s"',
-                    get_class($useParent),
-                ),
-            );
-        }
+        $use = self::getUseNode($this->name);
+        $useParent = self::getUseParentNode($use);
 
         $alias = $use->alias;
 
@@ -84,5 +65,41 @@ final class UseStmtName
             $alias,
             $useParent->type,
         ];
+    }
+
+    private static function getUseNode(Name $name): UseUse
+    {
+        $use = ParentNodeAppender::getParent($name);
+
+        if ($use instanceof UseUse) {
+            return $use;
+        }
+
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedValueException(
+            sprintf(
+                'Unexpected use statement name parent "%s"',
+                get_class($use),
+            ),
+        );
+        // @codeCoverageIgnoreEnd
+    }
+
+    private static function getUseParentNode(UseUse $use): Use_
+    {
+        $useParent = ParentNodeAppender::getParent($use);
+
+        if ($useParent instanceof Use_) {
+            return $useParent;
+        }
+
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedValueException(
+            sprintf(
+                'Unexpected UseUse parent "%s"',
+                get_class($useParent),
+            ),
+        );
+        // @codeCoverageIgnoreEnd
     }
 }

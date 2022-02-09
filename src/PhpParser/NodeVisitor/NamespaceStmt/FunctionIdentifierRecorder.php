@@ -19,6 +19,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use InvalidArgumentException;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -89,7 +90,8 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return $this->retrieveResolvedNameForString($node);
         }
 
-        return null;
+        throw new InvalidArgumentException('Unexpected case. Please report it.');
+        //return null;
     }
 
     private function retrieveResolvedNameForIdentifier(Identifier $identifier): ?FullyQualified

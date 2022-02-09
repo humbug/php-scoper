@@ -18,6 +18,7 @@ use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use InvalidArgumentException;
 use PhpParser\Node;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name\FullyQualified;
@@ -71,7 +72,8 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         $resolvedName = $this->identifierResolver->resolveIdentifier($node);
 
         if (!($resolvedName instanceof FullyQualified)) {
-            return $node;
+            throw new InvalidArgumentException('Unexpected case. Please report it.');
+            // return $node;
         }
 
         if ($this->enrichedReflector->isExposedClass((string) $resolvedName)) {
