@@ -59,6 +59,9 @@ use function strpos;
 use const PHP_EOL;
 use const PHP_VERSION_ID;
 
+/**
+ * @group integration
+ */
 class PhpScoperSpecTest extends TestCase
 {
     private const SPECS_PATH = __DIR__.'/../../specs';

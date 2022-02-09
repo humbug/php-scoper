@@ -1,20 +1,28 @@
 {
-    "timeout": 10,
+    "$schema": "fixtures/set020-infection/vendor/infection/infection/resources/schema.json",
+
+    "timeout": 1,
     "source": {
         "directories": [
             "../../src"
+        ],
+        "excludes": [
+            "../../src/PhpParser"
         ]
     },
     "phpUnit": {
         "configDir": "../../",
         "customPath": "../../vendor/phpunit/phpunit/phpunit"
     },
+    "initialTestsPhpOptions": "--group default",
+    "testFrameworkOptions": "--group default",
     "bootstrap": "../../vendor/autoload.php",
     "logs": {
-        "text": "../../build\/infection-log.txt"
+        "text": "../../infection-log.txt"
     },
     "mutators": {
         "@default": true,
-        "PublicVisibility": false
+        "PublicVisibility": false,
+        "UnwrapArrayUnique": false
     }
 }

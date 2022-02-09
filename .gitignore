@@ -1,7 +1,6 @@
 /bin/
 !/bin/php-scoper
 !/bin/check-composer-root-version.php
-!/bin/check-composer-root-version.php
 !/bin/root-version.php
 /.box_dump/
 /box.json
@@ -15,7 +14,8 @@
 /fixtures/set030/composer.lock
 /fixtures/set030/expected-output
 /fixtures/set031-extension-symbol/expected-output
-.phpunit*
+/infection-log.txt
+/.phpunit*
 /vendor/
 /vendor-bin/*/vendor/
 /vendor-bin/*/bin/
