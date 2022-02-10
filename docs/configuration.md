@@ -27,8 +27,8 @@ return [
     'prefix' => null,           // string|null
     'finders' => [],            // list<Finder>
     'patchers' => [],           // list<callable(string $filePath, string $prefix, string $contents): string>
-    'files-whitelist' => [],    // list<string>
-  
+
+    'exclude-files' => [],    // list<string>
     'exclude-namespaces' => [], // list<string|regex>
     'exclude-constants' => [],  // list<string|regex>
     'exclude-classes' => [],    // list<string|regex>
