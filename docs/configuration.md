@@ -171,7 +171,7 @@ return [
 
 ### Excluded files
 
-For the files listed in `files-whitelist`, their content will be left
+For the files listed in `exclude-files`, their content will be left
 untouched during the scoping process.
 
 
