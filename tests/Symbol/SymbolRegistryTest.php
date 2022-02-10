@@ -55,6 +55,64 @@ class SymbolRegistryTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
+    /**
+     * @dataProvider provideNamesAndRegexes
+     *
+     * @param string[] $regexes
+     * @param string[] $names
+     * @param list<string> $regexes
+     * @param list<string> $names
+     */
+    public function test_it_optimizes_the_registered_names_and_regexes(
+        array $names,
+        array $regexes,
+        array $expectedNames,
+        array $expectedRegexes
+    ): void
+    {
+        $registry = SymbolRegistry::create(
+            $names,
+            $regexes,
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $registry,
+            $expectedNames,
+            $expectedRegexes,
+        );
+    }
+
+    public function test_it_can_create_an_augmented_instance(): void
+    {
+        $registry = SymbolRegistry::create(
+            ['Acme\Foo'],
+            ['/^Acme\\\\Foo$/'],
+        );
+
+        $augmentedRegistry = $registry->withAdditionalSymbols(
+            ['Acme\Bar'],
+            ['/^Acme\\\\Bar/'],
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $registry,
+            ['acme\foo'],
+            ['/^Acme\\\\Foo$/'],
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $augmentedRegistry,
+            [
+                'acme\foo',
+                'acme\bar',
+            ],
+            [
+                '/^Acme\\\\Foo$/',
+                '/^Acme\\\\Bar/',
+            ],
+        );
+    }
+
     public static function provideSymbols(): iterable
     {
         foreach (self::provideNames() as $title => [$names, $symbol, $expected]) {
@@ -64,6 +122,13 @@ class SymbolRegistryTest extends TestCase
                 $symbol,
                 $expected,
             ];
+
+            yield '[(polluted) name only] '.$title => [
+                $names,
+                [],
+                '\\'.$symbol,
+                $expected,
+            ];
         }
 
         foreach (self::provideRegex() as $title => [$regexes, $symbol, $expected]) {
@@ -71,6 +136,13 @@ class SymbolRegistryTest extends TestCase
                 [],
                 $regexes,
                 $symbol,
+                $expected,
+            ];
+
+            yield '[(polluted) regex only] '.$title => [
+                [],
+                $regexes,
+                '\\'.$symbol,
                 $expected,
             ];
         }
@@ -222,6 +294,32 @@ class SymbolRegistryTest extends TestCase
             ['/^Acme$/i'],
             'Acme',
             true,
+        ];
+    }
+
+    public static function provideNamesAndRegexes(): iterable
+    {
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+            ['acme\bar', 'acme\foo'],
+            ['/^Acme$/', '/^Ecma/'],
+        ];
+
+        yield 'duplicates' => [
+            [
+                'Acme\Foo',
+                'Acme\Foo',
+                'ACME\FOO',
+                '\Acme\Foo',
+                'Acme\Foo\\',
+            ],
+            [
+                '/^Acme$/',
+                '/^Acme$/',
+            ],
+            ['acme\foo'],
+            ['/^Acme$/'],
         ];
     }
 

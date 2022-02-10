@@ -30,7 +30,7 @@ class NamespaceRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideNamespacedSymbol
+     * @dataProvider provideSymbol
      *
      * @param string[] $namespaceRegexes
      * @param string[] $namespaceNames
@@ -55,7 +55,57 @@ class NamespaceRegistryTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public static function provideNamespacedSymbol(): iterable
+    /**
+     * @dataProvider provideNamespaceSymbol
+     */
+    public function test_it_can_tell_if_a_namespace_is_a_registered_namespace(
+        array $namespaceNames,
+        array $namespaceRegexes,
+        string $namespaceName,
+        bool $expected
+    ): void
+    {
+        // Sanity check
+        $this->validateRegexes($namespaceRegexes);
+
+        $registeredNamespaces = NamespaceRegistry::create(
+            $namespaceNames,
+            $namespaceRegexes,
+        );
+
+        $actual = $registeredNamespaces->isRegisteredNamespace($namespaceName);
+
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @dataProvider provideNamesAndRegexes
+     *
+     * @param string[] $regexes
+     * @param string[] $names
+     * @param list<string> $regexes
+     * @param list<string> $names
+     */
+    public function test_it_optimizes_the_registered_names_and_regexes(
+        array $names,
+        array $regexes,
+        array $expectedNames,
+        array $expectedRegexes
+    ): void
+    {
+        $registry = NamespaceRegistry::create(
+            $names,
+            $regexes,
+        );
+
+        NamespaceRegistryAssertions::assertStateIs(
+            $registry,
+            $expectedNames,
+            $expectedRegexes,
+        );
+    }
+
+    public static function provideSymbol(): iterable
     {
         foreach (self::provideNamespaceNames() as $title => [$namespaceNames, $symbol, $expected]) {
             yield '[name only] '.$title => [
@@ -312,13 +362,49 @@ class NamespaceRegistryTest extends TestCase
         ];
     }
 
-    public static function provideNamespaces(): iterable
+    public static function provideNamespaceSymbol(): iterable
     {
-        yield [
+        yield 'namespace matches regex' => [
             [],
-            [],
-            '',
+            ['/^Acme/'],
+            'Acme',
             true,
+        ];
+
+        yield '(unormalized) namespace matches regex' => [
+            [],
+            ['/^Acme/'],
+            '\Acme',
+            true,
+        ];
+
+        // We are not interested in much more tests here as the targeted code is
+        // mostly ::covered by test_it_can_tell_if_a_symbol_belongs_to_a_registered_namespace()
+    }
+
+    public static function provideNamesAndRegexes(): iterable
+    {
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+            ['acme\bar', 'acme\foo'],
+            ['/^Acme$/', '/^Ecma/'],
+        ];
+
+        yield 'duplicates' => [
+            [
+                'Acme\Foo',
+                'Acme\Foo',
+                'ACME\FOO',
+                '\Acme\Foo',
+                'Acme\Foo\\',
+            ],
+            [
+                '/^Acme$/',
+                '/^Acme$/',
+            ],
+            ['acme\foo'],
+            ['/^Acme$/'],
         ];
     }
 

@@ -1,7 +1,7 @@
 {
     "$schema": "vendor/infection/infection/resources/schema.json",
 
-    "timeout": 1,
+    "timeout": 100,
     "source": {
         "directories": [
             "../../src"
@@ -17,7 +17,6 @@
     },
     "mutators": {
         "@default": true,
-        "PublicVisibility": false,
-        "UnwrapArrayUnique": false
+        "PublicVisibility": false
     }
 }

@@ -8,6 +8,7 @@ use function array_filter;
 use function array_map;
 use function array_pop;
 use function array_unique;
+use function array_values;
 use function count;
 use function explode;
 use function implode;
@@ -15,6 +16,7 @@ use function ltrim;
 use function Safe\preg_match;
 use function str_contains;
 use function strtolower;
+use function trim;
 use const SORT_STRING;
 
 final class NamespaceRegistry
@@ -41,7 +43,10 @@ final class NamespaceRegistry
     ): self {
         return new self(
             array_unique(
-                array_map('strtolower', $namespaceNames),
+                array_map(
+                    static fn (string $namespaceName) => strtolower(trim($namespaceName, '\\')),
+                    $namespaceNames,
+                ),
                 SORT_STRING,
             ),
             array_unique($namespaceRegexes, SORT_STRING),
@@ -127,10 +132,7 @@ final class NamespaceRegistry
 
     private static function extractNameNamespace(string $name): string
     {
-        $nameParts = explode(
-            '\\',
-            ltrim($name, '\\'),
-        );
+        $nameParts = explode('\\', $name);
 
         array_pop($nameParts);
 
