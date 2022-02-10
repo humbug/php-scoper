@@ -6,6 +6,8 @@ namespace Humbug\PhpScoper\Symbol;
 
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
+use function array_is_list;
+use function var_export;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolsRegistry
@@ -383,4 +385,24 @@ final class SymbolsRegistryTest extends TestCase
 
         return $registry;
     }
+
+    public static function assertEqualsCanonicalizing(
+        $expected,
+        $actual,
+        string $message = ''
+    ): void {
+        // TODO: use assertArrayIsList() assertion once available
+        // https://github.com/sebastianbergmann/phpunit/commit/71f507496aa1a483b32d9257d6f3477e6e5c091d
+        self::assertTrue(
+            array_is_list($actual),
+            var_export($actual, true),
+        );
+
+        parent::assertEqualsCanonicalizing(
+            $expected,
+            $actual,
+            $message
+        );
+    }
+
 }
