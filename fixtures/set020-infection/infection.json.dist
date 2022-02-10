@@ -1,5 +1,5 @@
 {
-    "$schema": "fixtures/set020-infection/vendor/infection/infection/resources/schema.json",
+    "$schema": "vendor/infection/infection/resources/schema.json",
 
     "timeout": 1,
     "source": {
@@ -14,8 +14,7 @@
         "configDir": "../../",
         "customPath": "../../vendor/phpunit/phpunit/phpunit"
     },
-    "initialTestsPhpOptions": "--group default",
-    "testFrameworkOptions": "--group default",
+    "testFrameworkOptions": "--group=default",
     "bootstrap": "../../vendor/autoload.php",
     "logs": {
         "text": "../../infection-log.txt"
