@@ -28,6 +28,7 @@ $polyfillsStubs = array_map(
 
 return [
     'exclude-namespaces' => [
+        'Composer',
         'Symfony\Polyfill'
     ],
     'exclude-constants' => [
