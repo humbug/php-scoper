@@ -7,7 +7,6 @@
             "../../src"
         ]
     },
-    "testFrameworkOptions": "exclude-group=integration",
     "phpUnit": {
         "configDir": "../..",
         "customPath": "../../vendor/phpunit/phpunit/phpunit"
