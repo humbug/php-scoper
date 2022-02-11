@@ -1,5 +1,5 @@
 {
-    "$schema": "vendor/infection/infection/resources/schema.json",
+    "$schema": "fixtures/set020-infection/vendor/infection/infection/resources/schema.json",
 
     "timeout": 100,
     "source": {
@@ -17,6 +17,11 @@
     },
     "mutators": {
         "@default": true,
-        "PublicVisibility": false
+        "PublicVisibility": false,
+        "CastString": {
+            "ignoreSourceCodeByRegex": [
+                ".*return \\(string\\) preg_replace.+"
+            ]
+        }
     }
 }

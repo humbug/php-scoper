@@ -68,7 +68,34 @@ class ComposerPatcherTest extends TestCase
 
     private static function provideCodeSamples(): iterable
     {
-        yield [
+        yield 'nominal' => [
+            <<<'PHP'
+            function load(
+                $rootPackageClassName = 'Composer\Package\RootPackage',
+                $escapedRootPackageClassName = 'Composer\\Package\\RootPackage',
+                $rootPackageSubClassName = 'Composer\Package\RootPackage\Foo',
+                $rootPackageMessage = 'the class Composer\Package\RootPackage mentioned somewhere',
+                $completePackageClassName = 'Composer\Package\CompletePackage',
+                $escapedCompletePackageClassName = 'Composer\\Package\\CompletePackage',
+                $completePackageSubClassName = 'Composer\Package\CompletePackage\Foo',
+                $completePackageMessage = 'the class Composer\Package\CompletePackage mentioned somewhere',
+            )
+            PHP,
+            <<<'PHP'
+            function load(
+                $rootPackageClassName = 'Humbug\Composer\Package\RootPackage',
+                $escapedRootPackageClassName = 'Humbug\\Composer\\Package\\RootPackage',
+                $rootPackageSubClassName = 'Composer\Package\RootPackage\Foo',
+                $rootPackageMessage = 'the class Humbug\Composer\Package\RootPackage mentioned somewhere',
+                $completePackageClassName = 'Humbug\Composer\Package\CompletePackage',
+                $escapedCompletePackageClassName = 'Humbug\\Composer\\Package\\CompletePackage',
+                $completePackageSubClassName = 'Composer\Package\CompletePackage\Foo',
+                $completePackageMessage = 'the class Humbug\Composer\Package\CompletePackage mentioned somewhere',
+            )
+            PHP,
+        ];
+        
+        yield 'Composer code excerpt' => [
             <<<'PHP'
             <?php
             

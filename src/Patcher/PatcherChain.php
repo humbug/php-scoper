@@ -23,7 +23,7 @@ final class PatcherChain implements Patcher
 
     public function __invoke(string $filePath, string $prefix, string $contents): string
     {
-        return (string) array_reduce(
+        return array_reduce(
             $this->patchers,
             static fn (string $contents, callable $patcher) => $patcher($filePath, $prefix, $contents),
             $contents,
