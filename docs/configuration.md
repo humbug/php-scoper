@@ -27,8 +27,8 @@ return [
     'prefix' => null,           // string|null
     'finders' => [],            // list<Finder>
     'patchers' => [],           // list<callable(string $filePath, string $prefix, string $contents): string>
-    'files-whitelist' => [],    // list<string>
-  
+
+    'exclude-files' => [],      // list<string>
     'exclude-namespaces' => [], // list<string|regex>
     'exclude-constants' => [],  // list<string|regex>
     'exclude-classes' => [],    // list<string|regex>
@@ -171,7 +171,7 @@ return [
 
 ### Excluded files
 
-For the files listed in `files-whitelist`, their content will be left
+For the files listed in `exclude-files`, their content will be left
 untouched during the scoping process.
 
 
