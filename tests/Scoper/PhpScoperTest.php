@@ -36,6 +36,8 @@ class PhpScoperTest extends TestCase
 {
     use ProphecyTrait;
 
+    private const PREFIX = 'Humbug';
+
     private Scoper $scoper;
 
     /**
@@ -59,6 +61,8 @@ class PhpScoperTest extends TestCase
 
     private Parser $parser;
 
+    private SymbolsRegistry $symbolsRegistry;
+
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -70,6 +74,8 @@ class PhpScoperTest extends TestCase
         $this->parserProphecy = $this->prophesize(Parser::class);
         $this->parser = $this->parserProphecy->reveal();
 
+        $this->symbolsRegistry = new SymbolsRegistry();
+
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
@@ -78,9 +84,11 @@ class PhpScoperTest extends TestCase
                     Reflector::createEmpty(),
                     SymbolsConfiguration::create(),
                 ),
+                self::PREFIX,
+                $this->symbolsRegistry,
             ),
-            'Humbug',
-            new SymbolsRegistry(),
+            self::PREFIX,
+            $this->symbolsRegistry,
         );
     }
 
@@ -117,7 +125,6 @@ class PhpScoperTest extends TestCase
     {
         $filePath = 'file.yaml';
         $fileContents = '';
-        $prefix = 'Humbug';
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents)
@@ -133,8 +140,8 @@ class PhpScoperTest extends TestCase
             new FakeParser(),
             $this->decoratedScoper,
             $this->traverserFactory,
-            $prefix,
-            new SymbolsRegistry(),
+            self::PREFIX,
+            $this->symbolsRegistry,
         );
 
         $actual = $scoper->scope($filePath, $fileContents);
@@ -198,7 +205,6 @@ class PhpScoperTest extends TestCase
 
     public function test_does_not_scope_a_non_PHP_executable_files(): void
     {
-        $prefix = 'Humbug';
         $filePath = 'hello';
 
         $contents = <<<'PHP'
@@ -222,8 +228,8 @@ class PhpScoperTest extends TestCase
             new FakeParser(),
             $this->decoratedScoper,
             $this->traverserFactory,
-            $prefix,
-            new SymbolsRegistry(),
+            self::PREFIX,
+            $this->symbolsRegistry,
         );
 
         $actual = $scoper->scope($filePath, $contents);
@@ -266,8 +272,6 @@ class PhpScoperTest extends TestCase
             'file2.php' => 'file2',
         ];
 
-        $prefix = 'Humbug';
-
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any())
             ->willReturn('Scoped content')
@@ -302,7 +306,7 @@ class PhpScoperTest extends TestCase
         $this->traverserFactoryProphecy
             ->create(
                 Argument::type(PhpScoper::class),
-                $prefix,
+                self::PREFIX,
                 Argument::that(
                     static function () use (&$i): bool {
                         ++$i;
@@ -316,7 +320,7 @@ class PhpScoperTest extends TestCase
         $this->traverserFactoryProphecy
             ->create(
                 Argument::type(PhpScoper::class),
-                $prefix,
+                self::PREFIX,
                 Argument::that(
                     static function () use (&$i): bool {
                         ++$i;
@@ -332,8 +336,8 @@ class PhpScoperTest extends TestCase
             $this->parser,
             new FakeScoper(),
             $this->traverserFactory,
-            $prefix,
-            new SymbolsRegistry(),
+            self::PREFIX,
+            $this->symbolsRegistry,
         );
 
         foreach ($files as $file => $contents) {

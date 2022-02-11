@@ -69,17 +69,13 @@ final class PhpScoper implements Scoper
     {
         $statements = $this->parser->parse($php);
 
-        $statements = $this->traverserFactory
-            ->create(
-                $this,
-                $this->prefix,
-                $this->symbolsRegistry,
-            )
+        $scopedStatements = $this->traverserFactory
+            ->create($this)
             ->traverse($statements);
 
         $prettyPrinter = new Standard();
 
-        return $prettyPrinter->prettyPrintFile($statements)."\n";
+        return $prettyPrinter->prettyPrintFile($scopedStatements)."\n";
     }
 
     private static function isPhpFile(string $filePath, string $contents): bool

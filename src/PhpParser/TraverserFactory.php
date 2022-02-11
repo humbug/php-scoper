@@ -30,17 +30,20 @@ use PhpParser\NodeVisitor\NameResolver;
 class TraverserFactory
 {
     private EnrichedReflector $reflector;
+    private string $prefix;
+    private SymbolsRegistry $symbolsRegistry;
 
-    public function __construct(EnrichedReflector $reflector)
-    {
-        $this->reflector = $reflector;
-    }
-
-    public function create(
-        PhpScoper $scoper,
+    public function __construct(
+        EnrichedReflector $reflector,
         string $prefix,
         SymbolsRegistry $symbolsRegistry
-    ): NodeTraverserInterface
+    ) {
+        $this->reflector = $reflector;
+        $this->prefix = $prefix;
+        $this->symbolsRegistry = $symbolsRegistry;
+    }
+
+    public function create(PhpScoper $scoper): NodeTraverserInterface
     {
         $traverser = new NodeTraverser();
 
@@ -62,7 +65,7 @@ class TraverserFactory
                 new NodeVisitor\IdentifierNameAppender($identifierResolver),
 
                 new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
-                    $prefix,
+                    $this->prefix,
                     $this->reflector,
                     $namespaceStatements,
                 ),
@@ -72,37 +75,37 @@ class TraverserFactory
                     $useStatements,
                 ),
                 new NodeVisitor\UseStmt\UseStmtPrefixer(
-                    $prefix,
+                    $this->prefix,
                     $this->reflector,
                 ),
 
                 new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
-                    $prefix,
+                    $this->prefix,
                     $identifierResolver,
-                    $symbolsRegistry,
+                    $this->symbolsRegistry,
                     $this->reflector,
                 ),
                 new NodeVisitor\ClassIdentifierRecorder(
-                    $prefix,
+                    $this->prefix,
                     $identifierResolver,
-                    $symbolsRegistry,
+                    $this->symbolsRegistry,
                     $this->reflector,
                 ),
                 new NodeVisitor\NameStmtPrefixer(
-                    $prefix,
+                    $this->prefix,
                     $namespaceStatements,
                     $useStatements,
                     $this->reflector,
                 ),
                 new NodeVisitor\StringScalarPrefixer(
-                    $prefix,
+                    $this->prefix,
                     $this->reflector,
                 ),
                 new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
                 new NodeVisitor\EvalPrefixer($stringNodePrefixer),
 
                 new NodeVisitor\ClassAliasStmtAppender(
-                    $prefix,
+                    $this->prefix,
                     $this->reflector,
                     $identifierResolver,
                 ),

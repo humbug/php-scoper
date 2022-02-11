@@ -45,18 +45,12 @@ class TraverserFactoryTest extends TestCase
                 Reflector::createEmpty(),
                 SymbolsConfiguration::create(),
             ),
+            $prefix,
+            $symbolsRegistry,
         );
 
-        $firstTraverser = $traverserFactory->create(
-            $phpScoper,
-            $prefix,
-            $symbolsRegistry,
-        );
-        $secondTraverser = $traverserFactory->create(
-            $phpScoper,
-            $prefix,
-            $symbolsRegistry,
-        );
+        $firstTraverser = $traverserFactory->create($phpScoper);
+        $secondTraverser = $traverserFactory->create($phpScoper);
 
         self::assertNotSame($firstTraverser, $secondTraverser);
     }

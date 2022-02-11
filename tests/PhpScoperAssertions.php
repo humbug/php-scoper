@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use PHPUnit\Framework\Assert;
+use function array_is_list;
+use function var_export;
 
 final class PhpScoperAssertions
 {
