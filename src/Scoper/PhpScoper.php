@@ -35,7 +35,6 @@ final class PhpScoper implements Scoper
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
     private Parser $parser;
-    private Lexer $lexer;
     private PrettyPrinterAbstract $printer;
     private Scoper $decoratedScoper;
     private TraverserFactory $traverserFactory;
@@ -44,7 +43,6 @@ final class PhpScoper implements Scoper
 
     public function __construct(
         Parser $parser,
-        Lexer $lexer,
         PrettyPrinterAbstract $printer,
         Scoper $decoratedScoper,
         TraverserFactory $traverserFactory,
@@ -52,7 +50,6 @@ final class PhpScoper implements Scoper
         SymbolsRegistry $symbolsRegistry
     ) {
         $this->parser = $parser;
-        $this->lexer = $lexer;
         $this->printer = $printer;
         $this->decoratedScoper = $decoratedScoper;
         $this->traverserFactory = $traverserFactory;
@@ -77,7 +74,6 @@ final class PhpScoper implements Scoper
     public function scopePhp(string $php): string
     {
         $oldStatements = $this->parser->parse($php);
-        $oldTokens = $this->lexer->getTokens();
 
         $scopedStatements = $this->traverserFactory
             ->create(
@@ -87,17 +83,7 @@ final class PhpScoper implements Scoper
             )
             ->traverse($oldStatements);
 
-        try {
-            $scopedPhp = $this->printer->printFormatPreserving(
-                $scopedStatements,
-                $oldStatements,
-                $oldTokens
-            );
-        } catch (Throwable $throwable) {
-            // Try again with a regular print: the print with format preserving
-            // is still experimental.
-            $scopedPhp = $this->printer->prettyPrint($scopedStatements);
-        }
+        $scopedPhp = $this->printer->prettyPrint($scopedStatements);
 
         return $scopedPhp."\n";
     }

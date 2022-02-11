@@ -66,7 +66,6 @@ final class Container
         if (!isset($this->scoperFactory)) {
             $this->scoperFactory = new ScoperFactory(
                 $this->getParser(),
-                $this->getLexer(),
                 $this->getPrinter(),
                 $this->getEnrichedReflectorFactory(),
             );

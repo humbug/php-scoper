@@ -32,18 +32,15 @@ use PhpParser\PrettyPrinterAbstract;
 class ScoperFactory
 {
     private Parser $parser;
-    private Lexer $lexer;
     private PrettyPrinterAbstract $printer;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
 
     public function __construct(
         Parser $parser,
-        Lexer $lexer,
         PrettyPrinterAbstract $printer,
         EnrichedReflectorFactory $enrichedReflectorFactory
     ) {
         $this->parser = $parser;
-        $this->lexer = $lexer;
         $this->printer = $printer;
         $this->enrichedReflectorFactory = $enrichedReflectorFactory;
     }
@@ -65,7 +62,6 @@ class ScoperFactory
         return new PatchScoper(
             new PhpScoper(
                 $this->parser,
-                $this->lexer,
                 $this->printer,
                 new JsonFileScoper(
                     new InstalledPackagesScoper(
