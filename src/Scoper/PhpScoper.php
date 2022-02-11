@@ -17,8 +17,11 @@ namespace Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
+use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
+use PhpParser\PrettyPrinterAbstract;
+use Throwable;
 use function basename;
 use function func_get_args;
 use function ltrim;
@@ -32,6 +35,8 @@ final class PhpScoper implements Scoper
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
     private Parser $parser;
+    private Lexer $lexer;
+    private PrettyPrinterAbstract $printer;
     private Scoper $decoratedScoper;
     private TraverserFactory $traverserFactory;
     private string $prefix;
@@ -39,12 +44,16 @@ final class PhpScoper implements Scoper
 
     public function __construct(
         Parser $parser,
+        Lexer $lexer,
+        PrettyPrinterAbstract $printer,
         Scoper $decoratedScoper,
         TraverserFactory $traverserFactory,
         string $prefix,
         SymbolsRegistry $symbolsRegistry
     ) {
         $this->parser = $parser;
+        $this->lexer = $lexer;
+        $this->printer = $printer;
         $this->decoratedScoper = $decoratedScoper;
         $this->traverserFactory = $traverserFactory;
         $this->prefix = $prefix;
@@ -67,19 +76,30 @@ final class PhpScoper implements Scoper
 
     public function scopePhp(string $php): string
     {
-        $statements = $this->parser->parse($php);
+        $oldStatements = $this->parser->parse($php);
+        $oldTokens = $this->lexer->getTokens();
 
-        $statements = $this->traverserFactory
+        $scopedStatements = $this->traverserFactory
             ->create(
                 $this,
                 $this->prefix,
                 $this->symbolsRegistry,
             )
-            ->traverse($statements);
+            ->traverse($oldStatements);
 
-        $prettyPrinter = new Standard();
+        try {
+            $scopedPhp = $this->printer->printFormatPreserving(
+                $scopedStatements,
+                $oldStatements,
+                $oldTokens
+            );
+        } catch (Throwable $throwable) {
+            // Try again with a regular print: the print with format preserving
+            // is still experimental.
+            $scopedPhp = $this->printer->prettyPrint($scopedStatements);
+        }
 
-        return $prettyPrinter->prettyPrintFile($statements)."\n";
+        return $scopedPhp."\n";
     }
 
     private static function isPhpFile(string $filePath, string $contents): bool

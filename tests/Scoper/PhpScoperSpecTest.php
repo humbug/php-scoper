@@ -19,6 +19,7 @@ use Humbug\PhpScoper\Configuration\ConfigurationKeys;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
@@ -275,7 +276,7 @@ class PhpScoperSpecTest extends TestCase
         SymbolsRegistry $symbolsRegistry
     ): Scoper
     {
-        $phpParser = create_parser();
+        $container = new Container();
 
         $reflector = Reflector
             ::createWithPhpStormStubs()
@@ -291,7 +292,9 @@ class PhpScoperSpecTest extends TestCase
         );
 
         return new PhpScoper(
-            $phpParser,
+            $container->getParser(),
+            $container->getLexer(),
+            $container->getPrinter(),
             new FakeScoper(),
             new TraverserFactory($enrichedReflector),
             $prefix,

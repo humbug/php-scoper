@@ -21,7 +21,10 @@ use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\Lexer;
 use PhpParser\Parser;
+use PhpParser\PrettyPrinter\Standard;
+use PhpParser\PrettyPrinterAbstract;
 
 /**
  * @final
@@ -29,11 +32,19 @@ use PhpParser\Parser;
 class ScoperFactory
 {
     private Parser $parser;
+    private Lexer $lexer;
+    private PrettyPrinterAbstract $printer;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
 
-    public function __construct(Parser $parser, EnrichedReflectorFactory $enrichedReflectorFactory)
-    {
+    public function __construct(
+        Parser $parser,
+        Lexer $lexer,
+        PrettyPrinterAbstract $printer,
+        EnrichedReflectorFactory $enrichedReflectorFactory
+    ) {
         $this->parser = $parser;
+        $this->lexer = $lexer;
+        $this->printer = $printer;
         $this->enrichedReflectorFactory = $enrichedReflectorFactory;
     }
 
@@ -54,6 +65,8 @@ class ScoperFactory
         return new PatchScoper(
             new PhpScoper(
                 $this->parser,
+                $this->lexer,
+                $this->printer,
                 new JsonFileScoper(
                     new InstalledPackagesScoper(
                         new SymfonyScoper(
