@@ -30,6 +30,7 @@ use function Safe\sprintf;
 /**
  * @private
  * @final
+ * @codeCoverageIgnore
  */
 class ScoperLogger
 {

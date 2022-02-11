@@ -32,7 +32,7 @@ use function strpos;
  */
 final class YamlScoper implements Scoper
 {
-    private const FILE_PATH_PATTERN = '/\.ya?ml$/i';
+    private const YAML_EXTENSION_REGEX = '/\.ya?ml$/i';
     private const CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
     private Scoper $decoratedScoper;
@@ -54,7 +54,7 @@ final class YamlScoper implements Scoper
 
     public function scope(string $filePath, string $contents): string
     {
-        if (1 !== native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
+        if (1 !== native_preg_match(self::YAML_EXTENSION_REGEX, $filePath)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 

@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
@@ -26,7 +27,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
-use UnexpectedValueException;
 use function array_reduce;
 
 /**
@@ -114,7 +114,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         $name = $stmt->name;
 
         if (null === $name) {
-            throw new UnexpectedValueException('Expected the class/interface statement to have a name but none found');
+            throw UnexpectedParsingScenario::create();
         }
 
         $resolvedName = $this->identifierResolver->resolveIdentifier($name);

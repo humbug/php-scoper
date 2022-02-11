@@ -15,14 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
-use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Scoper\ScoperStub;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
 /**
@@ -31,24 +29,15 @@ use function is_a;
  */
 class JsonFileScoperTest extends TestCase
 {
-    use ProphecyTrait;
-
     private const PREFIX = 'Foo';
 
-    private AutoloadPrefixer $autoloadPrefixer;
+    private ScoperStub $decoratedScoper;
 
-    private Scoper $scopedWithoutDecoratedScoper;
-
-    /**
-     * @var ObjectProphecy<Scoper>
-     */
-    private ObjectProphecy $decoratedScoperProphecy;
-
-    private Scoper $decoratedScoper;
+    private Scoper $scoper;
 
     protected function setUp(): void
     {
-        $this->autoloadPrefixer = new AutoloadPrefixer(
+        $autoloadPrefixer = new AutoloadPrefixer(
             self::PREFIX,
             new EnrichedReflector(
                 Reflector::createEmpty(),
@@ -56,13 +45,12 @@ class JsonFileScoperTest extends TestCase
             ),
         );
 
-        $this->scopedWithoutDecoratedScoper = new JsonFileScoper(
-            new FakeScoper(),
-            $this->autoloadPrefixer,
-        );
+        $this->decoratedScoper = new ScoperStub();
 
-        $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
+        $this->scoper = new JsonFileScoper(
+            $this->decoratedScoper,
+            $autoloadPrefixer,
+        );
     }
 
     public function test_it_is_a_Scoper(): void
@@ -74,26 +62,16 @@ class JsonFileScoperTest extends TestCase
     {
         $filePath = 'file.php';
         $fileContents = '';
-        $prefix = 'Humbug';
 
-        $this->decoratedScoperProphecy
-            ->scope($filePath, $fileContents)
-            ->willReturn(
-                $expected = 'Scoped content'
-            );
-
-        $scoper = new JsonFileScoper(
-            $this->decoratedScoper,
-            $this->autoloadPrefixer,
+        $this->decoratedScoper->addConfig(
+            $filePath,
+            $fileContents,
+            $expected = 'Scoped content',
         );
 
-        $actual = $scoper->scope($filePath, $fileContents);
+        $actual = $this->scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
-
-        $this->decoratedScoperProphecy
-            ->scope(Argument::cetera())
-            ->shouldHaveBeenCalledTimes(1);
     }
 
     /**
@@ -101,7 +79,28 @@ class JsonFileScoperTest extends TestCase
      */
     public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
     {
-        $actual = $this->scopedWithoutDecoratedScoper->scope(
+        $actual = $this->scoper->scope(
+            'composer.json',
+            $fileContents,
+        );
+
+        self::assertSame($expected, $actual);
+    }
+
+    public function test_it_requires_valid_composer2_files(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected the decoded JSON to be an stdClass instance, got "array" instead');
+
+        $this->scoper->scope('composer.json', '[]');
+    }
+
+    /**
+     * @dataProvider providePSR0ComposerFiles
+     */
+    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
+    {
+        $actual = $this->scoper->scope(
             'composer.json',
             $fileContents,
         );
@@ -162,19 +161,6 @@ class JsonFileScoperTest extends TestCase
             }
             JSON,
         ];
-    }
-
-    /**
-     * @dataProvider providePSR0ComposerFiles
-     */
-    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
-    {
-        $actual = $this->scopedWithoutDecoratedScoper->scope(
-            'composer.json',
-            $fileContents,
-        );
-
-        self::assertSame($expected, $actual);
     }
 
     public static function providePSR0ComposerFiles(): iterable

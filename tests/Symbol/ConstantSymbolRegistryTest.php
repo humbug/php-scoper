@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolRegistry
  */
-class ConstantRegistryTest extends TestCase
+class ConstantSymbolRegistryTest extends TestCase
 {
     private RegexChecker $regexChecker;
 
@@ -55,6 +55,64 @@ class ConstantRegistryTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
+    /**
+     * @dataProvider provideNamesAndRegexes
+     *
+     * @param string[] $regexes
+     * @param string[] $names
+     * @param list<string> $regexes
+     * @param list<string> $names
+     */
+    public function test_it_optimizes_the_registered_names_and_regexes(
+        array $names,
+        array $regexes,
+        array $expectedNames,
+        array $expectedRegexes
+    ): void
+    {
+        $registry = SymbolRegistry::createForConstants(
+            $names,
+            $regexes,
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $registry,
+            $expectedNames,
+            $expectedRegexes,
+        );
+    }
+
+    public function test_it_can_create_an_augmented_instance(): void
+    {
+        $registry = SymbolRegistry::createForConstants(
+            ['Acme\Foo'],
+            ['/^Acme\\\\Foo$/'],
+        );
+
+        $augmentedRegistry = $registry->withAdditionalSymbols(
+            ['Acme\Bar'],
+            ['/^Acme\\\\Bar/'],
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $registry,
+            ['acme\Foo'],
+            ['/^Acme\\\\Foo$/'],
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $augmentedRegistry,
+            [
+                'acme\Foo',
+                'acme\Bar',
+            ],
+            [
+                '/^Acme\\\\Foo$/',
+                '/^Acme\\\\Bar/',
+            ],
+        );
+    }
+
     public static function provideSymbols(): iterable
     {
         foreach (self::provideNames() as $title => [$names, $symbol, $expected]) {
@@ -64,10 +122,24 @@ class ConstantRegistryTest extends TestCase
                 $symbol,
                 $expected,
             ];
+
+            yield '[(polluted) name only] '.$title => [
+                $names,
+                [],
+                $symbol,
+                $expected,
+            ];
         }
 
         foreach (self::provideRegex() as $title => [$regexes, $symbol, $expected]) {
             yield '[regex only] '.$title => [
+                [],
+                $regexes,
+                $symbol,
+                $expected,
+            ];
+
+            yield '[(polluted) regex only] '.$title => [
                 [],
                 $regexes,
                 $symbol,
@@ -216,6 +288,33 @@ class ConstantRegistryTest extends TestCase
             ['/^Acme$/i'],
             'Acme',
             true,
+        ];
+    }
+
+    public static function provideNamesAndRegexes(): iterable
+    {
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+            ['acme\Foo', 'acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+        ];
+
+        yield 'duplicates' => [
+            [
+                'Acme\Foo',
+                'Acme\Foo',
+                'ACME\FOO',
+                'ACME\FOO',
+                '\Acme\Foo',
+                'Acme\Foo\\',
+            ],
+            [
+                '/^Acme$/',
+                '/^Acme$/',
+            ],
+            ['acme\Foo', 'acme\FOO'],
+            ['/^Acme$/'],
         ];
     }
 

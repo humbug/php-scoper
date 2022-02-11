@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
 
+use Humbug\PhpScoper\PhpScoperAssertions;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
+use function array_is_list;
+use function var_export;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolsRegistry
@@ -358,11 +361,11 @@ final class SymbolsRegistryTest extends TestCase
         int $expectedCount
     ): void
     {
-        self::assertEqualsCanonicalizing(
+        PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedRecordedFunctions,
             $symbolsRegistry->getRecordedFunctions(),
         );
-        self::assertEqualsCanonicalizing(
+        PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedRecordedClasses,
             $symbolsRegistry->getRecordedClasses(),
         );

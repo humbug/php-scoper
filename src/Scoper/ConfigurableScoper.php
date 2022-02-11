@@ -17,6 +17,9 @@ namespace Humbug\PhpScoper\Scoper;
 use function count;
 use function func_get_args;
 
+/**
+ * @deprecated since 0.16. Will be removed in 0.17.
+ */
 final class ConfigurableScoper implements Scoper
 {
     private Scoper $decoratedScoper;
@@ -28,13 +31,11 @@ final class ConfigurableScoper implements Scoper
 
     public function withWhitelistedFiles(string ...$whitelistedFiles): self
     {
-        $self = clone $this;
-
         return count($whitelistedFiles) === 0
-            ? $self
+            ? $this
             : new self(
                 new FileWhitelistScoper(
-                    $self,
+                    clone $this,
                     ...$whitelistedFiles
                 )
             )

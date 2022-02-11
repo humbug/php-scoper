@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
@@ -24,7 +25,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
-use UnexpectedValueException;
 
 /**
  * Records the user classes which are exposed.
@@ -65,13 +65,13 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         }
 
         if (null === $parent->name) {
-            throw new UnexpectedValueException('Expected the class/interface statement to have a name but none found');
+            throw UnexpectedParsingScenario::create();
         }
 
         $resolvedName = $this->identifierResolver->resolveIdentifier($node);
 
         if (!($resolvedName instanceof FullyQualified)) {
-            return $node;
+            throw UnexpectedParsingScenario::create();
         }
 
         if ($this->enrichedReflector->isExposedClass((string) $resolvedName)) {

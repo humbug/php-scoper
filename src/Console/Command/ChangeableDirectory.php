@@ -25,6 +25,7 @@ use function Safe\sprintf;
 
 /**
  * @private
+ * @codeCoverageIgnore
  */
 final class ChangeableDirectory
 {

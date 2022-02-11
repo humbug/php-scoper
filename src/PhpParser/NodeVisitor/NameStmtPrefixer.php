@@ -447,6 +447,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         if ($this->enrichedReflector->isExposedFunction($resolvedNameString)) {
+            // TODO: should be able to find a case for it
             return $this->enrichedReflector->isExposedFunctionFromGlobalNamespace($resolvedNameString)
                 ? $resolvedName
                 : null;

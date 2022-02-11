@@ -28,6 +28,7 @@ use const DIRECTORY_SEPARATOR;
 
 /**
  * @private
+ * @codeCoverageIgnore
  */
 final class InitCommand implements Command
 {

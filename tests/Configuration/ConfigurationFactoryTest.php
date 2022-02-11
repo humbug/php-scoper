@@ -29,6 +29,8 @@ use const DIRECTORY_SEPARATOR;
 
 /**
  * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
+ *
+ * @group integration
  */
 class ConfigurationFactoryTest extends FileSystemTestCase
 {

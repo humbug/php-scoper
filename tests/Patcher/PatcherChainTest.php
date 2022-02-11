@@ -25,17 +25,18 @@ use function str_replace;
  */
 class PatcherChainTest extends TestCase
 {
-    public function test_applies_all_the_inner_patchers(): void
+    public function test_it_applies_all_the_inner_patchers(): void
     {
         $filePath = '/path/to/file.php';
         $contents = 'OriginalContent';
         $prefix = 'Humbug';
-
-        $patcher = new PatcherChain([
+        $patchers = [
             self::createPatcher(0),
             self::createPatcher(1),
             self::createPatcher(2),
-        ]);
+        ];
+
+        $patcher = new PatcherChain($patchers);
 
         $expected = <<<'EOF'
         patcher#2{
@@ -59,6 +60,19 @@ class PatcherChainTest extends TestCase
         $actual = $patcher($filePath, $prefix, $contents);
 
         self::assertSame($expected, $actual);
+    }
+
+    public function test_it_exposes_its_inner_patchers(): void
+    {
+        $patchers = [
+            self::createPatcher(0),
+            self::createPatcher(1),
+            self::createPatcher(2),
+        ];
+
+        $patcher = new PatcherChain($patchers);
+
+        self::assertSame($patchers, $patcher->getPatchers());
     }
 
     private static function createPatcher(int $id): callable

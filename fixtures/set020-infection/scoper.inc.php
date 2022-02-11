@@ -10,7 +10,7 @@ $polyfillsBootstraps = array_map(
         Finder::create()
             ->files()
             ->in(__DIR__ . '/vendor/symfony/polyfill-*')
-            ->name('bootstrap.php'),
+            ->name('bootstrap*.php'),
         false,
     ),
 );
@@ -27,6 +27,17 @@ $polyfillsStubs = array_map(
 );
 
 return [
+    'exclude-namespaces' => [
+        'Composer',
+        'Symfony\Polyfill'
+    ],
+    'exclude-constants' => [
+        // Symfony global constants
+        // TODO: switch to the following regex once regexes are supported here
+        // https://github.com/humbug/php-scoper/issues/634
+        '/^SYMFONY\_[\p{L}_]+$/',
+        'SYMFONY_GRAPHEME_CLUSTER_RX',
+    ],
     'exclude-files' => [
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,

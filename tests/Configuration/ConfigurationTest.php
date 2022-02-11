@@ -21,7 +21,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
+ * @covers \Humbug\PhpScoper\Configuration\Configuration
  */
 final class ConfigurationTest extends TestCase
 {

@@ -29,7 +29,7 @@ use const JSON_THROW_ON_ERROR;
 
 final class InstalledPackagesScoper implements Scoper
 {
-    private static string $filePattern = '/composer(\/|\\\\)installed\.json$/';
+    private const COMPOSER_INSTALLED_FILE_PATTERN = '/composer(\/|\\\\)installed\.json$/';
 
     private Scoper $decoratedScoper;
     private AutoloadPrefixer $autoloadPrefixer;
@@ -47,7 +47,7 @@ final class InstalledPackagesScoper implements Scoper
      */
     public function scope(string $filePath, string $contents): string
     {
-        if (1 !== native_preg_match(self::$filePattern, $filePath)) {
+        if (1 !== native_preg_match(self::COMPOSER_INSTALLED_FILE_PATTERN, $filePath)) {
             return $this->decoratedScoper->scope($filePath, $contents);
         }
 
