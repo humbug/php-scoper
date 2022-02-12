@@ -369,7 +369,7 @@ final class SymbolsRegistryTest extends TestCase
             $expectedRecordedClasses,
             $symbolsRegistry->getRecordedClasses(),
         );
-        self::assertSame($expectedCount, $symbolsRegistry->count());
+        self::assertCount($expectedCount, $symbolsRegistry);
     }
 
     private static function createRegistry(array $functions, array $classes): SymbolsRegistry

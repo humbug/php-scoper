@@ -2,8 +2,7 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
 
-    excludePaths:
-        - src/Console/Command/AddPrefixCommand.php
+    excludePaths: []
 
     ignoreErrors:
         - message: '#Cannot cast array\<string\>\|string to string\.#'

@@ -8,6 +8,7 @@ use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * @covers \Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory
@@ -184,6 +185,8 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
 
     /**
      * @dataProvider invalidConfigProvider
+     *
+     * @param class-string<Throwable> $expectedExceptionClassName
      */
     public function test_it_cannot_create_a_whitelist_from_an_invalid_config(
         array $config,

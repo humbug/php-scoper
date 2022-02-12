@@ -51,9 +51,6 @@ final class ScoperStub implements Scoper
         }
     }
 
-    /**
-     * @param array<string, array{string, string}> $config
-     */
     public function addConfig(string $filePath, string $contents, string $scopedContents): void
     {
         $this->scopedContentsByFileAndContents[$filePath][$contents] = $scopedContents;
