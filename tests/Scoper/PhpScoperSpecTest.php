@@ -293,9 +293,11 @@ class PhpScoperSpecTest extends TestCase
         return new PhpScoper(
             $phpParser,
             new FakeScoper(),
-            new TraverserFactory($enrichedReflector),
-            $prefix,
-            $symbolsRegistry,
+            new TraverserFactory(
+                $enrichedReflector,
+                $prefix,
+                $symbolsRegistry,
+            ),
         );
     }
 

@@ -34,21 +34,15 @@ final class PhpScoper implements Scoper
     private Parser $parser;
     private Scoper $decoratedScoper;
     private TraverserFactory $traverserFactory;
-    private string $prefix;
-    private SymbolsRegistry $symbolsRegistry;
 
     public function __construct(
         Parser $parser,
         Scoper $decoratedScoper,
-        TraverserFactory $traverserFactory,
-        string $prefix,
-        SymbolsRegistry $symbolsRegistry
+        TraverserFactory $traverserFactory
     ) {
         $this->parser = $parser;
         $this->decoratedScoper = $decoratedScoper;
         $this->traverserFactory = $traverserFactory;
-        $this->prefix = $prefix;
-        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     /**
@@ -69,17 +63,13 @@ final class PhpScoper implements Scoper
     {
         $statements = $this->parser->parse($php);
 
-        $statements = $this->traverserFactory
-            ->create(
-                $this,
-                $this->prefix,
-                $this->symbolsRegistry,
-            )
+        $scopedStatements = $this->traverserFactory
+            ->create($this)
             ->traverse($statements);
 
         $prettyPrinter = new Standard();
 
-        return $prettyPrinter->prettyPrintFile($statements)."\n";
+        return $prettyPrinter->prettyPrintFile($scopedStatements)."\n";
     }
 
     private static function isPhpFile(string $filePath, string $contents): bool

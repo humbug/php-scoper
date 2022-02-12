@@ -66,9 +66,11 @@ class ScoperFactory
                     ),
                     $autoloadPrefixer
                 ),
-                new TraverserFactory($enrichedReflector),
-                $prefix,
-                $symbolsRegistry,
+                new TraverserFactory(
+                    $enrichedReflector,
+                    $prefix,
+                    $symbolsRegistry,
+                ),
             ),
             $prefix,
             $configuration->getPatcher(),
