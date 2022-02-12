@@ -26,6 +26,7 @@ use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
@@ -45,6 +46,7 @@ use function basename;
 use function count;
 use function current;
 use function explode;
+use function Humbug\PhpScoper\create_parser;
 use function implode;
 use function is_array;
 use function is_string;
@@ -291,11 +293,13 @@ class PhpScoperSpecTest extends TestCase
 
         return new PhpScoper(
             $container->getParser(),
-            $container->getPrinter(),
             new FakeScoper(),
-            new TraverserFactory($enrichedReflector),
-            $prefix,
-            $symbolsRegistry,
+            new TraverserFactory(
+                $enrichedReflector,
+                $prefix,
+                $symbolsRegistry,
+            ),
+            $container->getPrinter(),
         );
     }
 

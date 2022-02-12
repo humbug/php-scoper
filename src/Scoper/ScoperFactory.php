@@ -15,16 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Lexer;
 use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard;
-use PhpParser\PrettyPrinterAbstract;
 
 /**
  * @final
@@ -32,17 +30,17 @@ use PhpParser\PrettyPrinterAbstract;
 class ScoperFactory
 {
     private Parser $parser;
-    private PrettyPrinterAbstract $printer;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
+    private Printer $printer;
 
     public function __construct(
         Parser $parser,
-        PrettyPrinterAbstract $printer,
-        EnrichedReflectorFactory $enrichedReflectorFactory
+        EnrichedReflectorFactory $enrichedReflectorFactory,
+        Printer $printer
     ) {
         $this->parser = $parser;
-        $this->printer = $printer;
         $this->enrichedReflectorFactory = $enrichedReflectorFactory;
+        $this->printer = $printer;
     }
 
     public function createScoper(
@@ -62,7 +60,6 @@ class ScoperFactory
         return new PatchScoper(
             new PhpScoper(
                 $this->parser,
-                $this->printer,
                 new JsonFileScoper(
                     new InstalledPackagesScoper(
                         new SymfonyScoper(
@@ -75,9 +72,12 @@ class ScoperFactory
                     ),
                     $autoloadPrefixer
                 ),
-                new TraverserFactory($enrichedReflector),
-                $prefix,
-                $symbolsRegistry,
+                new TraverserFactory(
+                    $enrichedReflector,
+                    $prefix,
+                    $symbolsRegistry,
+                ),
+                $this->printer,
             ),
             $prefix,
             $configuration->getPatcher(),

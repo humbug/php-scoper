@@ -16,6 +16,9 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\FakeParser;
+use Humbug\PhpScoper\PhpParser\FakePrinter;
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
+use Humbug\PhpScoper\PhpParser\Printer\StandardPrinter;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
@@ -25,6 +28,7 @@ use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Name;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
+use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -35,6 +39,8 @@ use function is_a;
 class PhpScoperTest extends TestCase
 {
     use ProphecyTrait;
+
+    private const PREFIX = 'Humbug';
 
     private Scoper $scoper;
 
@@ -59,6 +65,10 @@ class PhpScoperTest extends TestCase
 
     private Parser $parser;
 
+    private SymbolsRegistry $symbolsRegistry;
+
+    private Printer $printer;
+
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -70,6 +80,9 @@ class PhpScoperTest extends TestCase
         $this->parserProphecy = $this->prophesize(Parser::class);
         $this->parser = $this->parserProphecy->reveal();
 
+        $this->symbolsRegistry = new SymbolsRegistry();
+        $this->printer = new StandardPrinter(new Standard());
+
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
@@ -78,9 +91,10 @@ class PhpScoperTest extends TestCase
                     Reflector::createEmpty(),
                     SymbolsConfiguration::create(),
                 ),
+                self::PREFIX,
+                $this->symbolsRegistry,
             ),
-            'Humbug',
-            new SymbolsRegistry(),
+            $this->printer,
         );
     }
 
@@ -117,7 +131,6 @@ class PhpScoperTest extends TestCase
     {
         $filePath = 'file.yaml';
         $fileContents = '';
-        $prefix = 'Humbug';
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents)
@@ -133,8 +146,7 @@ class PhpScoperTest extends TestCase
             new FakeParser(),
             $this->decoratedScoper,
             $this->traverserFactory,
-            $prefix,
-            new SymbolsRegistry(),
+            new FakePrinter(),
         );
 
         $actual = $scoper->scope($filePath, $fileContents);
@@ -198,7 +210,6 @@ class PhpScoperTest extends TestCase
 
     public function test_does_not_scope_a_non_PHP_executable_files(): void
     {
-        $prefix = 'Humbug';
         $filePath = 'hello';
 
         $contents = <<<'PHP'
@@ -222,8 +233,7 @@ class PhpScoperTest extends TestCase
             new FakeParser(),
             $this->decoratedScoper,
             $this->traverserFactory,
-            $prefix,
-            new SymbolsRegistry(),
+            new FakePrinter(),
         );
 
         $actual = $scoper->scope($filePath, $contents);
@@ -266,43 +276,30 @@ class PhpScoperTest extends TestCase
             'file2.php' => 'file2',
         ];
 
-        $prefix = 'Humbug';
-
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any())
-            ->willReturn('Scoped content')
-        ;
+            ->willReturn('Scoped content');
 
         $this->parserProphecy
             ->parse('file1')
             ->willReturn($file1Stmts = [
                 new Name('file1'),
-            ])
-        ;
+            ]);
         $this->parserProphecy
             ->parse('file2')
             ->willReturn($file2Stmts = [
                 new Name('file2'),
-            ])
-        ;
+            ]);
 
-        /** @var ObjectProphecy<NodeTraverserInterface> $firstTraverserProphecy */
         $firstTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
         $firstTraverserProphecy->traverse($file1Stmts)->willReturn([]);
-        /** @var NodeTraverserInterface $firstTraverser */
-        $firstTraverser = $firstTraverserProphecy->reveal();
 
-        /** @var ObjectProphecy<NodeTraverserInterface> $secondTraverserProphecy */
         $secondTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
         $secondTraverserProphecy->traverse($file2Stmts)->willReturn([]);
-        /** @var NodeTraverserInterface $secondTraverser */
-        $secondTraverser = $secondTraverserProphecy->reveal();
 
         $i = 0;
         $this->traverserFactoryProphecy
             ->create(
-                Argument::type(PhpScoper::class),
-                $prefix,
                 Argument::that(
                     static function () use (&$i): bool {
                         ++$i;
@@ -311,29 +308,30 @@ class PhpScoperTest extends TestCase
                     }
                 ),
             )
-            ->willReturn($firstTraverser)
-        ;
+            ->willReturn($firstTraverserProphecy->reveal());
+
         $this->traverserFactoryProphecy
             ->create(
-                Argument::type(PhpScoper::class),
-                $prefix,
                 Argument::that(
                     static function () use (&$i): bool {
                         ++$i;
 
+                        // It is 4 instead of 2 because Prophecy will check all
+                        // registered calls even if the first one matches.
+                        // So it will call this one too for the first file
+                        // hence by the time it is the 2nd call for the 2nd file
+                        // we are at the 4th call.
                         return 4 === $i;
                     }
                 ),
             )
-            ->willReturn($secondTraverser)
-        ;
+            ->willReturn($secondTraverserProphecy->reveal());
 
         $scoper = new PhpScoper(
             $this->parser,
             new FakeScoper(),
             $this->traverserFactory,
-            $prefix,
-            new SymbolsRegistry(),
+            $this->printer,
         );
 
         foreach ($files as $file => $contents) {

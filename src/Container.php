@@ -17,6 +17,8 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
+use Humbug\PhpScoper\PhpParser\Printer\StandardPrinter;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
@@ -24,7 +26,6 @@ use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
-use PhpParser\PrettyPrinterAbstract;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class Container
@@ -32,11 +33,11 @@ final class Container
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
-    private Lexer $lexer;
-    private PrettyPrinterAbstract $printer;
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
+    private Printer $printer;
+    private Lexer $lexer;
 
     public function getFileSystem(): Filesystem
     {
@@ -66,8 +67,8 @@ final class Container
         if (!isset($this->scoperFactory)) {
             $this->scoperFactory = new ScoperFactory(
                 $this->getParser(),
-                $this->getPrinter(),
                 $this->getEnrichedReflectorFactory(),
+                $this->getPrinter(),
             );
         }
 
@@ -84,24 +85,6 @@ final class Container
         }
 
         return $this->parser;
-    }
-
-    public function getLexer(): Lexer
-    {
-        if (!isset($this->lexer)) {
-            $this->lexer = new Lexer();
-        }
-
-        return $this->lexer;
-    }
-
-    public function getPrinter(): PrettyPrinterAbstract
-    {
-        if (!isset($this->printer)) {
-            $this->printer = new Standard();
-        }
-
-        return $this->printer;
     }
 
     public function getReflector(): Reflector
@@ -122,5 +105,25 @@ final class Container
         }
 
         return $this->enrichedReflectorFactory;
+    }
+
+    public function getPrinter(): Printer
+    {
+        if (!isset($this->printer)) {
+            $this->printer = new StandardPrinter(
+                new Standard(),
+            );
+        }
+
+        return $this->printer;
+    }
+
+    public function getLexer(): Lexer
+    {
+        if (!isset($this->lexer)) {
+            $this->lexer = new Lexer();
+        }
+
+        return $this->lexer;
     }
 }

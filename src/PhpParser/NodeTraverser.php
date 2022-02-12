@@ -23,7 +23,8 @@ use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use PhpParser\NodeTraverser as PhpParserNodeTraverser;
+use PhpParser\NodeTraverserInterface;
+use PhpParser\NodeVisitor;
 use function array_map;
 use function array_slice;
 use function array_splice;
@@ -34,14 +35,31 @@ use function current;
 /**
  * @private
  */
-final class NodeTraverser extends PhpParserNodeTraverser
+final class NodeTraverser implements NodeTraverserInterface
 {
+    private NodeTraverserInterface $decoratedTraverser;
+
+    public function __construct(NodeTraverserInterface $decoratedTraverser)
+    {
+        $this->decoratedTraverser = $decoratedTraverser;
+    }
+
+    public function addVisitor(NodeVisitor $visitor): void
+    {
+        $this->decoratedTraverser->addVisitor($visitor);
+    }
+
+    public function removeVisitor(NodeVisitor $visitor): void
+    {
+        $this->decoratedTraverser->removeVisitor($visitor);
+    }
+
     public function traverse(array $nodes): array
     {
         $nodes = $this->wrapInNamespace($nodes);
         $nodes = $this->replaceGroupUseStatements($nodes);
 
-        return parent::traverse($nodes);
+        return $this->decoratedTraverser->traverse($nodes);
     }
 
     /**

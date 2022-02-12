@@ -37,8 +37,7 @@ class TraverserFactoryTest extends TestCase
             new Lexer(),
             new FakeScoper(),
             (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
-            $prefix,
-            new SymbolsRegistry(),
+            new FakePrinter(),
         );
         $symbolsRegistry = new SymbolsRegistry();
 
@@ -47,18 +46,12 @@ class TraverserFactoryTest extends TestCase
                 Reflector::createEmpty(),
                 SymbolsConfiguration::create(),
             ),
+            $prefix,
+            $symbolsRegistry,
         );
 
-        $firstTraverser = $traverserFactory->create(
-            $phpScoper,
-            $prefix,
-            $symbolsRegistry,
-        );
-        $secondTraverser = $traverserFactory->create(
-            $phpScoper,
-            $prefix,
-            $symbolsRegistry,
-        );
+        $firstTraverser = $traverserFactory->create($phpScoper);
+        $secondTraverser = $traverserFactory->create($phpScoper);
 
         self::assertNotSame($firstTraverser, $secondTraverser);
     }

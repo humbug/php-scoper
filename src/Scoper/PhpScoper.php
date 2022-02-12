@@ -14,14 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
-use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\PrettyPrinter\Standard;
-use PhpParser\PrettyPrinterAbstract;
-use Throwable;
 use function basename;
 use function func_get_args;
 use function ltrim;
@@ -35,26 +33,20 @@ final class PhpScoper implements Scoper
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
     private Parser $parser;
-    private PrettyPrinterAbstract $printer;
     private Scoper $decoratedScoper;
     private TraverserFactory $traverserFactory;
-    private string $prefix;
-    private SymbolsRegistry $symbolsRegistry;
+    private Printer $printer;
 
     public function __construct(
         Parser $parser,
-        PrettyPrinterAbstract $printer,
         Scoper $decoratedScoper,
         TraverserFactory $traverserFactory,
-        string $prefix,
-        SymbolsRegistry $symbolsRegistry
+        Printer $printer
     ) {
         $this->parser = $parser;
-        $this->printer = $printer;
         $this->decoratedScoper = $decoratedScoper;
         $this->traverserFactory = $traverserFactory;
-        $this->prefix = $prefix;
-        $this->symbolsRegistry = $symbolsRegistry;
+        $this->printer = $printer;
     }
 
     /**
@@ -73,19 +65,13 @@ final class PhpScoper implements Scoper
 
     public function scopePhp(string $php): string
     {
-        $oldStatements = $this->parser->parse($php);
+        $statements = $this->parser->parse($php);
 
         $scopedStatements = $this->traverserFactory
-            ->create(
-                $this,
-                $this->prefix,
-                $this->symbolsRegistry,
-            )
-            ->traverse($oldStatements);
+            ->create($this)
+            ->traverse($statements);
 
-        $scopedPhp = $this->printer->prettyPrint($scopedStatements);
-
-        return $scopedPhp."\n";
+        return $this->printer->print($scopedStatements);
     }
 
     private static function isPhpFile(string $filePath, string $contents): bool
