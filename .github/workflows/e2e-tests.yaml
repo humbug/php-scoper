@@ -1,11 +1,9 @@
 name: End-to-End Tests
 
 on:
-    push:
-        branches: [ master ]
-    pull_request:
-    release:
-        types: [ created ]
+    workflow_run:
+        workflows: [ 'Tests' ]
+        types: [ 'completed' ]
 
 jobs:
     build-test-phar:
