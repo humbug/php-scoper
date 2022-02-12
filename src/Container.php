@@ -17,12 +17,15 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
+use Humbug\PhpScoper\PhpParser\Printer\StandardPrinter;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class Container
@@ -33,6 +36,7 @@ final class Container
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
+    private Printer $printer;
 
     public function getFileSystem(): Filesystem
     {
@@ -63,6 +67,7 @@ final class Container
             $this->scoperFactory = new ScoperFactory(
                 $this->getParser(),
                 $this->getEnrichedReflectorFactory(),
+                $this->getPrinter(),
             );
         }
 
@@ -96,5 +101,16 @@ final class Container
         }
 
         return $this->enrichedReflectorFactory;
+    }
+
+    public function getPrinter(): Printer
+    {
+        if (!isset($this->printer)) {
+            $this->printer = new StandardPrinter(
+                new Standard(),
+            );
+        }
+
+        return $this->printer;
     }
 }

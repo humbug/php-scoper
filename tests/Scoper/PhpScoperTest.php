@@ -16,6 +16,9 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\FakeParser;
+use Humbug\PhpScoper\PhpParser\FakePrinter;
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
+use Humbug\PhpScoper\PhpParser\Printer\StandardPrinter;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
@@ -25,6 +28,7 @@ use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Name;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
+use PhpParser\PrettyPrinter\Standard;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -63,6 +67,8 @@ class PhpScoperTest extends TestCase
 
     private SymbolsRegistry $symbolsRegistry;
 
+    private Printer $printer;
+
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -75,6 +81,7 @@ class PhpScoperTest extends TestCase
         $this->parser = $this->parserProphecy->reveal();
 
         $this->symbolsRegistry = new SymbolsRegistry();
+        $this->printer = new StandardPrinter(new Standard());
 
         $this->scoper = new PhpScoper(
             create_parser(),
@@ -87,6 +94,7 @@ class PhpScoperTest extends TestCase
                 self::PREFIX,
                 $this->symbolsRegistry,
             ),
+            $this->printer,
         );
     }
 
@@ -138,6 +146,7 @@ class PhpScoperTest extends TestCase
             new FakeParser(),
             $this->decoratedScoper,
             $this->traverserFactory,
+            new FakePrinter(),
         );
 
         $actual = $scoper->scope($filePath, $fileContents);
@@ -224,6 +233,7 @@ class PhpScoperTest extends TestCase
             new FakeParser(),
             $this->decoratedScoper,
             $this->traverserFactory,
+            new FakePrinter(),
         );
 
         $actual = $scoper->scope($filePath, $contents);
@@ -321,6 +331,7 @@ class PhpScoperTest extends TestCase
             $this->parser,
             new FakeScoper(),
             $this->traverserFactory,
+            $this->printer,
         );
 
         foreach ($files as $file => $contents) {
