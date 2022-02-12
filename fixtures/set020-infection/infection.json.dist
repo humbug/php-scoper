@@ -5,12 +5,18 @@
     "source": {
         "directories": [
             "../../src"
+        ],
+        "excludes": [
+            "../../src/Configuration",
+            "../../src/Console",
+            "../../src/PhpParser"
         ]
     },
     "phpUnit": {
         "configDir": "../..",
         "customPath": "../../vendor/phpunit/phpunit/phpunit"
     },
+    "testFrameworkOptions": "group=default",
     "bootstrap": "../../vendor/autoload.php",
     "logs": {
         "text": "../../infection-log.txt"
