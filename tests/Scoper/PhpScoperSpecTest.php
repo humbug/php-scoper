@@ -298,8 +298,6 @@ class PhpScoperSpecTest extends TestCase
                 $prefix,
                 $symbolsRegistry,
             ),
-            $prefix,
-            $symbolsRegistry,
         );
     }
 

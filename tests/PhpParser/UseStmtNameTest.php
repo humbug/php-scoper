@@ -9,10 +9,10 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
-use Humbug\PhpScoper\Whitelist;
 use LogicException;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
+use PhpParser\NodeTraverser as PhpParserNodeTraverser;
 use PHPUnit\Framework\TestCase;
 use function Humbug\PhpScoper\create_parser;
 use function Safe\sprintf;
@@ -172,7 +172,9 @@ final class UseStmtNameTest extends TestCase
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
 
-        $traverser = new NodeTraverser();
+        $traverser = new NodeTraverser(
+            new PhpParserNodeTraverser(),
+        );
 
         $traverser->addVisitor(new NodeVisitor\ParentNodeAppender());
         $traverser->addVisitor(

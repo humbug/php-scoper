@@ -71,8 +71,6 @@ class ScoperFactory
                     $prefix,
                     $symbolsRegistry,
                 ),
-                $prefix,
-                $symbolsRegistry,
             ),
             $prefix,
             $configuration->getPatcher(),

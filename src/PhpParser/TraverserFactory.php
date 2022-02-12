@@ -20,6 +20,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\NodeTraverser as PhpParserNodeTraverser;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor as PhpParserNodeVisitor;
 use PhpParser\NodeVisitor\NameResolver;
@@ -45,8 +46,42 @@ class TraverserFactory
 
     public function create(PhpScoper $scoper): NodeTraverserInterface
     {
-        $traverser = new NodeTraverser();
+        return self::createTraverser(
+            self::createNodeVisitors(
+                $this->prefix,
+                $this->reflector,
+                $scoper,
+                $this->symbolsRegistry,
+            )
+        );
+    }
 
+    /**
+     * @param PhpParserNodeVisitor[] $nodeVisitors
+     */
+    private static function createTraverser(array $nodeVisitors): NodeTraverserInterface
+    {
+        $traverser = new NodeTraverser(
+            new PhpParserNodeTraverser(),
+        );
+
+        foreach ($nodeVisitors as $nodeVisitor) {
+            $traverser->addVisitor($nodeVisitor);
+        }
+        
+        return $traverser;
+    }
+
+    /**
+     * @return PhpParserNodeVisitor[]
+     */
+    private static function createNodeVisitors(
+        string $prefix,
+        EnrichedReflector $reflector,
+        PhpScoper $scoper,
+        SymbolsRegistry $symbolsRegistry
+    ): array
+    {
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
 
@@ -56,80 +91,62 @@ class TraverserFactory
         );
         $identifierResolver = new IdentifierResolver($nameResolver);
         $stringNodePrefixer = new StringNodePrefixer($scoper);
+        
+        return [
+           $nameResolver,
+           new NodeVisitor\ParentNodeAppender(),
+           new NodeVisitor\IdentifierNameAppender($identifierResolver),
 
-        self::addVisitors(
-            $traverser,
-            [
-                $nameResolver,
-                new NodeVisitor\ParentNodeAppender(),
-                new NodeVisitor\IdentifierNameAppender($identifierResolver),
+           new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
+               $prefix,
+               $reflector,
+               $namespaceStatements,
+           ),
 
-                new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
-                    $this->prefix,
-                    $this->reflector,
-                    $namespaceStatements,
-                ),
+           new NodeVisitor\UseStmt\UseStmtCollector(
+               $namespaceStatements,
+               $useStatements,
+           ),
+           new NodeVisitor\UseStmt\UseStmtPrefixer(
+               $prefix,
+               $reflector,
+           ),
 
-                new NodeVisitor\UseStmt\UseStmtCollector(
-                    $namespaceStatements,
-                    $useStatements,
-                ),
-                new NodeVisitor\UseStmt\UseStmtPrefixer(
-                    $this->prefix,
-                    $this->reflector,
-                ),
+           new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
+               $prefix,
+               $identifierResolver,
+               $symbolsRegistry,
+               $reflector,
+           ),
+           new NodeVisitor\ClassIdentifierRecorder(
+               $prefix,
+               $identifierResolver,
+               $symbolsRegistry,
+               $reflector,
+           ),
+           new NodeVisitor\NameStmtPrefixer(
+               $prefix,
+               $namespaceStatements,
+               $useStatements,
+               $reflector,
+           ),
+           new NodeVisitor\StringScalarPrefixer(
+               $prefix,
+               $reflector,
+           ),
+           new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
+           new NodeVisitor\EvalPrefixer($stringNodePrefixer),
 
-                new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
-                    $this->prefix,
-                    $identifierResolver,
-                    $this->symbolsRegistry,
-                    $this->reflector,
-                ),
-                new NodeVisitor\ClassIdentifierRecorder(
-                    $this->prefix,
-                    $identifierResolver,
-                    $this->symbolsRegistry,
-                    $this->reflector,
-                ),
-                new NodeVisitor\NameStmtPrefixer(
-                    $this->prefix,
-                    $namespaceStatements,
-                    $useStatements,
-                    $this->reflector,
-                ),
-                new NodeVisitor\StringScalarPrefixer(
-                    $this->prefix,
-                    $this->reflector,
-                ),
-                new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
-                new NodeVisitor\EvalPrefixer($stringNodePrefixer),
-
-                new NodeVisitor\ClassAliasStmtAppender(
-                    $this->prefix,
-                    $this->reflector,
-                    $identifierResolver,
-                ),
-                new NodeVisitor\MultiConstStmtReplacer(),
-                new NodeVisitor\ConstStmtReplacer(
-                    $identifierResolver,
-                    $this->reflector,
-                ),
-            ],
-        );
-
-        return $traverser;
-    }
-
-    /**
-     * @param PhpParserNodeVisitor[] $nodeVisitors
-     */
-    private static function addVisitors(
-        NodeTraverserInterface $nodeTraverser,
-        array $nodeVisitors
-    ): void
-    {
-        foreach ($nodeVisitors as $nodeVisitor) {
-            $nodeTraverser->addVisitor($nodeVisitor);
-        }
+           new NodeVisitor\ClassAliasStmtAppender(
+               $prefix,
+               $reflector,
+               $identifierResolver,
+           ),
+           new NodeVisitor\MultiConstStmtReplacer(),
+           new NodeVisitor\ConstStmtReplacer(
+               $identifierResolver,
+               $reflector,
+           ),
+       ];
     }
 }

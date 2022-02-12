@@ -87,8 +87,6 @@ class PhpScoperTest extends TestCase
                 self::PREFIX,
                 $this->symbolsRegistry,
             ),
-            self::PREFIX,
-            $this->symbolsRegistry,
         );
     }
 
@@ -140,8 +138,6 @@ class PhpScoperTest extends TestCase
             new FakeParser(),
             $this->decoratedScoper,
             $this->traverserFactory,
-            self::PREFIX,
-            $this->symbolsRegistry,
         );
 
         $actual = $scoper->scope($filePath, $fileContents);
@@ -228,8 +224,6 @@ class PhpScoperTest extends TestCase
             new FakeParser(),
             $this->decoratedScoper,
             $this->traverserFactory,
-            self::PREFIX,
-            $this->symbolsRegistry,
         );
 
         $actual = $scoper->scope($filePath, $contents);
@@ -274,39 +268,28 @@ class PhpScoperTest extends TestCase
 
         $this->decoratedScoperProphecy
             ->scope(Argument::any(), Argument::any())
-            ->willReturn('Scoped content')
-        ;
+            ->willReturn('Scoped content');
 
         $this->parserProphecy
             ->parse('file1')
             ->willReturn($file1Stmts = [
                 new Name('file1'),
-            ])
-        ;
+            ]);
         $this->parserProphecy
             ->parse('file2')
             ->willReturn($file2Stmts = [
                 new Name('file2'),
-            ])
-        ;
+            ]);
 
-        /** @var ObjectProphecy<NodeTraverserInterface> $firstTraverserProphecy */
         $firstTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
         $firstTraverserProphecy->traverse($file1Stmts)->willReturn([]);
-        /** @var NodeTraverserInterface $firstTraverser */
-        $firstTraverser = $firstTraverserProphecy->reveal();
 
-        /** @var ObjectProphecy<NodeTraverserInterface> $secondTraverserProphecy */
         $secondTraverserProphecy = $this->prophesize(NodeTraverserInterface::class);
         $secondTraverserProphecy->traverse($file2Stmts)->willReturn([]);
-        /** @var NodeTraverserInterface $secondTraverser */
-        $secondTraverser = $secondTraverserProphecy->reveal();
 
         $i = 0;
         $this->traverserFactoryProphecy
             ->create(
-                Argument::type(PhpScoper::class),
-                self::PREFIX,
                 Argument::that(
                     static function () use (&$i): bool {
                         ++$i;
@@ -315,29 +298,29 @@ class PhpScoperTest extends TestCase
                     }
                 ),
             )
-            ->willReturn($firstTraverser)
-        ;
+            ->willReturn($firstTraverserProphecy->reveal());
+
         $this->traverserFactoryProphecy
             ->create(
-                Argument::type(PhpScoper::class),
-                self::PREFIX,
                 Argument::that(
                     static function () use (&$i): bool {
                         ++$i;
 
+                        // It is 4 instead of 2 because Prophecy will check all
+                        // registered calls even if the first one matches.
+                        // So it will call this one too for the first file
+                        // hence by the time it is the 2nd call for the 2nd file
+                        // we are at the 4th call.
                         return 4 === $i;
                     }
                 ),
             )
-            ->willReturn($secondTraverser)
-        ;
+            ->willReturn($secondTraverserProphecy->reveal());
 
         $scoper = new PhpScoper(
             $this->parser,
             new FakeScoper(),
             $this->traverserFactory,
-            self::PREFIX,
-            $this->symbolsRegistry,
         );
 
         foreach ($files as $file => $contents) {

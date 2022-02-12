@@ -35,8 +35,6 @@ class TraverserFactoryTest extends TestCase
             new FakeParser(),
             new FakeScoper(),
             (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
-            $prefix,
-            new SymbolsRegistry(),
         );
         $symbolsRegistry = new SymbolsRegistry();
 
