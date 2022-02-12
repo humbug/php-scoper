@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
@@ -30,11 +31,16 @@ class ScoperFactory
 {
     private Parser $parser;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
+    private Printer $printer;
 
-    public function __construct(Parser $parser, EnrichedReflectorFactory $enrichedReflectorFactory)
-    {
+    public function __construct(
+        Parser $parser,
+        EnrichedReflectorFactory $enrichedReflectorFactory,
+        Printer $printer
+    ) {
         $this->parser = $parser;
         $this->enrichedReflectorFactory = $enrichedReflectorFactory;
+        $this->printer = $printer;
     }
 
     public function createScoper(
@@ -71,6 +77,7 @@ class ScoperFactory
                     $prefix,
                     $symbolsRegistry,
                 ),
+                $this->printer,
             ),
             $prefix,
             $configuration->getPatcher(),

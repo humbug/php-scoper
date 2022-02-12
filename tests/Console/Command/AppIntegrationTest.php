@@ -25,6 +25,7 @@ use Humbug\PhpScoper\Console\AppTesterTestCase;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\PhpParser\FakeParser;
+use Humbug\PhpScoper\PhpParser\FakePrinter;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
@@ -157,6 +158,7 @@ class AppIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
                     new DummyScoperFactory(
                         new FakeParser(),
                         new EnrichedReflectorFactory(Reflector::createEmpty()),
+                        new FakePrinter(),
                         $scoper,
                     ),
                     $innerApp,
