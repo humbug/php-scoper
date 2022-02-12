@@ -16,10 +16,9 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\PhpParser\Printer\Printer;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
+use PhpParser\Lexer;
 use PhpParser\Parser;
-use PhpParser\PrettyPrinter\Standard;
 use function basename;
 use function func_get_args;
 use function ltrim;
@@ -36,17 +35,20 @@ final class PhpScoper implements Scoper
     private Scoper $decoratedScoper;
     private TraverserFactory $traverserFactory;
     private Printer $printer;
+    private Lexer $lexer;
 
     public function __construct(
         Parser $parser,
         Scoper $decoratedScoper,
         TraverserFactory $traverserFactory,
-        Printer $printer
+        Printer $printer,
+        Lexer $lexer
     ) {
         $this->parser = $parser;
         $this->decoratedScoper = $decoratedScoper;
         $this->traverserFactory = $traverserFactory;
         $this->printer = $printer;
+        $this->lexer = $lexer;
     }
 
     /**
@@ -66,12 +68,17 @@ final class PhpScoper implements Scoper
     public function scopePhp(string $php): string
     {
         $statements = $this->parser->parse($php);
+        $oldTokens = $this->lexer->getTokens();
 
         $scopedStatements = $this->traverserFactory
             ->create($this)
             ->traverse($statements);
 
-        return $this->printer->print($scopedStatements);
+        return $this->printer->print(
+            $scopedStatements,
+            $scopedStatements,
+            $oldTokens,
+        );
     }
 
     private static function isPhpFile(string $filePath, string $contents): bool

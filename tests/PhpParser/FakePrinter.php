@@ -10,7 +10,7 @@ use PhpParser\Node;
 
 final class FakePrinter implements Printer
 {
-    public function print(array $statements): string
+    public function print(array $newStmts, array $oldStmts, array $oldTokens): string
     {
         throw new LogicException();
     }

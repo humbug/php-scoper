@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\Lexer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -36,6 +37,7 @@ class TraverserFactoryTest extends TestCase
             new FakeScoper(),
             (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
             new FakePrinter(),
+            new Lexer(),
         );
         $symbolsRegistry = new SymbolsRegistry();
 

@@ -12,6 +12,7 @@ use Humbug\PhpScoper\PhpParser\FakePrinter;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\Lexer;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,6 +28,7 @@ final class ScoperFactoryTest extends TestCase
                 Reflector::createEmpty(),
             ),
             new FakePrinter(),
+            new Lexer(),
         );
 
         $factory->createScoper(

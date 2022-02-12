@@ -9,7 +9,9 @@ use PhpParser\Node;
 interface Printer
 {
     /**
-     * @param Node[] $statements
+     * @param Node[] $newStmts
+     * @param Node[] $oldStmts
+     * @param array<mixed> $oldTokens
      */
-    public function print(array $statements): string;
+    public function print(array $newStmts, array $oldStmts, array $oldTokens): string;
 }
