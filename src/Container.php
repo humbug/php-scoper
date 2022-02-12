@@ -69,6 +69,7 @@ final class Container
                 $this->getParser(),
                 $this->getEnrichedReflectorFactory(),
                 $this->getPrinter(),
+                $this->getLexer(),
             );
         }
 

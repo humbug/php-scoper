@@ -17,8 +17,8 @@ final class StandardPrinter implements Printer
         $this->decoratedPrinter = $decoratedPrinter;
     }
 
-    public function print(array $statements): string
+    public function print(array $newStmts, array $oldStmts, array $oldTokens): string
     {
-        return $this->decoratedPrinter->prettyPrintFile($statements)."\n";
+        return $this->decoratedPrinter->prettyPrintFile($newStmts)."\n";
     }
 }

@@ -34,10 +34,10 @@ class TraverserFactoryTest extends TestCase
         $prefix = 'Humbug';
         $phpScoper = new PhpScoper(
             new FakeParser(),
-            new Lexer(),
             new FakeScoper(),
             (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
             new FakePrinter(),
+            new Lexer(),
         );
         $symbolsRegistry = new SymbolsRegistry();
 

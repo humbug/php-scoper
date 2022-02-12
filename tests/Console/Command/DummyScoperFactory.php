@@ -10,6 +10,7 @@ use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\Lexer;
 use PhpParser\Parser;
 
 final class DummyScoperFactory extends ScoperFactory
@@ -22,7 +23,12 @@ final class DummyScoperFactory extends ScoperFactory
         Printer $printer,
         Scoper $scoper
     ) {
-        parent::__construct($parser, $enrichedReflectorFactory, $printer);
+        parent::__construct(
+            $parser,
+            $enrichedReflectorFactory,
+            $printer,
+            new Lexer(),
+        );
 
         $this->scoper = $scoper;
     }

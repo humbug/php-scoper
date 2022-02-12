@@ -22,6 +22,7 @@ use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\Lexer;
 use PhpParser\Parser;
 
 /**
@@ -32,15 +33,18 @@ class ScoperFactory
     private Parser $parser;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
     private Printer $printer;
+    private Lexer $lexer;
 
     public function __construct(
         Parser $parser,
         EnrichedReflectorFactory $enrichedReflectorFactory,
-        Printer $printer
+        Printer $printer,
+        Lexer $lexer
     ) {
         $this->parser = $parser;
         $this->enrichedReflectorFactory = $enrichedReflectorFactory;
         $this->printer = $printer;
+        $this->lexer = $lexer;
     }
 
     public function createScoper(
@@ -78,6 +82,7 @@ class ScoperFactory
                     $symbolsRegistry,
                 ),
                 $this->printer,
+                $this->lexer,
             ),
             $prefix,
             $configuration->getPatcher(),
