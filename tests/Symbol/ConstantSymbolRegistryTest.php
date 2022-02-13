@@ -90,8 +90,10 @@ class ConstantSymbolRegistryTest extends TestCase
         );
 
         $augmentedRegistry = $registry->merge(
-            ['Acme\Bar'],
-            ['/^Acme\\\\Bar/'],
+            SymbolRegistry::createForConstants(
+                ['Acme\Bar'],
+                ['/^Acme\\\\Bar/'],
+            ),
         );
 
         SymbolRegistryAssertions::assertStateIs(

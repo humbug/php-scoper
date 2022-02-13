@@ -24,18 +24,18 @@ final class EnrichedReflectorFactoryTest extends TestCase
             null,
             null,
             null,
-            ['Acme\Foo'],
-            ['Acme\main'],
-            ['Acme\BAR'],
+            SymbolRegistry::create(['Acme\Foo']),
+            SymbolRegistry::create(['Acme\main']),
+            SymbolRegistry::createForConstants(['Acme\BAR']),
         );
 
         $factory = new EnrichedReflectorFactory(Reflector::createEmpty());
 
         $expected = new EnrichedReflector(
             Reflector::createEmpty()->withAdditionalSymbols(
-                ['Acme\Foo'],
-                ['Acme\main'],
-                ['Acme\BAR'],
+                SymbolRegistry::create(['Acme\Foo']),
+                SymbolRegistry::create(['Acme\main']),
+                SymbolRegistry::createForConstants(['Acme\BAR']),
             ),
             $symbolsConfiguration,
         );

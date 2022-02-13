@@ -451,9 +451,9 @@ class PhpScoperSpecTest extends TestCase
         $formattedFunctionsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedFunctions());
         $formattedConstantsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedConstants());
 
-        $formattedInternalClasses = self::formatSimpleList($symbolsConfiguration->getExcludedClasses());
-        $formattedInternalFunctions = self::formatSimpleList($symbolsConfiguration->getExcludedFunctions());
-        $formattedInternalConstants = self::formatSimpleList($symbolsConfiguration->getExcludedConstants());
+        $formattedInternalClasses = self::formatSymbolRegistry($symbolsConfiguration->getExcludedClasses());
+        $formattedInternalFunctions = self::formatSymbolRegistry($symbolsConfiguration->getExcludedFunctions());
+        $formattedInternalConstants = self::formatSymbolRegistry($symbolsConfiguration->getExcludedConstants());
 
         $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
         $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);

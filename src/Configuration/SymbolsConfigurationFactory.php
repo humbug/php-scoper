@@ -94,21 +94,21 @@ final class SymbolsConfigurationFactory
         );
 
         $excludedClasses = SymbolRegistry::create(
-            $this->retrieveElements(
+            ...$this->retrieveElements(
                 $config,
                 ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
             ),
         );
 
         $excludedFunctions = SymbolRegistry::create(
-            $this->retrieveElements(
+            ...$this->retrieveElements(
                 $config,
                 ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
             ),
         );
 
         $excludedConstants = SymbolRegistry::createForConstants(
-            $this->retrieveElements(
+            ...$this->retrieveElements(
                 $config,
                 ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
             ),

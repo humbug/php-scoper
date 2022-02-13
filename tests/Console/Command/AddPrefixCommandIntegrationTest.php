@@ -29,8 +29,8 @@ use function Safe\file_get_contents;
 use function Safe\file_put_contents;
 use function Safe\preg_replace;
 use function Safe\realpath;
-use function str_replace;
 use function Safe\sprintf;
+use function str_replace;
 use const DIRECTORY_SEPARATOR;
 
 /**
