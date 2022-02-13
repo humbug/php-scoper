@@ -633,21 +633,16 @@ final class Reflector
         $this->constants = $constants;
     }
 
-    /**
-     * @param string[] $classNames
-     * @param string[] $functionNames
-     * @param string[] $constantNames
-     */
-    public function withSymbols(
-        array $classNames,
-        array $functionNames,
-        array $constantNames
+    public function withAdditionalSymbols(
+        SymbolRegistry $classNames,
+        SymbolRegistry $functionNames,
+        SymbolRegistry $constantNames
     ): self
     {
         return new self(
-            $this->classes->withAdditionalSymbols($classNames),
-            $this->functions->withAdditionalSymbols($functionNames),
-            $this->constants->withAdditionalSymbols($constantNames),
+            $this->classes->merge($classNames),
+            $this->functions->merge($functionNames),
+            $this->constants->merge($constantNames),
         );
     }
 

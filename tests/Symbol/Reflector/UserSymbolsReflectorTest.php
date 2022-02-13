@@ -31,7 +31,7 @@ class UserSymbolsReflectorTest extends TestCase
         array $constantNames
     ): void
     {
-        $reflector = Reflector::createEmpty()->withSymbols(
+        $reflector = Reflector::createEmpty()->withAdditionalSymbols(
             $classNames,
             $functionNames,
             $constantNames,
@@ -61,14 +61,14 @@ class UserSymbolsReflectorTest extends TestCase
         self::assertFalse($emptyReflector->isClassInternal($classA));
         self::assertFalse($emptyReflector->isClassInternal($classB));
 
-        $reflectorWithA = $emptyReflector->withSymbols([$classA], [], []);
+        $reflectorWithA = $emptyReflector->withAdditionalSymbols([$classA], [], []);
 
         self::assertFalse($emptyReflector->isClassInternal($classA));
         self::assertFalse($emptyReflector->isClassInternal($classB));
         self::assertTrue($reflectorWithA->isClassInternal($classA));
         self::assertFalse($reflectorWithA->isClassInternal($classB));
 
-        $reflectorWithAandB = $reflectorWithA->withSymbols([$classB], [], []);
+        $reflectorWithAandB = $reflectorWithA->withAdditionalSymbols([$classB], [], []);
 
         self::assertFalse($emptyReflector->isClassInternal($classA));
         self::assertFalse($emptyReflector->isClassInternal($classB));

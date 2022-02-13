@@ -32,7 +32,7 @@ final class EnrichedReflectorFactoryTest extends TestCase
         $factory = new EnrichedReflectorFactory(Reflector::createEmpty());
 
         $expected = new EnrichedReflector(
-            Reflector::createEmpty()->withSymbols(
+            Reflector::createEmpty()->withAdditionalSymbols(
                 ['Acme\Foo'],
                 ['Acme\main'],
                 ['Acme\BAR'],
