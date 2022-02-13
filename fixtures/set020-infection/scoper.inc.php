@@ -33,10 +33,7 @@ return [
     ],
     'exclude-constants' => [
         // Symfony global constants
-        // TODO: switch to the following regex once regexes are supported here
-        // https://github.com/humbug/php-scoper/issues/634
         '/^SYMFONY\_[\p{L}_]+$/',
-        'SYMFONY_GRAPHEME_CLUSTER_RX',
     ],
     'exclude-files' => [
         ...$polyfillsBootstraps,
