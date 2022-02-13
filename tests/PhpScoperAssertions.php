@@ -12,6 +12,7 @@ final class PhpScoperAssertions
 {
     /**
      * @parma list $expected
+     * @param mixed $actual
      */
     public static function assertListEqualsCanonicalizing(
         array $expected,

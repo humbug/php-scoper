@@ -14,13 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use Closure;
-use LogicException;
 use PhpParser\Parser;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use function rand;
-use function Safe\mkdir;
+use function mkdir as native_mkdir;
 use function Safe\realpath;
 use function Safe\sprintf;
 use function Safe\substr;
@@ -55,7 +53,7 @@ function make_tmp_dir(string $namespace, string $className): string
 
     $i = 0;
 
-    while (false === @mkdir($tempDir = escape_path($basePath.rand(10000, 99999)), 0777, true)) {
+    while (false === @native_mkdir($tempDir = escape_path($basePath.rand(10000, 99999)), 0777, true)) {
         // Run until we are able to create a directory
         if ($i > 100) {
             throw new RuntimeException(

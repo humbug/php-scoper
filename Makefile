@@ -48,7 +48,7 @@ cs-check: $(CODE_SNIFFER)
 PHPSTAN=vendor-bin/phpstan/vendor/bin/phpstan
 phpstan: ## Runs PHPStan
 phpstan: $(PHPSTAN)
-	$(PHPNOGC) $(PHPSTAN) analyze src --level max --memory-limit=-1
+	$(PHPNOGC) $(PHPSTAN) analyze src tests --level max --memory-limit=-1
 
 .PHONY: build
 build:	 ## Builds the PHAR

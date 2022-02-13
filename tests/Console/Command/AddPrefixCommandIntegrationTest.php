@@ -30,6 +30,7 @@ use function Safe\file_put_contents;
 use function Safe\preg_replace;
 use function Safe\realpath;
 use function str_replace;
+use function Safe\sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -329,9 +330,19 @@ EOF;
         return array_reduce(
             iterator_to_array($files),
             static function (array $collectedFiles, SplFileInfo $file) use ($dir): array {
-                $path = str_replace($dir, '', $file->getRealPath());
+                $realPath = $file->getRealPath();
 
-                $collectedFiles[$path] = file_get_contents($file->getRealPath());
+                self::assertIsString(
+                    $realPath,
+                    sprintf(
+                        'Expected file "%s" to have a real path.',
+                        $file->getPathname()
+                    ),
+                );
+
+                $path = str_replace($dir, '', $realPath);
+
+                $collectedFiles[$path] = file_get_contents($realPath);
 
                 return $collectedFiles;
             },

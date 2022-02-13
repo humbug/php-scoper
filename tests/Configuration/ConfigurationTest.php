@@ -27,6 +27,8 @@ final class ConfigurationTest extends TestCase
 {
     /**
      * @dataProvider prefixProvider
+     *
+     * @param non-empty-string $prefix
      */
     public function test_it_validates_the_prefix(
         string $prefix,

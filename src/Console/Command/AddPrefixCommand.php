@@ -26,6 +26,7 @@ use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
+use InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -158,6 +159,9 @@ final class AddPrefixCommand implements Command, CommandAware
         return ExitCode::SUCCESS;
     }
 
+    /**
+     * @return non-empty-string
+     */
     private function getOutputDir(IO $io, string $cwd): string
     {
         return $this->canonicalizePath(
@@ -260,11 +264,17 @@ final class AddPrefixCommand implements Command, CommandAware
      */
     private function canonicalizePath(string $path, string $cwd): string
     {
-        return Path::canonicalize(
+        $canonicalPath = Path::canonicalize(
             $this->fileSystem->isAbsolutePath($path)
                 ? $path
                 : $cwd.DIRECTORY_SEPARATOR.$path,
         );
+
+        if ('' === $canonicalPath) {
+            throw new InvalidArgumentException('Cannot canonicalize empty path and empty working directory');
+        }
+
+        return $canonicalPath;
     }
 
     private function getScoper(): ConsoleScoper

@@ -196,6 +196,8 @@ final class UseStmtNameTest extends TestCase
 
         $statements = $parser->parse($php);
 
+        self::assertNotNull($statements);
+
         $traverser->traverse($statements);
 
         foreach ($useStatements as $useStmts) {

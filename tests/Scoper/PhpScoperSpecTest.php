@@ -330,7 +330,7 @@ class PhpScoperSpecTest extends TestCase
         $spec = sprintf(
             '[%s] %s',
             $meta['title'],
-            isset($fixtureSet['spec']) ? $fixtureSet['spec'] : $fixtureTitle
+            $fixtureSet['spec'] ?? $fixtureTitle
         );
 
         $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];

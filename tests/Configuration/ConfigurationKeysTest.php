@@ -50,16 +50,18 @@ final class ConfigurationKeysTest extends TestCase
     {
         $configKeysReflection = new ReflectionClass(ConfigurationKeys::class);
 
-        $constant = $configKeysReflection->getConstant('KEYWORDS');
+        $constants = $configKeysReflection->getConstant('KEYWORDS');
 
-        foreach ($constant as $index => $value) {
+        self::assertIsArray($constants);
+
+        foreach ($constants as $index => $value) {
             self::assertNonEmptyStringConstantValue(
                 $value,
                 (string) $index,
             );
         }
 
-        return $constant;
+        return $constants;
     }
 
     /**
