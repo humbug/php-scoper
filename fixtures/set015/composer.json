@@ -8,6 +8,6 @@
         }
     },
     "require": {
-        "pimple/pimple": "3.2.3"
+        "pimple/pimple": "^3.2.3"
     }
 }
