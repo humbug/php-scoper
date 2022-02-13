@@ -17,10 +17,10 @@ final class EnrichedReflectorFactory
 
     public function create(SymbolsConfiguration $symbolsConfiguration): EnrichedReflector
     {
-        $configuredReflector = $this->reflector->withSymbols(
-            $symbolsConfiguration->getExcludedClassNames(),
-            $symbolsConfiguration->getExcludedFunctionNames(),
-            $symbolsConfiguration->getExcludedConstantNames(),
+        $configuredReflector = $this->reflector->withAdditionalSymbols(
+            $symbolsConfiguration->getExcludedClasses(),
+            $symbolsConfiguration->getExcludedFunctions(),
+            $symbolsConfiguration->getExcludedConstants(),
         );
 
         return new EnrichedReflector(

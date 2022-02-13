@@ -186,9 +186,9 @@ Symbols can be marked as excluded as follows:
 
 return [
     'exclude-namespaces' => [ 'WP', '/regex/' ],
-    'exclude-classes' => ['Stringeable'],
-    'exclude-functions' => ['str_contains'],
-    'exclude-constants' => ['PHP_EOL'],
+    'exclude-classes' => ['Stringeable', '/regex/'],
+    'exclude-functions' => ['str_contains', '/regex/'],
+    'exclude-constants' => ['PHP_EOL', '/regex/'],
 ];
 ```
 

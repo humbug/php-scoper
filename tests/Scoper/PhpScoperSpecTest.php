@@ -280,10 +280,10 @@ class PhpScoperSpecTest extends TestCase
 
         $reflector = Reflector
             ::createWithPhpStormStubs()
-            ->withSymbols(
-                $symbolsConfiguration->getExcludedClassNames(),
-                $symbolsConfiguration->getExcludedFunctionNames(),
-                $symbolsConfiguration->getExcludedConstantNames(),
+            ->withAdditionalSymbols(
+                $symbolsConfiguration->getExcludedClasses(),
+                $symbolsConfiguration->getExcludedFunctions(),
+                $symbolsConfiguration->getExcludedConstants(),
             );
 
         $enrichedReflector = new EnrichedReflector(
@@ -451,9 +451,9 @@ class PhpScoperSpecTest extends TestCase
         $formattedFunctionsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedFunctions());
         $formattedConstantsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedConstants());
 
-        $formattedInternalClasses = self::formatSimpleList($symbolsConfiguration->getExcludedClassNames());
-        $formattedInternalFunctions = self::formatSimpleList($symbolsConfiguration->getExcludedFunctionNames());
-        $formattedInternalConstants = self::formatSimpleList($symbolsConfiguration->getExcludedConstantNames());
+        $formattedInternalClasses = self::formatSymbolRegistry($symbolsConfiguration->getExcludedClasses());
+        $formattedInternalFunctions = self::formatSymbolRegistry($symbolsConfiguration->getExcludedFunctions());
+        $formattedInternalConstants = self::formatSymbolRegistry($symbolsConfiguration->getExcludedConstants());
 
         $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
         $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);

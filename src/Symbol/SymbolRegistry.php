@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
 
+use InvalidArgumentException;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
@@ -107,20 +108,20 @@ final class SymbolRegistry
         return false;
     }
 
-    /**
-     * @param string[] $names
-     * @param string[] $regexes
-     */
-    public function withAdditionalSymbols(array $names = [], array $regexes = []): self
+    public function merge(SymbolRegistry $registry): self
     {
+        if ($this->constants !== $registry->constants) {
+            throw new InvalidArgumentException('Cannot merge registries of different symbol types');
+        }
+
         $args = [
             [
                 ...$this->getNames(),
-                ...$names,
+                ...$registry->getNames(),
             ],
             [
                 ...$this->getRegexes(),
-                ...$regexes,
+                ...$registry->getRegexes(),
             ],
         ];
 

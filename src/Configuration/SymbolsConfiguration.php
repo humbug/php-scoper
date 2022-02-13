@@ -30,26 +30,10 @@ final class SymbolsConfiguration
     private SymbolRegistry $exposedFunctions;
     private SymbolRegistry $exposedConstants;
 
-    /**
-     * @var string[]
-     */
-    private array $excludedClassNames;
+    private SymbolRegistry $excludedClasses;
+    private SymbolRegistry $excludedFunctions;
+    private SymbolRegistry $excludedConstants;
 
-    /**
-     * @var string[]
-     */
-    private array $excludedFunctionNames;
-
-    /**
-     * @var string[]
-     */
-    private array $excludedConstantNames;
-
-    /**
-     * @param string[] $excludedClassNames
-     * @param string[] $excludedFunctionNames
-     * @param string[] $excludedConstantNames
-     */
     public static function create(
         bool $exposeGlobalConstants = false,
         bool $exposeGlobalClasses = false,
@@ -58,12 +42,12 @@ final class SymbolsConfiguration
         // Does not contain the list of excluded symbols which go to the
         // Reflector (which has no notion of namespaces)
         ?NamespaceRegistry $exposedNamespaces = null,
-        SymbolRegistry $exposedClasses = null,
-        SymbolRegistry $exposedFunctions = null,
-        SymbolRegistry $exposedConstants = null,
-        array $excludedClassNames = [],
-        array $excludedFunctionNames = [],
-        array $excludedConstantNames = []
+        ?SymbolRegistry $exposedClasses = null,
+        ?SymbolRegistry $exposedFunctions = null,
+        ?SymbolRegistry $exposedConstants = null,
+        ?SymbolRegistry $excludedClasses = null,
+        ?SymbolRegistry $excludedFunctions = null,
+        ?SymbolRegistry $excludedConstants = null
     ): self {
         return new self(
             $exposeGlobalConstants,
@@ -74,17 +58,12 @@ final class SymbolsConfiguration
             $exposedClasses ?? SymbolRegistry::create(),
             $exposedFunctions ?? SymbolRegistry::create(),
             $exposedConstants ?? SymbolRegistry::createForConstants(),
-            $excludedClassNames,
-            $excludedFunctionNames,
-            $excludedConstantNames,
+            $excludedClasses ?? SymbolRegistry::create(),
+            $excludedFunctions ?? SymbolRegistry::create(),
+            $excludedConstants ?? SymbolRegistry::createForConstants(),
         );
     }
 
-    /**
-     * @param string[] $excludedClassNames
-     * @param string[] $excludedFunctionNames
-     * @param string[] $excludedConstantNames
-     */
     private function __construct(
         bool $exposeGlobalConstants,
         bool $exposeGlobalClasses,
@@ -94,9 +73,9 @@ final class SymbolsConfiguration
         SymbolRegistry $exposedClasses,
         SymbolRegistry $exposedFunctions,
         SymbolRegistry $exposedConstants,
-        array $excludedClassNames,
-        array $excludedFunctionNames,
-        array $excludedConstantNames
+        SymbolRegistry $excludedClasses,
+        SymbolRegistry $excludedFunctions,
+        SymbolRegistry $excludedConstants
     ) {
         $this->exposeGlobalConstants = $exposeGlobalConstants;
         $this->exposeGlobalClasses = $exposeGlobalClasses;
@@ -106,9 +85,9 @@ final class SymbolsConfiguration
         $this->exposedClasses = $exposedClasses;
         $this->exposedFunctions = $exposedFunctions;
         $this->exposedConstants = $exposedConstants;
-        $this->excludedClassNames = $excludedClassNames;
-        $this->excludedFunctionNames = $excludedFunctionNames;
-        $this->excludedConstantNames = $excludedConstantNames;
+        $this->excludedClasses = $excludedClasses;
+        $this->excludedFunctions = $excludedFunctions;
+        $this->excludedConstants = $excludedConstants;
     }
 
     public function shouldExposeGlobalConstants(): bool
@@ -151,27 +130,18 @@ final class SymbolsConfiguration
         return $this->exposedConstants;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getExcludedClassNames(): array
+    public function getExcludedClasses(): SymbolRegistry
     {
-        return $this->excludedClassNames;
+        return $this->excludedClasses;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getExcludedFunctionNames(): array
+    public function getExcludedFunctions(): SymbolRegistry
     {
-        return $this->excludedFunctionNames;
+        return $this->excludedFunctions;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getExcludedConstantNames(): array
+    public function getExcludedConstants(): SymbolRegistry
     {
-        return $this->excludedConstantNames;
+        return $this->excludedConstants;
     }
 }

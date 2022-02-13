@@ -76,8 +76,6 @@ return [
         // '~^$~',                        // The root namespace only
         // '',                            // Any namespace
     ],
-    // Warning: regexes are not supported there (yet)
-    // See https://github.com/humbug/php-scoper/issues/634
     'exclude-classes' => [
         // 'ReflectionClassConstant',
     ],
