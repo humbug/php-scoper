@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Command\CommandRegistry;
-use Fidry\Console\IO;
+use Fidry\Console\Input\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Symfony\Component\Console\Exception\RuntimeException;

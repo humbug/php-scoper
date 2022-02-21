@@ -255,7 +255,7 @@ final class AddPrefixCommand implements Command, CommandAware
     {
         return array_map(
             fn (string $path) => $this->canonicalizePath($path, $cwd),
-            $io->getStringArrayArgument(self::PATH_ARG),
+            $io->getArgument(self::PATH_ARG)->asNonEmptyStringList(),
         );
     }
 
