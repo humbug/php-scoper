@@ -140,8 +140,8 @@ e2e_014: $(PHPSCOPER)
 	# Having those composer files messes up the Box auto-loading detection. This
 	# is a very special case where there is no dependency and for users in practice
 	# it would be recommended to register the files themselves
-	rm fixtures/set004/composer.lock || true
-	rm -rf fixtures/set004/vendor || true
+	rm fixtures/set014/composer.lock || true
+	rm -rf fixtures/set014/vendor || true
 
 	$(PHPBIN) $(BOX) compile --no-parallel --working-dir fixtures/set014
 

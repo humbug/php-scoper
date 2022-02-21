@@ -18,7 +18,7 @@ use Fidry\Console\Command\Command;
 use Fidry\Console\Command\CommandRegistry;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\ExitCode;
-use Fidry\Console\IO;
+use Fidry\Console\Input\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
@@ -197,7 +197,7 @@ final class InspectSymbolCommand implements Command
      */
     private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $configPath = trim($io->getStringOption(self::CONFIG_FILE_OPT));
+        $configPath = (string) $io->getOption(self::CONFIG_FILE_OPT)->asNullableString();
 
         if ('' === $configPath) {
             $configPath = ConfigurationFactory::DEFAULT_FILE_NAME;

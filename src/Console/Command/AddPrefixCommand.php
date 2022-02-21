@@ -20,7 +20,7 @@ use Fidry\Console\Command\CommandAware;
 use Fidry\Console\Command\CommandAwareness;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\ExitCode;
-use Fidry\Console\IO;
+use Fidry\Console\Input\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
@@ -92,6 +92,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     'p',
                     InputOption::VALUE_REQUIRED,
                     'The namespace prefix to add.',
+                    '',
                 ),
                 new InputOption(
                     self::OUTPUT_DIR_OPT,
@@ -153,7 +154,7 @@ final class AddPrefixCommand implements Command, CommandAware
             $config,
             $paths,
             $outputDir,
-            $io->getBooleanOption(self::STOP_ON_FAILURE_OPT),
+            $io->getOption(self::STOP_ON_FAILURE_OPT)->asBoolean(),
         );
 
         return ExitCode::SUCCESS;
@@ -165,7 +166,7 @@ final class AddPrefixCommand implements Command, CommandAware
     private function getOutputDir(IO $io, string $cwd): string
     {
         return $this->canonicalizePath(
-            $io->getStringOption(self::OUTPUT_DIR_OPT),
+            $io->getOption(self::OUTPUT_DIR_OPT)->asString(),
             $cwd,
         );
     }
@@ -201,7 +202,7 @@ final class AddPrefixCommand implements Command, CommandAware
 
     private static function canDeleteOutputDir(IO $io, string $outputDir): bool
     {
-        if ($io->getBooleanOption(self::FORCE_OPT)) {
+        if ($io->getOption(self::FORCE_OPT)->asBoolean()) {
             return true;
         }
 
@@ -228,8 +229,8 @@ final class AddPrefixCommand implements Command, CommandAware
 
         return $configLoader->loadConfig(
             $io,
-            $io->getStringOption(self::PREFIX_OPT),
-            $io->getBooleanOption(self::NO_CONFIG_OPT),
+            $io->getOption(self::PREFIX_OPT)->asString(),
+            $io->getOption(self::NO_CONFIG_OPT)->asBoolean(),
             $this->getConfigFilePath($io, $cwd),
             ConfigurationFactory::DEFAULT_FILE_NAME,
             $this->init,
@@ -243,7 +244,7 @@ final class AddPrefixCommand implements Command, CommandAware
      */
     private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $configFilePath = $io->getStringOption(self::CONFIG_FILE_OPT);
+        $configFilePath = (string) $io->getOption(self::CONFIG_FILE_OPT)->asNullableString();
 
         return '' === $configFilePath ? null : $this->canonicalizePath($configFilePath, $cwd);
     }
@@ -255,7 +256,7 @@ final class AddPrefixCommand implements Command, CommandAware
     {
         return array_map(
             fn (string $path) => $this->canonicalizePath($path, $cwd),
-            $io->getStringArrayArgument(self::PATH_ARG),
+            $io->getArgument(self::PATH_ARG)->asNonEmptyStringList(),
         );
     }
 
