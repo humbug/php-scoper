@@ -20,7 +20,7 @@ use Fidry\Console\Command\CommandAware;
 use Fidry\Console\Command\CommandAwareness;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\ExitCode;
-use Fidry\Console\IO;
+use Fidry\Console\Input\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
