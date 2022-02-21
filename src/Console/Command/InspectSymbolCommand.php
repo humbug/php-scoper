@@ -197,7 +197,7 @@ final class InspectSymbolCommand implements Command
      */
     private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $configPath = trim($io->getStringOption(self::CONFIG_FILE_OPT));
+        $configPath = (string) $io->getOption(self::CONFIG_FILE_OPT)->asNullableString();
 
         if ('' === $configPath) {
             $configPath = ConfigurationFactory::DEFAULT_FILE_NAME;

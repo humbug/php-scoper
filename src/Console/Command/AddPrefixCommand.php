@@ -243,7 +243,7 @@ final class AddPrefixCommand implements Command, CommandAware
      */
     private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $configFilePath = $io->getStringOption(self::CONFIG_FILE_OPT);
+        $configFilePath = (string) $io->getOption(self::CONFIG_FILE_OPT)->asNullableString();
 
         return '' === $configFilePath ? null : $this->canonicalizePath($configFilePath, $cwd);
     }
