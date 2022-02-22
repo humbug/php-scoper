@@ -16,7 +16,7 @@ dependencies such as vendor directories, to a new and distinct namespace.
 PHP-Scoper's goal is to make sure that all code for a project lies in a 
 distinct PHP namespace. This is necessary, for example, when building PHARs that:
 
--Bundle their own vendor dependencies; and 
+- Bundle their own vendor dependencies; and 
 - Load/execute code from arbitrary PHP projects with similar dependencies
 
 When a package (of possibly different versions) exists, and is found in both a PHAR
