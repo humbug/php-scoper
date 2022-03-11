@@ -55,6 +55,15 @@ return [
     if (!defined('Acme\BAR_CONST')) {
         define(\Acme\BAR_CONST, foo());
     }
+    if (!defined('Acme\Bar::TEST')) {
+        define(\Acme\Bar::TEST, foo());
+    }
+    if (!defined('\Acme\Bar::TEST')) {
+        define(\Acme\Bar::TEST, foo());
+    }
+    if (!defined('\\Acme\\Bar::TEST')) {
+        define(\Acme\Bar::TEST, foo());
+    }
     const PHP_VERSION = 81400;
     ----
     <?php
@@ -80,6 +89,15 @@ return [
     }
     if (!\defined('Humbug\\Acme\\BAR_CONST')) {
         \define(\Humbug\Acme\BAR_CONST, foo());
+    }
+    if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+        \define(\Humbug\Acme\Bar::TEST, foo());
+    }
+    if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+        \define(\Humbug\Acme\Bar::TEST, foo());
+    }
+    if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+        \define(\Humbug\Acme\Bar::TEST, foo());
     }
     \define('PHP_VERSION', 81400);
     
