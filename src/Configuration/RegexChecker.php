@@ -78,7 +78,7 @@ final class RegexChecker
     {
         // This is not ideal as not true but is good enough for our case.
         // See https://github.com/humbug/php-scoper/issues/597
-        return '\\' !== $delimiter && native_preg_match('/^\p{L}$/u', $delimiter) === 0;
+        return '\\' !== $delimiter && '_' !== $delimiter && native_preg_match('/^\p{L}$/u', $delimiter) === 0;
     }
 
     private static function isValidRegexFlags(string $value): bool
