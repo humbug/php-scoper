@@ -14,13 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Application\SymfonyApplication;
+use Fidry\Console\Test\AppTester;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function array_reduce;
@@ -41,9 +40,7 @@ use const DIRECTORY_SEPARATOR;
  */
 class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 {
-    use AppTesterAbilities {
-        getNormalizeDisplay as getBaseNormalizeDisplay;
-    }
+    use AppTesterAbilities;
 
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
 
@@ -59,9 +56,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
             false,
         );
 
-        $this->appTester = new ApplicationTester(
-            new SymfonyApplication($application),
-        );
+        $this->appTester = AppTester::fromConsoleApp($application);
 
         file_put_contents('scoper.inc.php', '<?php return [];');
     }
@@ -164,6 +159,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         $this->assertExpectedOutput(
             $expected,
             0,
+            $this->createDisplayNormalizer(),
             $extraNormalization,
         );
     }
@@ -210,7 +206,11 @@ PhpScoper version TestVersion 28/01/2020
 
 EOF;
 
-        $this->assertExpectedOutput($expected, 0);
+        $this->assertExpectedOutput(
+            $expected,
+            0,
+            $this->createDisplayNormalizer(),
+        );
     }
 
     public function test_scope_in_very_verbose_mode(): void
@@ -291,16 +291,23 @@ EOF;
         $this->assertExpectedOutput(
             $expected,
             0,
+            $this->createDisplayNormalizer(),
             $extraDisplayNormalization,
         );
     }
 
-    private function getNormalizeDisplay(string $display, ?callable $extraNormalization = null): string
+    /**
+     * @return callable(string):string
+     */
+    private function createDisplayNormalizer(): callable
+    {
+        return fn ($display) => $this->getNormalizeDisplay($display);
+    }
+
+    private function getNormalizeDisplay(string $display): string
     {
         $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
         $display = str_replace($this->tmp, '/path/to', $display);
-
-        $display = $this->getBaseNormalizeDisplay($display, $extraNormalization);
 
         return preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',

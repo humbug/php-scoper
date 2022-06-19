@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
-use Fidry\Console\DisplayNormalizer as FidryDisplayNormalizer;
+use Fidry\Console\Test\OutputAssertions;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
@@ -21,36 +21,20 @@ trait AppTesterAbilities
     }
 
     /**
-     * @param null|callable(string):string $extraNormalization
+     * @param callable(string):string $extraNormalizers
      */
     private function assertExpectedOutput(
         string $expectedOutput,
         int $expectedStatusCode,
-        ?callable $extraNormalization = null
+        callable ...$extraNormalizers
     ): void
     {
-        $appTester = $this->getAppTester();
-
-        $actual = $this->getNormalizeDisplay(
-            $appTester->getDisplay(true),
-            $extraNormalization,
+        OutputAssertions::assertSameOutput(
+            $expectedOutput,
+            $expectedStatusCode,
+            $this->getAppTester(),
+            [DisplayNormalizer::class, 'normalize'],
+            ...$extraNormalizers,
         );
-
-        self::assertSame($expectedOutput, $actual);
-        self::assertSame($expectedStatusCode, $appTester->getStatusCode());
-    }
-
-    private function getNormalizeDisplay(
-        string $display,
-        ?callable $extraNormalization = null
-    ): string
-    {
-        $extraNormalization = $extraNormalization ?? static fn (string $display) => $display;
-
-        $display = DisplayNormalizer::normalizeDirectorySeparators($display);
-        $display = DisplayNormalizer::normalizeProgressBar($display);
-        $display = FidryDisplayNormalizer::removeTrailingSpaces($display);
-
-        return $extraNormalization($display);
     }
 }

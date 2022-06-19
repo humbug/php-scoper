@@ -22,7 +22,7 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "composer/package-versions-deprecated": "^1.8",
-        "fidry/console": "^0.4.0",
+        "fidry/console": "^0.5.0",
         "jetbrains/phpstorm-stubs": "^v2021.1",
         "nikic/php-parser": "^4.12",
         "symfony/console": "^5.2 || ^6.0",
