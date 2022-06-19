@@ -117,7 +117,7 @@ final class InspectSymbolCommand implements Command
         // working directory
         $cwd = getcwd();
 
-        $symbol = $io->getStringArgument(self::SYMBOL_ARG);
+        $symbol = $io->getArgument(self::SYMBOL_ARG)->asString();
         $symbolType = self::getSymbolType($io);
         $config = $this->retrieveConfig($io, $cwd);
 
@@ -141,20 +141,9 @@ final class InspectSymbolCommand implements Command
      */
     private static function getSymbolType(IO $io): string
     {
-        // TODO: use options when available https://github.com/theofidry/console/issues/18
-        $type = $io->getStringArgument(self::SYMBOL_TYPE_ARG);
-
-        if (!in_array($type, SymbolType::ALL, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected symbol type to be one of "%s". Got "%s"',
-                    implode('", "', SymbolType::ALL),
-                    $type,
-                ),
-            );
-        }
-
-        return $type;
+        return $io
+            ->getArgument(self::SYMBOL_TYPE_ARG)
+            ->asStringChoice(SymbolType::ALL);
     }
 
     private function retrieveConfig(IO $io, string $cwd): Configuration
@@ -166,7 +155,7 @@ final class InspectSymbolCommand implements Command
         );
 
         $configFilePath = $this->getConfigFilePath($io, $cwd);
-        $noConfig = $io->getBooleanOption(self::NO_CONFIG_OPT);
+        $noConfig = $io->getOption(self::NO_CONFIG_OPT)->asBoolean();
 
         if (null === $configFilePath) {
             // Unlike when scoping, we do not want a config file to be created

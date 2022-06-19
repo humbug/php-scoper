@@ -48,7 +48,7 @@ final class ChangeableDirectory
 
     public static function changeWorkingDirectory(IO $io): void
     {
-        $workingDir = $io->getNullableStringOption(self::WORKING_DIR_OPT);
+        $workingDir = $io->getOption(self::WORKING_DIR_OPT)->asNullableString();
 
         if (null === $workingDir) {
             return;

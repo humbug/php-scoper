@@ -22,6 +22,13 @@ use const DIRECTORY_SEPARATOR;
 
 final class DisplayNormalizer
 {
+    public static function normalize(string $display): string
+    {
+        return self::normalizeDirectorySeparators(
+            self::normalizeProgressBar($display),
+        );
+    }
+
     public static function normalizeDirectorySeparators(string $display): string
     {
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\/path\/to(.*\\\\)+/', $display, $match)) {
