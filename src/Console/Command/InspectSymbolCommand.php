@@ -118,7 +118,8 @@ final class InspectSymbolCommand implements Command
         $cwd = getcwd();
 
         $symbol = $io->getArgument(self::SYMBOL_ARG)->asString();
-        $symbolType = self::getSymbolType($io);
+        /** @var SymbolType::*_TYPE $symbolType */
+        $symbolType = $io->getArgument(self::SYMBOL_TYPE_ARG)->asStringChoice(SymbolType::ALL);
         $config = $this->retrieveConfig($io, $cwd);
 
         $enrichedReflector = $this->enrichedReflectorFactory->create(
@@ -134,16 +135,6 @@ final class InspectSymbolCommand implements Command
         );
 
         return ExitCode::SUCCESS;
-    }
-
-    /**
-     * @return SymbolType::*_TYPE
-     */
-    private static function getSymbolType(IO $io): string
-    {
-        return $io
-            ->getArgument(self::SYMBOL_TYPE_ARG)
-            ->asStringChoice(SymbolType::ALL);
     }
 
     private function retrieveConfig(IO $io, string $cwd): Configuration
