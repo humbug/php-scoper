@@ -324,7 +324,7 @@ final class InspectSymbolCommand implements Command
 
             case SymbolType::FUNCTION_TYPE:
                 return [
-                    $reflector->isClassInternal($symbol),
+                    $reflector->isFunctionInternal($symbol),
                     $reflector->isExposedFunction($symbol),
                 ];
 
