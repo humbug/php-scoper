@@ -1,4 +1,5 @@
 build:
+    image: default-bionic
     environment:
         variables:
             COMPOSER_ROOT_VERSION: '0.17.99'
