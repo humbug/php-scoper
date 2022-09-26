@@ -41,6 +41,7 @@ final class ScoperAutoloadGenerator
     // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
     EOF;
 
+    /** @var non-empty-string */
     private static string $eol;
     
     private SymbolsRegistry $registry;
@@ -178,10 +179,6 @@ final class ScoperAutoloadGenerator
         $statements = array_map(
             static function (string $statement) use ($indentLine): string {
                 $parts = explode(self::$eol, $statement);
-
-                if (false === $parts) {
-                    return $statement;
-                }
 
                 return implode(
                     self::$eol,

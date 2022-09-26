@@ -40,6 +40,7 @@ final class RegexChecker
             return false;
         }
 
+        /** @var non-empty-string $firstCharacter */
         $firstCharacter = $value[0];
 
         if (!self::isValidDelimiter($firstCharacter)) {
@@ -48,7 +49,7 @@ final class RegexChecker
 
         $parts = explode($firstCharacter, $value);
 
-        if (false === $parts || count($parts) !== 3) {
+        if (count($parts) !== 3) {
             return false;
         }
 
