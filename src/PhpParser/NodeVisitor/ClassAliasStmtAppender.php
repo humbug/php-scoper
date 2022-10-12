@@ -132,8 +132,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         FullyQualified $originalName,
         Node $stmt,
         string $prefix
-    ): Expression
-    {
+    ): Expression {
         $call = new ClassAliasFuncCall(
             FullyQualifiedFactory::concat($prefix, $originalName),
             $originalName,

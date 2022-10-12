@@ -38,8 +38,7 @@ final class ConfigurableScoper implements Scoper
                     clone $this,
                     ...$whitelistedFiles
                 )
-            )
-        ;
+            );
     }
 
     public function scope(string $filePath, string $contents): string

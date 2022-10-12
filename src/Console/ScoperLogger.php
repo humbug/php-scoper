@@ -84,8 +84,6 @@ class ScoperLogger
 
     /**
      * Output file count message if relevant.
-     *
-     * @param int $count
      */
     public function outputFileCount(int $count): void
     {
@@ -99,8 +97,6 @@ class ScoperLogger
 
     /**
      * Output scoping success message.
-     *
-     * @param string $path
      */
     public function outputSuccess(string $path): void
     {

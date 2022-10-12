@@ -2,6 +2,16 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
@@ -25,7 +35,6 @@ use function Safe\preg_match as native_preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
-use function strpos;
 use function strtolower;
 use function trim;
 
@@ -184,7 +193,7 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * return list<string>
+     * return list<string>.
      */
     private static function retrieveLegacyExposedElements(array $config): array
     {
@@ -223,7 +232,7 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * return array{string[], string[]}
+     * return array{string[], string[]}.
      */
     private function retrieveElements(array $config, string $key): array
     {
@@ -298,7 +307,7 @@ final class SymbolsConfigurationFactory
                 $excludedNamespaceNames[] = strtolower(substr($element, 0, -2));
             } elseif ('*' === $element) {
                 $excludedNamespaceNames[] = '';
-            } elseif (false !== strpos($element, '*')) {
+            } elseif (str_contains($element, '*')) {
                 $exposedSymbolsPatterns[] = self::createExposePattern($element);
             } else {
                 $exposedSymbols[] = strtolower($element);
@@ -316,8 +325,6 @@ final class SymbolsConfigurationFactory
 
     /**
      * @psalm-assert string[] $value
-     *
-     * @param mixed $value
      */
     private static function assertIsArrayOfStrings($value, string $key): void
     {

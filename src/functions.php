@@ -26,7 +26,7 @@ function get_php_scoper_version(): string
 {
     // Since PHP-Scoper relies on COMPOSER_ROOT_VERSION the version parsed by PackageVersions, we rely on Box
     // placeholders in order to get the right version for the PHAR.
-    if (0 === strpos(__FILE__, 'phar:')) {
+    if (str_starts_with(__FILE__, 'phar:')) {
         return '@git_version_placeholder@';
     }
 
@@ -39,8 +39,6 @@ function get_php_scoper_version(): string
 
 /**
  * @param string[] $paths Absolute paths
- *
- * @return string
  */
 function get_common_path(array $paths): string
 {

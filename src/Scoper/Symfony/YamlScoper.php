@@ -71,7 +71,7 @@ final class YamlScoper implements Scoper
             $this->symbolsRegistry,
         );
 
-        $contents = self::replaceClasses(
+        return self::replaceClasses(
             array_filter($matches['class']),
             array_filter($matches['separator']),
             $this->prefix,
@@ -79,8 +79,6 @@ final class YamlScoper implements Scoper
             $this->enrichedReflector,
             $this->symbolsRegistry,
         );
-
-        return $contents;
     }
 
     /**
@@ -106,7 +104,7 @@ final class YamlScoper implements Scoper
 
             $psr4Service = $class.$separator.':';
 
-            if (false !== strpos($contents, $psr4Service)) {
+            if (str_contains($contents, $psr4Service)) {
                 $offset = strpos($contents, $psr4Service) + strlen($psr4Service);
 
                 $stringToScope = substr($contents, 0, $offset);
@@ -116,8 +114,7 @@ final class YamlScoper implements Scoper
 
                 $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class.$separator.'__UnknownService__')
                     ? $stringToScope
-                    : str_replace($class, $prefixedClass, $stringToScope)
-                ;
+                    : str_replace($class, $prefixedClass, $stringToScope);
 
                 continue;
             }
@@ -131,8 +128,7 @@ final class YamlScoper implements Scoper
 
             $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class)
                 ? $stringToScope
-                : str_replace($class, $prefixedClass, $stringToScope)
-            ;
+                : str_replace($class, $prefixedClass, $stringToScope);
 
             if ($enrichedReflector->isExposedClass($class)) {
                 $symbolsRegistry->recordClass(

@@ -34,12 +34,11 @@ function request_tags(): string
 
     $headerOption = false === $gitHubToken || '' === $gitHubToken
         ? ''
-        : "-H \"Authorization: token $gitHubToken\""
-    ;
+        : "-H \"Authorization: token {$gitHubToken}\"";
 
     $command = <<<BASH
-    curl -s $headerOption https://api.github.com/repos/humbug/php-scoper/tags?per_page=1
-    BASH;
+        curl -s {$headerOption} https://api.github.com/repos/humbug/php-scoper/tags?per_page=1
+        BASH;
 
     echo 'cURL command:'.PHP_EOL;
     echo '$ '.$command;
