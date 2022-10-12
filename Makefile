@@ -47,22 +47,26 @@ help:
 # Commands
 #---------------------------------------------------------------------------
 
+.PHONY: check
+check:	 ## Runs all checks
+check: update_root_version cs composer_normalize phpstan test
+
 .PHONY: clean
-clean:	 ## Clean all created artifacts
+clean:	 ## Cleans all created artifacts
 clean:
 	git clean --exclude=.idea/ -ffdx
 
-update_root_version: ## Check the latest GitHub release and update COMPOSER_ROOT_VERSION accordingly
+update_root_version: ## Checks the latest GitHub release and update COMPOSER_ROOT_VERSION accordingly
 update_root_version:
 	rm .composer-root-version || true
 	$(MAKE) .composer-root-version
 
 .PHONY: cs
-cs:	## Fixes CS
+cs:	 ## Fixes CS
 cs: php_cs_fixer
 
 .PHONY: cs_lint
-cs_lint:	## Checks CS
+cs_lint: ## Checks CS
 cs_lint: composer_normalize_lint php_cs_fixer_lint
 
 .PHONY: php_cs_fixer
@@ -87,13 +91,13 @@ phpstan: $(PHPSTAN_BIN)
 	$(PHPSTAN)
 
 .PHONY: build
-build:	## Builds the PHAR
+build:	 ## Builds the PHAR
 build:
 	rm $(PHP_SCOPER_BIN) || true
 	$(MAKE) $(PHP_SCOPER_BIN)
 
 .PHONY: outdated_fixtures
-outdated_fixtures:	## Reports outdated dependencies
+outdated_fixtures: ## Reports outdated dependencies
 outdated_fixtures:
 	find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'echo "Checking %;" $$(composer install --working-dir=% --ansi && composer outdated --direct --working-dir=% --ansi)'
 
@@ -103,47 +107,47 @@ outdated_fixtures:
 #---------------------------------------------------------------------------
 
 .PHONY: test
-test:	 ## Runs all the tests
+test:		   ## Runs all the tests
 test: check_composer_root_version validate_package covers_validator phpunit e2e
 
 .PHONY: validate_package
-validate_package:	## Validates the composer.json
+validate_package:  ## Validates the composer.json
 validate_package:
 	composer validate --strict
 
 .PHONY: check_composer_root_version
-check_composer_root_version:	## Checks that the COMPOSER_ROOT_VERSION is up to date
+check_composer_root_version: ## Checks that the COMPOSER_ROOT_VERSION is up to date
 check_composer_root_version: .composer-root-version
 	php bin/check-composer-root-version.php
 
 .PHONY: covers_validator
-covers_validator:	 ## Checks PHPUnit @coves tag
+covers_validator:  ## Checks PHPUnit @coves tag
 covers_validator: $(COVERS_VALIDATOR_BIN)
 	$(COVERS_VALIDATOR)
 
 .PHONY: phpunit
-phpunit:	## Runs PHPUnit tests
+phpunit:	   ## Runs PHPUnit tests
 phpunit: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT)
 
 .PHONY: phpunit_coverage_infection
-phpunit_coverage_infection:	## Runs PHPUnit tests with test coverage
+phpunit_coverage_infection: ## Runs PHPUnit tests with test coverage
 phpunit_coverage_infection: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT_COVERAGE_INFECTION)
 
 .PHONY: phpunit_coverage_html
-phpunit_coverage_html:		## Runs PHPUnit with code coverage with HTML report
+phpunit_coverage_html:	    ## Runs PHPUnit with code coverage with HTML report
 phpunit_coverage_html: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT_COVERAGE_HTML)
 
 .PHONY: infection
-infection:	## Runs Infection
+infection:	   ## Runs Infection
 infection: $(COVERAGE_XML) vendor
 #infection: $(INFECTION_BIN) $(COVERAGE_XML) vendor
 	if [ -d $(COVERAGE_XML) ]; then $(INFECTION); fi
 
 .PHONY: blackfire
-blackfire:	## Runs Blackfire profiling
+blackfire:	   ## Runs Blackfire profiling
 blackfire: $(PHP_SCOPER_BIN) vendor
 	@echo "By https://blackfire.io"
 	@echo "This might take a while (~2min)"

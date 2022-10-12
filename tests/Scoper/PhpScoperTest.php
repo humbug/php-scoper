@@ -207,7 +207,7 @@ class PhpScoperTest extends TestCase
 
         $expected = <<<'PHP'
             #!/usr/bin/env php
-            <?php
+            <?php 
             namespace Humbug;
 
             echo "Hello world";
