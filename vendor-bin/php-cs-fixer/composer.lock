@@ -2037,16 +2037,16 @@
         },
         {
             "name": "theofidry/php-cs-fixer-config",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/php-cs-fixer-config.git",
-                "reference": "4fee983f3da45e7cd7c0e38144135656252b30f1"
+                "reference": "9dd265fc36006f2d5b165e18a9e15411230512cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/php-cs-fixer-config/zipball/4fee983f3da45e7cd7c0e38144135656252b30f1",
-                "reference": "4fee983f3da45e7cd7c0e38144135656252b30f1",
+                "url": "https://api.github.com/repos/theofidry/php-cs-fixer-config/zipball/9dd265fc36006f2d5b165e18a9e15411230512cf",
+                "reference": "9dd265fc36006f2d5b165e18a9e15411230512cf",
                 "shasum": ""
             },
             "require": {
@@ -2081,9 +2081,9 @@
             "description": "The PHP-CS-Fixer default config for my projects",
             "support": {
                 "issues": "https://github.com/theofidry/php-cs-fixer-config/issues",
-                "source": "https://github.com/theofidry/php-cs-fixer-config/tree/1.0.0"
+                "source": "https://github.com/theofidry/php-cs-fixer-config/tree/1.0.1"
             },
-            "time": "2022-10-12T13:12:27+00:00"
+            "time": "2022-10-12T20:33:56+00:00"
         }
     ],
     "aliases": [],

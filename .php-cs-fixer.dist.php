@@ -43,23 +43,11 @@ $overriddenRules = [
         'location' => 'after_declare_strict',
     ],
     'mb_str_functions' => false,
-    'native_constant_invocation' => false,
-    'native_function_invocation' => false,
-    'no_superfluous_phpdoc_tags' => [
-        'allow_mixed' => true,
-    ],
     'no_unneeded_control_parentheses' => false,
-    'ordered_class_elements' => false,
-    'phpdoc_annotation_without_dot' => false,
     'yoda_style' => false,
 ];
 
 $config = new FidryConfig('', 74000);
-$config->setRules(
-    array_merge(
-        $config->getRules(),
-        $overriddenRules,
-    ),
-);
+$config->addRules($overriddenRules);
 
 return $config->setFinder($finder);
