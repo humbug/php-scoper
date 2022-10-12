@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
-use InvalidArgumentException;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Const_;
@@ -44,7 +43,6 @@ use function in_array;
 use function is_string;
 use function ltrim;
 use function preg_match as native_preg_match;
-use function strpos;
 use function strtolower;
 
 /**
@@ -257,8 +255,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         String_ $string,
         ArrayItem $parentNode,
         string $normalizedValue
-    ): String_
-    {
+    ): String_ {
         // ArrayItem can lead to two results: either the string is used for
         // `spl_autoload_register()`, e.g. `spl_autoload_register(['Swift', 'autoload'])`
         // in which case the string `'Swift'` is guaranteed to be class name, or
@@ -301,7 +298,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                 && array_key_exists(0, $arrayNode->items)
                 && $arrayItemNode === $arrayNode->items[0]
                 && !$this->enrichedReflector->isClassExcluded($normalizedValue)
-            )
+        )
             ? $this->createPrefixedString($string)
             : $string;
     }

@@ -26,6 +26,8 @@ use ReflectionClass;
 
 /**
  * @covers \Humbug\PhpScoper\PhpParser\TraverserFactory
+ *
+ * @internal
  */
 class TraverserFactoryTest extends TestCase
 {

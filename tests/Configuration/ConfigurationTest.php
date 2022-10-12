@@ -22,6 +22,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Configuration\Configuration
+ *
+ * @internal
  */
 final class ConfigurationTest extends TestCase
 {
@@ -33,8 +35,7 @@ final class ConfigurationTest extends TestCase
     public function test_it_validates_the_prefix(
         string $prefix,
         string $expectedExceptionMessage
-    ): void
-    {
+    ): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
 

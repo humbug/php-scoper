@@ -157,11 +157,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         );
 
         if ($this->doesNameHasUseStatement(
-                $originalName,
-                $resolvedName,
-                $parentNode,
-                $useStatement,
-            )
+            $originalName,
+            $resolvedName,
+            $parentNode,
+            $useStatement,
+        )
         ) {
             // Do not prefix if there is a matching use statement.
             return $originalName;
@@ -175,10 +175,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         $currentNamespace = $this->namespaceStatements->getCurrentNamespaceName();
 
         if (self::doesNameBelongToNamespace(
-                $originalName,
-                $resolvedName,
-                $currentNamespace,
-            )
+            $originalName,
+            $resolvedName,
+            $currentNamespace,
+        )
             // At this point if the name belongs to the global namespace, since
             // we are NOT in an excluded namespace, the current namespace will
             // become prefixed hence there is no need for prefixing.
@@ -289,13 +289,15 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
             // If exposed we cannot keep the original non-FQCN UNLESS belongs
             // to the global namespace for the reasons mentionned in the caller
-            && (!$this->enrichedReflector->isExposedClass($resolvedName)
+            && (
+                !$this->enrichedReflector->isExposedClass($resolvedName)
                 || $this->enrichedReflector->isExposedClassFromGlobalNamespace($resolvedName)
             )
             // If excluded we cannot keep the non-FQCN
             && !$this->enrichedReflector->isClassExcluded($resolvedName)
 
-            && (!$this->enrichedReflector->isExposedFunction($resolvedName)
+            && (
+                !$this->enrichedReflector->isExposedFunction($resolvedName)
                 || $this->enrichedReflector->isExposedFunctionFromGlobalNamespace($resolvedName)
             )
             && !$this->enrichedReflector->isFunctionExcluded($resolvedName);
@@ -356,8 +358,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     private function isPrefixableClassName(
         Name $resolvedName,
         Node $parentNode
-    ): bool
-    {
+    ): bool {
         $isClassNode = $parentNode instanceof ConstFetch || $parentNode instanceof FuncCall;
 
         return (

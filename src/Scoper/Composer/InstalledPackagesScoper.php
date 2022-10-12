@@ -67,7 +67,7 @@ final class InstalledPackagesScoper implements Scoper
 
     private static function decodeContents(string $contents): stdClass
     {
-        $decodedJson = json_decode($contents, false, 512,  JSON_THROW_ON_ERROR);
+        $decodedJson = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
 
         if ($decodedJson instanceof stdClass) {
             return $decodedJson;

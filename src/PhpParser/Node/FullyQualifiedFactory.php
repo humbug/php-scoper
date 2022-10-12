@@ -31,9 +31,7 @@ final class FullyQualifiedFactory
         }
 
         /** @var FullyQualified $fqName */
-        $fqName = FullyQualified::concat($name1, $name2, $attributes);
-
-        return $fqName;
+        return FullyQualified::concat($name1, $name2, $attributes);
     }
 
     private function __construct()

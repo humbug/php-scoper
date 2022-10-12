@@ -19,6 +19,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\NamespaceRegistry
+ *
+ * @internal
  */
 class NamespaceRegistryTest extends TestCase
 {
@@ -40,8 +42,7 @@ class NamespaceRegistryTest extends TestCase
         array $namespaceRegexes,
         string $symbol,
         bool $expected
-    ): void
-    {
+    ): void {
         // Sanity check
         $this->validateRegexes($namespaceRegexes);
 
@@ -63,8 +64,7 @@ class NamespaceRegistryTest extends TestCase
         array $namespaceRegexes,
         string $namespaceName,
         bool $expected
-    ): void
-    {
+    ): void {
         // Sanity check
         $this->validateRegexes($namespaceRegexes);
 
@@ -81,8 +81,8 @@ class NamespaceRegistryTest extends TestCase
     /**
      * @dataProvider provideNamesAndRegexes
      *
-     * @param string[] $regexes
-     * @param string[] $names
+     * @param string[]     $regexes
+     * @param string[]     $names
      * @param list<string> $regexes
      * @param list<string> $names
      */
@@ -91,8 +91,7 @@ class NamespaceRegistryTest extends TestCase
         array $regexes,
         array $expectedNames,
         array $expectedRegexes
-    ): void
-    {
+    ): void {
         $registry = NamespaceRegistry::create(
             $names,
             $regexes,

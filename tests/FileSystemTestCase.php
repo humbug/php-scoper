@@ -23,14 +23,8 @@ use function sys_get_temp_dir;
 
 abstract class FileSystemTestCase extends TestCase
 {
-    /**
-     * @var string
-     */
     protected string $cwd;
 
-    /**
-     * @var string
-     */
     protected string $tmp;
 
     protected function setUp(): void

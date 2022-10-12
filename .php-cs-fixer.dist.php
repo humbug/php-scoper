@@ -1,6 +1,5 @@
 <?php
 
-
 declare(strict_types=1);
 
 /*
@@ -33,14 +32,14 @@ $finder = Finder::create()
 $overriddenRules = [
     'header_comment' => [
         'header' => <<<'EOF'
-                    This file is part of the humbug/php-scoper package.
+            This file is part of the humbug/php-scoper package.
 
-                    Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
-                                       Pádraic Brady <padraic.brady@gmail.com>
+            Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+                               Pádraic Brady <padraic.brady@gmail.com>
 
-                    For the full copyright and license information, please view the LICENSE
-                    file that was distributed with this source code.
-                    EOF,
+            For the full copyright and license information, please view the LICENSE
+            file that was distributed with this source code.
+            EOF,
         'location' => 'after_declare_strict',
     ],
     'mb_str_functions' => false,

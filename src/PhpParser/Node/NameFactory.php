@@ -30,9 +30,7 @@ final class NameFactory
         }
 
         /** @var Name $fqName */
-        $fqName = Name::concat($name1, $name2, $attributes);
-
-        return $fqName;
+        return Name::concat($name1, $name2, $attributes);
     }
 
     private function __construct()

@@ -33,9 +33,7 @@ final class DisplayNormalizer
     {
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\/path\/to(.*\\\\)+/', $display, $match)) {
             $paths = $match[0];
-            usort($paths, static function ($a, $b) {
-                return strlen($b) - strlen($a);
-            });
+            usort($paths, static fn ($a, $b) => strlen($b) - strlen($a));
             foreach ($paths as $path) {
                 $fixedPath = str_replace('\\', '/', $path);
                 $display = str_replace($path, $fixedPath, $display);

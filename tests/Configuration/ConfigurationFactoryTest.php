@@ -31,6 +31,8 @@ use const DIRECTORY_SEPARATOR;
  * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
  *
  * @group integration
+ *
+ * @internal
  */
 class ConfigurationFactoryTest extends FileSystemTestCase
 {
@@ -68,12 +70,12 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     {
         self::dumpStandardConfigFile(
             <<<'PHP'
-            <?php
-            
-            return [
-                'unknown key' => 'val',
-            ];
-            PHP,
+                <?php
+
+                return [
+                    'unknown key' => 'val',
+                ];
+                PHP,
         );
 
         $this->expectException(InvalidArgumentException::class);
@@ -86,30 +88,30 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     {
         self::dumpStandardConfigFile(
             <<<'PHP'
-            <?php
-            
-            return [
-                'prefix' => 'MyPrefix',
-                'exclude-files' => ['file1', 'file2'],
-                'patchers' => [],
-                'finders' => [],
-                
-                'whitelist' => ['Foo', 'Bar\*'],
-                
-                'expose-global-constants' => false,
-                'expose-global-classes' => false,
-                'expose-global-functions' => false,
-                'expose-namespaces' => ['PHPUnit\Runner'],
-                'expose-constants' => [],
-                'expose-classes' => [],
-                'expose-functions' => [],
-                
-                'exclude-namespaces' => ['PHPUnit\Runner'],
-                'exclude-constants' => [],
-                'exclude-classes' => [],
-                'exclude-functions' => [],
-            ];
-            PHP,
+                <?php
+
+                return [
+                    'prefix' => 'MyPrefix',
+                    'exclude-files' => ['file1', 'file2'],
+                    'patchers' => [],
+                    'finders' => [],
+
+                    'whitelist' => ['Foo', 'Bar\*'],
+
+                    'expose-global-constants' => false,
+                    'expose-global-classes' => false,
+                    'expose-global-functions' => false,
+                    'expose-namespaces' => ['PHPUnit\Runner'],
+                    'expose-constants' => [],
+                    'expose-classes' => [],
+                    'expose-functions' => [],
+
+                    'exclude-namespaces' => ['PHPUnit\Runner'],
+                    'exclude-constants' => [],
+                    'exclude-classes' => [],
+                    'exclude-functions' => [],
+                ];
+                PHP,
         );
         touch('file1');
 
