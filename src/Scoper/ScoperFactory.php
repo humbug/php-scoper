@@ -50,7 +50,8 @@ class ScoperFactory
     public function createScoper(
         Configuration $configuration,
         SymbolsRegistry $symbolsRegistry
-    ): Scoper {
+    ): Scoper
+    {
         $prefix = $configuration->getPrefix();
         $symbolsConfiguration = $configuration->getSymbolsConfiguration();
         $enrichedReflector = $this->enrichedReflectorFactory->create($symbolsConfiguration);

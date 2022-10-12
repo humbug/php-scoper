@@ -22,6 +22,7 @@ use Humbug\PhpScoper\Container;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use function Humbug\PhpScoper\get_php_scoper_version;
 use function Safe\sprintf;
+use function strpos;
 use function trim;
 
 /**
@@ -31,16 +32,16 @@ use function trim;
 final class Application implements FidryApplication
 {
     private const LOGO = <<<'ASCII'
-
-            ____  __  ______     _____
-           / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-          / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
-         / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-        /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                             /_/
-
-
-        ASCII;
+    
+        ____  __  ______     _____
+       / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+      / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+     / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+    /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                         /_/
+    
+    
+    ASCII;
 
     private const RELEASE_DATE_PLACEHOLDER = '@release-date@';
 
@@ -55,9 +56,9 @@ final class Application implements FidryApplication
         return new self(
             new Container(),
             get_php_scoper_version(),
-            !str_contains(self::RELEASE_DATE_PLACEHOLDER, '@')
-              ? self::RELEASE_DATE_PLACEHOLDER
-              : '',
+            false === strpos(self::RELEASE_DATE_PLACEHOLDER, '@')
+                ? self::RELEASE_DATE_PLACEHOLDER
+                : '',
             true,
             true,
         );

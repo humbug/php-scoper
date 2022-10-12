@@ -110,7 +110,8 @@ final class InitCommand implements Command
 
         $configFile = (null === $configFile)
             ? $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT)
-            : $this->makeAbsolutePath($configFile);
+            : $this->makeAbsolutePath($configFile)
+        ;
 
         if (file_exists($configFile)) {
             $canDeleteFile = $io->confirm(

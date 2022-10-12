@@ -174,6 +174,8 @@ final class NodeTraverser implements NodeTraverserInterface
     }
 
     /**
+     * @param GroupUse $node
+     *
      * @return Use_[]
      */
     private function createUses_(GroupUse $node): array

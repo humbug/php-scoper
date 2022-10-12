@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Patcher;
 
 use function str_replace;
+use function strpos;
 
 final class ComposerPatcher implements Patcher
 {
@@ -55,7 +56,7 @@ final class ComposerPatcher implements Patcher
     private static function isSupportedFile(string $filePath): bool
     {
         foreach (self::PATHS as $path) {
-            if (str_contains($filePath, $path)) {
+            if (false !== strpos($filePath, $path)) {
                 return true;
             }
         }

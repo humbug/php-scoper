@@ -22,8 +22,6 @@ use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\FileWhitelistScoper
- *
- * @internal
  */
 class FileWhitelistScoperTest extends TestCase
 {
@@ -42,7 +40,7 @@ class FileWhitelistScoperTest extends TestCase
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
-    public function test_is_a__scoper(): void
+    public function test_is_a_Scoper(): void
     {
         self::assertTrue(is_a(FileWhitelistScoper::class, Scoper::class, true));
     }
@@ -55,7 +53,8 @@ class FileWhitelistScoperTest extends TestCase
 
         $this->decoratedScoperProphecy
             ->scope($notWhitelistedFilePath, $contents)
-            ->willReturn($scopedContents = 'Decorated scoper contents');
+            ->willReturn($scopedContents = 'Decorated scoper contents')
+        ;
 
         $scoper = new FileWhitelistScoper($this->decoratedScoper, $whitelistedFilePath);
 

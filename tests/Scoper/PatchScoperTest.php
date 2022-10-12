@@ -23,8 +23,6 @@ use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\PatchScoper
- *
- * @internal
  */
 class PatchScoperTest extends TestCase
 {
@@ -43,7 +41,7 @@ class PatchScoperTest extends TestCase
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
-    public function test_is_a__scoper(): void
+    public function test_is_a_Scoper(): void
     {
         self::assertTrue(is_a(PatchScoper::class, Scoper::class, true));
     }
@@ -57,7 +55,8 @@ class PatchScoperTest extends TestCase
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $contents)
-            ->willReturn('Decorated scoper contents');
+            ->willReturn('Decorated scoper contents')
+        ;
 
         $expected = 'patchedContent<Decorated scoper contents>';
 

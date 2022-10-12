@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use InvalidArgumentException;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
@@ -101,6 +102,8 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
 
     /**
      * Finds the type of the use statement.
+     *
+     * @param UseUse $use
      *
      * @return int See \PhpParser\Node\Stmt\Use_ type constants.
      */

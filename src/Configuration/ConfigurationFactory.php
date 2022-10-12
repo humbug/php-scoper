@@ -30,6 +30,7 @@ use function array_map;
 use function array_merge;
 use function array_unique;
 use function array_unshift;
+use function array_values;
 use function bin2hex;
 use function dirname;
 use function file_exists;
@@ -228,6 +229,7 @@ final class ConfigurationFactory
         $prefix = trim((string) ($config[ConfigurationKeys::PREFIX_KEYWORD] ?? ''));
 
         return '' === $prefix ? self::generateRandomPrefix() : $prefix;
+
     }
 
     /**

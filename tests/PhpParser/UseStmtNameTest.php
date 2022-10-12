@@ -2,16 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
@@ -29,8 +19,6 @@ use function Safe\sprintf;
 
 /**
  * @covers \Humbug\PhpScoper\PhpParser\UseStmtName
- *
- * @internal
  */
 final class UseStmtNameTest extends TestCase
 {
@@ -41,7 +29,8 @@ final class UseStmtNameTest extends TestCase
         Name $useStmt,
         Name $name,
         bool $expected
-    ): void {
+    ): void
+    {
         $useStmtName = new UseStmtName($useStmt);
 
         $actual = $useStmtName->contains($name);
@@ -83,7 +72,8 @@ final class UseStmtNameTest extends TestCase
         Name $name,
         ?string $expectedAlias,
         int $expectedType
-    ): void {
+    ): void
+    {
         $useStmtName = new UseStmtName($name);
 
         [$alias, $type] = $useStmtName->getUseStmtAliasAndType();
@@ -107,70 +97,70 @@ final class UseStmtNameTest extends TestCase
     {
         yield 'class use statement' => [
             <<<'PHP'
-                <?php
+            <?php
 
-                use Acme\Foo;
-                PHP,
+            use Acme\Foo;
+            PHP,
             null,
             Use_::TYPE_NORMAL,
         ];
 
         yield 'class use statement with alias' => [
             <<<'PHP'
-                <?php
+            <?php
 
-                use Acme\Foo as Bar;
-                PHP,
+            use Acme\Foo as Bar;
+            PHP,
             'Bar',
             Use_::TYPE_NORMAL,
         ];
 
         yield 'function use statement' => [
             <<<'PHP'
-                <?php
+            <?php
 
-                use function Acme\Foo;
-                PHP,
+            use function Acme\Foo;
+            PHP,
             null,
             Use_::TYPE_FUNCTION,
         ];
 
         yield 'function use statement with alias' => [
             <<<'PHP'
-                <?php
+            <?php
 
-                use function Acme\Foo as Bar;
-                PHP,
+            use function Acme\Foo as Bar;
+            PHP,
             'Bar',
             Use_::TYPE_FUNCTION,
         ];
 
         yield 'constant use statement' => [
             <<<'PHP'
-                <?php
+            <?php
 
-                use const Acme\FOO;
-                PHP,
+            use const Acme\FOO;
+            PHP,
             null,
             Use_::TYPE_CONSTANT,
         ];
 
         yield 'constant use statement with alias' => [
             <<<'PHP'
-                <?php
+            <?php
 
-                use const Acme\FOO as BAR;
-                PHP,
+            use const Acme\FOO as BAR;
+            PHP,
             'BAR',
             Use_::TYPE_CONSTANT,
         ];
 
         yield 'grouped statement' => [
             <<<'PHP'
-                <?php
+            <?php
 
-                use Acme\{Foo, Bar};
-                PHP,
+            use Acme\{Foo, Bar};
+            PHP,
             null,
             Use_::TYPE_UNKNOWN,
         ];

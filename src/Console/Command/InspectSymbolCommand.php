@@ -34,8 +34,10 @@ use Symfony\Component\Filesystem\Path;
 use function assert;
 use function file_exists;
 use function implode;
+use function in_array;
 use function Safe\getcwd;
 use function Safe\sprintf;
+use function trim;
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -195,7 +197,8 @@ final class InspectSymbolCommand implements Command
         string $type,
         ?string $configPath,
         EnrichedReflector $reflector
-    ): void {
+    ): void
+    {
         self::printDocBlock($io);
         self::printConfigLoaded($io, $configPath);
         self::printInspectionHeadline($io, $symbol, $type);
@@ -216,7 +219,7 @@ final class InspectSymbolCommand implements Command
             'Exposed symbols (configured via the `expose-*` settings) will be prefixed but aliased to its original symbol.',
             'If a symbol is neither internal or exposed, it will be prefixed and not aliased',
             '',
-            'For more information, see:',
+            'For more information, see:'
         ]);
         $io->listing([
             '<href=https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#excluded-symbols>Doc link for excluded symbols</>',
@@ -230,9 +233,9 @@ final class InspectSymbolCommand implements Command
             null === $configPath
                 ? 'No configuration loaded.'
                 : sprintf(
-                    'Loaded the configuration <comment>%s</comment>',
-                    $configPath,
-                ),
+                'Loaded the configuration <comment>%s</comment>',
+                $configPath,
+            ),
         );
         $io->newLine();
     }
@@ -244,7 +247,8 @@ final class InspectSymbolCommand implements Command
         IO $io,
         string $symbol,
         string $type
-    ): void {
+    ): void
+    {
         $io->writeln(
             sprintf(
                 'Inspecting the symbol <comment>%s</comment> %s',
@@ -254,13 +258,15 @@ final class InspectSymbolCommand implements Command
                     : sprintf('for type <comment>%s</comment>:', $type),
             ),
         );
+
     }
 
     private static function printAnyTypeSymbol(
         IO $io,
         string $symbol,
         EnrichedReflector $reflector
-    ): void {
+    ): void
+    {
         foreach (SymbolType::getAllSpecificTypes() as $specificType) {
             $io->writeln(
                 sprintf(
@@ -281,7 +287,8 @@ final class InspectSymbolCommand implements Command
         string $symbol,
         string $type,
         EnrichedReflector $reflector
-    ): void {
+    ): void
+    {
         [$internal, $exposed] = self::determineSymbolStatus(
             $symbol,
             $type,

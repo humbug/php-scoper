@@ -2,16 +2,6 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Application\Application;
@@ -52,7 +42,8 @@ final class ConsoleScoper
         Filesystem $fileSystem,
         Application $application,
         ScoperFactory $scoperFactory
-    ) {
+    )
+    {
         $this->fileSystem = $fileSystem;
         $this->application = $application;
         $this->scoperFactory = $scoperFactory;
@@ -60,7 +51,7 @@ final class ConsoleScoper
 
     /**
      * @param list<non-empty-string> $paths
-     * @param non-empty-string       $outputDir
+     * @param non-empty-string $outputDir
      */
     public function scope(
         IO $io,
@@ -68,7 +59,8 @@ final class ConsoleScoper
         array $paths,
         string $outputDir,
         bool $stopOnFailure
-    ): void {
+    ): void
+    {
         $logger = new ScoperLogger(
             $this->application,
             $io,

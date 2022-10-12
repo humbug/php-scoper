@@ -2,22 +2,13 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Humbug\PhpScoper\Symbol;
 
 use function array_filter;
 use function array_map;
 use function array_pop;
 use function array_unique;
+use function array_values;
 use function count;
 use function explode;
 use function implode;
@@ -74,11 +65,11 @@ final class NamespaceRegistry
         $this->regexes = $namespaceRegexes;
 
         $this->containsGlobalNamespace = count(
-            array_filter(
-                $namespaceNames,
-                static fn (string $name) => '' === $name,
-            ),
-        ) !== 0;
+                array_filter(
+                    $namespaceNames,
+                    static fn (string $name) => '' === $name,
+                ),
+            ) !== 0;
     }
 
     public function belongsToRegisteredNamespace(string $symbolName): bool

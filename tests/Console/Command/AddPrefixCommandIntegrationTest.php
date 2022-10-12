@@ -37,8 +37,6 @@ use const DIRECTORY_SEPARATOR;
  *
  * @group integration
  * @runTestsInSeparateProcesses
- *
- * @internal
  */
 class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 {
@@ -124,26 +122,26 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         $this->appTester->run($input);
 
         $expected = <<<'EOF'
-
-
-                ____  __  ______     _____
-               / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-              / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
-             / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-            /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                                 /_/
-
-            PhpScoper version TestVersion 28/01/2020
-
-             0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
-             4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
-
-             [OK] Successfully prefixed 4 files.
-
-             // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
-
-
-            EOF;
+        
+        
+            ____  __  ______     _____
+           / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+          / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+         / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+        /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                             /_/
+        
+        PhpScoper version TestVersion 28/01/2020
+        
+         0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+         4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+        
+         [OK] Successfully prefixed 4 files.
+        
+         // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+        
+        
+        EOF;
 
         $extraNormalization = static fn (string $display) => str_replace(
             [
@@ -186,27 +184,27 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         $expected = <<<'EOF'
 
 
-                ____  __  ______     _____
-               / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-              / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
-             / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-            /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                                 /_/
+    ____  __  ______     _____
+   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+ / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                     /_/
 
-            PhpScoper version TestVersion 28/01/2020
+PhpScoper version TestVersion 28/01/2020
 
-             * [NO] /path/to/composer/installed.json
-             * [OK] /path/to/file.php
-             * [NO] /path/to/invalid-file.php
-             * [OK] /path/to/scoper.inc.php
-
-
-             [OK] Successfully prefixed 4 files.
-
-             // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+ * [NO] /path/to/composer/installed.json
+ * [OK] /path/to/file.php
+ * [NO] /path/to/invalid-file.php
+ * [OK] /path/to/scoper.inc.php
 
 
-            EOF;
+ [OK] Successfully prefixed 4 files.
+
+ // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+
+
+EOF;
 
         $this->assertExpectedOutput(
             $expected,
@@ -232,60 +230,62 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
         $this->appTester->run($input);
 
-        $expected = <<<'EOF'
+        $expected = <<<EOF
 
 
-                ____  __  ______     _____
-               / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-              / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
-             / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-            /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                                 /_/
+    ____  __  ______     _____
+   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+ / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                     /_/
 
-            PhpScoper version TestVersion 28/01/2020
+PhpScoper version TestVersion 28/01/2020
 
-             * [NO] /path/to/composer/installed.json
-            	Could not parse the file "/path/to/composer/installed.json".: InvalidArgumentException
-            Stack trace:
-            #0
-            #1
-            #2
-            #3
-            #4
-            #5
-            #6
-            #7
-            #8
-            #9
-             * [OK] /path/to/file.php
-             * [NO] /path/to/invalid-file.php
-            	Could not parse the file "/path/to/invalid-file.php".: PhpParser
-            Stack trace:
-            #0
-            #1
-            #2
-            #3
-            #4
-            #5
-            #6
-            #7
-            #8
-            #9
-             * [OK] /path/to/scoper.inc.php
-
-
-             [OK] Successfully prefixed 4 files.
-
-             // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+ * [NO] /path/to/composer/installed.json
+	Could not parse the file "/path/to/composer/installed.json".: InvalidArgumentException
+Stack trace:
+#0
+#1
+#2
+#3
+#4
+#5
+#6
+#7
+#8
+#9
+ * [OK] /path/to/file.php
+ * [NO] /path/to/invalid-file.php
+	Could not parse the file "/path/to/invalid-file.php".: PhpParser
+Stack trace:
+#0
+#1
+#2
+#3
+#4
+#5
+#6
+#7
+#8
+#9
+ * [OK] /path/to/scoper.inc.php
 
 
-            EOF;
+ [OK] Successfully prefixed 4 files.
+
+ // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+
+
+EOF;
 
         $extraDisplayNormalization = static function (string $display): string {
             $display = preg_replace('/(Could not parse the file ".+?"\.: \w+).*(\n)/', '$1$2', $display);
             $display = preg_replace('/(#\d+).*(\n)/', '$1$2', $display);
             // Remove overly lengthy stack-trace
-            return preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $display);
+            $display = preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $display);
+
+            return $display;
         };
 
         $this->assertExpectedOutput(
@@ -331,7 +331,8 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
         $files = $finder->files()
             ->in($dir)
-            ->sortByName();
+            ->sortByName()
+        ;
 
         return array_reduce(
             iterator_to_array($files),

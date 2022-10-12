@@ -26,8 +26,6 @@ use function Safe\preg_match_all;
 
 /**
  * @coversNothing
- *
- * @internal
  */
 class MakefileE2ETest extends TestCase
 {
