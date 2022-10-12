@@ -19,10 +19,12 @@ use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\NullScoper
+ *
+ * @internal
  */
 class NullScoperTest extends TestCase
 {
-    public function test_is_a_Scoper(): void
+    public function test_is_a_scoper(): void
     {
         self::assertTrue(is_a(NullScoper::class, Scoper::class, true));
     }

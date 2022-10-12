@@ -36,10 +36,9 @@ final class ConfigurableScoper implements Scoper
             : new self(
                 new FileWhitelistScoper(
                     clone $this,
-                    ...$whitelistedFiles
-                )
-            )
-        ;
+                    ...$whitelistedFiles,
+                ),
+            );
     }
 
     public function scope(string $filePath, string $contents): string

@@ -47,8 +47,10 @@ use const DIRECTORY_SEPARATOR;
 
 /**
  * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
- * @covers \Humbug\PhpScoper\Console\ConsoleScoper
  * @covers \Humbug\PhpScoper\Console\ConfigLoader
+ * @covers \Humbug\PhpScoper\Console\ConsoleScoper
+ *
+ * @internal
  */
 class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCase
 {
@@ -121,8 +123,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
                     $inputPath,
                     $inputContents,
                 )
-                ->willReturn($prefixedContents)
-            ;
+                ->willReturn($prefixedContents);
 
             $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
         }
@@ -174,15 +175,13 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             if (null !== $prefixedContents) {
                 $this->scoperProphecy
                     ->scope($inputPath, $inputContents)
-                    ->willReturn($prefixedContents)
-                ;
+                    ->willReturn($prefixedContents);
 
                 $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
             } else {
                 $this->scoperProphecy
                     ->scope($inputPath, $inputContents)
-                    ->willThrow(new RootRuntimeException('Scoping of the file failed'))
-                ;
+                    ->willThrow(new RootRuntimeException('Scoping of the file failed'));
 
                 $this->fileSystemProphecy->dumpFile($outputPath, $inputContents)->shouldBeCalled();
             }
@@ -231,8 +230,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $inputContents)
-                ->willReturn($prefixedContents)
-            ;
+                ->willReturn($prefixedContents);
 
             $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
         }
@@ -282,8 +280,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $inputContents)
-                ->willReturn($prefixedFileContents)
-            ;
+                ->willReturn($prefixedFileContents);
 
             $this->fileSystemProphecy->dumpFile($outputPath, $prefixedFileContents)->shouldBeCalled();
         }
@@ -333,8 +330,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $inputContents)
-                ->willReturn($prefixedContents)
-            ;
+                ->willReturn($prefixedContents);
 
             $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
         }
@@ -384,8 +380,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $inputContents)
-                ->willReturn($prefixedContents)
-            ;
+                ->willReturn($prefixedContents);
 
             $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
         }
@@ -436,8 +431,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $inputContents)
-                ->willReturn($prefixedContents)
-            ;
+                ->willReturn($prefixedContents);
 
             $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
         }
@@ -473,9 +467,9 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             self::assertSame(
                 sprintf(
                     'Could not find the configuration file "%sunknown".',
-                    $this->tmp.DIRECTORY_SEPARATOR
+                    $this->tmp.DIRECTORY_SEPARATOR,
                 ),
-                $exception->getMessage()
+                $exception->getMessage(),
             );
         }
 
@@ -506,7 +500,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
         } catch (InvalidArgumentException $exception) {
             self::assertSame(
                 'Expected patchers to be an array of callables, the "0" element is not.',
-                $exception->getMessage()
+                $exception->getMessage(),
             );
         }
 
@@ -547,8 +541,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $fileContents)
-                ->willThrow(new RuntimeException('Could not scope file'))
-            ;
+                ->willThrow(new RuntimeException('Could not scope file'));
 
             $this->fileSystemProphecy->dumpFile($outputPath, $fileContents)->shouldBeCalled();
         }

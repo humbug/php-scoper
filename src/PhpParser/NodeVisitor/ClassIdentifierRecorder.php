@@ -52,7 +52,7 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
 
     public function enterNode(Node $node): Node
     {
-        if (!($node instanceof Identifier) ||!ParentNodeAppender::hasParent($node)) {
+        if (!($node instanceof Identifier) || !ParentNodeAppender::hasParent($node)) {
             return $node;
         }
 

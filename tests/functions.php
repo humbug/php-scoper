@@ -18,7 +18,6 @@ use PhpParser\Parser;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use function mkdir as native_mkdir;
-use function rand;
 use function Safe\realpath;
 use function Safe\sprintf;
 use function Safe\substr;
@@ -53,15 +52,15 @@ function make_tmp_dir(string $namespace, string $className): string
 
     $i = 0;
 
-    while (false === @native_mkdir($tempDir = escape_path($basePath.rand(10000, 99999)), 0777, true)) {
+    while (false === @native_mkdir($tempDir = escape_path($basePath.random_int(10000, 99999)), 0o777, true)) {
         // Run until we are able to create a directory
         if ($i > 100) {
             throw new RuntimeException(
                 sprintf(
                     'Could not create temporary directory for "%s:%s" after 100 attempts',
                     $namespace,
-                    $className
-                )
+                    $className,
+                ),
             );
         }
 

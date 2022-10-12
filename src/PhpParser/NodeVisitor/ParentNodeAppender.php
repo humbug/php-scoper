@@ -53,8 +53,7 @@ final class ParentNodeAppender extends NodeVisitorAbstract
     {
         return $node->hasAttribute(self::PARENT_ATTRIBUTE)
             ? $node->getAttribute(self::PARENT_ATTRIBUTE)
-            : null
-        ;
+            : null;
     }
 
     public function beforeTraverse(array $nodes): ?array

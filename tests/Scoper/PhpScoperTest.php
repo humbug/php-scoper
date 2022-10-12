@@ -37,6 +37,9 @@ use Prophecy\Prophecy\ObjectProphecy;
 use function Humbug\PhpScoper\create_parser;
 use function is_a;
 
+/**
+ * @internal
+ */
 class PhpScoperTest extends TestCase
 {
     use ProphecyTrait;
@@ -69,7 +72,7 @@ class PhpScoperTest extends TestCase
     private SymbolsRegistry $symbolsRegistry;
 
     private Printer $printer;
-    
+
     private Lexer $lexer;
 
     protected function setUp(): void
@@ -88,9 +91,9 @@ class PhpScoperTest extends TestCase
 
         $lexerProphecy = $this->prophesize(Lexer::class);
         $lexerProphecy->getTokens()->willReturn([]);
-        
+
         $this->lexer = $lexerProphecy->reveal();
-        
+
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
@@ -107,49 +110,47 @@ class PhpScoperTest extends TestCase
         );
     }
 
-    public function test_is_a_Scoper(): void
+    public function test_is_a_scoper(): void
     {
         self::assertTrue(is_a(PhpScoper::class, Scoper::class, true));
     }
 
-    public function test_can_scope_a_PHP_file(): void
+    public function test_can_scope_a_php_file(): void
     {
         $filePath = 'file.php';
 
         $contents = <<<'PHP'
-        <?php
-        
-        echo "Humbug!";
-        PHP;
+            <?php
+
+            echo "Humbug!";
+            PHP;
 
         $expected = <<<'PHP'
-        <?php
-        
-        namespace Humbug;
-        
-        echo "Humbug!";
-        
-        PHP;
+            <?php
+
+            namespace Humbug;
+
+            echo "Humbug!";
+
+            PHP;
 
         $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
 
-    public function test_does_not_scope_file_if_is_not_a_PHP_file(): void
+    public function test_does_not_scope_file_if_is_not_a_php_file(): void
     {
         $filePath = 'file.yaml';
         $fileContents = '';
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $fileContents)
-            ->willReturn($expected = 'Scoped content')
-        ;
+            ->willReturn($expected = 'Scoped content');
 
         $this->traverserFactoryProphecy
             ->create(Argument::cetera())
-            ->willThrow(new LogicException('Unexpected call.'))
-        ;
+            ->willThrow(new LogicException('Unexpected call.'));
 
         $scoper = new PhpScoper(
             new FakeParser(),
@@ -168,76 +169,74 @@ class PhpScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes(1);
     }
 
-    public function test_can_scope_a_PHP_file_with_the_wrong_extension(): void
+    public function test_can_scope_a_php_file_with_the_wrong_extension(): void
     {
         $filePath = 'file';
 
         $contents = <<<'PHP'
-        <?php
-        
-        echo "Humbug!";
-        
-        PHP;
+            <?php
+
+            echo "Humbug!";
+
+            PHP;
 
         $expected = <<<'PHP'
-        <?php
-        
-        namespace Humbug;
-        
-        echo "Humbug!";
-        
-        PHP;
+            <?php
+
+            namespace Humbug;
+
+            echo "Humbug!";
+
+            PHP;
 
         $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
 
-    public function test_can_scope_PHP_executable_files(): void
+    public function test_can_scope_php_executable_files(): void
     {
         $filePath = 'hello';
 
         $contents = <<<'PHP'
-        #!/usr/bin/env php
-        <?php
-        
-        echo "Hello world";
-        PHP;
+            #!/usr/bin/env php
+            <?php
+
+            echo "Hello world";
+            PHP;
 
         $expected = <<<'PHP'
-        #!/usr/bin/env php
-        <?php 
-        namespace Humbug;
-        
-        echo "Hello world";
-        
-        PHP;
+            #!/usr/bin/env php
+            <?php
+            namespace Humbug;
+
+            echo "Hello world";
+
+            PHP;
 
         $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
     }
 
-    public function test_does_not_scope_a_non_PHP_executable_files(): void
+    public function test_does_not_scope_a_non_php_executable_files(): void
     {
         $filePath = 'hello';
 
         $contents = <<<'PHP'
-        #!/usr/bin/env bash
-        <?php
-        
-        echo "Hello world";
-        PHP;
+            #!/usr/bin/env bash
+            <?php
+
+            echo "Hello world";
+            PHP;
 
         $this->decoratedScoperProphecy
             ->scope($filePath, $contents)
-            ->willReturn($expected = 'Scoped content')
-        ;
+            ->willReturn($expected = 'Scoped content');
 
         $this->traverserFactoryProphecy
             ->create(Argument::cetera())
-            ->willThrow(new LogicException('Unexpected call.'))
-        ;
+            ->willThrow(new LogicException('Unexpected call.'));
 
         $scoper = new PhpScoper(
             new FakeParser(),
@@ -256,15 +255,15 @@ class PhpScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes(1);
     }
 
-    public function test_cannot_scope_an_invalid_PHP_file(): void
+    public function test_cannot_scope_an_invalid_php_file(): void
     {
         $filePath = 'invalid-file.php';
         $contents = <<<'PHP'
-        <?php
-        
-        $class = ;
-        
-        PHP;
+            <?php
+
+            $class = ;
+
+            PHP;
 
         try {
             $this->scoper->scope($filePath, $contents);
@@ -273,7 +272,7 @@ class PhpScoperTest extends TestCase
         } catch (PhpParserError $error) {
             self::assertEquals(
                 'Syntax error, unexpected \';\' on line 3',
-                $error->getMessage()
+                $error->getMessage(),
             );
             self::assertSame(0, $error->getCode());
             self::assertNull($error->getPrevious());
@@ -316,7 +315,7 @@ class PhpScoperTest extends TestCase
                         ++$i;
 
                         return 1 === $i;
-                    }
+                    },
                 ),
             )
             ->willReturn($firstTraverserProphecy->reveal());
@@ -333,7 +332,7 @@ class PhpScoperTest extends TestCase
                         // hence by the time it is the 2nd call for the 2nd file
                         // we are at the 4th call.
                         return 4 === $i;
-                    }
+                    },
                 ),
             )
             ->willReturn($secondTraverserProphecy->reveal());

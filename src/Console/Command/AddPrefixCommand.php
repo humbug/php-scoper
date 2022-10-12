@@ -82,7 +82,7 @@ final class AddPrefixCommand implements Command, CommandAware
                 new InputArgument(
                     self::PATH_ARG,
                     InputArgument::IS_ARRAY,
-                    'The path(s) to process.'
+                    'The path(s) to process.',
                 ),
             ],
             [
@@ -105,13 +105,13 @@ final class AddPrefixCommand implements Command, CommandAware
                     self::FORCE_OPT,
                     'f',
                     InputOption::VALUE_NONE,
-                    'Deletes any existing content in the output directory without any warning.'
+                    'Deletes any existing content in the output directory without any warning.',
                 ),
                 new InputOption(
                     self::STOP_ON_FAILURE_OPT,
                     's',
                     InputOption::VALUE_NONE,
-                    'Stops on failure.'
+                    'Stops on failure.',
                 ),
                 new InputOption(
                     self::CONFIG_FILE_OPT,
@@ -120,13 +120,13 @@ final class AddPrefixCommand implements Command, CommandAware
                     sprintf(
                         'Configuration file. Will use "%s" if found by default.',
                         ConfigurationFactory::DEFAULT_FILE_NAME,
-                    )
+                    ),
                 ),
                 new InputOption(
                     self::NO_CONFIG_OPT,
                     null,
                     InputOption::VALUE_NONE,
-                    'Do not look for a configuration file.'
+                    'Do not look for a configuration file.',
                 ),
             ],
         );

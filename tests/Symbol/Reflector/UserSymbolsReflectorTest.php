@@ -20,6 +20,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\Reflector
+ *
+ * @internal
  */
 class UserSymbolsReflectorTest extends TestCase
 {
@@ -30,14 +32,13 @@ class UserSymbolsReflectorTest extends TestCase
         SymbolRegistry $classes,
         SymbolRegistry $functions,
         SymbolRegistry $constants
-    ): void
-    {
+    ): void {
         $reflector = Reflector::createEmpty()->withAdditionalSymbols(
             $classes,
             $functions,
             $constants,
         );
-        
+
         foreach ($classes->getNames() as $className) {
             self::assertTrue($reflector->isClassInternal($className));
         }
@@ -57,7 +58,7 @@ class UserSymbolsReflectorTest extends TestCase
         $classB = 'Acme\B';
 
         $emptyReflector = Reflector::createEmpty();
-        
+
         // Sanity check
         self::assertFalse($emptyReflector->isClassInternal($classA));
         self::assertFalse($emptyReflector->isClassInternal($classB));

@@ -61,13 +61,13 @@ final class InstalledPackagesScoper implements Scoper
 
         return json_encode(
             $decodedJson,
-            JSON_PRETTY_PRINT
+            JSON_PRETTY_PRINT,
         );
     }
 
     private static function decodeContents(string $contents): stdClass
     {
-        $decodedJson = json_decode($contents, false, 512,  JSON_THROW_ON_ERROR);
+        $decodedJson = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
 
         if ($decodedJson instanceof stdClass) {
             return $decodedJson;
@@ -77,7 +77,7 @@ final class InstalledPackagesScoper implements Scoper
             sprintf(
                 'Expected the decoded JSON to be an stdClass instance, got "%s" instead',
                 gettype($decodedJson),
-            )
+            ),
         );
     }
 

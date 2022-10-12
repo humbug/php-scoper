@@ -26,7 +26,6 @@ use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use Humbug\PhpScoper\Whitelist;
 use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\TestCase;
@@ -46,7 +45,6 @@ use function basename;
 use function count;
 use function current;
 use function explode;
-use function Humbug\PhpScoper\create_parser;
 use function implode;
 use function is_array;
 use function is_string;
@@ -62,6 +60,8 @@ use const PHP_VERSION_ID;
 
 /**
  * @group integration
+ *
+ * @internal
  */
 class PhpScoperSpecTest extends TestCase
 {
@@ -170,10 +170,10 @@ class PhpScoperSpecTest extends TestCase
                     sprintf(
                         'Could not parse the spec %s: %s',
                         $spec,
-                        $error->getMessage()
+                        $error->getMessage(),
                     ),
                     0,
-                    $error
+                    $error,
                 );
             }
 
@@ -189,19 +189,19 @@ class PhpScoperSpecTest extends TestCase
                     "\n\n> ",
                     implode(
                         "\n> ",
-                        array_slice($lines, $startLine, $endLine - $startLine + 1)
-                    )
-                )
+                        array_slice($lines, $startLine, $endLine - $startLine + 1),
+                    ),
+                ),
             );
         } catch (Throwable $throwable) {
             throw new Error(
                 sprintf(
                     'Could not parse the spec %s: %s',
                     $spec,
-                    $throwable->getMessage().$throwable->getTraceAsString()
+                    $throwable->getMessage().$throwable->getTraceAsString(),
                 ),
                 0,
-                $throwable
+                $throwable,
             );
         }
 
@@ -214,7 +214,7 @@ class PhpScoperSpecTest extends TestCase
             $expected,
             $actual,
             $expectedRegisteredClasses,
-            $expectedRegisteredFunctions
+            $expectedRegisteredFunctions,
         );
 
         self::assertSame($expected, $actual, $specMessage);
@@ -274,12 +274,10 @@ class PhpScoperSpecTest extends TestCase
         string $prefix,
         SymbolsConfiguration $symbolsConfiguration,
         SymbolsRegistry $symbolsRegistry
-    ): Scoper
-    {
+    ): Scoper {
         $container = new Container();
 
-        $reflector = Reflector
-            ::createWithPhpStormStubs()
+        $reflector = Reflector::createWithPhpStormStubs()
             ->withAdditionalSymbols(
                 $symbolsConfiguration->getExcludedClasses(),
                 $symbolsConfiguration->getExcludedFunctions(),
@@ -330,7 +328,7 @@ class PhpScoperSpecTest extends TestCase
         $spec = sprintf(
             '[%s] %s',
             $meta['title'],
-            $fixtureSet['spec'] ?? $fixtureTitle
+            $fixtureSet['spec'] ?? $fixtureTitle,
         );
 
         $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
@@ -345,8 +343,8 @@ class PhpScoperSpecTest extends TestCase
             ),
             sprintf(
                 'Expected the keys found in the meta section to be known keys, unknown keys: "%s"',
-                implode('", "', $diff)
-            )
+                implode('", "', $diff),
+            ),
         );
 
         if (is_array($fixtureSet)) {
@@ -364,8 +362,8 @@ class PhpScoperSpecTest extends TestCase
                 $diff,
                 sprintf(
                     'Expected the keys found in the spec section to be known keys, unknown keys: "%s"',
-                    implode('", "', $diff)
-                )
+                    implode('", "', $diff),
+                ),
             );
         }
 
@@ -394,8 +392,7 @@ class PhpScoperSpecTest extends TestCase
         string $file,
         $fixtureSet,
         array $meta
-    ): SymbolsConfiguration
-    {
+    ): SymbolsConfiguration {
         if (is_string($fixtureSet)) {
             $fixtureSet = [];
         }
@@ -465,54 +462,54 @@ class PhpScoperSpecTest extends TestCase
             '=',
             min(
                 strlen($spec),
-                80
-            )
+                80,
+            ),
         );
 
         return <<<OUTPUT
-        $titleSeparator
-        SPECIFICATION
-        $titleSeparator
-        $spec
-        $file
-        
-        $titleSeparator
-        INPUT
-        expose global classes: $formattedExposeGlobalClasses
-        expose global functions: $formattedExposeGlobalFunctions
-        expose global constants: $formattedExposeGlobalConstants
-        
-        exclude namespaces: $formattedNamespacesToExclude
-        expose namespaces: $formattedNamespacesToExpose
-        
-        expose classes: $formattedClassesToExpose
-        expose functions: $formattedFunctionsToExpose
-        expose constants: $formattedConstantsToExpose
-        
-        (raw) internal classes: $formattedInternalClasses
-        (raw) internal functions: $formattedInternalFunctions
-        (raw) internal constants: $formattedInternalConstants
-        $titleSeparator
-        $contents
-        
-        $titleSeparator
-        EXPECTED
-        $titleSeparator
-        $expected
-        ----------------
-        recorded functions: $formattedExpectedRegisteredFunctions
-        recorded classes: $formattedExpectedRegisteredClasses
-        
-        $titleSeparator
-        ACTUAL
-        $titleSeparator
-        $actual
-        ----------------
-        recorded functions: $formattedActualRegisteredFunctions
-        recorded classes: $formattedActualRegisteredClasses
-        
-        -------------------------------------------------------------------------------
-        OUTPUT;
+            {$titleSeparator}
+            SPECIFICATION
+            {$titleSeparator}
+            {$spec}
+            {$file}
+
+            {$titleSeparator}
+            INPUT
+            expose global classes: {$formattedExposeGlobalClasses}
+            expose global functions: {$formattedExposeGlobalFunctions}
+            expose global constants: {$formattedExposeGlobalConstants}
+
+            exclude namespaces: {$formattedNamespacesToExclude}
+            expose namespaces: {$formattedNamespacesToExpose}
+
+            expose classes: {$formattedClassesToExpose}
+            expose functions: {$formattedFunctionsToExpose}
+            expose constants: {$formattedConstantsToExpose}
+
+            (raw) internal classes: {$formattedInternalClasses}
+            (raw) internal functions: {$formattedInternalFunctions}
+            (raw) internal constants: {$formattedInternalConstants}
+            {$titleSeparator}
+            {$contents}
+
+            {$titleSeparator}
+            EXPECTED
+            {$titleSeparator}
+            {$expected}
+            ----------------
+            recorded functions: {$formattedExpectedRegisteredFunctions}
+            recorded classes: {$formattedExpectedRegisteredClasses}
+
+            {$titleSeparator}
+            ACTUAL
+            {$titleSeparator}
+            {$actual}
+            ----------------
+            recorded functions: {$formattedActualRegisteredFunctions}
+            recorded classes: {$formattedActualRegisteredClasses}
+
+            -------------------------------------------------------------------------------
+            OUTPUT;
     }
 
     /**
@@ -533,12 +530,10 @@ class PhpScoperSpecTest extends TestCase
             implode(
                 PHP_EOL,
                 array_map(
-                    static function (string $string): string {
-                        return '  - '.$string;
-                    },
-                    $strings
-                )
-            )
+                    static fn (string $string): string => '  - '.$string,
+                    $strings,
+                ),
+            ),
         );
     }
 
@@ -563,12 +558,10 @@ class PhpScoperSpecTest extends TestCase
             implode(
                 PHP_EOL,
                 array_map(
-                    static function (array $stringTuple): string {
-                        return sprintf('  - %s => %s', ...$stringTuple);
-                    },
-                    $stringTuples
-                )
-            )
+                    static fn (array $stringTuple): string => sprintf('  - %s => %s', ...$stringTuple),
+                    $stringTuples,
+                ),
+            ),
         );
     }
 

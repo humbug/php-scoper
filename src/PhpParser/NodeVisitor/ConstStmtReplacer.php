@@ -107,7 +107,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                 new FullyQualified('define'),
                 [
                     new Arg(
-                        new String_($name)
+                        new String_($name),
                     ),
                     new Arg($value),
                 ],

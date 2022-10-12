@@ -19,6 +19,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolRegistry
+ *
+ * @internal
  */
 class SymbolRegistryTest extends TestCase
 {
@@ -40,8 +42,7 @@ class SymbolRegistryTest extends TestCase
         array $regexes,
         string $symbol,
         bool $expected
-    ): void
-    {
+    ): void {
         // Sanity check
         $this->validateRegexes($regexes);
 
@@ -58,8 +59,8 @@ class SymbolRegistryTest extends TestCase
     /**
      * @dataProvider provideNamesAndRegexes
      *
-     * @param string[] $regexes
-     * @param string[] $names
+     * @param string[]     $regexes
+     * @param string[]     $names
      * @param list<string> $regexes
      * @param list<string> $names
      */
@@ -68,8 +69,7 @@ class SymbolRegistryTest extends TestCase
         array $regexes,
         array $expectedNames,
         array $expectedRegexes
-    ): void
-    {
+    ): void {
         $registry = SymbolRegistry::create(
             $names,
             $regexes,

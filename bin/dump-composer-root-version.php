@@ -37,11 +37,11 @@ file_put_contents(
     __DIR__.'/../.composer-root-version',
     sprintf(
         <<<'BASH'
-        #!/usr/bin/env bash
-        
-        export COMPOSER_ROOT_VERSION='%s'
-        
-        BASH,
+            #!/usr/bin/env bash
+
+            export COMPOSER_ROOT_VERSION='%s'
+
+            BASH,
         $composerRootVersion,
     ),
 );
@@ -52,7 +52,7 @@ file_put_contents(
         '/COMPOSER_ROOT_VERSION: \'.*?\'/',
         sprintf(
             'COMPOSER_ROOT_VERSION: \'%s\'',
-            $composerRootVersion
+            $composerRootVersion,
         ),
         file_get_contents($scrutinizerPath),
     ),

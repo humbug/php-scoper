@@ -39,8 +39,6 @@ function get_php_scoper_version(): string
 
 /**
  * @param string[] $paths Absolute paths
- *
- * @return string
  */
 function get_common_path(array $paths): string
 {

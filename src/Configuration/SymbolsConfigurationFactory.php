@@ -2,6 +2,16 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
@@ -184,7 +194,7 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * return list<string>
+     * @return list<string>
      */
     private static function retrieveLegacyExposedElements(array $config): array
     {
@@ -223,7 +233,7 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * return array{string[], string[]}
+     * @return array{list<string>, list<string>}
      */
     private function retrieveElements(array $config, string $key): array
     {

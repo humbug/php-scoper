@@ -2,6 +2,16 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Command\CommandRegistry;
@@ -40,9 +50,9 @@ final class ConfigLoader
     }
 
     /**
-     * @param non-empty-string|null $configFilePath Canonical absolute path
-     * @param non-empty-string $defaultConfigFilePath
-     * @param list<non-empty-string> $paths List of canonical absolute paths
+     * @param non-empty-string|null  $configFilePath        Canonical absolute path
+     * @param non-empty-string       $defaultConfigFilePath
+     * @param list<non-empty-string> $paths                 List of canonical absolute paths
      */
     public function loadConfig(
         IO $io,
@@ -53,8 +63,7 @@ final class ConfigLoader
         bool $isInitCommandExecuted,
         array $paths,
         string $cwd
-    ): Configuration
-    {
+    ): Configuration {
         $prefix = trim($prefix);
         $defaultConfigFilePath = $this->canonicalizePath($defaultConfigFilePath, $cwd);
 
@@ -100,11 +109,10 @@ final class ConfigLoader
         string $prefix,
         array $paths,
         string $cwd
-    ): Configuration
-    {
+    ): Configuration {
         $io->writeln(
             'Loading without configuration file.',
-            OutputInterface::VERBOSITY_DEBUG
+            OutputInterface::VERBOSITY_DEBUG,
         );
 
         return $this->loadConfiguration(null, $prefix, $paths, $cwd);
@@ -176,7 +184,7 @@ final class ConfigLoader
     }
 
     /**
-     * @param non-empty-string|null $configFilePath
+     * @param non-empty-string|null  $configFilePath
      * @param list<non-empty-string> $paths
      */
     private function loadConfiguration(
@@ -184,8 +192,7 @@ final class ConfigLoader
         string $prefix,
         array $paths,
         string $cwd
-    ): Configuration
-    {
+    ): Configuration {
         return $this->configurePaths(
             $this->configurePrefix(
                 $this->configFactory->create($configFilePath, $paths),
@@ -210,8 +217,7 @@ final class ConfigLoader
     private function configurePaths(
         Configuration $config,
         string $cwd
-    ): Configuration
-    {
+    ): Configuration {
         // Use the current working directory as the path if no file has been
         // found
         if (0 === count($config->getFilesWithContents())) {

@@ -15,7 +15,7 @@ jobs:
                 php: [ '8.1' ]
                 check:
                     -   name: CS
-                        command: make cs
+                        command: make cs_lint
                     -   name: PHPStan
                         command: make phpstan
 

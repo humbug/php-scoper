@@ -51,7 +51,7 @@ $polyfillsBootstraps = array_map(
     iterator_to_array(
         Finder::create()
             ->files()
-            ->in(__DIR__ . '/vendor/symfony/polyfill-*')
+            ->in(__DIR__.'/vendor/symfony/polyfill-*')
             ->name('bootstrap*.php'),
         false,
     ),
@@ -62,7 +62,7 @@ $polyfillsStubs = array_map(
     iterator_to_array(
         Finder::create()
             ->files()
-            ->in(__DIR__ . '/vendor/symfony/polyfill-*/Resources/stubs')
+            ->in(__DIR__.'/vendor/symfony/polyfill-*/Resources/stubs')
             ->name('*.php'),
         false,
     ),
@@ -73,7 +73,7 @@ $symfonyDeprecationContracts = array_map(
     iterator_to_array(
         Finder::create()
             ->files()
-            ->in(__DIR__ . '/vendor/symfony/deprecation-contracts')
+            ->in(__DIR__.'/vendor/symfony/deprecation-contracts')
             ->name('*.php'),
         false,
     ),
@@ -84,7 +84,7 @@ return [
         Finder::class,
     ],
     'exclude-namespaces' => [
-        'Symfony\Polyfill'
+        'Symfony\Polyfill',
     ],
     'exclude-constants' => [
         // Symfony global constants
@@ -119,10 +119,10 @@ return [
                     '',
                     sprintf(
                         'namespace %s\JetBrains\PHPStormStub;',
-                        $prefix
+                        $prefix,
                     ),
                 ],
-                $contents
+                $contents,
             );
         },
         //
@@ -135,13 +135,13 @@ return [
 
             $originalContents = file_get_contents(__DIR__.'/src/Reflector.php');
 
-            $classPosition = strpos($originalContents, 'final class Reflector');
-            $prefixedClassPosition = strpos($contents, 'final class Reflector');
+            $classPosition = mb_strpos($originalContents, 'final class Reflector');
+            $prefixedClassPosition = mb_strpos($contents, 'final class Reflector');
 
             return sprintf(
                 '%s%s',
-                substr($contents, 0, $prefixedClassPosition),
-                substr($originalContents, $classPosition)
+                mb_substr($contents, 0, $prefixedClassPosition),
+                mb_substr($originalContents, $classPosition),
             );
         },
         static function (string $filePath, string $prefix, string $contents): string {
@@ -152,7 +152,7 @@ return [
             return str_replace(
                 '\\'.$prefix.'\Isolated\Symfony\Component\Finder\Finder::class',
                 '\Isolated\Symfony\Component\Finder\Finder::class',
-                $contents
+                $contents,
             );
         },
     ],

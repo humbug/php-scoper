@@ -62,7 +62,7 @@ final class InitCommand implements Command
                     InputOption::VALUE_REQUIRED,
                     sprintf(
                         'Configuration file. Will use "%s" if found by default.',
-                        self::CONFIG_FILE_DEFAULT
+                        self::CONFIG_FILE_DEFAULT,
                     ),
                     null,
                 ),
@@ -78,8 +78,8 @@ final class InitCommand implements Command
         $io->writeln(
             $this->formatterHelper->formatSection(
                 'PHP-Scoper configuration generate',
-                'Welcome!'
-            )
+                'Welcome!',
+            ),
         );
 
         $configFile = $this->retrieveConfig($io);
@@ -96,7 +96,7 @@ final class InitCommand implements Command
             '',
             sprintf(
                 'Generated the configuration file "<comment>%s</comment>".',
-                $configFile
+                $configFile,
             ),
             '',
         ]);
@@ -110,17 +110,16 @@ final class InitCommand implements Command
 
         $configFile = (null === $configFile)
             ? $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT)
-            : $this->makeAbsolutePath($configFile)
-        ;
+            : $this->makeAbsolutePath($configFile);
 
         if (file_exists($configFile)) {
             $canDeleteFile = $io->confirm(
                 sprintf(
                     'The configuration file "<comment>%s</comment>" already exists. Are you sure you want to '
                     .'replace it?',
-                    $configFile
+                    $configFile,
                 ),
-                false
+                false,
             );
 
             if (!$canDeleteFile) {
