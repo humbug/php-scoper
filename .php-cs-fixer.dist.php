@@ -47,6 +47,9 @@ $overriddenRules = [
     'modernize_strpos' => false,
     'native_constant_invocation' => false,
     'native_function_invocation' => false,
+    'no_superfluous_phpdoc_tags' => [
+        'allow_mixed' => true,
+    ],
     'no_unneeded_control_parentheses' => false,
     'ordered_class_elements' => false,
     'phpdoc_annotation_without_dot' => false,
