@@ -29,7 +29,6 @@ final class NameFactory
             throw new InvalidArgumentException('Expected one of the names to not be null');
         }
 
-        /** @var Name $fqName */
         return Name::concat($name1, $name2, $attributes);
     }
 

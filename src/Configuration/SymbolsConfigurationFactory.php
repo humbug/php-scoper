@@ -233,7 +233,7 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * @return array{string[], string[]}
+     * @return array{list<string>, list<string>}
      */
     private function retrieveElements(array $config, string $key): array
     {
