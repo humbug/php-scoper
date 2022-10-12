@@ -36,6 +36,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use function Humbug\PhpScoper\create_parser;
 use function is_a;
+use function str_replace;
 
 /**
  * @internal
@@ -207,12 +208,13 @@ class PhpScoperTest extends TestCase
 
         $expected = <<<'PHP'
             #!/usr/bin/env php
-            <?php 
+            <?php
             namespace Humbug;
 
             echo "Hello world";
 
             PHP;
+        $expected = str_replace('<?php', '<?php ', $expected);
 
         $actual = $this->scoper->scope($filePath, $contents);
 
