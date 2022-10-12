@@ -132,7 +132,9 @@ infection: $(COVERAGE_XML) vendor
 .PHONY: blackfire
 blackfire:	## Runs Blackfire profiling
 blackfire: $(PHP_SCOPER_BIN) vendor
-	$(BLACKFIRE) --new-reference run php $(PHP_SCOPER_BIN) add-prefix --output-dir=build/php-scoper --force --quiet
+	@echo By https://blackfire.io
+	@echo This might take a while (~2min)
+	$(BLACKFIRE) run php $(PHP_SCOPER_BIN) add-prefix --output-dir=build/php-scoper --force --quiet
 
 .PHONY: e2e
 e2e:	 ## Runs end-to-end tests
