@@ -101,7 +101,7 @@ validate_package:
 .PHONY: check_composer_root_version
 check_composer_root_version:	## Checks that the COMPOSER_ROOT_VERSION is up to date
 check_composer_root_version: .composer-root-version
-	php bin/check_composer_root_version.php
+	php bin/check-composer-root-version.php
 
 .PHONY: covers_validator
 covers_validator:	 ## Checks PHPUnit @coves tag
@@ -125,7 +125,8 @@ phpunit_coverage_html: $(PHPUNIT_BIN) vendor
 
 .PHONY: infection
 infection:	## Runs Infection
-infection: $(INFECTION_BIN) $(COVERAGE_XML) vendor
+infection: $(COVERAGE_XML) vendor
+#infection: $(INFECTION_BIN) $(COVERAGE_XML) vendor
 	if [ -d $(COVERAGE_XML) ]; then $(INFECTION); fi
 
 .PHONY: blackfire
@@ -135,7 +136,7 @@ blackfire: $(PHP_SCOPER_BIN) vendor
 
 .PHONY: e2e
 e2e:	 ## Runs end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_021 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
 
 .PHONY: e2e_004
 e2e_004: ## Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
@@ -467,24 +468,37 @@ e2e_032: $(PHP_SCOPER_BIN)
 	touch -c $@
 
 vendor: composer.lock .composer-root-version
+	$(MAKE) vendor_install
+
+# Sometimes we need to re-install the vendor. Since it has a few dependencies
+# we do not want to check over and over, as unlike re-installing dependencies
+# which is fast, those might have a significant overhead (e.g. checking the
+# composer root version), we do not want to repeat the step of checking the
+# vendor dependencies.
+.PHONY: vendor_install
+vendor_install:
 	/bin/bash -c 'source .composer-root-version && composer install'
 	touch -c $@
 
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
+	touch -c $@	# We likely do not want that message repeated over and over
 
 vendor-hotfix: vendor
 	composer dump-autoload
 	touch -c $@
 
 $(COMPOSER_BIN_PLUGIN_VENDOR): composer.lock .composer-root-version
-	$(MAKE) --always-make vendor
+	$(MAKE) --always-make vendor_install
+	touch -c $@
 
 $(PHPUNIT_BIN): composer.lock .composer-root-version
-	$(MAKE) --always-make vendor
+	$(MAKE) --always-make vendor_install
+	touch -c $@
 
 $(BOX_BIN): composer.lock .composer-root-version
-	$(MAKE) --always-make vendor
+	$(MAKE) --always-make vendor_install
+	touch -c $@
 
 $(COVERS_VALIDATOR_BIN): vendor-bin/covers-validator/vendor
 vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
