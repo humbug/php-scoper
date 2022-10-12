@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -10,8 +12,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Humbug\PhpScoper\PhpParser;
 
 use LogicException;
@@ -20,7 +20,7 @@ use PhpParser\Parser;
 
 final class FakeParser implements Parser
 {
-    public function parse(string $code, ?ErrorHandler $errorHandler = null): void
+    public function parse(string $code, ErrorHandler $errorHandler = null)
     {
         throw new LogicException();
     }

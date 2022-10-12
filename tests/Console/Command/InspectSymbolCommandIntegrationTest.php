@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
@@ -25,23 +25,22 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  * @covers \Humbug\PhpScoper\Console\Command\InspectSymbolCommand
  *
  * @group integration
- *
- * @internal
  */
 class InspectSymbolCommandIntegrationTest extends FileSystemTestCase
 {
     private const STATIC_CONTENT = <<<'EOL'
 
-        Internal (configured via the `excluded-*` settings) are treated as PHP native symbols, i.e. will remain untouched.
-        Exposed symbols (configured via the `expose-*` settings) will be prefixed but aliased to its original symbol.
-        If a symbol is neither internal or exposed, it will be prefixed and not aliased
+    Internal (configured via the `excluded-*` settings) are treated as PHP native symbols, i.e. will remain untouched.
+    Exposed symbols (configured via the `expose-*` settings) will be prefixed but aliased to its original symbol.
+    If a symbol is neither internal or exposed, it will be prefixed and not aliased
+    
+    For more information, see:
+     * Doc link for excluded symbols
+     * Doc link for exposed symbols
 
-        For more information, see:
-         * Doc link for excluded symbols
-         * Doc link for exposed symbols
 
+    EOL;
 
-        EOL;
 
     private ApplicationTester $appTester;
 
@@ -75,15 +74,15 @@ class InspectSymbolCommandIntegrationTest extends FileSystemTestCase
         $this->appTester->run($input);
 
         $expected = self::STATIC_CONTENT.<<<'EOL'
-            No configuration loaded.
-
-            Inspecting the symbol Acme\Foo for type class:
-
-             * Internal: false
-             * Exposed:  false
-
-
-            EOL;
+        No configuration loaded.
+        
+        Inspecting the symbol Acme\Foo for type class:
+        
+         * Internal: false
+         * Exposed:  false
+        
+        
+        EOL;
 
         $this->assertSameOutput($expected, 0);
     }
@@ -100,24 +99,24 @@ class InspectSymbolCommandIntegrationTest extends FileSystemTestCase
         $this->appTester->run($input);
 
         $expected = self::STATIC_CONTENT.<<<'EOL'
-            No configuration loaded.
-
-            Inspecting the symbol Acme\Foo for all types.
-
-            As a class:
-             * Internal: false
-             * Exposed:  false
-
-            As a function:
-             * Internal: false
-             * Exposed:  false
-
-            As a constant:
-             * Internal: false
-             * Exposed:  false
-
-
-            EOL;
+        No configuration loaded.
+        
+        Inspecting the symbol Acme\Foo for all types.
+        
+        As a class:
+         * Internal: false
+         * Exposed:  false
+        
+        As a function:
+         * Internal: false
+         * Exposed:  false
+        
+        As a constant:
+         * Internal: false
+         * Exposed:  false
+        
+        
+        EOL;
 
         $this->assertSameOutput($expected, 0);
     }

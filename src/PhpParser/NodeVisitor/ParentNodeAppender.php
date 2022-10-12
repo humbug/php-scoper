@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
@@ -53,7 +53,8 @@ final class ParentNodeAppender extends NodeVisitorAbstract
     {
         return $node->hasAttribute(self::PARENT_ATTRIBUTE)
             ? $node->getAttribute(self::PARENT_ATTRIBUTE)
-            : null;
+            : null
+        ;
     }
 
     public function beforeTraverse(array $nodes): ?array

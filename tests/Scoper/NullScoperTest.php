@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -10,8 +12,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Humbug\PhpScoper\Scoper;
 
 use PHPUnit\Framework\TestCase;
@@ -19,12 +19,10 @@ use function is_a;
 
 /**
  * @covers \Humbug\PhpScoper\Scoper\NullScoper
- *
- * @internal
  */
 class NullScoperTest extends TestCase
 {
-    public function test_is_a__scoper(): void
+    public function test_is_a_Scoper(): void
     {
         self::assertTrue(is_a(NullScoper::class, Scoper::class, true));
     }

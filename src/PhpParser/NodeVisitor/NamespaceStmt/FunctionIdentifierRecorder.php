@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -10,8 +12,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
@@ -20,6 +20,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use InvalidArgumentException;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
@@ -148,6 +149,6 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         return $name instanceof Name
             && $name->isFullyQualified()
-            && 'function_exists' === $name->toString();
+            && $name->toString() === 'function_exists';
     }
 }

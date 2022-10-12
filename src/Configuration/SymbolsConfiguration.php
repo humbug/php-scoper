@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
@@ -33,32 +33,6 @@ final class SymbolsConfiguration
     private SymbolRegistry $excludedClasses;
     private SymbolRegistry $excludedFunctions;
     private SymbolRegistry $excludedConstants;
-
-    private function __construct(
-        bool $exposeGlobalConstants,
-        bool $exposeGlobalClasses,
-        bool $exposeGlobalFunctions,
-        NamespaceRegistry $excludedNamespaces,
-        NamespaceRegistry $exposedNamespaces,
-        SymbolRegistry $exposedClasses,
-        SymbolRegistry $exposedFunctions,
-        SymbolRegistry $exposedConstants,
-        SymbolRegistry $excludedClasses,
-        SymbolRegistry $excludedFunctions,
-        SymbolRegistry $excludedConstants
-    ) {
-        $this->exposeGlobalConstants = $exposeGlobalConstants;
-        $this->exposeGlobalClasses = $exposeGlobalClasses;
-        $this->exposeGlobalFunctions = $exposeGlobalFunctions;
-        $this->excludedNamespaces = $excludedNamespaces;
-        $this->exposedNamespaces = $exposedNamespaces;
-        $this->exposedClasses = $exposedClasses;
-        $this->exposedFunctions = $exposedFunctions;
-        $this->exposedConstants = $exposedConstants;
-        $this->excludedClasses = $excludedClasses;
-        $this->excludedFunctions = $excludedFunctions;
-        $this->excludedConstants = $excludedConstants;
-    }
 
     public static function create(
         bool $exposeGlobalConstants = false,
@@ -88,6 +62,32 @@ final class SymbolsConfiguration
             $excludedFunctions ?? SymbolRegistry::create(),
             $excludedConstants ?? SymbolRegistry::createForConstants(),
         );
+    }
+
+    private function __construct(
+        bool $exposeGlobalConstants,
+        bool $exposeGlobalClasses,
+        bool $exposeGlobalFunctions,
+        NamespaceRegistry $excludedNamespaces,
+        NamespaceRegistry $exposedNamespaces,
+        SymbolRegistry $exposedClasses,
+        SymbolRegistry $exposedFunctions,
+        SymbolRegistry $exposedConstants,
+        SymbolRegistry $excludedClasses,
+        SymbolRegistry $excludedFunctions,
+        SymbolRegistry $excludedConstants
+    ) {
+        $this->exposeGlobalConstants = $exposeGlobalConstants;
+        $this->exposeGlobalClasses = $exposeGlobalClasses;
+        $this->exposeGlobalFunctions = $exposeGlobalFunctions;
+        $this->excludedNamespaces = $excludedNamespaces;
+        $this->exposedNamespaces = $exposedNamespaces;
+        $this->exposedClasses = $exposedClasses;
+        $this->exposedFunctions = $exposedFunctions;
+        $this->exposedConstants = $exposedConstants;
+        $this->excludedClasses = $excludedClasses;
+        $this->excludedFunctions = $excludedFunctions;
+        $this->excludedConstants = $excludedConstants;
     }
 
     public function shouldExposeGlobalConstants(): bool

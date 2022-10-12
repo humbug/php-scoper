@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
@@ -47,6 +47,7 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UnionType;
 use PhpParser\NodeVisitorAbstract;
 use function in_array;
+use function strtolower;
 
 /**
  * Prefixes names when appropriate.
@@ -156,11 +157,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         );
 
         if ($this->doesNameHasUseStatement(
-            $originalName,
-            $resolvedName,
-            $parentNode,
-            $useStatement,
-        )
+                $originalName,
+                $resolvedName,
+                $parentNode,
+                $useStatement,
+            )
         ) {
             // Do not prefix if there is a matching use statement.
             return $originalName;
@@ -174,10 +175,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         $currentNamespace = $this->namespaceStatements->getCurrentNamespaceName();
 
         if (self::doesNameBelongToNamespace(
-            $originalName,
-            $resolvedName,
-            $currentNamespace,
-        )
+                $originalName,
+                $resolvedName,
+                $currentNamespace,
+            )
             // At this point if the name belongs to the global namespace, since
             // we are NOT in an excluded namespace, the current namespace will
             // become prefixed hence there is no need for prefixing.
@@ -244,9 +245,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         $isAlreadyPrefixed = $this->prefix === $resolvedName->getFirst();
 
-        return
+        return (
             $isAlreadyPrefixed
-            || $this->enrichedReflector->belongsToExcludedNamespace((string) $resolvedName);
+            || $this->enrichedReflector->belongsToExcludedNamespace((string) $resolvedName)
+        );
     }
 
     private static function doesNameBelongToNamespace(
@@ -255,7 +257,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         ?Name $namespaceName
     ): bool {
         if (
-            null === $namespaceName
+            $namespaceName === null
             || !$resolvedName->isFullyQualified()
             // In case the original name is a FQ, we do not skip the prefixing
             // and keep it as FQ
@@ -287,15 +289,13 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
             // If exposed we cannot keep the original non-FQCN UNLESS belongs
             // to the global namespace for the reasons mentionned in the caller
-            && (
-                !$this->enrichedReflector->isExposedClass($resolvedName)
+            && (!$this->enrichedReflector->isExposedClass($resolvedName)
                 || $this->enrichedReflector->isExposedClassFromGlobalNamespace($resolvedName)
             )
             // If excluded we cannot keep the non-FQCN
             && !$this->enrichedReflector->isClassExcluded($resolvedName)
 
-            && (
-                !$this->enrichedReflector->isExposedFunction($resolvedName)
+            && (!$this->enrichedReflector->isExposedFunction($resolvedName)
                 || $this->enrichedReflector->isExposedFunctionFromGlobalNamespace($resolvedName)
             )
             && !$this->enrichedReflector->isFunctionExcluded($resolvedName);
@@ -350,19 +350,21 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
         return $caseSensitiveUseStmt
             ? $originalName->getFirst() === $useStmtAlias
-            : mb_strtolower($originalName->getFirst()) === mb_strtolower($useStmtAlias);
+            : strtolower($originalName->getFirst()) === strtolower($useStmtAlias);
     }
 
     private function isPrefixableClassName(
         Name $resolvedName,
         Node $parentNode
-    ): bool {
+    ): bool
+    {
         $isClassNode = $parentNode instanceof ConstFetch || $parentNode instanceof FuncCall;
 
-        return
+        return (
             $isClassNode
             || !$resolvedName->isFullyQualified()
-            || !$this->enrichedReflector->isClassExcluded($resolvedName->toString());
+            || !$this->enrichedReflector->isClassExcluded($resolvedName->toString())
+        );
     }
 
     /**

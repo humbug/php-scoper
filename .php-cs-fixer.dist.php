@@ -41,5 +41,23 @@ $config = new FidryConfig(
         EOF,
     74000,
 );
+$config->setRules(
+    array_merge(
+        $config->getRules(),
+        [
+            'header_comment' => [
+                'header' => $config->getRules()['header_comment']['header'],
+                'location' => 'after_declare_strict',
+            ],
+            'mb_str_functions' => false,
+            'native_constant_invocation' => false,
+            'native_function_invocation' => false,
+            'no_unneeded_control_parentheses' => false,
+            'ordered_class_elements' => false,
+            'phpdoc_annotation_without_dot' => false,
+            'yoda_style' => false,
+        ],
+    ),
+);
 
 return $config->setFinder($finder);

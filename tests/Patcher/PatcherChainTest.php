@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
@@ -22,8 +22,6 @@ use function str_replace;
 
 /**
  * @covers \Humbug\PhpScoper\Patcher\PatcherChain
- *
- * @internal
  */
 class PatcherChainTest extends TestCase
 {
@@ -41,20 +39,20 @@ class PatcherChainTest extends TestCase
         $patcher = new PatcherChain($patchers);
 
         $expected = <<<'EOF'
-            patcher#2{
+        patcher#2{
+            /path/to/file.php,
+            Humbug,
+            patcher#1{
                 /path/to/file.php,
                 Humbug,
-                patcher#1{
+                patcher#0{
                     /path/to/file.php,
                     Humbug,
-                    patcher#0{
-                        /path/to/file.php,
-                        Humbug,
-                        OriginalContent
-                    }
+                    OriginalContent
                 }
             }
-            EOF;
+        }
+        EOF;
 
         // The line returns are purely for readability
         $expected = str_replace([' ', "\n"], ['', ''], $expected);

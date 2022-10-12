@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
@@ -22,6 +12,8 @@ use function preg_last_error;
 use function preg_last_error_msg;
 use function preg_match as native_preg_match;
 use function Safe\sprintf;
+use function str_split;
+use function strlen;
 
 final class RegexChecker
 {
@@ -30,7 +22,7 @@ final class RegexChecker
     // See https://github.com/humbug/php-scoper/issues/597
     private const INVALID_REGEX_DELIMITERS = [
         '\\',
-        '_',
+        '_'
     ];
 
     // https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
@@ -50,7 +42,7 @@ final class RegexChecker
 
     public function isRegexLike(string $value): bool
     {
-        $valueLength = mb_strlen($value);
+        $valueLength = strlen($value);
 
         if ($valueLength < 2) {
             return false;
@@ -65,7 +57,7 @@ final class RegexChecker
 
         $parts = explode($firstCharacter, $value);
 
-        if (3 !== count($parts)) {
+        if (count($parts) !== 3) {
             return false;
         }
 
@@ -80,7 +72,7 @@ final class RegexChecker
 
     public function validateRegex(string $regex): ?string
     {
-        if (false !== @native_preg_match($regex, '')) {
+        if (@native_preg_match($regex, '') !== false) {
             return null;
         }
 
@@ -94,7 +86,7 @@ final class RegexChecker
     private static function isValidDelimiter(string $delimiter): bool
     {
         return !in_array($delimiter, self::INVALID_REGEX_DELIMITERS, true)
-            && 0 === native_preg_match('/^\p{L}$/u', $delimiter);
+            && native_preg_match('/^\p{L}$/u', $delimiter) === 0;
     }
 
     private static function isValidRegexFlags(string $value): bool
@@ -103,7 +95,7 @@ final class RegexChecker
             return true;
         }
 
-        $characters = mb_str_split($value);
+        $characters = str_split($value);
 
         foreach ($characters as $character) {
             if (!in_array($character, self::PATTERN_MODIFIERS, true)) {

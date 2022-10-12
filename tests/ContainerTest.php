@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -10,8 +12,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Humbug\PhpScoper;
 
 use PHPUnit\Framework\TestCase;
@@ -19,8 +19,6 @@ use ReflectionClass;
 
 /**
  * @covers \Humbug\PhpScoper\Container
- *
- * @internal
  */
 class ContainerTest extends TestCase
 {
@@ -29,7 +27,7 @@ class ContainerTest extends TestCase
      */
     public function test_it_can_instantiate_its_services(string $getterName): void
     {
-        $result = (new Container())->{$getterName}();
+        $result = (new Container())->$getterName();
 
         self::assertNotNull($result);
     }
@@ -43,13 +41,13 @@ class ContainerTest extends TestCase
         $anotherContainer = new Container();
 
         self::assertSame(
-            $container->{$getterName}(),
-            $container->{$getterName}()
+            $container->$getterName(),
+            $container->$getterName()
         );
 
         self::assertNotSame(
-            $container->{$getterName}(),
-            $anotherContainer->{$getterName}()
+            $container->$getterName(),
+            $anotherContainer->$getterName()
         );
     }
 

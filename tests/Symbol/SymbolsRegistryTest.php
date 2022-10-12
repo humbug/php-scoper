@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
@@ -17,11 +7,11 @@ namespace Humbug\PhpScoper\Symbol;
 use Humbug\PhpScoper\PhpScoperAssertions;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
+use function array_is_list;
+use function var_export;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolsRegistry
- *
- * @internal
  */
 final class SymbolsRegistryTest extends TestCase
 {
@@ -39,7 +29,8 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
         int $expectedCount
-    ): void {
+    ): void
+    {
         $registry = self::createRegistry($functions, $classes);
 
         self::assertStateIs(
@@ -120,7 +111,8 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
         int $expectedCount
-    ): void {
+    ): void
+    {
         $originalSource = clone $source;
 
         $target->merge($source);
@@ -294,7 +286,8 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
         int $expectedCount
-    ): void {
+    ): void
+    {
         $symbolRegistry = SymbolsRegistry::createFromRegistries($sources);
 
         self::assertStateIs(
@@ -366,7 +359,8 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
         int $expectedCount
-    ): void {
+    ): void
+    {
         PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedRecordedFunctions,
             $symbolsRegistry->getRecordedFunctions(),

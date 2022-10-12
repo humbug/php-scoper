@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 require_once __DIR__.'/root-version.php';
 
@@ -37,11 +37,11 @@ file_put_contents(
     __DIR__.'/../.composer-root-version',
     sprintf(
         <<<'BASH'
-            #!/usr/bin/env bash
-
-            export COMPOSER_ROOT_VERSION='%s'
-
-            BASH,
+        #!/usr/bin/env bash
+        
+        export COMPOSER_ROOT_VERSION='%s'
+        
+        BASH,
         $composerRootVersion,
     ),
 );

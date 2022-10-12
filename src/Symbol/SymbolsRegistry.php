@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
 
@@ -33,7 +33,7 @@ final class SymbolsRegistry implements Countable
 
     public static function createFromRegistries(array $symbolsRegistries): self
     {
-        $symbolsRegistry = new self();
+        $symbolsRegistry = new SymbolsRegistry();
 
         foreach ($symbolsRegistries as $symbolsRegistryToMerge) {
             $symbolsRegistry->merge($symbolsRegistryToMerge);
@@ -52,7 +52,7 @@ final class SymbolsRegistry implements Countable
             $this->recordedClasses[$original] = [$original, $alias];
         }
     }
-
+    
     public function recordFunction(FullyQualified $original, FullyQualified $alias): void
     {
         $this->recordedFunctions[(string) $original] = [(string) $original, (string) $alias];

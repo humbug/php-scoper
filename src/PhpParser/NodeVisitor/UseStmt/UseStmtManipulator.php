@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
@@ -24,10 +24,6 @@ use PhpParser\NodeVisitorAbstract;
 final class UseStmtManipulator extends NodeVisitorAbstract
 {
     private const ORIGINAL_NAME_ATTRIBUTE = 'originalName';
-
-    private function __construct()
-    {
-    }
 
     public static function hasOriginalName(UseUse $use): bool
     {
@@ -46,5 +42,9 @@ final class UseStmtManipulator extends NodeVisitorAbstract
     public static function setOriginalName(UseUse $use, ?Name $originalName): void
     {
         $use->setAttribute(self::ORIGINAL_NAME_ATTRIBUTE, $originalName);
+    }
+
+    private function __construct()
+    {
     }
 }

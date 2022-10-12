@@ -19,11 +19,9 @@ use Humbug\PhpScoper\Console\Application;
 use Isolated\Symfony\Component\Finder\Finder as IsolatedFinder;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
-use const PHP_EOL;
-use const PHP_SAPI;
 
 if (PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg') {
-    echo PHP_EOL.'PHP-Scoper may only be invoked from a command line'.PHP_EOL;
+    echo PHP_EOL.'PHP-Scoper may only be invoked from a command line'.\PHP_EOL;
 
     exit(1);
 }

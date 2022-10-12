@@ -1,5 +1,9 @@
 <?php
 
+/** @noinspection ClassConstantCanBeUsedInspection */
+
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +13,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
 
@@ -25,58 +27,58 @@ final class Reflector
 {
     private const MISSING_CLASSES = [
         // https://github.com/JetBrains/phpstorm-stubs/commit/18a771fcdff1af5b5e2d2f815f886316447bacc9
-        'Swoole\Atomic',
-        'Swoole\Atomic\Long',
-        'Swoole\Client',
-        'Swoole\Client\Exception',
-        'Swoole\Connection\Iterator',
-        'Swoole\Coroutine',
-        'Swoole\Coroutine\Channel',
-        'Swoole\Coroutine\Client',
-        'Swoole\Coroutine\Context',
-        'Swoole\Coroutine\Curl\Exception',
-        'Swoole\Coroutine\Http2\Client',
-        'Swoole\Coroutine\Http2\Client\Exception',
-        'Swoole\Coroutine\Http\Client',
-        'Swoole\Coroutine\Http\Client\Exception',
-        'Swoole\Coroutine\Http\Server',
-        'Swoole\Coroutine\Iterator',
-        'Swoole\Coroutine\MySQL',
-        'Swoole\Coroutine\MySQL\Exception',
-        'Swoole\Coroutine\MySQL\Statement',
-        'Swoole\Coroutine\Redis',
-        'Swoole\Coroutine\Scheduler',
-        'Swoole\Coroutine\Socket',
-        'Swoole\Coroutine\Socket\Exception',
-        'Swoole\Coroutine\System',
-        'Swoole\Error',
-        'Swoole\Event',
-        'Swoole\Exception',
-        'Swoole\ExitException',
-        'Swoole\Http2\Request',
-        'Swoole\Http2\Response',
-        'Swoole\Http\Request',
-        'Swoole\Http\Response',
-        'Swoole\Http\Server',
-        'Swoole\Lock',
-        'Swoole\Process',
-        'Swoole\Process\Pool',
-        'Swoole\Redis\Server',
-        'Swoole\Runtime',
-        'Swoole\Server',
-        'Swoole\Server\Event',
-        'Swoole\Server\Packet',
-        'Swoole\Server\PipeMessage',
-        'Swoole\Server\Port',
-        'Swoole\Server\StatusInfo',
-        'Swoole\Server\Task',
-        'Swoole\Server\TaskResult',
-        'Swoole\Table',
-        'Swoole\Timer',
-        'Swoole\Timer\Iterator',
-        'Swoole\WebSocket\CloseFrame',
-        'Swoole\WebSocket\Frame',
-        'Swoole\WebSocket\Server',
+        'Swoole\Atomic' ,
+        'Swoole\Atomic\Long' ,
+        'Swoole\Client' ,
+        'Swoole\Client\Exception' ,
+        'Swoole\Connection\Iterator' ,
+        'Swoole\Coroutine' ,
+        'Swoole\Coroutine\Channel' ,
+        'Swoole\Coroutine\Client' ,
+        'Swoole\Coroutine\Context' ,
+        'Swoole\Coroutine\Curl\Exception' ,
+        'Swoole\Coroutine\Http2\Client' ,
+        'Swoole\Coroutine\Http2\Client\Exception' ,
+        'Swoole\Coroutine\Http\Client' ,
+        'Swoole\Coroutine\Http\Client\Exception' ,
+        'Swoole\Coroutine\Http\Server' ,
+        'Swoole\Coroutine\Iterator' ,
+        'Swoole\Coroutine\MySQL' ,
+        'Swoole\Coroutine\MySQL\Exception' ,
+        'Swoole\Coroutine\MySQL\Statement' ,
+        'Swoole\Coroutine\Redis' ,
+        'Swoole\Coroutine\Scheduler' ,
+        'Swoole\Coroutine\Socket' ,
+        'Swoole\Coroutine\Socket\Exception' ,
+        'Swoole\Coroutine\System' ,
+        'Swoole\Error' ,
+        'Swoole\Event' ,
+        'Swoole\Exception' ,
+        'Swoole\ExitException' ,
+        'Swoole\Http2\Request' ,
+        'Swoole\Http2\Response' ,
+        'Swoole\Http\Request' ,
+        'Swoole\Http\Response' ,
+        'Swoole\Http\Server' ,
+        'Swoole\Lock' ,
+        'Swoole\Process' ,
+        'Swoole\Process\Pool' ,
+        'Swoole\Redis\Server' ,
+        'Swoole\Runtime' ,
+        'Swoole\Server' ,
+        'Swoole\Server\Event' ,
+        'Swoole\Server\Packet' ,
+        'Swoole\Server\PipeMessage' ,
+        'Swoole\Server\Port' ,
+        'Swoole\Server\StatusInfo' ,
+        'Swoole\Server\Task' ,
+        'Swoole\Server\TaskResult' ,
+        'Swoole\Table' ,
+        'Swoole\Timer' ,
+        'Swoole\Timer\Iterator' ,
+        'Swoole\WebSocket\CloseFrame' ,
+        'Swoole\WebSocket\Frame' ,
+        'Swoole\WebSocket\Server' ,
 
         // https://youtrack.jetbrains.com/issue/WI-29503
         'MongoInsertBatch',
@@ -152,7 +154,7 @@ final class Reflector
     ];
 
     /**
-     * Basically mirrors https://github.com/nikic/PHP-Parser/blob/9aebf377fcdf205b2156cb78c0bd6e7b2003f106/lib/PhpParser/Lexer.php#L430.
+     * Basically mirrors https://github.com/nikic/PHP-Parser/blob/9aebf377fcdf205b2156cb78c0bd6e7b2003f106/lib/PhpParser/Lexer.php#L430
      */
     private const MISSING_CONSTANTS = [
         'STDIN',
@@ -594,16 +596,6 @@ final class Reflector
     private SymbolRegistry $functions;
     private SymbolRegistry $constants;
 
-    private function __construct(
-        SymbolRegistry $classes,
-        SymbolRegistry $functions,
-        SymbolRegistry $constants
-    ) {
-        $this->classes = $classes;
-        $this->functions = $functions;
-        $this->constants = $constants;
-    }
-
     public static function createWithPhpStormStubs(): self
     {
         return new self(
@@ -631,11 +623,22 @@ final class Reflector
         );
     }
 
+    private function __construct(
+        SymbolRegistry $classes,
+        SymbolRegistry $functions,
+        SymbolRegistry $constants
+    ) {
+        $this->classes = $classes;
+        $this->functions = $functions;
+        $this->constants = $constants;
+    }
+
     public function withAdditionalSymbols(
         SymbolRegistry $classNames,
         SymbolRegistry $functionNames,
         SymbolRegistry $constantNames
-    ): self {
+    ): self
+    {
         return new self(
             $this->classes->merge($classNames),
             $this->functions->merge($functionNames),

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
@@ -67,7 +67,7 @@ final class InstalledPackagesScoper implements Scoper
 
     private static function decodeContents(string $contents): stdClass
     {
-        $decodedJson = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
+        $decodedJson = json_decode($contents, false, 512,  JSON_THROW_ON_ERROR);
 
         if ($decodedJson instanceof stdClass) {
             return $decodedJson;

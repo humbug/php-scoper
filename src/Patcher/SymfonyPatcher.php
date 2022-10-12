@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -10,12 +12,11 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Humbug\PhpScoper\Patcher;
 
 use function Safe\preg_replace;
 use function Safe\sprintf;
+use function strpos;
 
 final class SymfonyPatcher implements Patcher
 {
@@ -43,7 +44,7 @@ final class SymfonyPatcher implements Patcher
     private static function isSupportedFile(string $filePath): bool
     {
         foreach (self::PATHS as $path) {
-            if (str_contains($filePath, $path)) {
+            if (false !== strpos($filePath, $path)) {
                 return true;
             }
         }

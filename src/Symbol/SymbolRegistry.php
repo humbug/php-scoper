@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
@@ -25,6 +15,7 @@ use function implode;
 use function ltrim;
 use function Safe\array_flip;
 use function Safe\preg_match;
+use function strtolower;
 use function trim;
 use const SORT_STRING;
 
@@ -43,20 +34,6 @@ final class SymbolRegistry
     private bool $constants;
 
     /**
-     * @param list<string> $names
-     * @param list<string> $regexes
-     */
-    private function __construct(
-        array $names,
-        array $regexes,
-        bool $constants
-    ) {
-        $this->names = array_flip($names);
-        $this->regexes = $regexes;
-        $this->constants = $constants;
-    }
-
-    /**
      * @param string[] $names
      * @param string[] $regexes
      */
@@ -66,7 +43,7 @@ final class SymbolRegistry
     ): self {
         return new self(
             array_map(
-                static fn (string $name) => mb_strtolower(trim($name, '\\')),
+                static fn (string $name) => strtolower(trim($name, '\\')),
                 $names,
             ),
             array_unique($regexes, SORT_STRING),
@@ -97,12 +74,26 @@ final class SymbolRegistry
         );
     }
 
+    /**
+     * @param list<string> $names
+     * @param list<string> $regexes
+     */
+    private function __construct(
+        array $names,
+        array $regexes,
+        bool $constants
+    ) {
+        $this->names = array_flip($names);
+        $this->regexes = $regexes;
+        $this->constants = $constants;
+    }
+
     public function matches(string $symbol): bool
     {
         $originalSymbol = ltrim($symbol, '\\');
         $symbol = $this->constants
             ? self::lowerCaseConstantName($originalSymbol)
-            : mb_strtolower($originalSymbol);
+            : strtolower($originalSymbol);
 
         if (array_key_exists($symbol, $this->names)) {
             return true;
@@ -117,7 +108,7 @@ final class SymbolRegistry
         return false;
     }
 
-    public function merge(self $registry): self
+    public function merge(SymbolRegistry $registry): self
     {
         if ($this->constants !== $registry->constants) {
             throw new InvalidArgumentException('Cannot merge registries of different symbol types');

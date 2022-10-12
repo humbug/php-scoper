@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -10,8 +12,6 @@
  * file that was distributed with this source code.
  */
 
-declare(strict_types=1);
-
 namespace Humbug\PhpScoper;
 
 use ArrayIterator;
@@ -20,9 +20,6 @@ use Humbug\PhpScoper\Console\Application;
 use PHPUnit\Framework\TestCase;
 use function iterator_to_array;
 
-/**
- * @internal
- */
 class FunctionsTest extends TestCase
 {
     public function test_it_can_create_an_application(): void
@@ -33,7 +30,7 @@ class FunctionsTest extends TestCase
         self::assertNotSame($app1, $app2);
     }
 
-    public function test_it_gets_the__ph_p__scoper_version(): void
+    public function test_it_gets_the_PHP_Scoper_version(): void
     {
         $version = get_php_scoper_version();
 

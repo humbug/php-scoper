@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
@@ -35,6 +25,8 @@ use function Safe\preg_match as native_preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
+use function strpos;
+use function strtolower;
 use function trim;
 
 final class SymbolsConfigurationFactory
@@ -192,7 +184,7 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * return list<string>.
+     * return list<string>
      */
     private static function retrieveLegacyExposedElements(array $config): array
     {
@@ -231,7 +223,7 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * return array{string[], string[]}.
+     * return array{string[], string[]}
      */
     private function retrieveElements(array $config, string $key): array
     {
@@ -303,13 +295,13 @@ final class SymbolsConfigurationFactory
             self::assertValidElement($element);
 
             if ('\*' === substr($element, -2)) {
-                $excludedNamespaceNames[] = mb_strtolower(substr($element, 0, -2));
+                $excludedNamespaceNames[] = strtolower(substr($element, 0, -2));
             } elseif ('*' === $element) {
                 $excludedNamespaceNames[] = '';
-            } elseif (str_contains($element, '*')) {
+            } elseif (false !== strpos($element, '*')) {
                 $exposedSymbolsPatterns[] = self::createExposePattern($element);
             } else {
-                $exposedSymbols[] = mb_strtolower($element);
+                $exposedSymbols[] = strtolower($element);
                 $exposedConstants[] = self::lowerCaseConstantName($element);
             }
         }
@@ -324,6 +316,8 @@ final class SymbolsConfigurationFactory
 
     /**
      * @psalm-assert string[] $value
+     *
+     * @param mixed $value
      */
     private static function assertIsArrayOfStrings($value, string $key): void
     {

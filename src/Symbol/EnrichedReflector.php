@@ -1,15 +1,5 @@
 <?php
 
-/*
- * This file is part of the humbug/php-scoper package.
- *
- * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
- *                    Pádraic Brady <padraic.brady@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
@@ -17,6 +7,7 @@ namespace Humbug\PhpScoper\Symbol;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use function ltrim;
 use function str_contains;
+use function strpos;
 
 /**
  * Combines the API or the "traditional" reflector which is about to tell
@@ -40,6 +31,13 @@ final class EnrichedReflector
     {
         return $this->symbolsConfiguration
             ->getExcludedNamespaces()
+            ->belongsToRegisteredNamespace($name);
+    }
+
+    private function belongsToExposedNamespace(string $name): bool
+    {
+        return $this->symbolsConfiguration
+            ->getExposedNamespaces()
             ->belongsToRegisteredNamespace($name);
     }
 
@@ -85,8 +83,8 @@ final class EnrichedReflector
             && (
                 $this->_isExposedFunctionFromGlobalNamespace($resolvedName)
                 || $this->symbolsConfiguration
-                    ->getExposedFunctions()
-                    ->matches($resolvedName)
+                        ->getExposedFunctions()
+                        ->matches($resolvedName)
                 || $this->belongsToExposedNamespace($resolvedName)
             );
     }
@@ -138,7 +136,7 @@ final class EnrichedReflector
     public function isExposedConstantFromGlobalNamespace(string $constantName): bool
     {
         // TODO: leverage belongsToGlobalNamespace
-        return $this->symbolsConfiguration->shouldExposeGlobalConstants() && !mb_strpos($constantName, '\\');
+        return $this->symbolsConfiguration->shouldExposeGlobalConstants() && !strpos($constantName, '\\');
     }
 
     public function isExcludedNamespace(string $name): bool
@@ -148,10 +146,16 @@ final class EnrichedReflector
             ->isRegisteredNamespace($name);
     }
 
+    private function _isExposedFunctionFromGlobalNamespace(string $functionName): bool
+    {
+        // TODO: leverage belongsToGlobalNamespace
+        return $this->symbolsConfiguration->shouldExposeGlobalFunctions() && !strpos($functionName, '\\');
+    }
+
     public function _isExposedClassFromGlobalNamespace(string $className): bool
     {
         // TODO: leverage belongsToGlobalNamespace
-        return $this->symbolsConfiguration->shouldExposeGlobalClasses() && !mb_strpos($className, '\\');
+        return $this->symbolsConfiguration->shouldExposeGlobalClasses() && !strpos($className, '\\');
     }
 
     public function belongsToGlobalNamespace(string $symbolName): bool
@@ -160,18 +164,5 @@ final class EnrichedReflector
             ltrim($symbolName, '\\'),
             '\\',
         );
-    }
-
-    private function belongsToExposedNamespace(string $name): bool
-    {
-        return $this->symbolsConfiguration
-            ->getExposedNamespaces()
-            ->belongsToRegisteredNamespace($name);
-    }
-
-    private function _isExposedFunctionFromGlobalNamespace(string $functionName): bool
-    {
-        // TODO: leverage belongsToGlobalNamespace
-        return $this->symbolsConfiguration->shouldExposeGlobalFunctions() && !mb_strpos($functionName, '\\');
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console;
 
@@ -84,6 +84,8 @@ class ScoperLogger
 
     /**
      * Output file count message if relevant.
+     *
+     * @param int $count
      */
     public function outputFileCount(int $count): void
     {
@@ -97,6 +99,8 @@ class ScoperLogger
 
     /**
      * Output scoping success message.
+     *
+     * @param string $path
      */
     public function outputSuccess(string $path): void
     {

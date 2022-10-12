@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
@@ -24,6 +24,8 @@ use function preg_match as native_preg_match;
 use function preg_match_all as native_preg_match_all;
 use function Safe\substr;
 use function str_replace;
+use function strlen;
+use function strpos;
 
 /**
  * Scopes the Symfony YAML configuration files.
@@ -69,7 +71,7 @@ final class YamlScoper implements Scoper
             $this->symbolsRegistry,
         );
 
-        return self::replaceClasses(
+        $contents = self::replaceClasses(
             array_filter($matches['class']),
             array_filter($matches['separator']),
             $this->prefix,
@@ -77,6 +79,8 @@ final class YamlScoper implements Scoper
             $this->enrichedReflector,
             $this->symbolsRegistry,
         );
+
+        return $contents;
     }
 
     /**
@@ -102,8 +106,8 @@ final class YamlScoper implements Scoper
 
             $psr4Service = $class.$separator.':';
 
-            if (str_contains($contents, $psr4Service)) {
-                $offset = mb_strpos($contents, $psr4Service) + mb_strlen($psr4Service);
+            if (false !== strpos($contents, $psr4Service)) {
+                $offset = strpos($contents, $psr4Service) + strlen($psr4Service);
 
                 $stringToScope = substr($contents, 0, $offset);
                 $contents = substr($contents, $offset);
@@ -112,12 +116,13 @@ final class YamlScoper implements Scoper
 
                 $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class.$separator.'__UnknownService__')
                     ? $stringToScope
-                    : str_replace($class, $prefixedClass, $stringToScope);
+                    : str_replace($class, $prefixedClass, $stringToScope)
+                ;
 
                 continue;
             }
 
-            $offset = mb_strpos($contents, $class) + mb_strlen($class);
+            $offset = strpos($contents, $class) + strlen($class);
 
             $stringToScope = substr($contents, 0, $offset);
             $contents = substr($contents, $offset);
@@ -126,7 +131,8 @@ final class YamlScoper implements Scoper
 
             $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class)
                 ? $stringToScope
-                : str_replace($class, $prefixedClass, $stringToScope);
+                : str_replace($class, $prefixedClass, $stringToScope)
+            ;
 
             if ($enrichedReflector->isExposedClass($class)) {
                 $symbolsRegistry->recordClass(

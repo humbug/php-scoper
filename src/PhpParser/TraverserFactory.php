@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -9,8 +11,6 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
@@ -68,7 +68,7 @@ class TraverserFactory
         foreach ($nodeVisitors as $nodeVisitor) {
             $traverser->addVisitor($nodeVisitor);
         }
-
+        
         return $traverser;
     }
 
@@ -80,7 +80,8 @@ class TraverserFactory
         EnrichedReflector $reflector,
         PhpScoper $scoper,
         SymbolsRegistry $symbolsRegistry
-    ): array {
+    ): array
+    {
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
 
@@ -90,62 +91,62 @@ class TraverserFactory
         );
         $identifierResolver = new IdentifierResolver($nameResolver);
         $stringNodePrefixer = new StringNodePrefixer($scoper);
-
+        
         return [
-            $nameResolver,
-            new NodeVisitor\ParentNodeAppender(),
-            new NodeVisitor\IdentifierNameAppender($identifierResolver),
+           $nameResolver,
+           new NodeVisitor\ParentNodeAppender(),
+           new NodeVisitor\IdentifierNameAppender($identifierResolver),
 
-            new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
-                $prefix,
-                $reflector,
-                $namespaceStatements,
-            ),
+           new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
+               $prefix,
+               $reflector,
+               $namespaceStatements,
+           ),
 
-            new NodeVisitor\UseStmt\UseStmtCollector(
-                $namespaceStatements,
-                $useStatements,
-            ),
-            new NodeVisitor\UseStmt\UseStmtPrefixer(
-                $prefix,
-                $reflector,
-            ),
+           new NodeVisitor\UseStmt\UseStmtCollector(
+               $namespaceStatements,
+               $useStatements,
+           ),
+           new NodeVisitor\UseStmt\UseStmtPrefixer(
+               $prefix,
+               $reflector,
+           ),
 
-            new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
-                $prefix,
-                $identifierResolver,
-                $symbolsRegistry,
-                $reflector,
-            ),
-            new NodeVisitor\ClassIdentifierRecorder(
-                $prefix,
-                $identifierResolver,
-                $symbolsRegistry,
-                $reflector,
-            ),
-            new NodeVisitor\NameStmtPrefixer(
-                $prefix,
-                $namespaceStatements,
-                $useStatements,
-                $reflector,
-            ),
-            new NodeVisitor\StringScalarPrefixer(
-                $prefix,
-                $reflector,
-            ),
-            new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
-            new NodeVisitor\EvalPrefixer($stringNodePrefixer),
+           new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
+               $prefix,
+               $identifierResolver,
+               $symbolsRegistry,
+               $reflector,
+           ),
+           new NodeVisitor\ClassIdentifierRecorder(
+               $prefix,
+               $identifierResolver,
+               $symbolsRegistry,
+               $reflector,
+           ),
+           new NodeVisitor\NameStmtPrefixer(
+               $prefix,
+               $namespaceStatements,
+               $useStatements,
+               $reflector,
+           ),
+           new NodeVisitor\StringScalarPrefixer(
+               $prefix,
+               $reflector,
+           ),
+           new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
+           new NodeVisitor\EvalPrefixer($stringNodePrefixer),
 
-            new NodeVisitor\ClassAliasStmtAppender(
-                $prefix,
-                $reflector,
-                $identifierResolver,
-            ),
-            new NodeVisitor\MultiConstStmtReplacer(),
-            new NodeVisitor\ConstStmtReplacer(
-                $identifierResolver,
-                $reflector,
-            ),
-        ];
+           new NodeVisitor\ClassAliasStmtAppender(
+               $prefix,
+               $reflector,
+               $identifierResolver,
+           ),
+           new NodeVisitor\MultiConstStmtReplacer(),
+           new NodeVisitor\ConstStmtReplacer(
+               $identifierResolver,
+               $reflector,
+           ),
+       ];
     }
 }

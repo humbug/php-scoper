@@ -74,11 +74,11 @@ php_cs_fixer_lint: $(PHP_CS_FIXER_BIN)
 	$(PHP_CS_FIXER) --dry-run
 
 .PHONY: composer_normalize
-composer_normalize: vendor
+composer_normalize: composer.json vendor
 	composer normalize
 
 .PHONY: composer_normalize_lint
-composer_normalize_lint: vendor
+composer_normalize_lint: composer.json vendor
 	composer normalize --dry-run
 
 .PHONY: phpstan
