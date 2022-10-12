@@ -26,7 +26,7 @@ class ComposerPatcherTest extends TestCase
     /**
      * @dataProvider provideFiles
      */
-    public function test_patch_the__symfony__dependency_injection_container__php_dumper(string $filePath, string $contents, string $expected): void
+    public function test_patch_the_symfony_dependency_injection_container_php_dumper(string $filePath, string $contents, string $expected): void
     {
         $actual = (new ComposerPatcher())->__invoke($filePath, 'Humbug', $contents);
 

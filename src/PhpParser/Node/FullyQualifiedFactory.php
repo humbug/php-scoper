@@ -30,7 +30,6 @@ final class FullyQualifiedFactory
             throw new InvalidArgumentException('Expected one of the names to not be null');
         }
 
-        /** @var FullyQualified $fqName */
         return FullyQualified::concat($name1, $name2, $attributes);
     }
 

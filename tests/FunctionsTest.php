@@ -33,7 +33,7 @@ class FunctionsTest extends TestCase
         self::assertNotSame($app1, $app2);
     }
 
-    public function test_it_gets_the__ph_p__scoper_version(): void
+    public function test_it_gets_the_php_scoper_version(): void
     {
         $version = get_php_scoper_version();
 

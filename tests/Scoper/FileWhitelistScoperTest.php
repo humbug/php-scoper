@@ -42,7 +42,7 @@ class FileWhitelistScoperTest extends TestCase
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
-    public function test_is_a__scoper(): void
+    public function test_is_a_scoper(): void
     {
         self::assertTrue(is_a(FileWhitelistScoper::class, Scoper::class, true));
     }

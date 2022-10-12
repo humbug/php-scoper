@@ -161,8 +161,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             $resolvedName,
             $parentNode,
             $useStatement,
-        )
-        ) {
+        )) {
             // Do not prefix if there is a matching use statement.
             return $originalName;
         }
@@ -288,7 +287,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             && !($parentNode instanceof ConstFetch)
 
             // If exposed we cannot keep the original non-FQCN UNLESS belongs
-            // to the global namespace for the reasons mentionned in the caller
+            // to the global namespace for the reasons mentioned in the caller
             && (
                 !$this->enrichedReflector->isExposedClass($resolvedName)
                 || $this->enrichedReflector->isExposedClassFromGlobalNamespace($resolvedName)

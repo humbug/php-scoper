@@ -110,12 +110,12 @@ class PhpScoperTest extends TestCase
         );
     }
 
-    public function test_is_a__scoper(): void
+    public function test_is_a_scoper(): void
     {
         self::assertTrue(is_a(PhpScoper::class, Scoper::class, true));
     }
 
-    public function test_can_scope_a__ph_p_file(): void
+    public function test_can_scope_a_php_file(): void
     {
         $filePath = 'file.php';
 
@@ -139,7 +139,7 @@ class PhpScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function test_does_not_scope_file_if_is_not_a__ph_p_file(): void
+    public function test_does_not_scope_file_if_is_not_a_php_file(): void
     {
         $filePath = 'file.yaml';
         $fileContents = '';
@@ -169,7 +169,7 @@ class PhpScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes(1);
     }
 
-    public function test_can_scope_a__ph_p_file_with_the_wrong_extension(): void
+    public function test_can_scope_a_php_file_with_the_wrong_extension(): void
     {
         $filePath = 'file';
 
@@ -194,7 +194,7 @@ class PhpScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function test_can_scope__ph_p_executable_files(): void
+    public function test_can_scope_php_executable_files(): void
     {
         $filePath = 'hello';
 
@@ -219,7 +219,7 @@ class PhpScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function test_does_not_scope_a_non__ph_p_executable_files(): void
+    public function test_does_not_scope_a_non_php_executable_files(): void
     {
         $filePath = 'hello';
 
@@ -255,7 +255,7 @@ class PhpScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes(1);
     }
 
-    public function test_cannot_scope_an_invalid__ph_p_file(): void
+    public function test_cannot_scope_an_invalid_php_file(): void
     {
         $filePath = 'invalid-file.php';
         $contents = <<<'PHP'

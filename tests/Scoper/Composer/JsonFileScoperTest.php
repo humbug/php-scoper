@@ -55,7 +55,7 @@ class JsonFileScoperTest extends TestCase
         );
     }
 
-    public function test_it_is_a__scoper(): void
+    public function test_it_is_a_scoper(): void
     {
         self::assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
     }

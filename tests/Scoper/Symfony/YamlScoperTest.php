@@ -49,7 +49,7 @@ class YamlScoperTest extends TestCase
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
-    public function test_it_is_a__scoper(): void
+    public function test_it_is_a_scoper(): void
     {
         self::assertTrue(is_a(YamlScoper::class, Scoper::class, true));
     }
@@ -57,7 +57,7 @@ class YamlScoperTest extends TestCase
     /**
      * @dataProvider provideYamlFilesExtensions
      */
-    public function test_it_can_scope__yaml_files(string $file, bool $scoped): void
+    public function test_it_can_scope_yaml_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
 
@@ -95,7 +95,7 @@ class YamlScoperTest extends TestCase
     /**
      * @dataProvider provideYamlFiles
      */
-    public function test_it_scopes__yaml_files(
+    public function test_it_scopes_yaml_files(
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,
         string $expected,

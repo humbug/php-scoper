@@ -41,7 +41,7 @@ final class Configuration
     /**
      * @param non-empty-string|null $path   Absolute path to the configuration file loaded.
      * @param non-empty-string      $prefix The prefix applied.
-     * @param array<string, array{string, string}> $filesWithContents         Array of tuple with the
+     * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
      * @param array<string, array{string, string}> $excludedFilesWithContents Array of tuple

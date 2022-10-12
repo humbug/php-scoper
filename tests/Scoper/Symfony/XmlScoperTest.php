@@ -49,7 +49,7 @@ class XmlScoperTest extends TestCase
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
     }
 
-    public function test_it_is_a__scoper(): void
+    public function test_it_is_a_scoper(): void
     {
         self::assertTrue(is_a(XmlScoper::class, Scoper::class, true));
     }
@@ -57,7 +57,7 @@ class XmlScoperTest extends TestCase
     /**
      * @dataProvider provideXmlFilesExtensions
      */
-    public function test_it_can_scope__xm_l_files(string $file, bool $scoped): void
+    public function test_it_can_scope_xml_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
         $contents = '';
