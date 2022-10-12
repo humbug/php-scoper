@@ -17,6 +17,14 @@ use function strlen;
 
 final class RegexChecker
 {
+    // Some characters are best to not be allowed as regex delimiters in order
+    // to not result in some fancy regexes
+    // See https://github.com/humbug/php-scoper/issues/597
+    private const INVALID_REGEX_DELIMITERS = [
+        '\\',
+        '_'
+    ];
+
     // https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
     private const PATTERN_MODIFIERS = [
         'i',
@@ -77,9 +85,8 @@ final class RegexChecker
 
     private static function isValidDelimiter(string $delimiter): bool
     {
-        // This is not ideal as not true but is good enough for our case.
-        // See https://github.com/humbug/php-scoper/issues/597
-        return '\\' !== $delimiter && native_preg_match('/^\p{L}$/u', $delimiter) === 0;
+        return !in_array($delimiter, self::INVALID_REGEX_DELIMITERS, true)
+            && native_preg_match('/^\p{L}$/u', $delimiter) === 0;
     }
 
     private static function isValidRegexFlags(string $value): bool

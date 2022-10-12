@@ -81,6 +81,12 @@ final class RegexCheckerTest extends TestCase
             false,
         ];
 
+        // See https://github.com/humbug/php-scoper/issues/666
+        yield 'fake regex (3)' => [
+            '__',
+            false,
+        ];
+
         yield 'minimal fake regex' => [
             '////',
             false,
