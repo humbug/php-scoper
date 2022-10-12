@@ -89,7 +89,7 @@ final class AutoloadPrefixer
             [$psr4, $classMap] = self::transformPsr0ToPsr4AndClassmap(
                 (array) $autoload->{'psr-0'},
                 (array) ($autoload->{'psr-4'} ?? new stdClass()),
-                (array) ($autoload->{'classmap'} ?? new stdClass())
+                (array) ($autoload->{'classmap'} ?? new stdClass()),
             );
 
             if ([] === $psr4) {
@@ -177,7 +177,7 @@ final class AutoloadPrefixer
     {
         $namespaceForPsr = rtrim(
             str_replace('\\', '/', $namespace),
-            '/'
+            '/',
         );
 
         if (!is_array($path)) {

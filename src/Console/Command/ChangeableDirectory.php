@@ -42,7 +42,7 @@ final class ChangeableDirectory
             'd',
             InputOption::VALUE_REQUIRED,
             'If specified, use the given directory as working directory.',
-            null
+            null,
         );
     }
 
@@ -58,8 +58,8 @@ final class ChangeableDirectory
             throw new InvalidArgumentException(
                 sprintf(
                     'Could not change the working directory to "%s": directory does not exists.',
-                    $workingDir
-                )
+                    $workingDir,
+                ),
             );
         }
 
@@ -68,8 +68,8 @@ final class ChangeableDirectory
                 sprintf(
                     'Failed to change the working directory to "%s" from "%s".',
                     $workingDir,
-                    getcwd()
-                )
+                    getcwd(),
+                ),
             );
         }
     }

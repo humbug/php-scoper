@@ -61,7 +61,7 @@ final class InstalledPackagesScoper implements Scoper
 
         return json_encode(
             $decodedJson,
-            JSON_PRETTY_PRINT
+            JSON_PRETTY_PRINT,
         );
     }
 
@@ -77,7 +77,7 @@ final class InstalledPackagesScoper implements Scoper
             sprintf(
                 'Expected the decoded JSON to be an stdClass instance, got "%s" instead',
                 gettype($decodedJson),
-            )
+            ),
         );
     }
 

@@ -104,8 +104,8 @@ class ScoperLogger
             $this->io->writeln(
                 sprintf(
                     ' * [<info>OK</info>] %s',
-                    $path
-                )
+                    $path,
+                ),
             );
         }
 
@@ -118,8 +118,8 @@ class ScoperLogger
             $this->io->writeln(
                 sprintf(
                     ' * [<error>NO</error>] %s',
-                    $path
-                )
+                    $path,
+                ),
             );
         }
 
@@ -128,8 +128,8 @@ class ScoperLogger
                 sprintf(
                     "\t".'%s: %s',
                     $exception->getMessage(),
-                    (string) $exception->getPrevious()
-                )
+                    (string) $exception->getPrevious(),
+                ),
             );
         }
 
@@ -155,8 +155,8 @@ class ScoperLogger
             $this->io->success(
                 sprintf(
                     'Successfully prefixed %d files.',
-                    $this->progressBar->getMaxSteps()
-                )
+                    $this->progressBar->getMaxSteps(),
+                ),
             );
         }
 
@@ -166,8 +166,8 @@ class ScoperLogger
                     '<info>Memory usage: %.2fMB (peak: %.2fMB), time: %.2fs<info>',
                     round(memory_get_usage() / 1024 / 1024, 2),
                     round(memory_get_peak_usage() / 1024 / 1024, 2),
-                    round(microtime(true) - $this->startTime, 2)
-                )
+                    round(microtime(true) - $this->startTime, 2),
+                ),
             );
         }
     }

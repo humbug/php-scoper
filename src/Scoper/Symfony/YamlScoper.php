@@ -133,7 +133,7 @@ final class YamlScoper implements Scoper
             if ($enrichedReflector->isExposedClass($class)) {
                 $symbolsRegistry->recordClass(
                     new FullyQualified($class),
-                    new FullyQualified($prefixedClass)
+                    new FullyQualified($prefixedClass),
                 );
             }
         }

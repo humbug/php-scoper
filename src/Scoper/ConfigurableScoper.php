@@ -36,8 +36,8 @@ final class ConfigurableScoper implements Scoper
             : new self(
                 new FileWhitelistScoper(
                     clone $this,
-                    ...$whitelistedFiles
-                )
+                    ...$whitelistedFiles,
+                ),
             );
     }
 

@@ -170,10 +170,10 @@ class PhpScoperSpecTest extends TestCase
                     sprintf(
                         'Could not parse the spec %s: %s',
                         $spec,
-                        $error->getMessage()
+                        $error->getMessage(),
                     ),
                     0,
-                    $error
+                    $error,
                 );
             }
 
@@ -189,19 +189,19 @@ class PhpScoperSpecTest extends TestCase
                     "\n\n> ",
                     implode(
                         "\n> ",
-                        array_slice($lines, $startLine, $endLine - $startLine + 1)
-                    )
-                )
+                        array_slice($lines, $startLine, $endLine - $startLine + 1),
+                    ),
+                ),
             );
         } catch (Throwable $throwable) {
             throw new Error(
                 sprintf(
                     'Could not parse the spec %s: %s',
                     $spec,
-                    $throwable->getMessage().$throwable->getTraceAsString()
+                    $throwable->getMessage().$throwable->getTraceAsString(),
                 ),
                 0,
-                $throwable
+                $throwable,
             );
         }
 
@@ -214,7 +214,7 @@ class PhpScoperSpecTest extends TestCase
             $expected,
             $actual,
             $expectedRegisteredClasses,
-            $expectedRegisteredFunctions
+            $expectedRegisteredFunctions,
         );
 
         self::assertSame($expected, $actual, $specMessage);
@@ -278,11 +278,11 @@ class PhpScoperSpecTest extends TestCase
         $container = new Container();
 
         $reflector = Reflector::createWithPhpStormStubs()
-                ->withAdditionalSymbols(
-                    $symbolsConfiguration->getExcludedClasses(),
-                    $symbolsConfiguration->getExcludedFunctions(),
-                    $symbolsConfiguration->getExcludedConstants(),
-                );
+            ->withAdditionalSymbols(
+                $symbolsConfiguration->getExcludedClasses(),
+                $symbolsConfiguration->getExcludedFunctions(),
+                $symbolsConfiguration->getExcludedConstants(),
+            );
 
         $enrichedReflector = new EnrichedReflector(
             $reflector,
@@ -328,7 +328,7 @@ class PhpScoperSpecTest extends TestCase
         $spec = sprintf(
             '[%s] %s',
             $meta['title'],
-            $fixtureSet['spec'] ?? $fixtureTitle
+            $fixtureSet['spec'] ?? $fixtureTitle,
         );
 
         $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
@@ -343,8 +343,8 @@ class PhpScoperSpecTest extends TestCase
             ),
             sprintf(
                 'Expected the keys found in the meta section to be known keys, unknown keys: "%s"',
-                implode('", "', $diff)
-            )
+                implode('", "', $diff),
+            ),
         );
 
         if (is_array($fixtureSet)) {
@@ -362,8 +362,8 @@ class PhpScoperSpecTest extends TestCase
                 $diff,
                 sprintf(
                     'Expected the keys found in the spec section to be known keys, unknown keys: "%s"',
-                    implode('", "', $diff)
-                )
+                    implode('", "', $diff),
+                ),
             );
         }
 
@@ -462,8 +462,8 @@ class PhpScoperSpecTest extends TestCase
             '=',
             min(
                 strlen($spec),
-                80
-            )
+                80,
+            ),
         );
 
         return <<<OUTPUT
@@ -531,9 +531,9 @@ class PhpScoperSpecTest extends TestCase
                 PHP_EOL,
                 array_map(
                     static fn (string $string): string => '  - '.$string,
-                    $strings
-                )
-            )
+                    $strings,
+                ),
+            ),
         );
     }
 
@@ -559,9 +559,9 @@ class PhpScoperSpecTest extends TestCase
                 PHP_EOL,
                 array_map(
                     static fn (array $stringTuple): string => sprintf('  - %s => %s', ...$stringTuple),
-                    $stringTuples
-                )
-            )
+                    $stringTuples,
+                ),
+            ),
         );
     }
 

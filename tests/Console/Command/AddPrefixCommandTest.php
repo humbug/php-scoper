@@ -467,9 +467,9 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             self::assertSame(
                 sprintf(
                     'Could not find the configuration file "%sunknown".',
-                    $this->tmp.DIRECTORY_SEPARATOR
+                    $this->tmp.DIRECTORY_SEPARATOR,
                 ),
-                $exception->getMessage()
+                $exception->getMessage(),
             );
         }
 
@@ -500,7 +500,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
         } catch (InvalidArgumentException $exception) {
             self::assertSame(
                 'Expected patchers to be an array of callables, the "0" element is not.',
-                $exception->getMessage()
+                $exception->getMessage(),
             );
         }
 

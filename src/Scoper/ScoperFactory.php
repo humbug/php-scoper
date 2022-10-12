@@ -71,9 +71,9 @@ class ScoperFactory
                             $enrichedReflector,
                             $symbolsRegistry,
                         ),
-                        $autoloadPrefixer
+                        $autoloadPrefixer,
                     ),
-                    $autoloadPrefixer
+                    $autoloadPrefixer,
                 ),
                 new TraverserFactory(
                     $enrichedReflector,

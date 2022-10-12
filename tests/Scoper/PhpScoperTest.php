@@ -272,7 +272,7 @@ class PhpScoperTest extends TestCase
         } catch (PhpParserError $error) {
             self::assertEquals(
                 'Syntax error, unexpected \';\' on line 3',
-                $error->getMessage()
+                $error->getMessage(),
             );
             self::assertSame(0, $error->getCode());
             self::assertNull($error->getPrevious());
@@ -315,7 +315,7 @@ class PhpScoperTest extends TestCase
                         ++$i;
 
                         return 1 === $i;
-                    }
+                    },
                 ),
             )
             ->willReturn($firstTraverserProphecy->reveal());
@@ -332,7 +332,7 @@ class PhpScoperTest extends TestCase
                         // hence by the time it is the 2nd call for the 2nd file
                         // we are at the 4th call.
                         return 4 === $i;
-                    }
+                    },
                 ),
             )
             ->willReturn($secondTraverserProphecy->reveal());

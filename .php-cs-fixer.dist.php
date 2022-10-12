@@ -43,7 +43,6 @@ $overriddenRules = [
         'location' => 'after_declare_strict',
     ],
     'mb_str_functions' => false,
-    'modernize_strpos' => false,
     'native_constant_invocation' => false,
     'native_function_invocation' => false,
     'no_superfluous_phpdoc_tags' => [

@@ -52,7 +52,7 @@ class TraverserFactory
                 $this->reflector,
                 $scoper,
                 $this->symbolsRegistry,
-            )
+            ),
         );
     }
 

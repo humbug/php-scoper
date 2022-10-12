@@ -119,10 +119,10 @@ return [
                     '',
                     sprintf(
                         'namespace %s\JetBrains\PHPStormStub;',
-                        $prefix
+                        $prefix,
                     ),
                 ],
-                $contents
+                $contents,
             );
         },
         //
@@ -141,7 +141,7 @@ return [
             return sprintf(
                 '%s%s',
                 mb_substr($contents, 0, $prefixedClassPosition),
-                mb_substr($originalContents, $classPosition)
+                mb_substr($originalContents, $classPosition),
             );
         },
         static function (string $filePath, string $prefix, string $contents): string {
@@ -152,7 +152,7 @@ return [
             return str_replace(
                 '\\'.$prefix.'\Isolated\Symfony\Component\Finder\Finder::class',
                 '\Isolated\Symfony\Component\Finder\Finder::class',
-                $contents
+                $contents,
             );
         },
     ],

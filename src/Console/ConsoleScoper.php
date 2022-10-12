@@ -219,7 +219,7 @@ final class ConsoleScoper
             $exception = new ParsingException(
                 sprintf(
                     'Could not parse the file "%s".',
-                    $inputFilePath
+                    $inputFilePath,
                 ),
                 0,
                 $throwable,

@@ -94,7 +94,7 @@ final class UseStmtCollection implements IteratorAggregate
                 $name,
                 $isFunctionName ? 'func' : '',
                 $isConstantName ? 'const' : '',
-            ]
+            ],
         );
 
         if (array_key_exists($hash, $this->hashes)) {

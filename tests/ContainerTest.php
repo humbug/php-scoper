@@ -44,12 +44,12 @@ class ContainerTest extends TestCase
 
         self::assertSame(
             $container->{$getterName}(),
-            $container->{$getterName}()
+            $container->{$getterName}(),
         );
 
         self::assertNotSame(
             $container->{$getterName}(),
-            $anotherContainer->{$getterName}()
+            $anotherContainer->{$getterName}(),
         );
     }
 

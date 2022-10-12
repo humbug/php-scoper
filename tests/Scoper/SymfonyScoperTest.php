@@ -50,8 +50,7 @@ final class SymfonyScoperTest extends TestCase
         string $filePath,
         string $contents,
         string $expected
-    ): void
-    {
+    ): void {
         $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);

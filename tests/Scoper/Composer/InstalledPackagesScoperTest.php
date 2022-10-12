@@ -387,7 +387,7 @@ class InstalledPackagesScoperTest extends TestCase
                     false,
                     false,
                     NamespaceRegistry::create(['Fideloper']),
-                )
+                ),
             ),
             <<<'JSON'
                 {

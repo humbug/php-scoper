@@ -35,9 +35,9 @@ final class SymfonyPatcher implements Patcher
             '/use (Symfony(\\\\(?:\\\\)?)Component\\\\.+?;)/',
             sprintf(
                 'use %s$2$1',
-                $prefix
+                $prefix,
             ),
-            $contents
+            $contents,
         );
     }
 

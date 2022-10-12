@@ -144,7 +144,7 @@ final class ScoperAutoloadGenerator
     {
         return array_map(
             static fn (array $pair) => self::createClassAliasStatement(...$pair),
-            $exposedClasses
+            $exposedClasses,
         );
     }
 
@@ -159,7 +159,7 @@ final class ScoperAutoloadGenerator
                 }
                 PHP,
             $original,
-            $alias
+            $alias,
         );
     }
 
@@ -203,7 +203,7 @@ final class ScoperAutoloadGenerator
         $statements = array_map(
             static fn (array $pair) => self::createFunctionAliasStatement(
                 $hasNamespacedFunctions,
-                ...$pair
+                ...$pair,
             ),
             $exposedFunctions,
         );

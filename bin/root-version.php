@@ -66,7 +66,7 @@ function parse_tag(string $responseContent): string
         throw new RuntimeException(
             sprintf(
                 'No tag name could be found in: %s',
-                $responseContent
+                $responseContent,
             ),
             100,
         );
@@ -78,7 +78,7 @@ function parse_tag(string $responseContent): string
         throw new RuntimeException(
             sprintf(
                 'No tag name could be found in: %s',
-                $responseContent
+                $responseContent,
             ),
             100,
         );
@@ -88,7 +88,7 @@ function parse_tag(string $responseContent): string
         throw new RuntimeException(
             sprintf(
                 'No tag name could be found in: %s',
-                $responseContent
+                $responseContent,
             ),
             100,
         );

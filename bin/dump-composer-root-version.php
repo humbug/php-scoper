@@ -52,7 +52,7 @@ file_put_contents(
         '/COMPOSER_ROOT_VERSION: \'.*?\'/',
         sprintf(
             'COMPOSER_ROOT_VERSION: \'%s\'',
-            $composerRootVersion
+            $composerRootVersion,
         ),
         file_get_contents($scrutinizerPath),
     ),

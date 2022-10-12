@@ -59,8 +59,8 @@ function make_tmp_dir(string $namespace, string $className): string
                 sprintf(
                     'Could not create temporary directory for "%s:%s" after 100 attempts',
                     $namespace,
-                    $className
-                )
+                    $className,
+                ),
             );
         }
 

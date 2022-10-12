@@ -31,7 +31,7 @@ set_error_handler(
         if (error_reporting() & $code) {
             throw new ErrorException($message, 0, $code, $file, $line);
         }
-    }
+    },
 );
 
 $findAutoload = static function () {

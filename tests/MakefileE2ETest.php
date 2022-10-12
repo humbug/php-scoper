@@ -49,7 +49,7 @@ class MakefileE2ETest extends TestCase
         if (1 !== preg_match(
             '/e2e:(?<steps>[\p{L}\d_ ]+)/u',
             $makefileContents,
-            $matches
+            $matches,
         )) {
             self::assertFalse(false, 'Expected the string input to match the regex');
         }
@@ -60,10 +60,10 @@ class MakefileE2ETest extends TestCase
                     'trim',
                     explode(
                         ' ',
-                        $matches['steps']
-                    )
-                )
-            )
+                        $matches['steps'],
+                    ),
+                ),
+            ),
         );
     }
 
@@ -75,7 +75,7 @@ class MakefileE2ETest extends TestCase
         if (1 !== preg_match_all(
             '/(?<step>e2e_\d+):/u',
             $makefileContents,
-            $matches
+            $matches,
         )) {
             self::assertFalse(false, 'Expected the string input to match the regex');
         }
@@ -85,10 +85,10 @@ class MakefileE2ETest extends TestCase
                 array_filter(
                     array_map(
                         'trim',
-                        $matches['step']
-                    )
-                )
-            )
+                        $matches['step'],
+                    ),
+                ),
+            ),
         );
     }
 }

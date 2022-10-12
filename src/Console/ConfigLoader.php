@@ -112,7 +112,7 @@ final class ConfigLoader
     ): Configuration {
         $io->writeln(
             'Loading without configuration file.',
-            OutputInterface::VERBOSITY_DEBUG
+            OutputInterface::VERBOSITY_DEBUG,
         );
 
         return $this->loadConfiguration(null, $prefix, $paths, $cwd);

@@ -72,7 +72,7 @@ final class InspectSymbolCommand implements Command
                 new InputArgument(
                     self::SYMBOL_ARG,
                     InputArgument::REQUIRED,
-                    'The symbol to inspect.'
+                    'The symbol to inspect.',
                 ),
                 new InputArgument(
                     self::SYMBOL_TYPE_ARG,
@@ -92,14 +92,14 @@ final class InspectSymbolCommand implements Command
                     InputOption::VALUE_REQUIRED,
                     sprintf(
                         'Configuration file. Will use "%s" if found by default.',
-                        ConfigurationFactory::DEFAULT_FILE_NAME
-                    )
+                        ConfigurationFactory::DEFAULT_FILE_NAME,
+                    ),
                 ),
                 new InputOption(
                     self::NO_CONFIG_OPT,
                     null,
                     InputOption::VALUE_NONE,
-                    'Do not look for a configuration file.'
+                    'Do not look for a configuration file.',
                 ),
             ],
         );

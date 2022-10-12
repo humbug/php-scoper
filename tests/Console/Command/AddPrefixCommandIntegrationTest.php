@@ -312,7 +312,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         return preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
             '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
-            $display
+            $display,
         );
     }
 
@@ -342,7 +342,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
                     $realPath,
                     sprintf(
                         'Expected file "%s" to have a real path.',
-                        $file->getPathname()
+                        $file->getPathname(),
                     ),
                 );
 
@@ -352,7 +352,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
                 return $collectedFiles;
             },
-            []
+            [],
         );
     }
 }

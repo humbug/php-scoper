@@ -35,7 +35,7 @@ try {
 preg_match(
     '/COMPOSER_ROOT_VERSION=\'(?<version>.*?)\'/',
     file_get_contents(__DIR__.'/../.composer-root-version'),
-    $matches
+    $matches,
 );
 
 $currentRootVersion = $matches['version'];
@@ -46,8 +46,8 @@ if ($expectedComposerRootVersion !== $currentRootVersion) {
         sprintf(
             'Expected the COMPOSER_ROOT_VERSION value to be "%s" but got "%s" instead.'.PHP_EOL,
             $expectedComposerRootVersion,
-            $currentRootVersion
-        )
+            $currentRootVersion,
+        ),
     );
 
     exit(1);
