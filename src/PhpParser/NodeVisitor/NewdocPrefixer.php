@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,6 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\StringNodePrefixer;
@@ -20,7 +20,6 @@ use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
 use function ltrim;
 use function Safe\substr;
-use function strpos;
 
 final class NewdocPrefixer extends NodeVisitorAbstract
 {
@@ -46,7 +45,7 @@ final class NewdocPrefixer extends NodeVisitorAbstract
             return false;
         }
 
-        return 0 === strpos(
+        return str_starts_with(
             substr(
                 ltrim($node->value),
                 0,

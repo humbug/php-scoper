@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -11,6 +9,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
@@ -31,15 +31,14 @@ final class ConfigurableScoper implements Scoper
 
     public function withWhitelistedFiles(string ...$whitelistedFiles): self
     {
-        return count($whitelistedFiles) === 0
+        return 0 === count($whitelistedFiles)
             ? $this
             : new self(
                 new FileWhitelistScoper(
                     clone $this,
                     ...$whitelistedFiles
                 )
-            )
-        ;
+            );
     }
 
     public function scope(string $filePath, string $contents): string

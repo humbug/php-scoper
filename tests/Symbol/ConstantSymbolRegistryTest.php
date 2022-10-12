@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,6 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\Configuration\RegexChecker;
@@ -19,6 +19,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolRegistry
+ *
+ * @internal
  */
 class ConstantSymbolRegistryTest extends TestCase
 {
@@ -40,8 +42,7 @@ class ConstantSymbolRegistryTest extends TestCase
         array $regexes,
         string $symbol,
         bool $expected
-    ): void
-    {
+    ): void {
         // Sanity check
         $this->validateRegexes($regexes);
 
@@ -58,8 +59,8 @@ class ConstantSymbolRegistryTest extends TestCase
     /**
      * @dataProvider provideNamesAndRegexes
      *
-     * @param string[] $regexes
-     * @param string[] $names
+     * @param string[]     $regexes
+     * @param string[]     $names
      * @param list<string> $regexes
      * @param list<string> $names
      */
@@ -68,8 +69,7 @@ class ConstantSymbolRegistryTest extends TestCase
         array $regexes,
         array $expectedNames,
         array $expectedRegexes
-    ): void
-    {
+    ): void {
         $registry = SymbolRegistry::createForConstants(
             $names,
             $regexes,
@@ -152,6 +152,33 @@ class ConstantSymbolRegistryTest extends TestCase
         foreach (self::provideNameAndRegex() as $title => $set) {
             yield '[name & regex] '.$title => $set;
         }
+    }
+
+    public static function provideNamesAndRegexes(): iterable
+    {
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+            ['acme\Foo', 'acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+        ];
+
+        yield 'duplicates' => [
+            [
+                'Acme\Foo',
+                'Acme\Foo',
+                'ACME\FOO',
+                'ACME\FOO',
+                '\Acme\Foo',
+                'Acme\Foo\\',
+            ],
+            [
+                '/^Acme$/',
+                '/^Acme$/',
+            ],
+            ['acme\Foo', 'acme\FOO'],
+            ['/^Acme$/'],
+        ];
     }
 
     private static function provideNames(): iterable
@@ -290,33 +317,6 @@ class ConstantSymbolRegistryTest extends TestCase
             ['/^Acme$/i'],
             'Acme',
             true,
-        ];
-    }
-
-    public static function provideNamesAndRegexes(): iterable
-    {
-        yield 'nominal' => [
-            ['Acme\Foo', 'Acme\Bar'],
-            ['/^Acme$/', '/^Ecma/'],
-            ['acme\Foo', 'acme\Bar'],
-            ['/^Acme$/', '/^Ecma/'],
-        ];
-
-        yield 'duplicates' => [
-            [
-                'Acme\Foo',
-                'Acme\Foo',
-                'ACME\FOO',
-                'ACME\FOO',
-                '\Acme\Foo',
-                'Acme\Foo\\',
-            ],
-            [
-                '/^Acme$/',
-                '/^Acme$/',
-            ],
-            ['acme\Foo', 'acme\FOO'],
-            ['/^Acme$/'],
         ];
     }
 

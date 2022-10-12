@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,6 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use ArrayIterator;
@@ -19,7 +19,6 @@ use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\OriginalNameResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
-use InvalidArgumentException;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
@@ -31,11 +30,9 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use Traversable;
-
 use function array_key_exists;
 use function count;
 use function implode;
-use function strtolower;
 
 /**
  * Utility class collecting all the use statements for the scoped files allowing to easily find the use which a node
@@ -128,7 +125,7 @@ final class UseStmtCollection implements IteratorAggregate
 
     private static function getNameFirstPart(Name $node): string
     {
-        return strtolower($node->getFirst());
+        return mb_strtolower($node->getFirst());
     }
 
     private function find(array $useStatements, bool $isFunctionName, bool $isConstantName, string $name): ?Name

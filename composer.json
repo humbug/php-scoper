@@ -16,9 +16,6 @@
             "email": "padraic.brady@gmail.com"
         }
     ],
-
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "require": {
         "php": "^8.1",
         "composer/package-versions-deprecated": "^1.8",
@@ -34,6 +31,7 @@
     },
     "require-dev": {
         "bamarni/composer-bin-plugin": "^1.1",
+        "ergebnis/composer-normalize": "^2.28",
         "humbug/box": "^4.0",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9.0"
@@ -41,35 +39,38 @@
     "replace": {
         "symfony/polyfill-php73": "*"
     },
-
-    "bin": ["bin/php-scoper"],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
-        "files": [
-            "src/functions.php"
-        ],
         "psr-4": {
             "Humbug\\PhpScoper\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "autoload-dev": {
-        "files": [
-            "tests/functions.php"
-        ],
         "psr-4": {
             "Humbug\\PhpScoper\\": "tests/"
-        }
+        },
+        "files": [
+            "tests/functions.php"
+        ]
     },
-
+    "bin": [
+        "bin/php-scoper"
+    ],
     "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
+            "composer/package-versions-deprecated": true,
+            "ergebnis/composer-normalize": true
+        },
         "bin-dir": "bin",
-        "sort-packages": true,
         "platform": {
             "php": "8.1.0"
         },
-        "allow-plugins": {
-            "bamarni/composer-bin-plugin": true,
-            "composer/package-versions-deprecated": true
-        }
+        "sort-packages": true
     },
     "extra": {
         "bamarni-bin": {

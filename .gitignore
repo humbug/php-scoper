@@ -4,6 +4,7 @@
 !/bin/php-scoper
 !/bin/root-version.php
 /.box_dump/
+/.php-cs-fixer.cache
 /box.json
 /build/
 /clover.xml

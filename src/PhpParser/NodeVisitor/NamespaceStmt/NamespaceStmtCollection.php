@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -11,6 +9,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
@@ -23,7 +23,6 @@ use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use Traversable;
-
 use function count;
 use function end;
 
@@ -42,12 +41,12 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
 
     /**
      * @var (Name|null)[] Associative array with the potentially prefixed namespace names as keys and their original name
-     *                    as value.
+     *                    as value
      */
     private array $mapping = [];
 
     /**
-     * @param Namespace_ $namespace New namespace, may have been prefixed.
+     * @param Namespace_ $namespace new namespace, may have been prefixed
      */
     public function add(Namespace_ $namespace): void
     {
@@ -82,6 +81,11 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return count($this->nodes);
     }
 
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->nodes);
+    }
+
     private function getNodeNamespaceName(Node $node): ?Name
     {
         if (!ParentNodeAppender::hasParent($node)) {
@@ -95,10 +99,5 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         }
 
         return $this->getNodeNamespaceName($parentNode);
-    }
-
-    public function getIterator(): Traversable
-    {
-        return new ArrayIterator($this->nodes);
     }
 }

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -11,6 +9,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
@@ -24,6 +24,10 @@ use PhpParser\NodeVisitorAbstract;
 final class NamespaceManipulator extends NodeVisitorAbstract
 {
     private const ORIGINAL_NAME_ATTRIBUTE = 'originalName';
+
+    private function __construct()
+    {
+    }
 
     public static function hasOriginalName(Namespace_ $namespace): bool
     {
@@ -42,9 +46,5 @@ final class NamespaceManipulator extends NodeVisitorAbstract
     public static function setOriginalName(Namespace_ $namespace, ?Name $originalName): void
     {
         $namespace->setAttribute(self::ORIGINAL_NAME_ATTRIBUTE, $originalName);
-    }
-
-    private function __construct()
-    {
     }
 }

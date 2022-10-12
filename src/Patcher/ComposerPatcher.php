@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,10 +10,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\Patcher;
 
 use function str_replace;
-use function strpos;
 
 final class ComposerPatcher implements Patcher
 {
@@ -56,7 +55,7 @@ final class ComposerPatcher implements Patcher
     private static function isSupportedFile(string $filePath): bool
     {
         foreach (self::PATHS as $path) {
-            if (false !== strpos($filePath, $path)) {
+            if (str_contains($filePath, $path)) {
                 return true;
             }
         }

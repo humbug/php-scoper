@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -11,6 +9,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
@@ -30,7 +30,6 @@ use function array_map;
 use function array_merge;
 use function array_unique;
 use function array_unshift;
-use function array_values;
 use function bin2hex;
 use function dirname;
 use function file_exists;
@@ -69,7 +68,7 @@ final class ConfigurationFactory
     }
 
     /**
-     * @param non-empty-string|null  $path  Absolute canonical path to the configuration file.
+     * @param non-empty-string|null  $path  absolute canonical path to the configuration file
      * @param list<non-empty-string> $paths List of absolute canonical paths to append besides the one configured
      */
     public function create(?string $path = null, array $paths = []): Configuration
@@ -229,7 +228,6 @@ final class ConfigurationFactory
         $prefix = trim((string) ($config[ConfigurationKeys::PREFIX_KEYWORD] ?? ''));
 
         return '' === $prefix ? self::generateRandomPrefix() : $prefix;
-
     }
 
     /**

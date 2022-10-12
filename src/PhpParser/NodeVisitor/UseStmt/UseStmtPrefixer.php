@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,12 +10,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
-use InvalidArgumentException;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
@@ -103,9 +102,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
     /**
      * Finds the type of the use statement.
      *
-     * @param UseUse $use
-     *
-     * @return int See \PhpParser\Node\Stmt\Use_ type constants.
+     * @return int see \PhpParser\Node\Stmt\Use_ type constants
      */
     private static function findUseType(UseUse $use): int
     {

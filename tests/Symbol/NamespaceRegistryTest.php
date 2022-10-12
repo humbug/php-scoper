@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,6 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\Configuration\RegexChecker;
@@ -19,6 +19,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\NamespaceRegistry
+ *
+ * @internal
  */
 class NamespaceRegistryTest extends TestCase
 {
@@ -40,8 +42,7 @@ class NamespaceRegistryTest extends TestCase
         array $namespaceRegexes,
         string $symbol,
         bool $expected
-    ): void
-    {
+    ): void {
         // Sanity check
         $this->validateRegexes($namespaceRegexes);
 
@@ -63,8 +64,7 @@ class NamespaceRegistryTest extends TestCase
         array $namespaceRegexes,
         string $namespaceName,
         bool $expected
-    ): void
-    {
+    ): void {
         // Sanity check
         $this->validateRegexes($namespaceRegexes);
 
@@ -81,8 +81,8 @@ class NamespaceRegistryTest extends TestCase
     /**
      * @dataProvider provideNamesAndRegexes
      *
-     * @param string[] $regexes
-     * @param string[] $names
+     * @param string[]     $regexes
+     * @param string[]     $names
      * @param list<string> $regexes
      * @param list<string> $names
      */
@@ -91,8 +91,7 @@ class NamespaceRegistryTest extends TestCase
         array $regexes,
         array $expectedNames,
         array $expectedRegexes
-    ): void
-    {
+    ): void {
         $registry = NamespaceRegistry::create(
             $names,
             $regexes,
@@ -142,6 +141,52 @@ class NamespaceRegistryTest extends TestCase
         foreach (self::provideNamespaceNameAndRegex() as $title => $set) {
             yield '[name & regex] '.$title => $set;
         }
+    }
+
+    public static function provideNamespaceSymbol(): iterable
+    {
+        yield 'namespace matches regex' => [
+            [],
+            ['/^Acme/'],
+            'Acme',
+            true,
+        ];
+
+        yield '(unormalized) namespace matches regex' => [
+            [],
+            ['/^Acme/'],
+            '\Acme',
+            true,
+        ];
+
+        // We are not interested in much more tests here as the targeted code is
+        // mostly ::covered by test_it_can_tell_if_a_symbol_belongs_to_a_registered_namespace()
+    }
+
+    public static function provideNamesAndRegexes(): iterable
+    {
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+            ['acme\bar', 'acme\foo'],
+            ['/^Acme$/', '/^Ecma/'],
+        ];
+
+        yield 'duplicates' => [
+            [
+                'Acme\Foo',
+                'Acme\Foo',
+                'ACME\FOO',
+                '\Acme\Foo',
+                'Acme\Foo\\',
+            ],
+            [
+                '/^Acme$/',
+                '/^Acme$/',
+            ],
+            ['acme\foo'],
+            ['/^Acme$/'],
+        ];
     }
 
     private static function provideNamespaceNames(): iterable
@@ -359,52 +404,6 @@ class NamespaceRegistryTest extends TestCase
             ['/^Acme$/i'],
             'Acme\Foo',
             true,
-        ];
-    }
-
-    public static function provideNamespaceSymbol(): iterable
-    {
-        yield 'namespace matches regex' => [
-            [],
-            ['/^Acme/'],
-            'Acme',
-            true,
-        ];
-
-        yield '(unormalized) namespace matches regex' => [
-            [],
-            ['/^Acme/'],
-            '\Acme',
-            true,
-        ];
-
-        // We are not interested in much more tests here as the targeted code is
-        // mostly ::covered by test_it_can_tell_if_a_symbol_belongs_to_a_registered_namespace()
-    }
-
-    public static function provideNamesAndRegexes(): iterable
-    {
-        yield 'nominal' => [
-            ['Acme\Foo', 'Acme\Bar'],
-            ['/^Acme$/', '/^Ecma/'],
-            ['acme\bar', 'acme\foo'],
-            ['/^Acme$/', '/^Ecma/'],
-        ];
-
-        yield 'duplicates' => [
-            [
-                'Acme\Foo',
-                'Acme\Foo',
-                'ACME\FOO',
-                '\Acme\Foo',
-                'Acme\Foo\\',
-            ],
-            [
-                '/^Acme$/',
-                '/^Acme$/',
-            ],
-            ['acme\foo'],
-            ['/^Acme$/'],
         ];
     }
 

@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
@@ -9,7 +19,6 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function count;
-use function get_class;
 use function Safe\sprintf;
 
 final class UseStmtName
@@ -27,23 +36,6 @@ final class UseStmtName
             $resolvedName->parts,
             $this->name->parts,
         );
-    }
-
-    /**
-     * @param string[] $array
-     * @param string[] $start
-     */
-    private static function arrayStartsWith(array $array, array $start): bool
-    {
-        $prefixLength = count($start);
-
-        for ($index = 0; $index < $prefixLength; ++$index) {
-            if (!isset($array[$index]) || $array[$index] !== $start[$index]) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     /**
@@ -66,6 +58,23 @@ final class UseStmtName
         ];
     }
 
+    /**
+     * @param string[] $array
+     * @param string[] $start
+     */
+    private static function arrayStartsWith(array $array, array $start): bool
+    {
+        $prefixLength = count($start);
+
+        for ($index = 0; $index < $prefixLength; ++$index) {
+            if (!isset($array[$index]) || $array[$index] !== $start[$index]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static function getUseNode(Name $name): UseUse
     {
         $use = ParentNodeAppender::getParent($name);
@@ -78,7 +87,7 @@ final class UseStmtName
         throw new UnexpectedParsingScenario(
             sprintf(
                 'Unexpected use statement name parent "%s"',
-                get_class($use),
+                $use::class,
             ),
         );
         // @codeCoverageIgnoreEnd
@@ -96,7 +105,7 @@ final class UseStmtName
         throw new UnexpectedParsingScenario(
             sprintf(
                 'Unexpected UseUse parent "%s"',
-                get_class($useParent),
+                $useParent::class,
             ),
         );
         // @codeCoverageIgnoreEnd

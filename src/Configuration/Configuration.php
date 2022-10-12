@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -11,6 +9,8 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
@@ -39,8 +39,8 @@ final class Configuration
     private SymbolsConfiguration $symbolsConfiguration;
 
     /**
-     * @param non-empty-string|null                $path                      Absolute path to the configuration file loaded.
-     * @param non-empty-string                     $prefix                    The prefix applied.
+     * @param non-empty-string|null $path   absolute path to the configuration file loaded
+     * @param non-empty-string      $prefix the prefix applied
      * @param array<string, array{string, string}> $filesWithContents         Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents

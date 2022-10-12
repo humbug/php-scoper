@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,18 +10,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 function get_last_tag_name(): string
 {
     $responseContent = request_tags();
 
-    echo '–––'.PHP_EOL;
+    echo '–––'.\PHP_EOL;
     echo $responseContent;
-    echo PHP_EOL;
+    echo \PHP_EOL;
 
     $lastRelease = parse_tag($responseContent);
 
     echo 'Latest tag found: '.$lastRelease;
-    echo PHP_EOL;
+    echo \PHP_EOL;
 
     return $lastRelease;
 }
@@ -34,16 +34,15 @@ function request_tags(): string
 
     $headerOption = false === $gitHubToken || '' === $gitHubToken
         ? ''
-        : "-H \"Authorization: token $gitHubToken\""
-    ;
+        : "-H \"Authorization: token {$gitHubToken}\"";
 
     $command = <<<BASH
-    curl -s $headerOption https://api.github.com/repos/humbug/php-scoper/tags?per_page=1
-    BASH;
+        curl -s {$headerOption} https://api.github.com/repos/humbug/php-scoper/tags?per_page=1
+        BASH;
 
-    echo 'cURL command:'.PHP_EOL;
+    echo 'cURL command:'.\PHP_EOL;
     echo '$ '.$command;
-    echo PHP_EOL;
+    echo \PHP_EOL;
 
     $responseContent = shell_exec($command);
 
@@ -60,7 +59,7 @@ function parse_tag(string $responseContent): string
         $responseContent,
         false,
         512,
-        JSON_PRETTY_PRINT & JSON_THROW_ON_ERROR,
+        \JSON_PRETTY_PRINT & \JSON_THROW_ON_ERROR,
     );
 
     if (!is_array($decodedContent)) {
@@ -85,7 +84,7 @@ function parse_tag(string $responseContent): string
         );
     }
 
-    if (!($lastReleaseInfo->name) || !is_string($lastReleaseInfo->name)) {
+    if (!$lastReleaseInfo->name || !is_string($lastReleaseInfo->name)) {
         throw new RuntimeException(
             sprintf(
                 'No tag name could be found in: %s',

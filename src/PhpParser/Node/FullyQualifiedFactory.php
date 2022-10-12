@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,6 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\PhpParser\Node;
 
 use InvalidArgumentException;
@@ -20,6 +20,10 @@ use PhpParser\Node\Name\FullyQualified;
 
 final class FullyQualifiedFactory
 {
+    private function __construct()
+    {
+    }
+
     /**
      * @param string|string[]|Name|null $name1
      * @param string|string[]|Name|null $name2
@@ -31,12 +35,6 @@ final class FullyQualifiedFactory
         }
 
         /** @var FullyQualified $fqName */
-        $fqName = FullyQualified::concat($name1, $name2, $attributes);
-
-        return $fqName;
-    }
-
-    private function __construct()
-    {
+        return FullyQualified::concat($name1, $name2, $attributes);
     }
 }

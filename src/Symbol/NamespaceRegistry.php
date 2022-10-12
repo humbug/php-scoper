@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Symbol;
@@ -8,14 +18,12 @@ use function array_filter;
 use function array_map;
 use function array_pop;
 use function array_unique;
-use function array_values;
 use function count;
 use function explode;
 use function implode;
 use function ltrim;
 use function Safe\preg_match;
 use function str_contains;
-use function strtolower;
 use function trim;
 use const SORT_STRING;
 
@@ -34,26 +42,6 @@ final class NamespaceRegistry
     private bool $containsGlobalNamespace;
 
     /**
-     * @param string[] $namespaceNames
-     * @param string[] $namespaceRegexes
-     */
-    public static function create(
-        array $namespaceNames = [],
-        array $namespaceRegexes = []
-    ): self {
-        return new self(
-            array_unique(
-                array_map(
-                    static fn (string $namespaceName) => strtolower(trim($namespaceName, '\\')),
-                    $namespaceNames,
-                ),
-                SORT_STRING,
-            ),
-            array_unique($namespaceRegexes, SORT_STRING),
-        );
-    }
-
-    /**
      * @param list<string> $namespaceNames
      * @param list<string> $namespaceRegexes
      */
@@ -64,12 +52,32 @@ final class NamespaceRegistry
         $this->names = $namespaceNames;
         $this->regexes = $namespaceRegexes;
 
-        $this->containsGlobalNamespace = count(
-                array_filter(
+        $this->containsGlobalNamespace = 0 !== count(
+            array_filter(
+                $namespaceNames,
+                static fn (string $name) => '' === $name,
+            ),
+        );
+    }
+
+    /**
+     * @param string[] $namespaceNames
+     * @param string[] $namespaceRegexes
+     */
+    public static function create(
+        array $namespaceNames = [],
+        array $namespaceRegexes = []
+    ): self {
+        return new self(
+            array_unique(
+                array_map(
+                    static fn (string $namespaceName) => mb_strtolower(trim($namespaceName, '\\')),
                     $namespaceNames,
-                    static fn (string $name) => '' === $name,
                 ),
-            ) !== 0;
+                SORT_STRING,
+            ),
+            array_unique($namespaceRegexes, SORT_STRING),
+        );
     }
 
     public function belongsToRegisteredNamespace(string $symbolName): bool
@@ -91,7 +99,7 @@ final class NamespaceRegistry
         }
 
         $originalNamespaceName = ltrim($namespaceName, '\\');
-        $normalizedNamespaceName = strtolower($originalNamespaceName);
+        $normalizedNamespaceName = mb_strtolower($originalNamespaceName);
 
         foreach ($this->names as $excludedNamespaceName) {
             if ('' === $excludedNamespaceName

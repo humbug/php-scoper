@@ -10,9 +10,6 @@ PHP_SCOPER=$(PHP_SCOPER_BIN)
 
 COMPOSER_BIN_PLUGIN_VENDOR=vendor/bamarni/composer-bin-plugin
 
-CODE_SNIFFER=vendor-bin/code-sniffer/vendor/bin/phpcs
-CODE_SNIFFER_FIX=vendor-bin/code-sniffer/vendor/bin/phpcbf
-
 PHPSTAN_BIN=vendor-bin/phpstan/vendor/bin/phpstan
 PHPSTAN=$(PHPSTAN_BIN) analyze src tests --level max --memory-limit=-1
 
@@ -30,6 +27,9 @@ PHPUNIT_COVERAGE_HTML = XDEBUG_MODE=coverage $(PHPUNIT) --coverage-html=$(COVERA
 
 COVERS_VALIDATOR_BIN=vendor-bin/covers-validator/bin/covers-validator
 COVERS_VALIDATOR=$(COVERS_VALIDATOR_BIN)
+
+PHP_CS_FIXER_BIN = vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer
+PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix
 
 BLACKFIRE=blackfire
 
@@ -58,15 +58,28 @@ update_root_version:
 	$(MAKE) .composer-root-version
 
 .PHONY: cs
-cs:	 ## Fixes CS
-cs: $(CODE_SNIFFER) $(CODE_SNIFFER_FIX)
-	php $(CODE_SNIFFER_FIX) || true
-	php $(CODE_SNIFFER)
+cs:	## Fixes CS
+cs: composer_normalize php_cs_fixer
 
-.PHONY: cs-check
-cs-check:	## Checks CS
-cs-check: $(CODE_SNIFFER)
-	php $(CODE_SNIFFER)
+.PHONY: cs_lint
+cs_lint:	## Checks CS
+cs_lint: composer_normalize_lint php_cs_fixer_lint
+
+.PHONY: php_cs_fixer
+php_cs_fixer: $(PHP_CS_FIXER_BIN)
+	$(PHP_CS_FIXER)
+
+.PHONY: php_cs_fixer_lint
+php_cs_fixer_lint: $(PHP_CS_FIXER_BIN)
+	$(PHP_CS_FIXER) --dry-run
+
+.PHONY: composer_normalize
+composer_normalize: vendor
+	composer normalize
+
+.PHONY: composer_normalize_lint
+composer_normalize_lint: vendor
+	composer normalize --dry-run
 
 .PHONY: phpstan
 phpstan: ## Runs PHPStan
@@ -132,8 +145,8 @@ infection: $(COVERAGE_XML) vendor
 .PHONY: blackfire
 blackfire:	## Runs Blackfire profiling
 blackfire: $(PHP_SCOPER_BIN) vendor
-	@echo By https://blackfire.io
-	@echo This might take a while (~2min)
+	@echo "By https://blackfire.io"
+	@echo "This might take a while (~2min)"
 	$(BLACKFIRE) run php $(PHP_SCOPER_BIN) add-prefix --output-dir=build/php-scoper --force --quiet
 
 .PHONY: e2e
@@ -509,19 +522,19 @@ vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock $(
 vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
 	@echo covers-validator composer.lock is not up to date
 
+$(PHP_CS_FIXER_BIN): vendor-bin/php-cs-fixer/vendor
+vendor-bin/php-cs-fixer/vendor: vendor-bin/php-cs-fixer/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
+	composer bin php-cs-fixer install
+	touch -c $@
+vendor-bin/php-cs-fixer/composer.lock: vendor-bin/php-cs-fixer/composer.json
+	@echo php-cs-fixer composer.lock is not up to date
+
 $(PHPSTAN_BIN): vendor-bin/phpstan/vendor
 vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
 	composer bin phpstan install
 	touch -c $@
 vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
 	@echo phpstan composer.lock is not up to date
-
-vendor-bin/code-sniffer/vendor: vendor-bin/code-sniffer/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
-	composer bin code-sniffer install
-	touch -c $@
-
-vendor-bin/code-sniffer/composer.lock: vendor-bin/code-sniffer/composer.json
-	@echo code-sniffer composer.lock is not up to date
 
 $(PHP_SCOPER_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
 	$(BOX) compile
@@ -530,14 +543,6 @@ $(PHP_SCOPER_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scope
 $(COVERAGE_XML): $(PHPUNIT_BIN) $(SRC_FILES)
 	$(MAKE) phpunit_coverage_infection
 	touch -c "$@"
-
-$(CODE_SNIFFER): vendor-bin/code-sniffer/vendor
-	composer bin code-sniffer install
-	touch -c $@
-
-$(CODE_SNIFFER_FIX): vendor-bin/code-sniffer/vendor
-	composer bin code-sniffer install
-	touch -c $@
 
 fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,33 +10,33 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper;
 
 use PhpParser\Parser;
 use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use function mkdir as native_mkdir;
-use function rand;
 use function Safe\realpath;
 use function Safe\sprintf;
 use function Safe\substr;
 use function str_replace;
-use function strrpos;
 use function sys_get_temp_dir;
 use const DIRECTORY_SEPARATOR;
 
 /**
  * Creates a temporary directory.
  *
- * @param string $namespace The directory path in the system's temporary
- *                          directory.
- * @param string $className The name of the test class.
+ * @param string $namespace the directory path in the system's temporary
+ *                          directory
+ * @param string $className the name of the test class
  *
- * @return string The path to the created directory.
+ * @return string the path to the created directory
  */
 function make_tmp_dir(string $namespace, string $className): string
 {
-    if (false !== ($pos = strrpos($className, '\\'))) {
+    if (false !== ($pos = mb_strrpos($className, '\\'))) {
         $shortClass = substr($className, $pos + 1);
     } else {
         $shortClass = $className;
@@ -53,7 +51,7 @@ function make_tmp_dir(string $namespace, string $className): string
 
     $i = 0;
 
-    while (false === @native_mkdir($tempDir = escape_path($basePath.rand(10000, 99999)), 0777, true)) {
+    while (false === @native_mkdir($tempDir = escape_path($basePath.random_int(10000, 99999)), 0o777, true)) {
         // Run until we are able to create a directory
         if ($i > 100) {
             throw new RuntimeException(

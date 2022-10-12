@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,16 +10,21 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\Console;
 
 use function Safe\preg_match_all;
 use function Safe\usort;
 use function str_replace;
-use function strlen;
 use const DIRECTORY_SEPARATOR;
 
 final class DisplayNormalizer
 {
+    private function __construct()
+    {
+    }
+
     public static function normalize(string $display): string
     {
         return self::normalizeDirectorySeparators(
@@ -33,9 +36,7 @@ final class DisplayNormalizer
     {
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\/path\/to(.*\\\\)+/', $display, $match)) {
             $paths = $match[0];
-            usort($paths, static function ($a, $b) {
-                return strlen($b) - strlen($a);
-            });
+            usort($paths, static fn ($a, $b) => mb_strlen($b) - mb_strlen($a));
             foreach ($paths as $path) {
                 $fixedPath = str_replace('\\', '/', $path);
                 $display = str_replace($path, $fixedPath, $display);
@@ -56,9 +57,5 @@ final class DisplayNormalizer
         }
 
         return $display;
-    }
-
-    private function __construct()
-    {
     }
 }

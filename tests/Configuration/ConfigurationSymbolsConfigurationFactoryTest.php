@@ -1,5 +1,15 @@
 <?php
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
@@ -12,6 +22,8 @@ use Throwable;
 
 /**
  * @covers \Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory
+ *
+ * @internal
  */
 final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
 {
@@ -30,8 +42,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
     public function test_it_can_create_a_symbols_config_object_from_the_config(
         array $config,
         SymbolsConfiguration $expected
-    ): void
-    {
+    ): void {
         $actual = $this->factory->createSymbolsConfiguration($config);
 
         self::assertEquals($expected, $actual);
@@ -192,8 +203,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
         array $config,
         string $expectedExceptionClassName,
         string $expectedExceptionMessage
-    ): void
-    {
+    ): void {
         $this->expectException($expectedExceptionClassName);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
@@ -235,7 +245,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
         ];
 
         // TODO: need to find a case
-        //yield 'exclude namespace contains an invalid regex-like expression' => [];
+        // yield 'exclude namespace contains an invalid regex-like expression' => [];
 
         yield 'whitelist is not an array' => [
             [

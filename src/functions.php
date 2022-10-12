@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,6 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper;
 
 use Iterator;
@@ -19,14 +19,12 @@ use PackageVersions\Versions;
 use function array_pop;
 use function count;
 use function Safe\substr;
-use function str_split;
-use function strrpos;
 
 function get_php_scoper_version(): string
 {
     // Since PHP-Scoper relies on COMPOSER_ROOT_VERSION the version parsed by PackageVersions, we rely on Box
     // placeholders in order to get the right version for the PHAR.
-    if (0 === strpos(__FILE__, 'phar:')) {
+    if (str_starts_with(__FILE__, 'phar:')) {
         return '@git_version_placeholder@';
     }
 
@@ -39,8 +37,6 @@ function get_php_scoper_version(): string
 
 /**
  * @param string[] $paths Absolute paths
- *
- * @return string
  */
 function get_common_path(array $paths): string
 {
@@ -57,7 +53,7 @@ function get_common_path(array $paths): string
     } else {
         $commonPath = '';
 
-        foreach (str_split($pathRef) as $pos => $char) {
+        foreach (mb_str_split($pathRef) as $pos => $char) {
             foreach ($paths as $path) {
                 if (!isset($path[$pos]) || $path[$pos] !== $char) {
                     break 2;
@@ -69,7 +65,7 @@ function get_common_path(array $paths): string
     }
 
     foreach (['/', '\\'] as $separator) {
-        $lastSeparatorPos = strrpos($commonPath, $separator);
+        $lastSeparatorPos = mb_strrpos($commonPath, $separator);
 
         if (false !== $lastSeparatorPos) {
             $commonPath = rtrim(substr($commonPath, 0, $lastSeparatorPos), $separator);

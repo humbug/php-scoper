@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the humbug/php-scoper package.
  *
@@ -12,6 +10,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+declare(strict_types=1);
+
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -21,8 +21,8 @@ interface Scoper
     /**
      * Scope AKA. apply the given prefix to the file in the appropriate way.
      *
-     * @param string     $filePath  File to scope
-     * @param string     $contents  File contents
+     * @param string $filePath File to scope
+     * @param string $contents File contents
      *
      * @throws ParsingException
      *
