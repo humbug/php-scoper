@@ -57,8 +57,4 @@ if (false === class_exists(IsolatedFinder::class)) {
     class_alias(Finder::class, IsolatedFinder::class);
 }
 
-ApplicationRunner::runApplication(
-    Application::create(),
-    null,
-    null,
-);
+ApplicationRunner::runApplication(Application::create());

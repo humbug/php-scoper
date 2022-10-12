@@ -68,6 +68,17 @@ $polyfillsStubs = array_map(
     ),
 );
 
+$symfonyDeprecationContracts = array_map(
+    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
+    iterator_to_array(
+        Finder::create()
+            ->files()
+            ->in(__DIR__ . '/vendor/symfony/deprecation-contracts')
+            ->name('*.php'),
+        false,
+    ),
+);
+
 return [
     'whitelist' => [
         Finder::class,
@@ -79,10 +90,14 @@ return [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
     ],
+    'exclude-functions' => [
+        'trigger_deprecation',
+    ],
     'exclude-files' => [
         ...$jetBrainStubs,
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,
+        ...$symfonyDeprecationContracts,
     ],
     'patchers' => [
         //

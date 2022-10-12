@@ -106,7 +106,7 @@ final class InitCommand implements Command
 
     private function retrieveConfig(IO $io): ?string
     {
-        $configFile = $io->getNullableStringOption(self::CONFIG_FILE_OPT);
+        $configFile = $io->getOption(self::CONFIG_FILE_OPT)->asNullableNonEmptyString();
 
         $configFile = (null === $configFile)
             ? $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT)

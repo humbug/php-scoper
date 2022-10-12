@@ -117,8 +117,9 @@ final class InspectSymbolCommand implements Command
         // working directory
         $cwd = getcwd();
 
-        $symbol = $io->getStringArgument(self::SYMBOL_ARG);
-        $symbolType = self::getSymbolType($io);
+        $symbol = $io->getArgument(self::SYMBOL_ARG)->asString();
+        /** @var SymbolType::*_TYPE $symbolType */
+        $symbolType = $io->getArgument(self::SYMBOL_TYPE_ARG)->asStringChoice(SymbolType::ALL);
         $config = $this->retrieveConfig($io, $cwd);
 
         $enrichedReflector = $this->enrichedReflectorFactory->create(
@@ -136,27 +137,6 @@ final class InspectSymbolCommand implements Command
         return ExitCode::SUCCESS;
     }
 
-    /**
-     * @return SymbolType::*_TYPE
-     */
-    private static function getSymbolType(IO $io): string
-    {
-        // TODO: use options when available https://github.com/theofidry/console/issues/18
-        $type = $io->getStringArgument(self::SYMBOL_TYPE_ARG);
-
-        if (!in_array($type, SymbolType::ALL, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected symbol type to be one of "%s". Got "%s"',
-                    implode('", "', SymbolType::ALL),
-                    $type,
-                ),
-            );
-        }
-
-        return $type;
-    }
-
     private function retrieveConfig(IO $io, string $cwd): Configuration
     {
         $configLoader = new ConfigLoader(
@@ -166,7 +146,7 @@ final class InspectSymbolCommand implements Command
         );
 
         $configFilePath = $this->getConfigFilePath($io, $cwd);
-        $noConfig = $io->getBooleanOption(self::NO_CONFIG_OPT);
+        $noConfig = $io->getOption(self::NO_CONFIG_OPT)->asBoolean();
 
         if (null === $configFilePath) {
             // Unlike when scoping, we do not want a config file to be created
@@ -344,7 +324,7 @@ final class InspectSymbolCommand implements Command
 
             case SymbolType::FUNCTION_TYPE:
                 return [
-                    $reflector->isClassInternal($symbol),
+                    $reflector->isFunctionInternal($symbol),
                     $reflector->isExposedFunction($symbol),
                 ];
 
