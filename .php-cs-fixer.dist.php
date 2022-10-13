@@ -47,7 +47,7 @@ $overriddenRules = [
     'yoda_style' => false,
 ];
 
-$config = new FidryConfig('', 74000);
+$config = new FidryConfig('', 81_000);
 $config->addRules($overriddenRules);
 
 return $config->setFinder($finder);
