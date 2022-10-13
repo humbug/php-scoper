@@ -89,15 +89,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private const CLASS_LIKE_PATTERN = '/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u';
 
-    private string $prefix;
-    private EnrichedReflector $enrichedReflector;
-
-    public function __construct(
-        string $prefix,
-        EnrichedReflector $enrichedReflector
-    ) {
-        $this->prefix = $prefix;
-        $this->enrichedReflector = $enrichedReflector;
+    public function __construct(private readonly string $prefix, private readonly EnrichedReflector $enrichedReflector)
+    {
     }
 
     public function enterNode(Node $node): Node

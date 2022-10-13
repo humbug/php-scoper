@@ -24,11 +24,8 @@ use function str_starts_with;
 
 final class NewdocPrefixer extends NodeVisitorAbstract
 {
-    private StringNodePrefixer $stringPrefixer;
-
-    public function __construct(StringNodePrefixer $stringPrefixer)
+    public function __construct(private readonly StringNodePrefixer $stringPrefixer)
     {
-        $this->stringPrefixer = $stringPrefixer;
     }
 
     public function enterNode(Node $node): Node

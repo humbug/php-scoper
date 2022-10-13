@@ -36,21 +36,8 @@ final class YamlScoper implements Scoper
     private const YAML_EXTENSION_REGEX = '/\.ya?ml$/i';
     private const CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
-    private Scoper $decoratedScoper;
-    private string $prefix;
-    private EnrichedReflector $enrichedReflector;
-    private SymbolsRegistry $symbolsRegistry;
-
-    public function __construct(
-        Scoper $decoratedScoper,
-        string $prefix,
-        EnrichedReflector $enrichedReflector,
-        SymbolsRegistry $symbolsRegistry
-    ) {
-        $this->decoratedScoper = $decoratedScoper;
-        $this->prefix = $prefix;
-        $this->enrichedReflector = $enrichedReflector;
-        $this->symbolsRegistry = $symbolsRegistry;
+    public function __construct(private readonly Scoper $decoratedScoper, private readonly string $prefix, private readonly EnrichedReflector $enrichedReflector, private readonly SymbolsRegistry $symbolsRegistry)
+    {
     }
 
     public function scope(string $filePath, string $contents): string

@@ -31,15 +31,8 @@ final class InstalledPackagesScoper implements Scoper
 {
     private const COMPOSER_INSTALLED_FILE_PATTERN = '/composer(\/|\\\\)installed\.json$/';
 
-    private Scoper $decoratedScoper;
-    private AutoloadPrefixer $autoloadPrefixer;
-
-    public function __construct(
-        Scoper $decoratedScoper,
-        AutoloadPrefixer $autoloadPrefixer
-    ) {
-        $this->decoratedScoper = $decoratedScoper;
-        $this->autoloadPrefixer = $autoloadPrefixer;
+    public function __construct(private readonly Scoper $decoratedScoper, private readonly AutoloadPrefixer $autoloadPrefixer)
+    {
     }
 
     /**

@@ -53,23 +53,10 @@ final class AddPrefixCommand implements Command, CommandAware
     private const STOP_ON_FAILURE_OPT = 'stop-on-failure';
     private const CONFIG_FILE_OPT = 'config';
     private const NO_CONFIG_OPT = 'no-config';
-
-    private Filesystem $fileSystem;
-    private ScoperFactory $scoperFactory;
     private bool $init = false;
-    private Application $application;
-    private ConfigurationFactory $configFactory;
 
-    public function __construct(
-        Filesystem $fileSystem,
-        ScoperFactory $scoperFactory,
-        Application $application,
-        ConfigurationFactory $configFactory
-    ) {
-        $this->fileSystem = $fileSystem;
-        $this->scoperFactory = $scoperFactory;
-        $this->application = $application;
-        $this->configFactory = $configFactory;
+    public function __construct(private readonly Filesystem $fileSystem, private readonly ScoperFactory $scoperFactory, private readonly Application $application, private readonly ConfigurationFactory $configFactory)
+    {
     }
 
     public function getConfiguration(): CommandConfiguration

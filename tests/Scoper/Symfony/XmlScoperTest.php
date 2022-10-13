@@ -146,7 +146,7 @@ class XmlScoperTest extends TestCase
         ];
 
         yield [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <?xml version="1.0" ?>
 
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -205,9 +205,9 @@ class XmlScoperTest extends TestCase
                     </services>
                 </container>
 
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <?xml version="1.0" ?>
 
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -266,12 +266,12 @@ class XmlScoperTest extends TestCase
                     </services>
                 </container>
 
-                XML,
+                XML_WRAP,
             [],
         ];
 
         yield 'PSR-4 service locator' => [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -287,9 +287,9 @@ class XmlScoperTest extends TestCase
                         <prototype namespace="Acme\App\" resource="../src/*" exclude="../src/{Entity,Migrations,Tests}" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -305,12 +305,12 @@ class XmlScoperTest extends TestCase
                         <prototype namespace="Humbug\Acme\App\" resource="../src/*" exclude="../src/{Entity,Migrations,Tests}" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             [],
         ];
 
         yield 'PSR-4 service locator with whitelist' => [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -326,7 +326,7 @@ class XmlScoperTest extends TestCase
                         <prototype namespace="Acme\Bar\" resource="../src/*" exclude="../src/{Entity,Migrations,Tests}" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(
                 true,
                 true,
@@ -335,7 +335,7 @@ class XmlScoperTest extends TestCase
                     ['Acme\Foo'],
                 ),
             ),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -351,12 +351,12 @@ class XmlScoperTest extends TestCase
                         <prototype namespace="Humbug\Acme\Bar\" resource="../src/*" exclude="../src/{Entity,Migrations,Tests}" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             [],
         ];
 
         yield 'service with alias' => [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -370,9 +370,9 @@ class XmlScoperTest extends TestCase
                         <service id="app.mailer" alias="App\Mail\PhpMailer" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -386,12 +386,12 @@ class XmlScoperTest extends TestCase
                         <service id="app.mailer" alias="Humbug\App\Mail\PhpMailer" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             [],
         ];
 
         yield 'service with argument' => [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- app/config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -407,9 +407,9 @@ class XmlScoperTest extends TestCase
                         </service>
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- app/config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -425,12 +425,12 @@ class XmlScoperTest extends TestCase
                         </service>
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             [],
         ];
 
         yield 'service with tag' => [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -444,9 +444,9 @@ class XmlScoperTest extends TestCase
                         </service>
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -460,12 +460,12 @@ class XmlScoperTest extends TestCase
                         </service>
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             [],
         ];
 
         yield [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -478,7 +478,7 @@ class XmlScoperTest extends TestCase
                         <service class="Acme\Bar" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(
                 true,
                 true,
@@ -487,7 +487,7 @@ class XmlScoperTest extends TestCase
                 null,
                 SymbolRegistry::create(['Acme\Foo']),
             ),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -500,14 +500,14 @@ class XmlScoperTest extends TestCase
                         <service class="Humbug\Acme\Bar" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             [
                 ['Acme\Foo', 'Humbug\Acme\Foo'],
             ],
         ];
 
         yield [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -522,9 +522,9 @@ class XmlScoperTest extends TestCase
                         <service class="Closure" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -539,13 +539,13 @@ class XmlScoperTest extends TestCase
                         <service class="Closure" />
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             [], // Whitelisting global classes in the service definitions is not supported at the moment. Provide a PR
             // if you are willing to add support for it.
         ];
 
         yield [
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -562,7 +562,7 @@ class XmlScoperTest extends TestCase
                         </service>
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             SymbolsConfiguration::create(
                 true,
                 true,
@@ -571,7 +571,7 @@ class XmlScoperTest extends TestCase
                     ['Acme'],
                 ),
             ),
-            <<<'XML'
+            <<<'XML_WRAP'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -588,7 +588,7 @@ class XmlScoperTest extends TestCase
                         </service>
                     </services>
                 </container>
-                XML,
+                XML_WRAP,
             [],
         ];
     }

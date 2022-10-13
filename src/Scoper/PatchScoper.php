@@ -19,15 +19,8 @@ use function func_get_args;
 
 final class PatchScoper implements Scoper
 {
-    private Scoper $decoratedScoper;
-    private string $prefix;
-    private Patcher $patcher;
-
-    public function __construct(Scoper $decoratedScoper, string $prefix, Patcher $patcher)
+    public function __construct(private readonly Scoper $decoratedScoper, private readonly string $prefix, private readonly Patcher $patcher)
     {
-        $this->decoratedScoper = $decoratedScoper;
-        $this->prefix = $prefix;
-        $this->patcher = $patcher;
     }
 
     public function scope(string $filePath, string $contents): string

@@ -87,7 +87,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     public function test_it_can_create_a_complete_configuration(): void
     {
         self::dumpStandardConfigFile(
-            <<<'PHP'
+            <<<'PHP_WRAP'
                 <?php
 
                 return [
@@ -111,7 +111,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                     'exclude-classes' => [],
                     'exclude-functions' => [],
                 ];
-                PHP,
+                PHP_WRAP,
         );
         touch('file1');
 

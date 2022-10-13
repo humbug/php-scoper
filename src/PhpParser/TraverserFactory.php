@@ -14,9 +14,23 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ClassAliasStmtAppender;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ClassIdentifierRecorder;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ConstStmtReplacer;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\EvalPrefixer;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\IdentifierNameAppender;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\MultiConstStmtReplacer;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NameStmtPrefixer;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\NewdocPrefixer;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\StringScalarPrefixer;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollector;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtPrefixer;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -30,18 +44,8 @@ use PhpParser\NodeVisitor\NameResolver;
  */
 class TraverserFactory
 {
-    private EnrichedReflector $reflector;
-    private string $prefix;
-    private SymbolsRegistry $symbolsRegistry;
-
-    public function __construct(
-        EnrichedReflector $reflector,
-        string $prefix,
-        SymbolsRegistry $symbolsRegistry
-    ) {
-        $this->reflector = $reflector;
-        $this->prefix = $prefix;
-        $this->symbolsRegistry = $symbolsRegistry;
+    public function __construct(private readonly EnrichedReflector $reflector, private readonly string $prefix, private readonly SymbolsRegistry $symbolsRegistry)
+    {
     }
 
     public function create(PhpScoper $scoper): NodeTraverserInterface
@@ -93,56 +97,56 @@ class TraverserFactory
 
         return [
             $nameResolver,
-            new NodeVisitor\ParentNodeAppender(),
-            new NodeVisitor\IdentifierNameAppender($identifierResolver),
+            new ParentNodeAppender(),
+            new IdentifierNameAppender($identifierResolver),
 
-            new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
+            new NamespaceStmtPrefixer(
                 $prefix,
                 $reflector,
                 $namespaceStatements,
             ),
 
-            new NodeVisitor\UseStmt\UseStmtCollector(
+            new UseStmtCollector(
                 $namespaceStatements,
                 $useStatements,
             ),
-            new NodeVisitor\UseStmt\UseStmtPrefixer(
+            new UseStmtPrefixer(
                 $prefix,
                 $reflector,
             ),
 
-            new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
+            new FunctionIdentifierRecorder(
                 $prefix,
                 $identifierResolver,
                 $symbolsRegistry,
                 $reflector,
             ),
-            new NodeVisitor\ClassIdentifierRecorder(
+            new ClassIdentifierRecorder(
                 $prefix,
                 $identifierResolver,
                 $symbolsRegistry,
                 $reflector,
             ),
-            new NodeVisitor\NameStmtPrefixer(
+            new NameStmtPrefixer(
                 $prefix,
                 $namespaceStatements,
                 $useStatements,
                 $reflector,
             ),
-            new NodeVisitor\StringScalarPrefixer(
+            new StringScalarPrefixer(
                 $prefix,
                 $reflector,
             ),
-            new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
-            new NodeVisitor\EvalPrefixer($stringNodePrefixer),
+            new NewdocPrefixer($stringNodePrefixer),
+            new EvalPrefixer($stringNodePrefixer),
 
-            new NodeVisitor\ClassAliasStmtAppender(
+            new ClassAliasStmtAppender(
                 $prefix,
                 $reflector,
                 $identifierResolver,
             ),
-            new NodeVisitor\MultiConstStmtReplacer(),
-            new NodeVisitor\ConstStmtReplacer(
+            new MultiConstStmtReplacer(),
+            new ConstStmtReplacer(
                 $identifierResolver,
                 $reflector,
             ),

@@ -22,11 +22,8 @@ use function func_get_args;
  */
 final class ConfigurableScoper implements Scoper
 {
-    private Scoper $decoratedScoper;
-
-    public function __construct(Scoper $decoratedScoper)
+    public function __construct(private readonly Scoper $decoratedScoper)
     {
-        $this->decoratedScoper = $decoratedScoper;
     }
 
     public function withWhitelistedFiles(string ...$whitelistedFiles): self

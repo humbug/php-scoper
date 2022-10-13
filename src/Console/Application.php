@@ -45,12 +45,6 @@ final class Application implements FidryApplication
 
     private const RELEASE_DATE_PLACEHOLDER = '@release-date@';
 
-    private Container $container;
-    private string $version;
-    private string $releaseDate;
-    private bool $isAutoExitEnabled;
-    private bool $areExceptionsCaught;
-
     public static function create(): self
     {
         return new self(
@@ -64,18 +58,8 @@ final class Application implements FidryApplication
         );
     }
 
-    public function __construct(
-        Container $container,
-        string $version,
-        string $releaseDate,
-        bool $isAutoExitEnabled,
-        bool $areExceptionsCaught
-    ) {
-        $this->container = $container;
-        $this->version = $version;
-        $this->releaseDate = $releaseDate;
-        $this->isAutoExitEnabled = $isAutoExitEnabled;
-        $this->areExceptionsCaught = $areExceptionsCaught;
+    public function __construct(private readonly Container $container, private readonly string $version, private readonly string $releaseDate, private readonly bool $isAutoExitEnabled, private readonly bool $areExceptionsCaught)
+    {
     }
 
     public function getName(): string

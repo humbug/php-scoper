@@ -34,15 +34,11 @@ use function Safe\sprintf;
  */
 class ScoperLogger
 {
-    private FidryApplication $application;
-    private IO $io;
-    private float $startTime;
+    private readonly float $startTime;
     private ProgressBar $progressBar;
 
-    public function __construct(FidryApplication $application, IO $io)
+    public function __construct(private readonly FidryApplication $application, private readonly IO $io)
     {
-        $this->io = $io;
-        $this->application = $application;
         $this->startTime = microtime(true);
         $this->progressBar = new ProgressBar(new NullOutput());
     }

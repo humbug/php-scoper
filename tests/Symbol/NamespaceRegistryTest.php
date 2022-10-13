@@ -209,7 +209,7 @@ class NamespaceRegistryTest extends TestCase
 
         yield 'two level namespace name; symbol belonging to the namespace' => [
             ['PHPUnit\Framework'],
-            'PHPUnit\Framework\TestCase',
+            TestCase::class,
             true,
         ];
 
@@ -233,19 +233,19 @@ class NamespaceRegistryTest extends TestCase
         ];
 
         yield 'three level namespace name; symbol belonging to the namespace' => [
-            ['PHPUnit\Framework\TestCase'],
+            [TestCase::class],
             'PHPUnit\Framework\TestCase\TestCase',
             true,
         ];
 
         yield 'three level namespace name; symbol belonging to a sub-namespace' => [
-            ['PHPUnit\Framework\TestCase'],
+            [TestCase::class],
             'PHPUnit\Framework\TestCase\Test\TestCase',
             true,
         ];
 
         yield 'three level namespace name; symbol belonging to a sub-namespace (different case)' => [
-            ['PHPUnit\Framework\TestCase'],
+            [TestCase::class],
             'PHPUNIT\FRAMEWORK\TESTCASE\TEST\TestCase',
             true,
         ];

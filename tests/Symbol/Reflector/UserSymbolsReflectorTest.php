@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\Reflector
@@ -91,8 +92,8 @@ class UserSymbolsReflectorTest extends TestCase
     public static function symbolsProvider(): iterable
     {
         $classNames = SymbolRegistry::create([
-            'PHPUnit\Framework\TestCase',
-            'Symfony\Component\Finder\Finder',
+            TestCase::class,
+            Finder::class,
         ]);
         $functionNames = SymbolRegistry::create([
             'PHPUnit\main',

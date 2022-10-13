@@ -302,11 +302,7 @@ class PhpScoperSpecTest extends TestCase
         );
     }
 
-    /**
-     * @param string|int   $fixtureTitle
-     * @param string|array $fixtureSet
-     */
-    private static function parseSpecFile(string $file, array $meta, $fixtureTitle, $fixtureSet): iterable
+    private static function parseSpecFile(string $file, array $meta, string|int $fixtureTitle, string|array $fixtureSet): iterable
     {
         static $specMetaKeys;
         static $specKeys;
@@ -333,7 +329,7 @@ class PhpScoperSpecTest extends TestCase
 
         $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
 
-        $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
+        $payloadParts = preg_split("/\n----(?:\n|$)/", (string) $payload);
 
         self::assertSame(
             [],
@@ -385,12 +381,9 @@ class PhpScoperSpecTest extends TestCase
         ];
     }
 
-    /**
-     * @param string|array $fixtureSet
-     */
     private static function createSymbolsConfiguration(
         string $file,
-        $fixtureSet,
+        string|array $fixtureSet,
         array $meta
     ): SymbolsConfiguration {
         if (is_string($fixtureSet)) {

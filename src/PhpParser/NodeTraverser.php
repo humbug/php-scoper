@@ -37,11 +37,8 @@ use function current;
  */
 final class NodeTraverser implements NodeTraverserInterface
 {
-    private NodeTraverserInterface $decoratedTraverser;
-
-    public function __construct(NodeTraverserInterface $decoratedTraverser)
+    public function __construct(private readonly NodeTraverserInterface $decoratedTraverser)
     {
-        $this->decoratedTraverser = $decoratedTraverser;
     }
 
     public function addVisitor(NodeVisitor $visitor): void

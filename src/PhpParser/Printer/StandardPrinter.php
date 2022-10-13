@@ -18,12 +18,8 @@ use PhpParser\PrettyPrinterAbstract;
 
 final class StandardPrinter implements Printer
 {
-    private PrettyPrinterAbstract $decoratedPrinter;
-
-    public function __construct(
-        PrettyPrinterAbstract $decoratedPrinter
-    ) {
-        $this->decoratedPrinter = $decoratedPrinter;
+    public function __construct(private readonly PrettyPrinterAbstract $decoratedPrinter)
+    {
     }
 
     public function print(array $newStmts, array $oldStmts, array $oldTokens): string

@@ -17,6 +17,8 @@ namespace Humbug\PhpScoper\Symbol;
 use Humbug\PhpScoper\PhpScoperAssertions;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolsRegistry
@@ -61,7 +63,7 @@ final class SymbolsRegistryTest extends TestCase
         $testCase = new FullyQualified('PHPUnit\TestCase');
         $scopedTestCase = new FullyQualified('Scoped\PHPUnit\TestCase');
 
-        $finder = new FullyQualified('Symfony\Component\Finder\Finder');
+        $finder = new FullyQualified(Finder::class);
         $scopedFinder = new FullyQualified('Scoped\Symfony\Component\Finder\Finder');
 
         yield 'empty' => [
@@ -87,7 +89,7 @@ final class SymbolsRegistryTest extends TestCase
             ],
             [
                 ['PHPUnit\TestCase', 'Scoped\PHPUnit\TestCase'],
-                ['Symfony\Component\Finder\Finder', 'Scoped\Symfony\Component\Finder\Finder'],
+                [Finder::class, 'Scoped\Symfony\Component\Finder\Finder'],
             ],
             4,
         ];
@@ -146,7 +148,7 @@ final class SymbolsRegistryTest extends TestCase
         $testCase = new FullyQualified('PHPUnit\TestCase');
         $scopedTestCase = new FullyQualified('Scoped\PHPUnit\TestCase');
 
-        $finder = new FullyQualified('Symfony\Component\Finder\Finder');
+        $finder = new FullyQualified(Finder::class);
         $scopedFinder = new FullyQualified('Scoped\Symfony\Component\Finder\Finder');
 
         yield 'empty' => [
@@ -217,7 +219,7 @@ final class SymbolsRegistryTest extends TestCase
                 ['PHPUnit\main', 'Scoped\PHPUnit\main'],
             ],
             [
-                ['Symfony\Component\Finder\Finder', 'Scoped\Symfony\Component\Finder\Finder'],
+                [Finder::class, 'Scoped\Symfony\Component\Finder\Finder'],
                 ['PHPUnit\TestCase', 'Scoped\PHPUnit\TestCase'],
             ],
             4,
@@ -247,7 +249,7 @@ final class SymbolsRegistryTest extends TestCase
                 ['PHPUnit\main', 'Scoped\PHPUnit\main'],
             ],
             [
-                ['Symfony\Component\Finder\Finder', 'Scoped\Symfony\Component\Finder\Finder'],
+                [Finder::class, 'Scoped\Symfony\Component\Finder\Finder'],
                 ['PHPUnit\TestCase', 'Scoped\PHPUnit\TestCase'],
             ],
             4,
@@ -277,7 +279,7 @@ final class SymbolsRegistryTest extends TestCase
                 ['PHPUnit\main', 'Scoped\PHPUnit\main'],
             ],
             [
-                ['Symfony\Component\Finder\Finder', 'Scoped\Symfony\Component\Finder\Finder'],
+                [Finder::class, 'Scoped\Symfony\Component\Finder\Finder'],
                 ['PHPUnit\TestCase', 'Scoped\PHPUnit\TestCase'],
             ],
             4,
@@ -319,10 +321,10 @@ final class SymbolsRegistryTest extends TestCase
         $testCase = new FullyQualified('PHPUnit\TestCase');
         $scopedTestCase = new FullyQualified('Scoped\PHPUnit\TestCase');
 
-        $finder = new FullyQualified('Symfony\Component\Finder\Finder');
+        $finder = new FullyQualified(Finder::class);
         $scopedFinder = new FullyQualified('Scoped\Symfony\Component\Finder\Finder');
 
-        $fileSystem = new FullyQualified('Symfony\Component\Filesystem\Filesystem');
+        $fileSystem = new FullyQualified(Filesystem::class);
         $scopedFileSystem = new FullyQualified('Scoped\Symfony\Component\Filesystem\Filesystem');
 
         yield 'empty' => [
@@ -353,8 +355,8 @@ final class SymbolsRegistryTest extends TestCase
                 ['PHPUnit\main', 'Scoped\PHPUnit\main'],
             ],
             [
-                ['Symfony\Component\Filesystem\Filesystem', 'Scoped\Symfony\Component\Filesystem\Filesystem'],
-                ['Symfony\Component\Finder\Finder', 'Scoped\Symfony\Component\Finder\Finder'],
+                [Filesystem::class, 'Scoped\Symfony\Component\Filesystem\Filesystem'],
+                [Finder::class, 'Scoped\Symfony\Component\Finder\Finder'],
                 ['PHPUnit\TestCase', 'Scoped\PHPUnit\TestCase'],
             ],
             6,

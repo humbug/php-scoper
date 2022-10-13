@@ -22,7 +22,6 @@ use function is_array;
 use function is_string;
 use function rtrim;
 use function Safe\sprintf;
-use function Safe\substr;
 use function str_contains;
 use function str_replace;
 
@@ -31,15 +30,8 @@ use function str_replace;
  */
 final class AutoloadPrefixer
 {
-    private string $prefix;
-    private EnrichedReflector $enrichedReflector;
-
-    public function __construct(
-        string $prefix,
-        EnrichedReflector $enrichedReflector
-    ) {
-        $this->prefix = $prefix;
-        $this->enrichedReflector = $enrichedReflector;
+    public function __construct(private readonly string $prefix, private readonly EnrichedReflector $enrichedReflector)
+    {
     }
 
     /**
@@ -144,7 +136,7 @@ final class AutoloadPrefixer
     {
         foreach ($psr0 as $namespace => $path) {
             // Append backslashes, if needed, since psr-0 does not require this
-            if ('\\' !== substr($namespace, -1)) {
+            if (!str_ends_with($namespace, '\\')) {
                 $namespace .= '\\';
             }
 
@@ -173,7 +165,7 @@ final class AutoloadPrefixer
      *
      * @return string|string[]
      */
-    private static function updatePSR0Path($path, string $namespace)
+    private static function updatePSR0Path(string|array $path, string $namespace): string|array
     {
         $namespaceForPsr = rtrim(
             str_replace('\\', '/', $namespace),
@@ -181,7 +173,7 @@ final class AutoloadPrefixer
         );
 
         if (!is_array($path)) {
-            if ('/' !== substr($path, -1)) {
+            if (!str_ends_with($path, '/')) {
                 $path .= '/';
             }
 
@@ -191,7 +183,7 @@ final class AutoloadPrefixer
         }
 
         foreach ($path as $key => $item) {
-            if ('/' !== substr($item, -1)) {
+            if (!str_ends_with($item, '/')) {
                 $item .= '/';
             }
 
@@ -214,7 +206,7 @@ final class AutoloadPrefixer
      *
      * @return string|string[]
      */
-    private static function mergeNamespaces(string $psr0Namespace, $psr0Path, array $psr4)
+    private static function mergeNamespaces(string $psr0Namespace, string|array $psr0Path, array $psr4): string|array
     {
         // Both strings
         if (is_string($psr0Path) && is_string($psr4[$psr0Namespace])) {

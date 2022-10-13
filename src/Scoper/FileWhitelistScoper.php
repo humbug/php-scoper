@@ -20,12 +20,10 @@ use function Safe\array_flip;
 
 final class FileWhitelistScoper implements Scoper
 {
-    private Scoper $decoratedScoper;
-    private array $filePaths;
+    private readonly array $filePaths;
 
-    public function __construct(Scoper $decoratedScoper, string ...$filePaths)
+    public function __construct(private readonly Scoper $decoratedScoper, string ...$filePaths)
     {
-        $this->decoratedScoper = $decoratedScoper;
         $this->filePaths = array_flip($filePaths);
     }
 

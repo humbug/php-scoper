@@ -42,7 +42,7 @@ trait AppTesterAbilities
             $expectedOutput,
             $expectedStatusCode,
             $this->getAppTester(),
-            [DisplayNormalizer::class, 'normalize'],
+            DisplayNormalizer::normalize(...),
             ...$extraNormalizers,
         );
     }

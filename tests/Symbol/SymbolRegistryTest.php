@@ -218,7 +218,7 @@ class SymbolRegistryTest extends TestCase
 
         yield 'namespaced name registered; name from sub-namespace' => [
             ['PHPUnit\TestCase'],
-            'PHPUnit\Framework\TestCase',
+            TestCase::class,
             false,
         ];
 

@@ -24,11 +24,8 @@ use function Safe\substr;
  */
 final class StringNodePrefixer
 {
-    private PhpScoper $scoper;
-
-    public function __construct(PhpScoper $scoper)
+    public function __construct(private readonly PhpScoper $scoper)
     {
-        $this->scoper = $scoper;
     }
 
     public function prefixStringValue(String_ $node): void
@@ -43,7 +40,7 @@ final class StringNodePrefixer
             }
 
             $node->value = $newValue;
-        } catch (PhpParserError $error) {
+        } catch (PhpParserError) {
             // Continue without scoping the heredoc which for some reasons contains invalid PHP code
         }
     }

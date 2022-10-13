@@ -19,16 +19,10 @@ use function array_reduce;
 final class PatcherChain implements Patcher
 {
     /**
-     * @var array<(callable(string, string, string): string)|Patcher>
-     */
-    private array $patchers;
-
-    /**
      * @param array<(callable(string, string, string): string)|Patcher> $patchers
      */
-    public function __construct(array $patchers = [])
+    public function __construct(private readonly array $patchers = [])
     {
-        $this->patchers = $patchers;
     }
 
     public function __invoke(string $filePath, string $prefix, string $contents): string
