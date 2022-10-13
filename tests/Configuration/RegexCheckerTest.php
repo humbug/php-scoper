@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
-use Humbug\PhpScoper\Configuration;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -28,7 +27,7 @@ final class RegexCheckerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->regexChecker = new Configuration\RegexChecker();
+        $this->regexChecker = new RegexChecker();
     }
 
     /**

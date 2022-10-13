@@ -90,21 +90,12 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         IntersectionType::class,
     ];
 
-    private string $prefix;
-    private NamespaceStmtCollection $namespaceStatements;
-    private UseStmtCollection $useStatements;
-    private EnrichedReflector $enrichedReflector;
-
     public function __construct(
-        string $prefix,
-        NamespaceStmtCollection $namespaceStatements,
-        UseStmtCollection $useStatements,
-        EnrichedReflector $enrichedReflector
+        private readonly string $prefix,
+        private readonly NamespaceStmtCollection $namespaceStatements,
+        private readonly UseStmtCollection $useStatements,
+        private readonly EnrichedReflector $enrichedReflector,
     ) {
-        $this->prefix = $prefix;
-        $this->namespaceStatements = $namespaceStatements;
-        $this->useStatements = $useStatements;
-        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node

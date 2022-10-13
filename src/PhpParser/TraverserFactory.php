@@ -30,18 +30,11 @@ use PhpParser\NodeVisitor\NameResolver;
  */
 class TraverserFactory
 {
-    private EnrichedReflector $reflector;
-    private string $prefix;
-    private SymbolsRegistry $symbolsRegistry;
-
     public function __construct(
-        EnrichedReflector $reflector,
-        string $prefix,
-        SymbolsRegistry $symbolsRegistry
+        private readonly EnrichedReflector $reflector,
+        private readonly string $prefix,
+        private readonly SymbolsRegistry $symbolsRegistry,
     ) {
-        $this->reflector = $reflector;
-        $this->prefix = $prefix;
-        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     public function create(PhpScoper $scoper): NodeTraverserInterface

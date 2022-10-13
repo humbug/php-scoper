@@ -27,7 +27,6 @@ use function array_filter;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
-use function array_merge;
 use function array_unique;
 use function array_unshift;
 use function bin2hex;
@@ -56,15 +55,10 @@ final class ConfigurationFactory
 {
     public const DEFAULT_FILE_NAME = 'scoper.inc.php';
 
-    private Filesystem $fileSystem;
-    private SymbolsConfigurationFactory $configurationWhitelistFactory;
-
     public function __construct(
-        Filesystem $fileSystem,
-        SymbolsConfigurationFactory $configurationWhitelistFactory
+        private readonly Filesystem $fileSystem,
+        private readonly SymbolsConfigurationFactory $configurationWhitelistFactory,
     ) {
-        $this->fileSystem = $fileSystem;
-        $this->configurationWhitelistFactory = $configurationWhitelistFactory;
     }
 
     /**
@@ -127,10 +121,10 @@ final class ConfigurationFactory
         return new Configuration(
             $config->getPath(),
             $config->getPrefix(),
-            array_merge(
-                $config->getFilesWithContents(),
-                $filesWithContents,
-            ),
+            [
+                ...$config->getFilesWithContents(),
+                ...$filesWithContents,
+            ],
             $config->getExcludedFilesWithContents(),
             $config->getPatcher(),
             $config->getSymbolsConfiguration(),

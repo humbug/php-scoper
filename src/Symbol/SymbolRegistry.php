@@ -37,13 +37,6 @@ final class SymbolRegistry
     private array $names;
 
     /**
-     * @var list<string>
-     */
-    private array $regexes;
-
-    private bool $constants;
-
-    /**
      * @param string[] $names
      * @param string[] $regexes
      */
@@ -90,12 +83,10 @@ final class SymbolRegistry
      */
     private function __construct(
         array $names,
-        array $regexes,
-        bool $constants
+        private array $regexes,
+        private bool $constants
     ) {
         $this->names = array_flip($names);
-        $this->regexes = $regexes;
-        $this->constants = $constants;
     }
 
     public function matches(string $symbol): bool

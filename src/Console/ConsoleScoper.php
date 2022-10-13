@@ -44,18 +44,11 @@ final class ConsoleScoper
 {
     private const VENDOR_DIR_PATTERN = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
 
-    private Filesystem $fileSystem;
-    private Application $application;
-    private ScoperFactory $scoperFactory;
-
     public function __construct(
-        Filesystem $fileSystem,
-        Application $application,
-        ScoperFactory $scoperFactory
+        private readonly Filesystem $fileSystem,
+        private readonly Application $application,
+        private readonly ScoperFactory $scoperFactory,
     ) {
-        $this->fileSystem = $fileSystem;
-        $this->application = $application;
-        $this->scoperFactory = $scoperFactory;
     }
 
     /**

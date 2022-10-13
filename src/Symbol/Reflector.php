@@ -592,10 +592,6 @@ final class Reflector
         'MONGODB_STABILITY',
     ];
 
-    private SymbolRegistry $classes;
-    private SymbolRegistry $functions;
-    private SymbolRegistry $constants;
-
     public static function createWithPhpStormStubs(): self
     {
         return new self(
@@ -624,13 +620,10 @@ final class Reflector
     }
 
     private function __construct(
-        SymbolRegistry $classes,
-        SymbolRegistry $functions,
-        SymbolRegistry $constants
+        private SymbolRegistry $classes,
+        private SymbolRegistry $functions,
+        private SymbolRegistry $constants,
     ) {
-        $this->classes = $classes;
-        $this->functions = $functions;
-        $this->constants = $constants;
     }
 
     public function withAdditionalSymbols(

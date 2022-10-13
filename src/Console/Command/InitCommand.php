@@ -36,15 +36,10 @@ final class InitCommand implements Command
     private const CONFIG_FILE_TEMPLATE = __DIR__.'/../../scoper.inc.php.tpl';
     private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
 
-    private Filesystem $fileSystem;
-    private FormatterHelper $formatterHelper;
-
     public function __construct(
-        Filesystem $fileSystem,
-        FormatterHelper $formatterHelper
+        private readonly Filesystem $fileSystem,
+        private readonly FormatterHelper $formatterHelper,
     ) {
-        $this->fileSystem = $fileSystem;
-        $this->formatterHelper = $formatterHelper;
     }
 
     public function getConfiguration(): CommandConfiguration

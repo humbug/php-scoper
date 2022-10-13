@@ -48,18 +48,11 @@ final class InspectSymbolCommand implements Command
     private const CONFIG_FILE_OPT = 'config';
     private const NO_CONFIG_OPT = 'no-config';
 
-    private Filesystem $fileSystem;
-    private ConfigurationFactory $configFactory;
-    private EnrichedReflectorFactory $enrichedReflectorFactory;
-
     public function __construct(
-        Filesystem $fileSystem,
-        ConfigurationFactory $configFactory,
-        EnrichedReflectorFactory $enrichedReflectorFactory
+        private readonly Filesystem $fileSystem,
+        private readonly ConfigurationFactory $configFactory,
+        private readonly EnrichedReflectorFactory $enrichedReflectorFactory,
     ) {
-        $this->fileSystem = $fileSystem;
-        $this->configFactory = $configFactory;
-        $this->enrichedReflectorFactory = $enrichedReflectorFactory;
     }
 
     public function getConfiguration(): CommandConfiguration
@@ -303,37 +296,28 @@ final class InspectSymbolCommand implements Command
     /**
      * @param SymbolType::*_TYPE $type
      */
-    private static function determineSymbolStatus(
-        string $symbol,
-        string $type,
-        EnrichedReflector $reflector
-    ): array {
-        switch ($type) {
-            case SymbolType::CLASS_TYPE:
-                return [
-                    $reflector->isClassInternal($symbol),
-                    $reflector->isExposedClass($symbol),
-                ];
-
-            case SymbolType::FUNCTION_TYPE:
-                return [
-                    $reflector->isFunctionInternal($symbol),
-                    $reflector->isExposedFunction($symbol),
-                ];
-
-            case SymbolType::CONSTANT_TYPE:
-                return [
-                    $reflector->isConstantInternal($symbol),
-                    $reflector->isExposedConstant($symbol),
-                ];
-        }
-
-        throw new InvalidArgumentException(
-            sprintf(
-                'Invalid type "%s"',
-                $type,
+    private static function determineSymbolStatus(string $symbol, string $type, EnrichedReflector $reflector): array
+    {
+        return match ($type) {
+            SymbolType::CLASS_TYPE => [
+                $reflector->isClassInternal($symbol),
+                $reflector->isExposedClass($symbol),
+            ],
+            SymbolType::FUNCTION_TYPE => [
+                $reflector->isFunctionInternal($symbol),
+                $reflector->isExposedFunction($symbol),
+            ],
+            SymbolType::CONSTANT_TYPE => [
+                $reflector->isConstantInternal($symbol),
+                $reflector->isExposedConstant($symbol),
+            ],
+            default => throw new InvalidArgumentException(
+                sprintf(
+                    'Invalid type "%s"',
+                    $type,
+                ),
             ),
-        );
+        };
     }
 
     private static function convertBoolToString(bool $bool): string

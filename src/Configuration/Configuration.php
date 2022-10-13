@@ -24,19 +24,9 @@ final class Configuration
     private const PREFIX_PATTERN = '/^[\p{L}\d_\\\\]+$/u';
 
     /**
-     * @var non-empty-string|null
-     */
-    private ?string $path;
-
-    /**
      * @var non-empty-string
      */
-    private string $prefix;
-
-    private array $filesWithContents;
-    private array $excludedFilesWithContents;
-    private Patcher $patcher;
-    private SymbolsConfiguration $symbolsConfiguration;
+    private readonly string $prefix;
 
     /**
      * @param non-empty-string|null $path   Absolute path to the configuration file loaded.
@@ -49,21 +39,15 @@ final class Configuration
      *                                            the second its contents
      */
     public function __construct(
-        ?string $path,
+        private ?string $path,
         string $prefix,
-        array $filesWithContents,
-        array $excludedFilesWithContents,
-        Patcher $patcher,
-        SymbolsConfiguration $symbolsConfiguration
+        private array $filesWithContents,
+        private array $excludedFilesWithContents,
+        private Patcher $patcher,
+        private SymbolsConfiguration $symbolsConfiguration
     ) {
         self::validatePrefix($prefix);
-
-        $this->path = $path;
         $this->prefix = $prefix;
-        $this->filesWithContents = $filesWithContents;
-        $this->excludedFilesWithContents = $excludedFilesWithContents;
-        $this->patcher = $patcher;
-        $this->symbolsConfiguration = $symbolsConfiguration;
     }
 
     /**

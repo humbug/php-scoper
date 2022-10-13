@@ -34,6 +34,7 @@ use function ltrim;
 use function Safe\preg_match as native_preg_match;
 use function sprintf;
 use function str_contains;
+use function str_ends_with;
 use function str_replace;
 use function strtolower;
 use function substr;
@@ -41,11 +42,8 @@ use function trim;
 
 final class SymbolsConfigurationFactory
 {
-    private RegexChecker $regexChecker;
-
-    public function __construct(RegexChecker $regexChecker)
+    public function __construct(private readonly RegexChecker $regexChecker)
     {
-        $this->regexChecker = $regexChecker;
     }
 
     public function createSymbolsConfiguration(array $config): SymbolsConfiguration
@@ -304,7 +302,7 @@ final class SymbolsConfigurationFactory
 
             self::assertValidElement($element);
 
-            if ('\*' === substr($element, -2)) {
+            if (str_ends_with($element, '\*')) {
                 $excludedNamespaceNames[] = strtolower(substr($element, 0, -2));
             } elseif ('*' === $element) {
                 $excludedNamespaceNames[] = '';

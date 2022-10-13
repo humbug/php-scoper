@@ -26,15 +26,10 @@ use function strpos;
  */
 final class EnrichedReflector
 {
-    private Reflector $reflector;
-    private SymbolsConfiguration $symbolsConfiguration;
-
     public function __construct(
-        Reflector $reflector,
-        SymbolsConfiguration $symbolsConfiguration
+        private Reflector $reflector,
+        private SymbolsConfiguration $symbolsConfiguration,
     ) {
-        $this->reflector = $reflector;
-        $this->symbolsConfiguration = $symbolsConfiguration;
     }
 
     public function belongsToExcludedNamespace(string $name): bool

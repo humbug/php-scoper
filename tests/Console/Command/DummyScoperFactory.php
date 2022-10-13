@@ -25,13 +25,11 @@ use PhpParser\Parser;
 
 final class DummyScoperFactory extends ScoperFactory
 {
-    private Scoper $scoper;
-
     public function __construct(
         Parser $parser,
         EnrichedReflectorFactory $enrichedReflectorFactory,
         Printer $printer,
-        Scoper $scoper
+        private readonly Scoper $scoper
     ) {
         parent::__construct(
             $parser,
@@ -39,8 +37,6 @@ final class DummyScoperFactory extends ScoperFactory
             $printer,
             new Lexer(),
         );
-
-        $this->scoper = $scoper;
     }
 
     public function createScoper(Configuration $configuration, SymbolsRegistry $symbolsRegistry): Scoper

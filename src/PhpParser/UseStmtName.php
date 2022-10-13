@@ -23,11 +23,8 @@ use function sprintf;
 
 final class UseStmtName
 {
-    private Name $name;
-
-    public function __construct(Name $name)
+    public function __construct(private readonly Name $name)
     {
-        $this->name = $name;
     }
 
     public function contains(Name $resolvedName): bool

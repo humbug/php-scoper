@@ -19,21 +19,6 @@ use Humbug\PhpScoper\Symbol\SymbolRegistry;
 
 final class SymbolsConfiguration
 {
-    private bool $exposeGlobalConstants;
-    private bool $exposeGlobalClasses;
-    private bool $exposeGlobalFunctions;
-
-    private NamespaceRegistry $excludedNamespaces;
-    private NamespaceRegistry $exposedNamespaces;
-
-    private SymbolRegistry $exposedClasses;
-    private SymbolRegistry $exposedFunctions;
-    private SymbolRegistry $exposedConstants;
-
-    private SymbolRegistry $excludedClasses;
-    private SymbolRegistry $excludedFunctions;
-    private SymbolRegistry $excludedConstants;
-
     public static function create(
         bool $exposeGlobalConstants = false,
         bool $exposeGlobalClasses = false,
@@ -47,7 +32,7 @@ final class SymbolsConfiguration
         ?SymbolRegistry $exposedConstants = null,
         ?SymbolRegistry $excludedClasses = null,
         ?SymbolRegistry $excludedFunctions = null,
-        ?SymbolRegistry $excludedConstants = null
+        ?SymbolRegistry $excludedConstants = null,
     ): self {
         return new self(
             $exposeGlobalConstants,
@@ -65,29 +50,18 @@ final class SymbolsConfiguration
     }
 
     private function __construct(
-        bool $exposeGlobalConstants,
-        bool $exposeGlobalClasses,
-        bool $exposeGlobalFunctions,
-        NamespaceRegistry $excludedNamespaces,
-        NamespaceRegistry $exposedNamespaces,
-        SymbolRegistry $exposedClasses,
-        SymbolRegistry $exposedFunctions,
-        SymbolRegistry $exposedConstants,
-        SymbolRegistry $excludedClasses,
-        SymbolRegistry $excludedFunctions,
-        SymbolRegistry $excludedConstants
+        private bool $exposeGlobalConstants,
+        private bool $exposeGlobalClasses,
+        private bool $exposeGlobalFunctions,
+        private NamespaceRegistry $excludedNamespaces,
+        private NamespaceRegistry $exposedNamespaces,
+        private SymbolRegistry $exposedClasses,
+        private SymbolRegistry $exposedFunctions,
+        private SymbolRegistry $exposedConstants,
+        private SymbolRegistry $excludedClasses,
+        private SymbolRegistry $excludedFunctions,
+        private SymbolRegistry $excludedConstants,
     ) {
-        $this->exposeGlobalConstants = $exposeGlobalConstants;
-        $this->exposeGlobalClasses = $exposeGlobalClasses;
-        $this->exposeGlobalFunctions = $exposeGlobalFunctions;
-        $this->excludedNamespaces = $excludedNamespaces;
-        $this->exposedNamespaces = $exposedNamespaces;
-        $this->exposedClasses = $exposedClasses;
-        $this->exposedFunctions = $exposedFunctions;
-        $this->exposedConstants = $exposedConstants;
-        $this->excludedClasses = $excludedClasses;
-        $this->excludedFunctions = $excludedFunctions;
-        $this->excludedConstants = $excludedConstants;
     }
 
     public function shouldExposeGlobalConstants(): bool

@@ -30,16 +30,6 @@ use const SORT_STRING;
 
 final class NamespaceRegistry
 {
-    /**
-     * @var list<string>
-     */
-    private array $names;
-
-    /**
-     * @var list<string>
-     */
-    private array $regexes;
-
     private bool $containsGlobalNamespace;
 
     /**
@@ -63,19 +53,16 @@ final class NamespaceRegistry
     }
 
     /**
-     * @param list<string> $namespaceNames
-     * @param list<string> $namespaceRegexes
+     * @param list<string> $names
+     * @param list<string> $regexes
      */
     private function __construct(
-        array $namespaceNames,
-        array $namespaceRegexes
+        private array $names,
+        private array $regexes
     ) {
-        $this->names = $namespaceNames;
-        $this->regexes = $namespaceRegexes;
-
         $this->containsGlobalNamespace = count(
             array_filter(
-                $namespaceNames,
+                $names,
                 static fn (string $name) => '' === $name,
             ),
         ) !== 0;

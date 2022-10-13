@@ -24,11 +24,8 @@ use function substr;
  */
 final class StringNodePrefixer
 {
-    private PhpScoper $scoper;
-
-    public function __construct(PhpScoper $scoper)
+    public function __construct(private readonly PhpScoper $scoper)
     {
-        $this->scoper = $scoper;
     }
 
     public function prefixStringValue(String_ $node): void

@@ -26,7 +26,7 @@ use function func_get_args;
  */
 final class SymfonyScoper implements Scoper
 {
-    private SymfonyXmlScoper $decoratedScoper;
+    private readonly SymfonyXmlScoper $decoratedScoper;
 
     public function __construct(
         Scoper $decoratedScoper,

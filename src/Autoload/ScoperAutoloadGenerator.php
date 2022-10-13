@@ -43,13 +43,9 @@ final class ScoperAutoloadGenerator
     /** @var non-empty-string */
     private static string $eol;
 
-    private SymbolsRegistry $registry;
-
-    public function __construct(SymbolsRegistry $registry)
+    public function __construct(private readonly SymbolsRegistry $registry)
     {
         self::$eol = chr(10);
-
-        $this->registry = $registry;
     }
 
     public function dump(): string

@@ -27,15 +27,10 @@ use const JSON_THROW_ON_ERROR;
 
 final class JsonFileScoper implements Scoper
 {
-    private Scoper $decoratedScoper;
-    private AutoloadPrefixer $autoloadPrefixer;
-
     public function __construct(
-        Scoper $decoratedScoper,
-        AutoloadPrefixer $autoloadPrefixer
+        private readonly Scoper $decoratedScoper,
+        private readonly AutoloadPrefixer $autoloadPrefixer,
     ) {
-        $this->decoratedScoper = $decoratedScoper;
-        $this->autoloadPrefixer = $autoloadPrefixer;
     }
 
     /**

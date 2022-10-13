@@ -18,11 +18,8 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 
 final class EnrichedReflectorFactory
 {
-    private Reflector $reflector;
-
-    public function __construct(Reflector $reflector)
+    public function __construct(private Reflector $reflector)
     {
-        $this->reflector = $reflector;
     }
 
     public function create(SymbolsConfiguration $symbolsConfiguration): EnrichedReflector

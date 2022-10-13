@@ -36,7 +36,7 @@ abstract class FileSystemTestCase extends TestCase
         remove_dir(str_replace('\\', '/', realpath(sys_get_temp_dir())).'/php-scoper');
 
         $this->cwd = getcwd();
-        $this->tmp = make_tmp_dir('php-scoper', __CLASS__);
+        $this->tmp = make_tmp_dir('php-scoper', self::class);
 
         chdir($this->tmp);
     }

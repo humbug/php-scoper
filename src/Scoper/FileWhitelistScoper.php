@@ -20,12 +20,12 @@ use function func_get_args;
 
 final class FileWhitelistScoper implements Scoper
 {
-    private Scoper $decoratedScoper;
-    private array $filePaths;
+    private readonly array $filePaths;
 
-    public function __construct(Scoper $decoratedScoper, string ...$filePaths)
-    {
-        $this->decoratedScoper = $decoratedScoper;
+    public function __construct(
+        private readonly Scoper $decoratedScoper,
+        string ...$filePaths,
+    ) {
         $this->filePaths = array_flip($filePaths);
     }
 
