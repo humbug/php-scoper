@@ -5,8 +5,8 @@ MAKEFLAGS += --no-builtin-rules
 IS_PHP8=$(shell php -r "echo version_compare(PHP_VERSION, '8.0.0', '>=') ? 'true' : 'false';")
 SRC_FILES=$(shell find bin/ src/ vendor-hotfix/ -type f)
 
-PHP_SCOPER_BIN=bin/php-scoper.phar
-PHP_SCOPER=$(PHP_SCOPER_BIN)
+PHP_SCOPER_PHAR_BIN=bin/php-scoper.phar
+PHP_SCOPER_PHAR=$(PHP_SCOPER_PHAR_BIN)
 
 COMPOSER_BIN_PLUGIN_VENDOR=vendor/bamarni/composer-bin-plugin
 
@@ -93,8 +93,8 @@ phpstan: $(PHPSTAN_BIN)
 .PHONY: build
 build:	 ## Builds the PHAR
 build:
-	rm $(PHP_SCOPER_BIN) || true
-	$(MAKE) $(PHP_SCOPER_BIN)
+	rm $(PHP_SCOPER_PHAR_BIN) || true
+	$(MAKE) $(PHP_SCOPER_PHAR_BIN)
 
 .PHONY: outdated_fixtures
 outdated_fixtures: ## Reports outdated dependencies
@@ -148,10 +148,10 @@ infection: $(COVERAGE_XML) vendor
 
 .PHONY: blackfire
 blackfire:	   ## Runs Blackfire profiling
-blackfire: $(PHP_SCOPER_BIN) vendor
+blackfire: vendor
 	@echo "By https://blackfire.io"
 	@echo "This might take a while (~2min)"
-	$(BLACKFIRE) run php $(PHP_SCOPER_BIN) add-prefix --output-dir=build/php-scoper --force --quiet
+	$(BLACKFIRE) run php bin/php-scoper add-prefix --output-dir=build/php-scoper --force --quiet
 
 .PHONY: e2e
 e2e:	 ## Runs end-to-end tests
@@ -159,7 +159,7 @@ e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e
 
 .PHONY: e2e_004
 e2e_004: ## Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
-e2e_004: $(PHP_SCOPER_BIN)
+e2e_004: $(PHP_SCOPER_PHAR_BIN)
 	# Having those composer files messes up the Box auto-loading detection. This
 	# is a very special case where there is no dependency and for users in practice
 	# it would be recommended to register the files themselves
@@ -173,7 +173,7 @@ e2e_004: $(PHP_SCOPER_BIN)
 
 .PHONY: e2e_005
 e2e_005: ## Runs end-to-end tests for the fixture set 005 — Codebase with third-party code
-e2e_005: $(PHP_SCOPER_BIN) fixtures/set005/vendor
+e2e_005: $(PHP_SCOPER_PHAR_BIN) fixtures/set005/vendor
 	$(BOX) compile --no-parallel --working-dir fixtures/set005
 
 	php build/set005/bin/greet.phar > build/set005/output
@@ -181,7 +181,7 @@ e2e_005: $(PHP_SCOPER_BIN) fixtures/set005/vendor
 
 .PHONY: e2e_011
 e2e_011: ## Runs end-to-end tests for the fixture set 011 — Codebase with exposed symbols
-e2e_011: $(PHP_SCOPER_BIN) fixtures/set011/vendor
+e2e_011: $(PHP_SCOPER_PHAR_BIN) fixtures/set011/vendor
 	$(BOX) compile --no-parallel --working-dir fixtures/set011
 	cp -R fixtures/set011/tests/ build/set011/tests/
 
@@ -190,18 +190,18 @@ e2e_011: $(PHP_SCOPER_BIN) fixtures/set011/vendor
 
 .PHONY: e2e_013
 e2e_013: ## Runs end-to-end tests for the fixture set 013 — Test the init command
-e2e_013: $(PHP_SCOPER_BIN)
+e2e_013: $(PHP_SCOPER_PHAR_BIN)
 	rm -rf build/set013 || true
 	mkdir -p build
 	cp -R fixtures/set013 build/set013
 
-	$(PHP_SCOPER_BIN) init --working-dir=build/set013 --no-interaction
+	$(PHP_SCOPER_PHAR_BIN) init --working-dir=build/set013 --no-interaction
 
 	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
 
 .PHONY: e2e_014
 e2e_014: ## Runs end-to-end tests for the fixture set 014 — Codebase with PSR-0 autoloading
-e2e_014: $(PHP_SCOPER_BIN)
+e2e_014: $(PHP_SCOPER_PHAR_BIN)
 	# Having those composer files messes up the Box auto-loading detection. This
 	# is a very special case where there is no dependency and for users in practice
 	# it would be recommended to register the files themselves
@@ -215,7 +215,7 @@ e2e_014: $(PHP_SCOPER_BIN)
 
 .PHONY: e2e_015
 e2e_015: ## Runs end-to-end tests for the fixture set 015 — Codebase with third-party code using PSR-0 autoloading
-e2e_015: $(PHP_SCOPER_BIN) fixtures/set015/vendor
+e2e_015: $(PHP_SCOPER_PHAR_BIN) fixtures/set015/vendor
 	$(BOX) compile --no-parallel --working-dir fixtures/set015
 
 	php build/set015/bin/greet.phar > build/set015/output
@@ -223,8 +223,8 @@ e2e_015: $(PHP_SCOPER_BIN) fixtures/set015/vendor
 
 .PHONY: e2e_016
 e2e_016: ## Runs end-to-end tests for the fixture set 016 — Scoping of the Symfony Finder component
-e2e_016: $(PHP_SCOPER_BIN) fixtures/set016-symfony-finder/vendor
-	$(PHP_SCOPER) add-prefix \
+e2e_016: $(PHP_SCOPER_PHAR_BIN) fixtures/set016-symfony-finder/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set016-symfony-finder \
 		--output-dir=../../build/set016-symfony-finder \
 		--force \
@@ -238,8 +238,8 @@ e2e_016: $(PHP_SCOPER_BIN) fixtures/set016-symfony-finder/vendor
 
 .PHONY: e2e_017
 e2e_017: ## Runs end-to-end tests for the fixture set 017 — Scoping of the Symfony DependencyInjection component
-e2e_017: $(PHP_SCOPER_BIN) fixtures/set017-symfony-di/vendor
-	$(PHP_SCOPER) add-prefix \
+e2e_017: $(PHP_SCOPER_PHAR_BIN) fixtures/set017-symfony-di/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set017-symfony-di \
 		--output-dir=../../build/set017-symfony-di \
 		--force \
@@ -253,8 +253,8 @@ e2e_017: $(PHP_SCOPER_BIN) fixtures/set017-symfony-di/vendor
 
 .PHONY: e2e_018
 e2e_018: ## Runs end-to-end tests for the fixture set 018 — Scoping of nikic/php-parser
-e2e_018: $(PHP_SCOPER_BIN) fixtures/set018-nikic-parser/vendor
-	$(PHP_SCOPER) add-prefix \
+e2e_018: $(PHP_SCOPER_PHAR_BIN) fixtures/set018-nikic-parser/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set018-nikic-parser \
 		--prefix=_Prefixed \
 		--output-dir=../../build/set018-nikic-parser \
@@ -268,8 +268,8 @@ e2e_018: $(PHP_SCOPER_BIN) fixtures/set018-nikic-parser/vendor
 
 .PHONY: e2e_019
 e2e_019: ## Runs end-to-end tests for the fixture set 019 — Scoping of the Symfony Console component
-e2e_019: $(PHP_SCOPER_BIN) fixtures/set019-symfony-console/vendor
-	$(PHP_SCOPER) add-prefix --working-dir=fixtures/set019-symfony-console \
+e2e_019: $(PHP_SCOPER_PHAR_BIN) fixtures/set019-symfony-console/vendor
+	$(PHP_SCOPER_PHAR) add-prefix --working-dir=fixtures/set019-symfony-console \
 		--prefix=_Prefixed \
 		--output-dir=../../build/set019-symfony-console \
 		--force \
@@ -283,9 +283,9 @@ e2e_019: $(PHP_SCOPER_BIN) fixtures/set019-symfony-console/vendor
 
 .PHONY: e2e_020
 e2e_020: ## Runs end-to-end tests for the fixture set 020 — Scoping of Infection
-e2e_020: $(PHP_SCOPER_BIN) fixtures/set020-infection/vendor
+e2e_020: $(PHP_SCOPER_PHAR_BIN) fixtures/set020-infection/vendor
 # Skip it for now: there is autoloading issues with the Safe functions
-#	$(PHP_SCOPER) add-prefix --working-dir=fixtures/set020-infection \
+#	$(PHP_SCOPER_PHAR) add-prefix --working-dir=fixtures/set020-infection \
 #		--output-dir=../../build/set020-infection \
 #		--force \
 #		--no-interaction
@@ -314,7 +314,7 @@ e2e_020: $(PHP_SCOPER_BIN) fixtures/set020-infection/vendor
 
 .PHONY: e2e_022
 e2e_022: ## Runs end-to-end tests for the fixture set 022 — Codebase with excluded symbols via the legacy namespace whitelisting setting
-e2e_022: $(PHP_SCOPER_BIN) fixtures/set022/vendor
+e2e_022: $(PHP_SCOPER_PHAR_BIN) fixtures/set022/vendor
 	$(BOX) compile --no-parallel --working-dir fixtures/set022
 	cp -R fixtures/set022/tests/ build/set022/tests/
 
@@ -324,8 +324,8 @@ e2e_022: $(PHP_SCOPER_BIN) fixtures/set022/vendor
 
 .PHONY: e2e_023
 e2e_023: ## Runs end-to-end tests for the fixture set 023 — Codebase with excluded symbols via the legacy component whitelisting setting
-e2e_023: $(PHP_SCOPER_BIN) fixtures/set023/vendor
-	$(PHP_SCOPER) add-prefix --working-dir=fixtures/set023 \
+e2e_023: $(PHP_SCOPER_PHAR_BIN) fixtures/set023/vendor
+	$(PHP_SCOPER_PHAR) add-prefix --working-dir=fixtures/set023 \
 		--output-dir=../../build/set023 \
 		--force \
 		--no-interaction \
@@ -337,8 +337,8 @@ e2e_023: $(PHP_SCOPER_BIN) fixtures/set023/vendor
 
 .PHONY: e2e_024
 e2e_024: ## Runs end-to-end tests for the fixture set 024 — Scoping of a codebase with global functions exposed
-e2e_024: $(PHP_SCOPER_BIN) fixtures/set024/vendor
-	$(PHP_SCOPER) add-prefix \
+e2e_024: $(PHP_SCOPER_PHAR_BIN) fixtures/set024/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set024 \
 		--output-dir=../../build/set024 \
 		--force \
@@ -351,8 +351,8 @@ e2e_024: $(PHP_SCOPER_BIN) fixtures/set024/vendor
 
 .PHONY: e2e_025
 e2e_025: ## Runs end-to-end tests for the fixture set 025 — Scoping of a codebase using third-party exposed functions
-e2e_025: $(PHP_SCOPER_BIN) fixtures/set025/vendor
-	$(PHP_SCOPER) add-prefix \
+e2e_025: $(PHP_SCOPER_PHAR_BIN) fixtures/set025/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set025 \
 		--output-dir=../../build/set025 \
 		--force \
@@ -365,8 +365,8 @@ e2e_025: $(PHP_SCOPER_BIN) fixtures/set025/vendor
 
 .PHONY: e2e_026
 e2e_026: ## Runs end-to-end tests for the fixture set 026 — Scoping of a codebase exposing symbols via the legacy whitelist setting
-e2e_026: $(PHP_SCOPER_BIN) fixtures/set026/vendor
-	$(PHP_SCOPER) add-prefix \
+e2e_026: $(PHP_SCOPER_PHAR_BIN) fixtures/set026/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set026 \
 		--output-dir=../../build/set026 \
 		--force \
@@ -380,8 +380,8 @@ e2e_026: $(PHP_SCOPER_BIN) fixtures/set026/vendor
 .PHONY: e2e_027
 e2e_027: ## Runs end-to-end tests for the fixture set 027 — Scoping of a Laravel
 ifeq ("$(IS_PHP8)", "true")
-e2e_027: $(PHP_SCOPER_BIN) fixtures/set027-laravel/vendor
-	$(PHP_SCOPER) add-prefix \
+e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set027-laravel \
 		--output-dir=../../build/set027-laravel \
 		--force \
@@ -398,8 +398,8 @@ endif
 
 .PHONY: e2e_028
 e2e_028: ## Runs end-to-end tests for the fixture set 028 — Scoping of a Symfony project
-e2e_028: $(PHP_SCOPER_BIN) fixtures/set028-symfony/vendor
-	php $(PHP_SCOPER_BIN) add-prefix \
+e2e_028: $(PHP_SCOPER_PHAR_BIN) fixtures/set028-symfony/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set028-symfony \
 		--output-dir=../../build/set028-symfony \
 		--no-config \
@@ -417,8 +417,8 @@ e2e_028: $(PHP_SCOPER_BIN) fixtures/set028-symfony/vendor
 
 .PHONY: e2e_029
 e2e_029: ## Runs end-to-end tests for the fixture set 029 — Scoping of the EasyRdf project
-e2e_029: $(PHP_SCOPER_BIN) fixtures/set029-easy-rdf/vendor
-	php $(PHP_SCOPER_BIN) add-prefix \
+e2e_029: $(PHP_SCOPER_PHAR_BIN) fixtures/set029-easy-rdf/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set029-easy-rdf \
 		--output-dir=../../build/set029-easy-rdf \
 		--no-config \
@@ -435,8 +435,8 @@ e2e_029: $(PHP_SCOPER_BIN) fixtures/set029-easy-rdf/vendor
 
 .PHONY: e2e_030
 e2e_030: ## Runs end-to-end tests for the fixture set 030 — Scoping of a codebase with globally registered functions
-e2e_030: $(PHP_SCOPER_BIN) fixtures/set030/vendor
-	php $(PHP_SCOPER_BIN) add-prefix \
+e2e_030: $(PHP_SCOPER_PHAR_BIN) fixtures/set030/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set030 \
 		--output-dir=../../build/set030 \
 		--no-config \
@@ -453,8 +453,8 @@ e2e_030: $(PHP_SCOPER_BIN) fixtures/set030/vendor
 
 .PHONY: e2e_031
 e2e_031: ## Runs end-to-end tests for the fixture set 031 — Scoping of a codebase using symbols of a non-loaded PHP extension
-e2e_031: $(PHP_SCOPER_BIN)
-	php $(PHP_SCOPER_BIN) add-prefix \
+e2e_031: $(PHP_SCOPER_PHAR_BIN)
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set031-extension-symbol \
 		--output-dir=../../build/set031-extension-symbol \
 		--force \
@@ -465,8 +465,8 @@ e2e_031: $(PHP_SCOPER_BIN)
 
 .PHONY: e2e_032
 e2e_032: ## Runs end-to-end tests for the fixture set 032 — Scoping of a codebase using the isolated finder in the configuration
-e2e_032: $(PHP_SCOPER_BIN)
-	php $(PHP_SCOPER_BIN) add-prefix \
+e2e_032: $(PHP_SCOPER_PHAR_BIN)
+	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set032-isolated-finder \
 		--output-dir=../../build/set032-isolated-finder \
 		--force \
@@ -540,7 +540,7 @@ vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock $(COMPOSER_BIN_PLUGI
 vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
 	@echo phpstan composer.lock is not up to date
 
-$(PHP_SCOPER_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
+$(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
 	$(BOX) compile
 	touch -c $@
 
