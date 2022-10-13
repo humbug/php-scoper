@@ -189,7 +189,7 @@ final class ConsoleScoper
 
         usort(
             $vendorDirs,
-            static fn ($a, $b) => strlen((string) $a) <=> strlen((string) $b),
+            static fn ($a, $b) => strlen($a) <=> strlen($b),
         );
 
         return (0 === count($vendorDirs)) ? null : $vendorDirs[0];

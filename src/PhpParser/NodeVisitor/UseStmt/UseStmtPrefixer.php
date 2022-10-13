@@ -30,8 +30,10 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
-    public function __construct(private readonly string $prefix, private readonly EnrichedReflector $enrichedReflector)
-    {
+    public function __construct(
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
+    ) {
     }
 
     public function enterNode(Node $node): Node
