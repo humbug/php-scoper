@@ -76,11 +76,8 @@ final class ConfigurationKeysTest extends TestCase
         return $constants;
     }
 
-    /**
-     * @param mixed $value
-     */
     private static function assertNonEmptyStringConstantValue(
-        $value,
+        mixed $value,
         string $name
     ): void {
         self::assertIsString($value, $name);

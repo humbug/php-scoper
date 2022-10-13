@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\Patcher;
 
 use function Safe\preg_replace;
 use function Safe\sprintf;
-use function strpos;
+use function str_contains;
 
 final class SymfonyPatcher implements Patcher
 {
@@ -44,7 +44,7 @@ final class SymfonyPatcher implements Patcher
     private static function isSupportedFile(string $filePath): bool
     {
         foreach (self::PATHS as $path) {
-            if (false !== strpos($filePath, $path)) {
+            if (str_contains($filePath, $path)) {
                 return true;
             }
         }

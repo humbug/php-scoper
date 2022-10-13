@@ -23,8 +23,8 @@ use function is_string;
 use function rtrim;
 use function Safe\sprintf;
 use function Safe\substr;
+use function str_contains;
 use function str_replace;
-use function strpos;
 
 /**
  * @private
@@ -148,7 +148,7 @@ final class AutoloadPrefixer
                 $namespace .= '\\';
             }
 
-            if (false !== strpos($namespace, '_')) {
+            if (str_contains($namespace, '_')) {
                 $classMap[] = $path;
 
                 continue;

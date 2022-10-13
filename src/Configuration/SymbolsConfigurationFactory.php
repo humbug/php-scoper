@@ -34,8 +34,8 @@ use function ltrim;
 use function Safe\preg_match as native_preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
+use function str_contains;
 use function str_replace;
-use function strpos;
 use function strtolower;
 use function trim;
 
@@ -308,7 +308,7 @@ final class SymbolsConfigurationFactory
                 $excludedNamespaceNames[] = strtolower(substr($element, 0, -2));
             } elseif ('*' === $element) {
                 $excludedNamespaceNames[] = '';
-            } elseif (false !== strpos($element, '*')) {
+            } elseif (str_contains($element, '*')) {
                 $exposedSymbolsPatterns[] = self::createExposePattern($element);
             } else {
                 $exposedSymbols[] = strtolower($element);
@@ -326,10 +326,8 @@ final class SymbolsConfigurationFactory
 
     /**
      * @psalm-assert string[] $value
-     *
-     * @param mixed $value
      */
-    private static function assertIsArrayOfStrings($value, string $key): void
+    private static function assertIsArrayOfStrings(mixed $value, string $key): void
     {
         if (!is_array($value)) {
             throw new InvalidArgumentException(

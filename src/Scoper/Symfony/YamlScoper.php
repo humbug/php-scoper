@@ -23,6 +23,7 @@ use function func_get_args;
 use function preg_match as native_preg_match;
 use function preg_match_all as native_preg_match_all;
 use function Safe\substr;
+use function str_contains;
 use function str_replace;
 use function strlen;
 use function strpos;
@@ -104,7 +105,7 @@ final class YamlScoper implements Scoper
 
             $psr4Service = $class.$separator.':';
 
-            if (false !== strpos($contents, $psr4Service)) {
+            if (str_contains($contents, $psr4Service)) {
                 $offset = strpos($contents, $psr4Service) + strlen($psr4Service);
 
                 $stringToScope = substr($contents, 0, $offset);

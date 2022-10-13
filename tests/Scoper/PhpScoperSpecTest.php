@@ -53,8 +53,8 @@ use function Safe\preg_split;
 use function Safe\sprintf;
 use function Safe\usort;
 use function str_repeat;
+use function str_starts_with;
 use function strlen;
-use function strpos;
 use const PHP_EOL;
 use const PHP_VERSION_ID;
 
@@ -165,7 +165,7 @@ class PhpScoperSpecTest extends TestCase
 
             return;
         } catch (PhpParserError $error) {
-            if (0 !== strpos($error->getMessage(), 'Syntax error,')) {
+            if (!str_starts_with($error->getMessage(), 'Syntax error,')) {
                 throw new Error(
                     sprintf(
                         'Could not parse the spec %s: %s',
