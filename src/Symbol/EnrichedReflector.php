@@ -27,8 +27,8 @@ use function strpos;
 final class EnrichedReflector
 {
     public function __construct(
-        private readonly Reflector $reflector,
-        private readonly SymbolsConfiguration $symbolsConfiguration,
+        private Reflector $reflector,
+        private SymbolsConfiguration $symbolsConfiguration,
     ) {
     }
 

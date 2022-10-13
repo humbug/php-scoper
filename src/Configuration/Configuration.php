@@ -39,12 +39,12 @@ final class Configuration
      *                                            the second its contents
      */
     public function __construct(
-        private readonly ?string $path,
+        private ?string $path,
         string $prefix,
-        private readonly array $filesWithContents,
-        private readonly array $excludedFilesWithContents,
-        private readonly Patcher $patcher,
-        private readonly SymbolsConfiguration $symbolsConfiguration
+        private array $filesWithContents,
+        private array $excludedFilesWithContents,
+        private Patcher $patcher,
+        private SymbolsConfiguration $symbolsConfiguration
     ) {
         self::validatePrefix($prefix);
         $this->prefix = $prefix;

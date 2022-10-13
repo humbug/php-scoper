@@ -50,17 +50,17 @@ final class SymbolsConfiguration
     }
 
     private function __construct(
-        private readonly bool $exposeGlobalConstants,
-        private readonly bool $exposeGlobalClasses,
-        private readonly bool $exposeGlobalFunctions,
-        private readonly NamespaceRegistry $excludedNamespaces,
-        private readonly NamespaceRegistry $exposedNamespaces,
-        private readonly SymbolRegistry $exposedClasses,
-        private readonly SymbolRegistry $exposedFunctions,
-        private readonly SymbolRegistry $exposedConstants,
-        private readonly SymbolRegistry $excludedClasses,
-        private readonly SymbolRegistry $excludedFunctions,
-        private readonly SymbolRegistry $excludedConstants,
+        private bool $exposeGlobalConstants,
+        private bool $exposeGlobalClasses,
+        private bool $exposeGlobalFunctions,
+        private NamespaceRegistry $excludedNamespaces,
+        private NamespaceRegistry $exposedNamespaces,
+        private SymbolRegistry $exposedClasses,
+        private SymbolRegistry $exposedFunctions,
+        private SymbolRegistry $exposedConstants,
+        private SymbolRegistry $excludedClasses,
+        private SymbolRegistry $excludedFunctions,
+        private SymbolRegistry $excludedConstants,
     ) {
     }
 

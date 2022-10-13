@@ -18,7 +18,7 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 
 final class EnrichedReflectorFactory
 {
-    public function __construct(private readonly Reflector $reflector)
+    public function __construct(private Reflector $reflector)
     {
     }
 

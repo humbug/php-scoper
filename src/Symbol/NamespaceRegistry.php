@@ -30,7 +30,7 @@ use const SORT_STRING;
 
 final class NamespaceRegistry
 {
-    private readonly bool $containsGlobalNamespace;
+    private bool $containsGlobalNamespace;
 
     /**
      * @param string[] $namespaceNames
@@ -57,8 +57,8 @@ final class NamespaceRegistry
      * @param list<string> $regexes
      */
     private function __construct(
-        private readonly array $names,
-        private readonly array $regexes
+        private array $names,
+        private array $regexes
     ) {
         $this->containsGlobalNamespace = count(
             array_filter(

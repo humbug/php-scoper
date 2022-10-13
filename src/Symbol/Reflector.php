@@ -620,9 +620,9 @@ final class Reflector
     }
 
     private function __construct(
-        private readonly SymbolRegistry $classes,
-        private readonly SymbolRegistry $functions,
-        private readonly SymbolRegistry $constants,
+        private SymbolRegistry $classes,
+        private SymbolRegistry $functions,
+        private SymbolRegistry $constants,
     ) {
     }
 
