@@ -42,7 +42,7 @@ use function Humbug\PhpScoper\escape_path;
 use function Safe\chdir;
 use function Safe\file_get_contents;
 use function Safe\realpath;
-use function Safe\sprintf;
+use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**

@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Patcher\Patcher;
 use InvalidArgumentException;
 use function Safe\preg_match;
-use function Safe\sprintf;
+use function sprintf;
 
 final class Configuration
 {

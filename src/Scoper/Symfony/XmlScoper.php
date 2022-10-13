@@ -22,11 +22,11 @@ use function array_filter;
 use function func_get_args;
 use function preg_match as native_preg_match;
 use function preg_match_all as native_preg_match_all;
-use function Safe\substr;
 use function str_contains;
 use function str_replace;
 use function strlen;
 use function strpos;
+use function substr;
 
 /**
  * Scopes the Symfony XML configuration files.

@@ -32,12 +32,12 @@ use function is_bool;
 use function is_string;
 use function ltrim;
 use function Safe\preg_match as native_preg_match;
-use function Safe\sprintf;
-use function Safe\substr;
+use function sprintf;
 use function str_contains;
 use function str_ends_with;
 use function str_replace;
 use function strtolower;
+use function substr;
 use function trim;
 
 final class SymbolsConfigurationFactory

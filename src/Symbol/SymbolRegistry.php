@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use InvalidArgumentException;
+use function array_flip;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
@@ -23,7 +24,6 @@ use function array_unique;
 use function explode;
 use function implode;
 use function ltrim;
-use function Safe\array_flip;
 use function Safe\preg_match;
 use function strtolower;
 use function trim;

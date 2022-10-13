@@ -19,10 +19,10 @@ use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 use function mkdir as native_mkdir;
 use function Safe\realpath;
-use function Safe\sprintf;
-use function Safe\substr;
+use function sprintf;
 use function str_replace;
 use function strrpos;
+use function substr;
 use function sys_get_temp_dir;
 use const DIRECTORY_SEPARATOR;
 

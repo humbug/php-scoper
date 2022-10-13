@@ -50,11 +50,11 @@ use function is_array;
 use function is_string;
 use function min;
 use function Safe\preg_split;
-use function Safe\sprintf;
-use function Safe\usort;
+use function sprintf;
 use function str_repeat;
 use function str_starts_with;
 use function strlen;
+use function usort;
 use const PHP_EOL;
 use const PHP_VERSION_ID;
 

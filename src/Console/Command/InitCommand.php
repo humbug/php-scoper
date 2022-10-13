@@ -23,7 +23,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use function file_exists;
 use function Safe\getcwd;
-use function Safe\sprintf;
+use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**

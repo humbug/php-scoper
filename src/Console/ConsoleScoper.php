@@ -31,10 +31,10 @@ use function count;
 use function Humbug\PhpScoper\get_common_path;
 use function preg_match as native_preg_match;
 use function Safe\file_get_contents;
-use function Safe\sprintf;
-use function Safe\usort;
+use function sprintf;
 use function str_replace;
 use function strlen;
+use function usort;
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -189,10 +189,10 @@ final class ConsoleScoper
 
         usort(
             $vendorDirs,
-            static fn ($a, $b) => strlen($a) <=> strlen($b),
+            static fn ($a, $b) => strlen((string) $a) <=> strlen((string) $b),
         );
 
-        return (0 === count($vendorDirs)) ? null : $vendorDirs[0];
+        return (0 === count($vendorDirs)) ? null : (string) $vendorDirs[0];
     }
 
     private function scopeFile(

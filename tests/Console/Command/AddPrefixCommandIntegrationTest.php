@@ -28,7 +28,7 @@ use function Safe\file_get_contents;
 use function Safe\file_put_contents;
 use function Safe\preg_replace;
 use function Safe\realpath;
-use function Safe\sprintf;
+use function sprintf;
 use function str_replace;
 use const DIRECTORY_SEPARATOR;
 
@@ -306,8 +306,11 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
     private function getNormalizeDisplay(string $display): string
     {
-        $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
-        $display = str_replace($this->tmp, '/path/to', $display);
+        $display = str_replace(
+            [realpath(self::FIXTURE_PATH), $this->tmp],
+            '/path/to',
+            $display,
+        );
 
         return preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',

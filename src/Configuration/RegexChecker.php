@@ -21,7 +21,7 @@ use function in_array;
 use function preg_last_error;
 use function preg_last_error_msg;
 use function preg_match as native_preg_match;
-use function Safe\sprintf;
+use function sprintf;
 use function str_split;
 use function strlen;
 

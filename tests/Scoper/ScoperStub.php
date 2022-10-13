@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use UnexpectedValueException;
-use function Safe\sprintf;
+use function sprintf;
 
 final class ScoperStub implements Scoper
 {

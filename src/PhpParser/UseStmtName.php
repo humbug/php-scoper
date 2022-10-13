@@ -19,7 +19,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use function count;
-use function Safe\sprintf;
+use function sprintf;
 
 final class UseStmtName
 {

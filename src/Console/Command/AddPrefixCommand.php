@@ -36,7 +36,7 @@ use function array_map;
 use function is_dir;
 use function is_writable;
 use function Safe\getcwd;
-use function Safe\sprintf;
+use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**
