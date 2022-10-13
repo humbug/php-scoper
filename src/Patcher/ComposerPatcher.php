@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
+use function str_contains;
 use function str_replace;
 
 final class ComposerPatcher implements Patcher

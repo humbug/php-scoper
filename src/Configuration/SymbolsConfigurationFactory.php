@@ -34,6 +34,7 @@ use function ltrim;
 use function Safe\preg_match as native_preg_match;
 use function Safe\sprintf;
 use function Safe\substr;
+use function str_contains;
 use function str_replace;
 use function strtolower;
 use function trim;
