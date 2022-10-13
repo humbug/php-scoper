@@ -22,7 +22,6 @@ use Humbug\PhpScoper\Container;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use function Humbug\PhpScoper\get_php_scoper_version;
 use function Safe\sprintf;
-use function strpos;
 use function trim;
 
 /**
@@ -56,9 +55,9 @@ final class Application implements FidryApplication
         return new self(
             new Container(),
             get_php_scoper_version(),
-            false === strpos(self::RELEASE_DATE_PLACEHOLDER, '@')
-                ? self::RELEASE_DATE_PLACEHOLDER
-                : '',
+            !str_contains(self::RELEASE_DATE_PLACEHOLDER, '@')
+              ? self::RELEASE_DATE_PLACEHOLDER
+              : '',
             true,
             true,
         );

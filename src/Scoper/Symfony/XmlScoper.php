@@ -146,7 +146,7 @@ final class XmlScoper implements Scoper
 
             $psr4Service = '"'.$class.$separator.'"';
 
-            if (false !== strpos($contents, $psr4Service)) {
+            if (str_contains($contents, $psr4Service)) {
                 $offset = strpos($contents, $psr4Service) + strlen($psr4Service);
 
                 $stringToScope = substr($contents, 0, $offset);

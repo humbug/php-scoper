@@ -25,7 +25,6 @@ use function implode;
 use function Safe\sprintf;
 use function str_repeat;
 use function str_replace;
-use function strpos;
 
 final class ScoperAutoloadGenerator
 {
@@ -271,7 +270,7 @@ final class ScoperAutoloadGenerator
     private static function hasNamespacedFunctions(array $functions): bool
     {
         foreach ($functions as [$original, $alias]) {
-            $containsBackslash = false !== strpos($original, '\\');
+            $containsBackslash = str_contains($original, '\\');
 
             if ($containsBackslash) {
                 return true;
