@@ -21,7 +21,7 @@ use Humbug\PhpScoper\Console\Command\InspectSymbolCommand;
 use Humbug\PhpScoper\Container;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use function Humbug\PhpScoper\get_php_scoper_version;
-use function Safe\sprintf;
+use function sprintf;
 use function str_contains;
 use function trim;
 

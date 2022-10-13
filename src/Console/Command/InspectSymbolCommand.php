@@ -35,7 +35,7 @@ use function assert;
 use function file_exists;
 use function implode;
 use function Safe\getcwd;
-use function Safe\sprintf;
+use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**

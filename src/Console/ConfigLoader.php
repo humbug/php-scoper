@@ -26,7 +26,7 @@ use Symfony\Component\Filesystem\Path;
 use function assert;
 use function count;
 use function file_exists;
-use function Safe\sprintf;
+use function sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 

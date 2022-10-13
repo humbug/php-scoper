@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputOption;
 use function chdir as native_chdir;
 use function file_exists;
 use function Safe\getcwd;
-use function Safe\sprintf;
+use function sprintf;
 
 /**
  * @private

@@ -18,10 +18,10 @@ use Iterator;
 use PackageVersions\Versions;
 use function array_pop;
 use function count;
-use function Safe\substr;
 use function str_split;
 use function str_starts_with;
 use function strrpos;
+use function substr;
 
 function get_php_scoper_version(): string
 {

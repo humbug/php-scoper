@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\PhpParser;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Scalar\String_;
-use function Safe\substr;
+use function substr;
 
 /**
  * @private
