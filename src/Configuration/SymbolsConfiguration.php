@@ -32,7 +32,7 @@ final class SymbolsConfiguration
         ?SymbolRegistry $exposedConstants = null,
         ?SymbolRegistry $excludedClasses = null,
         ?SymbolRegistry $excludedFunctions = null,
-        ?SymbolRegistry $excludedConstants = null
+        ?SymbolRegistry $excludedConstants = null,
     ): self {
         return new self(
             $exposeGlobalConstants,
@@ -49,8 +49,19 @@ final class SymbolsConfiguration
         );
     }
 
-    private function __construct(private readonly bool $exposeGlobalConstants, private readonly bool $exposeGlobalClasses, private readonly bool $exposeGlobalFunctions, private readonly NamespaceRegistry $excludedNamespaces, private readonly NamespaceRegistry $exposedNamespaces, private readonly SymbolRegistry $exposedClasses, private readonly SymbolRegistry $exposedFunctions, private readonly SymbolRegistry $exposedConstants, private readonly SymbolRegistry $excludedClasses, private readonly SymbolRegistry $excludedFunctions, private readonly SymbolRegistry $excludedConstants)
-    {
+    private function __construct(
+        private readonly bool $exposeGlobalConstants,
+        private readonly bool $exposeGlobalClasses,
+        private readonly bool $exposeGlobalFunctions,
+        private readonly NamespaceRegistry $excludedNamespaces,
+        private readonly NamespaceRegistry $exposedNamespaces,
+        private readonly SymbolRegistry $exposedClasses,
+        private readonly SymbolRegistry $exposedFunctions,
+        private readonly SymbolRegistry $exposedConstants,
+        private readonly SymbolRegistry $excludedClasses,
+        private readonly SymbolRegistry $excludedFunctions,
+        private readonly SymbolRegistry $excludedConstants,
+    ) {
     }
 
     public function shouldExposeGlobalConstants(): bool

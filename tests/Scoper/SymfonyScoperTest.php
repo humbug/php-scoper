@@ -77,7 +77,7 @@ final class SymfonyScoperTest extends TestCase
 
         yield 'XML service file' => [
             'services.xml',
-            <<<'XML_WRAP'
+            <<<'XML'
                 <?xml version="1.0" ?>
 
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -86,8 +86,8 @@ final class SymfonyScoperTest extends TestCase
 
                     <services></services>
                 </container>
-                XML_WRAP,
-            <<<'XML_WRAP'
+                XML,
+            <<<'XML'
                 <?xml version="1.0" ?>
 
                 <container xmlns="http://symfony.com/schema/dic/services"
@@ -96,7 +96,7 @@ final class SymfonyScoperTest extends TestCase
 
                     <services></services>
                 </container>
-                XML_WRAP,
+                XML,
         ];
     }
 }

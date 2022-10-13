@@ -48,8 +48,11 @@ final class InspectSymbolCommand implements Command
     private const CONFIG_FILE_OPT = 'config';
     private const NO_CONFIG_OPT = 'no-config';
 
-    public function __construct(private readonly Filesystem $fileSystem, private readonly ConfigurationFactory $configFactory, private readonly EnrichedReflectorFactory $enrichedReflectorFactory)
-    {
+    public function __construct(
+        private readonly Filesystem $fileSystem,
+        private readonly ConfigurationFactory $configFactory,
+        private readonly EnrichedReflectorFactory $enrichedReflectorFactory,
+    ) {
     }
 
     public function getConfiguration(): CommandConfiguration

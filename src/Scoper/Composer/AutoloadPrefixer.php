@@ -23,6 +23,7 @@ use function is_string;
 use function rtrim;
 use function Safe\sprintf;
 use function str_contains;
+use function str_ends_with;
 use function str_replace;
 
 /**
@@ -30,8 +31,10 @@ use function str_replace;
  */
 final class AutoloadPrefixer
 {
-    public function __construct(private readonly string $prefix, private readonly EnrichedReflector $enrichedReflector)
-    {
+    public function __construct(
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
+    ) {
     }
 
     /**

@@ -37,8 +37,10 @@ class ScoperLogger
     private readonly float $startTime;
     private ProgressBar $progressBar;
 
-    public function __construct(private readonly FidryApplication $application, private readonly IO $io)
-    {
+    public function __construct(
+        private readonly FidryApplication $application,
+        private readonly IO $io,
+    ) {
         $this->startTime = microtime(true);
         $this->progressBar = new ProgressBar(new NullOutput());
     }

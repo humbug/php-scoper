@@ -58,8 +58,13 @@ final class Application implements FidryApplication
         );
     }
 
-    public function __construct(private readonly Container $container, private readonly string $version, private readonly string $releaseDate, private readonly bool $isAutoExitEnabled, private readonly bool $areExceptionsCaught)
-    {
+    public function __construct(
+        private readonly Container $container,
+        private readonly string $version,
+        private readonly string $releaseDate,
+        private readonly bool $isAutoExitEnabled,
+        private readonly bool $areExceptionsCaught,
+    ) {
     }
 
     public function getName(): string

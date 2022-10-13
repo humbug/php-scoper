@@ -30,8 +30,12 @@ use PhpParser\Parser;
  */
 class ScoperFactory
 {
-    public function __construct(private readonly Parser $parser, private readonly EnrichedReflectorFactory $enrichedReflectorFactory, private readonly Printer $printer, private readonly Lexer $lexer)
-    {
+    public function __construct(
+        private readonly Parser $parser,
+        private readonly EnrichedReflectorFactory $enrichedReflectorFactory,
+        private readonly Printer $printer,
+        private readonly Lexer $lexer,
+    ) {
     }
 
     public function createScoper(

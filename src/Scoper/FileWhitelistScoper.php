@@ -22,8 +22,10 @@ final class FileWhitelistScoper implements Scoper
 {
     private readonly array $filePaths;
 
-    public function __construct(private readonly Scoper $decoratedScoper, string ...$filePaths)
-    {
+    public function __construct(
+        private readonly Scoper $decoratedScoper,
+        string ...$filePaths,
+    ) {
         $this->filePaths = array_flip($filePaths);
     }
 

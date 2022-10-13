@@ -40,7 +40,7 @@ final class StringNodePrefixer
             }
 
             $node->value = $newValue;
-        } catch (PhpParserError) {
+        } catch (PhpParserError $error) {
             // Continue without scoping the heredoc which for some reasons contains invalid PHP code
         }
     }

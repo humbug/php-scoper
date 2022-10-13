@@ -33,9 +33,9 @@ final class DisplayNormalizer
     {
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\/path\/to(.*\\\\)+/', $display, $match)) {
             $paths = $match[0];
-            usort($paths, static fn ($a, $b) => strlen((string) $b) - strlen((string) $a));
+            usort($paths, static fn ($a, $b) => strlen($b) - strlen($a));
             foreach ($paths as $path) {
-                $fixedPath = str_replace('\\', '/', (string) $path);
+                $fixedPath = str_replace('\\', '/', $path);
                 $display = str_replace($path, $fixedPath, $display);
             }
         }
@@ -48,7 +48,7 @@ final class DisplayNormalizer
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\\[=*>?\\-*\\]/', $display, $match)) {
             $bars = $match[0];
             foreach ($bars as $bar) {
-                $fixedBar = str_replace(['>', '-', '='], ['░', '░', '▓'], (string) $bar);
+                $fixedBar = str_replace(['>', '-', '='], ['░', '░', '▓'], $bar);
                 $display = str_replace($bar, $fixedBar, $display);
             }
         }

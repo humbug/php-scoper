@@ -16,10 +16,7 @@ namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollector;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use LogicException;
@@ -189,9 +186,9 @@ final class UseStmtNameTest extends TestCase
             new PhpParserNodeTraverser(),
         );
 
-        $traverser->addVisitor(new ParentNodeAppender());
+        $traverser->addVisitor(new NodeVisitor\ParentNodeAppender());
         $traverser->addVisitor(
-            new NamespaceStmtPrefixer(
+            new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
                 'Humbug',
                 new EnrichedReflector(
                     Reflector::createWithPhpStormStubs(),
@@ -201,7 +198,7 @@ final class UseStmtNameTest extends TestCase
             ),
         );
         $traverser->addVisitor(
-            new UseStmtCollector(
+            new NodeVisitor\UseStmt\UseStmtCollector(
                 $namespaceStatements,
                 $useStatements,
             ),

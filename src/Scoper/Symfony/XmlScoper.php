@@ -37,8 +37,12 @@ final class XmlScoper implements Scoper
     private const NAMESPACE_PATTERN = '/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/';
     private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
-    public function __construct(private readonly Scoper $decoratedScoper, private readonly string $prefix, private readonly EnrichedReflector $enrichedReflector, private readonly SymbolsRegistry $symbolsRegistry)
-    {
+    public function __construct(
+        private readonly Scoper $decoratedScoper,
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
+        private readonly SymbolsRegistry $symbolsRegistry,
+    ) {
     }
 
     public function scope(string $filePath, string $contents): string

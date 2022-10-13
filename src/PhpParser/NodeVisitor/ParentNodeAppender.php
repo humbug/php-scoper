@@ -15,8 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use PhpParser\Node;
-use PhpParser\Node\Stmt\ClassLike;
-use PhpParser\Node\Stmt\Const_;
 use PhpParser\NodeVisitorAbstract;
 use function array_pop;
 use function count;
@@ -74,14 +72,14 @@ final class ParentNodeAppender extends NodeVisitorAbstract
             // the child nodes early (i.e. before NodeVisitor::enterNode()) in
             // which case without the following they cannot be accessed to
             // with their parent node
-            if ($node instanceof Const_) {
+            if ($node instanceof Node\Stmt\Const_) {
                 foreach ($node->consts as $const) {
                     self::setParent($const, $node);
                     self::setParent($const->name, $const);
                 }
             }
 
-            if ($node instanceof ClassLike) {
+            if ($node instanceof Node\Stmt\ClassLike) {
                 $name = $node->name;
 
                 if (null !== $name) {

@@ -56,8 +56,11 @@ use function array_reduce;
  */
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
-    public function __construct(private readonly string $prefix, private readonly EnrichedReflector $enrichedReflector, private readonly IdentifierResolver $identifierResolver)
-    {
+    public function __construct(
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
+        private readonly IdentifierResolver $identifierResolver,
+    ) {
     }
 
     public function afterTraverse(array $nodes): array

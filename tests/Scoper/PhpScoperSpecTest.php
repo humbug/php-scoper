@@ -329,7 +329,7 @@ class PhpScoperSpecTest extends TestCase
 
         $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
 
-        $payloadParts = preg_split("/\n----(?:\n|$)/", (string) $payload);
+        $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
 
         self::assertSame(
             [],

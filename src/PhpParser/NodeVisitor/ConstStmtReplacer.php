@@ -45,8 +45,10 @@ use function count;
  */
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
-    public function __construct(private readonly IdentifierResolver $identifierResolver, private readonly EnrichedReflector $enrichedReflector)
-    {
+    public function __construct(
+        private readonly IdentifierResolver $identifierResolver,
+        private readonly EnrichedReflector $enrichedReflector,
+    ) {
     }
 
     public function enterNode(Node $node): Node

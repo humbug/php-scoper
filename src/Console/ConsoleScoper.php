@@ -44,8 +44,11 @@ final class ConsoleScoper
 {
     private const VENDOR_DIR_PATTERN = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
 
-    public function __construct(private readonly Filesystem $fileSystem, private readonly Application $application, private readonly ScoperFactory $scoperFactory)
-    {
+    public function __construct(
+        private readonly Filesystem $fileSystem,
+        private readonly Application $application,
+        private readonly ScoperFactory $scoperFactory,
+    ) {
     }
 
     /**
@@ -157,7 +160,7 @@ final class ConsoleScoper
         $mapFiles = static fn (array $inputFileTuple) => [
             $inputFileTuple[0],
             $inputFileTuple[1],
-            $outputDir.str_replace($commonPath, '', (string) $inputFileTuple[0]),
+            $outputDir.str_replace($commonPath, '', $inputFileTuple[0]),
         ];
 
         return [
@@ -177,7 +180,7 @@ final class ConsoleScoper
         $vendorDirsAsKeys = [];
 
         foreach ($outputFilePaths as $filePath) {
-            if (native_preg_match(self::VENDOR_DIR_PATTERN, (string) $filePath, $matches)) {
+            if (native_preg_match(self::VENDOR_DIR_PATTERN, $filePath, $matches)) {
                 $vendorDirsAsKeys[$matches[1]] = true;
             }
         }
@@ -189,7 +192,7 @@ final class ConsoleScoper
             static fn ($a, $b) => strlen((string) $a) <=> strlen((string) $b),
         );
 
-        return (0 === (is_countable($vendorDirs) ? count($vendorDirs) : 0)) ? null : $vendorDirs[0];
+        return (0 === count($vendorDirs)) ? null : $vendorDirs[0];
     }
 
     private function scopeFile(

@@ -55,8 +55,10 @@ final class ConfigurationFactory
 {
     public const DEFAULT_FILE_NAME = 'scoper.inc.php';
 
-    public function __construct(private readonly Filesystem $fileSystem, private readonly SymbolsConfigurationFactory $configurationWhitelistFactory)
-    {
+    public function __construct(
+        private readonly Filesystem $fileSystem,
+        private readonly SymbolsConfigurationFactory $configurationWhitelistFactory,
+    ) {
     }
 
     /**
@@ -119,7 +121,10 @@ final class ConfigurationFactory
         return new Configuration(
             $config->getPath(),
             $config->getPrefix(),
-            [...$config->getFilesWithContents(), ...$filesWithContents],
+            [
+                ...$config->getFilesWithContents(),
+                ...$filesWithContents,
+            ],
             $config->getExcludedFilesWithContents(),
             $config->getPatcher(),
             $config->getSymbolsConfiguration(),

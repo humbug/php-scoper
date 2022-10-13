@@ -87,31 +87,31 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     public function test_it_can_create_a_complete_configuration(): void
     {
         self::dumpStandardConfigFile(
-            <<<'PHP_WRAP'
-                <?php
+            <<<'PHP'
+                    <?php
 
-                return [
-                    'prefix' => 'MyPrefix',
-                    'exclude-files' => ['file1', 'file2'],
-                    'patchers' => [],
-                    'finders' => [],
+                    return [
+                        'prefix' => 'MyPrefix',
+                        'exclude-files' => ['file1', 'file2'],
+                        'patchers' => [],
+                        'finders' => [],
 
-                    'whitelist' => ['Foo', 'Bar\*'],
+                        'whitelist' => ['Foo', 'Bar\*'],
 
-                    'expose-global-constants' => false,
-                    'expose-global-classes' => false,
-                    'expose-global-functions' => false,
-                    'expose-namespaces' => ['PHPUnit\Runner'],
-                    'expose-constants' => [],
-                    'expose-classes' => [],
-                    'expose-functions' => [],
+                        'expose-global-constants' => false,
+                        'expose-global-classes' => false,
+                        'expose-global-functions' => false,
+                        'expose-namespaces' => ['PHPUnit\Runner'],
+                        'expose-constants' => [],
+                        'expose-classes' => [],
+                        'expose-functions' => [],
 
-                    'exclude-namespaces' => ['PHPUnit\Runner'],
-                    'exclude-constants' => [],
-                    'exclude-classes' => [],
-                    'exclude-functions' => [],
-                ];
-                PHP_WRAP,
+                        'exclude-namespaces' => ['PHPUnit\Runner'],
+                        'exclude-constants' => [],
+                        'exclude-classes' => [],
+                        'exclude-functions' => [],
+                    ];
+                PHP,
         );
         touch('file1');
 

@@ -31,8 +31,13 @@ final class PhpScoper implements Scoper
     private const PHP_TAG = '/^<\?php/';
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
-    public function __construct(private readonly Parser $parser, private readonly Scoper $decoratedScoper, private readonly TraverserFactory $traverserFactory, private readonly Printer $printer, private readonly Lexer $lexer)
-    {
+    public function __construct(
+        private readonly Parser $parser,
+        private readonly Scoper $decoratedScoper,
+        private readonly TraverserFactory $traverserFactory,
+        private readonly Printer $printer,
+        private readonly Lexer $lexer,
+    ) {
     }
 
     /**

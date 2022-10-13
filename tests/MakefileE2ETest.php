@@ -60,7 +60,7 @@ class MakefileE2ETest extends TestCase
                     'trim',
                     explode(
                         ' ',
-                        (string) $matches['steps'],
+                        $matches['steps'],
                     ),
                 ),
             ),

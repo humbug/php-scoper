@@ -33,8 +33,12 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
-    public function __construct(private readonly string $prefix, private readonly IdentifierResolver $identifierResolver, private readonly SymbolsRegistry $symbolsRegistry, private readonly EnrichedReflector $enrichedReflector)
-    {
+    public function __construct(
+        private readonly string $prefix,
+        private readonly IdentifierResolver $identifierResolver,
+        private readonly SymbolsRegistry $symbolsRegistry,
+        private readonly EnrichedReflector $enrichedReflector,
+    ) {
     }
 
     public function enterNode(Node $node): Node

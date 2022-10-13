@@ -55,8 +55,12 @@ final class AddPrefixCommand implements Command, CommandAware
     private const NO_CONFIG_OPT = 'no-config';
     private bool $init = false;
 
-    public function __construct(private readonly Filesystem $fileSystem, private readonly ScoperFactory $scoperFactory, private readonly Application $application, private readonly ConfigurationFactory $configFactory)
-    {
+    public function __construct(
+        private readonly Filesystem $fileSystem,
+        private readonly ScoperFactory $scoperFactory,
+        private readonly Application $application,
+        private readonly ConfigurationFactory $configFactory,
+    ) {
     }
 
     public function getConfiguration(): CommandConfiguration

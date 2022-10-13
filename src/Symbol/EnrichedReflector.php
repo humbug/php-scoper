@@ -26,8 +26,10 @@ use function strpos;
  */
 final class EnrichedReflector
 {
-    public function __construct(private readonly Reflector $reflector, private readonly SymbolsConfiguration $symbolsConfiguration)
-    {
+    public function __construct(
+        private readonly Reflector $reflector,
+        private readonly SymbolsConfiguration $symbolsConfiguration,
+    ) {
     }
 
     public function belongsToExcludedNamespace(string $name): bool
