@@ -497,11 +497,14 @@ vendor: composer.lock .composer-root-version
 .PHONY: vendor_install
 vendor_install:
 	/bin/bash -c 'source .composer-root-version && composer install'
-	touch -c $@
+	touch -c vendor
+	touch -c $(COMPOSER_BIN_PLUGIN_VENDOR)
+	touch -c $(PHPUNIT_BIN)
+	touch -c $(BOX_BIN)
 
 composer.lock: composer.json
-	@echo composer.lock is not up to date.
-	touch -c $@	# We likely do not want that message repeated over and over
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer update --lock && touch -c $(@)"
 
 vendor-hotfix: vendor
 	composer dump-autoload
@@ -524,21 +527,26 @@ vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock $(
 	composer bin covers-validator install
 	touch -c $@
 vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
-	@echo covers-validator composer.lock is not up to date
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer bin covers-validator update --lock && touch -c $(@)"
 
 $(PHP_CS_FIXER_BIN): vendor-bin/php-cs-fixer/vendor
+	touch -c $@
 vendor-bin/php-cs-fixer/vendor: vendor-bin/php-cs-fixer/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
 	composer bin php-cs-fixer install
 	touch -c $@
 vendor-bin/php-cs-fixer/composer.lock: vendor-bin/php-cs-fixer/composer.json
-	@echo php-cs-fixer composer.lock is not up to date
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer bin php-cs-fixer update --lock && touch -c $(@)"
 
 $(PHPSTAN_BIN): vendor-bin/phpstan/vendor
+	touch -c $@
 vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
 	composer bin phpstan install
 	touch -c $@
 vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
-	@echo phpstan composer.lock is not up to date
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer bin phpstan update --lock && touch -c $(@)"
 
 $(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
 	$(BOX) compile
@@ -552,7 +560,8 @@ fixtures/set005/vendor: fixtures/set005/composer.lock
 	composer --working-dir=fixtures/set005 install
 	touch -c $@
 fixtures/set005/composer.lock: fixtures/set005/composer.json
-	@echo fixtures/set005/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set005 update --lock && touch -c $(@)"
 
 fixtures/set011/vendor:
 	composer --working-dir=fixtures/set011 install
@@ -572,37 +581,43 @@ fixtures/set015/vendor: fixtures/set015/composer.lock
 	composer --working-dir=fixtures/set015 install
 	touch -c $@
 fixtures/set015/composer.lock: fixtures/set015/composer.json
-	@echo fixtures/set015/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set015 update --lock && touch -c $(@)"
 
 fixtures/set016-symfony-finder/vendor: fixtures/set016-symfony-finder/composer.lock
 	composer --working-dir=fixtures/set016-symfony-finder install
 	touch -c $@
 fixtures/set016-symfony-finder/composer.lock: fixtures/set016-symfony-finder/composer.json
-	@echo fixtures/set016-symfony-finder/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set016-symfony-finder update --lock && touch -c $(@)"
 
 fixtures/set017-symfony-di/vendor: fixtures/set017-symfony-di/composer.lock
 	composer --working-dir=fixtures/set017-symfony-di install
 	touch -c $@
 fixtures/set017-symfony-di/composer.lock: fixtures/set017-symfony-di/composer.json
-	@echo fixtures/set017-symfony-di/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set017-symfony-di update --lock && touch -c $(@)"
 
 fixtures/set018-nikic-parser/vendor: fixtures/set018-nikic-parser/composer.lock
 	composer --working-dir=fixtures/set018-nikic-parser install
 	touch -c $@
 fixtures/set018-nikic-parser/composer.lock: fixtures/set018-nikic-parser/composer.json
-	@echo fixtures/set018-nikic-parser/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set018-nikic-parser update --lock && touch -c $(@)"
 
 fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer.lock
 	composer --working-dir=fixtures/set019-symfony-console install
 	touch -c $@
 fixtures/set019-symfony-console/composer.lock: fixtures/set019-symfony-console/composer.json
-	@echo fixtures/set019-symfony-console/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set019-symfony-console update --lock && touch -c $(@)"
 
 fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
 	composer --working-dir=fixtures/set020-infection install
 	touch -c $@
 fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
-	@echo fixtures/set020-infection/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set020-infection update --lock && touch -c $(@)"
 
 fixtures/set022/vendor: fixtures/set022/composer.json
 	composer --working-dir=fixtures/set022 update
@@ -612,19 +627,22 @@ fixtures/set023/vendor: fixtures/set023/composer.lock
 	composer --working-dir=fixtures/set023 install
 	touch -c $@
 fixtures/set023/composer.lock: fixtures/set023/composer.json
-	@echo fixtures/set023/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set023 update --lock && touch -c $(@)"
 
 fixtures/set024/vendor: fixtures/set024/composer.lock
 	composer --working-dir=fixtures/set024 install
 	touch -c $@
 fixtures/set024/composer.lock: fixtures/set024/composer.json
-	@echo fixtures/set024/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set024 update --lock && touch -c $(@)"
 
 fixtures/set025/vendor: fixtures/set025/composer.lock
 	composer --working-dir=fixtures/set025 install
 	touch -c $@
 fixtures/set025/composer.lock: fixtures/set025/composer.json
-	@echo fixtures/set025/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set025 update --lock && touch -c $(@)"
 
 fixtures/set026/vendor:
 	composer --working-dir=fixtures/set026 update
@@ -634,19 +652,22 @@ fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
 	composer --working-dir=fixtures/set027-laravel install --no-dev
 	touch -c $@
 fixtures/set027-laravel/composer.lock: fixtures/set027-laravel/composer.json
-	@echo fixtures/set027-laravel/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set027-laravel update --lock && touch -c $(@)"
 
 fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
 	composer --working-dir=fixtures/set028-symfony install --no-dev --no-scripts
 	touch -c $@
 fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
-	@echo fixtures/set028-symfony/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set028-symfony update --lock && touch -c $(@)"
 
 fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
 	composer --working-dir=fixtures/set029-easy-rdf install --no-dev
 	touch -c $@
 fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
-	@echo fixtures/set029-easy-rdf/composer.lock is not up to date.
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set029-easy-rdf update --lock && touch -c $(@)"
 
 fixtures/set030/vendor: fixtures/set030/composer.json
 	composer --working-dir=fixtures/set030 install --no-dev
