@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Patcher;
 
 use function Safe\preg_replace;
-use function Safe\sprintf;
+use function sprintf;
 use function str_contains;
 
 final class SymfonyPatcher implements Patcher

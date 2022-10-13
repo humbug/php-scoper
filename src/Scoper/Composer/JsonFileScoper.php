@@ -21,7 +21,7 @@ use function gettype;
 use function preg_match as native_preg_match;
 use function Safe\json_decode;
 use function Safe\json_encode;
-use function Safe\sprintf;
+use function sprintf;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 

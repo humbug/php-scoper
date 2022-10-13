@@ -47,7 +47,7 @@ use function random_bytes;
 use function readlink as native_readlink;
 use function realpath;
 use function Safe\file_get_contents;
-use function Safe\sprintf;
+use function sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 use const SORT_STRING;

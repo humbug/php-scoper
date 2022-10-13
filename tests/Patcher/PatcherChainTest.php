@@ -17,7 +17,7 @@ namespace Humbug\PhpScoper\Patcher;
 use PHPUnit\Framework\TestCase;
 use function func_get_args;
 use function implode;
-use function Safe\sprintf;
+use function sprintf;
 use function str_replace;
 
 /**

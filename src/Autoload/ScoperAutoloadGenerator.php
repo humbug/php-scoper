@@ -22,7 +22,7 @@ use function chr;
 use function count;
 use function explode;
 use function implode;
-use function Safe\sprintf;
+use function sprintf;
 use function str_repeat;
 use function str_replace;
 
