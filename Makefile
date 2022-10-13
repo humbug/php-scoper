@@ -497,7 +497,10 @@ vendor: composer.lock .composer-root-version
 .PHONY: vendor_install
 vendor_install:
 	/bin/bash -c 'source .composer-root-version && composer install'
-	touch -c $@
+	touch -c vendor
+	touch -c $(COMPOSER_BIN_PLUGIN_VENDOR)
+	touch -c $(PHPUNIT_BIN)
+	touch -c $(BOX_BIN)
 
 composer.lock: composer.json
 	@echo composer.lock is not up to date.
@@ -527,6 +530,7 @@ vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.
 	@echo covers-validator composer.lock is not up to date
 
 $(PHP_CS_FIXER_BIN): vendor-bin/php-cs-fixer/vendor
+	touch -c $@
 vendor-bin/php-cs-fixer/vendor: vendor-bin/php-cs-fixer/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
 	composer bin php-cs-fixer install
 	touch -c $@
@@ -534,11 +538,12 @@ vendor-bin/php-cs-fixer/composer.lock: vendor-bin/php-cs-fixer/composer.json
 	@echo php-cs-fixer composer.lock is not up to date
 
 $(PHPSTAN_BIN): vendor-bin/phpstan/vendor
+	touch -c $@
 vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
 	composer bin phpstan install
 	touch -c $@
 vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
-	@echo phpstan composer.lock is not up to date
+	@echo $(@) is not up to date# TODO rework the command check NEOS
 
 $(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
 	$(BOX) compile
