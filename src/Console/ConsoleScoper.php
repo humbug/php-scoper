@@ -196,10 +196,10 @@ final class ConsoleScoper
 
         usort(
             $vendorDirs,
-            static fn ($a, $b) => strlen($a) <=> strlen($b),
+            static fn ($a, $b) => strlen((string) $a) <=> strlen((string) $b),
         );
 
-        return (0 === count($vendorDirs)) ? null : $vendorDirs[0];
+        return (0 === count($vendorDirs)) ? null : (string) $vendorDirs[0];
     }
 
     private function scopeFile(
