@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Configuration;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use ReflectionClassConstant;
 use function array_values;
 
 /**
@@ -39,20 +40,18 @@ final class ConfigurationKeysTest extends TestCase
     private static function retrieveConfigurationKeys(): array
     {
         $configKeysReflection = new ReflectionClass(ConfigurationKeys::class);
-        // TODO in PHP 8.0 pass ReflectionClassConstant::IS_PUBLIC as a filter
-        //  and rename `$constants` to `$publicConstants`
-        $constants = $configKeysReflection->getConstants();
+        $publicConstants = $configKeysReflection->getConstants(ReflectionClassConstant::IS_PUBLIC);
 
-        unset($constants['KEYWORDS']);
+        unset($publicConstants['KEYWORDS']);
 
-        foreach ($constants as $name => $value) {
+        foreach ($publicConstants as $name => $value) {
             self::assertNonEmptyStringConstantValue(
                 $value,
                 $name,
             );
         }
 
-        return array_values($constants);
+        return array_values($publicConstants);
     }
 
     /**
