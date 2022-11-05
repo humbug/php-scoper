@@ -1,6 +1,7 @@
 ## Further Reading
 
 - [Polyfills](#polyfills)
+- [How to deal with unknown third-party symbols](#how-to-deal-with-unknown-third-party-symbols)
 
 
 ### Polyfills
@@ -13,7 +14,7 @@ If all of what you have is Symfony polyfills however, the following should get
 you covered:
 
 ```php
-<?php declare(strict_types=1);
+<?php declare(strict_types=1);  // scoper.inc.php
 
 use Isolated\Symfony\Component\Finder\Finder;
 
@@ -58,7 +59,57 @@ return [
 ```
 
 
+### How to deal with unknown third-party symbols
+
+If you consider the following code:
+
+```php
+<?php
+
+namespace Acme;
+
+use function wp_list_users;
+
+foreach (wp_list_users() as $user) {
+    // ...
+}
+```
+
+It would be scoped as follows:
+
+```
+<?php
+
+namespace ScopingPrefix\Acme;
+
+use function ScopingPrefix\wp_list_users;
+
+foreach (wp_list_users() as $user) {
+    // ...
+}
+```
+
+This however will be a problem if your code (or your vendor) never declares
+`wp_list_users`.
+
+There is "two" ways to deal with this:
+
+- excluding the symbol (recommended)
+- exposing the symbol (fragile)
+
+**Excluding** the symbol (see [excluded-symbols]) marks it as "internal", as if this
+symbol was coming from PHP itself or a PHP extension. This is the most appropriate
+solution.
+
+**Exposing** the symbol _may_ work but is more fragile. Indeed, exposing the
+symbol will result in an alias being registered (see [exposed-symbols]), which
+means you _need_ to have the function declared within your codebase at some point.
+
+
 <br />
 <hr />
 
 « [Configuration](configuration.md#configuration) • [Limitations](limitations.md#limitations) »
+
+[excluded-symbols]: configuration.md#excluded-symbols
+[exposed-symbols]: configuration.md#exposed-symbols

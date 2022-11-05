@@ -147,7 +147,7 @@ classes).
 In order to bring some performance optimisation, the call will nonetheless be
 prefixed in `\is_array`. This *will* break your code if you were relying on
 `\Foo\is_array` instead. This however should be _extremely_ rare, so if that
-happens you have two solutions: use a [patcher](#patchers) or simpler remove
+happens you have two solutions: use a [patcher](#patchers) or simply remove
 any ambiguity by making use of a use statement (which is unneeded outside of
 the context of prefixing your code):
 
@@ -229,7 +229,15 @@ If this will work for the classes under `src/JsonMapper/`, it will not for `Json
 
 ### Files autoloading
 
-TODO
+Currently, scoping autoloaded files, i.e. files registered to Composer via the
+[`autoload.files`][autoload-files] setting only half work. Indeed, the scoping
+itself works, but if your scoped code happen to try to load another Composer
+based project with the same file, it will not. The problem identified is that
+the Composer autoloader uses hash to know if a file has been loaded or not already.
+Unfortunately, this hash is defined by the package and file name, which means
+the scoped file and non-scoped file will have the same hash resulting in errors.
+
+This is a limitation that should be fixable, check [#298] for the progress.
 
 
 <br />
@@ -238,5 +246,7 @@ TODO
 « [Further Reading](further-reading.md#further-reading) • [Table of Contents](../README.md#table-of-contents) »
 
 
+[autoload-files]: https://getcomposer.org/doc/04-schema.md#files
 [box]: https://github.com/humbug/box
 [exposed-symbols]: configuration.md#exposed-symbols
+[#298]: https://github.com/humbug/php-scoper/issues/298

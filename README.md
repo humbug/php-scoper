@@ -51,6 +51,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 - [Recommendations](#recommendations)
 - [Further Reading](docs/further-reading.md#further-reading)
     - [Polyfills](docs/further-reading.md#polyfills)
+    - [How to deal with unknown third-party symbols](#how-to-deal-with-unknown-third-party-symbols)
 - [Limitations](docs/limitations.md#limitations)
     - [Dynamic symbols](docs/limitations.md#dynamic-symbols)
     - [Date symbols](docs/limitations.md#date-symbols)
@@ -61,6 +62,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Composer Autoloader](docs/limitations.md#composer-autoloader)
     - [Composer Plugins](docs/limitations.md#composer-plugins)
     - [PSR-0 Partial support](docs/limitations.md#psr-0-partial-support)
+    - [Files autoloading](docs/limitations.md#files-autoloading)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
