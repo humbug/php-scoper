@@ -478,7 +478,7 @@ e2e_032: $(PHP_SCOPER_PHAR_BIN)
 	diff fixtures/set032-isolated-finder/expected-tree build/set032-isolated-finder/actual-tree
 
 .PHONY: e2e_033
-e2e_033: ## Runs end-to-end tests for the fixture set 032 — Scoping of a codebase using the isolated finder in the configuration
+e2e_033: ## Runs end-to-end tests for the fixture set 033 — Scoping of a codebase a function registered in the global namespace
 e2e_033: $(PHP_SCOPER_PHAR_BIN)
 	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set033-user-global-function \

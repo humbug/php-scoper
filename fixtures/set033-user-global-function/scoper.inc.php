@@ -8,4 +8,5 @@ return [
             ->files()
             ->in(__DIR__),
     ],
+    'exclude-functions' => ['trigger_deprecation'],
 ];

@@ -2,10 +2,10 @@
 
 namespace Acme;
 
-require __DIR__.'/vendor/autoload.php';
+use function file_exists;
 
-use function error_reporting;
-use function trigger_deprecation;
-use const E_ALL;
+require file_exists(__DIR__.'/vendor/scoper-autoload.php')
+    ? __DIR__.'/vendor/scoper-autoload.php'
+    : __DIR__.'/vendor/autoload.php';
 
 trigger_deprecation('fixtures/set033', '1.0.0', 'Test');
