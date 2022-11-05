@@ -146,7 +146,7 @@ classes).
 In order to bring some performance optimisation, the call will nonetheless be
 prefixed in `\is_array`. This *will* break your code if you were relying on
 `\Foo\is_array` instead. This however should be _extremely_ rare, so if that
-happens you have two solutions: use a [patcher](#patchers) or simpler remove
+happens you have two solutions: use a [patcher](#patchers) or simply remove
 any ambiguity by making use of a use statement (which is unneeded outside of
 the context of prefixing your code):
 
