@@ -61,6 +61,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Composer Autoloader](docs/limitations.md#composer-autoloader)
     - [Composer Plugins](docs/limitations.md#composer-plugins)
     - [PSR-0 Partial support](docs/limitations.md#psr-0-partial-support)
+    - [Files autoloading](docs/limitations.md#files-autoloading)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
