@@ -113,4 +113,3 @@ means you _need_ to have the function declared within your codebase at some poin
 
 [excluded-symbols]: configuration.md#excluded-symbols
 [exposed-symbols]: configuration.md#exposed-symbols
-[known limitations]: limitations.md
