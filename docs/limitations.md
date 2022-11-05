@@ -9,6 +9,7 @@
 - [Composer Autoloader](#composer-autoloader)
 - [Composer Plugins](#composer-plugins)
 - [PSR-0 Partial support](#psr-0-partial-support)
+- [Files autoloading](#files-autoloading)
 
 
 ### Dynamic symbols
@@ -224,6 +225,11 @@ transforming it to PSR-4, i.e. in the case above:
 ```
 
 If this will work for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
+
+
+### Files autoloading
+
+TODO
 
 
 <br />

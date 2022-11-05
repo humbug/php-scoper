@@ -31,7 +31,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Records the user functions registered in the global namespace which have been whitelisted and whitelisted functions.
+ * Records the exposed functions used or the???
  *
  * @private
  */
@@ -55,8 +55,16 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $resolvedName = $this->retrieveResolvedName($node);
 
-        if (null !== $resolvedName
-            && $this->enrichedReflector->isExposedFunction($resolvedName->toString())
+        if (null === $resolvedName) {
+            return $node;
+        }
+
+        if ($this->enrichedReflector->isExposedFunction($resolvedName->toString())
+            || (
+                self::isFunctionDeclaration($node)
+                    // TODO: test excluded vs internal
+                && $this->enrichedReflector->isFunctionExcluded($resolvedName->toString())
+            )
         ) {
             $this->symbolsRegistry->recordFunction(
                 $resolvedName,
@@ -140,5 +148,16 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         return $name instanceof Name
             && $name->isFullyQualified()
             && $name->toString() === 'function_exists';
+    }
+
+    private static function isFunctionDeclaration(Node $node): bool
+    {
+        if (!($node instanceof Identifier)) {
+            return false;
+        }
+
+        $parentNode = ParentNodeAppender::getParent($node);
+
+        return $parentNode instanceof Function_;
     }
 }
