@@ -477,6 +477,23 @@ e2e_032: $(PHP_SCOPER_PHAR_BIN)
 
 	diff fixtures/set032-isolated-finder/expected-tree build/set032-isolated-finder/actual-tree
 
+.PHONY: e2e_033
+e2e_033: ## Runs end-to-end tests for the fixture set 032 — Scoping of a codebase using the isolated finder in the configuration
+e2e_033: $(PHP_SCOPER_PHAR_BIN)
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set033-user-global-function \
+		--output-dir=../../build/set033-user-global-function \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set033-user-global-function/index.php > fixtures/set033-user-global-function/expected-output
+
+	composer --working-dir=build/set033-user-global-function dump-autoload --no-dev
+	php build/set033-user-global-function/index.php > build/set033-user-global-function/output
+
+	diff fixtures/set033-user-global-function/expected-output build/set033-user-global-function/output
+
 
 #
 # Rules from files
@@ -549,7 +566,7 @@ vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
 	@echo "$$ composer bin phpstan update --lock && touch -c $(@)"
 
 $(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
-	$(BOX) compile
+	$(BOX) compile --no-parallel
 	touch -c $@
 
 $(COVERAGE_XML): $(PHPUNIT_BIN) $(SRC_FILES)

@@ -62,7 +62,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         if ($this->enrichedReflector->isExposedFunction($resolvedName->toString())
             || (
                 self::isFunctionDeclaration($node)
-                    // TODO: test excluded vs internal
+                && $this->enrichedReflector->belongsToGlobalNamespace($resolvedName->toString())
                 && $this->enrichedReflector->isFunctionExcluded($resolvedName->toString())
             )
         ) {
