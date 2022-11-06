@@ -2,6 +2,9 @@
 
 - [Polyfills](#polyfills)
 - [How to deal with unknown third-party symbols](#how-to-deal-with-unknown-third-party-symbols)
+- [Autoload aliases](#autoload-aliases)
+  - [Class aliases](#class-aliases)
+  - [Function aliases](#function-aliases)
 
 
 ### Polyfills
@@ -106,10 +109,26 @@ symbol will result in an alias being registered (see [exposed-symbols]), which
 means you _need_ to have the function declared within your codebase at some point.
 
 
+### Autoload aliases
+
+#### Class aliases
+
+When [exposing a class], an alias will be registered.
+
+#### Function aliases
+
+When [exposing a function] or when a globally declared [excluded function]
+declaration is found (see [#706]), an alias will be registered.
+
+
 <br />
 <hr />
 
 « [Configuration](configuration.md#configuration) • [Limitations](limitations.md#limitations) »
 
 [excluded-symbols]: configuration.md#excluded-symbols
+[excluding a function]: configuration.md#excluded-symbols
 [exposed-symbols]: configuration.md#exposed-symbols
+[exposing a class]: configuration.md#exposing-classes
+[exposing a function]: configuration.md#exposing-functions
+[#706]: https://github.com/humbug/php-scoper/pull/706
