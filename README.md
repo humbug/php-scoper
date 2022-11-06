@@ -51,7 +51,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 - [Recommendations](#recommendations)
 - [Further Reading](docs/further-reading.md#further-reading)
     - [Polyfills](docs/further-reading.md#polyfills)
-    - [How to deal with unknown third-party symbols](#how-to-deal-with-unknown-third-party-symbols)
+    - [How to deal with unknown third-party symbols](docs/further-reading.md#how-to-deal-with-unknown-third-party-symbols)
 - [Limitations](docs/limitations.md#limitations)
     - [Dynamic symbols](docs/limitations.md#dynamic-symbols)
     - [Date symbols](docs/limitations.md#date-symbols)
