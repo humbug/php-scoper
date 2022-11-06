@@ -402,7 +402,6 @@ e2e_028: $(PHP_SCOPER_PHAR_BIN) fixtures/set028-symfony/vendor
 	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set028-symfony \
 		--output-dir=../../build/set028-symfony \
-		--no-config \
 		--force \
 		--no-interaction \
 		--stop-on-failure
