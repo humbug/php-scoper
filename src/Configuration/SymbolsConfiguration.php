@@ -19,10 +19,11 @@ use Humbug\PhpScoper\Symbol\SymbolRegistry;
 
 final class SymbolsConfiguration
 {
+    // To keep in sync with the default configuration set in src/scoper.inc.php.tpl
     public static function create(
-        bool $exposeGlobalConstants = false,
-        bool $exposeGlobalClasses = false,
-        bool $exposeGlobalFunctions = false,
+        bool $exposeGlobalConstants = true,
+        bool $exposeGlobalClasses = true,
+        bool $exposeGlobalFunctions = true,
         ?NamespaceRegistry $excludedNamespaces = null,
         // Does not contain the list of excluded symbols which go to the
         // Reflector (which has no notion of namespaces)

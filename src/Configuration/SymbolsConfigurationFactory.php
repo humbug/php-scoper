@@ -173,7 +173,7 @@ final class SymbolsConfigurationFactory
     private static function retrieveExposeGlobalSymbol(array $config, string $key): bool
     {
         if (!array_key_exists($key, $config)) {
-            return false;
+            return true;
         }
 
         $value = $config[$key];
