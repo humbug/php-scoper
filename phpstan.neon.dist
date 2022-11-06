@@ -55,3 +55,5 @@ parameters:
           path: 'src/Scoper/Symfony/YamlScoper.php'
         - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
           path: 'src/Scoper/SymfonyScoper.php'
+        - message: '#Class Isolated\\Symfony\\Component\\Finder\\Finder not found\.#'
+          path: 'tests/Configuration/DefaultConfigurationTest.php'

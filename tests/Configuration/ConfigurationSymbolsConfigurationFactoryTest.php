@@ -59,30 +59,33 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
             [
                 ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => true,
             ],
-            SymbolsConfiguration::create(
-                true,
-            ),
+            SymbolsConfiguration::create(),
         ];
 
-        // TODO: named parameters would be handy here
-        yield 'expose global classes' => [
+        yield 'do not expose global constants' => [
             [
-                ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => true,
+                ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => false,
             ],
             SymbolsConfiguration::create(
                 false,
-                true,
             ),
         ];
 
-        yield 'expose global functions' => [
+        yield 'do not expose global classes' => [
             [
-                ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => true,
+                ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => false,
             ],
             SymbolsConfiguration::create(
-                false,
-                false,
-                true,
+                exposeGlobalClasses: false,
+            ),
+        ];
+
+        yield 'do not expose global functions' => [
+            [
+                ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => false,
+            ],
+            SymbolsConfiguration::create(
+                exposeGlobalFunctions: false,
             ),
         ];
 
@@ -93,10 +96,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 ],
             ],
             SymbolsConfiguration::create(
-                false,
-                false,
-                false,
-                NamespaceRegistry::create(
+                excludedNamespaces: NamespaceRegistry::create(
                     ['PHPUnit\Runner'],
                 ),
             ),
@@ -109,10 +109,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 ],
             ],
             SymbolsConfiguration::create(
-                false,
-                false,
-                false,
-                NamespaceRegistry::create(
+                excludedNamespaces: NamespaceRegistry::create(
                     [],
                     ['~^PHPUnit\\Runner(\\.*)?$~i'],
                 ),
@@ -126,14 +123,9 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 ],
             ],
             SymbolsConfiguration::create(
-                false,
-                false,
-                false,
-                null,
-                null,
-                SymbolRegistry::create(['Acme\Foo']),
-                SymbolRegistry::create(['Acme\Foo']),
-                SymbolRegistry::createForConstants(['Acme\Foo']),
+                exposedClasses: SymbolRegistry::create(['Acme\Foo']),
+                exposedFunctions: SymbolRegistry::create(['Acme\Foo']),
+                exposedConstants: SymbolRegistry::createForConstants(['Acme\Foo']),
             ),
         ];
 
@@ -147,10 +139,7 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 ],
             ],
             SymbolsConfiguration::create(
-                false,
-                false,
-                false,
-                NamespaceRegistry::create(
+                excludedNamespaces: NamespaceRegistry::create(
                     [
                         'PHPUnit\Internal',
                         'PHPUnit\Runner',
@@ -161,9 +150,9 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
 
         yield 'nominal' => [
             [
-                ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => true,
-                ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => true,
-                ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => true,
+                ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => false,
+                ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => false,
+                ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => false,
                 ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
                     'PHPUnit\Internal',
                     '~^PHPUnit\\Runner(\\.*)?$~',
@@ -174,9 +163,9 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 ],
             ],
             SymbolsConfiguration::create(
-                true,
-                true,
-                true,
+                false,
+                false,
+                false,
                 NamespaceRegistry::create(
                     [
                         'PHPUnit\Internal',
