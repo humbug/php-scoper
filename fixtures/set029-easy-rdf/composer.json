@@ -1,5 +1,11 @@
 {
     "require": {
-        "easyrdf/easyrdf": "^1.0.0"
-    }
+        "easyrdf/easyrdf": "dev-php8.1"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/zozlak/easyrdf.git"
+        }
+    ]
 }
