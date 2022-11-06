@@ -155,7 +155,7 @@ blackfire: vendor
 
 .PHONY: e2e
 e2e:	 ## Runs end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034
 
 .PHONY: e2e_004
 e2e_004: ## Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
@@ -493,6 +493,25 @@ e2e_033: $(PHP_SCOPER_PHAR_BIN)
 	php build/set033-user-global-function/index.php > build/set033-user-global-function/output
 
 	diff fixtures/set033-user-global-function/expected-output build/set033-user-global-function/output
+
+
+
+.PHONY: e2e_034
+e2e_034: ## Runs end-to-end tests for the fixture set 034 — Leverage Composer InstalledVersions
+e2e_034: $(PHP_SCOPER_PHAR_BIN)
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set034-installed-versions \
+		--output-dir=../../build/set034-installed-versions \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set034-installed-versions/index.php > fixtures/set034-installed-versions/expected-output
+
+	composer --working-dir=build/set034-installed-versions dump-autoload --no-dev
+	php build/set034-installed-versions/index.php > build/set034-installed-versions/output
+
+	diff fixtures/set034-installed-versions/expected-output build/set034-installed-versions/output
 
 
 #
