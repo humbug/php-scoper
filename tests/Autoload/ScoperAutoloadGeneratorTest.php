@@ -68,8 +68,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 $loader = require_once __DIR__.'/autoload.php';
                 require_once __DIR__.'/composer/InstalledVersions.php';
 
-                // Exposed functions. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
+                // Function aliases. For more information see:
+                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
                 if (!function_exists('foo')) {
                     function foo() {
                         return \Humbug\foo(...func_get_args());
@@ -105,8 +105,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     require_once __DIR__.'/composer/InstalledVersions.php';
                 }
 
-                // Exposed functions. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
+                // Function aliases. For more information see:
+                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
                 namespace Acme {
                     if (!function_exists('Acme\foo')) {
                         function foo() {
@@ -151,8 +151,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 $loader = require_once __DIR__.'/autoload.php';
                 require_once __DIR__.'/composer/InstalledVersions.php';
 
-                // Exposed classes. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
+                // Class aliases. For more information see:
+                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
                 if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
                     spl_autoload_call('Humbug\A\Foo');
                 }
@@ -178,8 +178,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 $loader = require_once __DIR__.'/autoload.php';
                 require_once __DIR__.'/composer/InstalledVersions.php';
 
-                // Exposed classes. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
+                // Class aliases. For more information see:
+                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
                 if (!class_exists('Foo', false) && !interface_exists('Foo', false) && !trait_exists('Foo', false)) {
                     spl_autoload_call('Humbug\Foo');
                 }
@@ -215,16 +215,16 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     require_once __DIR__.'/composer/InstalledVersions.php';
                 }
 
-                // Exposed classes. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
+                // Class aliases. For more information see:
+                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
                 namespace {
                     if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
                         spl_autoload_call('Humbug\A\Foo');
                     }
                 }
 
-                // Exposed functions. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
+                // Function aliases. For more information see:
+                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
                 namespace {
                     if (!function_exists('foo')) {
                         function foo() {
@@ -284,8 +284,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 $loader = require_once __DIR__.'/autoload.php';
                 require_once __DIR__.'/composer/InstalledVersions.php';
 
-                // Exposed functions. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
+                // Function aliases. For more information see:
+                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
                 if (!function_exists('__autoload')) {
                     function __autoload($className) {
                         return \Humbug\__autoload(...func_get_args());
@@ -316,8 +316,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     require_once __DIR__.'/composer/InstalledVersions.php';
                 }
 
-                // Exposed functions. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
+                // Function aliases. For more information see:
+                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
                 namespace {
                     if (!function_exists('__autoload')) {
                         function __autoload($className) {

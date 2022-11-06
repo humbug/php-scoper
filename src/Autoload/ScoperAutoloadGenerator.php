@@ -30,14 +30,14 @@ final class ScoperAutoloadGenerator
 {
     // TODO: aliasing functions could be done via a single function to reduce boiler-template.
 
-    private const EXPOSED_FUNCTIONS_DOC = <<<'EOF'
-        // Exposed functions. For more information see:
-        // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-functions
+    private const FUNCTION_ALIASES_DOC = <<<'EOF'
+        // Function aliases. For more information see:
+        // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
         EOF;
 
-    private const EXPOSED_CLASSES_DOC = <<<'EOF'
-        // Exposed classes. For more information see:
-        // https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposing-classes
+    private const CLASS_ALIASES_DOC = <<<'EOF'
+        // Class aliases. For more information see:
+        // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
         EOF;
 
     /** @var non-empty-string */
@@ -127,7 +127,7 @@ final class ScoperAutoloadGenerator
             $statements = self::wrapStatementsInNamespaceBlock($statements);
         }
 
-        array_unshift($statements, self::EXPOSED_CLASSES_DOC);
+        array_unshift($statements, self::CLASS_ALIASES_DOC);
 
         return $statements;
     }
@@ -209,7 +209,7 @@ final class ScoperAutoloadGenerator
             return $statements;
         }
 
-        array_unshift($statements, self::EXPOSED_FUNCTIONS_DOC);
+        array_unshift($statements, self::FUNCTION_ALIASES_DOC);
 
         return $statements;
     }
