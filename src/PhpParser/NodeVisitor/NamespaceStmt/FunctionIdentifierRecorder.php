@@ -31,7 +31,7 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Records the exposed functions used or the???
+ * Records the functions that need to be aliased.
  *
  * @private
  */
@@ -55,17 +55,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $resolvedName = $this->retrieveResolvedName($node);
 
-        if (null === $resolvedName) {
-            return $node;
-        }
-
-        if ($this->enrichedReflector->isExposedFunction($resolvedName->toString())
-            || (
-                self::isFunctionDeclaration($node)
-                && $this->enrichedReflector->belongsToGlobalNamespace($resolvedName->toString())
-                && $this->enrichedReflector->isFunctionExcluded($resolvedName->toString())
-            )
-        ) {
+        if (null !== $resolvedName && $this->shouldBeAliased($node, $resolvedName)) {
             $this->symbolsRegistry->recordFunction(
                 $resolvedName,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),
@@ -73,6 +63,24 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         return $node;
+    }
+
+    private function shouldBeAliased(
+        Node $node,
+        FullyQualified $resolvedName
+    ): bool {
+        if ($this->enrichedReflector->isExposedFunction($resolvedName->toString())) {
+            return true;
+        }
+
+        // If is a function declaration, excluded global functions need to be
+        // aliased since otherwise any usage without the FQCN in a namespace
+        // will break. Indeed, previously it would work thanks to the function
+        // PHP autoloading fallback mechanism, but now that the declaration is
+        // namespaced because of the prefix, an alias is needed.
+        return self::isFunctionDeclaration($node)
+            && $this->enrichedReflector->belongsToGlobalNamespace($resolvedName->toString())
+            && $this->enrichedReflector->isFunctionExcluded($resolvedName->toString());
     }
 
     private function retrieveResolvedName(Node $node): ?FullyQualified
