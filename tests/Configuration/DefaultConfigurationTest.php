@@ -23,6 +23,7 @@ use function class_exists;
 
 /**
  * @coversNothing
+ * @group integration
  *
  * @internal
  */
