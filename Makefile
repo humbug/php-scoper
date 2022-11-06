@@ -155,7 +155,7 @@ blackfire: vendor
 
 .PHONY: e2e
 e2e:	 ## Runs end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033
 
 .PHONY: e2e_004
 e2e_004: ## Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
@@ -477,6 +477,23 @@ e2e_032: $(PHP_SCOPER_PHAR_BIN)
 
 	diff fixtures/set032-isolated-finder/expected-tree build/set032-isolated-finder/actual-tree
 
+.PHONY: e2e_033
+e2e_033: ## Runs end-to-end tests for the fixture set 033 — Scoping of a codebase a function registered in the global namespace
+e2e_033: $(PHP_SCOPER_PHAR_BIN)
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set033-user-global-function \
+		--output-dir=../../build/set033-user-global-function \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set033-user-global-function/index.php > fixtures/set033-user-global-function/expected-output
+
+	composer --working-dir=build/set033-user-global-function dump-autoload --no-dev
+	php build/set033-user-global-function/index.php > build/set033-user-global-function/output
+
+	diff fixtures/set033-user-global-function/expected-output build/set033-user-global-function/output
+
 
 #
 # Rules from files
@@ -549,7 +566,7 @@ vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
 	@echo "$$ composer bin phpstan update --lock && touch -c $(@)"
 
 $(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
-	$(BOX) compile
+	$(BOX) compile --no-parallel
 	touch -c $@
 
 $(COVERAGE_XML): $(PHPUNIT_BIN) $(SRC_FILES)

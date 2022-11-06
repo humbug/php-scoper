@@ -90,9 +90,6 @@ return [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
     ],
-    'exclude-functions' => [
-        'trigger_deprecation',
-    ],
     'exclude-files' => [
         ...$jetBrainStubs,
         ...$polyfillsBootstraps,
