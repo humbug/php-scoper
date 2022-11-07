@@ -201,9 +201,12 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 // Class aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
-                if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
-                    spl_autoload_call('Humbug\A\Foo');
+                function expose_class(string $exposed, string $prefixed): void {
+                    if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                        spl_autoload_call($prefixed);
+                    }
                 }
+                expose_class('A\Foo', 'Humbug\A\Foo');
 
                 return $loader;
 
@@ -228,12 +231,13 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 // Class aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
-                if (!class_exists('Foo', false) && !interface_exists('Foo', false) && !trait_exists('Foo', false)) {
-                    spl_autoload_call('Humbug\Foo');
+                function expose_class(string $exposed, string $prefixed): void {
+                    if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                        spl_autoload_call($prefixed);
+                    }
                 }
-                if (!class_exists('Bar', false) && !interface_exists('Bar', false) && !trait_exists('Bar', false)) {
-                    spl_autoload_call('Humbug\Bar');
-                }
+                expose_class('Foo', 'Humbug\Foo');
+                expose_class('Bar', 'Humbug\Bar');
 
                 return $loader;
 
@@ -266,9 +270,12 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 // Class aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
                 namespace {
-                    if (!class_exists('A\Foo', false) && !interface_exists('A\Foo', false) && !trait_exists('A\Foo', false)) {
-                        spl_autoload_call('Humbug\A\Foo');
+                    function expose_class(string $exposed, string $prefixed): void {
+                        if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                            spl_autoload_call($prefixed);
+                        }
                     }
+                    expose_class('A\Foo', 'Humbug\A\Foo');
                 }
 
                 // Function aliases. For more information see:
