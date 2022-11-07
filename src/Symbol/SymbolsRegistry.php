@@ -72,6 +72,14 @@ final class SymbolsRegistry implements Countable
     }
 
     /**
+     * @return array{string, string}|null
+     */
+    public function getRecordedClass(string $original): ?array
+    {
+        return $this->recordedClasses[$original] ?? null;
+    }
+
+    /**
      * @return list<array{string, string}>
      */
     public function getRecordedClasses(): array

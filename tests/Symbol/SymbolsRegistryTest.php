@@ -361,6 +361,22 @@ final class SymbolsRegistryTest extends TestCase
         ];
     }
 
+    public function test_it_exposes_recorded_classes(): void
+    {
+        $registry = self::createRegistry(
+            [[new FullyQualified('foo'), new FullyQualified('Humbug\foo')]],
+            [[new FullyQualified('Bar'), new FullyQualified('Humbug\Bar')]],
+        );
+
+        self::assertNull($registry->getRecordedClass('foo'));
+        self::assertNull($registry->getRecordedClass('bar'));
+        self::assertNull($registry->getRecordedClass('Humbug\Bar'));
+        self::assertEquals(
+            ['Bar', 'Humbug\Bar'],
+            $registry->getRecordedClass('Bar'),
+        );
+    }
+
     private static function assertStateIs(
         SymbolsRegistry $symbolsRegistry,
         array $expectedRecordedFunctions,

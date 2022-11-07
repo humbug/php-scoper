@@ -15,10 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
-use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
-use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
@@ -57,9 +56,8 @@ use function array_reduce;
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
     public function __construct(
-        private readonly string $prefix,
-        private readonly EnrichedReflector $enrichedReflector,
         private readonly IdentifierResolver $identifierResolver,
+        private readonly SymbolsRegistry $symbolsRegistry,
     ) {
     }
 
@@ -112,23 +110,27 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
 
         $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
-        if ($resolvedName instanceof FullyQualified
-            && $this->enrichedReflector->isExposedClass((string) $resolvedName)
-        ) {
-            $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
+        if (!($resolvedName instanceof FullyQualified)) {
+            return $stmts;
+        }
+
+        $record = $this->symbolsRegistry->getRecordedClass((string) $resolvedName);
+
+        if (null !== $record) {
+            $stmts[] = self::createAliasStmt($record[0], $record[1], $stmt);
         }
 
         return $stmts;
     }
 
     private static function createAliasStmt(
-        FullyQualified $originalName,
-        Node $stmt,
-        string $prefix
+        string $originalName,
+        string $prefixedName,
+        Node $stmt
     ): Expression {
         $call = new ClassAliasFuncCall(
-            FullyQualifiedFactory::concat($prefix, $originalName),
-            $originalName,
+            new FullyQualified($prefixedName),
+            new FullyQualified($originalName),
             $stmt->getAttributes(),
         );
 

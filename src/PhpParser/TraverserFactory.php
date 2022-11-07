@@ -130,9 +130,8 @@ class TraverserFactory
             new NodeVisitor\EvalPrefixer($stringNodePrefixer),
 
             new NodeVisitor\ClassAliasStmtAppender(
-                $prefix,
-                $reflector,
                 $identifierResolver,
+                $symbolsRegistry,
             ),
             new NodeVisitor\MultiConstStmtReplacer(),
             new NodeVisitor\ConstStmtReplacer(
