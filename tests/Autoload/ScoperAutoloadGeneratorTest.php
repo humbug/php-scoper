@@ -70,16 +70,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 // Function aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
-                if (!function_exists('foo')) {
-                    function foo() {
-                        return \Humbug\foo(...func_get_args());
-                    }
-                }
-                if (!function_exists('bar')) {
-                    function bar() {
-                        return \Humbug\bar(...func_get_args());
-                    }
-                }
+                if (!function_exists('foo')) function foo() { return \Humbug\foo(...func_get_args()); }
+                if (!function_exists('bar')) function bar() { return \Humbug\bar(...func_get_args()); }
 
                 return $loader;
 
@@ -108,25 +100,13 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 // Function aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
                 namespace Acme {
-                    if (!function_exists('Acme\foo')) {
-                        function foo() {
-                            return \Humbug\Acme\foo(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('Acme\foo')) function foo() { return \Humbug\Acme\foo(...func_get_args()); }
                 }
                 namespace Acme {
-                    if (!function_exists('Acme\bar')) {
-                        function bar() {
-                            return \Humbug\Acme\bar(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('Acme\bar')) function bar() { return \Humbug\Acme\bar(...func_get_args()); }
                 }
                 namespace Emca {
-                    if (!function_exists('Emca\baz')) {
-                        function baz() {
-                            return \Humbug\Emca\baz(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('Emca\baz')) function baz() { return \Humbug\Emca\baz(...func_get_args()); }
                 }
 
                 namespace {
@@ -226,39 +206,19 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 // Function aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
                 namespace {
-                    if (!function_exists('foo')) {
-                        function foo() {
-                            return \Humbug\foo(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('foo')) function foo() { return \Humbug\foo(...func_get_args()); }
                 }
                 namespace {
-                    if (!function_exists('bar')) {
-                        function bar() {
-                            return \Humbug\bar(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('bar')) function bar() { return \Humbug\bar(...func_get_args()); }
                 }
                 namespace Acme {
-                    if (!function_exists('Acme\foo')) {
-                        function foo() {
-                            return \Humbug\Acme\foo(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('Acme\foo')) function foo() { return \Humbug\Acme\foo(...func_get_args()); }
                 }
                 namespace Acme {
-                    if (!function_exists('Acme\bar')) {
-                        function bar() {
-                            return \Humbug\Acme\bar(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('Acme\bar')) function bar() { return \Humbug\Acme\bar(...func_get_args()); }
                 }
                 namespace Emca {
-                    if (!function_exists('Emca\baz')) {
-                        function baz() {
-                            return \Humbug\Emca\baz(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('Emca\baz')) function baz() { return \Humbug\Emca\baz(...func_get_args()); }
                 }
 
                 namespace {
@@ -286,11 +246,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 // Function aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
-                if (!function_exists('__autoload')) {
-                    function __autoload($className) {
-                        return \Humbug\__autoload(...func_get_args());
-                    }
-                }
+                if (!function_exists('__autoload')) function __autoload($className) { return \Humbug\__autoload(...func_get_args()); }
 
                 return $loader;
 
@@ -319,18 +275,10 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 // Function aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
                 namespace {
-                    if (!function_exists('__autoload')) {
-                        function __autoload($className) {
-                            return \Humbug\__autoload(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('__autoload')) function __autoload($className) { return \Humbug\__autoload(...func_get_args()); }
                 }
                 namespace Acme {
-                    if (!function_exists('Acme\foo')) {
-                        function foo() {
-                            return \Humbug\Acme\foo(...func_get_args());
-                        }
-                    }
+                    if (!function_exists('Acme\foo')) function foo() { return \Humbug\Acme\foo(...func_get_args()); }
                 }
 
                 namespace {
