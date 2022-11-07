@@ -30,8 +30,6 @@ use function usort;
 
 final class ScoperAutoloadGenerator
 {
-    // TODO: aliasing functions could be done via a single function to reduce boiler-template.
-
     private const FUNCTION_ALIASES_DOC = <<<'EOF'
         // Function aliases. For more information see:
         // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
