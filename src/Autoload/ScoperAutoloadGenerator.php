@@ -23,6 +23,7 @@ use function chr;
 use function count;
 use function explode;
 use function implode;
+use function is_string;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
@@ -62,26 +63,24 @@ final class ScoperAutoloadGenerator
             $this->registry->getRecordedFunctions(),
         );
 
-        $hasNamespacedFunctions = self::hasNamespacedFunctions($exposedFunctions);
+        $wrapInNamespace = self::hasNamespacedFunctions($exposedFunctions);
 
-        $statements = implode(
-            self::$eol,
-            self::createClassAliasStatementsSection(
+        $statements = [
+            ...self::createClassAliasStatementsSection(
                 $this->registry->getRecordedClasses(),
-                $hasNamespacedFunctions,
+                $wrapInNamespace,
             ),
-        )
-            .self::$eol
-            .self::$eol;
-        $statements .= implode(
             self::$eol,
-            self::createFunctionAliasStatements(
+            self::$eol,
+            ...self::createFunctionAliasStatements(
                 $exposedFunctions,
-                $hasNamespacedFunctions,
+                $wrapInNamespace,
             ),
-        );
+        ];
 
-        if ($hasNamespacedFunctions) {
+        $statements = implode(self::$eol, $statements);
+
+        if ($wrapInNamespace) {
             $dump = <<<PHP
                 <?php
 
@@ -140,7 +139,7 @@ final class ScoperAutoloadGenerator
      */
     private static function createClassAliasStatementsSection(
         array $exposedClasses,
-        bool $hasNamespacedFunctions
+        bool $wrapInNamespace
     ): array {
         $statements = self::createClassAliasStatements($exposedClasses);
 
@@ -150,7 +149,7 @@ final class ScoperAutoloadGenerator
 
         array_unshift($statements, self::EXPOSE_CLASS_DECLARATION);
 
-        if ($hasNamespacedFunctions) {
+        if ($wrapInNamespace) {
             $statements = self::wrapStatementsInNamespaceBlock('', $statements);
         }
 
@@ -167,7 +166,7 @@ final class ScoperAutoloadGenerator
     private static function createClassAliasStatements(array $exposedClasses): array
     {
         return array_map(
-            static fn (array $pair) => self::createClassAliasStatement(...$pair),
+            static fn (array $class) => self::createClassAliasStatement(...$class),
             $exposedClasses,
         );
     }
@@ -184,12 +183,16 @@ final class ScoperAutoloadGenerator
     }
 
     /**
-     * @param list<string> $statements
+     * @param string|list<string> $statements
      *
      * @return list<string>
      */
-    private static function wrapStatementsInNamespaceBlock(string $namespace, array $statements): array
+    private static function wrapStatementsInNamespaceBlock(string $namespace, string|array $statements): array
     {
+        if (is_string($statements)) {
+            $statements = explode(self::$eol, $statements);
+        }
+
         $indent = str_repeat(' ', 4);
         $indentLine = static fn (string $line) => $indent.$line;
 
@@ -224,13 +227,13 @@ final class ScoperAutoloadGenerator
      */
     private static function createFunctionAliasStatements(
         array $exposedFunctions,
-        bool $hasNamespacedFunctions
+        bool $wrapInNamespace
     ): array {
         $functionsGroupedByNamespace = self::groupFunctionsByNamespace($exposedFunctions);
 
         $statements = array_map(
             static fn (string $namespace) => self::createNamespacedFunctionAliasStatement(
-                $hasNamespacedFunctions,
+                $wrapInNamespace,
                 $namespace,
                 $functionsGroupedByNamespace[$namespace],
             ),
@@ -255,12 +258,13 @@ final class ScoperAutoloadGenerator
     {
         $groupedFunctions = [];
 
-        foreach ($exposedFunctions as [$original, $alias]) {
-            $originalFQ = new FullyQualified($original);
-            $namespace = $originalFQ->slice(0, -1);
-            $functionName = null === $namespace ? $original : (string) $originalFQ->slice(1);
+        foreach ($exposedFunctions as [$exposed, $prefix]) {
+            $originalFQ = new FullyQualified($exposed);
 
-            $groupedFunctions[(string) $namespace][] = [$original, $functionName, $alias];
+            $namespace = $originalFQ->slice(0, -1);
+            $functionName = null === $namespace ? $exposed : (string) $originalFQ->slice(1);
+
+            $groupedFunctions[(string) $namespace][] = [$exposed, $functionName, $prefix];
         }
 
         return $groupedFunctions;
@@ -270,7 +274,7 @@ final class ScoperAutoloadGenerator
      * @param list<array{string, string, string}> $functions
      */
     private static function createNamespacedFunctionAliasStatement(
-        bool $hasNamespacedFunctions,
+        bool $wrapInNamespace,
         string $namespace,
         array $functions
     ): string {
@@ -279,7 +283,7 @@ final class ScoperAutoloadGenerator
             $functions,
         );
 
-        if ($hasNamespacedFunctions) {
+        if ($wrapInNamespace) {
             $statements = self::wrapStatementsInNamespaceBlock(
                 $namespace,
                 $statements,
@@ -290,18 +294,18 @@ final class ScoperAutoloadGenerator
     }
 
     private static function createFunctionAliasStatement(
-        string $original,
+        string $exposed,
         string $functionName,
-        string $alias
+        string $prefixed
     ): string {
         return sprintf(
             <<<'PHP'
                 if (!function_exists('%s')) { function %s(%s) { return \%s(...func_get_args()); } }
                 PHP,
-            $original,
+            $exposed,
             $functionName,
             '__autoload' === $functionName ? '$className' : '',
-            $alias,
+            $prefixed,
         );
     }
 
