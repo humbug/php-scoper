@@ -104,7 +104,7 @@ class TraverserFactory
                 $reflector,
             ),
 
-            new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
+            new NodeVisitor\FunctionIdentifierRecorder(
                 $prefix,
                 $identifierResolver,
                 $symbolsRegistry,
