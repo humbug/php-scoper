@@ -41,6 +41,14 @@ final class ScoperAutoloadGenerator
         // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
         EOF;
 
+    private const EXPOSE_CLASS_DECLARATION = <<<'PHP'
+        function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
+            if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                spl_autoload_call($prefixed);
+            }
+        }
+        PHP;
+
     /** @var non-empty-string */
     private static string $eol;
 
@@ -138,8 +146,10 @@ final class ScoperAutoloadGenerator
         $statements = self::createClassAliasStatements($exposedClasses);
 
         if (count($statements) === 0) {
-            return $statements;
+            return [];
         }
+
+        array_unshift($statements, self::EXPOSE_CLASS_DECLARATION);
 
         if ($hasNamespacedFunctions) {
             $statements = self::wrapStatementsInNamespaceBlock('', $statements);
@@ -164,17 +174,13 @@ final class ScoperAutoloadGenerator
     }
 
     private static function createClassAliasStatement(
-        string $original,
-        string $alias
+        string $exposed,
+        string $prefixed
     ): string {
         return sprintf(
-            <<<'PHP'
-                if (!class_exists('%1$s', false) && !interface_exists('%1$s', false) && !trait_exists('%1$s', false)) {
-                    spl_autoload_call('%2$s');
-                }
-                PHP,
-            $original,
-            $alias,
+            'humbug_phpscoper_expose_class(\'%s\', \'%s\');',
+            $exposed,
+            $prefixed,
         );
     }
 
