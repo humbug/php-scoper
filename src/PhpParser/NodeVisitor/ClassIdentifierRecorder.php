@@ -27,7 +27,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- *  Records the classes that need to be aliased.
+ * Records the classes that need to be aliased.
  *
  * @private
  */
@@ -81,11 +81,10 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             return true;
         }
 
-        // If is a function declaration, excluded global functions need to be
-        // aliased since otherwise any usage without the FQCN in a namespace
-        // will break. Indeed, previously it would work thanks to the function
-        // PHP autoloading fallback mechanism, but now that the declaration is
-        // namespaced because of the prefix, an alias is needed.
+        // Excluded global classes (for which we found a declaration) need to be
+        // aliased since otherwise any usage will not point to the prefixed
+        // version (since it's an alias) but the declaration will now declare
+        // a prefixed version (due to the namespace).
         return $this->enrichedReflector->belongsToGlobalNamespace($resolvedName)
             && $this->enrichedReflector->isClassExcluded($resolvedName);
     }
