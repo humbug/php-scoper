@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Autoload;
 
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node\Name\FullyQualified;
+use function array_keys;
 use function array_map;
 use function array_unshift;
 use function chr;
@@ -29,8 +30,6 @@ use function usort;
 
 final class ScoperAutoloadGenerator
 {
-    // TODO: aliasing functions could be done via a single function to reduce boiler-template.
-
     private const FUNCTION_ALIASES_DOC = <<<'EOF'
         // Function aliases. For more information see:
         // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
@@ -227,12 +226,15 @@ final class ScoperAutoloadGenerator
         array $exposedFunctions,
         bool $hasNamespacedFunctions
     ): array {
+        $functionsGroupedByNamespace = self::groupFunctionsByNamespace($exposedFunctions);
+
         $statements = array_map(
-            static fn (array $pair) => self::createFunctionAliasStatement(
+            static fn (string $namespace) => self::createNamespacedFunctionAliasStatement(
                 $hasNamespacedFunctions,
-                ...$pair,
+                $namespace,
+                $functionsGroupedByNamespace[$namespace],
             ),
-            $exposedFunctions,
+            array_keys($functionsGroupedByNamespace),
         );
 
         if ([] === $statements) {
@@ -244,48 +246,62 @@ final class ScoperAutoloadGenerator
         return $statements;
     }
 
-    private static function createFunctionAliasStatement(
+    /**
+     * @param list<array{string, string}> $exposedFunctions
+     *
+     * @return array<string, list<array{string, string, string}>>
+     */
+    private static function groupFunctionsByNamespace(array $exposedFunctions): array
+    {
+        $groupedFunctions = [];
+
+        foreach ($exposedFunctions as [$original, $alias]) {
+            $originalFQ = new FullyQualified($original);
+            $namespace = $originalFQ->slice(0, -1);
+            $functionName = null === $namespace ? $original : (string) $originalFQ->slice(1);
+
+            $groupedFunctions[(string) $namespace][] = [$original, $functionName, $alias];
+        }
+
+        return $groupedFunctions;
+    }
+
+    /**
+     * @param list<array{string, string, string}> $functions
+     */
+    private static function createNamespacedFunctionAliasStatement(
         bool $hasNamespacedFunctions,
-        string $original,
-        string $alias
+        string $namespace,
+        array $functions
     ): string {
-        if (!$hasNamespacedFunctions) {
-            return sprintf(
-                <<<'PHP'
-                    if (!function_exists('%1$s')) { function %1$s(%2$s) { return \%3$s(...func_get_args()); } }
-                    PHP,
-                $original,
-                '__autoload' === $original ? '$className' : '',
-                $alias,
+        $statements = array_map(
+            static fn (array $function) => self::createFunctionAliasStatement(...$function),
+            $functions,
+        );
+
+        if ($hasNamespacedFunctions) {
+            $statements = self::wrapStatementsInNamespaceBlock(
+                $namespace,
+                $statements,
             );
         }
 
-        // When the function is namespaced we need to wrap the function
-        // declaration within its namespace
-        // TODO: consider grouping the declarations within the same namespace
-        //  i.e. that if there is Acme\foo and Acme\bar that only one
-        //  namespace Acme statement is used
+        return implode(self::$eol, $statements);
+    }
 
-        $originalFQ = new FullyQualified($original);
-        $namespace = $originalFQ->slice(0, -1);
-        $functionName = null === $namespace ? $original : (string) $originalFQ->slice(1);
-
-        return implode(
-            self::$eol,
-            self::wrapStatementsInNamespaceBlock(
-                (string) $namespace,
-                [
-                    sprintf(
-                        <<<'PHP'
-                            if (!function_exists('%s')) { function %s(%s) { return \%s(...func_get_args()); } }
-                            PHP,
-                        $original,
-                        $functionName,
-                        '__autoload' === $functionName ? '$className' : '',
-                        $alias,
-                    ),
-                ],
-            ),
+    private static function createFunctionAliasStatement(
+        string $original,
+        string $functionName,
+        string $alias
+    ): string {
+        return sprintf(
+            <<<'PHP'
+                if (!function_exists('%s')) { function %s(%s) { return \%s(...func_get_args()); } }
+                PHP,
+            $original,
+            $functionName,
+            '__autoload' === $functionName ? '$className' : '',
+            $alias,
         );
     }
 
