@@ -27,7 +27,7 @@ use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
 
 /**
- * Records the user classes which are exposed.
+ *  Records the classes that need to be aliased.
  *
  * @private
  */
@@ -65,7 +65,7 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             throw UnexpectedParsingScenario::create();
         }
 
-        if ($this->enrichedReflector->isExposedClass((string) $resolvedName)) {
+        if ($this->shouldBeAliased($resolvedName->toString())) {
             $this->symbolsRegistry->recordClass(
                 $resolvedName,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),
@@ -73,5 +73,20 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
         }
 
         return $node;
+    }
+
+    private function shouldBeAliased(string $resolvedName): bool
+    {
+        if ($this->enrichedReflector->isExposedClass($resolvedName)) {
+            return true;
+        }
+
+        // If is a function declaration, excluded global functions need to be
+        // aliased since otherwise any usage without the FQCN in a namespace
+        // will break. Indeed, previously it would work thanks to the function
+        // PHP autoloading fallback mechanism, but now that the declaration is
+        // namespaced because of the prefix, an alias is needed.
+        return $this->enrichedReflector->belongsToGlobalNamespace($resolvedName)
+            && $this->enrichedReflector->isClassExcluded($resolvedName);
     }
 }

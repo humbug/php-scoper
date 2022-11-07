@@ -178,6 +178,11 @@ return [
 
     'Declaration in the global namespace which is excluded' => [
         'exclude-namespaces' => ['/^$/'],
+        'expected-recorded-classes' => [
+            ['A', 'Humbug\A'],
+            ['B', 'Humbug\B'],
+            ['C', 'Humbug\C'],
+        ],
         'payload' => <<<'PHP'
         <?php
         
@@ -209,9 +214,11 @@ return [
             interface B
             {
             }
+            \class_alias('Humbug\\B', 'B', \false);
             interface C
             {
             }
+            \class_alias('Humbug\\C', 'C', \false);
             new class
             {
                 public function test()
@@ -239,6 +246,7 @@ return [
                     };
                 }
             }
+            \class_alias('Humbug\\A', 'A', \false);
         }
         
         PHP,

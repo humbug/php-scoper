@@ -83,18 +83,20 @@ return [
     'whitelist' => [
         Finder::class,
     ],
-    'exclude-namespaces' => [
-        'Symfony\Polyfill',
-    ],
+    'expose-global-functions' => true,
+    'expose-global-classes' => true,
+    //    'exclude-namespaces' => [
+    //        'Symfony\Polyfill',
+    //    ],
     'exclude-constants' => [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
     ],
     'exclude-files' => [
         ...$jetBrainStubs,
-        ...$polyfillsBootstraps,
-        ...$polyfillsStubs,
-        ...$symfonyDeprecationContracts,
+        //        ...$polyfillsBootstraps,
+        //        ...$polyfillsStubs,
+        //        ...$symfonyDeprecationContracts,
     ],
     'patchers' => [
         //
