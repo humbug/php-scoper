@@ -142,7 +142,7 @@ final class ScoperAutoloadGenerator
         }
 
         if ($hasNamespacedFunctions) {
-            $statements = self::wrapStatementsInNamespaceBlock($statements);
+            $statements = self::wrapStatementsInNamespaceBlock('', $statements);
         }
 
         array_unshift($statements, self::CLASS_ALIASES_DOC);
@@ -183,7 +183,7 @@ final class ScoperAutoloadGenerator
      *
      * @return list<string>
      */
-    private static function wrapStatementsInNamespaceBlock(array $statements): array
+    private static function wrapStatementsInNamespaceBlock(string $namespace, array $statements): array
     {
         $indent = str_repeat(' ', 4);
         $indentLine = static fn (string $line) => $indent.$line;
@@ -200,7 +200,13 @@ final class ScoperAutoloadGenerator
             $statements,
         );
 
-        array_unshift($statements, 'namespace {');
+        array_unshift(
+            $statements,
+            sprintf(
+                'namespace %s{',
+                '' === $namespace ? '' : $namespace.' ',
+            ),
+        );
         $statements[] = '}'.self::$eol;
 
         return $statements;
@@ -258,17 +264,22 @@ final class ScoperAutoloadGenerator
         $namespace = $originalFQ->slice(0, -1);
         $functionName = null === $namespace ? $original : (string) $originalFQ->slice(1);
 
-        return sprintf(
-            <<<'PHP'
-                namespace %s{
-                    if (!function_exists('%s')) { function %s(%s) { return \%s(...func_get_args()); } }
-                }
-                PHP,
-            null === $namespace ? '' : $namespace->toString().' ',
-            $original,
-            $functionName,
-            '__autoload' === $functionName ? '$className' : '',
-            $alias,
+        return implode(
+            self::$eol,
+            self::wrapStatementsInNamespaceBlock(
+                (string) $namespace,
+                [
+                    sprintf(
+                        <<<'PHP'
+                            if (!function_exists('%s')) { function %s(%s) { return \%s(...func_get_args()); } }
+                            PHP,
+                        $original,
+                        $functionName,
+                        '__autoload' === $functionName ? '$className' : '',
+                        $alias,
+                    ),
+                ],
+            ),
         );
     }
 
