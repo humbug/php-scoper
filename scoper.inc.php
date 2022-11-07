@@ -46,58 +46,17 @@ $jetBrainStubs = (static function (): array {
     return $files;
 })();
 
-$polyfillsBootstraps = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__.'/vendor/symfony/polyfill-*')
-            ->name('bootstrap*.php'),
-        false,
-    ),
-);
-
-$polyfillsStubs = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__.'/vendor/symfony/polyfill-*/Resources/stubs')
-            ->name('*.php'),
-        false,
-    ),
-);
-
-$symfonyDeprecationContracts = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__.'/vendor/symfony/deprecation-contracts')
-            ->name('*.php'),
-        false,
-    ),
-);
-
 return [
     'whitelist' => [
         Finder::class,
     ],
     'expose-global-functions' => true,
     'expose-global-classes' => true,
-    //    'exclude-namespaces' => [
-    //        'Symfony\Polyfill',
-    //    ],
     'exclude-constants' => [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
     ],
-    'exclude-files' => [
-        ...$jetBrainStubs,
-        //        ...$polyfillsBootstraps,
-        //        ...$polyfillsStubs,
-        //        ...$symfonyDeprecationContracts,
-    ],
+    'exclude-files' => $jetBrainStubs,
     'patchers' => [
         //
         // PHPStorm stub map: leave it unchanged
