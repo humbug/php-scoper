@@ -104,7 +104,7 @@ class TraverserFactory
                 $reflector,
             ),
 
-            new NodeVisitor\NamespaceStmt\FunctionIdentifierRecorder(
+            new NodeVisitor\FunctionIdentifierRecorder(
                 $prefix,
                 $identifierResolver,
                 $symbolsRegistry,
@@ -130,9 +130,8 @@ class TraverserFactory
             new NodeVisitor\EvalPrefixer($stringNodePrefixer),
 
             new NodeVisitor\ClassAliasStmtAppender(
-                $prefix,
-                $reflector,
                 $identifierResolver,
+                $symbolsRegistry,
             ),
             new NodeVisitor\MultiConstStmtReplacer(),
             new NodeVisitor\ConstStmtReplacer(

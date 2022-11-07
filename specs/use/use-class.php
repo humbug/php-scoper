@@ -148,6 +148,9 @@ PHP
 
     'Use statement of a class belonging to the global scope which has been excluded' => [
         'exclude-namespaces' => [''],
+        'expected-recorded-classes' => [
+            ['Foo', 'Humbug\Foo'],
+        ],
         'payload' => <<<'PHP'
         <?php
         
@@ -162,6 +165,7 @@ PHP
             class Foo
             {
             }
+            \class_alias('Humbug\\Foo', 'Foo', \false);
             use Foo;
         }
         
@@ -171,7 +175,9 @@ PHP
     'Use statement of an exposed class belonging to the global scope which has been excluded' => [
         'exclude-namespaces' => [''],
         'expose-classes' => ['Foo'],
-        'expected-recorded-classes' => [],
+        'expected-recorded-classes' => [
+            ['Foo', 'Humbug\Foo'],
+        ],
         'payload' => <<<'PHP'
         <?php
         
@@ -186,6 +192,7 @@ PHP
             class Foo
             {
             }
+            \class_alias('Humbug\\Foo', 'Foo', \false);
             use Foo;
         }
         
