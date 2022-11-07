@@ -222,7 +222,7 @@ final class ScoperAutoloadGenerator
         if (!$hasNamespacedFunctions) {
             return sprintf(
                 <<<'PHP'
-                    if (!function_exists('%1$s')) function %1$s(%2$s) { return \%3$s(...func_get_args()); }
+                    if (!function_exists('%1$s')) { function %1$s(%2$s) { return \%3$s(...func_get_args()); } }
                     PHP,
                 $original,
                 '__autoload' === $original ? '$className' : '',
@@ -243,7 +243,7 @@ final class ScoperAutoloadGenerator
         return sprintf(
             <<<'PHP'
                 namespace %s{
-                    if (!function_exists('%s')) function %s(%s) { return \%s(...func_get_args()); }
+                    if (!function_exists('%s')) { function %s(%s) { return \%s(...func_get_args()); } }
                 }
                 PHP,
             null === $namespace ? '' : $namespace->toString().' ',
