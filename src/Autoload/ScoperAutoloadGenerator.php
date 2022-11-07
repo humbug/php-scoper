@@ -25,6 +25,7 @@ use function implode;
 use function sprintf;
 use function str_repeat;
 use function str_replace;
+use function usort;
 
 final class ScoperAutoloadGenerator
 {
@@ -50,7 +51,9 @@ final class ScoperAutoloadGenerator
 
     public function dump(): string
     {
-        $exposedFunctions = $this->registry->getRecordedFunctions();
+        $exposedFunctions = self::sortExposedFunctions(
+            $this->registry->getRecordedFunctions(),
+        );
 
         $hasNamespacedFunctions = self::hasNamespacedFunctions($exposedFunctions);
 
@@ -106,6 +109,21 @@ final class ScoperAutoloadGenerator
         }
 
         return self::removeUnnecessaryLineReturns($dump);
+    }
+
+    /**
+     * @param list<array{string, string}> $exposedFunctions
+     *
+     * @return list<array{string, string}>
+     */
+    private static function sortExposedFunctions(array $exposedFunctions): array
+    {
+        usort(
+            $exposedFunctions,
+            static fn (array $a, array $b) => $a[0] <=> $b[0],
+        );
+
+        return $exposedFunctions;
     }
 
     /**
