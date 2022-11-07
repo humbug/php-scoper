@@ -82,6 +82,27 @@ return [
         PHP,
     ],
 
+    'Declaration of an internal class' => [
+        'expected-recorded-classes' => [
+            ['Normalizer', 'Humbug\Normalizer'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        class Normalizer {}
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        class Normalizer
+        {
+        }
+        \class_alias('Humbug\\Normalizer', 'Normalizer', \false);
+        
+        PHP,
+    ],
+
     'Declaration in a namespace' => <<<'PHP'
     <?php
     

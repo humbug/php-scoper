@@ -55,6 +55,9 @@ return [
 
     'Constant call on a class belonging to the global namespace which is excluded' => [
         'exclude-namespaces' => ['/^$/'],
+        'expected-recorded-classes' => [
+            ['Command', 'Humbug\Command'],
+        ],
         'payload' => <<<'PHP'
         <?php
         
@@ -68,6 +71,7 @@ return [
             class Command
             {
             }
+            \class_alias('Humbug\\Command', 'Command', \false);
             \Command::MAIN_CONST;
         }
         

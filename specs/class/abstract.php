@@ -88,6 +88,9 @@ return [
 
     'Declaration in the global namespace with the global namespace excluded' => [
         'exclude-namespaces' => ['/^$/'],
+        'expected-recorded-classes' => [
+            ['A', 'Humbug\A'],
+        ],
         'payload' => <<<'PHP'
         <?php
         
@@ -106,6 +109,7 @@ return [
                 }
                 public abstract function b();
             }
+            \class_alias('Humbug\\A', 'A', \false);
         }
         
         PHP,
@@ -143,7 +147,9 @@ return [
     'Declaration of an exposed class in the global namespace which is excluded' => [
         'exclude-namespaces' => ['/^$/'],
         'expose-classes' => ['A'],
-        'expected-recorded-classes' => [],
+        'expected-recorded-classes' => [
+            ['A', 'Humbug\A'],
+        ],
         'payload' => <<<'PHP'
         <?php
         
@@ -162,6 +168,7 @@ return [
                 }
                 public abstract function b();
             }
+            \class_alias('Humbug\\A', 'A', \false);
         }
         
         PHP,
