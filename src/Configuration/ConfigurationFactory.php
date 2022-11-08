@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
+use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use RuntimeException;
@@ -87,6 +88,7 @@ final class ConfigurationFactory
         $patchers = self::retrievePatchers($config);
 
         array_unshift($patchers, new SymfonyPatcher());
+        array_unshift($patchers, new SymfonyParentTraitPatcher());
         array_unshift($patchers, new ComposerPatcher());
 
         $symbolsConfiguration = $this->configurationWhitelistFactory->createSymbolsConfiguration($config);

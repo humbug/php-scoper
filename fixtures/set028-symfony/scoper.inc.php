@@ -38,17 +38,17 @@ $polyfillsStubs = array_map(
 
 return [
     'exclude-namespaces' => [
-        'Symfony\Polyfill',
+//        'Symfony\Polyfill',
     ],
     'exclude-constants' => [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
     ],
     'exclude-files' => [
-        ...$polyfillsBootstraps,
-        ...$polyfillsStubs,
+//        ...$polyfillsBootstraps,
+//        ...$polyfillsStubs,
     ],
     'expose-classes' => [
-        'Composer\InstalledVersions',
+//        'Composer\InstalledVersions',
     ]
 ];
