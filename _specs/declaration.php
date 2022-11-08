@@ -35,22 +35,116 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'nominal' => <<<'PHP'
+    'minimal enum declaration' => <<<'PHP'
     <?php
     
-    enum Foo {}
+    enum Status {
+        DRAFT,
+        PUBLISHED,
+        ARCHIVED;
+    }
     
-    class Enum {}
     ----
     <?php
     
     namespace Humbug;
+
+    enum PostStatus {
+        DRAFT,
+        PUBLISHED,
+        ARCHIVED;
+    }  
     
-    enum Foo
-    {
+    PHP,
+
+    'enum with methods' => <<<'PHP'
+    <?php
+    
+    enum Status {
+        DRAFT,
+        PUBLISHED,
+        ARCHIVED;
+        
+        public function color(): string {
+            return match($this) {
+                Status::DRAFT => 'grey',   
+                Status::PUBLISHED => 'green',   
+                self::ARCHIVED => 'red',   
+            };
+        }
     }
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+
+    enum PostStatus {
+        DRAFT,
+        PUBLISHED,
+        ARCHIVED;
+    }  
+    
+    PHP,
+
+    'enum with interface' => <<<'PHP'
+    <?php
+    
+    enum Status implements HasColor {
+        case DRAFT = 'draft';
+        case PUBLISHED = 'published';
+        case ARCHIVED = 'archived';
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+
+    enum Status implements \HasColor
+    {
+        case DRAFT = 'draft';
+        case PUBLISHED = 'published';
+        case ARCHIVED = 'archived';
+    }
+    
+    PHP,
+
+    'class with Enum name' => <<<'PHP'
+    <?php
+    
+    class Enum {}
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+
     class Enum
     {
+    }
+    
+    PHP,
+
+    'backed enum' => <<<'PHP'
+    <?php
+    
+    enum Status: string {
+        case DRAFT = 'draft';
+        case PUBLISHED = 'published';
+        case ARCHIVED = 'archived';
+    }
+    
+    ----
+    <?php
+    
+    namespace Humbug;
+
+    enum Status : string
+    {
+        case DRAFT = 'draft';
+        case PUBLISHED = 'published';
+        case ARCHIVED = 'archived';
     }
 
     PHP,
