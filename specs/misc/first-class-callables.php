@@ -73,7 +73,7 @@ return [
     new \Humbug\X\A(...);
     $this->foo(...);
     $this?->foo(...);
-    #[\X\A(...)]
+    #[A(...)]
     function b()
     {
     }
