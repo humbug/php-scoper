@@ -150,6 +150,12 @@ return [
             class Main {
                 function foo(): self {}
                 function foo(): void {}
+                function foo(): static {}
+                function foo(): never {}
+
+                function foo(): false {}
+                function foo(): true {}
+                function foo(): null {}
                 
                 function foo(): bool {}
                 function foo(): ?bool {}
@@ -217,6 +223,21 @@ return [
             {
             }
             function foo() : void
+            {
+            }
+            function foo() : static
+            {
+            }
+            function foo() : never
+            {
+            }
+            function foo() : false
+            {
+            }
+            function foo() : true
+            {
+            }
+            function foo() : null
             {
             }
             function foo() : bool

@@ -284,7 +284,14 @@ return [
             use ArrayIterator;
 
             function foo(): void {}
+            function foo(): self {}
+            function foo(): static {}
+            function foo(): never {}
 
+            function foo(): false {}
+            function foo(): true {}
+            function foo(): null {}
+            
             function foo(): bool {}
             function foo(): ?bool {}
 
@@ -345,6 +352,24 @@ return [
         use Humbug\Foo;
         use ArrayIterator;
         function foo() : void
+        {
+        }
+        function foo() : self
+        {
+        }
+        function foo() : static
+        {
+        }
+        function foo() : never
+        {
+        }
+        function foo() : false
+        {
+        }
+        function foo() : true
+        {
+        }
+        function foo() : null
         {
         }
         function foo() : bool
