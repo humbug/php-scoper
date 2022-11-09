@@ -39,9 +39,9 @@ return [
     <?php
     
     enum Status {
-        DRAFT,
-        PUBLISHED,
-        ARCHIVED;
+        case DRAFT;
+        case PUBLISHED;
+        case ARCHIVED;
     }
     
     ----
@@ -49,11 +49,12 @@ return [
     
     namespace Humbug;
 
-    enum PostStatus {
-        DRAFT,
-        PUBLISHED,
-        ARCHIVED;
-    }  
+    enum Status
+    {
+        case DRAFT;
+        case PUBLISHED;
+        case ARCHIVED;
+    }
     
     PHP,
 
@@ -61,9 +62,9 @@ return [
     <?php
     
     enum Status {
-        DRAFT,
-        PUBLISHED,
-        ARCHIVED;
+        case DRAFT;
+        case PUBLISHED;
+        case ARCHIVED;
         
         public function color(): string {
             return match($this) {
@@ -79,11 +80,20 @@ return [
     
     namespace Humbug;
 
-    enum PostStatus {
-        DRAFT,
-        PUBLISHED,
-        ARCHIVED;
-    }  
+    enum Status
+    {
+        case DRAFT;
+        case PUBLISHED;
+        case ARCHIVED;
+        public function color() : string
+        {
+            return match ($this) {
+                Status::DRAFT => 'grey',
+                Status::PUBLISHED => 'green',
+                self::ARCHIVED => 'red',
+            };
+        }
+    }
     
     PHP,
 
@@ -148,4 +158,56 @@ return [
     }
 
     PHP,
+
+    'excluded enum (doesn\'t work)' => [
+        'exclude-classes' => ['Status'],
+        'payload' => <<<'PHP'
+            <?php
+            
+            enum Status {
+                case DRAFT;
+                case PUBLISHED;
+                case ARCHIVED;
+            }
+            
+            ----
+            <?php
+            
+            namespace Humbug;
+
+            enum Status
+            {
+                case DRAFT;
+                case PUBLISHED;
+                case ARCHIVED;
+            }
+            
+            PHP
+    ],
+
+    'exposed enum (doesn\'t work)' => [
+        'expose-classes' => ['Status'],
+        'payload' => <<<'PHP'
+            <?php
+            
+            enum Status {
+                case DRAFT;
+                case PUBLISHED;
+                case ARCHIVED;
+            }
+            
+            ----
+            <?php
+            
+            namespace Humbug;
+
+            enum Status
+            {
+                case DRAFT;
+                case PUBLISHED;
+                case ARCHIVED;
+            }
+            
+            PHP
+    ],
 ];
