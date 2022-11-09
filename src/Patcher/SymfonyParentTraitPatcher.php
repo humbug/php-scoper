@@ -15,13 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Patcher;
 
 use function array_key_exists;
-use function array_keys;
-use function Safe\preg_replace;
-use function sprintf;
 use function str_contains;
 use function str_replace;
 use function strlen;
-use function strpos;
 
 final class SymfonyParentTraitPatcher implements Patcher
 {

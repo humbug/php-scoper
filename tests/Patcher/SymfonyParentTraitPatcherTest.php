@@ -74,12 +74,12 @@ class SymfonyParentTraitPatcherTest extends TestCase
                  * For the full copyright and license information, please view the LICENSE
                  * file that was distributed with this source code.
                  */
-                
+
                 namespace Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
-                
+
                 use Symfony\Component\DependencyInjection\ChildDefinition;
                 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-                
+
                 trait ParentTrait
                 {
                     /**
@@ -94,7 +94,7 @@ class SymfonyParentTraitPatcherTest extends TestCase
                         if (!$this->allowParent) {
                             throw new InvalidArgumentException(sprintf('A parent cannot be defined when either "_instanceof" or "_defaults" are also defined for service prototype "%s".', $this->id));
                         }
-                
+
                         if ($this->definition instanceof ChildDefinition) {
                             $this->definition->setParent($parent);
                         } else {
@@ -103,10 +103,10 @@ class SymfonyParentTraitPatcherTest extends TestCase
                             $definition = substr_replace($definition, '53', 2, 2);
                             $definition = substr_replace($definition, 'Child', 44, 0);
                             $definition = unserialize($definition);
-                
+
                             $this->definition = $definition->setParent($parent);
                         }
-                
+
                         return $this;
                     }
                 }
@@ -123,12 +123,12 @@ class SymfonyParentTraitPatcherTest extends TestCase
                  * For the full copyright and license information, please view the LICENSE
                  * file that was distributed with this source code.
                  */
-                
+
                 namespace Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
-                
+
                 use Symfony\Component\DependencyInjection\ChildDefinition;
                 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
-                
+
                 trait ParentTrait
                 {
                     /**
@@ -143,7 +143,7 @@ class SymfonyParentTraitPatcherTest extends TestCase
                         if (!$this->allowParent) {
                             throw new InvalidArgumentException(sprintf('A parent cannot be defined when either "_instanceof" or "_defaults" are also defined for service prototype "%s".', $this->id));
                         }
-                
+
                         if ($this->definition instanceof ChildDefinition) {
                             $this->definition->setParent($parent);
                         } else {
@@ -152,10 +152,10 @@ class SymfonyParentTraitPatcherTest extends TestCase
                             $definition = substr_replace($definition, '60', 2, 2);
                             $definition = substr_replace($definition, 'Child', 51, 0);
                             $definition = unserialize($definition);
-                
+
                             $this->definition = $definition->setParent($parent);
                         }
-                
+
                         return $this;
                     }
                 }
@@ -176,11 +176,11 @@ class SymfonyParentTraitPatcherTest extends TestCase
                  * file that was distributed with this source code.
                  */
                 namespace Humbug\Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
-                
+
                 use Humbug\Symfony\Component\DependencyInjection\ChildDefinition;
                 use Humbug\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
                 use function strlen;
-                
+
                 trait ParentTrait
                 {
                     /**
@@ -222,11 +222,11 @@ class SymfonyParentTraitPatcherTest extends TestCase
                  * file that was distributed with this source code.
                  */
                 namespace Humbug\Symfony\Component\DependencyInjection\Loader\Configurator\Traits;
-                
+
                 use Humbug\Symfony\Component\DependencyInjection\ChildDefinition;
                 use Humbug\Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
                 use function strlen;
-                
+
                 trait ParentTrait
                 {
                     /**
