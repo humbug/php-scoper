@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 return [
     'meta' => [
-        'title' => 'First-class callables',
+        'title' => 'Attributes',
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
@@ -35,48 +35,46 @@ return [
         'expected-recorded-functions' => [],
     ],
 
-    'PHP native symbols' => <<<'PHP'
+    'FQCN attribute' => <<<'PHP'
     <?php
     
-    namespace Acme;
-    
-    use function something;
-    use X\A;
-    
-    something(...);
-    \something(...);
-    
-    A::foo(...);
-    \X\A::foo(...);
-    
-    new A(...);
-    new \X\A(...);
-    
-    $this->foo(...);
-    $this?->foo(...);
-    
-    #[A(...)]
-    function b() {}
+    namespace PhpScoper\Command;
+
+    #[\PhpScoper\Attribute\AsCommand(name: "main")]
+    class MainCommand {}
     
     ----
     <?php
-    
-    namespace Humbug\Acme;
 
-    use function Humbug\something;
-    use Humbug\X\A;
-    something(...);
-    \Humbug\something(...);
-    A::foo(...);
-    \Humbug\X\A::foo(...);
-    new A(...);
-    new \Humbug\X\A(...);
-    $this->foo(...);
-    $this?->foo(...);
-    #[A(...)]
-    function b()
+    namespace Humbug\PhpScoper\Command;
+
+    #[\Humbug\PhpScoper\Attribute\AsCommand(name: "main")]
+    class MainCommand
     {
     }
 
+    PHP,
+
+    'imported attribute' => <<<'PHP'
+    <?php
+    
+    namespace PhpScoper\Command;
+
+    use PhpScoper\Attribute\AsCommand;
+
+    #[AsCommand(name: "main")]
+    class MainCommand {}
+    
+    ----
+    <?php
+
+    namespace Humbug\PhpScoper\Command;
+
+    use Humbug\PhpScoper\Attribute\AsCommand;
+    #[AsCommand(name: "main")]
+    class MainCommand
+    {
+    }
+  
     PHP,
 ];

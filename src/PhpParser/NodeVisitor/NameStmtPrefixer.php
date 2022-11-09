@@ -20,6 +20,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\UseStmtName;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
@@ -68,6 +69,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 {
     private const SUPPORTED_PARENT_NODE_CLASS_NAMES = [
         Alias::class,
+        Attribute::class,
         ArrowFunction::class,
         Catch_::class,
         ConstFetch::class,
