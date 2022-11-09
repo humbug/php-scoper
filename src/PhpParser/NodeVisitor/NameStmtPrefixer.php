@@ -48,7 +48,6 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UnionType;
 use PhpParser\NodeVisitorAbstract;
 use function in_array;
-use function iter\any;
 use function strtolower;
 
 /**
@@ -221,10 +220,13 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private static function isParentNodeSupported(Node $parentNode): bool
     {
-        return any(
-            static fn (string $supportedClassName) => $parentNode instanceof $supportedClassName,
-            self::SUPPORTED_PARENT_NODE_CLASS_NAMES,
-        );
+        foreach (self::SUPPORTED_PARENT_NODE_CLASS_NAMES as $supportedClassName) {
+            if ($parentNode instanceof $supportedClassName) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isNamePrefixable(Name $resolvedName): bool
