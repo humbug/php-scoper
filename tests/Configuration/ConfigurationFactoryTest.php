@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
+use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
@@ -60,6 +61,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         self::assertEquals(
             new PatcherChain([
                 new ComposerPatcher(),
+                new SymfonyParentTraitPatcher(),
                 new SymfonyPatcher(),
             ]),
             $configuration->getPatcher(),
@@ -140,6 +142,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         self::assertEquals(
             new PatcherChain([
                 new ComposerPatcher(),
+                new SymfonyParentTraitPatcher(),
                 new SymfonyPatcher(),
             ]),
             $configuration->getPatcher(),
