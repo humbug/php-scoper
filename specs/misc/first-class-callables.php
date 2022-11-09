@@ -52,6 +52,9 @@ return [
     new A(...);
     new \X\A(...);
     
+    $this->foo(...);
+    $this?->foo(...);
+    
     #[A(...)]
     function b() {}
     
@@ -68,6 +71,8 @@ return [
     \Humbug\X\A::foo(...);
     new A(...);
     new \Humbug\X\A(...);
+    $this->foo(...);
+    $this?->foo(...);
     #[\X\A(...)]
     function b()
     {
