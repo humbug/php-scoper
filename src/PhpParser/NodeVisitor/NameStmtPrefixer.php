@@ -20,6 +20,7 @@ use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\UseStmtName;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
+use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\Closure;
@@ -47,6 +48,7 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UnionType;
 use PhpParser\NodeVisitorAbstract;
 use function in_array;
+use function iter\any;
 use function strtolower;
 
 /**
@@ -68,6 +70,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 {
     private const SUPPORTED_PARENT_NODE_CLASS_NAMES = [
         Alias::class,
+        Attribute::class,
         ArrowFunction::class,
         Catch_::class,
         ConstFetch::class,
@@ -218,13 +221,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private static function isParentNodeSupported(Node $parentNode): bool
     {
-        foreach (self::SUPPORTED_PARENT_NODE_CLASS_NAMES as $supportedClassName) {
-            if ($parentNode instanceof $supportedClassName) {
-                return true;
-            }
-        }
-
-        return false;
+        return any(
+            static fn (string $supportedClassName) => $parentNode instanceof $supportedClassName,
+            self::SUPPORTED_PARENT_NODE_CLASS_NAMES,
+        );
     }
 
     private function isNamePrefixable(Name $resolvedName): bool
