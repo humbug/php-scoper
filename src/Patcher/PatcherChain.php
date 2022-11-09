@@ -35,8 +35,6 @@ final class PatcherChain implements Patcher
     }
 
     /**
-     * @internal
-     *
      * @return array<(callable(string, string, string): string)|Patcher>
      */
     public function getPatchers(): array
