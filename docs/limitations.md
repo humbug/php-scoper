@@ -10,6 +10,8 @@
 - [Composer Plugins](#composer-plugins)
 - [PSR-0 Partial support](#psr-0-partial-support)
 - [Files autoloading](#files-autoloading)
+- [Exposing/Excluding traits](#exposingexcluding-traits)
+- [Exposing/Excluding enums](#exposingexcluding-enums)
 
 
 ### Dynamic symbols
@@ -238,6 +240,19 @@ Unfortunately, this hash is defined by the package and file name, which means
 the scoped file and non-scoped file will have the same hash resulting in errors.
 
 This is a limitation that should be fixable, check [#298] for the progress.
+
+
+### Exposing/Excluding traits
+
+There is currently no way to expose or exclude a trait. Since there is no
+aliasing mechanism for traits, it could be still possible by declaring a trait
+that extends the scoped trait, but this is currently not implemented.
+
+
+### Exposing/Excluding enums
+
+There is currently no way to expose or exclude an enum. The problem being there
+is no way to alias one.
 
 
 <br />

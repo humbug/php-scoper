@@ -66,6 +66,8 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Composer Plugins](docs/limitations.md#composer-plugins)
     - [PSR-0 Partial support](docs/limitations.md#psr-0-partial-support)
     - [Files autoloading](docs/limitations.md#files-autoloading)
+    - [Exposing/Excluding traits](docs/limitations.md#exposingexcluding-traits)
+    - [Exposing/Excluding enums](docs/limitations.md#exposingexcluding-enums)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
