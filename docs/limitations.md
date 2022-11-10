@@ -91,6 +91,8 @@ EOF;
 
 It would be very hard to properly scope the relevant classes.
 
+To fix such cases, you will need to resort to [patchers].
+
 
 ### Callables
 
@@ -104,6 +106,8 @@ If you consider the two following values:
 The classes used there will not be scoped. It should not be impossible to add
 support for it, but it is currently not supported. See
 [#286](https://github.com/humbug/php-scoper/issues/286).
+
+To fix such cases, you will need to resort to [patchers].
 
 
 ### String values
@@ -126,6 +130,8 @@ prefixed. But there is bound to have confusing cases. For example:
 - Classes belonging to the global scope: `'Foo'` or `'Acme_Foo'`, because there
   is no way to know if it is a class name or a random string except for a
   handful of methods such as `class_alias`, `function_exists`, etc.
+
+To fix such cases, you will need to resort to [patchers].
 
 
 ### Native functions and constants shadowing
@@ -180,6 +186,8 @@ to Composer loading files based on a hash which is generated from package name
 and relative file path. For a workaround see
 [#298](https://github.com/humbug/php-scoper/issues/298#issuecomment-525700081).
 
+To fix such cases, you will need to resort to [patchers].
+
 
 ### Composer Plugins
 
@@ -226,7 +234,7 @@ transforming it to PSR-4, i.e. in the case above:
 }
 ```
 
-If this will work for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
+If this works for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
 
 
 ### Files autoloading
@@ -265,3 +273,4 @@ is no way to alias one.
 [box]: https://github.com/humbug/box
 [exposed-symbols]: configuration.md#exposed-symbols
 [#298]: https://github.com/humbug/php-scoper/issues/298
+[patchers]: configuration.md#patchers
