@@ -98,6 +98,18 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $/ux
         REGEX;
 
+    private const CONSTANT_FETCH_PATTERN = <<<'REGEX'
+        /^
+            (\\)?               # leading backslash
+            (
+                [\p{L}_\d]+     # class-like name
+                \\              # separator
+            )*
+            [\p{L}_\d]+         # class-like name
+            ::[\p{L}_\d]+       # constant-like name
+        $/ux
+        REGEX;
+
     public function __construct(
         private readonly string $prefix,
         private readonly EnrichedReflector $enrichedReflector,
@@ -114,7 +126,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function prefixStringScalar(String_ $string): String_
     {
         if (!(ParentNodeAppender::hasParent($string) && is_string($string->value))
-            || 1 !== native_preg_match(self::CLASS_LIKE_PATTERN, $string->value)
+            || (
+                1 !== native_preg_match(self::CLASS_LIKE_PATTERN, $string->value)
+                && 1 !== native_preg_match(self::CONSTANT_FETCH_PATTERN, $string->value)
+            )
         ) {
             return $string;
         }

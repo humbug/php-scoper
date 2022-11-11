@@ -471,4 +471,50 @@ return [
         
         PHP,
     ],
+
+    'Define check of a global class constant' => <<<'PHP'
+    <?php
+    
+    if (!defined('Bar::TEST')) {
+    }
+    if (!defined('\Bar::TEST')) {
+    }
+    if (!defined('\\Bar::TEST')) {
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    if (!\defined('Humbug\\Bar::TEST')) {
+    }
+    if (!\defined('Humbug\\Bar::TEST')) {
+    }
+    if (!\defined('Humbug\\Bar::TEST')) {
+    }
+    
+    PHP,
+
+    'Define check of a namespaced class constant' => <<<'PHP'
+    <?php
+    
+    if (!defined('Acme\Bar::TEST')) {
+    }
+    if (!defined('\Acme\Bar::TEST')) {
+    }
+    if (!defined('\\Acme\\Bar::TEST')) {
+    }
+    ----
+    <?php
+    
+    namespace Humbug;
+    
+    if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+    }
+    if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+    }
+    if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+    }
+    
+    PHP,
 ];
