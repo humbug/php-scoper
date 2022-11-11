@@ -87,7 +87,16 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'datetimeimmutable',
     ];
 
-    private const CLASS_LIKE_PATTERN = '/^((\\\\)?[\p{L}_\d]+)$|((\\\\)?(?:[\p{L}_\d]+\\\\+)+[\p{L}_\d]+)$/u';
+    private const CLASS_LIKE_PATTERN = <<<'REGEX'
+        /^
+            (\\)?               # leading backslash
+            (
+                [\p{L}_\d]+     # class-like name
+                \\              # separator
+            )*
+            [\p{L}_\d]+         # class-like name
+        $/ux
+        REGEX;
 
     public function __construct(
         private readonly string $prefix,
