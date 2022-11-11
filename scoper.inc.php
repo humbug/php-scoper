@@ -47,6 +47,9 @@ $jetBrainStubs = (static function (): array {
 return [
     'expose-global-functions' => true,
     'expose-global-classes' => true,
+    'exclude-classes' => [
+        'Isolated\Symfony\Component\Finder\Finder',
+    ],
     'exclude-constants' => [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
@@ -95,17 +98,6 @@ return [
                 '%s%s',
                 mb_substr($contents, 0, $prefixedClassPosition),
                 mb_substr($originalContents, $classPosition),
-            );
-        },
-        static function (string $filePath, string $prefix, string $contents): string {
-            if ('bin/php-scoper' !== $filePath) {
-                return $contents;
-            }
-
-            return str_replace(
-                '\\'.$prefix.'\Isolated\Symfony\Component\Finder\Finder::class',
-                '\Isolated\Symfony\Component\Finder\Finder::class',
-                $contents,
             );
         },
     ],
