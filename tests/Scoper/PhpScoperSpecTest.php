@@ -89,8 +89,6 @@ class PhpScoperSpecTest extends TestCase
 
     // Keys kept and used to build the symbols configuration
     private const SPECS_CONFIG_KEYS = [
-        ConfigurationKeys::WHITELIST_KEYWORD,
-
         ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
         ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
@@ -349,10 +347,6 @@ class PhpScoperSpecTest extends TestCase
                 $specKeys,
             );
 
-            if ([ConfigurationKeys::WHITELIST_KEYWORD] === array_values($diff)) {
-                $diff = [];
-            }
-
             self::assertSame(
                 [],
                 $diff,
@@ -396,10 +390,6 @@ class PhpScoperSpecTest extends TestCase
 
         foreach (self::SPECS_CONFIG_KEYS as $key) {
             if (!array_key_exists($key, $mergedConfig)) {
-                if ($key === ConfigurationKeys::WHITELIST_KEYWORD) {
-                    continue;
-                }
-
                 throw new InvalidArgumentException(
                     sprintf(
                         'Missing the key "%s" for the file "%s"',

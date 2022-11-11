@@ -21,7 +21,6 @@ final class ConfigurationKeys
     public const EXCLUDED_FILES_KEYWORD = 'exclude-files';
     public const FINDER_KEYWORD = 'finders';
     public const PATCHERS_KEYWORD = 'patchers';
-    public const WHITELIST_KEYWORD = 'whitelist';
 
     public const EXPOSE_GLOBAL_CONSTANTS_KEYWORD = 'expose-global-constants';
     public const EXPOSE_GLOBAL_CLASSES_KEYWORD = 'expose-global-classes';
@@ -42,7 +41,6 @@ final class ConfigurationKeys
         self::EXCLUDED_FILES_KEYWORD,
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
-        self::WHITELIST_KEYWORD,
         self::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
         self::EXPOSE_GLOBAL_CLASSES_KEYWORD,
         self::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,

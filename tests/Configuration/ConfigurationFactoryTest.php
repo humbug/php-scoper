@@ -98,8 +98,6 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                     'patchers' => [],
                     'finders' => [],
 
-                    'whitelist' => ['Foo', 'Bar\*'],
-
                     'expose-global-constants' => false,
                     'expose-global-classes' => false,
                     'expose-global-functions' => false,
@@ -153,17 +151,14 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 false,
                 false,
                 NamespaceRegistry::create(
-                    [
-                        'PHPUnit\Runner',
-                        'Bar',
-                    ],
+                    ['PHPUnit\Runner'],
                 ),
                 NamespaceRegistry::create(
                     ['PHPUnit\Runner'],
                 ),
-                SymbolRegistry::create(['Foo']),
-                SymbolRegistry::create(['Foo']),
-                SymbolRegistry::createForConstants(['Foo']),
+                SymbolRegistry::create(),
+                SymbolRegistry::create(),
+                SymbolRegistry::createForConstants(),
             ),
             $configuration->getSymbolsConfiguration(),
         );

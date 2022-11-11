@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Configuration\ConfigurationKeys;
 use PHPUnit\Framework\TestCase;
-use function array_diff;
 use function Safe\file_get_contents;
 use function Safe\preg_match_all;
 
@@ -34,7 +33,7 @@ final class TemplateFileTest extends TestCase
         $templateConfigKeys = self::retrieveKeys();
 
         self::assertEqualsCanonicalizing(
-            array_diff(ConfigurationKeys::KEYWORDS, [ConfigurationKeys::WHITELIST_KEYWORD]),
+            ConfigurationKeys::KEYWORDS,
             $templateConfigKeys,
         );
     }
