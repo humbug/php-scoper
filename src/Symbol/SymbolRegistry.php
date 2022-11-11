@@ -79,6 +79,14 @@ final class SymbolRegistry
         private bool $constants
     ) {
         $this->names = array_flip($names);
+
+        if (array_key_exists('', $this->names)) {
+            throw new InvalidArgumentException('Cannot register "" as a symbol name.');
+        }
+
+        if (array_key_exists('', array_flip($regexes))) {
+            throw new InvalidArgumentException('Cannot register "" as a symbol regex.');
+        }
     }
 
     public function matches(string $symbol): bool
