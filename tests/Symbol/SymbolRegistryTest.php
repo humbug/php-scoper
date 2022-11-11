@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\Configuration\RegexChecker;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -335,6 +336,22 @@ class SymbolRegistryTest extends TestCase
             ['acme\foo'],
             ['/^Acme$/'],
         ];
+    }
+
+    public function test_it_cannot_create_a_symbol_with_an_empty_string_for_a_name(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot register "" as a symbol name.');
+
+        SymbolRegistry::create(['']);
+    }
+
+    public function test_it_cannot_create_a_symbol_with_an_empty_string_for_a_regex(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot register "" as a symbol regex.');
+
+        SymbolRegistry::create(regexes: ['']);
     }
 
     private function validateRegexes(array $regexes): void
