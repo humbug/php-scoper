@@ -27,7 +27,6 @@ use function ltrim;
 use function Safe\preg_match;
 use function strtolower;
 use function trim;
-use const SORT_STRING;
 
 final class SymbolRegistry
 {
@@ -45,11 +44,8 @@ final class SymbolRegistry
         array $regexes = []
     ): self {
         return new self(
-            array_map(
-                static fn (string $name) => strtolower(trim($name, '\\')),
-                $names,
-            ),
-            array_unique($regexes, SORT_STRING),
+            self::normalizeNames($names),
+            array_unique($regexes),
             false,
         );
     }
@@ -66,13 +62,8 @@ final class SymbolRegistry
         array $regexes = []
     ): self {
         return new self(
-            array_map(
-                static fn (string $name) => self::lowerCaseConstantName(
-                    trim($name, '\\'),
-                ),
-                $names,
-            ),
-            array_unique($regexes, SORT_STRING),
+            self::normalizeConstantNames($names),
+            array_unique($regexes),
             true,
         );
     }
@@ -149,6 +140,31 @@ final class SymbolRegistry
     public function getRegexes(): array
     {
         return $this->regexes;
+    }
+
+    private static function normalizeNames(array $names): array
+    {
+        return array_map(
+            static fn (string $name) => strtolower(
+                self::normalizeName($name),
+            ),
+            $names,
+        );
+    }
+
+    private static function normalizeConstantNames(array $names): array
+    {
+        return array_map(
+            static fn (string $name) => self::lowerCaseConstantName(
+                self::normalizeName($name),
+            ),
+            $names,
+        );
+    }
+
+    private static function normalizeName(string $name): string
+    {
+        return trim($name, '\\ ');
     }
 
     /**
