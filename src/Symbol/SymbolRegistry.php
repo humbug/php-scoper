@@ -27,7 +27,6 @@ use function ltrim;
 use function Safe\preg_match;
 use function strtolower;
 use function trim;
-use const SORT_STRING;
 
 final class SymbolRegistry
 {
