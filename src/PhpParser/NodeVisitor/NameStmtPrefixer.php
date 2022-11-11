@@ -306,8 +306,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             // In case the original name is a FQ, we do not skip the prefixing
             // and keep it as FQ
             || $originalName->isFullyQualified()
-            // TODO: review Isolated Finder support
-            || $resolvedName->parts === ['Isolated', 'Symfony', 'Component', 'Finder', 'Finder']
         ) {
             return false;
         }
