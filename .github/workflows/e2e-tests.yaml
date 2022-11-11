@@ -73,11 +73,8 @@ jobs:
                     - 'e2e_018'
                     - 'e2e_019'
                     - 'e2e_020'
-                    - 'e2e_022'
-                    - 'e2e_023'
                     - 'e2e_024'
                     - 'e2e_025'
-                    - 'e2e_026'
                     # TODO: add back
                     # https://github.com/humbug/php-scoper/issues/646
                     #- 'e2e_027'
