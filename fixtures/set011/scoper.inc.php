@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 
 return [
-    'whitelist' => [
+    'expose-classes' => [
         \Set011\Dictionary::class,
     ],
 ];

@@ -47,9 +47,6 @@ $jetBrainStubs = (static function (): array {
 })();
 
 return [
-    'whitelist' => [
-        Finder::class,
-    ],
     'expose-global-functions' => true,
     'expose-global-classes' => true,
     'exclude-constants' => [
