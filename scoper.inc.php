@@ -12,8 +12,6 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Isolated\Symfony\Component\Finder\Finder;
-
 $jetBrainStubs = (static function (): array {
     $files = [];
 
@@ -47,9 +45,6 @@ $jetBrainStubs = (static function (): array {
 })();
 
 return [
-    'whitelist' => [
-        Finder::class,
-    ],
     'expose-global-functions' => true,
     'expose-global-classes' => true,
     'exclude-constants' => [

@@ -20,9 +20,7 @@ use InvalidArgumentException;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
-use function array_merge;
 use function array_pop;
-use function array_values;
 use function explode;
 use function get_debug_type;
 use function gettype;
@@ -63,15 +61,6 @@ final class SymbolsConfigurationFactory
             $config,
             ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
         );
-
-        $legacyExposedElements = self::retrieveLegacyExposedElements($config);
-
-        [
-            $legacyExposedSymbols,
-            $legacyExposedSymbolsPatterns,
-            $legacyExposedConstants,
-            $excludedNamespaceNames,
-        ] = self::parseLegacyExposedElements($legacyExposedElements, $excludedNamespaceNames);
 
         $exposeGlobalConstants = self::retrieveExposeGlobalSymbol(
             $config,
@@ -135,34 +124,16 @@ final class SymbolsConfigurationFactory
                 $exposedNamespaceRegexes,
             ),
             SymbolRegistry::create(
-                array_merge(
-                    $exposedClassNames,
-                    $legacyExposedSymbols,
-                ),
-                array_merge(
-                    $exposedClassRegexes,
-                    $legacyExposedSymbolsPatterns,
-                ),
+                $exposedClassNames,
+                $exposedClassRegexes,
             ),
             SymbolRegistry::create(
-                array_merge(
-                    $exposedFunctionNames,
-                    $legacyExposedSymbols,
-                ),
-                array_merge(
-                    $exposedFunctionRegexes,
-                    $legacyExposedSymbolsPatterns,
-                ),
+                $exposedFunctionNames,
+                $exposedFunctionRegexes,
             ),
             SymbolRegistry::createForConstants(
-                array_merge(
-                    $exposedConstantNames,
-                    $legacyExposedConstants,
-                ),
-                array_merge(
-                    $exposedConstantRegexes,
-                    $legacyExposedSymbolsPatterns,
-                ),
+                $exposedConstantNames,
+                $exposedConstantRegexes,
             ),
             $excludedClasses,
             $excludedFunctions,
@@ -189,45 +160,6 @@ final class SymbolsConfigurationFactory
         }
 
         return $value;
-    }
-
-    /**
-     * @return list<string>
-     */
-    private static function retrieveLegacyExposedElements(array $config): array
-    {
-        $key = ConfigurationKeys::WHITELIST_KEYWORD;
-
-        if (!array_key_exists($key, $config)) {
-            return [];
-        }
-
-        $whitelist = $config[$key];
-
-        if (!is_array($whitelist)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected "%s" to be an array of strings, found "%s" instead.',
-                    $key,
-                    gettype($whitelist),
-                ),
-            );
-        }
-
-        foreach ($whitelist as $index => $className) {
-            if (is_string($className)) {
-                continue;
-            }
-
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected whitelist to be an array of string, the "%d" element is not.',
-                    $index,
-                ),
-            );
-        }
-
-        return array_values($whitelist);
     }
 
     /**

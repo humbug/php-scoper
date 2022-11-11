@@ -116,38 +116,6 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
             ),
         ];
 
-        yield 'expose element' => [
-            [
-                ConfigurationKeys::WHITELIST_KEYWORD => [
-                    'Acme\Foo',
-                ],
-            ],
-            SymbolsConfiguration::create(
-                exposedClasses: SymbolRegistry::create(['Acme\Foo']),
-                exposedFunctions: SymbolRegistry::create(['Acme\Foo']),
-                exposedConstants: SymbolRegistry::createForConstants(['Acme\Foo']),
-            ),
-        ];
-
-        yield 'legacy expose namespace' => [
-            [
-                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
-                    'PHPUnit\Internal',
-                ],
-                ConfigurationKeys::WHITELIST_KEYWORD => [
-                    'PHPUnit\Runner\*',
-                ],
-            ],
-            SymbolsConfiguration::create(
-                excludedNamespaces: NamespaceRegistry::create(
-                    [
-                        'PHPUnit\Internal',
-                        'PHPUnit\Runner',
-                    ],
-                ),
-            ),
-        ];
-
         yield 'nominal' => [
             [
                 ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => false,
@@ -157,10 +125,6 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                     'PHPUnit\Internal',
                     '~^PHPUnit\\Runner(\\.*)?$~',
                 ],
-                ConfigurationKeys::WHITELIST_KEYWORD => [
-                    'PHPUnit\Runner\*',
-                    'Acme\Foo',
-                ],
             ],
             SymbolsConfiguration::create(
                 false,
@@ -169,16 +133,15 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 NamespaceRegistry::create(
                     [
                         'PHPUnit\Internal',
-                        'PHPUnit\Runner',
                     ],
                     [
                         '~^PHPUnit\\Runner(\\.*)?$~i',
                     ],
                 ),
                 null,
-                SymbolRegistry::create(['Acme\Foo']),
-                SymbolRegistry::create(['Acme\Foo']),
-                SymbolRegistry::createForConstants(['Acme\Foo']),
+                SymbolRegistry::create(),
+                SymbolRegistry::create(),
+                SymbolRegistry::createForConstants(),
             ),
         ];
     }
@@ -235,21 +198,5 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
 
         // TODO: need to find a case
         // yield 'exclude namespace contains an invalid regex-like expression' => [];
-
-        yield 'whitelist is not an array' => [
-            [
-                ConfigurationKeys::WHITELIST_KEYWORD => true,
-            ],
-            InvalidArgumentException::class,
-            'Expected "whitelist" to be an array of strings, found "boolean" instead.',
-        ];
-
-        yield 'whitelist is not an array of strings' => [
-            [
-                ConfigurationKeys::WHITELIST_KEYWORD => [true],
-            ],
-            InvalidArgumentException::class,
-            'Expected whitelist to be an array of string, the "0" element is not.',
-        ];
     }
 }

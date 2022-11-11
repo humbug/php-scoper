@@ -155,7 +155,7 @@ blackfire: vendor
 
 .PHONY: e2e
 e2e:	 ## Runs end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_022 e2e_023 e2e_024 e2e_025 e2e_026 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_024 e2e_025 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034
 
 .PHONY: e2e_004
 e2e_004: ## Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
@@ -312,29 +312,6 @@ e2e_020: $(PHP_SCOPER_PHAR_BIN) fixtures/set020-infection/vendor
 #
 #	diff build/set020-infection/expected-output build/set020-infection/output
 
-.PHONY: e2e_022
-e2e_022: ## Runs end-to-end tests for the fixture set 022 — Codebase with excluded symbols via the legacy namespace whitelisting setting
-e2e_022: $(PHP_SCOPER_PHAR_BIN) fixtures/set022/vendor
-	$(BOX) compile --no-parallel --working-dir fixtures/set022
-	cp -R fixtures/set022/tests/ build/set022/tests/
-
-	php build/set022/bin/greet.phar > build/set022/output
-
-	diff fixtures/set022/expected-output build/set022/output
-
-.PHONY: e2e_023
-e2e_023: ## Runs end-to-end tests for the fixture set 023 — Codebase with excluded symbols via the legacy component whitelisting setting
-e2e_023: $(PHP_SCOPER_PHAR_BIN) fixtures/set023/vendor
-	$(PHP_SCOPER_PHAR) add-prefix --working-dir=fixtures/set023 \
-		--output-dir=../../build/set023 \
-		--force \
-		--no-interaction \
-		--stop-on-failure
-	composer --working-dir=build/set023 dump-autoload
-
-	php build/set023/main.php > build/set023/output
-	diff fixtures/set023/expected-output build/set023/output
-
 .PHONY: e2e_024
 e2e_024: ## Runs end-to-end tests for the fixture set 024 — Scoping of a codebase with global functions exposed
 e2e_024: $(PHP_SCOPER_PHAR_BIN) fixtures/set024/vendor
@@ -362,20 +339,6 @@ e2e_025: $(PHP_SCOPER_PHAR_BIN) fixtures/set025/vendor
 
 	php build/set025/main.php > build/set025/output
 	diff fixtures/set025/expected-output build/set025/output
-
-.PHONY: e2e_026
-e2e_026: ## Runs end-to-end tests for the fixture set 026 — Scoping of a codebase exposing symbols via the legacy whitelist setting
-e2e_026: $(PHP_SCOPER_PHAR_BIN) fixtures/set026/vendor
-	$(PHP_SCOPER_PHAR) add-prefix \
-		--working-dir=fixtures/set026 \
-		--output-dir=../../build/set026 \
-		--force \
-		--no-interaction \
-		--stop-on-failure
-	composer --working-dir=build/set026 dump-autoload
-
-	php build/set026/main.php > build/set026/output
-	diff fixtures/set026/expected-output build/set026/output
 
 .PHONY: e2e_027
 e2e_027: ## Runs end-to-end tests for the fixture set 027 — Scoping of a Laravel
@@ -654,17 +617,6 @@ fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set020-infection update --lock && touch -c $(@)"
 
-fixtures/set022/vendor: fixtures/set022/composer.json
-	composer --working-dir=fixtures/set022 update
-	touch -c $@
-
-fixtures/set023/vendor: fixtures/set023/composer.lock
-	composer --working-dir=fixtures/set023 install
-	touch -c $@
-fixtures/set023/composer.lock: fixtures/set023/composer.json
-	@echo "$(@) is not up to date. You may want to run the following command:"
-	@echo "$$ composer --working-dir=fixtures/set023 update --lock && touch -c $(@)"
-
 fixtures/set024/vendor: fixtures/set024/composer.lock
 	composer --working-dir=fixtures/set024 install
 	touch -c $@
@@ -678,10 +630,6 @@ fixtures/set025/vendor: fixtures/set025/composer.lock
 fixtures/set025/composer.lock: fixtures/set025/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set025 update --lock && touch -c $(@)"
-
-fixtures/set026/vendor:
-	composer --working-dir=fixtures/set026 update
-	touch -c $@
 
 fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
 	composer --working-dir=fixtures/set027-laravel install --no-dev
