@@ -125,7 +125,7 @@ class SymbolRegistryTest extends TestCase
                 $expected,
             ];
 
-            yield '[(polluted) name only] '.$title => [
+            yield '[(polluted with leading backslash) name only] '.$title => [
                 $names,
                 [],
                 '\\'.$symbol,
@@ -226,6 +226,18 @@ class SymbolRegistryTest extends TestCase
             ['PHPUnit\TestCase'],
             'PHPUnit',
             false,
+        ];
+
+        yield 'name with extra spaces' => [
+            [' Pest '],
+            'Pest',
+            true,
+        ];
+
+        yield 'name with extra backslashes' => [
+            ['\\Pest\\'],
+            'Pest',
+            true,
         ];
     }
 
