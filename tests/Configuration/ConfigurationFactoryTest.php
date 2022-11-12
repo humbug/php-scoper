@@ -95,7 +95,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 return [
                     'prefix' => 'MyPrefix',
                     'output-dir' => 'dist',
-                'exclude-files' => ['file1', 'file2'],
+                    'exclude-files' => ['file1', 'file2'],
                     'patchers' => [],
                     'finders' => [],
 

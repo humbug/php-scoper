@@ -57,7 +57,7 @@ then a random prefix will be automatically generated.
 ### Output directory
 
 The base output directory where the prefixed files will be generated. If `null`
-is given, "build" is used.
+is given, `build` is used.
 
 This setting will be overridden by the command line option of the same name if
 present.

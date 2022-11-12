@@ -37,7 +37,6 @@ use function is_dir;
 use function is_writable;
 use function Safe\getcwd;
 use function sprintf;
-use function trim;
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -161,7 +160,7 @@ final class AddPrefixCommand implements Command, CommandAware
      */
     private function getOutputDir(IO $io, Configuration $configuration): string
     {
-        $commandOutputDir = trim($io->getStringOption(self::OUTPUT_DIR_OPT));
+        $commandOutputDir = $io->getOption(self::OUTPUT_DIR_OPT)->asString();
 
         if ('' !== $commandOutputDir) {
             return $commandOutputDir;

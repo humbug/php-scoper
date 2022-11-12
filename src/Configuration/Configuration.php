@@ -29,9 +29,9 @@ final class Configuration
     private readonly string $prefix;
 
     /**
-     * @param non-empty-string|null $path   Absolute canonical path to the configuration file loaded.
-     * @param non-empty-string|null                $outputDir                 Absolute canonical path to the output directory.
-     * @param non-empty-string      $prefix The prefix applied.
+     * @param non-empty-string|null $path      Absolute canonical path to the configuration file loaded.
+     * @param non-empty-string|null $outputDir Absolute canonical path to the output directory.
+     * @param non-empty-string      $prefix    The prefix applied.
      * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents

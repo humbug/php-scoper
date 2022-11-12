@@ -238,7 +238,6 @@ final class ConfigurationFactory
         $outputDir = trim((string) ($config[ConfigurationKeys::OUTPUT_DIR_KEYWORD] ?? ''));
 
         return '' === $outputDir ? null : $outputDir;
-
     }
 
     /**
