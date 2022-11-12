@@ -72,9 +72,9 @@ final class InspectSymbolCommand implements Command
                     InputArgument::OPTIONAL,
                     sprintf(
                         'The symbol type inspect ("%s").',
-                        implode('", "', SymbolType::ALL),
+                        implode('", "', SymbolType::values()),
                     ),
-                    SymbolType::ANY_TYPE,
+                    SymbolType::ANY_TYPE->value,
                 ),
             ],
             [
@@ -109,8 +109,7 @@ final class InspectSymbolCommand implements Command
         $cwd = getcwd();
 
         $symbol = $io->getArgument(self::SYMBOL_ARG)->asString();
-        /** @var SymbolType::*_TYPE $symbolType */
-        $symbolType = $io->getArgument(self::SYMBOL_TYPE_ARG)->asStringChoice(SymbolType::ALL);
+        $symbolType = self::getSymbolType($io);
         $config = $this->retrieveConfig($io, $cwd);
 
         $enrichedReflector = $this->enrichedReflectorFactory->create(
@@ -126,6 +125,14 @@ final class InspectSymbolCommand implements Command
         );
 
         return ExitCode::SUCCESS;
+    }
+
+    // TODO: https://github.com/theofidry/console/issues/99
+    private static function getSymbolType(IO $io): SymbolType
+    {
+        $symbolType = $io->getArgument(self::SYMBOL_TYPE_ARG)->asString();
+
+        return SymbolType::from($symbolType);
     }
 
     private function retrieveConfig(IO $io, string $cwd): Configuration
@@ -179,13 +186,10 @@ final class InspectSymbolCommand implements Command
         return file_exists($configPath) ? $configPath : null;
     }
 
-    /**
-     * @param SymbolType::*_TYPE $type
-     */
     private static function printSymbol(
         IO $io,
         string $symbol,
-        string $type,
+        SymbolType $type,
         ?string $configPath,
         EnrichedReflector $reflector
     ): void {
@@ -230,13 +234,10 @@ final class InspectSymbolCommand implements Command
         $io->newLine();
     }
 
-    /**
-     * @param SymbolType::*_TYPE $type
-     */
     private static function printInspectionHeadline(
         IO $io,
         string $symbol,
-        string $type
+        SymbolType $type
     ): void {
         $io->writeln(
             sprintf(
@@ -244,7 +245,7 @@ final class InspectSymbolCommand implements Command
                 $symbol,
                 SymbolType::ANY_TYPE === $type
                     ? 'for all types.'
-                    : sprintf('for type <comment>%s</comment>:', $type),
+                    : sprintf('for type <comment>%s</comment>:', $type->value),
             ),
         );
     }
@@ -258,7 +259,7 @@ final class InspectSymbolCommand implements Command
             $io->writeln(
                 sprintf(
                     'As a <comment>%s</comment>:',
-                    $specificType,
+                    $specificType->value,
                 ),
             );
 
@@ -266,13 +267,10 @@ final class InspectSymbolCommand implements Command
         }
     }
 
-    /**
-     * @param SymbolType::*_TYPE $type
-     */
     private static function printTypedSymbol(
         IO $io,
         string $symbol,
-        string $type,
+        SymbolType $type,
         EnrichedReflector $reflector
     ): void {
         [$internal, $exposed] = self::determineSymbolStatus(
@@ -293,11 +291,11 @@ final class InspectSymbolCommand implements Command
         ]);
     }
 
-    /**
-     * @param SymbolType::*_TYPE $type
-     */
-    private static function determineSymbolStatus(string $symbol, string $type, EnrichedReflector $reflector): array
-    {
+    private static function determineSymbolStatus(
+        string $symbol,
+        SymbolType $type,
+        EnrichedReflector $reflector
+    ): array {
         return match ($type) {
             SymbolType::CLASS_TYPE => [
                 $reflector->isClassInternal($symbol),
@@ -314,7 +312,7 @@ final class InspectSymbolCommand implements Command
             default => throw new InvalidArgumentException(
                 sprintf(
                     'Invalid type "%s"',
-                    $type,
+                    $type->value,
                 ),
             ),
         };
