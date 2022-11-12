@@ -25,7 +25,7 @@ use Throwable;
  *
  * @internal
  */
-final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
+final class SymbolsConfigurationFactoryTest extends TestCase
 {
     private SymbolsConfigurationFactory $factory;
 
@@ -112,6 +112,48 @@ final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
                 excludedNamespaces: NamespaceRegistry::create(
                     [],
                     ['~^PHPUnit\\Runner(\\.*)?$~i'],
+                ),
+            ),
+        ];
+
+        yield 'exclude namespace regex with flags' => [
+            [
+                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
+                    '~^PHPUnit\\Runner(\\.*)?$~u',
+                ],
+            ],
+            SymbolsConfiguration::create(
+                excludedNamespaces: NamespaceRegistry::create(
+                    [],
+                    ['~^PHPUnit\\Runner(\\.*)?$~ui'],
+                ),
+            ),
+        ];
+
+        yield 'exclude namespace regex with case insensitive flag' => [
+            [
+                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
+                    '~^PHPUnit\\Runner(\\.*)?$~i',
+                ],
+            ],
+            SymbolsConfiguration::create(
+                excludedNamespaces: NamespaceRegistry::create(
+                    [],
+                    ['~^PHPUnit\\Runner(\\.*)?$~i'],
+                ),
+            ),
+        ];
+
+        yield 'exclude namespace regex with several flags flag' => [
+            [
+                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
+                    '~^PHPUnit\\Runner(\\.*)?$~uiA',
+                ],
+            ],
+            SymbolsConfiguration::create(
+                excludedNamespaces: NamespaceRegistry::create(
+                    [],
+                    ['~^PHPUnit\\Runner(\\.*)?$~uiA'],
                 ),
             ),
         ];
