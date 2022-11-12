@@ -67,7 +67,7 @@ class InspectSymbolCommandIntegrationTest extends FileSystemTestCase
         $input = [
             'inspect-symbol',
             'symbol' => 'Acme\Foo',
-            'type' => SymbolType::CLASS_TYPE,
+            'type' => SymbolType::CLASS_TYPE->value,
             '--no-interaction' => null,
             '--no-config' => null,
         ];
