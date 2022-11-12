@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
-// TODO: make it an enum once in PHP 8.1
 final class ConfigurationKeys
 {
     public const PREFIX_KEYWORD = 'prefix';
