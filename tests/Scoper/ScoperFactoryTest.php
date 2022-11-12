@@ -46,6 +46,7 @@ final class ScoperFactoryTest extends TestCase
         $factory->createScoper(
             new Configuration(
                 null,
+                null,
                 '_Humbug',
                 [],
                 [],
