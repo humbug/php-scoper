@@ -158,7 +158,7 @@ final class InspectSymbolCommand implements Command
             // We do not want the init command to be triggered if there is no
             // config file.
             true,
-            [],
+            [__FILE__],
             getcwd(),
         );
     }
