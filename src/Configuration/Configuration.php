@@ -94,6 +94,22 @@ final class Configuration
     }
 
     /**
+     * @param array<string, array{string, string}> $filesWithContents
+     */
+    public function withFilesWithContents(array $filesWithContents): self
+    {
+        return new self(
+            $this->path,
+            $this->outputDir,
+            $this->prefix,
+            $filesWithContents,
+            $this->excludedFilesWithContents,
+            $this->patcher,
+            $this->symbolsConfiguration,
+        );
+    }
+
+    /**
      * @return array<string, array{string, string}>
      */
     public function getFilesWithContents(): array

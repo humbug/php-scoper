@@ -50,7 +50,6 @@ use function Safe\file_get_contents;
 use function sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
-use const SORT_STRING;
 
 final class ConfigurationFactory
 {
@@ -117,38 +116,22 @@ final class ConfigurationFactory
         $filesWithContents = self::retrieveFilesWithContents(
             chain(
                 self::retrieveFilesFromPaths(
-                    array_unique($paths, SORT_STRING),
+                    array_unique($paths),
                 ),
             ),
         );
 
-        return new Configuration(
-            $config->getPath(),
-            $config->getOutputDir(),
-            $config->getPrefix(),
-            [
-                ...$config->getFilesWithContents(),
-                ...$filesWithContents,
-            ],
-            $config->getExcludedFilesWithContents(),
-            $config->getPatcher(),
-            $config->getSymbolsConfiguration(),
-        );
+        return $config->withFilesWithContents([
+            ...$config->getFilesWithContents(),
+            ...$filesWithContents,
+        ]);
     }
 
     public function createWithPrefix(Configuration $config, string $prefix): Configuration
     {
         $prefix = self::retrievePrefix([ConfigurationKeys::PREFIX_KEYWORD => $prefix]);
 
-        return new Configuration(
-            $config->getPath(),
-            $config->getOutputDir(),
-            $prefix,
-            $config->getFilesWithContents(),
-            $config->getExcludedFilesWithContents(),
-            $config->getPatcher(),
-            $config->getSymbolsConfiguration(),
-        );
+        return $config->withPrefix($prefix);
     }
 
     private function loadConfigFile(string $path): array

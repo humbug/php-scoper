@@ -197,14 +197,12 @@ final class ConfigLoader
 
     private function configurePrefix(Configuration $config, string $prefix): Configuration
     {
-        if ('' !== $prefix) {
-            return $this->configFactory->createWithPrefix(
+        return '' !== $prefix
+            ? $this->configFactory->createWithPrefix(
                 $config,
                 $prefix,
-            );
-        }
-
-        return $config;
+            )
+            : $config;
     }
 
     private function configurePaths(
@@ -213,14 +211,12 @@ final class ConfigLoader
     ): Configuration {
         // Use the current working directory as the path if no file has been
         // found
-        if (0 === count($config->getFilesWithContents())) {
-            return $this->configFactory->createWithPaths(
+        return 0 === count($config->getFilesWithContents())
+            ? $this->configFactory->createWithPaths(
                 $config,
                 [$cwd],
-            );
-        }
-
-        return $config;
+            )
+            : $config;
     }
 
     /**
