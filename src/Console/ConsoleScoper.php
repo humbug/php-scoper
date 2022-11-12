@@ -27,7 +27,6 @@ use Throwable;
 use function array_column;
 use function array_keys;
 use function array_map;
-use function chmod;
 use function count;
 use function Humbug\PhpScoper\get_common_path;
 use function preg_match as native_preg_match;
@@ -152,7 +151,11 @@ final class ConsoleScoper
         $this->fileSystem->dumpFile($outputFilePath, $inputContents);
 
         $originalFilePermissions = fileperms($inputFilePath) & 0o777;
-        chmod($outputFilePath, $originalFilePermissions);
+
+        if ($originalFilePermissions !== 420) {
+            // Only change the permissions if necessary
+            $this->fileSystem->chmod($outputFilePath, $originalFilePermissions);
+        }
     }
 
     /**

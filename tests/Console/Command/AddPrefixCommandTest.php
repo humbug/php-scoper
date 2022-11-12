@@ -105,12 +105,20 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
         $expectedFiles = [
             'composer/installed.json' => 'f1',
+            'executable-file.php' => 'f5',
             'file.php' => 'f2',
             'invalid-file.php' => 'f3',
             'scoper.inc.php' => 'f4',
         ];
 
         $root = realpath($root);
+
+        $this->fileSystemProphecy
+            ->chmod(
+                $this->tmp.'/executable-file.php',
+                493,
+            )
+            ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
             $inputPath = escape_path($root.'/'.$expectedFile);
@@ -159,12 +167,20 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
         $expectedFiles = [
             'composer/installed.json' => 'f1',
+            'executable-file.php' => 'f5',
             'file.php' => 'f2',
             'invalid-file.php' => 'f3',
             'scoper.inc.php' => null,
         ];
 
         $root = realpath($root);
+
+        $this->fileSystemProphecy
+            ->chmod(
+                $this->tmp.'/executable-file.php',
+                493,
+            )
+            ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
             $inputPath = escape_path($root.'/'.$expectedFile);
@@ -315,12 +331,20 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
         $expectedFiles = [
             'composer/installed.json' => 'f1',
+            'executable-file.php' => 'f5',
             'file.php' => 'f2',
             'invalid-file.php' => 'f3',
             'scoper.inc.php' => 'f4',
         ];
 
         $root = realpath($root);
+
+        $this->fileSystemProphecy
+            ->chmod(
+                $this->tmp.'/executable-file.php',
+                493,
+            )
+            ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
             $inputPath = escape_path($root.'/'.$expectedFile);
@@ -365,12 +389,20 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
         $expectedFiles = [
             'composer/installed.json' => 'f1',
+            'executable-file.php' => 'f5',
             'file.php' => 'f2',
             'invalid-file.php' => 'f3',
             'scoper.inc.php' => 'f4',
         ];
 
         $root = realpath($root);
+
+        $this->fileSystemProphecy
+            ->chmod(
+                $outDir.'/executable-file.php',
+                493,
+            )
+            ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
             $inputPath = escape_path($root.'/'.$expectedFile);
@@ -416,12 +448,20 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
         $expectedFiles = [
             'composer/installed.json' => 'f1',
+            'executable-file.php' => 'f5',
             'file.php' => 'f2',
             'invalid-file.php' => 'f3',
             'scoper.inc.php' => 'f4',
         ];
 
         $root = realpath($root);
+
+        $this->fileSystemProphecy
+            ->chmod(
+                $this->tmp.DIRECTORY_SEPARATOR.$outDir.'/executable-file.php',
+                493,
+            )
+            ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
             $inputPath = escape_path($root.'/'.$expectedFile);
@@ -526,6 +566,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
         $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
         $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+        $this->fileSystemProphecy->chmod(Argument::cetera())->shouldNotBeCalled();
 
         $expectedFiles = [
             'invalid-json.json' => 'f1',
