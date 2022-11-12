@@ -76,6 +76,33 @@ final class ConfigurationTest extends TestCase
         self::assertStateIs($newConfig, ...$expectedNewConfigValues);
     }
 
+    public function test_it_can_create_a_new_instance_with_a_different_patcher(): void
+    {
+        $values = [
+            '/path/to/config',
+            '/path/to/outputDir',
+            'initialPrefix',
+            ['/path/to/fileA' => ['/path/to/fileA', 'fileAContent']],
+            ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
+            new FakePatcher(),
+            SymbolsConfiguration::create(),
+        ];
+
+        $config = new Configuration(...$values);
+
+        // Sanity check
+        self::assertStateIs($config, ...$values);
+
+        $newPatcher = new FakePatcher();
+        $newConfig = $config->withPatcher($newPatcher);
+
+        $expectedNewConfigValues = $values;
+        $expectedNewConfigValues[5] = $newPatcher;
+
+        self::assertStateIs($config, ...$values);
+        self::assertStateIs($newConfig, ...$expectedNewConfigValues);
+    }
+
     public static function prefixProvider(): iterable
     {
         yield [
