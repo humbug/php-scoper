@@ -83,7 +83,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
         }
 
         if (count($const->consts) > 1) {
-            // TODO
+            // TODO: add support for this case instead of bailing out.
             throw new UnexpectedValueException(
                 'Exposing a constant declared in a grouped constant statement (e.g. `const FOO = \'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant declaration statements',
             );

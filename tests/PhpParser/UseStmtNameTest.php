@@ -186,7 +186,7 @@ final class UseStmtNameTest extends TestCase
             new PhpParserNodeTraverser(),
         );
 
-        $traverser->addVisitor(new NodeVisitor\ParentNodeAppender());
+        $traverser->addVisitor(new NodeVisitor\AttributeAppender\ParentNodeAppender());
         $traverser->addVisitor(
             new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
                 'Humbug',

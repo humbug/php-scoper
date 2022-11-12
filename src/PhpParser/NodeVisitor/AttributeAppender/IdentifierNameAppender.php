@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use PhpParser\Node;

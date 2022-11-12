@@ -15,7 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\OriginalNameResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
 use Humbug\PhpScoper\PhpParser\UseStmtName;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
@@ -438,7 +440,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         if ($this->enrichedReflector->isExposedFunction($resolvedNameString)) {
-            // TODO: should be able to find a case for it
             return $this->enrichedReflector->isExposedFunctionFromGlobalNamespace($resolvedNameString)
                 ? $resolvedName
                 : null;
