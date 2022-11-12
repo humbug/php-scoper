@@ -109,6 +109,19 @@ final class Configuration
         return $this->excludedFilesWithContents;
     }
 
+    public function withPatcher(Patcher $patcher): self
+    {
+        return new self(
+            $this->path,
+            $this->outputDir,
+            $this->prefix,
+            $this->filesWithContents,
+            $this->excludedFilesWithContents,
+            $patcher,
+            $this->symbolsConfiguration,
+        );
+    }
+
     public function getPatcher(): Patcher
     {
         return $this->patcher;

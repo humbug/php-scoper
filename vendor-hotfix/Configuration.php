@@ -2764,17 +2764,7 @@ final class Configuration
             return $phpScoperConfig;
         }
 
-        // TODO: provide easier way to change the prefix
-        //  https://github.com/humbug/php-scoper/issues/616
-        return new PhpScoperConfiguration(
-            $phpScoperConfig->getPath(),
-            $phpScoperConfig->getOutputDir(),
-            unique_id('_HumbugBox'),
-            $phpScoperConfig->getFilesWithContents(),
-            $phpScoperConfig->getExcludedFilesWithContents(),
-            $phpScoperConfig->getPatcher(),
-            $phpScoperConfig->getSymbolsConfiguration(),
-        );
+        return $phpScoperConfig->withPrefix(unique_id('_HumbugBox'));
     }
 
     private static function checkIfDefaultValue(

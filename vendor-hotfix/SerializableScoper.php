@@ -39,14 +39,8 @@ final class SerializableScoper implements Scoper
         PhpScoperConfiguration $scoperConfig,
         string ...$excludedFilePaths,
     ) {
-        $this->scoperConfig = new PhpScoperConfiguration(
-            $scoperConfig->getPath(),
-            $scoperConfig->getOutputDir(),
-            $scoperConfig->getPrefix(),
-            $scoperConfig->getFilesWithContents(),
-            $scoperConfig->getExcludedFilesWithContents(),
-            PatcherFactory::createSerializablePatchers($scoperConfig->getPatcher()),
-            $scoperConfig->getSymbolsConfiguration(),
+        $this->scoperConfig = $scoperConfig->withPatcher(
+            PatcherFactory::createSerializablePatchers($scoperConfig->getPatcher())
         );
         $this->excludedFilePaths = $excludedFilePaths;
         $this->symbolsRegistry = new SymbolsRegistry();
