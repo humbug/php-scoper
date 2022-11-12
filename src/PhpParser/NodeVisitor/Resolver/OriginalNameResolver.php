@@ -12,11 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
+namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver;
 
 use PhpParser\Node\Name;
 
-// TODO: review those classes
 final class OriginalNameResolver
 {
     private const ORIGINAL_NAME_ATTRIBUTE = 'originalName';

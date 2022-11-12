@@ -16,8 +16,8 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use ArrayIterator;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\OriginalNameResolver;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\OriginalNameResolver;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use IteratorAggregate;
 use PhpParser\Node;

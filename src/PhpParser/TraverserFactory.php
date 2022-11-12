@@ -86,8 +86,8 @@ class TraverserFactory
 
         return [
             $nameResolver,
-            new NodeVisitor\ParentNodeAppender(),
-            new NodeVisitor\IdentifierNameAppender($identifierResolver),
+            new NodeVisitor\AttributeAppender\ParentNodeAppender(),
+            new NodeVisitor\AttributeAppender\IdentifierNameAppender($identifierResolver),
 
             new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
                 $prefix,
