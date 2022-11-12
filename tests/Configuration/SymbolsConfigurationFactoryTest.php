@@ -116,6 +116,48 @@ final class SymbolsConfigurationFactoryTest extends TestCase
             ),
         ];
 
+        yield 'exclude namespace regex with flags' => [
+            [
+                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
+                    '~^PHPUnit\\Runner(\\.*)?$~u',
+                ],
+            ],
+            SymbolsConfiguration::create(
+                excludedNamespaces: NamespaceRegistry::create(
+                    [],
+                    ['~^PHPUnit\\Runner(\\.*)?$~ui'],
+                ),
+            ),
+        ];
+
+        yield 'exclude namespace regex with case insensitive flag' => [
+            [
+                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
+                    '~^PHPUnit\\Runner(\\.*)?$~i',
+                ],
+            ],
+            SymbolsConfiguration::create(
+                excludedNamespaces: NamespaceRegistry::create(
+                    [],
+                    ['~^PHPUnit\\Runner(\\.*)?$~i'],
+                ),
+            ),
+        ];
+
+        yield 'exclude namespace regex with several flags flag' => [
+            [
+                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
+                    '~^PHPUnit\\Runner(\\.*)?$~uiA',
+                ],
+            ],
+            SymbolsConfiguration::create(
+                excludedNamespaces: NamespaceRegistry::create(
+                    [],
+                    ['~^PHPUnit\\Runner(\\.*)?$~uiA'],
+                ),
+            ),
+        ];
+
         yield 'nominal' => [
             [
                 ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => false,

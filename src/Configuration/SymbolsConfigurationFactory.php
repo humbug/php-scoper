@@ -25,6 +25,9 @@ use function is_array;
 use function is_bool;
 use function is_string;
 use function sprintf;
+use function str_contains;
+use function strrpos;
+use function substr;
 
 final class SymbolsConfigurationFactory
 {
@@ -203,10 +206,29 @@ final class SymbolsConfigurationFactory
             );
         }
 
-        // TODO: double check that we are not adding it twice or that adding it twice does not break anything
-        $regex .= 'i';
+        $flags = self::getRegexFlags($regex);
+
+        if (!str_contains($flags, 'i')) {
+            // Ensure namespace comparisons are always case-insensitive
+            $regex .= 'i';
+        }
 
         return $regex;
+    }
+
+    /**
+     * @param non-empty-string $regex
+     */
+    private static function getRegexFlags(string $regex): string
+    {
+        $separator = $regex[0];
+        $lastSeparatorPosition = strrpos($regex, $separator);
+
+        if (false === $lastSeparatorPosition) {
+            return '';
+        }
+
+        return substr($regex, $lastSeparatorPosition);
     }
 
     /**
@@ -240,6 +262,9 @@ final class SymbolsConfigurationFactory
         }
     }
 
+    /**
+     * @phpstan-assert non-empty-string $regex
+     */
     private function assertValidRegex(string $regex, string $key, string $index): void
     {
         $errorMessage = $this->regexChecker->validateRegex($regex);
