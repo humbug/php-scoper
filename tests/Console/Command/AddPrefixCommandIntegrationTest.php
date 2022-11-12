@@ -26,6 +26,7 @@ use function array_reduce;
 use function iterator_to_array;
 use function Safe\file_get_contents;
 use function Safe\file_put_contents;
+use function Safe\fileperms;
 use function Safe\preg_replace;
 use function Safe\realpath;
 use function sprintf;
@@ -36,7 +37,6 @@ use const DIRECTORY_SEPARATOR;
  * @coversNothing
  *
  * @group integration
- * @runTestsInSeparateProcesses
  *
  * @internal
  */
@@ -135,10 +135,10 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
             PhpScoper version TestVersion 28/01/2020
 
-             0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
-             4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+             0/5 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+             5/5 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
 
-             [OK] Successfully prefixed 4 files.
+             [OK] Successfully prefixed 5 files.
 
              // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -196,12 +196,13 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
             PhpScoper version TestVersion 28/01/2020
 
              * [NO] /path/to/composer/installed.json
+             * [OK] /path/to/executable-file.php
              * [OK] /path/to/file.php
              * [NO] /path/to/invalid-file.php
              * [OK] /path/to/scoper.inc.php
 
 
-             [OK] Successfully prefixed 4 files.
+             [OK] Successfully prefixed 5 files.
 
              // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -257,6 +258,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
             #7
             #8
             #9
+             * [OK] /path/to/executable-file.php
              * [OK] /path/to/file.php
              * [NO] /path/to/invalid-file.php
             	Could not parse the file "/path/to/invalid-file.php".: PhpParser
@@ -274,7 +276,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
              * [OK] /path/to/scoper.inc.php
 
 
-             [OK] Successfully prefixed 4 files.
+             [OK] Successfully prefixed 5 files.
 
              // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
 
@@ -351,7 +353,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
                 $path = str_replace($dir, '', $realPath);
 
-                $collectedFiles[$path] = file_get_contents($realPath);
+                $collectedFiles[$path] = [file_get_contents($realPath), fileperms($realPath)];
 
                 return $collectedFiles;
             },

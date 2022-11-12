@@ -31,6 +31,7 @@ use function count;
 use function Humbug\PhpScoper\get_common_path;
 use function preg_match as native_preg_match;
 use function Safe\file_get_contents;
+use function Safe\fileperms;
 use function sprintf;
 use function str_replace;
 use function strlen;
@@ -99,7 +100,7 @@ final class ConsoleScoper
         // Creates output directory if does not already exist
         $this->fileSystem->mkdir($outputDir);
 
-        [$files, $whitelistedFiles] = self::getFiles($config, $outputDir);
+        [$files, $excludedFilesWithContents] = self::getFiles($config, $outputDir);
 
         $logger->outputFileCount(count($files));
 
@@ -121,14 +122,14 @@ final class ConsoleScoper
             );
         }
 
-        foreach ($whitelistedFiles as [$inputFilePath, $inputContents, $outputFilePath]) {
-            $this->fileSystem->dumpFile($outputFilePath, $inputContents);
+        foreach ($excludedFilesWithContents as $excludedFileWithContent) {
+            $this->dumpFileWithPermissions(...$excludedFileWithContent);
         }
 
         $vendorDir = self::findVendorDir(
             [
                 ...array_column($files, 2),
-                ...array_column($whitelistedFiles, 2),
+                ...array_column($excludedFilesWithContents, 2),
             ],
         );
 
@@ -139,6 +140,21 @@ final class ConsoleScoper
                 $vendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
                 $autoload,
             );
+        }
+    }
+
+    private function dumpFileWithPermissions(
+        string $inputFilePath,
+        string $inputContents,
+        string $outputFilePath
+    ): void {
+        $this->fileSystem->dumpFile($outputFilePath, $inputContents);
+
+        $originalFilePermissions = fileperms($inputFilePath) & 0o777;
+
+        if ($originalFilePermissions !== 420) {
+            // Only change the permissions if necessary
+            $this->fileSystem->chmod($outputFilePath, $originalFilePermissions);
         }
     }
 
@@ -228,7 +244,11 @@ final class ConsoleScoper
             $scoppedContent = file_get_contents($inputFilePath);
         }
 
-        $this->fileSystem->dumpFile($outputFilePath, $scoppedContent);
+        $this->dumpFileWithPermissions(
+            $inputFilePath,
+            $scoppedContent,
+            $outputFilePath,
+        );
 
         if (!isset($exception)) {
             $logger->outputSuccess($inputFilePath);
