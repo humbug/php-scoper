@@ -224,6 +224,10 @@ final class SymbolsConfigurationFactory
         $separator = $regex[0];
         $lastSeparatorPosition = strrpos($regex, $separator);
 
+        if (false === $lastSeparatorPosition) {
+            return '';
+        }
+
         return substr($regex, $lastSeparatorPosition);
     }
 
@@ -258,6 +262,9 @@ final class SymbolsConfigurationFactory
         }
     }
 
+    /**
+     * @phpstan-assert non-empty-string $regex
+     */
     private function assertValidRegex(string $regex, string $key, string $index): void
     {
         $errorMessage = $this->regexChecker->validateRegex($regex);
