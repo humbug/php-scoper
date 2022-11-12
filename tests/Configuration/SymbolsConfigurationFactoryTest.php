@@ -25,7 +25,7 @@ use Throwable;
  *
  * @internal
  */
-final class ConfigurationSymbolsConfigurationFactoryTest extends TestCase
+final class SymbolsConfigurationFactoryTest extends TestCase
 {
     private SymbolsConfigurationFactory $factory;
 

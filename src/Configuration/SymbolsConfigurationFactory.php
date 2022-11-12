@@ -19,24 +19,12 @@ use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
 use function array_key_exists;
 use function array_keys;
-use function array_map;
-use function array_pop;
-use function explode;
 use function get_debug_type;
 use function gettype;
-use function implode;
 use function is_array;
 use function is_bool;
 use function is_string;
-use function ltrim;
-use function Safe\preg_match as native_preg_match;
 use function sprintf;
-use function str_contains;
-use function str_ends_with;
-use function str_replace;
-use function strtolower;
-use function substr;
-use function trim;
 
 final class SymbolsConfigurationFactory
 {
@@ -186,27 +174,8 @@ final class SymbolsConfigurationFactory
                 continue;
             }
 
-            $regex = $nameOrRegex;
+            $regex = $this->getRegex($nameOrRegex, $key, $index);
 
-            $this->assertValidRegex($regex, $key, (string) $index);
-
-            $errorMessage = $this->regexChecker->validateRegex($regex);
-
-            if (null !== $errorMessage) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected "%s" to be an array of valid regexes. The element "%s" with the index "%s" is not: %s.',
-                        $key,
-                        $regex,
-                        $index,
-                        $errorMessage,
-                    ),
-                );
-            }
-
-            // Ensure namespace comparisons are always case-insensitive
-            // TODO: double check that we are not adding it twice or that adding it twice does not break anything
-            $regex .= 'i';
             $regexes[$regex] = null;
         }
 
@@ -216,42 +185,28 @@ final class SymbolsConfigurationFactory
         ];
     }
 
-    /**
-     * @deprecated
-     *
-     * @param list<string> $elements
-     * @param list<string> $excludedNamespaceNames
-     */
-    private static function parseLegacyExposedElements(array $elements, array $excludedNamespaceNames): array
+    private function getRegex(string $regex, string $key, int|string $index): string
     {
-        $exposedSymbols = [];
-        $exposedConstants = [];
-        $exposedSymbolsPatterns = [];
-        $excludedNamespaceNames = array_map('strtolower', $excludedNamespaceNames);
+        $this->assertValidRegex($regex, $key, (string) $index);
 
-        foreach ($elements as $element) {
-            $element = ltrim(trim($element), '\\');
+        $errorMessage = $this->regexChecker->validateRegex($regex);
 
-            self::assertValidElement($element);
-
-            if (str_ends_with($element, '\*')) {
-                $excludedNamespaceNames[] = strtolower(substr($element, 0, -2));
-            } elseif ('*' === $element) {
-                $excludedNamespaceNames[] = '';
-            } elseif (str_contains($element, '*')) {
-                $exposedSymbolsPatterns[] = self::createExposePattern($element);
-            } else {
-                $exposedSymbols[] = strtolower($element);
-                $exposedConstants[] = self::lowerCaseConstantName($element);
-            }
+        if (null !== $errorMessage) {
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Expected "%s" to be an array of valid regexes. The element "%s" with the index "%s" is not: %s.',
+                    $key,
+                    $regex,
+                    $index,
+                    $errorMessage,
+                ),
+            );
         }
 
-        return [
-            $exposedSymbols,
-            $exposedSymbolsPatterns,
-            $exposedConstants,
-            $excludedNamespaceNames,
-        ];
+        // TODO: double check that we are not adding it twice or that adding it twice does not break anything
+        $regex .= 'i';
+
+        return $regex;
     }
 
     /**
@@ -300,74 +255,5 @@ final class SymbolsConfigurationFactory
                 ),
             );
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    private static function assertValidElement(string $element): void
-    {
-        if ('' !== $element) {
-            return;
-        }
-
-        throw new InvalidArgumentException(
-            sprintf(
-                'Invalid whitelist element "%s": cannot accept an empty string',
-                $element,
-            ),
-        );
-    }
-
-    /**
-     * @deprecated
-     */
-    private static function createExposePattern(string $element): string
-    {
-        self::assertValidPattern($element);
-
-        return sprintf(
-            '/^%s$/u',
-            str_replace(
-                '\\',
-                '\\\\',
-                str_replace(
-                    '*',
-                    '.*',
-                    $element,
-                ),
-            ),
-        );
-    }
-
-    /**
-     * @deprecated
-     */
-    private static function assertValidPattern(string $element): void
-    {
-        if (1 !== native_preg_match('/^(([\p{L}_]+\\\\)+)?[\p{L}_]*\*$/u', $element)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid whitelist pattern "%s".',
-                    $element,
-                ),
-            );
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    private static function lowerCaseConstantName(string $name): string
-    {
-        $parts = explode('\\', $name);
-
-        $lastPart = array_pop($parts);
-
-        $parts = array_map('strtolower', $parts);
-
-        $parts[] = $lastPart;
-
-        return implode('\\', $parts);
     }
 }
