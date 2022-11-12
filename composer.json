@@ -45,6 +45,9 @@
         "psr-4": {
             "Humbug\\PhpScoper\\": "src/"
         },
+        "classmap": [
+            "vendor-hotfix/"
+        ],
         "files": [
             "src/functions.php"
         ]

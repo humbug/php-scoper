@@ -29,8 +29,9 @@ final class Configuration
     private readonly string $prefix;
 
     /**
-     * @param non-empty-string|null $path   Absolute path to the configuration file loaded.
-     * @param non-empty-string      $prefix The prefix applied.
+     * @param non-empty-string|null $path      Absolute canonical path to the configuration file loaded.
+     * @param non-empty-string|null $outputDir Absolute canonical path to the output directory.
+     * @param non-empty-string      $prefix    The prefix applied.
      * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
@@ -40,6 +41,7 @@ final class Configuration
      */
     public function __construct(
         private ?string $path,
+        private ?string $outputDir,
         string $prefix,
         private array $filesWithContents,
         private array $excludedFilesWithContents,
@@ -47,6 +49,7 @@ final class Configuration
         private SymbolsConfiguration $symbolsConfiguration
     ) {
         self::validatePrefix($prefix);
+
         $this->prefix = $prefix;
     }
 
@@ -59,12 +62,21 @@ final class Configuration
     }
 
     /**
+     * @return non-empty-string|null Absolute canonical path
+     */
+    public function getOutputDir(): ?string
+    {
+        return $this->outputDir;
+    }
+
+    /**
      * @param non-empty-string $prefix
      */
     public function withPrefix(string $prefix): self
     {
         return new self(
             $this->path,
+            $this->outputDir,
             $prefix,
             $this->filesWithContents,
             $this->excludedFilesWithContents,

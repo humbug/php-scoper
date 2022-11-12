@@ -77,6 +77,7 @@ final class ConfigurationFactory
         self::validateConfigKeys($config);
 
         $prefix = self::retrievePrefix($config);
+        $outputDir = self::retrieveOutputDir($config);
 
         $excludedFiles = null === $path
             ? []
@@ -99,6 +100,7 @@ final class ConfigurationFactory
 
         return new Configuration(
             $path,
+            $outputDir,
             $prefix,
             $filesWithContents,
             self::retrieveFilesWithContents($excludedFiles),
@@ -122,6 +124,7 @@ final class ConfigurationFactory
 
         return new Configuration(
             $config->getPath(),
+            $config->getOutputDir(),
             $config->getPrefix(),
             [
                 ...$config->getFilesWithContents(),
@@ -139,6 +142,7 @@ final class ConfigurationFactory
 
         return new Configuration(
             $config->getPath(),
+            $config->getOutputDir(),
             $prefix,
             $config->getFilesWithContents(),
             $config->getExcludedFilesWithContents(),
@@ -224,6 +228,16 @@ final class ConfigurationFactory
         $prefix = trim((string) ($config[ConfigurationKeys::PREFIX_KEYWORD] ?? ''));
 
         return '' === $prefix ? self::generateRandomPrefix() : $prefix;
+    }
+
+    /**
+     * @return non-empty-string|null
+     */
+    private static function retrieveOutputDir(array $config): ?string
+    {
+        $outputDir = trim((string) ($config[ConfigurationKeys::OUTPUT_DIR_KEYWORD] ?? ''));
+
+        return '' === $outputDir ? null : $outputDir;
     }
 
     /**

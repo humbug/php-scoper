@@ -1,6 +1,7 @@
 ## Configuration
 
 - [Prefix](#prefix)
+- [Output directory](#output-directory)
 - [Finders and paths](#finders-and-paths)
 - [Patchers](#patchers)
 - [Excluded files](#excluded-files)
@@ -25,6 +26,7 @@ use Isolated\Symfony\Component\Finder\Finder;
 
 return [
     'prefix' => null,           // string|null
+    'output-dir' => null,       // string|null
     'finders' => [],            // list<Finder>
     'patchers' => [],           // list<callable(string $filePath, string $prefix, string $contents): string>
 
@@ -50,6 +52,15 @@ return [
 
 The prefix to be used to isolate the code. If `null` or `''` (empty string) is given,
 then a random prefix will be automatically generated.
+
+
+### Output directory
+
+The base output directory where the prefixed files will be generated. If `null`
+is given, `build` is used.
+
+This setting will be overridden by the command line option of the same name if
+present.
 
 
 ### Finders and paths

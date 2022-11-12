@@ -53,6 +53,9 @@ final class AddPrefixCommand implements Command, CommandAware
     private const STOP_ON_FAILURE_OPT = 'stop-on-failure';
     private const CONFIG_FILE_OPT = 'config';
     private const NO_CONFIG_OPT = 'no-config';
+
+    private const DEFAULT_OUTPUT_DIR = 'build';
+
     private bool $init = false;
 
     public function __construct(
@@ -90,7 +93,6 @@ final class AddPrefixCommand implements Command, CommandAware
                     'o',
                     InputOption::VALUE_REQUIRED,
                     'The output directory in which the prefixed code will be dumped.',
-                    'build',
                 ),
                 new InputOption(
                     self::FORCE_OPT,
@@ -134,11 +136,13 @@ final class AddPrefixCommand implements Command, CommandAware
         $cwd = getcwd();
 
         $paths = $this->getPathArguments($io, $cwd);
-        $outputDir = $this->getOutputDir($io, $cwd);
-
-        $this->checkOutputDir($io, $outputDir);
-
         $config = $this->retrieveConfig($io, $paths, $cwd);
+
+        $outputDir = $this->canonicalizePath(
+            $this->getOutputDir($io, $config),
+            $cwd,
+        );
+        $this->checkOutputDir($io, $outputDir);
 
         $this->getScoper()->scope(
             $io,
@@ -154,12 +158,15 @@ final class AddPrefixCommand implements Command, CommandAware
     /**
      * @return non-empty-string
      */
-    private function getOutputDir(IO $io, string $cwd): string
+    private function getOutputDir(IO $io, Configuration $configuration): string
     {
-        return $this->canonicalizePath(
-            $io->getOption(self::OUTPUT_DIR_OPT)->asString(),
-            $cwd,
-        );
+        $commandOutputDir = $io->getOption(self::OUTPUT_DIR_OPT)->asString();
+
+        if ('' !== $commandOutputDir) {
+            return $commandOutputDir;
+        }
+
+        return $configuration->getOutputDir() ?? self::DEFAULT_OUTPUT_DIR;
     }
 
     private function checkOutputDir(IO $io, string $outputDir): void

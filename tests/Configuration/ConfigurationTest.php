@@ -41,6 +41,7 @@ final class ConfigurationTest extends TestCase
 
         new Configuration(
             null,
+            null,
             $prefix,
             [],
             [],
@@ -53,6 +54,7 @@ final class ConfigurationTest extends TestCase
     {
         $values = [
             '/path/to/config',
+            '/path/to/outputDir',
             'initialPrefix',
             ['/path/to/fileA' => ['/path/to/fileA', 'fileAContent']],
             ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
@@ -68,7 +70,7 @@ final class ConfigurationTest extends TestCase
         $newConfig = $config->withPrefix('newPrefix');
 
         $expectedNewConfigValues = $values;
-        $expectedNewConfigValues[1] = 'newPrefix';
+        $expectedNewConfigValues[2] = 'newPrefix';
 
         self::assertStateIs($config, ...$values);
         self::assertStateIs($newConfig, ...$expectedNewConfigValues);
@@ -90,6 +92,7 @@ final class ConfigurationTest extends TestCase
     private static function assertStateIs(
         Configuration $configuration,
         ?string $expectedPath,
+        ?string $expectedOutputDir,
         string $expectedPrefix,
         array $expectedFilesWithContents,
         array $expectedExcludedFilesWithContents,
@@ -97,6 +100,7 @@ final class ConfigurationTest extends TestCase
         SymbolsConfiguration $expectedSymbolsConfiguration
     ): void {
         self::assertSame($expectedPath, $configuration->getPath());
+        self::assertSame($expectedOutputDir, $configuration->getOutputDir());
         self::assertSame($expectedPrefix, $configuration->getPrefix());
         self::assertEqualsCanonicalizing(
             $expectedFilesWithContents,

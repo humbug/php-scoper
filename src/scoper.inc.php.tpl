@@ -12,11 +12,15 @@ use Isolated\Symfony\Component\Finder\Finder;
 // the PHP-Scoper analysis.
 
 return [
-    // The prefix configuration. If a non null value is be used, a random prefix
+    // The prefix configuration. If a non-null value is used, a random prefix
     // will be generated instead.
     //
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#prefix
     'prefix' => null,
+
+    // The base output directory for the prefixed files.
+    // This will be overridden by the 'output-dir' command line option if present.
+    'output-dir' => null,
 
     // By default when running php-scoper add-prefix, it will prefix all relevant code found in the current working
     // directory. You can however define which files should be scoped by defining a collection of Finders in the

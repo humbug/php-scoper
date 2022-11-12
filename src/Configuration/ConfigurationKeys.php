@@ -18,6 +18,7 @@ namespace Humbug\PhpScoper\Configuration;
 final class ConfigurationKeys
 {
     public const PREFIX_KEYWORD = 'prefix';
+    public const OUTPUT_DIR_KEYWORD = 'output-dir';
     public const EXCLUDED_FILES_KEYWORD = 'exclude-files';
     public const FINDER_KEYWORD = 'finders';
     public const PATCHERS_KEYWORD = 'patchers';
@@ -38,6 +39,7 @@ final class ConfigurationKeys
 
     public const KEYWORDS = [
         self::PREFIX_KEYWORD,
+        self::OUTPUT_DIR_KEYWORD,
         self::EXCLUDED_FILES_KEYWORD,
         self::FINDER_KEYWORD,
         self::PATCHERS_KEYWORD,
