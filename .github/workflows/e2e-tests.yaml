@@ -2,7 +2,7 @@ name: End-to-End Tests
 
 on:
     push:
-        branches: [ master ]
+        branches: [ main ]
     pull_request:
     release:
         types: [ created ]
@@ -15,8 +15,6 @@ jobs:
             fail-fast: false
             matrix:
                 php:
-                    - '7.4'
-                    - '8.0'
                     - '8.1'
         steps:
             -   name: Checkout
@@ -75,12 +73,8 @@ jobs:
                     - 'e2e_018'
                     - 'e2e_019'
                     - 'e2e_020'
-                    - 'e2e_021'
-                    - 'e2e_022'
-                    - 'e2e_023'
                     - 'e2e_024'
                     - 'e2e_025'
-                    - 'e2e_026'
                     - 'e2e_027'
                     - 'e2e_028'
                     - 'e2e_029'
@@ -88,8 +82,6 @@ jobs:
                     - 'e2e_031'
                     - 'e2e_032'
                 php:
-                    - '7.4'
-                    - '8.0'
                     - '8.1'
 
         steps:

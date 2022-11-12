@@ -1,0 +1,6 @@
+{
+    "bin": "index.php",
+    "require": {
+        "symfony/deprecation-contracts": "^3.1"
+    }
+}

@@ -19,8 +19,8 @@ use PhpParser\Node\Name\FullyQualified;
 // TODO:review
 final class PrefixedName extends FullyQualified
 {
-    private FullyQualified $prefixedName;
-    private FullyQualified $originalName;
+    private readonly FullyQualified $prefixedName;
+    private readonly FullyQualified $originalName;
 
     public function __construct(FullyQualified $prefixedName, FullyQualified $originalName, array $attributes = [])
     {

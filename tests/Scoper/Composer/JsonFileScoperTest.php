@@ -15,40 +15,31 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper\Composer;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
-use Humbug\PhpScoper\Scoper\FakeScoper;
 use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Scoper\ScoperStub;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\Composer\JsonFileScoper
  * @covers \Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer
+ * @covers \Humbug\PhpScoper\Scoper\Composer\JsonFileScoper
+ *
+ * @internal
  */
 class JsonFileScoperTest extends TestCase
 {
-    use ProphecyTrait;
-
     private const PREFIX = 'Foo';
 
-    private AutoloadPrefixer $autoloadPrefixer;
+    private ScoperStub $decoratedScoper;
 
-    private Scoper $scopedWithoutDecoratedScoper;
-
-    /**
-     * @var ObjectProphecy<Scoper>
-     */
-    private ObjectProphecy $decoratedScoperProphecy;
-
-    private Scoper $decoratedScoper;
+    private Scoper $scoper;
 
     protected function setUp(): void
     {
-        $this->autoloadPrefixer = new AutoloadPrefixer(
+        $autoloadPrefixer = new AutoloadPrefixer(
             self::PREFIX,
             new EnrichedReflector(
                 Reflector::createEmpty(),
@@ -56,16 +47,15 @@ class JsonFileScoperTest extends TestCase
             ),
         );
 
-        $this->scopedWithoutDecoratedScoper = new JsonFileScoper(
-            new FakeScoper(),
-            $this->autoloadPrefixer,
-        );
+        $this->decoratedScoper = new ScoperStub();
 
-        $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
-        $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
+        $this->scoper = new JsonFileScoper(
+            $this->decoratedScoper,
+            $autoloadPrefixer,
+        );
     }
 
-    public function test_it_is_a_Scoper(): void
+    public function test_it_is_a_scoper(): void
     {
         self::assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
     }
@@ -74,26 +64,16 @@ class JsonFileScoperTest extends TestCase
     {
         $filePath = 'file.php';
         $fileContents = '';
-        $prefix = 'Humbug';
 
-        $this->decoratedScoperProphecy
-            ->scope($filePath, $fileContents)
-            ->willReturn(
-                $expected = 'Scoped content'
-            );
-
-        $scoper = new JsonFileScoper(
-            $this->decoratedScoper,
-            $this->autoloadPrefixer,
+        $this->decoratedScoper->addConfig(
+            $filePath,
+            $fileContents,
+            $expected = 'Scoped content',
         );
 
-        $actual = $scoper->scope($filePath, $fileContents);
+        $actual = $this->scoper->scope($filePath, $fileContents);
 
         self::assertSame($expected, $actual);
-
-        $this->decoratedScoperProphecy
-            ->scope(Argument::cetera())
-            ->shouldHaveBeenCalledTimes(1);
     }
 
     /**
@@ -101,7 +81,28 @@ class JsonFileScoperTest extends TestCase
      */
     public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
     {
-        $actual = $this->scopedWithoutDecoratedScoper->scope(
+        $actual = $this->scoper->scope(
+            'composer.json',
+            $fileContents,
+        );
+
+        self::assertSame($expected, $actual);
+    }
+
+    public function test_it_requires_valid_composer2_files(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected the decoded JSON to be an stdClass instance, got "array" instead');
+
+        $this->scoper->scope('composer.json', '[]');
+    }
+
+    /**
+     * @dataProvider providePSR0ComposerFiles
+     */
+    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
+    {
+        $actual = $this->scoper->scope(
             'composer.json',
             $fileContents,
         );
@@ -113,330 +114,317 @@ class JsonFileScoperTest extends TestCase
     {
         yield [
             <<<'JSON'
-            {
-                "bin": ["bin/php-scoper"],
-                "autoload": {
-                    "psr-4": {
-                        "Humbug\\PhpScoper\\": "src/"
+                {
+                    "bin": ["bin/php-scoper"],
+                    "autoload": {
+                        "psr-4": {
+                            "Humbug\\PhpScoper\\": "src/"
+                        },
+                        "files": [
+                            "src/functions.php"
+                        ],
+                        "classmap": []
                     },
-                    "files": [
-                        "src/functions.php"
-                    ],
-                    "classmap": []
-                },
-                "autoload-dev": {
-                    "psr-4": {
-                        "Humbug\\PhpScoper\\": "tests/"
+                    "autoload-dev": {
+                        "psr-4": {
+                            "Humbug\\PhpScoper\\": "tests/"
+                        },
+                        "files": [
+                            "tests/functions.php"
+                        ]
                     },
-                    "files": [
-                        "tests/functions.php"
-                    ]
-                },
-                "config": {}
-            }
-            
-            JSON,
+                    "config": {}
+                }
+
+                JSON,
             <<<'JSON'
-            {
-                "bin": [
-                    "bin\/php-scoper"
-                ],
-                "autoload": {
-                    "psr-4": {
-                        "Foo\\Humbug\\PhpScoper\\": "src\/"
-                    },
-                    "files": [
-                        "src\/functions.php"
+                {
+                    "bin": [
+                        "bin\/php-scoper"
                     ],
-                    "classmap": []
-                },
-                "autoload-dev": {
-                    "psr-4": {
-                        "Foo\\Humbug\\PhpScoper\\": "tests\/"
+                    "autoload": {
+                        "psr-4": {
+                            "Foo\\Humbug\\PhpScoper\\": "src\/"
+                        },
+                        "files": [
+                            "src\/functions.php"
+                        ],
+                        "classmap": []
                     },
-                    "files": [
-                        "tests\/functions.php"
-                    ]
-                },
-                "config": {}
-            }
-            JSON,
+                    "autoload-dev": {
+                        "psr-4": {
+                            "Foo\\Humbug\\PhpScoper\\": "tests\/"
+                        },
+                        "files": [
+                            "tests\/functions.php"
+                        ]
+                    },
+                    "config": {}
+                }
+                JSON,
         ];
-    }
-
-    /**
-     * @dataProvider providePSR0ComposerFiles
-     */
-    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
-    {
-        $actual = $this->scopedWithoutDecoratedScoper->scope(
-            'composer.json',
-            $fileContents,
-        );
-
-        self::assertSame($expected, $actual);
     }
 
     public static function providePSR0ComposerFiles(): iterable
     {
         yield [
             <<<'JSON'
-            {
-                "bin": ["bin/php-scoper"],
-                "autoload": {
-                    "psr-0": {
-                        "Humbug\\PhpScoper\\": "src/"
-                    },
-                    "psr-4": {
-                        "BarFoo\\": [
-                            "lib/",
-                            "dev/"
+                {
+                    "bin": ["bin/php-scoper"],
+                    "autoload": {
+                        "psr-0": {
+                            "Humbug\\PhpScoper\\": "src/"
+                        },
+                        "psr-4": {
+                            "BarFoo\\": [
+                                "lib/",
+                                "dev/"
+                            ]
+                        },
+                        "files": [
+                            "src/functions.php"
                         ]
                     },
-                    "files": [
-                        "src/functions.php"
-                    ]
-                },
-                "autoload-dev": {
-                    "psr-0": {
-                        "Humbug\\PhpScoper\\": "tests/"
-                    },
-                    "psr-4": {
-                        "Bar\\": "folder\/"
-                    },
-                    "files": [
-                        "tests/functions.php"
-                    ]
+                    "autoload-dev": {
+                        "psr-0": {
+                            "Humbug\\PhpScoper\\": "tests/"
+                        },
+                        "psr-4": {
+                            "Bar\\": "folder\/"
+                        },
+                        "files": [
+                            "tests/functions.php"
+                        ]
+                    }
                 }
-            }
-            
-            JSON,
+
+                JSON,
             <<<'JSON'
-            {
-                "bin": [
-                    "bin\/php-scoper"
-                ],
-                "autoload": {
-                    "psr-4": {
-                        "Foo\\BarFoo\\": [
-                            "lib\/",
-                            "dev\/"
-                        ],
-                        "Foo\\Humbug\\PhpScoper\\": "src\/Humbug\/PhpScoper\/"
+                {
+                    "bin": [
+                        "bin\/php-scoper"
+                    ],
+                    "autoload": {
+                        "psr-4": {
+                            "Foo\\BarFoo\\": [
+                                "lib\/",
+                                "dev\/"
+                            ],
+                            "Foo\\Humbug\\PhpScoper\\": "src\/Humbug\/PhpScoper\/"
+                        },
+                        "files": [
+                            "src\/functions.php"
+                        ]
                     },
-                    "files": [
-                        "src\/functions.php"
-                    ]
-                },
-                "autoload-dev": {
-                    "psr-4": {
-                        "Foo\\Bar\\": "folder\/",
-                        "Foo\\Humbug\\PhpScoper\\": "tests\/Humbug\/PhpScoper\/"
-                    },
-                    "files": [
-                        "tests\/functions.php"
-                    ]
+                    "autoload-dev": {
+                        "psr-4": {
+                            "Foo\\Bar\\": "folder\/",
+                            "Foo\\Humbug\\PhpScoper\\": "tests\/Humbug\/PhpScoper\/"
+                        },
+                        "files": [
+                            "tests\/functions.php"
+                        ]
+                    }
                 }
-            }
-            JSON,
+                JSON,
         ];
 
         yield 'PSR-0 and four with the same namespace get merged' => [
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-0": {
-                        "Bar\\": "src/"
-                    },
-                    "psr-4": {
-                        "Bar\\": "lib/"
-                    }
-                 }
-            }
-            JSON,
+                {
+                    "autoload": {
+                        "psr-0": {
+                            "Bar\\": "src/"
+                        },
+                        "psr-4": {
+                            "Bar\\": "lib/"
+                        }
+                     }
+                }
+                JSON,
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-4": {
-                        "Foo\\Bar\\": [
-                            "lib\/",
-                            "src\/Bar\/"
-                        ]
+                {
+                    "autoload": {
+                        "psr-4": {
+                            "Foo\\Bar\\": [
+                                "lib\/",
+                                "src\/Bar\/"
+                            ]
+                        }
                     }
                 }
-            }
-            JSON,
+                JSON,
         ];
 
         yield 'PSR-0 and four get merged if either of them have multiple entries' => [
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-4": {
-                        "Bar\\": [
-                            "lib/",
-                            "src/"
-                        ]
+                {
+                    "autoload": {
+                        "psr-4": {
+                            "Bar\\": [
+                                "lib/",
+                                "src/"
+                            ]
+                        },
+                        "psr-0": {
+                            "Bar\\": "test"
+                        }
                     },
-                    "psr-0": {
-                        "Bar\\": "test"
-                    }
-                },
-                "autoload-dev": {
-                    "psr-0": {
-                        "Baz\\": [
-                            "folder/",
-                            "check/"
-                        ]
-                    },
-                    "psr-4": {
-                        "Baz\\": "loader/"
+                    "autoload-dev": {
+                        "psr-0": {
+                            "Baz\\": [
+                                "folder/",
+                                "check/"
+                            ]
+                        },
+                        "psr-4": {
+                            "Baz\\": "loader/"
+                        }
                     }
                 }
-            }
-            JSON,
+                JSON,
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-4": {
-                        "Foo\\Bar\\": [
-                            "lib\/",
-                            "src\/",
-                            "test\/Bar\/"
-                        ]
-                    }
-                },
-                "autoload-dev": {
-                    "psr-4": {
-                        "Foo\\Baz\\": [
-                            "folder\/Baz\/",
-                            "check\/Baz\/",
-                            "loader\/"
-                        ]
+                {
+                    "autoload": {
+                        "psr-4": {
+                            "Foo\\Bar\\": [
+                                "lib\/",
+                                "src\/",
+                                "test\/Bar\/"
+                            ]
+                        }
+                    },
+                    "autoload-dev": {
+                        "psr-4": {
+                            "Foo\\Baz\\": [
+                                "folder\/Baz\/",
+                                "check\/Baz\/",
+                                "loader\/"
+                            ]
+                        }
                     }
                 }
-            }
-            JSON,
+                JSON,
         ];
 
         yield 'PSR-0 gets converted to PSR-4' => [
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-0": {
-                        "Bar\\": "src/"
+                {
+                    "autoload": {
+                        "psr-0": {
+                            "Bar\\": "src/"
+                        }
                     }
                 }
-            }
-            JSON,
+                JSON,
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-4": {
-                        "Foo\\Bar\\": "src\/Bar\/"
+                {
+                    "autoload": {
+                        "psr-4": {
+                            "Foo\\Bar\\": "src\/Bar\/"
+                        }
                     }
                 }
-            }
-            JSON,
+                JSON,
         ];
 
         yield 'PSR-0 and four get merged when both are arrays' => [
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-4": {
-                        "Bar\\": [
-                            "lib/",
-                            "src/"
-                        ]
-                    },
-                    "psr-0": {
-                        "Bar": [
-                            "build",
-                            "internal/"
-                        ]
+                {
+                    "autoload": {
+                        "psr-4": {
+                            "Bar\\": [
+                                "lib/",
+                                "src/"
+                            ]
+                        },
+                        "psr-0": {
+                            "Bar": [
+                                "build",
+                                "internal/"
+                            ]
+                        }
                     }
                 }
-            }
-            JSON,
+                JSON,
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-4": {
-                        "Foo\\Bar\\": [
-                            "lib\/",
-                            "src\/",
-                            "build\/Bar\/",
-                            "internal\/Bar\/"
-                        ]
+                {
+                    "autoload": {
+                        "psr-4": {
+                            "Foo\\Bar\\": [
+                                "lib\/",
+                                "src\/",
+                                "build\/Bar\/",
+                                "internal\/Bar\/"
+                            ]
+                        }
                     }
                 }
-            }
-            JSON,
+                JSON,
         ];
 
         yield 'PSR-0 with underscores gets converted to classmap' => [
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-0": {
-                        "EasyRdf_": "lib"
+                {
+                    "autoload": {
+                        "psr-0": {
+                            "EasyRdf_": "lib"
+                        }
                     }
                 }
-            }
-            
-            JSON,
+
+                JSON,
             <<<'JSON'
-            {
-                "autoload": {
-                    "classmap": [
-                        "lib"
-                    ]
+                {
+                    "autoload": {
+                        "classmap": [
+                            "lib"
+                        ]
+                    }
                 }
-            }
-            JSON,
+                JSON,
         ];
 
         yield [
             <<<'JSON'
-            {
-                "autoload": {
-                    "psr-0": {
-                        "EasyRdf_": "lib/"
+                {
+                    "autoload": {
+                        "psr-0": {
+                            "EasyRdf_": "lib/"
+                        }
                     }
                 }
-            }
-            
-            JSON,
+
+                JSON,
             <<<'JSON'
-            {
-                "autoload": {
-                    "classmap": [
-                        "lib\/"
-                    ]
+                {
+                    "autoload": {
+                        "classmap": [
+                            "lib\/"
+                        ]
+                    }
                 }
-            }
-            JSON,
+                JSON,
         ];
 
         yield [
             <<<'JSON'
-            {
-                "autoload": {
-                    "classmap": ["src"]
+                {
+                    "autoload": {
+                        "classmap": ["src"]
+                    }
                 }
-            }
-            
-            JSON,
+
+                JSON,
             <<<'JSON'
-            {
-                "autoload": {
-                    "classmap": [
-                        "src"
-                    ]
+                {
+                    "autoload": {
+                        "classmap": [
+                            "src"
+                        ]
+                    }
                 }
-            }
-            JSON,
+                JSON,
         ];
     }
 }

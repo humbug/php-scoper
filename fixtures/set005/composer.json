@@ -8,6 +8,6 @@
         }
     },
     "require": {
-        "beberlei/assert": "^2.7"
+        "beberlei/assert": "^3.3"
     }
 }

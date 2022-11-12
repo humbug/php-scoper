@@ -33,7 +33,7 @@ final class SymbolsRegistry implements Countable
 
     public static function createFromRegistries(array $symbolsRegistries): self
     {
-        $symbolsRegistry = new SymbolsRegistry();
+        $symbolsRegistry = new self();
 
         foreach ($symbolsRegistries as $symbolsRegistryToMerge) {
             $symbolsRegistry->merge($symbolsRegistryToMerge);
@@ -52,7 +52,7 @@ final class SymbolsRegistry implements Countable
             $this->recordedClasses[$original] = [$original, $alias];
         }
     }
-    
+
     public function recordFunction(FullyQualified $original, FullyQualified $alias): void
     {
         $this->recordedFunctions[(string) $original] = [(string) $original, (string) $alias];
@@ -69,6 +69,14 @@ final class SymbolsRegistry implements Countable
     public function recordClass(FullyQualified $original, FullyQualified $alias): void
     {
         $this->recordedClasses[(string) $original] = [(string) $original, (string) $alias];
+    }
+
+    /**
+     * @return array{string, string}|null
+     */
+    public function getRecordedClass(string $original): ?array
+    {
+        return $this->recordedClasses[$original] ?? null;
     }
 
     /**

@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
+use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
@@ -29,6 +30,10 @@ use const DIRECTORY_SEPARATOR;
 
 /**
  * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
+ *
+ * @group integration
+ *
+ * @internal
  */
 class ConfigurationFactoryTest extends FileSystemTestCase
 {
@@ -56,6 +61,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         self::assertEquals(
             new PatcherChain([
                 new ComposerPatcher(),
+                new SymfonyParentTraitPatcher(),
                 new SymfonyPatcher(),
             ]),
             $configuration->getPatcher(),
@@ -66,12 +72,12 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     {
         self::dumpStandardConfigFile(
             <<<'PHP'
-            <?php
-            
-            return [
-                'unknown key' => 'val',
-            ];
-            PHP,
+                <?php
+
+                return [
+                    'unknown key' => 'val',
+                ];
+                PHP,
         );
 
         $this->expectException(InvalidArgumentException::class);
@@ -84,31 +90,29 @@ class ConfigurationFactoryTest extends FileSystemTestCase
     {
         self::dumpStandardConfigFile(
             <<<'PHP'
-            <?php
-            
-            return [
-                'prefix' => 'MyPrefix',
-                'output-dir' => 'dist',
+                <?php
+
+                return [
+                    'prefix' => 'MyPrefix',
+                    'output-dir' => 'dist',
                 'exclude-files' => ['file1', 'file2'],
-                'patchers' => [],
-                'finders' => [],
-                
-                'whitelist' => ['Foo', 'Bar\*'],
-                
-                'expose-global-constants' => false,
-                'expose-global-classes' => false,
-                'expose-global-functions' => false,
-                'expose-namespaces' => ['PHPUnit\Runner'],
-                'expose-constants' => [],
-                'expose-classes' => [],
-                'expose-functions' => [],
-                
-                'exclude-namespaces' => ['PHPUnit\Runner'],
-                'exclude-constants' => [],
-                'exclude-classes' => [],
-                'exclude-functions' => [],
-            ];
-            PHP,
+                    'patchers' => [],
+                    'finders' => [],
+
+                    'expose-global-constants' => false,
+                    'expose-global-classes' => false,
+                    'expose-global-functions' => false,
+                    'expose-namespaces' => ['PHPUnit\Runner'],
+                    'expose-constants' => [],
+                    'expose-classes' => [],
+                    'expose-functions' => [],
+
+                    'exclude-namespaces' => ['PHPUnit\Runner'],
+                    'exclude-constants' => [],
+                    'exclude-classes' => [],
+                    'exclude-functions' => [],
+                ];
+                PHP,
         );
         touch('file1');
 
@@ -138,6 +142,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         self::assertEquals(
             new PatcherChain([
                 new ComposerPatcher(),
+                new SymfonyParentTraitPatcher(),
                 new SymfonyPatcher(),
             ]),
             $configuration->getPatcher(),
@@ -148,17 +153,14 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 false,
                 false,
                 NamespaceRegistry::create(
-                    [
-                        'PHPUnit\Runner',
-                        'Bar',
-                    ],
+                    ['PHPUnit\Runner'],
                 ),
                 NamespaceRegistry::create(
                     ['PHPUnit\Runner'],
                 ),
-                SymbolRegistry::create(['Foo']),
-                SymbolRegistry::create(['Foo']),
-                SymbolRegistry::createForConstants(['Foo']),
+                SymbolRegistry::create(),
+                SymbolRegistry::create(),
+                SymbolRegistry::createForConstants(),
             ),
             $configuration->getSymbolsConfiguration(),
         );

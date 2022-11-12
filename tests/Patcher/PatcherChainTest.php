@@ -17,41 +17,44 @@ namespace Humbug\PhpScoper\Patcher;
 use PHPUnit\Framework\TestCase;
 use function func_get_args;
 use function implode;
-use function Safe\sprintf;
+use function sprintf;
 use function str_replace;
 
 /**
  * @covers \Humbug\PhpScoper\Patcher\PatcherChain
+ *
+ * @internal
  */
 class PatcherChainTest extends TestCase
 {
-    public function test_applies_all_the_inner_patchers(): void
+    public function test_it_applies_all_the_inner_patchers(): void
     {
         $filePath = '/path/to/file.php';
         $contents = 'OriginalContent';
         $prefix = 'Humbug';
-
-        $patcher = new PatcherChain([
+        $patchers = [
             self::createPatcher(0),
             self::createPatcher(1),
             self::createPatcher(2),
-        ]);
+        ];
+
+        $patcher = new PatcherChain($patchers);
 
         $expected = <<<'EOF'
-        patcher#2{
-            /path/to/file.php,
-            Humbug,
-            patcher#1{
+            patcher#2{
                 /path/to/file.php,
                 Humbug,
-                patcher#0{
+                patcher#1{
                     /path/to/file.php,
                     Humbug,
-                    OriginalContent
+                    patcher#0{
+                        /path/to/file.php,
+                        Humbug,
+                        OriginalContent
+                    }
                 }
             }
-        }
-        EOF;
+            EOF;
 
         // The line returns are purely for readability
         $expected = str_replace([' ', "\n"], ['', ''], $expected);
@@ -59,6 +62,19 @@ class PatcherChainTest extends TestCase
         $actual = $patcher($filePath, $prefix, $contents);
 
         self::assertSame($expected, $actual);
+    }
+
+    public function test_it_exposes_its_inner_patchers(): void
+    {
+        $patchers = [
+            self::createPatcher(0),
+            self::createPatcher(1),
+            self::createPatcher(2),
+        ];
+
+        $patcher = new PatcherChain($patchers);
+
+        self::assertSame($patchers, $patcher->getPatchers());
     }
 
     private static function createPatcher(int $id): callable

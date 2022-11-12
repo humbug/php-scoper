@@ -19,16 +19,13 @@ use PhpParser\Node;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeVisitorAbstract;
 use function ltrim;
-use function Safe\substr;
-use function strpos;
+use function str_starts_with;
+use function substr;
 
 final class NewdocPrefixer extends NodeVisitorAbstract
 {
-    private StringNodePrefixer $stringPrefixer;
-
-    public function __construct(StringNodePrefixer $stringPrefixer)
+    public function __construct(private readonly StringNodePrefixer $stringPrefixer)
     {
-        $this->stringPrefixer = $stringPrefixer;
     }
 
     public function enterNode(Node $node): Node
@@ -46,7 +43,7 @@ final class NewdocPrefixer extends NodeVisitorAbstract
             return false;
         }
 
-        return 0 === strpos(
+        return str_starts_with(
             substr(
                 ltrim($node->value),
                 0,

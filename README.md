@@ -2,8 +2,8 @@
 
 [![Package version](https://img.shields.io/packagist/v/humbug/php-scoper.svg?style=flat-square)](https://packagist.org/packages/humbug/php-scoper)
 [![Build Status](https://github.com/humbug/php-scoper/workflows/Build/badge.svg)](https://github.com/humbug/php-scoper/actions)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/humbug/php-scoper.svg?branch=master&style=flat-square)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=master)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/humbug/php-scoper.svg?branch=main&style=flat-square)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=main)
+[![Code Coverage](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=main)
 [![Slack](https://img.shields.io/badge/slack-%23humbug-red.svg?style=flat-square)](https://symfony.com/slack-invite)
 [![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](LICENSE)
 
@@ -16,7 +16,7 @@ dependencies such as vendor directories, to a new and distinct namespace.
 PHP-Scoper's goal is to make sure that all code for a project lies in a 
 distinct PHP namespace. This is necessary, for example, when building PHARs that:
 
--Bundle their own vendor dependencies; and 
+- Bundle their own vendor dependencies; and 
 - Load/execute code from arbitrary PHP projects with similar dependencies
 
 When a package (of possibly different versions) exists, and is found in both a PHAR
@@ -50,16 +50,25 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
         - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
         - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
 - [Recommendations](#recommendations)
+- [Further Reading](docs/further-reading.md#further-reading)
+    - [Polyfills](docs/further-reading.md#polyfills)
+    - [How to deal with unknown third-party symbols](docs/further-reading.md#how-to-deal-with-unknown-third-party-symbols)
+    - [Autoload aliases](docs/further-reading.md#autoload-aliases)
+        - [Class aliases](docs/further-reading.md#class-aliases)
+        - [Function aliases](docs/further-reading.md#function-aliases)
 - [Limitations](docs/limitations.md#limitations)
-  - [Dynamic symbols](docs/limitations.md#dynamic-symbols)
-  - [Date symbols](docs/limitations.md#date-symbols)
-  - [Heredoc values](docs/limitations.md#heredoc-values)
-  - [Callables](docs/limitations.md#callables)
-  - [String values](docs/limitations.md#string-values)
-  - [Native functions and constants shadowing](docs/limitations.md#native-functions-and-constants-shadowing)
-  - [Composer Autoloader](docs/limitations.md#composer-autoloader)
-  - [Composer Plugins](docs/limitations.md#composer-plugins)
-  - [PSR-0 Partial support](docs/limitations.md#psr-0-partial-support)
+    - [Dynamic symbols](docs/limitations.md#dynamic-symbols)
+    - [Date symbols](docs/limitations.md#date-symbols)
+    - [Heredoc values](docs/limitations.md#heredoc-values)
+    - [Callables](docs/limitations.md#callables)
+    - [String values](docs/limitations.md#string-values)
+    - [Native functions and constants shadowing](docs/limitations.md#native-functions-and-constants-shadowing)
+    - [Composer Autoloader](docs/limitations.md#composer-autoloader)
+    - [Composer Plugins](docs/limitations.md#composer-plugins)
+    - [PSR-0 Partial support](docs/limitations.md#psr-0-partial-support)
+    - [Files autoloading](docs/limitations.md#files-autoloading)
+    - [Exposing/Excluding traits](docs/limitations.md#exposingexcluding-traits)
+    - [Exposing/Excluding enums](docs/limitations.md#exposingexcluding-enums)
 - [Contributing](#contributing)
 - [Credits](#credits)
 

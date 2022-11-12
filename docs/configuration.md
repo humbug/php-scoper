@@ -29,8 +29,8 @@ return [
     'output-dir' => null,       // string|null
     'finders' => [],            // list<Finder>
     'patchers' => [],           // list<callable(string $filePath, string $prefix, string $contents): string>
-    'files-whitelist' => [],    // list<string>
-  
+
+    'exclude-files' => [],      // list<string>
     'exclude-namespaces' => [], // list<string|regex>
     'exclude-constants' => [],  // list<string|regex>
     'exclude-classes' => [],    // list<string|regex>
@@ -182,7 +182,7 @@ return [
 
 ### Excluded files
 
-For the files listed in `files-whitelist`, their content will be left
+For the files listed in `exclude-files`, their content will be left
 untouched during the scoping process.
 
 
@@ -196,10 +196,10 @@ Symbols can be marked as excluded as follows:
 // scoper.inc.php
 
 return [
-    'exclude-namespaces' => ['WP'],
-    'exclude-classes' => ['Stringeable'],
-    'exclude-functions' => ['str_contains'],
-    'exclude-constants' => ['PHP_EOL'],
+    'exclude-namespaces' => [ 'WP', '/regex/' ],
+    'exclude-classes' => ['Stringeable', '/regex/'],
+    'exclude-functions' => ['str_contains', '/regex/'],
+    'exclude-constants' => ['PHP_EOL', '/regex/'],
 ];
 ```
 
@@ -252,10 +252,10 @@ return [
     'expose-global-classes' => false,
     'expose-global-functions' => false,
 
-    'expose-namespaces' => ['PHPUnit\Framework'],
-    'expose-classes' => ['PHPUnit\Configuration'],
-    'expose-functions' => ['PHPUnit\execute_tests'],
-    'expose-constants' => ['PHPUnit\VERSION'],
+    'expose-namespaces' => ['PHPUnit\Framework', '/regex/'],
+    'expose-classes' => ['PHPUnit\Configuration', '/regex/'],
+    'expose-functions' => ['PHPUnit\execute_tests', '/regex/'],
+    'expose-constants' => ['PHPUnit\VERSION', '/regex/'],
 ];
 ```
 
@@ -406,7 +406,7 @@ namespace Humbug\Acme;
 <br />
 <hr />
 
-« [Installation](installation.md#installation) • [Limitations](limitations.md#limitations) »
+« [Installation](installation.md#installation) • [Further Reading](further-reading.md#further-reading) »
 
 
 [box]: https://github.com/box-project/box

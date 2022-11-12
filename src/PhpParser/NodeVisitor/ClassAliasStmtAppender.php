@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
-use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\Symbol\EnrichedReflector;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
@@ -26,7 +26,6 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
-use UnexpectedValueException;
 use function array_reduce;
 
 /**
@@ -56,18 +55,10 @@ use function array_reduce;
  */
 final class ClassAliasStmtAppender extends NodeVisitorAbstract
 {
-    private string $prefix;
-    private EnrichedReflector $enrichedReflector;
-    private IdentifierResolver $identifierResolver;
-
     public function __construct(
-        string $prefix,
-        EnrichedReflector $enrichedReflector,
-        IdentifierResolver $identifierResolver
+        private readonly IdentifierResolver $identifierResolver,
+        private readonly SymbolsRegistry $symbolsRegistry,
     ) {
-        $this->prefix = $prefix;
-        $this->enrichedReflector = $enrichedReflector;
-        $this->identifierResolver = $identifierResolver;
     }
 
     public function afterTraverse(array $nodes): array
@@ -114,29 +105,32 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         $name = $stmt->name;
 
         if (null === $name) {
-            throw new UnexpectedValueException('Expected the class/interface statement to have a name but none found');
+            throw UnexpectedParsingScenario::create();
         }
 
         $resolvedName = $this->identifierResolver->resolveIdentifier($name);
 
-        if ($resolvedName instanceof FullyQualified
-            && $this->enrichedReflector->isExposedClass((string) $resolvedName)
-        ) {
-            $stmts[] = self::createAliasStmt($resolvedName, $stmt, $this->prefix);
+        if (!($resolvedName instanceof FullyQualified)) {
+            return $stmts;
+        }
+
+        $record = $this->symbolsRegistry->getRecordedClass((string) $resolvedName);
+
+        if (null !== $record) {
+            $stmts[] = self::createAliasStmt($record[0], $record[1], $stmt);
         }
 
         return $stmts;
     }
 
     private static function createAliasStmt(
-        FullyQualified $originalName,
-        Node $stmt,
-        string $prefix
-    ): Expression
-    {
+        string $originalName,
+        string $prefixedName,
+        Node $stmt
+    ): Expression {
         $call = new ClassAliasFuncCall(
-            FullyQualifiedFactory::concat($prefix, $originalName),
-            $originalName,
+            new FullyQualified($prefixedName),
+            new FullyQualified($originalName),
             $stmt->getAttributes(),
         );
 

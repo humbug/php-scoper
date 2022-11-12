@@ -1,0 +1,6 @@
+{
+    "bin": "index.php",
+    "require": {
+        "nikic/iter": "^2.0"
+    }
+}

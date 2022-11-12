@@ -17,37 +17,22 @@ namespace Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Patcher\Patcher;
 use InvalidArgumentException;
 use function Safe\preg_match;
-use function Safe\sprintf;
+use function sprintf;
 
 final class Configuration
 {
     private const PREFIX_PATTERN = '/^[\p{L}\d_\\\\]+$/u';
 
     /**
-     * @var non-empty-string|null
-     */
-    private ?string $path;
-
-    /**
-     * @var non-empty-string|null
-     */
-    private ?string $outputDir;
-
-    /**
      * @var non-empty-string
      */
-    private string $prefix;
-
-    private array $filesWithContents;
-    private array $excludedFilesWithContents;
-    private Patcher $patcher;
-    private SymbolsConfiguration $symbolsConfiguration;
+    private readonly string $prefix;
 
     /**
-     * @param non-empty-string|null                $path                      Absolute canonical path to the configuration file loaded.
+     * @param non-empty-string|null $path   Absolute canonical path to the configuration file loaded.
      * @param non-empty-string|null                $outputDir                 Absolute canonical path to the output directory.
-     * @param non-empty-string                     $prefix                    The prefix applied.
-     * @param array<string, array{string, string}> $filesWithContents         Array of tuple with the
+     * @param non-empty-string      $prefix The prefix applied.
+     * @param array<string, array{string, string}> $filesWithContents Array of tuple with the
      *                                            first argument being the file path and the second
      *                                            its contents
      * @param array<string, array{string, string}> $excludedFilesWithContents Array of tuple
@@ -55,23 +40,17 @@ final class Configuration
      *                                            the second its contents
      */
     public function __construct(
-        ?string $path,
-        ?string $outputDir,
+        private ?string $path,
+        private ?string $outputDir,
         string $prefix,
-        array $filesWithContents,
-        array $excludedFilesWithContents,
-        Patcher $patcher,
-        SymbolsConfiguration $symbolsConfiguration
+        private array $filesWithContents,
+        private array $excludedFilesWithContents,
+        private Patcher $patcher,
+        private SymbolsConfiguration $symbolsConfiguration
     ) {
         self::validatePrefix($prefix);
 
-        $this->path = $path;
-        $this->outputDir = $outputDir;
         $this->prefix = $prefix;
-        $this->filesWithContents = $filesWithContents;
-        $this->excludedFilesWithContents = $excludedFilesWithContents;
-        $this->patcher = $patcher;
-        $this->symbolsConfiguration = $symbolsConfiguration;
     }
 
     /**

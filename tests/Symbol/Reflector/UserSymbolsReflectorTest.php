@@ -15,10 +15,13 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol\Reflector;
 
 use Humbug\PhpScoper\Symbol\Reflector;
+use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\Reflector
+ *
+ * @internal
  */
 class UserSymbolsReflectorTest extends TestCase
 {
@@ -26,26 +29,25 @@ class UserSymbolsReflectorTest extends TestCase
      * @dataProvider symbolsProvider
      */
     public function test_it_can_be_enriched_with_arbitrary_symbols(
-        array $classNames,
-        array $functionNames,
-        array $constantNames
-    ): void
-    {
-        $reflector = Reflector::createEmpty()->withSymbols(
-            $classNames,
-            $functionNames,
-            $constantNames,
+        SymbolRegistry $classes,
+        SymbolRegistry $functions,
+        SymbolRegistry $constants
+    ): void {
+        $reflector = Reflector::createEmpty()->withAdditionalSymbols(
+            $classes,
+            $functions,
+            $constants,
         );
-        
-        foreach ($classNames as $className) {
+
+        foreach ($classes->getNames() as $className) {
             self::assertTrue($reflector->isClassInternal($className));
         }
 
-        foreach ($functionNames as $functionName) {
+        foreach ($functions->getNames() as $functionName) {
             self::assertTrue($reflector->isFunctionInternal($functionName));
         }
 
-        foreach ($constantNames as $constantName) {
+        foreach ($constants->getNames() as $constantName) {
             self::assertTrue($reflector->isConstantInternal($constantName));
         }
     }
@@ -56,19 +58,27 @@ class UserSymbolsReflectorTest extends TestCase
         $classB = 'Acme\B';
 
         $emptyReflector = Reflector::createEmpty();
-        
+
         // Sanity check
         self::assertFalse($emptyReflector->isClassInternal($classA));
         self::assertFalse($emptyReflector->isClassInternal($classB));
 
-        $reflectorWithA = $emptyReflector->withSymbols([$classA], [], []);
+        $reflectorWithA = $emptyReflector->withAdditionalSymbols(
+            SymbolRegistry::create([$classA]),
+            SymbolRegistry::create(),
+            SymbolRegistry::createForConstants(),
+        );
 
         self::assertFalse($emptyReflector->isClassInternal($classA));
         self::assertFalse($emptyReflector->isClassInternal($classB));
         self::assertTrue($reflectorWithA->isClassInternal($classA));
         self::assertFalse($reflectorWithA->isClassInternal($classB));
 
-        $reflectorWithAandB = $reflectorWithA->withSymbols([$classB], [], []);
+        $reflectorWithAandB = $reflectorWithA->withAdditionalSymbols(
+            SymbolRegistry::create([$classB]),
+            SymbolRegistry::create(),
+            SymbolRegistry::createForConstants(),
+        );
 
         self::assertFalse($emptyReflector->isClassInternal($classA));
         self::assertFalse($emptyReflector->isClassInternal($classB));
@@ -80,25 +90,34 @@ class UserSymbolsReflectorTest extends TestCase
 
     public static function symbolsProvider(): iterable
     {
-        $classNames = ['PHPUnit\Framework\TestCase', 'Symfony\Component\Finder\Finder'];
-        $functionNames = ['PHPUnit\main', 'Symfony\dump'];
-        $constantNames = ['PHPUnit\VERSION', 'Symfony\VERSION'];
+        $classNames = SymbolRegistry::create([
+            'PHPUnit\Framework\TestCase',
+            'Symfony\Component\Finder\Finder',
+        ]);
+        $functionNames = SymbolRegistry::create([
+            'PHPUnit\main',
+            'Symfony\dump',
+        ]);
+        $constantNames = SymbolRegistry::createForConstants([
+            'PHPUnit\VERSION',
+            'Symfony\VERSION',
+        ]);
 
         yield 'classes' => [
             $classNames,
-            [],
-            [],
+            SymbolRegistry::create(),
+            SymbolRegistry::createForConstants(),
         ];
 
         yield 'functions' => [
-            [],
+            SymbolRegistry::create(),
             $functionNames,
-            [],
+            SymbolRegistry::createForConstants(),
         ];
 
         yield 'constants' => [
-            [],
-            [],
+            SymbolRegistry::create(),
+            SymbolRegistry::create(),
             $constantNames,
         ];
 

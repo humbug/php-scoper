@@ -30,6 +30,7 @@ return [
     //
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#finders-and-paths
     'finders' => [
+        /*
         Finder::create()->files()->in('src'),
         Finder::create()
             ->files()
@@ -47,6 +48,7 @@ return [
         Finder::create()->append([
             'composer.json',
         ]),
+        */
     ],
 
     // List of excluded files, i.e. files for which the content will be left untouched.
@@ -54,7 +56,7 @@ return [
     //
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers
     'exclude-files' => [
-        'src/a-whitelisted-file.php',
+        // 'src/a-whitelisted-file.php',
     ],
 
     // When scoping PHP files, there will be scenarios where some of the code being scoped indirectly references the
@@ -80,9 +82,15 @@ return [
         // '~^$~',                        // The root namespace only
         // '',                            // Any namespace
     ],
-    'exclude-classes' => [],
-    'exclude-functions' => [],
-    'exclude-constants' => [],
+    'exclude-classes' => [
+        // 'ReflectionClassConstant',
+    ],
+    'exclude-functions' => [
+        // 'mb_str_split',
+    ],
+    'exclude-constants' => [
+        // 'STDIN',
+    ],
 
     // List of symbols to expose.
     //

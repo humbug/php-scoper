@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -29,15 +30,10 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
-    private string $prefix;
-    private EnrichedReflector $enrichedReflector;
-
     public function __construct(
-        string $prefix,
-        EnrichedReflector $enrichedReflector
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
     ) {
-        $this->prefix = $prefix;
-        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -87,7 +83,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         );
 
         if (null === $prefixedName) {
-            return;
+            throw UnexpectedParsingScenario::create();
         }
 
         // Unlike the new (prefixed name), the previous name will not be
@@ -100,8 +96,6 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
 
     /**
      * Finds the type of the use statement.
-     *
-     * @param UseUse $use
      *
      * @return int See \PhpParser\Node\Stmt\Use_ type constants.
      */

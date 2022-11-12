@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
+use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
 use RuntimeException;
@@ -27,10 +28,8 @@ use function array_filter;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
-use function array_merge;
 use function array_unique;
 use function array_unshift;
-use function array_values;
 use function bin2hex;
 use function dirname;
 use function file_exists;
@@ -48,7 +47,7 @@ use function random_bytes;
 use function readlink as native_readlink;
 use function realpath;
 use function Safe\file_get_contents;
-use function Safe\sprintf;
+use function sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 use const SORT_STRING;
@@ -57,15 +56,10 @@ final class ConfigurationFactory
 {
     public const DEFAULT_FILE_NAME = 'scoper.inc.php';
 
-    private Filesystem $fileSystem;
-    private SymbolsConfigurationFactory $configurationWhitelistFactory;
-
     public function __construct(
-        Filesystem $fileSystem,
-        SymbolsConfigurationFactory $configurationWhitelistFactory
+        private readonly Filesystem $fileSystem,
+        private readonly SymbolsConfigurationFactory $configurationWhitelistFactory,
     ) {
-        $this->fileSystem = $fileSystem;
-        $this->configurationWhitelistFactory = $configurationWhitelistFactory;
     }
 
     /**
@@ -95,6 +89,7 @@ final class ConfigurationFactory
         $patchers = self::retrievePatchers($config);
 
         array_unshift($patchers, new SymfonyPatcher());
+        array_unshift($patchers, new SymfonyParentTraitPatcher());
         array_unshift($patchers, new ComposerPatcher());
 
         $symbolsConfiguration = $this->configurationWhitelistFactory->createSymbolsConfiguration($config);
@@ -131,10 +126,10 @@ final class ConfigurationFactory
             $config->getPath(),
             $config->getOutputDir(),
             $config->getPrefix(),
-            array_merge(
-                $config->getFilesWithContents(),
-                $filesWithContents,
-            ),
+            [
+                ...$config->getFilesWithContents(),
+                ...$filesWithContents,
+            ],
             $config->getExcludedFilesWithContents(),
             $config->getPatcher(),
             $config->getSymbolsConfiguration(),
@@ -233,7 +228,6 @@ final class ConfigurationFactory
         $prefix = trim((string) ($config[ConfigurationKeys::PREFIX_KEYWORD] ?? ''));
 
         return '' === $prefix ? self::generateRandomPrefix() : $prefix;
-
     }
 
     /**

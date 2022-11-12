@@ -1,15 +1,1 @@
-{
-    "timeout": 10,
-    "source": {
-        "directories": [
-            "src"
-        ]
-    },
-    "logs": {
-        "text": "build\/infection-log.txt"
-    },
-    "mutators": {
-        "@default": true,
-        "PublicVisibility": false
-    }
-}
+fixtures/set020-infection/infection.json.dist

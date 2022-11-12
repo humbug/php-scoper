@@ -18,6 +18,7 @@ use ArrayIterator;
 use Humbug\PhpScoper\PhpParser\Node\NamedIdentifier;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\OriginalNameResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Expr\ConstFetch;
@@ -29,7 +30,6 @@ use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
 use Traversable;
-
 use function array_key_exists;
 use function count;
 use function implode;
@@ -81,7 +81,7 @@ final class UseStmtCollection implements IteratorAggregate
             // The current node can either be the class like name or one of its elements, e.g. extends or implements.
             // In the first case, the node was original an Identifier.
 
-            return null;
+            throw UnexpectedParsingScenario::create();
         }
 
         $isFunctionName = self::isFunctionName($node, $parentNode);
@@ -94,7 +94,7 @@ final class UseStmtCollection implements IteratorAggregate
                 $name,
                 $isFunctionName ? 'func' : '',
                 $isConstantName ? 'const' : '',
-            ]
+            ],
         );
 
         if (array_key_exists($hash, $this->hashes)) {
@@ -172,7 +172,7 @@ final class UseStmtCollection implements IteratorAggregate
     private static function isFunctionName(Name $node, ?Node $parentNode): bool
     {
         if (null === $parentNode) {
-            return false;
+            throw UnexpectedParsingScenario::create();
         }
 
         if ($parentNode instanceof FuncCall) {

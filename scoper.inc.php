@@ -12,8 +12,6 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Isolated\Symfony\Component\Finder\Finder;
-
 $jetBrainStubs = (static function (): array {
     $files = [];
 
@@ -46,38 +44,17 @@ $jetBrainStubs = (static function (): array {
     return $files;
 })();
 
-$polyfillsBootstraps = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__ . '/vendor/symfony/polyfill-*')
-            ->name('bootstrap.php'),
-        false,
-    ),
-);
-
-$polyfillsStubs = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__ . '/vendor/symfony/polyfill-*/Resources/stubs')
-            ->name('*.php'),
-        false,
-    ),
-);
-
 return [
-    'whitelist' => [
-        Finder::class,
-        'Symfony\\Polyfill\\*',
+    'expose-global-functions' => true,
+    'expose-global-classes' => true,
+    'exclude-classes' => [
+        'Isolated\Symfony\Component\Finder\Finder',
     ],
-    'exclude-files' => [
-        ...$jetBrainStubs,
-        ...$polyfillsBootstraps,
-        ...$polyfillsStubs,
+    'exclude-constants' => [
+        // Symfony global constants
+        '/^SYMFONY\_[\p{L}_]+$/',
     ],
+    'exclude-files' => $jetBrainStubs,
     'patchers' => [
         //
         // PHPStorm stub map: leave it unchanged
@@ -98,10 +75,10 @@ return [
                     '',
                     sprintf(
                         'namespace %s\JetBrains\PHPStormStub;',
-                        $prefix
+                        $prefix,
                     ),
                 ],
-                $contents
+                $contents,
             );
         },
         //
@@ -114,24 +91,13 @@ return [
 
             $originalContents = file_get_contents(__DIR__.'/src/Reflector.php');
 
-            $classPosition = strpos($originalContents, 'final class Reflector');
-            $prefixedClassPosition = strpos($contents, 'final class Reflector');
+            $classPosition = mb_strpos($originalContents, 'final class Reflector');
+            $prefixedClassPosition = mb_strpos($contents, 'final class Reflector');
 
             return sprintf(
                 '%s%s',
-                substr($contents, 0, $prefixedClassPosition),
-                substr($originalContents, $classPosition)
-            );
-        },
-        static function (string $filePath, string $prefix, string $contents): string {
-            if ('bin/php-scoper' !== $filePath) {
-                return $contents;
-            }
-
-            return str_replace(
-                '\\'.$prefix.'\Isolated\Symfony\Component\Finder\Finder::class',
-                '\Isolated\Symfony\Component\Finder\Finder::class',
-                $contents
+                mb_substr($contents, 0, $prefixedClassPosition),
+                mb_substr($originalContents, $classPosition),
             );
         },
     ],

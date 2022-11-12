@@ -124,7 +124,7 @@ return [
         $x = 'Symfony\\Component\\Yaml\\Ya_1';
         $x = '\\Symfony\\Component\\Yaml\\Ya_1';
         $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
         
         PHP,
     ],

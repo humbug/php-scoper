@@ -22,39 +22,31 @@ use function array_filter;
 use function func_get_args;
 use function preg_match as native_preg_match;
 use function preg_match_all as native_preg_match_all;
-use function Safe\substr;
+use function str_contains;
 use function str_replace;
 use function strlen;
 use function strpos;
+use function substr;
 
 /**
  * Scopes the Symfony YAML configuration files.
  */
 final class YamlScoper implements Scoper
 {
-    private const FILE_PATH_PATTERN = '/\.ya?ml$/i';
+    private const YAML_EXTENSION_REGEX = '/\.ya?ml$/i';
     private const CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
-    private Scoper $decoratedScoper;
-    private string $prefix;
-    private EnrichedReflector $enrichedReflector;
-    private SymbolsRegistry $symbolsRegistry;
-
     public function __construct(
-        Scoper $decoratedScoper,
-        string $prefix,
-        EnrichedReflector $enrichedReflector,
-        SymbolsRegistry $symbolsRegistry
+        private readonly Scoper $decoratedScoper,
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
+        private readonly SymbolsRegistry $symbolsRegistry,
     ) {
-        $this->decoratedScoper = $decoratedScoper;
-        $this->prefix = $prefix;
-        $this->enrichedReflector = $enrichedReflector;
-        $this->symbolsRegistry = $symbolsRegistry;
     }
 
     public function scope(string $filePath, string $contents): string
     {
-        if (1 !== native_preg_match(self::FILE_PATH_PATTERN, $filePath)) {
+        if (1 !== native_preg_match(self::YAML_EXTENSION_REGEX, $filePath)) {
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
@@ -71,7 +63,7 @@ final class YamlScoper implements Scoper
             $this->symbolsRegistry,
         );
 
-        $contents = self::replaceClasses(
+        return self::replaceClasses(
             array_filter($matches['class']),
             array_filter($matches['separator']),
             $this->prefix,
@@ -79,8 +71,6 @@ final class YamlScoper implements Scoper
             $this->enrichedReflector,
             $this->symbolsRegistry,
         );
-
-        return $contents;
     }
 
     /**
@@ -106,7 +96,7 @@ final class YamlScoper implements Scoper
 
             $psr4Service = $class.$separator.':';
 
-            if (false !== strpos($contents, $psr4Service)) {
+            if (str_contains($contents, $psr4Service)) {
                 $offset = strpos($contents, $psr4Service) + strlen($psr4Service);
 
                 $stringToScope = substr($contents, 0, $offset);
@@ -116,8 +106,7 @@ final class YamlScoper implements Scoper
 
                 $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class.$separator.'__UnknownService__')
                     ? $stringToScope
-                    : str_replace($class, $prefixedClass, $stringToScope)
-                ;
+                    : str_replace($class, $prefixedClass, $stringToScope);
 
                 continue;
             }
@@ -131,13 +120,12 @@ final class YamlScoper implements Scoper
 
             $scopedContents .= $enrichedReflector->belongsToExcludedNamespace($class)
                 ? $stringToScope
-                : str_replace($class, $prefixedClass, $stringToScope)
-            ;
+                : str_replace($class, $prefixedClass, $stringToScope);
 
             if ($enrichedReflector->isExposedClass($class)) {
                 $symbolsRegistry->recordClass(
                     new FullyQualified($class),
-                    new FullyQualified($prefixedClass)
+                    new FullyQualified($prefixedClass),
                 );
             }
         }

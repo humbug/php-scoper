@@ -1,7 +1,8 @@
 build:
+    image: default-bionic
     environment:
         variables:
-            COMPOSER_ROOT_VERSION: '0.16.99'
+            COMPOSER_ROOT_VERSION: '0.17.99'
 
     nodes:
         analysis:

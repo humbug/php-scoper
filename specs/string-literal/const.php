@@ -108,7 +108,7 @@ return [
         const X = 'Symfony\\Component\\Yaml\\Ya_1';
         const X = '\\Symfony\\Component\\Yaml\\Ya_1';
         const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
         
         PHP,
     ],

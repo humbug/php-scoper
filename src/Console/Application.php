@@ -21,60 +21,50 @@ use Humbug\PhpScoper\Console\Command\InspectSymbolCommand;
 use Humbug\PhpScoper\Container;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use function Humbug\PhpScoper\get_php_scoper_version;
-use function Safe\sprintf;
-use function strpos;
+use function sprintf;
+use function str_contains;
 use function trim;
 
 /**
  * @private
+ * @codeCoverageIgnore
  */
 final class Application implements FidryApplication
 {
     private const LOGO = <<<'ASCII'
 
-    ____  __  ______     _____
-   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
- / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                     /_/
+            ____  __  ______     _____
+           / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+          / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+         / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+        /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                             /_/
 
 
-ASCII;
+        ASCII;
 
     private const RELEASE_DATE_PLACEHOLDER = '@release-date@';
-
-    private Container $container;
-    private string $version;
-    private string $releaseDate;
-    private bool $isAutoExitEnabled;
-    private bool $areExceptionsCaught;
 
     public static function create(): self
     {
         return new self(
             new Container(),
             get_php_scoper_version(),
-            false === strpos(self::RELEASE_DATE_PLACEHOLDER, '@')
-                ? self::RELEASE_DATE_PLACEHOLDER
-                : '',
+            !str_contains(self::RELEASE_DATE_PLACEHOLDER, '@')
+              ? self::RELEASE_DATE_PLACEHOLDER
+              : '',
             true,
             true,
         );
     }
 
     public function __construct(
-        Container $container,
-        string $version,
-        string $releaseDate,
-        bool $isAutoExitEnabled,
-        bool $areExceptionsCaught
+        private readonly Container $container,
+        private readonly string $version,
+        private readonly string $releaseDate,
+        private readonly bool $isAutoExitEnabled,
+        private readonly bool $areExceptionsCaught,
     ) {
-        $this->container = $container;
-        $this->version = $version;
-        $this->releaseDate = $releaseDate;
-        $this->isAutoExitEnabled = $isAutoExitEnabled;
-        $this->areExceptionsCaught = $areExceptionsCaught;
     }
 
     public function getName(): string
@@ -94,8 +84,8 @@ ASCII;
                 '<info>%s</info> version <comment>%s</comment> %s',
                 $this->getName(),
                 $this->getVersion(),
-                $this->releaseDate
-            )
+                $this->releaseDate,
+            ),
         );
     }
 

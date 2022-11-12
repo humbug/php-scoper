@@ -2,7 +2,7 @@ name: Tests
 
 on:
     push:
-        branches: [ master ]
+        branches: [ main ]
     pull_request:
     release:
         types: [ created ]
@@ -30,7 +30,7 @@ jobs:
                     coverage: none
 
             -   name: Check COMPOSER_ROOT_VERSION
-                run: make check-composer-root-version
+                run: make check_composer_root_version
 
     composer-json:
         runs-on: ubuntu-latest
@@ -62,8 +62,6 @@ jobs:
             fail-fast: false
             matrix:
                 php:
-                    - '7.4'
-                    - '8.0'
                     - '8.1'
         steps:
             -   name: Checkout
@@ -90,4 +88,4 @@ jobs:
                     composer-options: '--prefer-dist'
 
             -   name: Run tests
-                run: make tu
+                run: make phpunit

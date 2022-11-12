@@ -9,6 +9,9 @@
 - [Composer Autoloader](#composer-autoloader)
 - [Composer Plugins](#composer-plugins)
 - [PSR-0 Partial support](#psr-0-partial-support)
+- [Files autoloading](#files-autoloading)
+- [Exposing/Excluding traits](#exposingexcluding-traits)
+- [Exposing/Excluding enums](#exposingexcluding-enums)
 
 
 ### Dynamic symbols
@@ -88,6 +91,8 @@ EOF;
 
 It would be very hard to properly scope the relevant classes.
 
+To fix such cases, you will need to resort to [patchers].
+
 
 ### Callables
 
@@ -101,6 +106,8 @@ If you consider the two following values:
 The classes used there will not be scoped. It should not be impossible to add
 support for it, but it is currently not supported. See
 [#286](https://github.com/humbug/php-scoper/issues/286).
+
+To fix such cases, you will need to resort to [patchers].
 
 
 ### String values
@@ -124,6 +131,8 @@ prefixed. But there is bound to have confusing cases. For example:
   is no way to know if it is a class name or a random string except for a
   handful of methods such as `class_alias`, `function_exists`, etc.
 
+To fix such cases, you will need to resort to [patchers].
+
 
 ### Native functions and constants shadowing
 
@@ -146,7 +155,7 @@ classes).
 In order to bring some performance optimisation, the call will nonetheless be
 prefixed in `\is_array`. This *will* break your code if you were relying on
 `\Foo\is_array` instead. This however should be _extremely_ rare, so if that
-happens you have two solutions: use a [patcher](#patchers) or simpler remove
+happens you have two solutions: use a [patcher](#patchers) or simply remove
 any ambiguity by making use of a use statement (which is unneeded outside of
 the context of prefixing your code):
 
@@ -176,6 +185,8 @@ PHP-Scoper also can not handle Composers static file autoloaders. This is due
 to Composer loading files based on a hash which is generated from package name
 and relative file path. For a workaround see
 [#298](https://github.com/humbug/php-scoper/issues/298#issuecomment-525700081).
+
+To fix such cases, you will need to resort to [patchers].
 
 
 ### Composer Plugins
@@ -223,14 +234,43 @@ transforming it to PSR-4, i.e. in the case above:
 }
 ```
 
-If this will work for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
+If this works for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
+
+
+### Files autoloading
+
+Currently, scoping autoloaded files, i.e. files registered to Composer via the
+[`autoload.files`][autoload-files] setting only half work. Indeed, the scoping
+itself works, but if your scoped code happen to try to load another Composer
+based project with the same file, it will not. The problem identified is that
+the Composer autoloader uses hash to know if a file has been loaded or not already.
+Unfortunately, this hash is defined by the package and file name, which means
+the scoped file and non-scoped file will have the same hash resulting in errors.
+
+This is a limitation that should be fixable, check [#298] for the progress.
+
+
+### Exposing/Excluding traits
+
+There is currently no way to expose or exclude a trait. Since there is no
+aliasing mechanism for traits, it could be still possible by declaring a trait
+that extends the scoped trait, but this is currently not implemented.
+
+
+### Exposing/Excluding enums
+
+There is currently no way to expose or exclude an enum. The problem being there
+is no way to alias one.
 
 
 <br />
 <hr />
 
-« [Configuration](configuration.md#configuration) • [Table of Contents](../README.md#table-of-contents) »
+« [Further Reading](further-reading.md#further-reading) • [Table of Contents](../README.md#table-of-contents) »
 
 
+[autoload-files]: https://getcomposer.org/doc/04-schema.md#files
 [box]: https://github.com/humbug/box
 [exposed-symbols]: configuration.md#exposed-symbols
+[#298]: https://github.com/humbug/php-scoper/issues/298
+[patchers]: configuration.md#patchers

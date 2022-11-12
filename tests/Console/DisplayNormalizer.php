@@ -15,20 +15,25 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use function Safe\preg_match_all;
-use function Safe\usort;
 use function str_replace;
 use function strlen;
+use function usort;
 use const DIRECTORY_SEPARATOR;
 
 final class DisplayNormalizer
 {
+    public static function normalize(string $display): string
+    {
+        return self::normalizeDirectorySeparators(
+            self::normalizeProgressBar($display),
+        );
+    }
+
     public static function normalizeDirectorySeparators(string $display): string
     {
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\/path\/to(.*\\\\)+/', $display, $match)) {
             $paths = $match[0];
-            usort($paths, static function ($a, $b) {
-                return strlen($b) - strlen($a);
-            });
+            usort($paths, static fn ($a, $b) => strlen($b) - strlen($a));
             foreach ($paths as $path) {
                 $fixedPath = str_replace('\\', '/', $path);
                 $display = str_replace($path, $fixedPath, $display);

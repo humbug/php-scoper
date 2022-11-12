@@ -148,7 +148,7 @@ return [
             \function_exists('Acme\\foo');
             \function_exists('\\Acme\\foo');
             \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('\\Humbug\\Acme\\foo');
             \function_exists('dump');
             \function_exists('\\dump');
             \function_exists('Humbug\\dump');

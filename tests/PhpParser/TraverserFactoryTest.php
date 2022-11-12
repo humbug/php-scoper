@@ -20,11 +20,14 @@ use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\Lexer;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 /**
  * @covers \Humbug\PhpScoper\PhpParser\TraverserFactory
+ *
+ * @internal
  */
 class TraverserFactoryTest extends TestCase
 {
@@ -35,8 +38,8 @@ class TraverserFactoryTest extends TestCase
             new FakeParser(),
             new FakeScoper(),
             (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
-            $prefix,
-            new SymbolsRegistry(),
+            new FakePrinter(),
+            new Lexer(),
         );
         $symbolsRegistry = new SymbolsRegistry();
 
@@ -45,18 +48,12 @@ class TraverserFactoryTest extends TestCase
                 Reflector::createEmpty(),
                 SymbolsConfiguration::create(),
             ),
+            $prefix,
+            $symbolsRegistry,
         );
 
-        $firstTraverser = $traverserFactory->create(
-            $phpScoper,
-            $prefix,
-            $symbolsRegistry,
-        );
-        $secondTraverser = $traverserFactory->create(
-            $phpScoper,
-            $prefix,
-            $symbolsRegistry,
-        );
+        $firstTraverser = $traverserFactory->create($phpScoper);
+        $secondTraverser = $traverserFactory->create($phpScoper);
 
         self::assertNotSame($firstTraverser, $secondTraverser);
     }

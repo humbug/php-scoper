@@ -2,13 +2,26 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Symbol;
 
+use Humbug\PhpScoper\PhpScoperAssertions;
 use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\SymbolsRegistry
+ *
+ * @internal
  */
 final class SymbolsRegistryTest extends TestCase
 {
@@ -26,8 +39,7 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
         int $expectedCount
-    ): void
-    {
+    ): void {
         $registry = self::createRegistry($functions, $classes);
 
         self::assertStateIs(
@@ -108,8 +120,7 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
         int $expectedCount
-    ): void
-    {
+    ): void {
         $originalSource = clone $source;
 
         $target->merge($source);
@@ -283,8 +294,7 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
         int $expectedCount
-    ): void
-    {
+    ): void {
         $symbolRegistry = SymbolsRegistry::createFromRegistries($sources);
 
         self::assertStateIs(
@@ -351,22 +361,37 @@ final class SymbolsRegistryTest extends TestCase
         ];
     }
 
+    public function test_it_exposes_recorded_classes(): void
+    {
+        $registry = self::createRegistry(
+            [[new FullyQualified('foo'), new FullyQualified('Humbug\foo')]],
+            [[new FullyQualified('Bar'), new FullyQualified('Humbug\Bar')]],
+        );
+
+        self::assertNull($registry->getRecordedClass('foo'));
+        self::assertNull($registry->getRecordedClass('bar'));
+        self::assertNull($registry->getRecordedClass('Humbug\Bar'));
+        self::assertEquals(
+            ['Bar', 'Humbug\Bar'],
+            $registry->getRecordedClass('Bar'),
+        );
+    }
+
     private static function assertStateIs(
         SymbolsRegistry $symbolsRegistry,
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
         int $expectedCount
-    ): void
-    {
-        self::assertEqualsCanonicalizing(
+    ): void {
+        PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedRecordedFunctions,
             $symbolsRegistry->getRecordedFunctions(),
         );
-        self::assertEqualsCanonicalizing(
+        PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedRecordedClasses,
             $symbolsRegistry->getRecordedClasses(),
         );
-        self::assertSame($expectedCount, $symbolsRegistry->count());
+        self::assertCount($expectedCount, $symbolsRegistry);
     }
 
     private static function createRegistry(array $functions, array $classes): SymbolsRegistry

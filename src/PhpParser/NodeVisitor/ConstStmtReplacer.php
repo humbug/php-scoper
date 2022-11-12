@@ -45,15 +45,10 @@ use function count;
  */
 final class ConstStmtReplacer extends NodeVisitorAbstract
 {
-    private IdentifierResolver $identifierResolver;
-    private EnrichedReflector $enrichedReflector;
-
     public function __construct(
-        IdentifierResolver $identifierResolver,
-        EnrichedReflector $enrichedReflector
+        private readonly IdentifierResolver $identifierResolver,
+        private readonly EnrichedReflector $enrichedReflector,
     ) {
-        $this->identifierResolver = $identifierResolver;
-        $this->enrichedReflector = $enrichedReflector;
     }
 
     public function enterNode(Node $node): Node
@@ -88,6 +83,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
         }
 
         if (count($const->consts) > 1) {
+            // TODO
             throw new UnexpectedValueException(
                 'Exposing a constant declared in a grouped constant statement (e.g. `const FOO = \'foo\', BAR = \'bar\'; is not supported. Consider breaking it down in multiple constant declaration statements',
             );
@@ -106,7 +102,7 @@ final class ConstStmtReplacer extends NodeVisitorAbstract
                 new FullyQualified('define'),
                 [
                     new Arg(
-                        new String_($name)
+                        new String_($name),
                     ),
                     new Arg($value),
                 ],

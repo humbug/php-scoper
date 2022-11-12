@@ -14,18 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use function array_flip;
 use function array_key_exists;
 use function func_get_args;
-use function Safe\array_flip;
 
 final class FileWhitelistScoper implements Scoper
 {
-    private Scoper $decoratedScoper;
-    private array $filePaths;
+    private readonly array $filePaths;
 
-    public function __construct(Scoper $decoratedScoper, string ...$filePaths)
-    {
-        $this->decoratedScoper = $decoratedScoper;
+    public function __construct(
+        private readonly Scoper $decoratedScoper,
+        string ...$filePaths,
+    ) {
         $this->filePaths = array_flip($filePaths);
     }
 

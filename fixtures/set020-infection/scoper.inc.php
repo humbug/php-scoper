@@ -10,7 +10,7 @@ $polyfillsBootstraps = array_map(
         Finder::create()
             ->files()
             ->in(__DIR__ . '/vendor/symfony/polyfill-*')
-            ->name('bootstrap.php'),
+            ->name('bootstrap*.php'),
         false,
     ),
 );
@@ -27,6 +27,14 @@ $polyfillsStubs = array_map(
 );
 
 return [
+    'exclude-namespaces' => [
+        'Composer',
+        'Symfony\Polyfill'
+    ],
+    'exclude-constants' => [
+        // Symfony global constants
+        '/^SYMFONY\_[\p{L}_]+$/',
+    ],
     'exclude-files' => [
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,

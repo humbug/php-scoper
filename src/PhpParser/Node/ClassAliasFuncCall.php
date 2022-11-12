@@ -28,18 +28,18 @@ final class ClassAliasFuncCall extends FuncCall
             new FullyQualified('class_alias'),
             [
                 new Arg(
-                    new String_((string) $prefixedName)
+                    new String_((string) $prefixedName),
                 ),
                 new Arg(
-                    new String_((string) $originalName)
+                    new String_((string) $originalName),
                 ),
                 new Arg(
                     new ConstFetch(
-                        new FullyQualified('false')
-                    )
+                        new FullyQualified('false'),
+                    ),
                 ),
             ],
-            $attributes
+            $attributes,
         );
     }
 }

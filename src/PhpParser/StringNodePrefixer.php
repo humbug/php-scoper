@@ -17,18 +17,15 @@ namespace Humbug\PhpScoper\PhpParser;
 use Humbug\PhpScoper\Scoper\PhpScoper;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Node\Scalar\String_;
-use function Safe\substr;
+use function substr;
 
 /**
  * @private
  */
 final class StringNodePrefixer
 {
-    private PhpScoper $scoper;
-
-    public function __construct(PhpScoper $scoper)
+    public function __construct(private readonly PhpScoper $scoper)
     {
-        $this->scoper = $scoper;
     }
 
     public function prefixStringValue(String_ $node): void

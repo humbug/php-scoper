@@ -2,10 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Command\CommandRegistry;
-use Fidry\Console\IO;
+use Fidry\Console\Input\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -16,7 +26,7 @@ use Symfony\Component\Filesystem\Path;
 use function assert;
 use function count;
 use function file_exists;
-use function Safe\sprintf;
+use function sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 
@@ -25,24 +35,17 @@ use const DIRECTORY_SEPARATOR;
  */
 final class ConfigLoader
 {
-    private CommandRegistry $commandRegistry;
-    private Filesystem $fileSystem;
-    private ConfigurationFactory $configFactory;
-
     public function __construct(
-        CommandRegistry $commandRegistry,
-        Filesystem $fileSystem,
-        ConfigurationFactory $configFactory
+        private readonly CommandRegistry $commandRegistry,
+        private readonly Filesystem $fileSystem,
+        private readonly ConfigurationFactory $configFactory,
     ) {
-        $this->commandRegistry = $commandRegistry;
-        $this->fileSystem = $fileSystem;
-        $this->configFactory = $configFactory;
     }
 
     /**
-     * @param non-empty-string|null $configFilePath Canonical absolute path
-     * @param non-empty-string $defaultConfigFilePath
-     * @param list<non-empty-string> $paths List of canonical absolute paths
+     * @param non-empty-string|null  $configFilePath        Canonical absolute path
+     * @param non-empty-string       $defaultConfigFilePath
+     * @param list<non-empty-string> $paths                 List of canonical absolute paths
      */
     public function loadConfig(
         IO $io,
@@ -53,8 +56,7 @@ final class ConfigLoader
         bool $isInitCommandExecuted,
         array $paths,
         string $cwd
-    ): Configuration
-    {
+    ): Configuration {
         $prefix = trim($prefix);
         $defaultConfigFilePath = $this->canonicalizePath($defaultConfigFilePath, $cwd);
 
@@ -100,11 +102,10 @@ final class ConfigLoader
         string $prefix,
         array $paths,
         string $cwd
-    ): Configuration
-    {
+    ): Configuration {
         $io->writeln(
             'Loading without configuration file.',
-            OutputInterface::VERBOSITY_DEBUG
+            OutputInterface::VERBOSITY_DEBUG,
         );
 
         return $this->loadConfiguration(null, $prefix, $paths, $cwd);
@@ -176,7 +177,7 @@ final class ConfigLoader
     }
 
     /**
-     * @param non-empty-string|null $configFilePath
+     * @param non-empty-string|null  $configFilePath
      * @param list<non-empty-string> $paths
      */
     private function loadConfiguration(
@@ -184,8 +185,7 @@ final class ConfigLoader
         string $prefix,
         array $paths,
         string $cwd
-    ): Configuration
-    {
+    ): Configuration {
         return $this->configurePaths(
             $this->configurePrefix(
                 $this->configFactory->create($configFilePath, $paths),
@@ -210,8 +210,7 @@ final class ConfigLoader
     private function configurePaths(
         Configuration $config,
         string $cwd
-    ): Configuration
-    {
+    ): Configuration {
         // Use the current working directory as the path if no file has been
         // found
         if (0 === count($config->getFilesWithContents())) {

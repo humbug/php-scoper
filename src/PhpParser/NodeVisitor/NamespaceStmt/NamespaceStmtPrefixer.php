@@ -37,18 +37,11 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {
-    private string $prefix;
-    private EnrichedReflector $enrichedReflector;
-    private NamespaceStmtCollection $namespaceStatements;
-
     public function __construct(
-        string $prefix,
-        EnrichedReflector $enrichedReflector,
-        NamespaceStmtCollection $namespaceStatements
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
+        private readonly NamespaceStmtCollection $namespaceStatements,
     ) {
-        $this->prefix = $prefix;
-        $this->enrichedReflector = $enrichedReflector;
-        $this->namespaceStatements = $namespaceStatements;
     }
 
     public function enterNode(Node $node): Node

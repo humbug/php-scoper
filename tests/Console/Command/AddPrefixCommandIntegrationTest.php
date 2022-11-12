@@ -14,13 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Application\SymfonyApplication;
+use Fidry\Console\Test\AppTester;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function array_reduce;
@@ -29,6 +28,7 @@ use function Safe\file_get_contents;
 use function Safe\file_put_contents;
 use function Safe\preg_replace;
 use function Safe\realpath;
+use function sprintf;
 use function str_replace;
 use const DIRECTORY_SEPARATOR;
 
@@ -37,12 +37,12 @@ use const DIRECTORY_SEPARATOR;
  *
  * @group integration
  * @runTestsInSeparateProcesses
+ *
+ * @internal
  */
 class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 {
-    use AppTesterAbilities {
-        getNormalizeDisplay as getBaseNormalizeDisplay;
-    }
+    use AppTesterAbilities;
 
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
 
@@ -58,9 +58,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
             false,
         );
 
-        $this->appTester = new ApplicationTester(
-            new SymfonyApplication($application),
-        );
+        $this->appTester = AppTester::fromConsoleApp($application);
 
         file_put_contents('scoper.inc.php', '<?php return [];');
     }
@@ -126,26 +124,26 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         $this->appTester->run($input);
 
         $expected = <<<'EOF'
-        
-        
-            ____  __  ______     _____
-           / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-          / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
-         / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-        /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                             /_/
-        
-        PhpScoper version TestVersion 28/01/2020
-        
-         0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
-         4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
-        
-         [OK] Successfully prefixed 4 files.
-        
-         // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
-        
-        
-        EOF;
+
+
+                ____  __  ______     _____
+               / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+              / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+             / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+            /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                                 /_/
+
+            PhpScoper version TestVersion 28/01/2020
+
+             0/4 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%
+             4/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+             [OK] Successfully prefixed 4 files.
+
+             // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+
+
+            EOF;
 
         $extraNormalization = static fn (string $display) => str_replace(
             [
@@ -163,6 +161,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         $this->assertExpectedOutput(
             $expected,
             0,
+            $this->createDisplayNormalizer(),
             $extraNormalization,
         );
     }
@@ -187,29 +186,33 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         $expected = <<<'EOF'
 
 
-    ____  __  ______     _____
-   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
- / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                     /_/
+                ____  __  ______     _____
+               / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+              / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+             / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+            /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                                 /_/
 
-PhpScoper version TestVersion 28/01/2020
+            PhpScoper version TestVersion 28/01/2020
 
- * [NO] /path/to/composer/installed.json
- * [OK] /path/to/file.php
- * [NO] /path/to/invalid-file.php
- * [OK] /path/to/scoper.inc.php
-
-
- [OK] Successfully prefixed 4 files.
-
- // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+             * [NO] /path/to/composer/installed.json
+             * [OK] /path/to/file.php
+             * [NO] /path/to/invalid-file.php
+             * [OK] /path/to/scoper.inc.php
 
 
-EOF;
+             [OK] Successfully prefixed 4 files.
 
-        $this->assertExpectedOutput($expected, 0);
+             // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+
+
+            EOF;
+
+        $this->assertExpectedOutput(
+            $expected,
+            0,
+            $this->createDisplayNormalizer(),
+        );
     }
 
     public function test_scope_in_very_verbose_mode(): void
@@ -229,82 +232,90 @@ EOF;
 
         $this->appTester->run($input);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 
 
-    ____  __  ______     _____
-   / __ \/ / / / __ \   / ___/_________  ____  ___  _____
-  / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
- / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
-/_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
-                                     /_/
+                ____  __  ______     _____
+               / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+              / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+             / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+            /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                                 /_/
 
-PhpScoper version TestVersion 28/01/2020
+            PhpScoper version TestVersion 28/01/2020
 
- * [NO] /path/to/composer/installed.json
-	Could not parse the file "/path/to/composer/installed.json".: InvalidArgumentException
-Stack trace:
-#0
-#1
-#2
-#3
-#4
-#5
-#6
-#7
-#8
-#9
- * [OK] /path/to/file.php
- * [NO] /path/to/invalid-file.php
-	Could not parse the file "/path/to/invalid-file.php".: PhpParser
-Stack trace:
-#0
-#1
-#2
-#3
-#4
-#5
-#6
-#7
-#8
-#9
- * [OK] /path/to/scoper.inc.php
-
-
- [OK] Successfully prefixed 4 files.
-
- // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+             * [NO] /path/to/composer/installed.json
+            	Could not parse the file "/path/to/composer/installed.json".: InvalidArgumentException
+            Stack trace:
+            #0
+            #1
+            #2
+            #3
+            #4
+            #5
+            #6
+            #7
+            #8
+            #9
+             * [OK] /path/to/file.php
+             * [NO] /path/to/invalid-file.php
+            	Could not parse the file "/path/to/invalid-file.php".: PhpParser
+            Stack trace:
+            #0
+            #1
+            #2
+            #3
+            #4
+            #5
+            #6
+            #7
+            #8
+            #9
+             * [OK] /path/to/scoper.inc.php
 
 
-EOF;
+             [OK] Successfully prefixed 4 files.
+
+             // Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s
+
+
+            EOF;
 
         $extraDisplayNormalization = static function (string $display): string {
             $display = preg_replace('/(Could not parse the file ".+?"\.: \w+).*(\n)/', '$1$2', $display);
             $display = preg_replace('/(#\d+).*(\n)/', '$1$2', $display);
             // Remove overly lengthy stack-trace
-            $display = preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $display);
-
-            return $display;
+            return preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $display);
         };
 
         $this->assertExpectedOutput(
             $expected,
             0,
+            $this->createDisplayNormalizer(),
             $extraDisplayNormalization,
         );
     }
 
-    private function getNormalizeDisplay(string $display, ?callable $extraNormalization = null): string
+    /**
+     * @return callable(string):string
+     */
+    private function createDisplayNormalizer(): callable
     {
-        $display = str_replace(realpath(self::FIXTURE_PATH), '/path/to', $display);
-        $display = str_replace($this->tmp, '/path/to', $display);
+        return fn ($display) => $this->getNormalizeDisplay($display);
+    }
 
-        $display = $this->getBaseNormalizeDisplay($display, $extraNormalization);
+    private function getNormalizeDisplay(string $display): string
+    {
+        $display = str_replace(
+            [realpath(self::FIXTURE_PATH), $this->tmp],
+            '/path/to',
+            $display,
+        );
 
         return preg_replace(
             '/\/\/ Memory usage: \d+\.\d{2}MB \(peak: \d+\.\d{2}MB\), time: \d+\.\d{2}s/',
             '// Memory usage: 5.00MB (peak: 10.00MB), time: 0.00s',
-            $display
+            $display,
         );
     }
 
@@ -323,19 +334,28 @@ EOF;
 
         $files = $finder->files()
             ->in($dir)
-            ->sortByName()
-        ;
+            ->sortByName();
 
         return array_reduce(
             iterator_to_array($files),
             static function (array $collectedFiles, SplFileInfo $file) use ($dir): array {
-                $path = str_replace($dir, '', $file->getRealPath());
+                $realPath = $file->getRealPath();
 
-                $collectedFiles[$path] = file_get_contents($file->getRealPath());
+                self::assertIsString(
+                    $realPath,
+                    sprintf(
+                        'Expected file "%s" to have a real path.',
+                        $file->getPathname(),
+                    ),
+                );
+
+                $path = str_replace($dir, '', $realPath);
+
+                $collectedFiles[$path] = file_get_contents($realPath);
 
                 return $collectedFiles;
             },
-            []
+            [],
         );
     }
 }

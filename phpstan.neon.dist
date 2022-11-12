@@ -2,8 +2,7 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
 
-    excludePaths:
-        - src/Console/Command/AddPrefixCommand.php
+    excludePaths: []
 
     ignoreErrors:
         - message: '#Cannot cast array\<string\>\|string to string\.#'
@@ -24,4 +23,37 @@ parameters:
           path: 'src/PhpParser/NodeVisitor/OriginalNameResolver.php'
         - message: '#NamespaceManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/NamespaceStmt/NamespaceManipulator.php'
-        # TODO: this one is really strange and may be worth investigating
+        - message: '#Dead catch#'
+          path: 'tests/Scoper/PhpScoperTest.php'
+        - message: '#Dead catch#'
+          path: 'tests/Scoper/PhpScoperSpecTest.php'
+        - message: '#DummyScoperFactory extends @final#'
+          path: 'tests/Console/Command/DummyScoperFactory.php'
+        - message: '#Anonymous function should return string but returns array#'
+          path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
+        - message: '#AddPrefixCommandIntegrationTest\:\:getNormalizeDisplay\(\) should return string but returns array#'
+          path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
+        - message: '#ConfigurationKeysTest\:\:retrieveConfigurationKeys\(\) should return array#'
+          path: 'tests/Configuration/ConfigurationKeysTest.php'
+        - message: '#Property .* does not accept#'
+          path: 'src/PhpParser/NodeVisitor/UseStmt/UseStmtCollection.php'
+        - message: '#::concat\(\) should return .+Name but returns .+\|null#'
+          path: 'src/PhpParser/Node/NameFactory.php'
+        - message: '#concat\(\) should return .+FullyQualified but returns .+\|null#'
+          path: 'src/PhpParser/Node/FullyQualifiedFactory.php'
+        - message: '#retrieveElements\(\) should return#'
+          path: 'src/Configuration/SymbolsConfigurationFactory.php'
+        - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
+          path: 'src/Scoper/FileWhitelistScoper.php'
+        - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
+          path: 'src/Scoper/PatchScoper.php'
+        - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
+          path: 'src/Scoper/PhpScoper.php'
+        - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
+          path: 'src/Scoper/Symfony/XmlScoper.php'
+        - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
+          path: 'src/Scoper/Symfony/YamlScoper.php'
+        - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
+          path: 'src/Scoper/SymfonyScoper.php'
+        - message: '#Class Isolated\\Symfony\\Component\\Finder\\Finder not found\.#'
+          path: 'tests/Configuration/DefaultConfigurationTest.php'

@@ -17,12 +17,12 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 use ArrayIterator;
 use Countable;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use IteratorAggregate;
 use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use Traversable;
-
 use function count;
 use function end;
 
@@ -69,17 +69,6 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return $this->getNodeNamespaceName($node);
     }
 
-    public function findNamespaceByName(string $name): ?Name
-    {
-        foreach ($this->nodes as $node) {
-            if ((string) NamespaceManipulator::getOriginalName($node) === $name) {
-                return $node->name;
-            }
-        }
-
-        return null;
-    }
-
     public function getCurrentNamespaceName(): ?Name
     {
         $lastNode = end($this->nodes);
@@ -95,7 +84,7 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
     private function getNodeNamespaceName(Node $node): ?Name
     {
         if (!ParentNodeAppender::hasParent($node)) {
-            return null;
+            throw UnexpectedParsingScenario::create();
         }
 
         $parentNode = ParentNodeAppender::getParent($node);

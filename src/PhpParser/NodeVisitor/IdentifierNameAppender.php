@@ -31,11 +31,8 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class IdentifierNameAppender extends NodeVisitorAbstract
 {
-    private IdentifierResolver $identifierResolver;
-
-    public function __construct(IdentifierResolver $identifierResolver)
+    public function __construct(private readonly IdentifierResolver $identifierResolver)
     {
-        $this->identifierResolver = $identifierResolver;
     }
 
     public function enterNode(Node $node): ?Node

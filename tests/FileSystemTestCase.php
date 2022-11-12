@@ -23,14 +23,8 @@ use function sys_get_temp_dir;
 
 abstract class FileSystemTestCase extends TestCase
 {
-    /**
-     * @var string
-     */
     protected string $cwd;
 
-    /**
-     * @var string
-     */
     protected string $tmp;
 
     protected function setUp(): void
@@ -42,7 +36,7 @@ abstract class FileSystemTestCase extends TestCase
         remove_dir(str_replace('\\', '/', realpath(sys_get_temp_dir())).'/php-scoper');
 
         $this->cwd = getcwd();
-        $this->tmp = make_tmp_dir('php-scoper', __CLASS__);
+        $this->tmp = make_tmp_dir('php-scoper', self::class);
 
         chdir($this->tmp);
     }

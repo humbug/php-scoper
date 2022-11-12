@@ -2,6 +2,16 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
@@ -10,9 +20,7 @@ use InvalidArgumentException;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
-use function array_merge;
 use function array_pop;
-use function array_values;
 use function explode;
 use function get_debug_type;
 use function gettype;
@@ -22,20 +30,18 @@ use function is_bool;
 use function is_string;
 use function ltrim;
 use function Safe\preg_match as native_preg_match;
-use function Safe\sprintf;
-use function Safe\substr;
+use function sprintf;
+use function str_contains;
+use function str_ends_with;
 use function str_replace;
-use function strpos;
 use function strtolower;
+use function substr;
 use function trim;
 
 final class SymbolsConfigurationFactory
 {
-    private RegexChecker $regexChecker;
-
-    public function __construct(RegexChecker $regexChecker)
+    public function __construct(private readonly RegexChecker $regexChecker)
     {
-        $this->regexChecker = $regexChecker;
     }
 
     public function createSymbolsConfiguration(array $config): SymbolsConfiguration
@@ -55,15 +61,6 @@ final class SymbolsConfigurationFactory
             $config,
             ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
         );
-
-        $legacyExposedElements = self::retrieveLegacyExposedElements($config);
-
-        [
-            $legacyExposedSymbols,
-            $legacyExposedSymbolsPatterns,
-            $legacyExposedConstants,
-            $excludedNamespaceNames,
-        ] = self::parseLegacyExposedElements($legacyExposedElements, $excludedNamespaceNames);
 
         $exposeGlobalConstants = self::retrieveExposeGlobalSymbol(
             $config,
@@ -93,6 +90,27 @@ final class SymbolsConfigurationFactory
             ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD,
         );
 
+        $excludedClasses = SymbolRegistry::create(
+            ...$this->retrieveElements(
+                $config,
+                ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
+            ),
+        );
+
+        $excludedFunctions = SymbolRegistry::create(
+            ...$this->retrieveElements(
+                $config,
+                ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
+            ),
+        );
+
+        $excludedConstants = SymbolRegistry::createForConstants(
+            ...$this->retrieveElements(
+                $config,
+                ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
+            ),
+        );
+
         return SymbolsConfiguration::create(
             $exposeGlobalConstants,
             $exposeGlobalClasses,
@@ -106,43 +124,27 @@ final class SymbolsConfigurationFactory
                 $exposedNamespaceRegexes,
             ),
             SymbolRegistry::create(
-                array_merge(
-                    $exposedClassNames,
-                    $legacyExposedSymbols,
-                ),
-                array_merge(
-                    $exposedClassRegexes,
-                    $legacyExposedSymbolsPatterns,
-                ),
+                $exposedClassNames,
+                $exposedClassRegexes,
             ),
             SymbolRegistry::create(
-                array_merge(
-                    $exposedFunctionNames,
-                    $legacyExposedSymbols,
-                ),
-                array_merge(
-                    $exposedFunctionRegexes,
-                    $legacyExposedSymbolsPatterns,
-                ),
+                $exposedFunctionNames,
+                $exposedFunctionRegexes,
             ),
             SymbolRegistry::createForConstants(
-                array_merge(
-                    $exposedConstantNames,
-                    $legacyExposedConstants,
-                ),
-                array_merge(
-                    $exposedConstantRegexes,
-                    $legacyExposedSymbolsPatterns,
-                ),
+                $exposedConstantNames,
+                $exposedConstantRegexes,
             ),
-            ...self::retrieveAllExcludedSymbols($config),
+            $excludedClasses,
+            $excludedFunctions,
+            $excludedConstants,
         );
     }
 
     private static function retrieveExposeGlobalSymbol(array $config, string $key): bool
     {
         if (!array_key_exists($key, $config)) {
-            return false;
+            return true;
         }
 
         $value = $config[$key];
@@ -161,46 +163,7 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * return list<string>
-     */
-    private static function retrieveLegacyExposedElements(array $config): array
-    {
-        $key = ConfigurationKeys::WHITELIST_KEYWORD;
-
-        if (!array_key_exists($key, $config)) {
-            return [];
-        }
-
-        $whitelist = $config[$key];
-
-        if (!is_array($whitelist)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected "%s" to be an array of strings, found "%s" instead.',
-                    $key,
-                    gettype($whitelist),
-                ),
-            );
-        }
-
-        foreach ($whitelist as $index => $className) {
-            if (is_string($className)) {
-                continue;
-            }
-
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected whitelist to be an array of string, the "%d" element is not.',
-                    $index,
-                ),
-            );
-        }
-
-        return array_values($whitelist);
-    }
-
-    /**
-     * return array{string[], string[]}
+     * @return array{list<string>, list<string>}
      */
     private function retrieveElements(array $config, string $key): array
     {
@@ -254,18 +217,6 @@ final class SymbolsConfigurationFactory
     }
 
     /**
-     * @return array{string[], string[], string[]}
-     */
-    private static function retrieveAllExcludedSymbols(array $config): array
-    {
-        return [
-            self::retrieveExcludedSymbols($config, ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD),
-            self::retrieveExcludedSymbols($config, ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD),
-            self::retrieveExcludedSymbols($config, ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD),
-        ];
-    }
-
-    /**
      * @deprecated
      *
      * @param list<string> $elements
@@ -283,11 +234,11 @@ final class SymbolsConfigurationFactory
 
             self::assertValidElement($element);
 
-            if ('\*' === substr($element, -2)) {
+            if (str_ends_with($element, '\*')) {
                 $excludedNamespaceNames[] = strtolower(substr($element, 0, -2));
             } elseif ('*' === $element) {
                 $excludedNamespaceNames[] = '';
-            } elseif (false !== strpos($element, '*')) {
+            } elseif (str_contains($element, '*')) {
                 $exposedSymbolsPatterns[] = self::createExposePattern($element);
             } else {
                 $exposedSymbols[] = strtolower($element);
@@ -305,10 +256,8 @@ final class SymbolsConfigurationFactory
 
     /**
      * @psalm-assert string[] $value
-     *
-     * @param mixed $value
      */
-    private static function assertIsArrayOfStrings($value, string $key): void
+    private static function assertIsArrayOfStrings(mixed $value, string $key): void
     {
         if (!is_array($value)) {
             throw new InvalidArgumentException(
@@ -420,21 +369,5 @@ final class SymbolsConfigurationFactory
         $parts[] = $lastPart;
 
         return implode('\\', $parts);
-    }
-
-    /**
-     * @return string[]
-     */
-    private static function retrieveExcludedSymbols(array $config, string $key): array
-    {
-        if (!array_key_exists($key, $config)) {
-            return [];
-        }
-
-        $symbols = $config[$key];
-
-        self::assertIsArrayOfStrings($symbols, $key);
-
-        return $symbols;
     }
 }

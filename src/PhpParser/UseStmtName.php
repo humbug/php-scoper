@@ -2,24 +2,29 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\PhpParser;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ParentNodeAppender;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\Stmt\UseUse;
-use UnexpectedValueException;
 use function count;
-use function get_class;
-use function Safe\sprintf;
+use function sprintf;
 
 final class UseStmtName
 {
-    private Name $name;
-
-    public function __construct(Name $name)
+    public function __construct(private readonly Name $name)
     {
-        $this->name = $name;
     }
 
     public function contains(Name $resolvedName): bool
@@ -52,27 +57,8 @@ final class UseStmtName
      */
     public function getUseStmtAliasAndType(): array
     {
-        $use = ParentNodeAppender::getParent($this->name);
-
-        if (!($use instanceof UseUse)) {
-            throw new UnexpectedValueException(
-                sprintf(
-                    'Unexpected use statement name parent "%s"',
-                    get_class($use),
-                ),
-            );
-        }
-
-        $useParent = ParentNodeAppender::getParent($use);
-
-        if (!($useParent instanceof Use_)) {
-            throw new UnexpectedValueException(
-                sprintf(
-                    'Unexpected UseUse parent "%s"',
-                    get_class($useParent),
-                ),
-            );
-        }
+        $use = self::getUseNode($this->name);
+        $useParent = self::getUseParentNode($use);
 
         $alias = $use->alias;
 
@@ -84,5 +70,41 @@ final class UseStmtName
             $alias,
             $useParent->type,
         ];
+    }
+
+    private static function getUseNode(Name $name): UseUse
+    {
+        $use = ParentNodeAppender::getParent($name);
+
+        if ($use instanceof UseUse) {
+            return $use;
+        }
+
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedParsingScenario(
+            sprintf(
+                'Unexpected use statement name parent "%s"',
+                $use::class,
+            ),
+        );
+        // @codeCoverageIgnoreEnd
+    }
+
+    private static function getUseParentNode(UseUse $use): Use_
+    {
+        $useParent = ParentNodeAppender::getParent($use);
+
+        if ($useParent instanceof Use_) {
+            return $useParent;
+        }
+
+        // @codeCoverageIgnoreStart
+        throw new UnexpectedParsingScenario(
+            sprintf(
+                'Unexpected UseUse parent "%s"',
+                $useParent::class,
+            ),
+        );
+        // @codeCoverageIgnoreEnd
     }
 }

@@ -23,23 +23,18 @@ use function is_array;
 use function preg_match as native_preg_match;
 use function Safe\json_decode;
 use function Safe\json_encode;
-use function Safe\sprintf;
+use function sprintf;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 
 final class InstalledPackagesScoper implements Scoper
 {
-    private static string $filePattern = '/composer(\/|\\\\)installed\.json$/';
-
-    private Scoper $decoratedScoper;
-    private AutoloadPrefixer $autoloadPrefixer;
+    private const COMPOSER_INSTALLED_FILE_PATTERN = '/composer(\/|\\\\)installed\.json$/';
 
     public function __construct(
-        Scoper $decoratedScoper,
-        AutoloadPrefixer $autoloadPrefixer
+        private readonly Scoper $decoratedScoper,
+        private readonly AutoloadPrefixer $autoloadPrefixer,
     ) {
-        $this->decoratedScoper = $decoratedScoper;
-        $this->autoloadPrefixer = $autoloadPrefixer;
     }
 
     /**
@@ -47,7 +42,7 @@ final class InstalledPackagesScoper implements Scoper
      */
     public function scope(string $filePath, string $contents): string
     {
-        if (1 !== native_preg_match(self::$filePattern, $filePath)) {
+        if (1 !== native_preg_match(self::COMPOSER_INSTALLED_FILE_PATTERN, $filePath)) {
             return $this->decoratedScoper->scope($filePath, $contents);
         }
 
@@ -61,13 +56,13 @@ final class InstalledPackagesScoper implements Scoper
 
         return json_encode(
             $decodedJson,
-            JSON_PRETTY_PRINT
+            JSON_PRETTY_PRINT,
         );
     }
 
     private static function decodeContents(string $contents): stdClass
     {
-        $decodedJson = json_decode($contents, false, 512,  JSON_THROW_ON_ERROR);
+        $decodedJson = json_decode($contents, false, 512, JSON_THROW_ON_ERROR);
 
         if ($decodedJson instanceof stdClass) {
             return $decodedJson;
@@ -77,7 +72,7 @@ final class InstalledPackagesScoper implements Scoper
             sprintf(
                 'Expected the decoded JSON to be an stdClass instance, got "%s" instead',
                 gettype($decodedJson),
-            )
+            ),
         );
     }
 

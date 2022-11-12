@@ -21,25 +21,20 @@ use function array_merge;
 use function is_array;
 use function is_string;
 use function rtrim;
-use function Safe\sprintf;
-use function Safe\substr;
+use function sprintf;
+use function str_contains;
+use function str_ends_with;
 use function str_replace;
-use function strpos;
 
 /**
  * @private
  */
 final class AutoloadPrefixer
 {
-    private string $prefix;
-    private EnrichedReflector $enrichedReflector;
-
     public function __construct(
-        string $prefix,
-        EnrichedReflector $enrichedReflector
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
     ) {
-        $this->prefix = $prefix;
-        $this->enrichedReflector = $enrichedReflector;
     }
 
     /**
@@ -80,8 +75,7 @@ final class AutoloadPrefixer
         stdClass $autoload,
         string $prefix,
         EnrichedReflector $enrichedReflector
-    ): stdClass
-    {
+    ): stdClass {
         if (!isset($autoload->{'psr-4'}) && !isset($autoload->{'psr-0'})) {
             return $autoload;
         }
@@ -90,7 +84,7 @@ final class AutoloadPrefixer
             [$psr4, $classMap] = self::transformPsr0ToPsr4AndClassmap(
                 (array) $autoload->{'psr-0'},
                 (array) ($autoload->{'psr-4'} ?? new stdClass()),
-                (array) ($autoload->{'classmap'} ?? new stdClass())
+                (array) ($autoload->{'classmap'} ?? new stdClass()),
             );
 
             if ([] === $psr4) {
@@ -122,15 +116,13 @@ final class AutoloadPrefixer
         array $autoload,
         string $prefix,
         EnrichedReflector $enrichedReflector
-    ): array
-    {
+    ): array {
         $loader = [];
 
         foreach ($autoload as $namespace => $paths) {
             $newNamespace = $enrichedReflector->isExcludedNamespace($namespace)
                 ? $namespace
-                : sprintf('%s\\%s', $prefix, $namespace)
-            ;
+                : sprintf('%s\\%s', $prefix, $namespace);
 
             $loader[$newNamespace] = $paths;
         }
@@ -141,17 +133,17 @@ final class AutoloadPrefixer
     /**
      * @param array<string, (string|string[])> $psr0
      * @param (string|string[])[]              $psr4
-     * @param string[]                         $classMap
+     * @param string[] $classMap
      */
     private static function transformPsr0ToPsr4AndClassmap(array $psr0, array $psr4, array $classMap): array
     {
         foreach ($psr0 as $namespace => $path) {
-            //Append backslashes, if needed, since psr-0 does not require this
-            if ('\\' !== substr($namespace, -1)) {
+            // Append backslashes, if needed, since psr-0 does not require this
+            if (!str_ends_with($namespace, '\\')) {
                 $namespace .= '\\';
             }
 
-            if (false !== strpos($namespace, '_')) {
+            if (str_contains($namespace, '_')) {
                 $classMap[] = $path;
 
                 continue;
@@ -176,15 +168,15 @@ final class AutoloadPrefixer
      *
      * @return string|string[]
      */
-    private static function updatePSR0Path($path, string $namespace)
+    private static function updatePSR0Path(string|array $path, string $namespace): string|array
     {
         $namespaceForPsr = rtrim(
             str_replace('\\', '/', $namespace),
-            '/'
+            '/',
         );
 
         if (!is_array($path)) {
-            if ('/' !== substr($path, -1)) {
+            if (!str_ends_with($path, '/')) {
                 $path .= '/';
             }
 
@@ -194,7 +186,7 @@ final class AutoloadPrefixer
         }
 
         foreach ($path as $key => $item) {
-            if ('/' !== substr($item, -1)) {
+            if (!str_ends_with($item, '/')) {
                 $item .= '/';
             }
 
@@ -212,13 +204,12 @@ final class AutoloadPrefixer
      * string     |
      * or simply the namespace not existing as a psr-4 entry.
      *
-     * @param string              $psr0Namespace
-     * @param string|string[]     $psr0Path
+     * @param string|string[] $psr0Path
      * @param (string|string[])[] $psr4
      *
      * @return string|string[]
      */
-    private static function mergeNamespaces(string $psr0Namespace, $psr0Path, array $psr4)
+    private static function mergeNamespaces(string $psr0Namespace, string|array $psr0Path, array $psr4): string|array
     {
         // Both strings
         if (is_string($psr0Path) && is_string($psr4[$psr0Namespace])) {
@@ -250,8 +241,7 @@ final class AutoloadPrefixer
         array $providers,
         string $prefix,
         EnrichedReflector $enrichedReflector
-    ): array
-    {
+    ): array {
         return array_map(
             static fn (string $provider) => $enrichedReflector->isExcludedNamespace($provider)
                 ? $provider

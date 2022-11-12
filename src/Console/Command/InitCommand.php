@@ -17,17 +17,18 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Command\Command;
 use Fidry\Console\Command\Configuration;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
-use Fidry\Console\IO;
+use Fidry\Console\Input\IO;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use function file_exists;
 use function Safe\getcwd;
-use function Safe\sprintf;
+use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**
  * @private
+ * @codeCoverageIgnore
  */
 final class InitCommand implements Command
 {
@@ -35,15 +36,10 @@ final class InitCommand implements Command
     private const CONFIG_FILE_TEMPLATE = __DIR__.'/../../scoper.inc.php.tpl';
     private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
 
-    private Filesystem $fileSystem;
-    private FormatterHelper $formatterHelper;
-
     public function __construct(
-        Filesystem $fileSystem,
-        FormatterHelper $formatterHelper
+        private readonly Filesystem $fileSystem,
+        private readonly FormatterHelper $formatterHelper,
     ) {
-        $this->fileSystem = $fileSystem;
-        $this->formatterHelper = $formatterHelper;
     }
 
     public function getConfiguration(): CommandConfiguration
@@ -61,7 +57,7 @@ final class InitCommand implements Command
                     InputOption::VALUE_REQUIRED,
                     sprintf(
                         'Configuration file. Will use "%s" if found by default.',
-                        self::CONFIG_FILE_DEFAULT
+                        self::CONFIG_FILE_DEFAULT,
                     ),
                     null,
                 ),
@@ -77,8 +73,8 @@ final class InitCommand implements Command
         $io->writeln(
             $this->formatterHelper->formatSection(
                 'PHP-Scoper configuration generate',
-                'Welcome!'
-            )
+                'Welcome!',
+            ),
         );
 
         $configFile = $this->retrieveConfig($io);
@@ -95,7 +91,7 @@ final class InitCommand implements Command
             '',
             sprintf(
                 'Generated the configuration file "<comment>%s</comment>".',
-                $configFile
+                $configFile,
             ),
             '',
         ]);
@@ -105,21 +101,20 @@ final class InitCommand implements Command
 
     private function retrieveConfig(IO $io): ?string
     {
-        $configFile = $io->getNullableStringOption(self::CONFIG_FILE_OPT);
+        $configFile = $io->getOption(self::CONFIG_FILE_OPT)->asNullableNonEmptyString();
 
         $configFile = (null === $configFile)
             ? $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT)
-            : $this->makeAbsolutePath($configFile)
-        ;
+            : $this->makeAbsolutePath($configFile);
 
         if (file_exists($configFile)) {
             $canDeleteFile = $io->confirm(
                 sprintf(
                     'The configuration file "<comment>%s</comment>" already exists. Are you sure you want to '
                     .'replace it?',
-                    $configFile
+                    $configFile,
                 ),
-                false
+                false,
             );
 
             if (!$canDeleteFile) {

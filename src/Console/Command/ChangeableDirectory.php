@@ -14,17 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\IO;
+use Fidry\Console\Input\IO;
 use InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use function chdir as native_chdir;
 use function file_exists;
 use function Safe\getcwd;
-use function Safe\sprintf;
+use function sprintf;
 
 /**
  * @private
+ * @codeCoverageIgnore
  */
 final class ChangeableDirectory
 {
@@ -41,13 +42,13 @@ final class ChangeableDirectory
             'd',
             InputOption::VALUE_REQUIRED,
             'If specified, use the given directory as working directory.',
-            null
+            null,
         );
     }
 
     public static function changeWorkingDirectory(IO $io): void
     {
-        $workingDir = $io->getNullableStringOption(self::WORKING_DIR_OPT);
+        $workingDir = $io->getOption(self::WORKING_DIR_OPT)->asNullableString();
 
         if (null === $workingDir) {
             return;
@@ -57,8 +58,8 @@ final class ChangeableDirectory
             throw new InvalidArgumentException(
                 sprintf(
                     'Could not change the working directory to "%s": directory does not exists.',
-                    $workingDir
-                )
+                    $workingDir,
+                ),
             );
         }
 
@@ -67,8 +68,8 @@ final class ChangeableDirectory
                 sprintf(
                     'Failed to change the working directory to "%s" from "%s".',
                     $workingDir,
-                    getcwd()
-                )
+                    getcwd(),
+                ),
             );
         }
     }

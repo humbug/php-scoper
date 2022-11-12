@@ -15,12 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\Lexer;
 use PhpParser\Parser;
 
 /**
@@ -28,20 +30,18 @@ use PhpParser\Parser;
  */
 class ScoperFactory
 {
-    private Parser $parser;
-    private EnrichedReflectorFactory $enrichedReflectorFactory;
-
-    public function __construct(Parser $parser, EnrichedReflectorFactory $enrichedReflectorFactory)
-    {
-        $this->parser = $parser;
-        $this->enrichedReflectorFactory = $enrichedReflectorFactory;
+    public function __construct(
+        private readonly Parser $parser,
+        private readonly EnrichedReflectorFactory $enrichedReflectorFactory,
+        private readonly Printer $printer,
+        private readonly Lexer $lexer,
+    ) {
     }
 
     public function createScoper(
         Configuration $configuration,
         SymbolsRegistry $symbolsRegistry
-    ): Scoper
-    {
+    ): Scoper {
         $prefix = $configuration->getPrefix();
         $symbolsConfiguration = $configuration->getSymbolsConfiguration();
         $enrichedReflector = $this->enrichedReflectorFactory->create($symbolsConfiguration);
@@ -62,13 +62,17 @@ class ScoperFactory
                             $enrichedReflector,
                             $symbolsRegistry,
                         ),
-                        $autoloadPrefixer
+                        $autoloadPrefixer,
                     ),
-                    $autoloadPrefixer
+                    $autoloadPrefixer,
                 ),
-                new TraverserFactory($enrichedReflector),
-                $prefix,
-                $symbolsRegistry,
+                new TraverserFactory(
+                    $enrichedReflector,
+                    $prefix,
+                    $symbolsRegistry,
+                ),
+                $this->printer,
+                $this->lexer,
             ),
             $prefix,
             $configuration->getPatcher(),

@@ -2,31 +2,35 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Symbol;
 
+use function array_filter;
 use function array_map;
 use function array_pop;
 use function array_unique;
+use function count;
 use function explode;
 use function implode;
 use function ltrim;
 use function Safe\preg_match;
-use function Safe\substr;
-use function strpos;
+use function str_contains;
 use function strtolower;
+use function trim;
 use const SORT_STRING;
 
 final class NamespaceRegistry
 {
-    /**
-     * @var list<string>
-     */
-    private array $names;
-
-    /**
-     * @var list<string>
-     */
-    private array $regexes;
+    private bool $containsGlobalNamespace;
 
     /**
      * @param string[] $namespaceNames
@@ -38,7 +42,10 @@ final class NamespaceRegistry
     ): self {
         return new self(
             array_unique(
-                array_map('strtolower', $namespaceNames),
+                array_map(
+                    static fn (string $namespaceName) => strtolower(trim($namespaceName, '\\')),
+                    $namespaceNames,
+                ),
                 SORT_STRING,
             ),
             array_unique($namespaceRegexes, SORT_STRING),
@@ -46,15 +53,19 @@ final class NamespaceRegistry
     }
 
     /**
-     * @param list<string> $namespaceNames
-     * @param list<string> $namespaceRegexes
+     * @param list<string> $names
+     * @param list<string> $regexes
      */
     private function __construct(
-        array $namespaceNames,
-        array $namespaceRegexes
+        private array $names,
+        private array $regexes
     ) {
-        $this->names = $namespaceNames;
-        $this->regexes = $namespaceRegexes;
+        $this->containsGlobalNamespace = count(
+            array_filter(
+                $names,
+                static fn (string $name) => '' === $name,
+            ),
+        ) !== 0;
     }
 
     public function belongsToRegisteredNamespace(string $symbolName): bool
@@ -71,27 +82,19 @@ final class NamespaceRegistry
      */
     public function isRegisteredNamespace(string $namespaceName): bool
     {
+        if ($this->containsGlobalNamespace) {
+            return true;
+        }
+
         $originalNamespaceName = ltrim($namespaceName, '\\');
         $normalizedNamespaceName = strtolower($originalNamespaceName);
 
         foreach ($this->names as $excludedNamespaceName) {
-            if ('' === $excludedNamespaceName) {
+            if ('' === $excludedNamespaceName
+                || str_contains($normalizedNamespaceName, $excludedNamespaceName)
+            ) {
                 return true;
             }
-
-            if (0 !== strpos($normalizedNamespaceName, $excludedNamespaceName)) {
-                continue;
-            }
-
-            $nameParts = explode('\\', $normalizedNamespaceName);
-
-            foreach (explode('\\', $excludedNamespaceName) as $index => $excludedNamespacePart) {
-                if ($nameParts[$index] !== $excludedNamespacePart) {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         foreach ($this->regexes as $excludedNamespace) {
@@ -125,10 +128,6 @@ final class NamespaceRegistry
 
     private static function extractNameNamespace(string $name): string
     {
-        if (0 === strpos($name, '\\')) {
-            $name = substr($name, 1);
-        }
-
         $nameParts = explode('\\', $name);
 
         array_pop($nameParts);

@@ -34,11 +34,8 @@ use function ltrim;
  */
 final class IdentifierResolver
 {
-    private NameResolver $nameResolver;
-
-    public function __construct(NameResolver $nameResolver)
+    public function __construct(private readonly NameResolver $nameResolver)
     {
-        $this->nameResolver = $nameResolver;
     }
 
     public function resolveIdentifier(Identifier $identifier): Name

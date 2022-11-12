@@ -2,13 +2,24 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Configuration;
 
-use Humbug\PhpScoper\Configuration;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Configuration\RegexChecker
+ *
+ * @internal
  */
 final class RegexCheckerTest extends TestCase
 {
@@ -16,7 +27,7 @@ final class RegexCheckerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->regexChecker = new Configuration\RegexChecker();
+        $this->regexChecker = new RegexChecker();
     }
 
     /**
@@ -25,8 +36,7 @@ final class RegexCheckerTest extends TestCase
     public function test_it_can_tell_if_a_string_looks_like_a_regex(
         string $value,
         bool $expected
-    ): void
-    {
+    ): void {
         $actual = $this->regexChecker->isRegexLike($value);
 
         self::assertSame($expected, $actual);
@@ -81,6 +91,12 @@ final class RegexCheckerTest extends TestCase
             false,
         ];
 
+        // See https://github.com/humbug/php-scoper/issues/666
+        yield 'fake regex (3)' => [
+            '__',
+            false,
+        ];
+
         yield 'minimal fake regex' => [
             '////',
             false,
@@ -113,8 +129,7 @@ final class RegexCheckerTest extends TestCase
     public function test_it_can_validate_that_a_string_is_a_valid_regex_or_not(
         string $regex,
         ?string $expected
-    ): void
-    {
+    ): void {
         $actual = $this->regexChecker->validateRegex($regex);
 
         self::assertSame($expected, $actual);

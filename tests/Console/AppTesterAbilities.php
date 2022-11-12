@@ -2,9 +2,19 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Console;
 
-use Fidry\Console\DisplayNormalizer as FidryDisplayNormalizer;
+use Fidry\Console\Test\OutputAssertions;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
@@ -21,36 +31,19 @@ trait AppTesterAbilities
     }
 
     /**
-     * @param null|callable(string):string $extraNormalization
+     * @param callable(string):string $extraNormalizers
      */
     private function assertExpectedOutput(
         string $expectedOutput,
         int $expectedStatusCode,
-        ?callable $extraNormalization = null
-    ): void
-    {
-        $appTester = $this->getAppTester();
-
-        $actual = $this->getNormalizeDisplay(
-            $appTester->getDisplay(true),
-            $extraNormalization,
+        callable ...$extraNormalizers
+    ): void {
+        OutputAssertions::assertSameOutput(
+            $expectedOutput,
+            $expectedStatusCode,
+            $this->getAppTester(),
+            DisplayNormalizer::normalize(...),
+            ...$extraNormalizers,
         );
-
-        self::assertSame($expectedOutput, $actual);
-        self::assertSame($expectedStatusCode, $appTester->getStatusCode());
-    }
-
-    private function getNormalizeDisplay(
-        string $display,
-        ?callable $extraNormalization = null
-    ): string
-    {
-        $extraNormalization = $extraNormalization ?? static fn (string $display) => $display;
-
-        $display = DisplayNormalizer::normalizeDirectorySeparators($display);
-        $display = DisplayNormalizer::normalizeProgressBar($display);
-        $display = FidryDisplayNormalizer::removeTrailingSpaces($display);
-
-        return $extraNormalization($display);
     }
 }

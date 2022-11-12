@@ -19,6 +19,8 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\Reflector
+ *
+ * @internal
  */
 class PhpStormStubsReflectorTest extends TestCase
 {

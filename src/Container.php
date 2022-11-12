@@ -17,12 +17,15 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\PhpParser\Printer\Printer;
+use Humbug\PhpScoper\PhpParser\Printer\StandardPrinter;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use PhpParser\Lexer;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Filesystem\Filesystem;
 
 final class Container
@@ -33,6 +36,8 @@ final class Container
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
+    private Printer $printer;
+    private Lexer $lexer;
 
     public function getFileSystem(): Filesystem
     {
@@ -63,6 +68,8 @@ final class Container
             $this->scoperFactory = new ScoperFactory(
                 $this->getParser(),
                 $this->getEnrichedReflectorFactory(),
+                $this->getPrinter(),
+                $this->getLexer(),
             );
         }
 
@@ -72,7 +79,10 @@ final class Container
     public function getParser(): Parser
     {
         if (!isset($this->parser)) {
-            $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7, new Lexer());
+            $this->parser = (new ParserFactory())->create(
+                ParserFactory::PREFER_PHP7,
+                $this->getLexer(),
+            );
         }
 
         return $this->parser;
@@ -96,5 +106,25 @@ final class Container
         }
 
         return $this->enrichedReflectorFactory;
+    }
+
+    public function getPrinter(): Printer
+    {
+        if (!isset($this->printer)) {
+            $this->printer = new StandardPrinter(
+                new Standard(),
+            );
+        }
+
+        return $this->printer;
+    }
+
+    public function getLexer(): Lexer
+    {
+        if (!isset($this->lexer)) {
+            $this->lexer = new Lexer();
+        }
+
+        return $this->lexer;
     }
 }

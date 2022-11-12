@@ -2,10 +2,20 @@
 
 declare(strict_types=1);
 
+/*
+ * This file is part of the humbug/php-scoper package.
+ *
+ * Copyright (c) 2017 Théo FIDRY <theo.fidry@gmail.com>,
+ *                    Pádraic Brady <padraic.brady@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Application\Application;
-use Fidry\Console\IO;
+use Fidry\Console\Input\IO;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Scoper\Scoper;
@@ -21,10 +31,10 @@ use function count;
 use function Humbug\PhpScoper\get_common_path;
 use function preg_match as native_preg_match;
 use function Safe\file_get_contents;
-use function Safe\sprintf;
-use function Safe\usort;
+use function sprintf;
 use function str_replace;
 use function strlen;
+use function usort;
 use const DIRECTORY_SEPARATOR;
 
 /**
@@ -34,24 +44,16 @@ final class ConsoleScoper
 {
     private const VENDOR_DIR_PATTERN = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
 
-    private Filesystem $fileSystem;
-    private Application $application;
-    private ScoperFactory $scoperFactory;
-
     public function __construct(
-        Filesystem $fileSystem,
-        Application $application,
-        ScoperFactory $scoperFactory
-    )
-    {
-        $this->fileSystem = $fileSystem;
-        $this->application = $application;
-        $this->scoperFactory = $scoperFactory;
+        private readonly Filesystem $fileSystem,
+        private readonly Application $application,
+        private readonly ScoperFactory $scoperFactory,
+    ) {
     }
 
     /**
      * @param list<non-empty-string> $paths
-     * @param non-empty-string $outputDir
+     * @param non-empty-string       $outputDir
      */
     public function scope(
         IO $io,
@@ -59,8 +61,7 @@ final class ConsoleScoper
         array $paths,
         string $outputDir,
         bool $stopOnFailure
-    ): void
-    {
+    ): void {
         $logger = new ScoperLogger(
             $this->application,
             $io,
@@ -188,10 +189,10 @@ final class ConsoleScoper
 
         usort(
             $vendorDirs,
-            static fn ($a, $b) => strlen($a) <=> strlen($b),
+            static fn ($a, $b) => strlen((string) $a) <=> strlen((string) $b),
         );
 
-        return (0 === count($vendorDirs)) ? null : $vendorDirs[0];
+        return (0 === count($vendorDirs)) ? null : (string) $vendorDirs[0];
     }
 
     private function scopeFile(
@@ -211,7 +212,7 @@ final class ConsoleScoper
             $exception = new ParsingException(
                 sprintf(
                     'Could not parse the file "%s".',
-                    $inputFilePath
+                    $inputFilePath,
                 ),
                 0,
                 $throwable,

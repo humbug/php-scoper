@@ -19,9 +19,11 @@ use Humbug\PhpScoper\Console\Application;
 use Isolated\Symfony\Component\Finder\Finder as IsolatedFinder;
 use RuntimeException;
 use Symfony\Component\Finder\Finder;
+use const PHP_EOL;
+use const PHP_SAPI;
 
 if (PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg') {
-    echo PHP_EOL.'PHP-Scoper may only be invoked from a command line'.\PHP_EOL;
+    echo PHP_EOL.'PHP-Scoper may only be invoked from a command line'.PHP_EOL;
 
     exit(1);
 }
@@ -31,7 +33,7 @@ set_error_handler(
         if (error_reporting() & $code) {
             throw new ErrorException($message, 0, $code, $file, $line);
         }
-    }
+    },
 );
 
 $findAutoload = static function () {
@@ -57,8 +59,4 @@ if (false === class_exists(IsolatedFinder::class)) {
     class_alias(Finder::class, IsolatedFinder::class);
 }
 
-ApplicationRunner::runApplication(
-    Application::create(),
-    null,
-    null,
-);
+ApplicationRunner::runApplication(Application::create());

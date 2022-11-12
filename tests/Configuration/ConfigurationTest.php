@@ -21,18 +21,21 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
+ * @covers \Humbug\PhpScoper\Configuration\Configuration
+ *
+ * @internal
  */
 final class ConfigurationTest extends TestCase
 {
     /**
      * @dataProvider prefixProvider
+     *
+     * @param non-empty-string $prefix
      */
     public function test_it_validates_the_prefix(
         string $prefix,
         string $expectedExceptionMessage
-    ): void
-    {
+    ): void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
