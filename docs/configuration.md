@@ -276,6 +276,8 @@ With this in mind, know that excluding a symbol may not be done the way you
 expect it to. More details about the internal work, which will be necessary
 if you need to delve into the scoped code, can be found bellow.
 
+**Note: If a symbol is excluded _and_ exposed, the exclusion will take precedence.**
+
 
 ### Exposing classes
 
