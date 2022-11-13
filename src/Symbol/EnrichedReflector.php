@@ -23,6 +23,11 @@ use function strpos;
  * Combines the API or the "traditional" reflector which is about to tell
  * if a symbol is internal or not with the more PHP-Scoper specific exposed
  * API.
+ *
+ * The configuration allows to:
+ * - register internal symbols (via the exclude-*)
+ * - register symbols to expose
+ * - register excluded & exposed namespaces (exclusion takes priority)
  */
 final class EnrichedReflector
 {
@@ -41,6 +46,7 @@ final class EnrichedReflector
 
     private function belongsToExposedNamespace(string $name): bool
     {
+        // TODO: should probably check that is not excluded!
         return $this->symbolsConfiguration
             ->getExposedNamespaces()
             ->belongsToRegisteredNamespace($name);
@@ -73,52 +79,40 @@ final class EnrichedReflector
         return $this->reflector->isConstantInternal($name);
     }
 
-    public function isConstantExcluded(string $name): bool
-    {
-        // TODO: double check not sure that internal should mean excluded for constants
-        // TODO: review as not used at the moment
-        return $this->reflector->isConstantInternal($name)
-            || $this->belongsToExcludedNamespace($name);
-    }
-
     public function isExposedFunction(string $resolvedName): bool
     {
-        return !$this->belongsToExcludedNamespace($resolvedName)
-            && !$this->reflector->isFunctionInternal($resolvedName)
+        return !$this->isFunctionExcluded($resolvedName)
             && (
-                $this->_isExposedFunctionFromGlobalNamespace($resolvedName)
-                || $this->symbolsConfiguration
+                $this->symbolsConfiguration
                     ->getExposedFunctions()
                     ->matches($resolvedName)
+                || $this->isExposedFunctionFromGlobalNamespaceWithoutExclusionCheck($resolvedName)
                 || $this->belongsToExposedNamespace($resolvedName)
             );
     }
 
     public function isExposedFunctionFromGlobalNamespace(string $resolvedName): bool
     {
-        return !$this->belongsToExcludedNamespace($resolvedName)
-            && !$this->reflector->isFunctionInternal($resolvedName)
-            && $this->_isExposedFunctionFromGlobalNamespace($resolvedName);
+        return !$this->isFunctionExcluded($resolvedName)
+            && $this->isExposedFunctionFromGlobalNamespaceWithoutExclusionCheck($resolvedName);
     }
 
     public function isExposedClass(string $resolvedName): bool
     {
-        return !$this->belongsToExcludedNamespace($resolvedName)
-            && !$this->reflector->isClassInternal($resolvedName)
+        return !$this->isClassExcluded($resolvedName)
             && (
-                $this->_isExposedClassFromGlobalNamespace($resolvedName)
-                || $this->symbolsConfiguration
+                $this->symbolsConfiguration
                     ->getExposedClasses()
                     ->matches($resolvedName)
+                || $this->isExposedClassFromGlobalNamespaceWithoutExclusionCheck($resolvedName)
                 || $this->belongsToExposedNamespace($resolvedName)
             );
     }
 
     public function isExposedClassFromGlobalNamespace(string $resolvedName): bool
     {
-        return !$this->belongsToExcludedNamespace($resolvedName)
-            && !$this->reflector->isClassInternal($resolvedName)
-            && $this->_isExposedClassFromGlobalNamespace($resolvedName);
+        return !$this->isClassInternal($resolvedName)
+            && $this->isExposedClassFromGlobalNamespaceWithoutExclusionCheck($resolvedName);
     }
 
     public function isExposedConstant(string $name): bool
@@ -130,18 +124,20 @@ final class EnrichedReflector
         return !$this->belongsToExcludedNamespace($name)
             && (
                 $this->reflector->isConstantInternal($name)
-                || $this->isExposedConstantFromGlobalNamespace($name)
                 || $this->symbolsConfiguration
                     ->getExposedConstants()
                     ->matches($name)
+                || $this->isExposedConstantFromGlobalNamespace($name)
                 || $this->belongsToExposedNamespace($name)
             );
     }
 
     public function isExposedConstantFromGlobalNamespace(string $constantName): bool
     {
-        // TODO: leverage belongsToGlobalNamespace
-        return $this->symbolsConfiguration->shouldExposeGlobalConstants() && !strpos($constantName, '\\');
+        // TODO: should probably check if belongs to an excluded namespace
+        //  or excluded symbol
+        return $this->symbolsConfiguration->shouldExposeGlobalConstants()
+            && $this->belongsToGlobalNamespace($constantName);
     }
 
     public function isExcludedNamespace(string $name): bool
@@ -151,16 +147,16 @@ final class EnrichedReflector
             ->isRegisteredNamespace($name);
     }
 
-    private function _isExposedFunctionFromGlobalNamespace(string $functionName): bool
+    private function isExposedFunctionFromGlobalNamespaceWithoutExclusionCheck(string $functionName): bool
     {
-        // TODO: leverage belongsToGlobalNamespace
-        return $this->symbolsConfiguration->shouldExposeGlobalFunctions() && !strpos($functionName, '\\');
+        return $this->symbolsConfiguration->shouldExposeGlobalFunctions()
+            && $this->belongsToGlobalNamespace($functionName);
     }
 
-    public function _isExposedClassFromGlobalNamespace(string $className): bool
+    private function isExposedClassFromGlobalNamespaceWithoutExclusionCheck(string $className): bool
     {
-        // TODO: leverage belongsToGlobalNamespace
-        return $this->symbolsConfiguration->shouldExposeGlobalClasses() && !strpos($className, '\\');
+        return $this->symbolsConfiguration->shouldExposeGlobalClasses()
+            && $this->belongsToGlobalNamespace($className);
     }
 
     public function belongsToGlobalNamespace(string $symbolName): bool
