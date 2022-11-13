@@ -11,6 +11,16 @@ use Isolated\Symfony\Component\Finder\Finder;
 // to auto-load any code here: it can result in a conflict or even corrupt
 // the PHP-Scoper analysis.
 
+// Example of collecting files to include in the scoped build but to not scope
+// leveraging the isolated finder.
+$excludedFiles = array_map(
+    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathName(),
+    iterator_to_array(
+        Finder::create()->files()->in(__DIR__),
+        false,
+    ),
+);
+
 return [
     // The prefix configuration. If a non-null value is used, a random prefix
     // will be generated instead.
@@ -57,6 +67,7 @@ return [
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers
     'exclude-files' => [
         // 'src/a-whitelisted-file.php',
+        ...$excludedFiles,
     ],
 
     // When scoping PHP files, there will be scenarios where some of the code being scoped indirectly references the
