@@ -30,7 +30,6 @@ final class PhpScoperAssertions
     ): void {
         Assert::assertIsArray($actual);
 
-        // TODO: contribute this to PHPUnit
         // TODO: use assertArrayIsList() assertion once available
         // https://github.com/sebastianbergmann/phpunit/commit/71f507496aa1a483b32d9257d6f3477e6e5c091d
         Assert::assertTrue(

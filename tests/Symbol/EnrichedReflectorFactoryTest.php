@@ -26,19 +26,10 @@ final class EnrichedReflectorFactoryTest extends TestCase
 {
     public function test_it_can_create_an_enriched_reflector(): void
     {
-        // TODO: named param could help here
         $symbolsConfiguration = SymbolsConfiguration::create(
-            false,
-            false,
-            false,
-            null,
-            null,
-            null,
-            null,
-            null,
-            SymbolRegistry::create(['Acme\Foo']),
-            SymbolRegistry::create(['Acme\main']),
-            SymbolRegistry::createForConstants(['Acme\BAR']),
+            excludedClasses: SymbolRegistry::create(['Acme\Foo']),
+            excludedFunctions: SymbolRegistry::create(['Acme\main']),
+            excludedConstants: SymbolRegistry::createForConstants(['Acme\BAR']),
         );
 
         $factory = new EnrichedReflectorFactory(Reflector::createEmpty());
