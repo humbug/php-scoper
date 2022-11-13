@@ -24,10 +24,11 @@ use function strpos;
  * if a symbol is internal or not with the more PHP-Scoper specific exposed
  * API.
  *
- * The configuration allows to:
- * - register internal symbols (via the exclude-*)
- * - register symbols to expose
- * - register excluded & exposed namespaces (exclusion takes priority)
+ * To recap, the configurations to take into account:
+ * - excluded & exposed namespaces (exclusion takes priority)
+ * - internal symbols
+ * - exposed symbols
+ * - whether symbols from the global namespace should be exposed or not
  */
 final class EnrichedReflector
 {
