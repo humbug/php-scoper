@@ -79,14 +79,6 @@ final class EnrichedReflector
         return $this->reflector->isConstantInternal($name);
     }
 
-    public function isConstantExcluded(string $name): bool
-    {
-        // TODO: double check not sure that internal should mean excluded for constants
-        // TODO: review as not used at the moment
-        return $this->reflector->isConstantInternal($name)
-            || $this->belongsToExcludedNamespace($name);
-    }
-
     public function isExposedFunction(string $resolvedName): bool
     {
         return !$this->belongsToExcludedNamespace($resolvedName)
@@ -163,7 +155,7 @@ final class EnrichedReflector
         return $this->symbolsConfiguration->shouldExposeGlobalFunctions() && !strpos($functionName, '\\');
     }
 
-    public function isExposedClassFromGlobalNamespaceWithoutExclusionCheck(string $className): bool
+    private function isExposedClassFromGlobalNamespaceWithoutExclusionCheck(string $className): bool
     {
         // TODO: leverage belongsToGlobalNamespace
         return $this->symbolsConfiguration->shouldExposeGlobalClasses() && !strpos($className, '\\');
