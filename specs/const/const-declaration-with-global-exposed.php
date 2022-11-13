@@ -114,6 +114,36 @@ return [
         PHP,
     ],
 
+    'Excluded constants declaration in the global namespace' => [
+        'exclude-constants' => [
+            'FOO_CONST',
+            'BAR_CONST',
+            'Acme\BAR_CONST',
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        const FOO_CONST = foo();
+        define('BAR_CONST', foo());
+        define('Acme\BAR_CONST', foo());
+        define(FOO_CONST, foo());
+        define(\FOO_CONST, foo());
+        define(\Acme\BAR_CONST, foo());
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        \define('FOO_CONST', foo());
+        \define('BAR_CONST', foo());
+        \define('Acme\\BAR_CONST', foo());
+        \define(\FOO_CONST, foo());
+        \define(\FOO_CONST, foo());
+        \define(\Acme\BAR_CONST, foo());
+        
+        PHP,
+    ],
+
     'Constants declaration in a namespace' => <<<'PHP'
     <?php
     
