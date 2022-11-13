@@ -6,6 +6,7 @@
 - [Patchers](#patchers)
 - [Excluded files](#excluded-files)
 - [Excluded Symbols](#excluded-symbols)
+- [Excluded Namespaces](#excluded-namespaces)
 - [Exposed Symbols](#exposed-symbols)
     - [Exposing classes](#exposing-classes)
     - [Exposing functions](#exposing-functions)
@@ -229,7 +230,18 @@ package will be faulty and will not work*. For this to work, the whole package
 It is recommended to use excluded symbols only to complement the
 [PhpStorm's stubs][phpstorm-stubs] shipped with PHP-Scoper.
 
-Excluding a namespace also excludes its sub-namespaces.
+
+### Excluded Namespaces
+
+When excluding a namespace by name, for example `'PHPUnit\Framework'`, any
+symbol belonging to that namespace **or sub-namespace** will be excluded. For
+example the class `'PHPUnit\Framework\TestCase\CommandTestCase'` would be
+excluded as well.
+
+As a result, registering the namespace name `''` will end up excluding any symbol.
+
+To exclude symbols from the global namespace only, you should use a regex `/^$/`.
+Indeed, regexes only exclude the matching namespaces.
 
 
 ### Exposed Symbols
