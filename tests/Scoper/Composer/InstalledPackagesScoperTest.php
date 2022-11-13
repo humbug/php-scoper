@@ -381,12 +381,8 @@ class InstalledPackagesScoperTest extends TestCase
         yield 'fideloper/proxy excerpt with excluded provider' => [
             new EnrichedReflector(
                 Reflector::createEmpty(),
-                // TODO: named params
                 SymbolsConfiguration::create(
-                    false,
-                    false,
-                    false,
-                    NamespaceRegistry::create(['Fideloper']),
+                    excludedNamespaces: NamespaceRegistry::create(['Fideloper']),
                 ),
             ),
             <<<'JSON'
