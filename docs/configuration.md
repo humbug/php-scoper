@@ -6,8 +6,9 @@
 - [Patchers](#patchers)
 - [Excluded files](#excluded-files)
 - [Excluded Symbols](#excluded-symbols)
-- [Excluded Namespaces](#excluded-namespaces)
+- [Excluding namespaces](#excluding-namespaces)
 - [Exposed Symbols](#exposed-symbols)
+    - [Exposing namespaces](#exposing-namespaces)
     - [Exposing classes](#exposing-classes)
     - [Exposing functions](#exposing-functions)
     - [Exposing constants](#exposing-constants)
@@ -231,7 +232,7 @@ It is recommended to use excluded symbols only to complement the
 [PhpStorm's stubs][phpstorm-stubs] shipped with PHP-Scoper.
 
 
-### Excluded Namespaces
+### Excluding namespaces
 
 When excluding a namespace by name, for example `'PHPUnit\Framework'`, any
 symbol belonging to that namespace **or sub-namespace** will be excluded. For
@@ -289,6 +290,14 @@ expect it to. More details about the internal work, which will be necessary
 if you need to delve into the scoped code, can be found bellow.
 
 **Note: If a symbol is excluded _and_ exposed, the exclusion will take precedence.**
+
+### Exposing Namespaces
+
+The namespace configuration is identical to [excluding namespaces](#excluding-namespaces).
+
+How the symbols are exposed is done as described in the next sections. Note
+however that some symbols cannot be exposed (see [exposing/excluding traits](limitations.md#exposingexcluding-traits)
+ and [exposing/excluding enums](limitations.md#exposingexcluding-enums)) 
 
 
 ### Exposing classes
