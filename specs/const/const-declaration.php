@@ -85,8 +85,6 @@ return [
     
     PHP,
 
-    // TODO: use `''` for global namespace and sub-namespaces rather than regex;
-    //  also check (unit) tests for it
     'Constant declarations in the global namespace which is excluded' => [
         'exclude-namespaces' => [''],
         'payload' => <<<'PHP'

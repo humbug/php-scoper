@@ -9,6 +9,8 @@
 
 ### Polyfills
 
+**Note: should be obsolete as of 0.18.0.**
+
 At the moment there is no way to automatically handles polyfills. This is mainly
 due to the nature of polyfills: the code is sometimes a bit... special and there
 is also not only one way on how to approach it.
