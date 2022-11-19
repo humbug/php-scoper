@@ -457,7 +457,6 @@ e2e_033: $(PHP_SCOPER_PHAR_BIN)
 	diff fixtures/set033-user-global-function/expected-output build/set033-user-global-function/output
 
 
-
 .PHONY: e2e_034
 e2e_034: ## Runs end-to-end tests for the fixture set 034 — Leverage Composer InstalledVersions
 e2e_034: $(PHP_SCOPER_PHAR_BIN)
@@ -474,6 +473,30 @@ e2e_034: $(PHP_SCOPER_PHAR_BIN)
 	php build/set034-installed-versions/index.php > build/set034-installed-versions/output
 
 	diff fixtures/set034-installed-versions/expected-output build/set034-installed-versions/output
+
+
+.PHONY: e2e_035
+e2e_035: ## Runs end-to-end tests for the fixture set 035 — Leverage Composer InstalledVersions
+e2e_035: $(PHP_SCOPER_PHAR_BIN)
+	rm -rf build/set035-functions-autoload || true
+	rm -rf fixtures/set035-functions-autoload/vendor || true
+	rm -rf fixtures/set035-functions-autoload/guzzle5-include/vendor || true
+	composer --working-dir=fixtures/set035-functions-autoload install --no-dev
+	cp -R fixtures/set035-functions-autoload build/set035-functions-autoload
+	composer --working-dir=fixtures/set035-functions-autoload/guzzle5-include install --no-dev
+
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set035-functions-autoload/guzzle5-include \
+		--output-dir=../../../build/set035-functions-autoload/scoped-guzzle5-include \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set035-functions-autoload/scoped-guzzle5-include dump-autoload
+
+	php build/set035-functions-autoload/index.php &> build/set035-functions-autoload/output || true
+
+	php build/set035-functions-autoload/test.php
 
 
 #
@@ -655,19 +678,4 @@ fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 fixtures/set030/vendor: fixtures/set030/composer.json
 	composer --working-dir=fixtures/set030 install --no-dev
 	touch -c $@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
