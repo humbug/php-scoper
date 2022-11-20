@@ -14,12 +14,15 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\Node;
 
+use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 
 final class FullyQualifiedFactory
 {
+    use NotInstantiable;
+
     /**
      * @param string|string[]|Name|null $name1
      * @param string|string[]|Name|null $name2
@@ -31,9 +34,5 @@ final class FullyQualifiedFactory
         }
 
         return FullyQualified::concat($name1, $name2, $attributes);
-    }
-
-    private function __construct()
-    {
     }
 }

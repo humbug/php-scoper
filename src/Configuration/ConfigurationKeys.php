@@ -14,8 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\NotInstantiable;
+
 final class ConfigurationKeys
 {
+    use NotInstantiable;
+
     public const PREFIX_KEYWORD = 'prefix';
     public const OUTPUT_DIR_KEYWORD = 'output-dir';
     public const EXCLUDED_FILES_KEYWORD = 'exclude-files';
@@ -54,8 +58,4 @@ final class ConfigurationKeys
         self::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
         self::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
     ];
-
-    private function __construct()
-    {
-    }
 }
