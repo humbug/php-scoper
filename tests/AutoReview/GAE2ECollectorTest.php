@@ -18,15 +18,15 @@ use PHPUnit\Framework\TestCase;
 use function count;
 
 /**
- * @covers \Humbug\PhpScoper\AutoReview\E2ECollector
+ * @covers \Humbug\PhpScoper\AutoReview\GAE2ECollector
  *
  * @internal
  */
-class E2ECollectorTest extends TestCase
+class GAE2ECollectorTest extends TestCase
 {
     public function test_it_collects_the_e2e_test_names(): void
     {
-        $names = E2ECollector::getE2ENames();
+        $names = GAE2ECollector::getExecutedE2ETests();
 
         self::assertGreaterThan(0, count($names));
 
@@ -37,7 +37,7 @@ class E2ECollectorTest extends TestCase
 
     public function test_it_ignores_non_e2e_tests(): void
     {
-        $names = E2ECollector::getE2ENames();
+        $names = GAE2ECollector::getExecutedE2ETests();
 
         self::assertNotContains('e2e_000', $names);
     }
