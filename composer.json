@@ -32,7 +32,8 @@
         "ergebnis/composer-normalize": "^2.28",
         "humbug/box": "^4.0",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.0",
+        "symfony/yaml": "^6.1"
     },
     "replace": {
         "symfony/polyfill-php73": "*"
