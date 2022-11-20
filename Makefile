@@ -441,7 +441,7 @@ e2e_032: $(PHP_SCOPER_PHAR_BIN)
 
 .PHONY: e2e_033
 e2e_033: ## Runs end-to-end tests for the fixture set 033 — Scoping of a codebase a function registered in the global namespace
-e2e_033: $(PHP_SCOPER_PHAR_BIN)
+e2e_033: $(PHP_SCOPER_PHAR_BIN) fixtures/set033-user-global-function/vendor
 	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set033-user-global-function \
 		--output-dir=../../build/set033-user-global-function \
@@ -458,7 +458,7 @@ e2e_033: $(PHP_SCOPER_PHAR_BIN)
 
 .PHONY: e2e_034
 e2e_034: ## Runs end-to-end tests for the fixture set 034 — Leverage Composer InstalledVersions
-e2e_034: $(PHP_SCOPER_PHAR_BIN)
+e2e_034: $(PHP_SCOPER_PHAR_BIN) fixtures/set034-installed-versions/vendor
 	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set034-installed-versions \
 		--output-dir=../../build/set034-installed-versions \
@@ -653,3 +653,17 @@ fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 fixtures/set030/vendor: fixtures/set030/composer.json
 	composer --working-dir=fixtures/set030 install --no-dev
 	touch -c $@
+
+fixtures/set033-user-global-function/vendor: fixtures/set033-user-global-function/composer.lock
+	composer --working-dir=fixtures/set033-user-global-function install --no-dev --no-scripts
+	touch -c $@
+fixtures/set033-user-global-function/composer.lock: fixtures/set033-user-global-function/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set033-user-global-function update --lock && touch -c $(@)"
+
+fixtures/set034-installed-versions/vendor: fixtures/set034-installed-versions/composer.lock
+	composer --working-dir=fixtures/set034-installed-versions install --no-dev --no-scripts
+	touch -c $@
+fixtures/set034-installed-versions/composer.lock: fixtures/set034-installed-versions/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set034-installed-versions update --lock && touch -c $(@)"
