@@ -46,6 +46,7 @@ final class GAE2ECollector
     {
         $parsedYaml = Yaml::parseFile(self::GA_FILE);
 
+        /** @var string[] $names */
         $names = $parsedYaml['jobs']['e2e-tests']['strategy']['matrix']['e2e'];
 
         sort($names, SORT_STRING);
