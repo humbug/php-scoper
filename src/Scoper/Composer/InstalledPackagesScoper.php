@@ -52,10 +52,7 @@ final class InstalledPackagesScoper implements Scoper
             throw new InvalidArgumentException('Expected the decoded JSON to contain the list of installed packages');
         }
 
-        $decodedJson->packages = array_map(
-            $this->prefixPackage(...),
-            $decodedJson->packages,
-        );
+        $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages);
 
         return json_encode(
             $decodedJson,
@@ -79,18 +76,16 @@ final class InstalledPackagesScoper implements Scoper
         );
     }
 
-    private function prefixPackage(stdClass $package): stdClass
+    /**
+     * @param array<string, stdClass> $packages
+     *
+     * @return array<string, stdClass>
+     */
+    private function prefixLockPackages(array $packages): array
     {
-        // We do not change plugin packages as otherwise it would require to
-        // update the composer.json#config.allow-plugins which in turns would
-        // require to update the lock file.
-//        if ($package->type !== 'composer-plugin') {
-//            // We change the name to ensure the hash generated for the autoloaded
-//            // files declared by that package are changed and cannot conflict
-//            // with the non-scoped version of the package.
-//            $package->name = 'scoped-'.$package->name;
-//        }
-
-        return $this->autoloadPrefixer->prefixPackageAutoloadStatements($package);
+        return array_map(
+            fn (stdClass $package) => $this->autoloadPrefixer->prefixPackageAutoloadStatements($package),
+            $packages,
+        );
     }
 }

@@ -91,7 +91,7 @@ final class ScoperAutoloadGenerator
                     if (isset(\$GLOBALS['__composer_autoload_files'])) {
                         \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'];
                     }
-                
+
                     \$loader = require_once __DIR__.'/autoload.php';
                     // Ensure InstalledVersions is available
                     require_once __DIR__.'/composer/InstalledVersions.php';
@@ -121,11 +121,11 @@ final class ScoperAutoloadGenerator
                 if (isset(\$GLOBALS['__composer_autoload_files'])) {
                     \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'];
                 }
-                
+
                 \$loader = require_once __DIR__.'/autoload.php';
                 // Ensure InstalledVersions is available
                 require_once __DIR__.'/composer/InstalledVersions.php';
-                
+
                 // Restore the backup
                 if (isset(\$existingComposerAutoloadFiles)) {
                     \$GLOBALS['__composer_autoload_files'] = \$existingComposerAutoloadFiles;
