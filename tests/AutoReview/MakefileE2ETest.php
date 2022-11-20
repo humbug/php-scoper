@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\AutoReview;
 
 use PHPUnit\Framework\TestCase;
 use function array_filter;
@@ -31,20 +31,35 @@ use function Safe\preg_match_all;
  */
 class MakefileE2ETest extends TestCase
 {
+    private const MAKEFILE_PATH = __DIR__.'/../../Makefile';
+
+    private static string $makeFileContents;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$makeFileContents = file_get_contents(self::MAKEFILE_PATH);
+    }
+
     public function test_the_e2e_test_executes_all_the_e2e_sub_rules(): void
     {
-        $contents = file_get_contents(__DIR__.'/../Makefile');
-
-        $mainE2ERule = $this->retrieveE2ERule($contents);
-        $e2eSubRules = $this->retrieveSubE2ERules($contents);
+        $mainE2ERule = self::retrieveE2ERule(self::$makeFileContents);
+        $e2eSubRules = self::retrieveSubE2ERules(self::$makeFileContents);
 
         self::assertSame($e2eSubRules, $mainE2ERule);
     }
 
+    public function test_it_lists_all_e2e_tests(): void
+    {
+        $expected = E2ECollector::getE2ENames();
+        $actual = self::retrieveE2ERule(self::$makeFileContents);
+
+        self::assertEqualsCanonicalizing($expected, $actual);
+    }
+
     /**
-     * @return string[]
+     * @return list<string>
      */
-    private function retrieveE2ERule(string $makefileContents): array
+    private static function retrieveE2ERule(string $makefileContents): array
     {
         if (1 !== preg_match(
             '/e2e:(?<steps>[\p{L}\d_ ]+)/u',
@@ -68,9 +83,9 @@ class MakefileE2ETest extends TestCase
     }
 
     /**
-     * @return string[]
+     * @return list<string>
      */
-    private function retrieveSubE2ERules(string $makefileContents): array
+    private static function retrieveSubE2ERules(string $makefileContents): array
     {
         if (1 !== preg_match_all(
             '/(?<step>e2e_\d+):/u',
