@@ -21,7 +21,7 @@ require __DIR__.'/vendor/autoload.php';
 
 // Will fail to find the function
 try {
-    \GuzzleHttp\describe_type();
+    \GuzzleHttp\describe_type('hello');
 } catch (Throwable $throwable) {
     echo $throwable->getMessage().PHP_EOL;
 }

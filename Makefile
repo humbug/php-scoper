@@ -493,9 +493,9 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN)
 		--no-interaction \
 		--stop-on-failure
 	composer --working-dir=build/set035-functions-autoload/scoped-guzzle5-include dump-autoload
+	rm -rf build/set035-functions-autoload/guzzle5-include || true
 
 	php build/set035-functions-autoload/index.php &> build/set035-functions-autoload/output || true
-
 	php build/set035-functions-autoload/test.php
 
 
