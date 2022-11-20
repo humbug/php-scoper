@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
+use Humbug\PhpScoper\NotInstantiable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
@@ -23,6 +24,8 @@ use PhpParser\NodeVisitorAbstract;
  */
 final class NamespaceManipulator extends NodeVisitorAbstract
 {
+    use NotInstantiable;
+
     private const ORIGINAL_NAME_ATTRIBUTE = 'originalName';
 
     public static function hasOriginalName(Namespace_ $namespace): bool
@@ -42,9 +45,5 @@ final class NamespaceManipulator extends NodeVisitorAbstract
     public static function setOriginalName(Namespace_ $namespace, ?Name $originalName): void
     {
         $namespace->setAttribute(self::ORIGINAL_NAME_ATTRIBUTE, $originalName);
-    }
-
-    private function __construct()
-    {
     }
 }
