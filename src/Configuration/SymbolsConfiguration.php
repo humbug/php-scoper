@@ -14,11 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\NotInstantiable;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 
 final class SymbolsConfiguration
 {
+    use NotInstantiable;
+
     // To keep in sync with the default configuration set in src/scoper.inc.php.tpl
     public static function create(
         bool $exposeGlobalConstants = true,

@@ -7,6 +7,7 @@
 /.php-cs-fixer.cache
 /box.json
 /build/
+!/build/.gitkeep
 /clover.xml
 /dist/
 /fixtures/set004/scoper.inc.php

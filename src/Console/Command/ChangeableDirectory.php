@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Fidry\Console\Input\IO;
+use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,11 +30,9 @@ use function sprintf;
  */
 final class ChangeableDirectory
 {
-    private const WORKING_DIR_OPT = 'working-dir';
+    use NotInstantiable;
 
-    private function __construct()
-    {
-    }
+    private const WORKING_DIR_OPT = 'working-dir';
 
     public static function createOption(): InputOption
     {

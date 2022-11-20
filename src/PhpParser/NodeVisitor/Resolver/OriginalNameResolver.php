@@ -14,10 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver;
 
+use Humbug\PhpScoper\NotInstantiable;
 use PhpParser\Node\Name;
 
 final class OriginalNameResolver
 {
+    use NotInstantiable;
+
     private const ORIGINAL_NAME_ATTRIBUTE = 'originalName';
 
     public static function hasOriginalName(Name $namespace): bool
@@ -32,9 +35,5 @@ final class OriginalNameResolver
         }
 
         return $name->getAttribute(self::ORIGINAL_NAME_ATTRIBUTE);
-    }
-
-    private function __construct()
-    {
     }
 }

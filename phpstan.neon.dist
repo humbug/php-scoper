@@ -57,3 +57,5 @@ parameters:
           path: 'src/Scoper/SymfonyScoper.php'
         - message: '#Class Isolated\\Symfony\\Component\\Finder\\Finder not found\.#'
           path: 'tests/Configuration/DefaultConfigurationTest.php'
+        - message: '#Cannot access offset#'
+          path: 'tests/AutoReview/GAE2ECollector.php'
