@@ -456,8 +456,6 @@ e2e_033: $(PHP_SCOPER_PHAR_BIN)
 
 	diff fixtures/set033-user-global-function/expected-output build/set033-user-global-function/output
 
-
-
 .PHONY: e2e_034
 e2e_034: ## Runs end-to-end tests for the fixture set 034 — Leverage Composer InstalledVersions
 e2e_034: $(PHP_SCOPER_PHAR_BIN)
@@ -655,19 +653,3 @@ fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
 fixtures/set030/vendor: fixtures/set030/composer.json
 	composer --working-dir=fixtures/set030 install --no-dev
 	touch -c $@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
