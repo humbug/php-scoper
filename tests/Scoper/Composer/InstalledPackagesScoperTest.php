@@ -191,7 +191,7 @@ class InstalledPackagesScoperTest extends TestCase
                 {
                     "packages": [
                         {
-                            "name": "fideloper\/proxy",
+                            "name": "scoped-fideloper\/proxy",
                             "version": "4.0.0",
                             "version_normalized": "4.0.0.0",
                             "source": {
@@ -320,7 +320,7 @@ class InstalledPackagesScoperTest extends TestCase
                     "dev": true,
                     "packages": [
                         {
-                            "name": "beberlei\/assert",
+                            "name": "scoped-beberlei\/assert",
                             "version": "v2.7.6",
                             "version_normalized": "2.7.6.0",
                             "source": {
@@ -451,7 +451,7 @@ class InstalledPackagesScoperTest extends TestCase
                 {
                     "packages": [
                         {
-                            "name": "fideloper\/proxy",
+                            "name": "scoped-fideloper\/proxy",
                             "version": "4.0.0",
                             "version_normalized": "4.0.0.0",
                             "source": {
@@ -510,6 +510,8 @@ class InstalledPackagesScoperTest extends TestCase
                 }
                 JSON,
         ];
+
+        // TODO:add composer plugin case
     }
 
     public static function provideInvalidComposerFiles(): iterable
