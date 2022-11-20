@@ -155,7 +155,7 @@ blackfire: vendor
 
 .PHONY: e2e
 e2e:	 ## Runs end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_024 e2e_025 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_024 e2e_025 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034 e2e_035
 
 .PHONY: e2e_004
 e2e_004: ## Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
@@ -473,6 +473,25 @@ e2e_034: $(PHP_SCOPER_PHAR_BIN) fixtures/set034-installed-versions/vendor
 
 	diff fixtures/set034-installed-versions/expected-output build/set034-installed-versions/output
 
+.PHONY: e2e_035
+e2e_035: ## Runs end-to-end tests for the fixture set 035 — Tests tha composer autoloaded files are working fine
+e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor fixtures/set035-composer-files-autoload/guzzle5-include/vendor
+	rm -rf build/set035-composer-files-autoload || true
+	cp -R fixtures/set035-composer-files-autoload build/set035-composer-files-autoload
+
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set035-composer-files-autoload/guzzle5-include \
+		--output-dir=../../../build/set035-composer-files-autoload/scoped-guzzle5-include \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set035-composer-files-autoload/scoped-guzzle5-include dump-autoload
+	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
+
+	php build/set035-composer-files-autoload/index.php &> build/set035-composer-files-autoload/output || true
+	php build/set035-composer-files-autoload/test.php
+
 
 #
 # Rules from files
@@ -667,3 +686,17 @@ fixtures/set034-installed-versions/vendor: fixtures/set034-installed-versions/co
 fixtures/set034-installed-versions/composer.lock: fixtures/set034-installed-versions/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set034-installed-versions update --lock && touch -c $(@)"
+
+fixtures/set035-composer-files-autoload/vendor: fixtures/set035-composer-files-autoload/composer.lock
+	composer --working-dir=fixtures/set035-composer-files-autoload install --no-dev --no-scripts
+	touch -c $@
+fixtures/set035-composer-files-autoload/composer.lock: fixtures/set035-composer-files-autoload/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload update --lock && touch -c $(@)"
+
+fixtures/set035-composer-files-autoload/guzzle5-include/vendor: fixtures/set035-composer-files-autoload/guzzle5-include/composer.lock
+	composer --working-dir=fixtures/set035-composer-files-autoload/guzzle5-include install --no-dev --no-scripts
+	touch -c $@
+fixtures/set035-composer-files-autoload/guzzle5-include/composer.lock: fixtures/set035-composer-files-autoload/guzzle5-include/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload/guzzle5-include update --lock && touch -c $(@)"
