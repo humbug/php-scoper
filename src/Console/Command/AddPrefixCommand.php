@@ -93,6 +93,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     'o',
                     InputOption::VALUE_REQUIRED,
                     'The output directory in which the prefixed code will be dumped.',
+                    ''
                 ),
                 new InputOption(
                     self::FORCE_OPT,
