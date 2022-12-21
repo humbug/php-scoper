@@ -106,6 +106,16 @@ function parse_tag(string $responseContent): string
 function get_composer_root_version(string $lastTagName): string
 {
     $tagParts = explode('.', $lastTagName);
+    $parsedTagParts = [];
+
+    // Remove stability flag
+    foreach ($tagParts as $tagPart) {
+        if (in_array(strtolower($tagPart), ['rc', 'alpha', 'beta'])) {
+            break;
+        }
+
+        $parsedTagParts[] = $tagPart;
+    }
 
     array_pop($tagParts);
 
