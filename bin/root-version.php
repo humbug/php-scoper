@@ -103,6 +103,8 @@ function parse_tag(string $responseContent): string
     return $lastRelease;
 }
 
+
+
 function get_composer_root_version(string $lastTagName): string
 {
     $tagParts = explode('.', $lastTagName);
@@ -117,9 +119,9 @@ function get_composer_root_version(string $lastTagName): string
         $parsedTagParts[] = $tagPart;
     }
 
-    array_pop($tagParts);
+    array_pop($parsedTagParts);
 
-    $tagParts[] = '99';
+    $parsedTagParts[] = '99';
 
-    return implode('.', $tagParts);
+    return implode('.', $parsedTagParts);
 }
