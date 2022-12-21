@@ -17,9 +17,9 @@ namespace Humbug\PhpScoperComposerRootChecker;
 use RuntimeException;
 use function getenv;
 use function preg_replace;
-use function sprintf;
 use function Safe\file_get_contents;
 use function Safe\file_put_contents;
+use function sprintf;
 
 final class Dumper
 {
@@ -57,9 +57,9 @@ final class Dumper
             self::COMPOSER_ROOT_VERSION_PATH,
             sprintf(
                 <<<'BASH'
-                COMPOSER_ROOT_VERSION='%s'
+                    COMPOSER_ROOT_VERSION='%s'
 
-                BASH,
+                    BASH,
                 $composerRootVersion,
             ),
         );

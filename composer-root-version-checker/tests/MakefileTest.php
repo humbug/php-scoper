@@ -33,11 +33,11 @@ final class MakefileTest extends BaseMakefileTestCase
         return <<<'EOF'
             [33mUsage:[0m
               make TARGET
-            
+
             [32m#
             # Commands
             #---------------------------------------------------------------------------[0m
-            
+
             [33mcheck_root_version:[0m  Checks that the Composer root version is up to date
             [33mdump_root_version:[0m   Dumps the latest Composer root version
             [33mcs:[0m		     Runs the fixers

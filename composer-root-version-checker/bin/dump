@@ -13,8 +13,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Humbug\PhpScoperComposerRootChecker\Checker;
-use Humbug\PhpScoperComposerRootChecker\Dumper;
+namespace Humbug\PhpScoperComposerRootChecker;
 
 require_once __DIR__.'/../vendor/autoload.php';
 

@@ -118,7 +118,7 @@ validate_package:
 .PHONY: check_composer_root_version
 check_composer_root_version: ## Checks that the COMPOSER_ROOT_VERSION is up to date
 check_composer_root_version: .composer-root-version
-	php bin/check-composer-root-version.php
+	cd composer-root-version-checker; $(MAKE) --makefile Makefile check_root_version
 
 .PHONY: covers_validator
 covers_validator:  ## Checks PHPUnit @coves tag
