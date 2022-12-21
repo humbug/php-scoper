@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+This file is part of the humbug/php-scoper package.
+
+(c) 2017 Bernhard Schussek (pre-2017), Théo Fidry, Pádraic Brady
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+-->
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheResultFile="../dist/.phpunit-composer-root-version-checker.result.cache"
+>
+    <testsuites>
+        <testsuite name="Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
