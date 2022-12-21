@@ -110,7 +110,7 @@ function get_composer_root_version(string $lastTagName): string
 
     // Remove stability flag
     foreach ($tagParts as $tagPart) {
-        if (in_array(strtolower($tagPart), ['rc', 'alpha', 'beta'])) {
+        if (in_array(strtolower($tagPart), ['rc', 'alpha', 'beta'], true)) {
             break;
         }
 
