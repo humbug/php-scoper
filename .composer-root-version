@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
+#!/user/bin/env sh
 
-export COMPOSER_ROOT_VERSION='0.17.99'
+export COMPOSER_ROOT_VERSION='0.18.99'
