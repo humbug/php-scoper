@@ -41,12 +41,6 @@ jobs:
                 with:
                     composer-options: '--prefer-dist'
 
-            -   name: Install Composer CodeSniffer dependencies
-                uses: ramsey/composer-install@v2
-                with:
-                    working-directory: 'vendor-bin/code-sniffer'
-                    composer-options: '--prefer-dist'
-
             -   name: Install Composer PHPStan dependencies
                 uses: ramsey/composer-install@v2
                 with:
