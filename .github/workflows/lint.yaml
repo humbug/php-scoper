@@ -21,7 +21,7 @@ jobs:
 
         steps:
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
@@ -37,18 +37,18 @@ jobs:
                     echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
 
             -   name: Install Composer dependencies
-                uses: ramsey/composer-install@v1
+                uses: ramsey/composer-install@v2
                 with:
                     composer-options: '--prefer-dist'
 
             -   name: Install Composer CodeSniffer dependencies
-                uses: ramsey/composer-install@v1
+                uses: ramsey/composer-install@v2
                 with:
                     working-directory: 'vendor-bin/code-sniffer'
                     composer-options: '--prefer-dist'
 
             -   name: Install Composer PHPStan dependencies
-                uses: ramsey/composer-install@v1
+                uses: ramsey/composer-install@v2
                 with:
                     working-directory: 'vendor-bin/phpstan'
                     composer-options: '--prefer-dist'

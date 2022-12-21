@@ -18,7 +18,7 @@ jobs:
                 php: [ '8.1' ]
         steps:
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
                 with:
                     fetch-depth: 0
 
@@ -41,7 +41,7 @@ jobs:
                 php: [ '8.1' ]
         steps:
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
                 with:
                     fetch-depth: 0
 
@@ -65,7 +65,7 @@ jobs:
                     - '8.1'
         steps:
             -   name: Checkout
-                uses: actions/checkout@v2
+                uses: actions/checkout@v3
                 with:
                     fetch-depth: 0
 
@@ -83,7 +83,7 @@ jobs:
                     echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
 
             -   name: Install Composer dependencies
-                uses: ramsey/composer-install@v1
+                uses: ramsey/composer-install@v2
                 with:
                     composer-options: '--prefer-dist'
 
