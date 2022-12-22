@@ -38,8 +38,6 @@ jobs:
 
             -   name: Install Composer dependencies
                 uses: ramsey/composer-install@v2
-                with:
-                    composer-options: '--prefer-dist'
 
             -   name: Build PHAR
                 run: make build
@@ -108,8 +106,6 @@ jobs:
 
             -   name: Install Composer dependencies
                 uses: ramsey/composer-install@v2
-                with:
-                    composer-options: '--prefer-dist'
 
             -   name: Retrieve built PHAR
                 uses: actions/download-artifact@v3

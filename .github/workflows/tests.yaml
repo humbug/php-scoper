@@ -89,8 +89,6 @@ jobs:
 
             -   name: Install Composer dependencies
                 uses: ramsey/composer-install@v2
-                with:
-                    composer-options: '--prefer-dist'
 
             -   name: Run tests
                 run: make phpunit
