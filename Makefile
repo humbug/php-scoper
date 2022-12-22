@@ -545,6 +545,9 @@ vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer bin covers-validator update --lock && touch -c $(@)"
 
+.PHONY: install_php_cs_fixer
+install_php_cs_fixer: $(PHP_CS_FIXER_BIN)
+
 $(PHP_CS_FIXER_BIN): vendor-bin/php-cs-fixer/vendor
 	touch -c $@
 vendor-bin/php-cs-fixer/vendor: vendor-bin/php-cs-fixer/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)

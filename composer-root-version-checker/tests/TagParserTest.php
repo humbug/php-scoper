@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace Humbug\PhpScoperComposerRootChecker\Tests;
 
 use Exception;
+use Humbug\PhpScoperComposerRootChecker\CouldNotParseTag;
 use Humbug\PhpScoperComposerRootChecker\TagParser;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 /**
  * @covers \Humbug\PhpScoperComposerRootChecker\TagParser
@@ -151,8 +151,6 @@ final class TagParserTest extends TestCase
         string $responseContent,
         Exception $exception
     ): void {
-        self::markTestSkipped('TODO');
-
         $this->expectException($exception::class);
         $this->expectExceptionMessage($exception->getMessage());
 
@@ -165,16 +163,21 @@ final class TagParserTest extends TestCase
             <<<'JSON'
                 []
                 JSON,
-            // TODO: change message
-            new RuntimeException('No tag name could be found in: []'),
+            new CouldNotParseTag('No tag could be found in: "[]".'),
         ];
 
         yield 'non-JSON response' => [
             <<<'XML'
                 <xml></xml>
                 XML,
-            // TODO: should not be able to decode this; change the message
-            new RuntimeException('No tag name could be found in: <xml></xml>'),
+            new CouldNotParseTag('No tag could be found in: "<xml></xml>".'),
+        ];
+
+        yield 'non-array JSON response' => [
+            <<<'JSON'
+                {}
+                JSON,
+            new CouldNotParseTag('No tag could be found in: "{}".'),
         ];
 
         yield 'no name found' => [
@@ -191,7 +194,20 @@ final class TagParserTest extends TestCase
                   }
                 ]
                 JSON,
-            new RuntimeException('foo'),
+            new CouldNotParseTag(
+                <<<'EOF'
+                    No tag name could be found in:
+                    "{
+                        "zipball_url": "https:\/\/api.github.com\/repos\/humbug\/php-scoper\/zipball\/refs\/tags\/0.18.0-rc.0",
+                        "tarball_url": "https:\/\/api.github.com\/repos\/humbug\/php-scoper\/tarball\/refs\/tags\/0.18.0-rc.0",
+                        "commit": {
+                            "sha": "f7bd92f2459f1d9a643313f6d324476b0e23e087",
+                            "url": "https:\/\/api.github.com\/repos\/humbug\/php-scoper\/commits\/f7bd92f2459f1d9a643313f6d324476b0e23e087"
+                        },
+                        "node_id": "MDM6UmVmNDQzODQ0NDc6cmVmcy90YWdzLzAuMTguMC1yYy4w"
+                    }".
+                    EOF
+            ),
         ];
 
         yield 'name is not a string' => [
@@ -209,8 +225,7 @@ final class TagParserTest extends TestCase
                   }
                 ]
                 JSON,
-            // TODO: change the error into something more practical
-            new RuntimeException('No tag name could be found in: '),
+            new CouldNotParseTag('Could not parse the tag "1": Expected the tag to be a non-blank string, got "bool".'),
         ];
 
         yield 'name is empty' => [
@@ -228,8 +243,7 @@ final class TagParserTest extends TestCase
                   }
                 ]
                 JSON,
-            // TODO: change the error into something more practical
-            new RuntimeException('No tag name could be found in: '),
+            new CouldNotParseTag('Could not parse the tag "": Expected the tag to be a non-blank string, got an empty string.'),
         ];
 
         yield 'name is a blank string' => [
@@ -247,8 +261,7 @@ final class TagParserTest extends TestCase
                   }
                 ]
                 JSON,
-            // TODO: change the error into something more practical
-            new RuntimeException('Invalid tag name found.'),
+            new CouldNotParseTag('Could not parse the tag " ": Expected the tag to be a non-blank string, got an empty string.'),
         ];
     }
 }

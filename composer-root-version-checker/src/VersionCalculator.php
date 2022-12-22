@@ -14,17 +14,36 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoperComposerRootChecker;
 
+use function str_contains;
+use function strtolower;
+
 final class VersionCalculator
 {
     public static function calculateDesiredVersion(string $tag): string
     {
         $tagParts = explode('.', $tag);
+        $desiredVersionParts = [];
 
-        array_pop($tagParts);
+        foreach ($tagParts as $tagPart) {
+            $normalizedPart = strtolower($tagPart);
 
-        $tagParts[] = '99';
+            if (str_contains($normalizedPart, 'rc')
+                || str_contains($normalizedPart, 'alpha')
+                || str_contains($normalizedPart, 'beta')
+            ) {
+                $desiredVersionParts[] = '99';
 
-        return implode('.', $tagParts);
+                return implode('.', $desiredVersionParts);
+            }
+
+            $desiredVersionParts[] = $tagPart;
+        }
+
+        array_pop($desiredVersionParts);
+
+        $desiredVersionParts[] = '99';
+
+        return implode('.', $desiredVersionParts);
     }
 
     private function __construct()
