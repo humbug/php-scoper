@@ -62,7 +62,7 @@ final class Dumper
             self::COMPOSER_ROOT_VERSION_PATH,
             sprintf(
                 <<<'BASH'
-                    COMPOSER_ROOT_VERSION='%s'
+                    export COMPOSER_ROOT_VERSION='%s'
 
                     BASH,
                 $composerRootVersion,
