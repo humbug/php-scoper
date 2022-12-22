@@ -44,7 +44,7 @@ jobs:
                     working-directory: 'composer-root-version-checker'
 
             -   name: Lints CS
-                run: cd composer-root-version-checker; make cs_lint
+                run: cd composer-root-version-checker; make cs_lint --debug
 
     tests:
         runs-on: ubuntu-latest
