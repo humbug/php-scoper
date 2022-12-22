@@ -24,13 +24,19 @@ jobs:
                     php-version: "${{ matrix.php }}"
                     tools: composer
 
+            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
+            -   name: Configure composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install the Composer (root) dependencies
+                uses: ramsey/composer-install@v2
+
             -   name: Install PHP-CS-Fixer
                 uses: ramsey/composer-install@v2
                 with:
                     working-directory: 'vendor-bin/php-cs-fixer'
-
-            -   name: Ensures the makefile does not remake the PHP-CS-Fixer target
-                run: touch -c vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer
 
             -   name: Install the Composer dependencies
                 uses: ramsey/composer-install@v2
@@ -38,7 +44,7 @@ jobs:
                     working-directory: 'composer-root-version-checker'
 
             -   name: Lints CS
-                run: cd composer-root-version-checker; make cs_lint --debug
+                run: cd composer-root-version-checker; make cs_lint
 
     tests:
         runs-on: ubuntu-latest
