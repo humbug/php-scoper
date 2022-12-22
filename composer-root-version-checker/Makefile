@@ -68,7 +68,7 @@ php_cs_fixer:
 
 .PHONY: php_cs_fixer_lint
 php_cs_fixer_lint:
-	cd ..; $(MAKE) --makefile Makefile $@ --debug
+	cd ..; $(MAKE) --makefile Makefile $@
 
 .PHONY: phpunit
 phpunit: $(PHPUNIT_BIN) vendor

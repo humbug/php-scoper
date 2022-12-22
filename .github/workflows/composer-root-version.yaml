@@ -42,7 +42,7 @@ jobs:
                     working-directory: 'vendor-bin/php-cs-fixer'
 
             -   name: Ensure that PHP-CS-Fixer dependencies are updated correctly
-                run: make vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer
+                run: make install_php_cs_fixer
 
             -   name: Install the Composer dependencies
                 uses: ramsey/composer-install@v2
@@ -50,7 +50,7 @@ jobs:
                     working-directory: 'composer-root-version-checker'
 
             -   name: Lints CS
-                run: cd composer-root-version-checker; make cs_lint --debug
+                run: cd composer-root-version-checker; make cs_lint
 
     tests:
         runs-on: ubuntu-latest
