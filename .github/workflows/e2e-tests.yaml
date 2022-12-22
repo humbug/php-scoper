@@ -54,7 +54,7 @@ jobs:
                     path: bin/php-scoper.phar
 
     e2e-tests:
-        name: 'Test ${{ matrix.e2e }} (PHP: ${{ matrix.php }})'
+        name: 'Test ${{ matrix.e2e }} (PHP: ${{ matrix.php }}) with ${{ matrix.composer }}'
         runs-on: ubuntu-latest
         needs: build-test-phar
         strategy:
