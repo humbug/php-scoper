@@ -342,7 +342,6 @@ e2e_025: $(PHP_SCOPER_PHAR_BIN) fixtures/set025/vendor
 
 .PHONY: e2e_027
 e2e_027: ## Runs end-to-end tests for the fixture set 027 — Scoping of a Laravel
-ifeq ("$(IS_PHP8)", "true")
 e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
 	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set027-laravel \
@@ -354,10 +353,6 @@ e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
 
 	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
-else
-e2e_027:
-	echo "SKIP e2e_027: PHP version not supported"
-endif
 
 .PHONY: e2e_028
 e2e_028: ## Runs end-to-end tests for the fixture set 028 — Scoping of a Symfony project
