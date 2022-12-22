@@ -25,27 +25,31 @@ final class Checker
         $fetcher = new TagFetcher($logger);
 
         try {
-            $expectedComposerRootVersion = $fetcher->fetchLastTag();
+            $lastTag = $fetcher->fetchLastTag();
+        } catch (CouldNotParseTag $couldNotParseTag) {
+            $logger->notice(
+                sprintf(
+                    'Skipped: %s',
+                    $couldNotParseTag->getMessage(),
+                ),
+            );
+
+            // This is the GitHub API playing tricks on us... I could not find a way to reliably fix it so it is just better
+            // to avoid bailing out because of it for now.
+            return 0;
         } catch (RuntimeException $couldNotFetchTag) {
             if (false !== getenv('PHP_SCOPER_GITHUB_TOKEN') && false === getenv('GITHUB_TOKEN')) {
-                $logger->info('Skipped.');
+                $logger->info('Skipped: not GitHub token configured. Export the environment variable "PHP_SCOPER_GITHUB_TOKEN" or "GITHUB_TOKEN" to fix this.');
 
                 // Ignore this PR to avoid too many builds to fail untimely or locally due to API rate limits because the last
                 // release version could not be retrieved.
                 return 0;
             }
 
-            if (100 === $couldNotFetchTag->getCode()) {
-                $logger->info('Skipped.');
-
-                // This is the GitHub API playing tricks on us... I could not find a way to reliably fix it so it is just better
-                // to avoid bailing out because of it for now.
-                return 0;
-            }
-
             throw $couldNotFetchTag;
         }
 
+        $expectedComposerRootVersion = VersionCalculator::calculateDesiredVersion($lastTag);
         $currentRootVersion = RootVersionProvider::provideCurrentVersion();
 
         if ($expectedComposerRootVersion === $currentRootVersion) {

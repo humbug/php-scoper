@@ -14,61 +14,65 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoperComposerRootChecker;
 
-use RuntimeException;
+use JsonException;
 use function current;
+use function get_debug_type;
 use function is_array;
 use function is_string;
 use function Safe\json_decode;
+use function Safe\json_encode;
 use function sprintf;
 use function trim;
+use const JSON_PRETTY_PRINT;
 
 final class TagParser
 {
     public static function parse(string $responseContent): string
     {
-        $decodedContent = json_decode(
-            $responseContent,
-            false,
-            512,
-            JSON_PRETTY_PRINT & JSON_THROW_ON_ERROR,
-        );
+        try {
+            $decodedContent = json_decode(
+                $responseContent,
+                false,
+                512,
+                JSON_PRETTY_PRINT & JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException) {
+            throw CouldNotParseTag::noTagFound($responseContent);
+        }
 
         if (!is_array($decodedContent)) {
-            throw new RuntimeException(
-                sprintf(
-                    'No tag name could be found in: %s',
-                    $responseContent,
-                ),
-                100,
-            );
+            throw CouldNotParseTag::noTagFound($responseContent);
         }
 
         $lastReleaseInfo = current($decodedContent);
 
         if (false === $lastReleaseInfo) {
-            throw new RuntimeException(
+            throw CouldNotParseTag::noTagFound($responseContent);
+        }
+
+        if (!isset($lastReleaseInfo->name)) {
+            throw CouldNotParseTag::noNameTagFound(json_encode($lastReleaseInfo, JSON_PRETTY_PRINT));
+        }
+
+        $tagName = $lastReleaseInfo->name;
+
+        if (!is_string($tagName)) {
+            throw CouldNotParseTag::withReason(
+                $tagName,
                 sprintf(
-                    'No tag name could be found in: %s',
-                    $responseContent,
+                    'Expected the tag to be a non-blank string, got "%s".',
+                    get_debug_type($tagName),
                 ),
-                100,
             );
         }
 
-        if (!($lastReleaseInfo->name) || !is_string($lastReleaseInfo->name)) {
-            throw new RuntimeException(
-                sprintf(
-                    'No tag name could be found in: %s',
-                    $responseContent,
-                ),
-                100,
-            );
-        }
-
-        $lastRelease = trim($lastReleaseInfo->name);
+        $lastRelease = trim($tagName);
 
         if ('' === $lastRelease) {
-            throw new RuntimeException('Invalid tag name found.');
+            throw CouldNotParseTag::withReason(
+                $tagName,
+                'Expected the tag to be a non-blank string, got an empty string.',
+            );
         }
 
         return $lastRelease;

@@ -48,100 +48,104 @@ final class VersionCalculatorTest extends TestCase
             '0.17.99',
         ];
 
-        // TODO: fix
-//        yield 'stable version' => [
-//            '1.17.3',
-//            '1.17.99'
-//        ];
-//
-//        yield 'RC version of unstable release' => [
-//            '0.17.12-RC.0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'RC (dash) version of unstable release' => [
-//            '0.17.12-RC-0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'RC (no separator) version of unstable release' => [
-//            '0.17.12-RC0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'alpha version of unstable release' => [
-//            '0.17.12-ALPHA.0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'alpha (dash) version of unstable release' => [
-//            '0.17.12-ALPHA-0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'alpha (no separator) version of unstable release' => [
-//            '0.17.12-ALPHA0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'beta version of unstable release' => [
-//            '0.17.12-BETA.0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'beta (dash) version of unstable release' => [
-//            '0.17.12-BETA-0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'beta (no separator) version of unstable release' => [
-//            '0.17.12-BETA0',
-//            '0.17.99'
-//        ];
-//
-//        yield 'RC version of stable release' => [
-//            '1.17.12-RC.0',
-//            '1.17.99'
-//        ];
-//
-//        yield 'RC (dash) version of stable release' => [
-//            '1.17.12-RC-0',
-//            '1.17.99'
-//        ];
-//
-//        yield 'RC (no separator) version of stable release' => [
-//            '1.17.12-RC0',
-//            '1.17.99'
-//        ];
-//
-//        yield 'alpha version of stable release' => [
-//            '1.17.12-ALPHA.0',
-//            '1.17.99'
-//        ];
-//
-//        yield 'alpha (dash) version of stable release' => [
-//            '1.17.12-ALPHA-0',
-//            '1.17.99'
-//        ];
-//
-//        yield 'alpha (no separator) version of stable release' => [
-//            '1.17.12-ALPHA0',
-//            '1.17.99'
-//        ];
-//
-//        yield 'beta version of stable release' => [
-//            '1.17.12-BETA.0',
-//            '1.17.99'
-//        ];
-//
-//        yield 'beta (dash) version of stable release' => [
-//            '1.17.12-BETA-0',
-//            '1.17.99'
-//        ];
-//
-//        yield 'beta (no separator) version of stable release' => [
-//            '1.17.12-BETA0',
-//            '1.17.99'
-//        ];
+        yield 'stable version' => [
+            '1.17.3',
+            '1.17.99',
+        ];
+
+        yield 'RC version of unstable release' => [
+            '0.17.12-RC.0',
+            '0.17.99',
+        ];
+
+        yield 'RC (dash) version of unstable release' => [
+            '0.17.12-RC-0',
+            '0.17.99',
+        ];
+
+        yield 'RC (no separator) version of unstable release' => [
+            '0.17.12-RC0',
+            '0.17.99',
+        ];
+
+        yield 'alpha version of unstable release' => [
+            '0.17.12-ALPHA.0',
+            '0.17.99',
+        ];
+
+        yield 'alpha (dash) version of unstable release' => [
+            '0.17.12-ALPHA-0',
+            '0.17.99',
+        ];
+
+        yield 'alpha (no separator) version of unstable release' => [
+            '0.17.12-ALPHA0',
+            '0.17.99',
+        ];
+
+        yield 'beta version of unstable release' => [
+            '0.17.12-BETA.0',
+            '0.17.99',
+        ];
+
+        yield 'beta (dash) version of unstable release' => [
+            '0.17.12-BETA-0',
+            '0.17.99',
+        ];
+
+        yield 'beta (no separator) version of unstable release' => [
+            '0.17.12-BETA0',
+            '0.17.99',
+        ];
+
+        yield 'RC version of stable release' => [
+            '1.17.12-RC.0',
+            '1.17.99',
+        ];
+
+        yield 'RC (dash) version of stable release' => [
+            '1.17.12-RC-0',
+            '1.17.99',
+        ];
+
+        yield 'RC (no separator) version of stable release' => [
+            '1.17.12-RC0',
+            '1.17.99',
+        ];
+
+        yield 'alpha version of stable release' => [
+            '1.17.12-ALPHA.0',
+            '1.17.99',
+        ];
+
+        yield 'alpha (dash) version of stable release' => [
+            '1.17.12-ALPHA-0',
+            '1.17.99',
+        ];
+
+        yield 'alpha (no separator) version of stable release' => [
+            '1.17.12-ALPHA0',
+            '1.17.99',
+        ];
+
+        yield 'beta version of stable release' => [
+            '1.17.12-BETA.0',
+            '1.17.99',
+        ];
+
+        yield 'beta (dash) version of stable release' => [
+            '1.17.12-BETA-0',
+            '1.17.99',
+        ];
+
+        yield 'beta (no separator) version of stable release' => [
+            '1.17.12-BETA0',
+            '1.17.99',
+        ];
+
+        yield 'bug case #1' => [
+            '0.18.0-rc.0',
+            '0.18.99',
+        ];
     }
 }
