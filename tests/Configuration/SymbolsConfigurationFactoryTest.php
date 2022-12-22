@@ -193,7 +193,7 @@ final class SymbolsConfigurationFactoryTest extends TestCase
      *
      * @param class-string<Throwable> $expectedExceptionClassName
      */
-    public function test_it_cannot_create_a_whitelist_from_an_invalid_config(
+    public function test_it_cannot_create_a_symbols_config_from_an_invalid_config(
         array $config,
         string $expectedExceptionClassName,
         string $expectedExceptionMessage

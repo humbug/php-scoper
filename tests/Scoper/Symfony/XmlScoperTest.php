@@ -309,7 +309,7 @@ class XmlScoperTest extends TestCase
             [],
         ];
 
-        yield 'PSR-4 service locator with whitelist' => [
+        yield 'PSR-4 service locator with excluded namespace' => [
             <<<'XML'
                 <!-- config/services.xml -->
                 <?xml version="1.0" encoding="UTF-8" ?>

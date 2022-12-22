@@ -66,7 +66,7 @@ return [
     //
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers
     'exclude-files' => [
-        // 'src/a-whitelisted-file.php',
+        // 'src/an-excluded-file.php',
         ...$excludedFiles,
     ],
 

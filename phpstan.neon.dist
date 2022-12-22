@@ -44,8 +44,6 @@ parameters:
         - message: '#retrieveElements\(\) should return#'
           path: 'src/Configuration/SymbolsConfigurationFactory.php'
         - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
-          path: 'src/Scoper/FileWhitelistScoper.php'
-        - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
           path: 'src/Scoper/PatchScoper.php'
         - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
           path: 'src/Scoper/PhpScoper.php'
