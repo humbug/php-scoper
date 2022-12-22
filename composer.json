@@ -36,9 +36,6 @@
         "phpunit/phpunit": "^9.0",
         "symfony/yaml": "^6.1"
     },
-    "replace": {
-        "symfony/polyfill-php73": "*"
-    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "autoload": {
