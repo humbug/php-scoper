@@ -498,7 +498,7 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 #---------------------------------------------------------------------------
 
 .composer-root-version:
-	php bin/dump-composer-root-version.php
+	cd composer-root-version-checker; $(MAKE) --makefile Makefile dump_root_version
 	touch -c $@
 
 vendor: composer.lock .composer-root-version
