@@ -85,6 +85,15 @@ jobs:
                     - 'e2e_035'
                 php:
                     - '8.1'
+                    - '8.2'
+                composer:
+                    - 'composer:2.0'
+                    - 'composer:2.1'
+                    - 'composer:2.2'
+                    - 'composer:2.3'
+                    - 'composer:2.4'
+                    - 'composer:2.5'
+                    - 'composer'
 
         steps:
             -   name: Checkout
@@ -97,8 +106,11 @@ jobs:
                 with:
                     php-version: ${{ matrix.php }}
                     ini-values: phar.readonly=0
-                    tools: composer
+                    tools: ${{ matrix.composer }}
                     coverage: pcov
+                env:
+                    # This is necessary when installing a tool with a specific version
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             -   name: Configure composer root version
                 run: |
