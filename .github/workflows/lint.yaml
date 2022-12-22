@@ -39,13 +39,11 @@ jobs:
             -   name: Install Composer dependencies
                 uses: ramsey/composer-install@v2
                 with:
-                    composer-options: '--prefer-dist'
 
             -   name: Install Composer PHPStan dependencies
                 uses: ramsey/composer-install@v2
                 with:
                     working-directory: 'vendor-bin/phpstan'
-                    composer-options: '--prefer-dist'
 
             -   name: Run ${{ matrix.check.name }}
                 run: ${{ matrix.check.command }}
