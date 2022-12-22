@@ -39,7 +39,7 @@ jobs:
 
     composer-json:
         runs-on: ubuntu-latest
-        name: Check COMPOSER_ROOT_VERSION value
+        name: Check the composer package
         strategy:
             fail-fast: false
             matrix:
@@ -58,7 +58,7 @@ jobs:
                     coverage: none
 
             -   name: Validate Composer configuration
-                run: composer validate --strict
+                run: make validate_package
 
     unit-tests:
         runs-on: ubuntu-latest
