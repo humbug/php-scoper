@@ -23,7 +23,7 @@ $exitCode = Checker::check();
 
 if (0 !== $exitCode) {
     echo 'You can fix the Composer root version by running:'.PHP_EOL;
-    echo '"$ make dump_root_version"'.PHP_EOL;
+    echo '$ make dump_root_version'.PHP_EOL;
 }
 
 exit($exitCode);

@@ -28,6 +28,10 @@ jobs:
                 uses: ramsey/composer-install@v2
                 with:
                     working-directory: 'vendor-bin/php-cs-fixer'
+                    tools: composer
+
+            -   name: Ensures the makefile does not remake the PHP-CS-Fixer target
+                run: touch -c vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer
 
             -   name: Install the Composer dependencies
                 uses: ramsey/composer-install@v2
