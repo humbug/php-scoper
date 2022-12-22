@@ -114,7 +114,7 @@ jobs:
                     path: bin
 
             -   name: Ensure PHAR will not be rebuilt
-                run: touch -c bin/php-scoper.phar
+                run: touch -c vendor-hotfix bin/php-scoper.phar
 
             # See https://github.com/actions/download-artifact#limitations
             # the permissions are not guaranteed to be preserved
