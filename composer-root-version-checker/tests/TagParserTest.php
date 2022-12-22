@@ -151,7 +151,7 @@ final class TagParserTest extends TestCase
         string $responseContent,
         Exception $exception
     ): void {
-        $this->markTestSkipped('TODO');
+        self::markTestSkipped('TODO');
 
         $this->expectException($exception::class);
         $this->expectExceptionMessage($exception->getMessage());
@@ -179,18 +179,18 @@ final class TagParserTest extends TestCase
 
         yield 'no name found' => [
             <<<'JSON'
-            [
-              {
-                "zipball_url": "https://api.github.com/repos/humbug/php-scoper/zipball/refs/tags/0.18.0-rc.0",
-                "tarball_url": "https://api.github.com/repos/humbug/php-scoper/tarball/refs/tags/0.18.0-rc.0",
-                "commit": {
-                  "sha": "f7bd92f2459f1d9a643313f6d324476b0e23e087",
-                  "url": "https://api.github.com/repos/humbug/php-scoper/commits/f7bd92f2459f1d9a643313f6d324476b0e23e087"
-                },
-                "node_id": "MDM6UmVmNDQzODQ0NDc6cmVmcy90YWdzLzAuMTguMC1yYy4w"
-              }
-            ]
-            JSON,
+                [
+                  {
+                    "zipball_url": "https://api.github.com/repos/humbug/php-scoper/zipball/refs/tags/0.18.0-rc.0",
+                    "tarball_url": "https://api.github.com/repos/humbug/php-scoper/tarball/refs/tags/0.18.0-rc.0",
+                    "commit": {
+                      "sha": "f7bd92f2459f1d9a643313f6d324476b0e23e087",
+                      "url": "https://api.github.com/repos/humbug/php-scoper/commits/f7bd92f2459f1d9a643313f6d324476b0e23e087"
+                    },
+                    "node_id": "MDM6UmVmNDQzODQ0NDc6cmVmcy90YWdzLzAuMTguMC1yYy4w"
+                  }
+                ]
+                JSON,
             new RuntimeException('foo'),
         ];
 
