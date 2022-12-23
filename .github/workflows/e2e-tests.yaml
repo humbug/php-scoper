@@ -87,7 +87,7 @@ jobs:
                     - '8.1'
                     - '8.2'
                 composer:
-                    - 'composer:2.0'
+                    - 'composer:2.1'
                     - 'composer'
 
         steps:
