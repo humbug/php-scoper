@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Composer\InstalledVersions;
 use Iterator;
-use PackageVersions\Versions;
 use function array_pop;
 use function count;
 use function str_split;
@@ -31,7 +31,7 @@ function get_php_scoper_version(): string
         return '@git_version_placeholder@';
     }
 
-    $rawVersion = Versions::getVersion('humbug/php-scoper');
+    $rawVersion = InstalledVersions::getVersion('humbug/php-scoper');
 
     [$prettyVersion, $commitHash] = explode('@', $rawVersion);
 
