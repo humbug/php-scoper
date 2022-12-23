@@ -23,12 +23,12 @@ use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
 use Throwable;
 use function array_column;
 use function array_keys;
 use function array_map;
 use function count;
-use function Humbug\PhpScoper\get_common_path;
 use function preg_match as native_preg_match;
 use function Safe\file_get_contents;
 use function Safe\fileperms;
@@ -166,11 +166,9 @@ final class ConsoleScoper
         $filesWithContent = $config->getFilesWithContents();
         $excludedFilesWithContents = $config->getExcludedFilesWithContents();
 
-        $commonPath = get_common_path(
-            [
-                ...array_keys($filesWithContent),
-                ...array_keys($excludedFilesWithContents),
-            ],
+        $commonPath = Path::getLongestCommonBasePath(
+            ...array_keys($filesWithContent),
+            ...array_keys($excludedFilesWithContents),
         );
 
         $mapFiles = static fn (array $inputFileTuple) => [
