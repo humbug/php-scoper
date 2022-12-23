@@ -596,6 +596,66 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
+    public function test_it_outputs_in_the_build_directory_if_no_output_dir_is_given(): void
+    {
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                $root = self::FIXTURE_PATH.'/set002/original',
+            ],
+            '--no-interaction',
+            '--no-config' => null,
+        ];
+
+        $outDir = 'build';
+
+        $this->fileSystemProphecy->isAbsolutePath($outDir)->willReturn(false);
+        $this->fileSystemProphecy->isAbsolutePath(Argument::cetera())->willReturn(true);
+
+        $this->fileSystemProphecy->mkdir($this->tmp.DIRECTORY_SEPARATOR.$outDir)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            'composer/installed.json' => 'f1',
+            'executable-file.php' => 'f5',
+            'file.php' => 'f2',
+            'invalid-file.php' => 'f3',
+            'scoper.inc.php' => 'f4',
+        ];
+
+        $root = realpath($root);
+
+        $this->fileSystemProphecy
+            ->chmod(
+                $this->tmp.DIRECTORY_SEPARATOR.$outDir.'/executable-file.php',
+                493,
+            )
+            ->shouldBeCalled();
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = escape_path($root.'/'.$expectedFile);
+            $outputPath = escape_path($this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
+
+            $inputContents = file_get_contents($inputPath);
+
+            $this->scoperProphecy
+                ->scope($inputPath, $inputContents)
+                ->willReturn($prefixedContents);
+
+            $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+        }
+
+        $this->appTester->run($input);
+
+        self::assertSame(0, $this->appTester->getStatusCode());
+
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
+    }
+
     private function createAppTester(): ApplicationTester
     {
         /** @var Filesystem $fileSystem */
