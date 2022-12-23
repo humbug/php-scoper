@@ -118,7 +118,7 @@ validate_package:
 .PHONY: check_composer_root_version
 check_composer_root_version: ## Checks that the COMPOSER_ROOT_VERSION is up to date
 check_composer_root_version: .composer-root-version
-	php bin/check-composer-root-version.php
+	cd composer-root-version-checker; $(MAKE) --makefile Makefile check_root_version
 
 .PHONY: covers_validator
 covers_validator:  ## Checks PHPUnit @coves tag
@@ -342,7 +342,6 @@ e2e_025: $(PHP_SCOPER_PHAR_BIN) fixtures/set025/vendor
 
 .PHONY: e2e_027
 e2e_027: ## Runs end-to-end tests for the fixture set 027 — Scoping of a Laravel
-ifeq ("$(IS_PHP8)", "true")
 e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
 	$(PHP_SCOPER_PHAR) add-prefix \
 		--working-dir=fixtures/set027-laravel \
@@ -354,10 +353,6 @@ e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
 
 	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
-else
-e2e_027:
-	echo "SKIP e2e_027: PHP version not supported"
-endif
 
 .PHONY: e2e_028
 e2e_028: ## Runs end-to-end tests for the fixture set 028 — Scoping of a Symfony project
@@ -498,7 +493,7 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 #---------------------------------------------------------------------------
 
 .composer-root-version:
-	php bin/dump-composer-root-version.php
+	cd composer-root-version-checker; $(MAKE) --makefile Makefile dump_root_version
 	touch -c $@
 
 vendor: composer.lock .composer-root-version
@@ -544,6 +539,9 @@ vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock $(
 vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer bin covers-validator update --lock && touch -c $(@)"
+
+.PHONY: install_php_cs_fixer
+install_php_cs_fixer: $(PHP_CS_FIXER_BIN)
 
 $(PHP_CS_FIXER_BIN): vendor-bin/php-cs-fixer/vendor
 	touch -c $@

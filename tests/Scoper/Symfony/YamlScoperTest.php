@@ -167,7 +167,7 @@ class YamlScoperTest extends TestCase
             [],
         ];
 
-        yield 'not quoted service definitions with whitelist' => [
+        yield 'not quoted service definitions with excluded namespace' => [
             <<<'YAML'
                 services:
                     Symfony\Component\Console\Style\SymfonyStyle: ~
@@ -212,7 +212,7 @@ class YamlScoperTest extends TestCase
             [],
         ];
 
-        yield 'quoted service definitions with whitelist' => [
+        yield 'quoted service definitions with default config' => [
             <<<'YAML'
                 services:
                     "Symfony\\Component\\Console\\Style\\SymfonyStyle": ~
@@ -248,7 +248,7 @@ class YamlScoperTest extends TestCase
             [],
         ];
 
-        yield 'PSR-4 service locator with whitelist' => [
+        yield 'PSR-4 service locator with excluded namespace' => [
             <<<'YAML'
                 services:
                     Acme\Controller\:
@@ -291,7 +291,7 @@ class YamlScoperTest extends TestCase
             [],
         ];
 
-        yield 'service as alias with whitelist' => [
+        yield 'service as alias with excluded namespace' => [
             <<<'YAML'
                 services:
                     Acme\Foo\X: '@Acme\Foo\Bar'
@@ -328,7 +328,7 @@ class YamlScoperTest extends TestCase
             [],
         ];
 
-        yield 'service with class-name as argument with short-argument notation with whitelist' => [
+        yield 'service with class-name as argument with short-argument notation with excluded namespace' => [
             <<<'YAML'
                 services:
                     Acme\Foo\X:
@@ -379,7 +379,7 @@ class YamlScoperTest extends TestCase
             [],
         ];
 
-        yield 'service with class alias key, class as argument and class in tag attribute with whitelist' => [
+        yield 'service with class alias key, class as argument and class in tag attribute with excluded namespace' => [
             <<<'YAML'
                 services:
                     foo:

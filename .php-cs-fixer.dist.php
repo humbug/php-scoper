@@ -17,6 +17,9 @@ use PhpCsFixer\Finder;
 
 $finder = Finder::create()
     ->in([
+        'composer-root-version-checker/bin',
+        'composer-root-version-checker/src',
+        'composer-root-version-checker/tests',
         'src',
         'tests',
     ])
