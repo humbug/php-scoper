@@ -47,7 +47,7 @@ jobs:
             -   name: Ensure the PHAR works
                 run: bin/php-scoper.phar --version
 
-            -   uses: actions/upload-artifact@v2
+            -   uses: actions/upload-artifact@v3
                 name: Upload the PHAR artifact
                 with:
                     name: php-scoper-phar-${{ matrix.php }}
