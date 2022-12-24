@@ -48,22 +48,21 @@ jobs:
             -   name: Ensure the PHAR works
                 run: bin/php-scoper.phar --version
 
-            - name: Configure GPG key and sign the PHAR
+            -   name: Import GPG key
+                uses: crazy-max/ghaction-import-gpg@v5
+                with:
+                    gpg_private_key: ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE }}
+                    passphrase: ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}
+
+            - name: Sign the PHAR
               run: |
-                  mkdir -p ~/.gnupg/
-                  chmod 0700 ~/.gnupg/
-                  echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
-                  gpg --import ~/.gnupg/private.key
                   gpg --local-user theo.fidry+phpscoper@gmail.com \
                       --batch \
                       --yes \
-                      --passphrase="${{ secrets.GPG_KEY_161DFBE342889F01DDAC4E61CBB3D576F2A0946F_PASSPHRASE }}"
+                      --passphrase="${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}"
                       --detach-sign \
                       --output bin/php-scoper.phar.asc \
                       bin/php-scoper.phar
-              env:
-                  GPG_SIGNING_KEY: |
-                      ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE }}
 
             -   name: Upload the PHAR artifact
                 if: github.event_name == 'release'
