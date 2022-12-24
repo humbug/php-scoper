@@ -59,7 +59,7 @@ jobs:
                   gpg --local-user theo.fidry+phpscoper@gmail.com \
                       --batch \
                       --yes \
-                      --passphrase="${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}"
+                      --passphrase="${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}" \
                       --detach-sign \
                       --output bin/php-scoper.phar.asc \
                       bin/php-scoper.phar
