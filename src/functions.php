@@ -14,7 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use Composer\InstalledVersions;
 use Iterator;
+use function array_pop;
+use function count;
+use function str_split;
 use function str_starts_with;
 use function substr;
 
@@ -26,11 +30,11 @@ function get_php_scoper_version(): string
         return '@git_version_placeholder@';
     }
 
-    $rawVersion = InstalledVersions::getVersion('humbug/php-scoper');
+    $prettyVersion = InstalledVersions::getPrettyVersion('humbug/php-scoper');
+    $commitHash = InstalledVersions::getReference('humbug/php-scoper');
+    $shortCommitHash = null === $commitHash ? 'local' : substr($commitHash, 0, 7);
 
-    [$prettyVersion, $commitHash] = explode('@', $rawVersion);
-
-    return $prettyVersion.'@'.substr($commitHash, 0, 7);
+    return $prettyVersion.'@'.$shortCommitHash;
 }
 
 function chain(iterable ...$iterables): Iterator
