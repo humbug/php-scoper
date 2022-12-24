@@ -41,16 +41,6 @@ class FunctionsTest extends TestCase
     }
 
     /**
-     * @dataProvider providePaths
-     */
-    public function test_get_the_common_path(array $paths, string $expected): void
-    {
-        $actual = get_common_path($paths);
-
-        self::assertSame($expected, $actual);
-    }
-
-    /**
      * @dataProvider provideGenerators
      */
     public function test_it_can_chain_iterators(array $iterators, array $expected): void
@@ -58,85 +48,6 @@ class FunctionsTest extends TestCase
         $actual = iterator_to_array(chain(...$iterators), true);
 
         self::assertSame($expected, $actual);
-    }
-
-    public static function providePaths(): iterable
-    {
-        yield [
-            [],
-            '',
-        ];
-
-        yield [
-            [
-                '/path/to/file',
-            ],
-            '/path/to',
-        ];
-
-        yield [
-            [
-                '/path/to/file',
-                '/path/to/another-file',
-            ],
-            '/path/to',
-        ];
-
-        yield [
-            [
-                '/path/to/file',
-                '/path/to/another-file',
-                '/path/another-to/another-file',
-            ],
-            '/path',
-        ];
-
-        yield [
-            [
-                '/path/to/file',
-                '/another/path/to/another-file',
-            ],
-            '',
-        ];
-
-        yield [
-            [
-                '/file',
-            ],
-            '',
-        ];
-
-        yield [
-            [
-                'C:\\path\\to\\file',
-            ],
-            'C:\\path\\to',
-        ];
-
-        yield [
-            [
-                'C:\\path\\to\\file',
-                'C:\\path\\to\\another-file',
-            ],
-            'C:\\path\\to',
-        ];
-
-        yield [
-            [
-                'C:\\path\\to\\file',
-                'C:\\path\\to\\another-file',
-                'C:\\path\\another-to\\another-file',
-            ],
-            'C:\\path',
-        ];
-
-        yield [
-            [
-                'C:\\path\\to\\file',
-                'D:\\another\\path\\to\\another-file',
-            ],
-            '',
-        ];
     }
 
     public static function provideGenerators(): iterable
