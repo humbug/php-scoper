@@ -1,4 +1,4 @@
-name: Build
+name: Release
 
 on:
     push:
@@ -48,11 +48,31 @@ jobs:
             -   name: Ensure the PHAR works
                 run: bin/php-scoper.phar --version
 
-            -   uses: actions/upload-artifact@v3
-                name: Upload the PHAR artifact
+            - name: Configure GPG key and sign the PHAR
+              run: |
+                  mkdir -p ~/.gnupg/
+                  chmod 0700 ~/.gnupg/
+                  echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
+                  gpg --import ~/.gnupg/private.key
+                  gpg --local-user theo.fidry+phpscoper@gmail.com \
+                      --batch \
+                      --yes \
+                      --passphrase="${{ secrets.GPG_KEY_161DFBE342889F01DDAC4E61CBB3D576F2A0946F_PASSPHRASE }}"
+                      --detach-sign \
+                      --output bin/php-scoper.phar.asc \
+                      bin/php-scoper.phar
+              env:
+                  GPG_SIGNING_KEY: |
+                      ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE }}
+
+            -   name: Upload the PHAR artifact
+                if: github.event_name == 'release'
+                uses: actions/upload-artifact@v3
                 with:
                     name: php-scoper-phar
-                    path: bin/php-scoper.phar
+                    path: |
+                        bin/php-scoper.phar
+                        bin/php-scoper.phar.asc
 
     publish-phar:
         runs-on: ubuntu-latest
@@ -70,4 +90,6 @@ jobs:
                 uses: softprops/action-gh-release@v1
                 with:
                     token: ${{ secrets.PHP_SCOPER_GITHUB_TOKEN }}
-                    files: php-scoper.phar
+                    files: |
+                        php-scoper.phar
+                        php-scoper.phar.asc
