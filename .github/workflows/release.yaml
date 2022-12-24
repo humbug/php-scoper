@@ -10,7 +10,6 @@ on:
 jobs:
     build-phar:
         runs-on: ubuntu-latest
-        if: ${{ github.repository } == 'humbug/php-scoper'
         name: Build PHAR
         strategy:
             fail-fast: false
@@ -50,20 +49,22 @@ jobs:
                 run: bin/php-scoper.phar --version
 
             -   name: Import GPG key
+                if: github.event_name == 'release'
                 uses: crazy-max/ghaction-import-gpg@v5
                 with:
                     gpg_private_key: ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE }}
                     passphrase: ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}
 
-            - name: Sign the PHAR
-              run: |
-                  gpg --local-user theo.fidry+phpscoper@gmail.com \
-                      --batch \
-                      --yes \
-                      --passphrase="${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}" \
-                      --detach-sign \
-                      --output bin/php-scoper.phar.asc \
-                      bin/php-scoper.phar
+            -   name: Sign the PHAR
+                if: github.event_name == 'release'
+                run: |
+                   gpg --local-user theo.fidry+phpscoper@gmail.com \
+                       --batch \
+                       --yes \
+                       --passphrase="${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}" \
+                       --detach-sign \
+                       --output bin/php-scoper.phar.asc \
+                       bin/php-scoper.phar
 
             -   name: Upload the PHAR artifact
                 if: github.event_name == 'release'
