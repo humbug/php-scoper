@@ -16,9 +16,6 @@ namespace Humbug\PhpScoper;
 
 use Composer\InstalledVersions;
 use Iterator;
-use function array_pop;
-use function count;
-use function str_split;
 use function str_starts_with;
 use function substr;
 

@@ -25,6 +25,7 @@ use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
+use Webmozart\Assert\Assert;
 use function array_column;
 use function array_keys;
 use function array_map;
@@ -166,15 +167,22 @@ final class ConsoleScoper
         $filesWithContent = $config->getFilesWithContents();
         $excludedFilesWithContents = $config->getExcludedFilesWithContents();
 
-        $commonPath = Path::getLongestCommonBasePath(
-            ...array_keys($filesWithContent),
-            ...array_keys($excludedFilesWithContents),
+        $commonDirectoryPath = Path::getLongestCommonBasePath(
+            ...array_map(
+                static fn (string $path) => Path::getDirectory($path),
+                array_keys($filesWithContent),
+            ),
+            ...array_map(
+                static fn (string $path) => Path::getDirectory($path),
+                array_keys($excludedFilesWithContents),
+            ),
         );
+        Assert::notNull($commonDirectoryPath);
 
         $mapFiles = static fn (array $inputFileTuple) => [
             $inputFileTuple[0],
             $inputFileTuple[1],
-            $outputDir.str_replace($commonPath, '', $inputFileTuple[0]),
+            $outputDir.str_replace($commonDirectoryPath, '', $inputFileTuple[0]),
         ];
 
         return [
