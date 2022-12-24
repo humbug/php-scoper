@@ -49,7 +49,6 @@ jobs:
                 run: bin/php-scoper.phar --version
 
             -   name: Import GPG key
-                id: import_gpg
                 uses: crazy-max/ghaction-import-gpg@v5
                 with:
                     gpg_private_key: ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE }}
