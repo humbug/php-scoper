@@ -10,6 +10,7 @@ on:
 jobs:
     build-phar:
         runs-on: ubuntu-latest
+        if: ${{ github.repository } == 'humbug/php-scoper'
         name: Build PHAR
         strategy:
             fail-fast: false
