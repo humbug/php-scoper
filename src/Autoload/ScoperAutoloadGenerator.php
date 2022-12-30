@@ -42,9 +42,11 @@ final class ScoperAutoloadGenerator
         EOF;
 
     private const EXPOSE_CLASS_DECLARATION = <<<'PHP'
-        function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
-            if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
-                spl_autoload_call($prefixed);
+        if (!function_exists('humbug_phpscoper_expose_class')) {
+            function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
+                if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                    spl_autoload_call($prefixed);
+                }
             }
         }
         PHP;

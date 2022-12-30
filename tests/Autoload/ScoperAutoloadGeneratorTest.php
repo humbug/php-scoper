@@ -273,9 +273,11 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 // Class aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
-                function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
-                    if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
-                        spl_autoload_call($prefixed);
+                if (!function_exists('humbug_phpscoper_expose_class')) {
+                    function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
+                        if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                            spl_autoload_call($prefixed);
+                        }
                     }
                 }
                 humbug_phpscoper_expose_class('A\Foo', 'Humbug\A\Foo');
@@ -316,9 +318,11 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 // Class aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
-                function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
-                    if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
-                        spl_autoload_call($prefixed);
+                if (!function_exists('humbug_phpscoper_expose_class')) {
+                    function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
+                        if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                            spl_autoload_call($prefixed);
+                        }
                     }
                 }
                 humbug_phpscoper_expose_class('Foo', 'Humbug\Foo');
@@ -368,9 +372,11 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 // Class aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
                 namespace {
-                    function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
-                        if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
-                            spl_autoload_call($prefixed);
+                    if (!function_exists('humbug_phpscoper_expose_class')) {
+                        function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
+                            if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                                spl_autoload_call($prefixed);
+                            }
                         }
                     }
                     humbug_phpscoper_expose_class('A\Foo', 'Humbug\A\Foo');
