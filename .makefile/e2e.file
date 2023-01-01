@@ -1,0 +1,465 @@
+.PHONY: e2e_004
+e2e_004: ## Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
+e2e_004: $(PHP_SCOPER_PHAR_BIN)
+	# Having those composer files messes up the Box auto-loading detection. This
+	# is a very special case where there is no dependency and for users in practice
+	# it would be recommended to register the files themselves
+	rm fixtures/set004/composer.lock || true
+	rm -rf fixtures/set004/vendor || true
+
+	$(BOX) compile --no-parallel --working-dir fixtures/set004
+
+	php build/set004/bin/greet.phar > build/set004/output
+	diff fixtures/set004/expected-output build/set004/output
+
+.PHONY: e2e_005
+e2e_005: ## Runs end-to-end tests for the fixture set 005 — Codebase with third-party code
+e2e_005: $(PHP_SCOPER_PHAR_BIN) fixtures/set005/vendor
+	$(BOX) compile --no-parallel --working-dir fixtures/set005
+
+	php build/set005/bin/greet.phar > build/set005/output
+	diff fixtures/set005/expected-output build/set005/output
+
+.PHONY: e2e_011
+e2e_011: ## Runs end-to-end tests for the fixture set 011 — Codebase with exposed symbols
+e2e_011: $(PHP_SCOPER_PHAR_BIN) fixtures/set011/vendor
+	$(BOX) compile --no-parallel --working-dir fixtures/set011
+	cp -R fixtures/set011/tests/ build/set011/tests/
+
+	php build/set011/bin/greet.phar > build/set011/output
+	diff fixtures/set011/expected-output build/set011/output
+
+.PHONY: e2e_013
+e2e_013: ## Runs end-to-end tests for the fixture set 013 — Test the init command
+e2e_013: $(PHP_SCOPER_PHAR_BIN)
+	rm -rf build/set013 || true
+	mkdir -p build
+	cp -R fixtures/set013 build/set013
+
+	$(PHP_SCOPER_PHAR_BIN) init --working-dir=build/set013 --no-interaction
+
+	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
+
+.PHONY: e2e_014
+e2e_014: ## Runs end-to-end tests for the fixture set 014 — Codebase with PSR-0 autoloading
+e2e_014: $(PHP_SCOPER_PHAR_BIN)
+	# Having those composer files messes up the Box auto-loading detection. This
+	# is a very special case where there is no dependency and for users in practice
+	# it would be recommended to register the files themselves
+	rm fixtures/set014/composer.lock || true
+	rm -rf fixtures/set014/vendor || true
+
+	$(BOX) compile --no-parallel --working-dir fixtures/set014
+
+	php build/set014/bin/greet.phar > build/set014/output
+	diff fixtures/set014/expected-output build/set014/output
+
+.PHONY: e2e_015
+e2e_015: ## Runs end-to-end tests for the fixture set 015 — Codebase with third-party code using PSR-0 autoloading
+e2e_015: $(PHP_SCOPER_PHAR_BIN) fixtures/set015/vendor
+	$(BOX) compile --no-parallel --working-dir fixtures/set015
+
+	php build/set015/bin/greet.phar > build/set015/output
+	diff fixtures/set015/expected-output build/set015/output
+
+.PHONY: e2e_016
+e2e_016: ## Runs end-to-end tests for the fixture set 016 — Scoping of the Symfony Finder component
+e2e_016: $(PHP_SCOPER_PHAR_BIN) fixtures/set016-symfony-finder/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set016-symfony-finder \
+		--output-dir=../../build/set016-symfony-finder \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set016-symfony-finder dump-autoload
+
+	php build/set016-symfony-finder/main.php > build/set016-symfony-finder/output
+	diff fixtures/set016-symfony-finder/expected-output build/set016-symfony-finder/output
+
+.PHONY: e2e_017
+e2e_017: ## Runs end-to-end tests for the fixture set 017 — Scoping of the Symfony DependencyInjection component
+e2e_017: $(PHP_SCOPER_PHAR_BIN) fixtures/set017-symfony-di/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set017-symfony-di \
+		--output-dir=../../build/set017-symfony-di \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set017-symfony-di dump-autoload
+
+	php build/set017-symfony-di/main.php > build/set017-symfony-di/output
+	diff fixtures/set017-symfony-di/expected-output build/set017-symfony-di/output
+
+.PHONY: e2e_018
+e2e_018: ## Runs end-to-end tests for the fixture set 018 — Scoping of nikic/php-parser
+e2e_018: $(PHP_SCOPER_PHAR_BIN) fixtures/set018-nikic-parser/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set018-nikic-parser \
+		--prefix=_Prefixed \
+		--output-dir=../../build/set018-nikic-parser \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set018-nikic-parser dump-autoload
+
+	php build/set018-nikic-parser/main.php > build/set018-nikic-parser/output
+	diff fixtures/set018-nikic-parser/expected-output build/set018-nikic-parser/output
+
+.PHONY: e2e_019
+e2e_019: ## Runs end-to-end tests for the fixture set 019 — Scoping of the Symfony Console component
+e2e_019: $(PHP_SCOPER_PHAR_BIN) fixtures/set019-symfony-console/vendor
+	$(PHP_SCOPER_PHAR) add-prefix --working-dir=fixtures/set019-symfony-console \
+		--prefix=_Prefixed \
+		--output-dir=../../build/set019-symfony-console \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set019-symfony-console dump-autoload
+
+	php build/set019-symfony-console/main.php > build/set019-symfony-console/output
+	diff fixtures/set019-symfony-console/expected-output build/set019-symfony-console/output
+
+.PHONY: e2e_020
+e2e_020: ## Runs end-to-end tests for the fixture set 020 — Scoping of Infection
+e2e_020: $(PHP_SCOPER_PHAR_BIN) fixtures/set020-infection/vendor
+# Skip it for now: there is autoloading issues with the Safe functions
+#	$(PHP_SCOPER_PHAR) add-prefix --working-dir=fixtures/set020-infection \
+#		--output-dir=../../build/set020-infection \
+#		--force \
+#		--no-interaction
+#	composer --working-dir=build/set020-infection dump-autoload
+#
+#	# We generate the expected output file: we test that the scoping process
+#	# does not alter it
+#	cd fixtures/set020-infection && php vendor/infection/infection/bin/infection \
+#		--coverage=../../dist/infection-coverage \
+#		--skip-initial-tests \
+#		--only-covered \
+#		--no-progress
+#		> build/set020-infection/expected-output
+#	sed 's/Time.*//' build/set020-infection/expected-output > build/set020-infection/expected-output
+#
+#
+#	cd build/set020-infection && php vendor/infection/infection/bin/infection \
+#		--coverage=../../dist/infection-coverage \
+#		--skip-initial-tests \
+#		--only-covered \
+#		--no-progress
+#		> build/set020-infection/output
+#	sed 's/Time.*//' build/set020-infection/output > build/set020-infection/output
+#
+#	diff build/set020-infection/expected-output build/set020-infection/output
+
+.PHONY: e2e_024
+e2e_024: ## Runs end-to-end tests for the fixture set 024 — Scoping of a codebase with global functions exposed
+e2e_024: $(PHP_SCOPER_PHAR_BIN) fixtures/set024/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set024 \
+		--output-dir=../../build/set024 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set024 dump-autoload
+
+	php build/set024/main.php > build/set024/output
+	diff fixtures/set024/expected-output build/set024/output
+
+.PHONY: e2e_025
+e2e_025: ## Runs end-to-end tests for the fixture set 025 — Scoping of a codebase using third-party exposed functions
+e2e_025: $(PHP_SCOPER_PHAR_BIN) fixtures/set025/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set025 \
+		--output-dir=../../build/set025 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set025 dump-autoload
+
+	php build/set025/main.php > build/set025/output
+	diff fixtures/set025/expected-output build/set025/output
+
+.PHONY: e2e_027
+e2e_027: ## Runs end-to-end tests for the fixture set 027 — Scoping of a Laravel
+e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set027-laravel \
+		--output-dir=../../build/set027-laravel \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set027-laravel dump-autoload --no-dev
+
+	php build/set027-laravel/artisan -V > build/set027-laravel/output
+	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
+
+.PHONY: e2e_028
+e2e_028: ## Runs end-to-end tests for the fixture set 028 — Scoping of a Symfony project
+e2e_028: $(PHP_SCOPER_PHAR_BIN) fixtures/set028-symfony/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set028-symfony \
+		--output-dir=../../build/set028-symfony \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	APP_ENV=dev composer --working-dir=fixtures/set028-symfony dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set028-symfony/bin/console -V > fixtures/set028-symfony/expected-output
+
+	APP_ENV=dev composer --working-dir=build/set028-symfony dump-autoload --no-dev
+	APP_ENV=dev php build/set028-symfony/bin/console -V > build/set028-symfony/output
+
+	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
+
+.PHONY: e2e_029
+e2e_029: ## Runs end-to-end tests for the fixture set 029 — Scoping of the EasyRdf project
+e2e_029: $(PHP_SCOPER_PHAR_BIN) fixtures/set029-easy-rdf/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set029-easy-rdf \
+		--output-dir=../../build/set029-easy-rdf \
+		--no-config \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set029-easy-rdf/main.php > fixtures/set029-easy-rdf/expected-output
+
+	composer --working-dir=build/set029-easy-rdf dump-autoload --no-dev
+	php build/set029-easy-rdf/main.php > build/set029-easy-rdf/output
+
+	diff fixtures/set029-easy-rdf/expected-output build/set029-easy-rdf/output
+
+.PHONY: e2e_030
+e2e_030: ## Runs end-to-end tests for the fixture set 030 — Scoping of a codebase with globally registered functions
+e2e_030: $(PHP_SCOPER_PHAR_BIN) fixtures/set030/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set030 \
+		--output-dir=../../build/set030 \
+		--no-config \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set030/main.php > fixtures/set030/expected-output
+
+	composer --working-dir=build/set030 dump-autoload --no-dev
+	php build/set030/main.php > build/set030/output
+
+	diff fixtures/set030/expected-output build/set030/output
+
+.PHONY: e2e_031
+e2e_031: ## Runs end-to-end tests for the fixture set 031 — Scoping of a codebase using symbols of a non-loaded PHP extension
+e2e_031: $(PHP_SCOPER_PHAR_BIN)
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set031-extension-symbol \
+		--output-dir=../../build/set031-extension-symbol \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	diff fixtures/set031-extension-symbol/expected-main.php build/set031-extension-symbol/main.php
+
+.PHONY: e2e_032
+e2e_032: ## Runs end-to-end tests for the fixture set 032 — Scoping of a codebase using the isolated finder in the configuration
+e2e_032: $(PHP_SCOPER_PHAR_BIN)
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set032-isolated-finder \
+		--output-dir=../../build/set032-isolated-finder \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	tree build/set032-isolated-finder > build/set032-isolated-finder/actual-tree
+
+	diff fixtures/set032-isolated-finder/expected-tree build/set032-isolated-finder/actual-tree
+
+.PHONY: e2e_033
+e2e_033: ## Runs end-to-end tests for the fixture set 033 — Scoping of a codebase a function registered in the global namespace
+e2e_033: $(PHP_SCOPER_PHAR_BIN) fixtures/set033-user-global-function/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set033-user-global-function \
+		--output-dir=../../build/set033-user-global-function \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set033-user-global-function/index.php > fixtures/set033-user-global-function/expected-output
+
+	composer --working-dir=build/set033-user-global-function dump-autoload --no-dev
+	php build/set033-user-global-function/index.php > build/set033-user-global-function/output
+
+	diff fixtures/set033-user-global-function/expected-output build/set033-user-global-function/output
+
+.PHONY: e2e_034
+e2e_034: ## Runs end-to-end tests for the fixture set 034 — Leverage Composer InstalledVersions
+e2e_034: $(PHP_SCOPER_PHAR_BIN) fixtures/set034-installed-versions/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set034-installed-versions \
+		--output-dir=../../build/set034-installed-versions \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+
+	php fixtures/set034-installed-versions/index.php > fixtures/set034-installed-versions/expected-output
+
+	composer --working-dir=build/set034-installed-versions dump-autoload --no-dev
+	php build/set034-installed-versions/index.php > build/set034-installed-versions/output
+
+	diff fixtures/set034-installed-versions/expected-output build/set034-installed-versions/output
+
+.PHONY: e2e_035
+e2e_035: ## Runs end-to-end tests for the fixture set 035 — Tests tha composer autoloaded files are working fine
+e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor fixtures/set035-composer-files-autoload/guzzle5-include/vendor
+	rm -rf build/set035-composer-files-autoload || true
+	cp -R fixtures/set035-composer-files-autoload build/set035-composer-files-autoload
+
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set035-composer-files-autoload/guzzle5-include \
+		--output-dir=../../../build/set035-composer-files-autoload/scoped-guzzle5-include \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set035-composer-files-autoload/scoped-guzzle5-include dump-autoload
+	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
+
+	php build/set035-composer-files-autoload/index.php &> build/set035-composer-files-autoload/output || true
+	php build/set035-composer-files-autoload/test.php
+
+
+#
+# Rules from files
+#---------------------------------------------------------------------------
+
+
+fixtures/set005/vendor: fixtures/set005/composer.lock
+	composer --working-dir=fixtures/set005 install
+	touch -c $@
+fixtures/set005/composer.lock: fixtures/set005/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set005 update --lock && touch -c $(@)"
+
+fixtures/set011/vendor:
+	composer --working-dir=fixtures/set011 install
+	# Dumping the autoload is not enough when there is a composer.lock. Indeed
+	# without composer.lock, no vendor/composer/installed.json is installed
+	# so Box sees composer.json without composer.lock & installed.json and can
+	# dump the autoload just fine.
+	# However, if there is only composer.lock, the dump-autoload will NOT add
+	# the installed.json file and Box only sees that there is a composer.lock
+	# without installed.json which prevents it to dump the autoload.
+	# TL:DR; If you don't have composer.lock, dump-autoload is enough, otherwise you
+	# need install.
+	composer --working-dir=fixtures/set011 dump-autoload
+	touch -c $@
+
+fixtures/set015/vendor: fixtures/set015/composer.lock
+	composer --working-dir=fixtures/set015 install
+	touch -c $@
+fixtures/set015/composer.lock: fixtures/set015/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set015 update --lock && touch -c $(@)"
+
+fixtures/set016-symfony-finder/vendor: fixtures/set016-symfony-finder/composer.lock
+	composer --working-dir=fixtures/set016-symfony-finder install
+	touch -c $@
+fixtures/set016-symfony-finder/composer.lock: fixtures/set016-symfony-finder/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set016-symfony-finder update --lock && touch -c $(@)"
+
+fixtures/set017-symfony-di/vendor: fixtures/set017-symfony-di/composer.lock
+	composer --working-dir=fixtures/set017-symfony-di install
+	touch -c $@
+fixtures/set017-symfony-di/composer.lock: fixtures/set017-symfony-di/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set017-symfony-di update --lock && touch -c $(@)"
+
+fixtures/set018-nikic-parser/vendor: fixtures/set018-nikic-parser/composer.lock
+	composer --working-dir=fixtures/set018-nikic-parser install
+	touch -c $@
+fixtures/set018-nikic-parser/composer.lock: fixtures/set018-nikic-parser/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set018-nikic-parser update --lock && touch -c $(@)"
+
+fixtures/set019-symfony-console/vendor: fixtures/set019-symfony-console/composer.lock
+	composer --working-dir=fixtures/set019-symfony-console install
+	touch -c $@
+fixtures/set019-symfony-console/composer.lock: fixtures/set019-symfony-console/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set019-symfony-console update --lock && touch -c $(@)"
+
+fixtures/set020-infection/vendor: fixtures/set020-infection/composer.lock
+	composer --working-dir=fixtures/set020-infection install
+	touch -c $@
+fixtures/set020-infection/composer.lock: fixtures/set020-infection/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set020-infection update --lock && touch -c $(@)"
+
+fixtures/set024/vendor: fixtures/set024/composer.lock
+	composer --working-dir=fixtures/set024 install
+	touch -c $@
+fixtures/set024/composer.lock: fixtures/set024/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set024 update --lock && touch -c $(@)"
+
+fixtures/set025/vendor: fixtures/set025/composer.lock
+	composer --working-dir=fixtures/set025 install
+	touch -c $@
+fixtures/set025/composer.lock: fixtures/set025/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set025 update --lock && touch -c $(@)"
+
+fixtures/set027-laravel/vendor: fixtures/set027-laravel/composer.lock
+	composer --working-dir=fixtures/set027-laravel install --no-dev
+	touch -c $@
+fixtures/set027-laravel/composer.lock: fixtures/set027-laravel/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set027-laravel update --lock && touch -c $(@)"
+
+fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
+	composer --working-dir=fixtures/set028-symfony install --no-dev --no-scripts
+	touch -c $@
+fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set028-symfony update --lock && touch -c $(@)"
+
+fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
+	composer --working-dir=fixtures/set029-easy-rdf install --no-dev
+	touch -c $@
+fixtures/set029-easy-rdf/composer.lock: fixtures/set029-easy-rdf/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set029-easy-rdf update --lock && touch -c $(@)"
+
+fixtures/set030/vendor: fixtures/set030/composer.json
+	composer --working-dir=fixtures/set030 install --no-dev
+	touch -c $@
+
+fixtures/set033-user-global-function/vendor: fixtures/set033-user-global-function/composer.lock
+	composer --working-dir=fixtures/set033-user-global-function install --no-dev --no-scripts
+	touch -c $@
+fixtures/set033-user-global-function/composer.lock: fixtures/set033-user-global-function/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set033-user-global-function update --lock && touch -c $(@)"
+
+fixtures/set034-installed-versions/vendor: fixtures/set034-installed-versions/composer.lock
+	composer --working-dir=fixtures/set034-installed-versions install --no-dev --no-scripts
+	touch -c $@
+fixtures/set034-installed-versions/composer.lock: fixtures/set034-installed-versions/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set034-installed-versions update --lock && touch -c $(@)"
+
+fixtures/set035-composer-files-autoload/vendor: fixtures/set035-composer-files-autoload/composer.lock
+	composer --working-dir=fixtures/set035-composer-files-autoload install --no-dev --no-scripts
+	touch -c $@
+fixtures/set035-composer-files-autoload/composer.lock: fixtures/set035-composer-files-autoload/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload update --lock && touch -c $(@)"
+
+fixtures/set035-composer-files-autoload/guzzle5-include/vendor: fixtures/set035-composer-files-autoload/guzzle5-include/composer.lock
+	composer --working-dir=fixtures/set035-composer-files-autoload/guzzle5-include install --no-dev --no-scripts
+	touch -c $@
+fixtures/set035-composer-files-autoload/guzzle5-include/composer.lock: fixtures/set035-composer-files-autoload/guzzle5-include/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload/guzzle5-include update --lock && touch -c $(@)"
