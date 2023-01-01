@@ -46,19 +46,20 @@ class MakefileE2ETest extends BaseMakefileTestCase
             # Commands
             #---------------------------------------------------------------------------[0m
 
-            [33mcheck:[0m	  Runs all checks
-            [33mclean:[0m	  Cleans all created artifacts
-            [33mupdate_root_version:[0m  Checks the latest GitHub release and update COMPOSER_ROOT_VERSION accordingly
-            [33mcs:[0m	  Fixes CS
+            [33mcheck:[0m  Runs all checks
+            [33mbuild:[0m  Builds the PHAR
+            [33mfixtures_composer_outdated:[0m  Reports outdated dependencies
+            [33mcs:[0m  Fixes CS
             [33mcs_lint:[0m  Checks CS
-            [33mphpstan:[0m  Runs PHPStan
-            [33mbuild:[0m	  Builds the PHAR
-            [33moutdated_fixtures:[0m  Reports outdated dependencies
-            [33mtest:[0m		    Runs all the tests
-            [33mcheck_composer_root_version:[0m  Checks that the COMPOSER_ROOT_VERSION is up to date
-            [33mphpunit_coverage_html:[0m	     Runs PHPUnit with code coverage with HTML report
-            [33mblackfire:[0m	    Runs Blackfire profiling
-            [33me2e:[0m	  Runs end-to-end tests
+            [33mautoreview:[0m  Runs the AutoReview checks
+            [33mtest:[0m  Runs all the tests
+            [33mcomposer_root_version_check:[0m  Runs all checks for the ComposerRootVersion app
+            [33mcomposer_root_version_lint:[0m  Checks that the COMPOSER_ROOT_VERSION is up to date
+            [33mcomposer_root_version_update:[0m  Updates the COMPOSER_ROOT_VERSION
+            [33mphpunit_coverage_html:[0m  Runs PHPUnit with code coverage with HTML report
+            [33me2e:[0m  Runs end-to-end tests
+            [33mblackfire:[0m  Runs Blackfire profiling
+            [33mclean:[0m  Cleans all created artifacts
 
             EOF;
     }

@@ -47,16 +47,23 @@ help:
 #---------------------------------------------------------------------------
 
 .PHONY: check
-check:	 ## Runs all checks
-check: composer_root_version_lint cs composer_normalize phpstan test
+check: ## Runs all checks
+check: composer_root_version_lint cs autoreview test composer_root_version_check
 
-.PHONY: clean
-clean:	 ## Cleans all created artifacts
-clean:
-	git clean --exclude=.idea/ -ffdx
+.PHONY: build
+build: ## Builds the PHAR
+build:
+	rm $(PHP_SCOPER_PHAR_BIN) || true
+	$(MAKE) $(PHP_SCOPER_PHAR_BIN)
+
+.PHONY: fixtures_composer_outdated
+fixtures_composer_outdated: ## Reports outdated dependencies
+fixtures_composer_outdated:
+	@find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'printf "Installing dependencies for %;\n" $$(composer install --working-dir=% --ansi)'
+	@find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'printf "Checking dependencies for %;\n" $$(composer outdated --direct --working-dir=% --ansi)'
 
 .PHONY: cs
-cs:	 ## Fixes CS
+cs: ## Fixes CS
 cs: gitignore_sort composer_normalize php_cs_fixer
 
 .PHONY: cs_lint
@@ -87,21 +94,13 @@ gitignore_sort:
 phpstan: $(PHPSTAN_BIN)
 	$(PHPSTAN)
 
-.PHONY: build
-build:	 ## Builds the PHAR
-build:
-	rm $(PHP_SCOPER_PHAR_BIN) || true
-	$(MAKE) $(PHP_SCOPER_PHAR_BIN)
-
-.PHONY: fixtures_composer_outdated
-fixtures_composer_outdated: ## Reports outdated dependencies
-fixtures_composer_outdated:
-	@find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'printf "Installing dependencies for %;\n" $$(composer install --working-dir=% --ansi)'
-	@find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'printf "Checking dependencies for %;\n" $$(composer outdated --direct --working-dir=% --ansi)'
+.PHONY: autoreview
+autoreview: ## Runs the AutoReview checks
+autoreview: cs_lint phpstan covers_validator
 
 .PHONY: test
-test:		   ## Runs all the tests
-test: validate_package covers_validator phpunit e2e
+test: ## Runs all the tests
+test: validate_package phpunit e2e
 
 .PHONY: validate_package
 validate_package:
@@ -109,6 +108,7 @@ validate_package:
 
 .PHONY: composer_root_version_check
 composer_root_version_check: ## Runs all checks for the ComposerRootVersion app
+composer_root_version_check:
 	cd composer-root-version-checker; $(MAKE) --file Makefile check
 
 .PHONY: composer_root_version_lint
@@ -135,7 +135,7 @@ phpunit_coverage_infection: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT_COVERAGE_INFECTION)
 
 .PHONY: phpunit_coverage_html
-phpunit_coverage_html:	    ## Runs PHPUnit with code coverage with HTML report
+phpunit_coverage_html: ## Runs PHPUnit with code coverage with HTML report
 phpunit_coverage_html: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT_COVERAGE_HTML)
 
@@ -144,17 +144,22 @@ infection: $(COVERAGE_XML) vendor
 #infection: $(INFECTION_BIN) $(COVERAGE_XML) vendor
 	if [ -d $(COVERAGE_XML) ]; then $(INFECTION); fi
 
+include .makefile/e2e.file
+.PHONY: e2e
+e2e: ## Runs end-to-end tests
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_024 e2e_025 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034 e2e_035
+
 .PHONY: blackfire
-blackfire:	   ## Runs Blackfire profiling
+blackfire: ## Runs Blackfire profiling
 blackfire: vendor
 	@echo "By https://blackfire.io"
 	@echo "This might take a while (~2min)"
 	$(BLACKFIRE) run php bin/php-scoper add-prefix --output-dir=build/php-scoper --force --quiet
 
-include .makefile/e2e.file
-.PHONY: e2e
-e2e:	 ## Runs end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_024 e2e_025 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034 e2e_035
+.PHONY: clean
+clean: ## Cleans all created artifacts
+clean:
+	git clean --exclude=.idea/ -ffdx
 
 
 #
