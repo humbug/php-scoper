@@ -48,7 +48,7 @@ help:
 
 .PHONY: check
 check:	 ## Runs all checks
-check: update_root_version cs composer_normalize phpstan test
+check: update_root_version cs phpstan test
 
 .PHONY: clean
 clean:	 ## Cleans all created artifacts
@@ -89,7 +89,6 @@ gitignore_sort:
 	LC_ALL=C sort -u .gitignore -o .gitignore
 
 .PHONY: phpstan
-phpstan: ## Runs PHPStan
 phpstan: $(PHPSTAN_BIN)
 	$(PHPSTAN)
 
@@ -104,32 +103,27 @@ outdated_fixtures: ## Reports outdated dependencies
 outdated_fixtures:
 	find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'echo "Checking %;" $$(composer install --working-dir=% --ansi && composer outdated --direct --working-dir=% --ansi)'
 
-
-#
-# Tests
-#---------------------------------------------------------------------------
+.PHONY: autoreview
+autoreview: ## Runs the AutoReview checks
+autoreview: cs_lint phpstan covers_validator phpunit_autoreview
 
 .PHONY: test
 test:		   ## Runs all the tests
-test: check_composer_root_version validate_package covers_validator phpunit e2e
+test: check_composer_root_version validate_package phpunit e2e
 
 .PHONY: validate_package
-validate_package:  ## Validates the composer.json
 validate_package:
 	composer validate --strict
 
 .PHONY: check_composer_root_version
-check_composer_root_version: ## Checks that the COMPOSER_ROOT_VERSION is up to date
 check_composer_root_version: .composer-root-version
 	cd composer-root-version-checker; $(MAKE) --makefile Makefile check_root_version
 
 .PHONY: covers_validator
-covers_validator:  ## Checks PHPUnit @coves tag
 covers_validator: $(COVERS_VALIDATOR_BIN)
 	$(COVERS_VALIDATOR)
 
 .PHONY: phpunit
-phpunit:	   ## Runs PHPUnit tests
 phpunit: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT)
 
