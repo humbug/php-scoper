@@ -14,8 +14,8 @@
 /dist/
 /fixtures/*/.box_dump/
 /fixtures/*/vendor/
-/fixtures/set004/scoper.inc.php
 /fixtures/set004/composer.lock
+/fixtures/set004/scoper.inc.php
 /fixtures/set014/composer.lock
 /fixtures/set028-symfony/expected-output
 /fixtures/set030/composer.lock
