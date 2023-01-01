@@ -101,7 +101,7 @@ outdated_fixtures:
 
 .PHONY: test
 test:		   ## Runs all the tests
-test: check_composer_root_version validate_package covers_validator phpunit e2e
+test: validate_package covers_validator phpunit e2e
 
 .PHONY: validate_package
 validate_package:  ## Validates the composer.json
@@ -117,9 +117,9 @@ composer_root_version_lint: ## Checks that the COMPOSER_ROOT_VERSION is up to da
 composer_root_version_lint: .composer-root-version
 	cd composer-root-version-checker; $(MAKE) --makefile Makefile check_root_version
 
-.PHONY: composer_root_version
-composer_root_version: ## Updates the COMPOSER_ROOT_VERSION
-composer_root_version:
+.PHONY: composer_root_version_update
+composer_root_version_update: ## Updates the COMPOSER_ROOT_VERSION
+composer_root_version_update:
 	rm .composer-root-version || true
 	$(MAKE) .composer-root-version
 
