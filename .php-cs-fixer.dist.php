@@ -52,5 +52,6 @@ $overriddenRules = [
 
 $config = new FidryConfig('', 81_000);
 $config->addRules($overriddenRules);
+$config->setCacheFile(__DIR__.'/build/.php-cs-fixer.cache');
 
 return $config->setFinder($finder);
