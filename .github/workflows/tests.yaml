@@ -12,10 +12,6 @@ jobs:
         runs-on: ubuntu-latest
         name: Check COMPOSER_ROOT_VERSION value
         if: github.event_name != 'release' && github.event.action != 'created'
-        strategy:
-            fail-fast: false
-            matrix:
-                php: [ '8.2' ]  # Should be the latest PHP version supported
         steps:
             -   name: Checkout
                 uses: actions/checkout@v3
@@ -25,7 +21,7 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: ${{ matrix.php }}
+                    php-version: '8.2'
                     tools: composer
                     coverage: none
 
@@ -39,11 +35,7 @@ jobs:
 
     composer-json:
         runs-on: ubuntu-latest
-        name: Check the composer package
-        strategy:
-            fail-fast: false
-            matrix:
-                php: [ '8.2' ]
+        name: Check the Composer package
         steps:
             -   name: Checkout
                 uses: actions/checkout@v3
@@ -53,7 +45,7 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: ${{ matrix.php }}
+                    php-version: '8.2'
                     tools: composer
                     coverage: none
 
