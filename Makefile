@@ -2,8 +2,6 @@
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
-include .makefile/e2e.file
-
 SRC_FILES := $(shell find bin/ src/ vendor-hotfix/ -type f)
 
 PHP_SCOPER_PHAR_BIN = bin/php-scoper.phar
@@ -50,17 +48,12 @@ help:
 
 .PHONY: check
 check:	 ## Runs all checks
-check: update_root_version cs composer_normalize phpstan test
+check: composer_root_version_lint cs composer_normalize phpstan test
 
 .PHONY: clean
 clean:	 ## Cleans all created artifacts
 clean:
 	git clean --exclude=.idea/ -ffdx
-
-update_root_version: ## Checks the latest GitHub release and update COMPOSER_ROOT_VERSION accordingly
-update_root_version:
-	rm .composer-root-version || true
-	$(MAKE) .composer-root-version
 
 .PHONY: cs
 cs:	 ## Fixes CS
@@ -106,24 +99,29 @@ outdated_fixtures: ## Reports outdated dependencies
 outdated_fixtures:
 	find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'echo "Checking %;" $$(composer install --working-dir=% --ansi && composer outdated --direct --working-dir=% --ansi)'
 
-
-#
-# Tests
-#---------------------------------------------------------------------------
-
 .PHONY: test
 test:		   ## Runs all the tests
-test: check_composer_root_version validate_package covers_validator phpunit e2e
+test: validate_package covers_validator phpunit e2e
 
 .PHONY: validate_package
 validate_package:  ## Validates the composer.json
 validate_package:
 	composer validate --strict
 
-.PHONY: check_composer_root_version
-check_composer_root_version: ## Checks that the COMPOSER_ROOT_VERSION is up to date
-check_composer_root_version: .composer-root-version
+.PHONY: composer_root_version_check
+composer_root_version_check: ## Runs all checks for the ComposerRootVersion app
+	cd composer-root-version-checker; $(MAKE) --file Makefile check
+
+.PHONY: composer_root_version_lint
+composer_root_version_lint: ## Checks that the COMPOSER_ROOT_VERSION is up to date
+composer_root_version_lint: .composer-root-version
 	cd composer-root-version-checker; $(MAKE) --makefile Makefile check_root_version
+
+.PHONY: composer_root_version_update
+composer_root_version_update: ## Updates the COMPOSER_ROOT_VERSION
+composer_root_version_update:
+	rm .composer-root-version || true
+	$(MAKE) .composer-root-version
 
 .PHONY: covers_validator
 covers_validator:  ## Checks PHPUnit @coves tag
@@ -158,6 +156,7 @@ blackfire: vendor
 	@echo "This might take a while (~2min)"
 	$(BLACKFIRE) run php bin/php-scoper add-prefix --output-dir=build/php-scoper --force --quiet
 
+include .makefile/e2e.file
 .PHONY: e2e
 e2e:	 ## Runs end-to-end tests
 e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_024 e2e_025 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034 e2e_035
@@ -239,7 +238,7 @@ vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer bin phpstan update --lock && touch -c $(@)"
 
-$(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor-hotfix vendor scoper.inc.php box.json.dist
+$(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
 	$(BOX) compile --no-parallel
 	touch -c $@
 

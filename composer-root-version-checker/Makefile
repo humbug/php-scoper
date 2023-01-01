@@ -16,7 +16,8 @@ help:
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | awk 'BEGIN {FS = ":"}; {printf "\033[33m%s:\033[0m%s\n", $$1, $$2}'
 
 
-all: cs cs_lint check_root_version phpunit
+.PHONY: check
+check: cs cs_lint check_root_version phpunit
 
 
 .PHONY: check_root_version
