@@ -42,7 +42,7 @@ jobs:
                     working-directory: 'vendor-bin/php-cs-fixer'
 
             -   name: Ensure that PHP-CS-Fixer dependencies are updated correctly
-                run: make install_php_cs_fixer
+                run: make php_cs_fixer_install
 
             -   name: Install the Composer dependencies
                 uses: ramsey/composer-install@v2

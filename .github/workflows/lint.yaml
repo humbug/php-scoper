@@ -6,19 +6,9 @@ on:
     pull_request:
 
 jobs:
-    tests:
+    cs:
         runs-on: ubuntu-latest
-        name: Lint ${{ matrix.check.name }}
-        strategy:
-            fail-fast: false
-            matrix:
-                php: [ '8.1' ]
-                check:
-                    -   name: CS
-                        command: make cs_lint
-                    -   name: PHPStan
-                        command: make phpstan
-
+        name: CS
         steps:
             -   name: Checkout
                 uses: actions/checkout@v3
@@ -26,7 +16,7 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: "${{ matrix.php }}"
+                    php-version: '8.1'
                     tools: composer
                     coverage: none
 
@@ -39,10 +29,44 @@ jobs:
             -   name: Install Composer dependencies
                 uses: ramsey/composer-install@v2
 
-            -   name: Install Composer PHPStan dependencies
+            -   name: Install PHP-CS-Fixer
+                uses: ramsey/composer-install@v2
+                with:
+                    working-directory: 'vendor-bin/php-cs-fixer'
+
+            -   name: Ensure PHP-CS-Fixer Makefile target is up to date
+                run: make php_cs_fixer_install
+
+            -   run: make cs_lint
+    phpstan:
+        runs-on: ubuntu-latest
+        name: PHPStan
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v3
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.1'
+                    tools: composer
+                    coverage: none
+
+            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
+            -   name: Configure composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v2
+
+            -   name: Install PHPStan
                 uses: ramsey/composer-install@v2
                 with:
                     working-directory: 'vendor-bin/phpstan'
 
-            -   name: Run ${{ matrix.check.name }}
-                run: ${{ matrix.check.command }}
+            -   name: Ensure PHPStan Makefile target is up to date
+                run: make phpstan_install
+
+            -   run: make phpstan
