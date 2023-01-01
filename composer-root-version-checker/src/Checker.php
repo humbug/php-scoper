@@ -53,7 +53,12 @@ final class Checker
         $currentRootVersion = RootVersionProvider::provideCurrentVersion();
 
         if ($expectedComposerRootVersion === $currentRootVersion) {
-            $logger->notice('The tag is up to date.');
+            $logger->notice(
+                sprintf(
+                    'The tag is up to date (%s).',
+                    $currentRootVersion,
+                ),
+            );
 
             return 0;
         }
