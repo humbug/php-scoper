@@ -93,10 +93,11 @@ build:
 	rm $(PHP_SCOPER_PHAR_BIN) || true
 	$(MAKE) $(PHP_SCOPER_PHAR_BIN)
 
-.PHONY: outdated_fixtures
-outdated_fixtures: ## Reports outdated dependencies
-outdated_fixtures:
-	find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'echo "Checking %;" $$(composer install --working-dir=% --ansi && composer outdated --direct --working-dir=% --ansi)'
+.PHONY: fixtures_composer_outdated
+fixtures_composer_outdated: ## Reports outdated dependencies
+fixtures_composer_outdated:
+	@find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'printf "Installing dependencies for %;\n" $$(composer install --working-dir=% --ansi)'
+	@find fixtures -name 'composer.json' -type f -depth 2 -exec dirname '{}' \; | xargs -I % sh -c 'printf "Checking dependencies for %;\n" $$(composer outdated --direct --working-dir=% --ansi)'
 
 .PHONY: test
 test:		   ## Runs all the tests
