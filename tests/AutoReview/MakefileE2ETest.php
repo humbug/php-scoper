@@ -14,12 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\AutoReview;
 
+use Fidry\Makefile\Parser;
 use Fidry\Makefile\Rule;
 use Fidry\Makefile\Test\BaseMakefileTestCase;
 use function array_filter;
 use function array_map;
 use function array_values;
 use function current;
+use function Safe\file_get_contents;
 use function str_starts_with;
 
 /**
@@ -125,8 +127,12 @@ class MakefileE2ETest extends BaseMakefileTestCase
      */
     private static function retrieveSubE2ERules(): array
     {
+        $e2eParsedRules = Parser::parse(
+            file_get_contents(__DIR__.'/../../.makefile/e2e.file'),
+        );
+
         $e2eRules = array_filter(
-            self::getParsedRules(),
+            $e2eParsedRules,
             static fn (Rule $rule) => str_starts_with($rule->getTarget(), 'e2e_') && !$rule->isComment(),
         );
 
