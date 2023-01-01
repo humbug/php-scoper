@@ -2,36 +2,35 @@
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
-IS_PHP8=$(shell php -r "echo version_compare(PHP_VERSION, '8.0.0', '>=') ? 'true' : 'false';")
-SRC_FILES=$(shell find bin/ src/ vendor-hotfix/ -type f)
+SRC_FILES := $(shell find bin/ src/ vendor-hotfix/ -type f)
 
-PHP_SCOPER_PHAR_BIN=bin/php-scoper.phar
-PHP_SCOPER_PHAR=$(PHP_SCOPER_PHAR_BIN)
+PHP_SCOPER_PHAR_BIN = bin/php-scoper.phar
+PHP_SCOPER_PHAR = $(PHP_SCOPER_PHAR_BIN)
 
-COMPOSER_BIN_PLUGIN_VENDOR=vendor/bamarni/composer-bin-plugin
+COMPOSER_BIN_PLUGIN_VENDOR = vendor/bamarni/composer-bin-plugin
 
-PHPSTAN_BIN=vendor-bin/phpstan/vendor/bin/phpstan
-PHPSTAN=$(PHPSTAN_BIN) analyze src tests --level max --memory-limit=-1
+PHPSTAN_BIN = vendor-bin/phpstan/vendor/bin/phpstan
+PHPSTAN = $(PHPSTAN_BIN) analyze src tests --level max --memory-limit=-1
 
-BOX_BIN=bin/box
-BOX=$(BOX_BIN)
+BOX_BIN = bin/box
+BOX = $(BOX_BIN)
 
 COVERAGE_DIR = dist/coverage
 COVERAGE_XML = $(COVERAGE_DIR)/xml
 COVERAGE_HTML = $(COVERAGE_DIR)/html
 
-PHPUNIT_BIN=bin/phpunit
-PHPUNIT=$(PHPUNIT_BIN)
+PHPUNIT_BIN = bin/phpunit
+PHPUNIT = $(PHPUNIT_BIN)
 PHPUNIT_COVERAGE_INFECTION = XDEBUG_MODE=coverage $(PHPUNIT) --coverage-xml=$(COVERAGE_XML) --log-junit=$(COVERAGE_DIR)/phpunit.junit.xml
 PHPUNIT_COVERAGE_HTML = XDEBUG_MODE=coverage $(PHPUNIT) --coverage-html=$(COVERAGE_HTML)
 
-COVERS_VALIDATOR_BIN=vendor-bin/covers-validator/bin/covers-validator
-COVERS_VALIDATOR=$(COVERS_VALIDATOR_BIN)
+COVERS_VALIDATOR_BIN = vendor-bin/covers-validator/bin/covers-validator
+COVERS_VALIDATOR = $(COVERS_VALIDATOR_BIN)
 
 PHP_CS_FIXER_BIN = vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer
 PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix
 
-BLACKFIRE=blackfire
+BLACKFIRE = blackfire
 
 
 .DEFAULT_GOAL := help
