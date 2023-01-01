@@ -13,10 +13,11 @@ file that was distributed with this source code.
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
+         cacheResultFile="build/.phpunit.result.cache"
 >
     <testsuites>
         <testsuite name="PHP-Scoper Test Suite">
-            <directory suffix="Test.php">tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 

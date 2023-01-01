@@ -62,7 +62,7 @@ update_root_version:
 
 .PHONY: cs
 cs:	 ## Fixes CS
-cs: composer_normalize php_cs_fixer
+cs: gitignore_sort composer_normalize php_cs_fixer
 
 .PHONY: cs_lint
 cs_lint: ## Checks CS
