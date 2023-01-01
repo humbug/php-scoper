@@ -55,37 +55,10 @@ class MakefileE2ETest extends BaseMakefileTestCase
             [33mbuild:[0m	  Builds the PHAR
             [33moutdated_fixtures:[0m  Reports outdated dependencies
             [33mtest:[0m		    Runs all the tests
-            [33mvalidate_package:[0m   Validates the composer.json
             [33mcheck_composer_root_version:[0m  Checks that the COMPOSER_ROOT_VERSION is up to date
-            [33mcovers_validator:[0m   Checks PHPUnit @coves tag
-            [33mphpunit:[0m	    Runs PHPUnit tests
-            [33mphpunit_coverage_infection:[0m  Runs PHPUnit tests with test coverage
             [33mphpunit_coverage_html:[0m	     Runs PHPUnit with code coverage with HTML report
-            [33minfection:[0m	    Runs Infection
             [33mblackfire:[0m	    Runs Blackfire profiling
             [33me2e:[0m	  Runs end-to-end tests
-            [33me2e_004:[0m  Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
-            [33me2e_005:[0m  Runs end-to-end tests for the fixture set 005 — Codebase with third-party code
-            [33me2e_011:[0m  Runs end-to-end tests for the fixture set 011 — Codebase with exposed symbols
-            [33me2e_013:[0m  Runs end-to-end tests for the fixture set 013 — Test the init command
-            [33me2e_014:[0m  Runs end-to-end tests for the fixture set 014 — Codebase with PSR-0 autoloading
-            [33me2e_015:[0m  Runs end-to-end tests for the fixture set 015 — Codebase with third-party code using PSR-0 autoloading
-            [33me2e_016:[0m  Runs end-to-end tests for the fixture set 016 — Scoping of the Symfony Finder component
-            [33me2e_017:[0m  Runs end-to-end tests for the fixture set 017 — Scoping of the Symfony DependencyInjection component
-            [33me2e_018:[0m  Runs end-to-end tests for the fixture set 018 — Scoping of nikic/php-parser
-            [33me2e_019:[0m  Runs end-to-end tests for the fixture set 019 — Scoping of the Symfony Console component
-            [33me2e_020:[0m  Runs end-to-end tests for the fixture set 020 — Scoping of Infection
-            [33me2e_024:[0m  Runs end-to-end tests for the fixture set 024 — Scoping of a codebase with global functions exposed
-            [33me2e_025:[0m  Runs end-to-end tests for the fixture set 025 — Scoping of a codebase using third-party exposed functions
-            [33me2e_027:[0m  Runs end-to-end tests for the fixture set 027 — Scoping of a Laravel
-            [33me2e_028:[0m  Runs end-to-end tests for the fixture set 028 — Scoping of a Symfony project
-            [33me2e_029:[0m  Runs end-to-end tests for the fixture set 029 — Scoping of the EasyRdf project
-            [33me2e_030:[0m  Runs end-to-end tests for the fixture set 030 — Scoping of a codebase with globally registered functions
-            [33me2e_031:[0m  Runs end-to-end tests for the fixture set 031 — Scoping of a codebase using symbols of a non-loaded PHP extension
-            [33me2e_032:[0m  Runs end-to-end tests for the fixture set 032 — Scoping of a codebase using the isolated finder in the configuration
-            [33me2e_033:[0m  Runs end-to-end tests for the fixture set 033 — Scoping of a codebase a function registered in the global namespace
-            [33me2e_034:[0m  Runs end-to-end tests for the fixture set 034 — Leverage Composer InstalledVersions
-            [33me2e_035:[0m  Runs end-to-end tests for the fixture set 035 — Tests tha composer autoloaded files are working fine
 
             EOF;
     }
