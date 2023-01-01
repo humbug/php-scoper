@@ -8,12 +8,7 @@ on:
 jobs:
     cs-lint:
         runs-on: ubuntu-latest
-        name: CS lint
-        strategy:
-            fail-fast: false
-            matrix:
-                php: [ '8.1' ]  # Should be the latest PHP version supported
-
+        name: Lint CS
         steps:
             -   name: Checkout
                 uses: actions/checkout@v3
@@ -21,8 +16,9 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: "${{ matrix.php }}"
+                    php-version: '8.1'
                     tools: composer
+                    coverage: none
 
             # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
             -   name: Configure composer root version
@@ -49,7 +45,7 @@ jobs:
                 with:
                     working-directory: 'composer-root-version-checker'
 
-            -   name: Lints CS
+            -   name: Lint CS
                 run: cd composer-root-version-checker; make cs_lint
 
     tests:
