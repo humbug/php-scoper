@@ -84,6 +84,10 @@ composer_normalize: composer.json vendor
 composer_normalize_lint: composer.json vendor
 	composer normalize --dry-run
 
+.PHONY: gitignore_sort
+gitignore_sort:
+	LC_ALL=C sort -u .gitignore -o .gitignore
+
 .PHONY: phpstan
 phpstan: ## Runs PHPStan
 phpstan: $(PHPSTAN_BIN)
