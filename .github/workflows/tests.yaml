@@ -31,7 +31,7 @@ jobs:
                     working-directory: 'composer-root-version-checker'
 
             -   name: Check COMPOSER_ROOT_VERSION
-                run: make check_composer_root_version
+                run: make composer_root_version_lint
 
     composer-json:
         runs-on: ubuntu-latest
