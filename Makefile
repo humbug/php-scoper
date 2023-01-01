@@ -84,7 +84,6 @@ gitignore_sort:
 	LC_ALL=C sort -u .gitignore -o .gitignore
 
 .PHONY: phpstan
-phpstan: ## Runs PHPStan
 phpstan: $(PHPSTAN_BIN)
 	$(PHPSTAN)
 
@@ -104,7 +103,6 @@ test:		   ## Runs all the tests
 test: validate_package covers_validator phpunit e2e
 
 .PHONY: validate_package
-validate_package:  ## Validates the composer.json
 validate_package:
 	composer validate --strict
 
@@ -124,17 +122,14 @@ composer_root_version_update:
 	$(MAKE) .composer-root-version
 
 .PHONY: covers_validator
-covers_validator:  ## Checks PHPUnit @coves tag
 covers_validator: $(COVERS_VALIDATOR_BIN)
 	$(COVERS_VALIDATOR)
 
 .PHONY: phpunit
-phpunit:	   ## Runs PHPUnit tests
 phpunit: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT)
 
 .PHONY: phpunit_coverage_infection
-phpunit_coverage_infection: ## Runs PHPUnit tests with test coverage
 phpunit_coverage_infection: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT_COVERAGE_INFECTION)
 
@@ -144,7 +139,6 @@ phpunit_coverage_html: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT_COVERAGE_HTML)
 
 .PHONY: infection
-infection:	   ## Runs Infection
 infection: $(COVERAGE_XML) vendor
 #infection: $(INFECTION_BIN) $(COVERAGE_XML) vendor
 	if [ -d $(COVERAGE_XML) ]; then $(INFECTION); fi
