@@ -51,7 +51,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 $loader = require_once __DIR__.'/autoload.php';
                 // Ensure InstalledVersions is available
-                require_once __DIR__.'/composer/InstalledVersions.php';
+                $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                 // Restore the backup
                 if (isset($existingComposerAutoloadFiles)) {
@@ -85,7 +86,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 $loader = require_once __DIR__.'/autoload.php';
                 // Ensure InstalledVersions is available
-                require_once __DIR__.'/composer/InstalledVersions.php';
+                $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                 // Restore the backup
                 if (isset($existingComposerAutoloadFiles)) {
@@ -124,7 +126,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 $loader = require_once __DIR__.'/autoload.php';
                 // Ensure InstalledVersions is available
-                require_once __DIR__.'/composer/InstalledVersions.php';
+                $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                 // Restore the backup
                 if (isset($existingComposerAutoloadFiles)) {
@@ -165,7 +168,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                     $loader = require_once __DIR__.'/autoload.php';
                     // Ensure InstalledVersions is available
-                    require_once __DIR__.'/composer/InstalledVersions.php';
+                    $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                    if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup
                     if (isset($existingComposerAutoloadFiles)) {
@@ -215,7 +219,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                     $loader = require_once __DIR__.'/autoload.php';
                     // Ensure InstalledVersions is available
-                    require_once __DIR__.'/composer/InstalledVersions.php';
+                    $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                    if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup
                     if (isset($existingComposerAutoloadFiles)) {
@@ -262,7 +267,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 $loader = require_once __DIR__.'/autoload.php';
                 // Ensure InstalledVersions is available
-                require_once __DIR__.'/composer/InstalledVersions.php';
+                $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                 // Restore the backup
                 if (isset($existingComposerAutoloadFiles)) {
@@ -307,7 +313,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 $loader = require_once __DIR__.'/autoload.php';
                 // Ensure InstalledVersions is available
-                require_once __DIR__.'/composer/InstalledVersions.php';
+                $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                 // Restore the backup
                 if (isset($existingComposerAutoloadFiles)) {
@@ -359,7 +366,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                     $loader = require_once __DIR__.'/autoload.php';
                     // Ensure InstalledVersions is available
-                    require_once __DIR__.'/composer/InstalledVersions.php';
+                    $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                    if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup
                     if (isset($existingComposerAutoloadFiles)) {
@@ -425,7 +433,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 $loader = require_once __DIR__.'/autoload.php';
                 // Ensure InstalledVersions is available
-                require_once __DIR__.'/composer/InstalledVersions.php';
+                $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                 // Restore the backup
                 if (isset($existingComposerAutoloadFiles)) {
@@ -465,7 +474,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                     $loader = require_once __DIR__.'/autoload.php';
                     // Ensure InstalledVersions is available
-                    require_once __DIR__.'/composer/InstalledVersions.php';
+                    $installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
+                    if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup
                     if (isset($existingComposerAutoloadFiles)) {
