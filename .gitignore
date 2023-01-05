@@ -11,7 +11,6 @@
 /box.json
 /build/
 /clover.xml
-/dist/
 /fixtures/*/.box_dump/
 /fixtures/*/vendor/
 /fixtures/set004/composer.lock
