@@ -1,0 +1,10 @@
+{
+    "bin": [
+        "bin/greet.php"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Set004\\": "src/"
+        }
+    }
+}
