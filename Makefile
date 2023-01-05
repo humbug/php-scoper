@@ -147,7 +147,7 @@ infection: $(COVERAGE_XML) vendor
 include .makefile/e2e.file
 .PHONY: e2e
 e2e: ## Runs end-to-end tests
-e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_024 e2e_025 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034 e2e_035
+e2e: e2e_004 e2e_005 e2e_011 e2e_013 e2e_014 e2e_015 e2e_016 e2e_017 e2e_018 e2e_019 e2e_020 e2e_024 e2e_025 e2e_027 e2e_028 e2e_029 e2e_030 e2e_031 e2e_032 e2e_033 e2e_034 e2e_035 e2e_036
 
 .PHONY: blackfire
 blackfire: ## Runs Blackfire profiling

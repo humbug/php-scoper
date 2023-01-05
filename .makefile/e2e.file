@@ -328,6 +328,29 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 	php build/set035-composer-files-autoload/index.php &> build/set035-composer-files-autoload/output || true
 	php build/set035-composer-files-autoload/test.php
 
+.PHONY: e2e_036
+e2e_036: # Runs end-to-end tests for the fixture set e2e_036 — Minimalistic codebase
+e2e_036: $(PHP_SCOPER_PHAR_BIN)
+	# Identical to set004 but without Box
+	rm fixtures/set036/composer.lock || true
+	rm -rf fixtures/set036/vendor || true
+	rm -rf build/set036 || true
+	mkdir -p build/set036
+
+	composer --working-dir=fixtures/set036 dump-autoload
+
+	$(PHP_SCOPER_PHAR) add-prefix . \
+		--working-dir=fixtures/set036 \
+		--output-dir=../../build/set036 \
+		--force \
+		--no-config \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set036 dump-autoload
+
+	php build/set036/bin/greet.php > build/set036/output
+	diff fixtures/set036/expected-output build/set036/output
+
 
 #
 # Rules from files
