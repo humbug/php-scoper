@@ -21,6 +21,7 @@
 /fixtures/set030/composer.lock
 /fixtures/set030/expected-output
 /fixtures/set031-extension-symbol/expected-output
+/fixtures/set037-double-scoping/bin/scoped-greet.phar
 /infection-log.txt
 /phpcs.xml
 /vendor-bin/*/bin/
