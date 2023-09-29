@@ -280,7 +280,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 // Class aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
                 if (!function_exists('humbug_phpscoper_expose_class')) {
-                    function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
+                    function humbug_phpscoper_expose_class($exposed, $prefixed) {
                         if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
                             spl_autoload_call($prefixed);
                         }
@@ -326,7 +326,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 // Class aliases. For more information see:
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
                 if (!function_exists('humbug_phpscoper_expose_class')) {
-                    function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
+                    function humbug_phpscoper_expose_class($exposed, $prefixed) {
                         if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
                             spl_autoload_call($prefixed);
                         }
@@ -381,7 +381,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
                 namespace {
                     if (!function_exists('humbug_phpscoper_expose_class')) {
-                        function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
+                        function humbug_phpscoper_expose_class($exposed, $prefixed) {
                             if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
                                 spl_autoload_call($prefixed);
                             }
