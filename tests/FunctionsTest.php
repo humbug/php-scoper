@@ -88,10 +88,14 @@ class FunctionsTest extends TestCase
         yield [
             [
                 (static function (): Generator {
-                    yield from ['a' => 'alpha', 'b' => 'beta', 2 => 'two'];
+                    yield 'a' => 'alpha';
+                    yield 'b' => 'beta';
+                    yield 2 => 'two';
                 })(),
                 (static function (): Generator {
-                    yield from [0, 1, 2];
+                    yield 0;
+                    yield 1;
+                    yield 2;
                 })(),
             ],
             [

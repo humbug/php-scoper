@@ -300,7 +300,7 @@ class PhpScoperSpecTest extends TestCase
         );
     }
 
-    private static function parseSpecFile(string $file, array $meta, string|int $fixtureTitle, string|array $fixtureSet): iterable
+    private static function parseSpecFile(string $file, array $meta, int|string $fixtureTitle, array|string $fixtureSet): iterable
     {
         static $specMetaKeys;
         static $specKeys;
@@ -377,7 +377,7 @@ class PhpScoperSpecTest extends TestCase
 
     private static function createSymbolsConfiguration(
         string $file,
-        string|array $fixtureSet,
+        array|string $fixtureSet,
         array $meta
     ): SymbolsConfiguration {
         if (is_string($fixtureSet)) {

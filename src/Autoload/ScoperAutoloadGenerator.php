@@ -217,7 +217,7 @@ final class ScoperAutoloadGenerator
      *
      * @return list<string>
      */
-    private static function wrapStatementsInNamespaceBlock(string $namespace, string|array $statements): array
+    private static function wrapStatementsInNamespaceBlock(string $namespace, array|string $statements): array
     {
         if (is_string($statements)) {
             $statements = explode(self::$eol, $statements);

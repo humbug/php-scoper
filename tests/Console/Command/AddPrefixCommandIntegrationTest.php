@@ -286,6 +286,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
         $extraDisplayNormalization = static function (string $display): string {
             $display = preg_replace('/(Could not parse the file ".+?"\.: \w+).*(\n)/', '$1$2', $display);
             $display = preg_replace('/(#\d+).*(\n)/', '$1$2', $display);
+
             // Remove overly lengthy stack-trace
             return preg_replace('/(Stack trace:(?:\n\#\d)+)\n?((?:\n\#\d{2,})+)/', '$1', $display);
         };
