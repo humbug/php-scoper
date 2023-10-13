@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Fidry\FileSystem\FS;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
@@ -24,7 +25,6 @@ use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
 use function array_keys;
-use function KevinGH\Box\FileSystem\dump_file;
 use function Safe\touch;
 use const DIRECTORY_SEPARATOR;
 
@@ -168,7 +168,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
 
     private static function dumpStandardConfigFile(string $contents): void
     {
-        dump_file('scoper.inc.php', $contents);
+        FS::dumpFile('scoper.inc.php', $contents);
     }
 
     private function createConfigFromStandardFile(): Configuration
