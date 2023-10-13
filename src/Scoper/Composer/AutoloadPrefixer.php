@@ -133,7 +133,7 @@ final class AutoloadPrefixer
     /**
      * @param array<string, (string|string[])> $psr0
      * @param (string|string[])[]              $psr4
-     * @param string[] $classMap
+     * @param string[]                         $classMap
      */
     private static function transformPsr0ToPsr4AndClassmap(array $psr0, array $psr4, array $classMap): array
     {
@@ -168,7 +168,7 @@ final class AutoloadPrefixer
      *
      * @return string|string[]
      */
-    private static function updatePSR0Path(string|array $path, string $namespace): string|array
+    private static function updatePSR0Path(array|string $path, string $namespace): array|string
     {
         $namespaceForPsr = rtrim(
             str_replace('\\', '/', $namespace),
@@ -204,12 +204,12 @@ final class AutoloadPrefixer
      * string     |
      * or simply the namespace not existing as a psr-4 entry.
      *
-     * @param string|string[] $psr0Path
+     * @param string|string[]     $psr0Path
      * @param (string|string[])[] $psr4
      *
      * @return string|string[]
      */
-    private static function mergeNamespaces(string $psr0Namespace, string|array $psr0Path, array $psr4): string|array
+    private static function mergeNamespaces(string $psr0Namespace, array|string $psr0Path, array $psr4): array|string
     {
         // Both strings
         if (is_string($psr0Path) && is_string($psr4[$psr0Namespace])) {

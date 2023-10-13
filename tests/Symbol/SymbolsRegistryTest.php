@@ -30,8 +30,8 @@ final class SymbolsRegistryTest extends TestCase
      *
      * @param array<array{FullyQualified, FullyQualified}> $functions
      * @param array<array{FullyQualified, FullyQualified}> $classes
-     * @param list<array{FullyQualified, FullyQualified}> $expectedRecordedFunctions
-     * @param list<array{FullyQualified, FullyQualified}> $expectedRecordedClasses
+     * @param list<array{FullyQualified, FullyQualified}>  $expectedRecordedFunctions
+     * @param list<array{FullyQualified, FullyQualified}>  $expectedRecordedClasses
      */
     public function test_it_records_functions_and_classes(
         array $functions,

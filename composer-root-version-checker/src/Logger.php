@@ -31,7 +31,7 @@ final class Logger extends AbstractLogger
         $this->writeRecords();
     }
 
-    public function log($level, Stringable|string $message, array $context = []): void
+    public function log($level, string|Stringable $message, array $context = []): void
     {
         $record = sprintf('[%s] %s', $level, $message).PHP_EOL;
 
