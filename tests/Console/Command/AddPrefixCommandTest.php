@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Fidry\Console\Application\SymfonyApplication;
 use Fidry\Console\Command\SymfonyCommand;
+use Fidry\FileSystem\FS;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
@@ -38,7 +39,6 @@ use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 use function count;
-use function Humbug\PhpScoper\escape_path;
 use function Safe\chdir;
 use function Safe\file_get_contents;
 use function Safe\realpath;
@@ -121,8 +121,8 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($this->tmp.'/'.$expectedFile);
 
             $inputContents = file_get_contents($inputPath);
 
@@ -183,8 +183,8 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($this->tmp.'/'.$expectedFile);
 
             $inputContents = file_get_contents($inputPath);
 
@@ -239,8 +239,8 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
         ];
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($this->tmp.'/'.$expectedFile);
 
             $inputContents = file_get_contents($inputPath);
 
@@ -262,7 +262,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
     public function test_scope_the_given_paths_and_the_ones_found_by_the_finder(): void
     {
-        chdir($rootPath = escape_path(self::FIXTURE_PATH.'/set012'));
+        chdir($rootPath = FS::escapePath(self::FIXTURE_PATH.'/set012'));
 
         $input = [
             'add-prefix',
@@ -289,7 +289,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
         foreach ($expectedFiles as $inputPath => $outputPath) {
             $inputPath = realpath($inputPath);
-            $outputPath = escape_path($outputPath);
+            $outputPath = FS::escapePath($outputPath);
 
             $inputContents = file_get_contents($inputPath);
             $prefixedFileContents = 'Random string';
@@ -347,8 +347,8 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($this->tmp.'/'.$expectedFile);
 
             $inputContents = file_get_contents($inputPath);
 
@@ -405,8 +405,8 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($outDir.'/'.$expectedFile);
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($outDir.'/'.$expectedFile);
 
             $inputContents = file_get_contents($inputPath);
 
@@ -464,8 +464,8 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
 
             $inputContents = file_get_contents($inputPath);
 
@@ -520,7 +520,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
     public function test_throws_an_error_if_patch_file_returns_an_array_with_invalid_values(): void
     {
-        chdir(escape_path(self::FIXTURE_PATH.'/set009'));
+        chdir(FS::escapePath(self::FIXTURE_PATH.'/set009'));
 
         $input = [
             'add-prefix',
@@ -551,7 +551,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
     public function test_can_scope_projects_with_invalid_files(): void
     {
-        chdir(escape_path($root = self::FIXTURE_PATH.'/set010'));
+        chdir(FS::escapePath($root = self::FIXTURE_PATH.'/set010'));
 
         $input = [
             'add-prefix',
@@ -575,8 +575,8 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
         $root = realpath($root);
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp.'/'.$expectedFile);
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($this->tmp.'/'.$expectedFile);
 
             $fileContents = file_get_contents($inputPath);
 
@@ -635,8 +635,8 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldBeCalled();
 
         foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = escape_path($root.'/'.$expectedFile);
-            $outputPath = escape_path($this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($this->tmp.DIRECTORY_SEPARATOR.$outDir.'/'.$expectedFile);
 
             $inputContents = file_get_contents($inputPath);
 
