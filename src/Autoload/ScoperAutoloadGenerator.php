@@ -42,9 +42,11 @@ final class ScoperAutoloadGenerator
         EOF;
 
     private const EXPOSE_CLASS_DECLARATION = <<<'PHP'
-        function humbug_phpscoper_expose_class(string $exposed, string $prefixed): void {
-            if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
-                spl_autoload_call($prefixed);
+        if (!function_exists('humbug_phpscoper_expose_class')) {
+            function humbug_phpscoper_expose_class($exposed, $prefixed) {
+                if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
+                    spl_autoload_call($prefixed);
+                }
             }
         }
         PHP;
@@ -215,7 +217,7 @@ final class ScoperAutoloadGenerator
      *
      * @return list<string>
      */
-    private static function wrapStatementsInNamespaceBlock(string $namespace, string|array $statements): array
+    private static function wrapStatementsInNamespaceBlock(string $namespace, array|string $statements): array
     {
         if (is_string($statements)) {
             $statements = explode(self::$eol, $statements);

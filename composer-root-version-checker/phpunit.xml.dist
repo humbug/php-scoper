@@ -13,7 +13,7 @@ file that was distributed with this source code.
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
-         cacheResultFile="../dist/.phpunit-composer-root-version-checker.result.cache"
+         cacheResultFile="../build/.phpunit-composer-root-version-checker.result.cache"
 >
     <testsuites>
         <testsuite name="Test Suite">

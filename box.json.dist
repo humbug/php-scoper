@@ -1,4 +1,6 @@
 {
+    "$schema": "vendor/humbug/box/res/schema.json",
+
     "banner": [
         "This file is part of the humbug/php-scoper package.",
         "",
@@ -13,6 +15,7 @@
     "files": [
         "src/scoper.inc.php.tpl"
     ],
+    "files-bin": ["vendor-hotfix/.gitkeep"],
 
     "git": "git_version_placeholder",
     "datetime": "release-date",

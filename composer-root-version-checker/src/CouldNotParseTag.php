@@ -44,7 +44,7 @@ final class CouldNotParseTag extends RuntimeException
     }
 
     public static function withReason(
-        null|bool|int|float|string $tag,
+        null|bool|float|int|string $tag,
         string $reason
     ): self {
         return new self(

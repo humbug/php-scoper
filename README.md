@@ -210,8 +210,8 @@ now been moved under the
 
 [@webmozart]: https://twitter.com/webmozart
 [Bernhard Schussek]: https://webmozart.io/
-[box]: https://github.com/humbug/box
+[box]: https://github.com/box-project/box
 [humbug]: https://github.com/humbug
 [patchers]: docs/configuration.md#patchers
-[php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
+[php-scoper-integration]: https://github.com/box-project/box/blob/main/doc/code-isolation.md#phar-code-isolation
 [phar-extract-to]: https://secure.php.net/manual/en/phar.extractto.php

@@ -15,7 +15,7 @@ PHPSTAN = $(PHPSTAN_BIN) analyze src tests --level max --memory-limit=-1
 BOX_BIN = bin/box
 BOX = $(BOX_BIN)
 
-COVERAGE_DIR = dist/coverage
+COVERAGE_DIR = build/coverage
 COVERAGE_XML = $(COVERAGE_DIR)/xml
 COVERAGE_HTML = $(COVERAGE_DIR)/html
 

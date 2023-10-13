@@ -346,7 +346,7 @@ return $loader;
 ```
 
 
-##### Exposing functions
+### Exposing functions
 
 The mechanism is very similar to the one used for classes. However since a
 function similar to `class_alias` does not exists for functions, we declare
