@@ -20,7 +20,7 @@ require __DIR__.'/scoped-guzzle5-include/index.php';
 // - The case of PHPStan which needs to access the Composer global variables.
 // It would probably be clearer to have a separate test for this but it was easier to
 // fit it here with a confusing explanation instead.
-//require __DIR__.'/scoped-composer-variable-access/index.php';
+require __DIR__.'/scoped-composer-variable-access/index.php';
 
 // Autoload the project autoload. This will trigger the autoloading of the files.
 // Due to Composer creating a hash based on the package name & file path, the
@@ -33,5 +33,5 @@ require __DIR__.'/vendor/autoload.php';
 // despite the scoped file having been loaded previously.
 \GuzzleHttp\describe_type('hello');
 
-// Mimic PHPStan that uses some autoloaded code
+echo 'OK.'.PHP_EOL;
 

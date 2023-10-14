@@ -2,15 +2,20 @@
 
 $output = file_get_contents(__DIR__.'/output');
 
-$functionAutoloadFailed = 1 === preg_match(
-    '#PHP Fatal error:  Uncaught Error: Call to undefined function GuzzleHttp\\describe_type\(\)#',
-    $output,
-);
-$expectedResult = false;
+$expectedOutput = <<<'EOF'
+Autoload Scoped code.
+Autoload code.
+OK.
 
-if ($functionAutoloadFailed) {
+EOF;
+
+if ($output !== $expectedOutput) {
+    echo 'FAILED!'.PHP_EOL;
+    echo '–––––––'.PHP_EOL;
     echo $output;
     echo PHP_EOL;
+
+    exit(1);
 }
 
-exit($functionAutoloadFailed === $expectedResult ? 0 : 1);
+exit(0);
