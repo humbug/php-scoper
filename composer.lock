@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "fidry/console",
-            "version": "0.6.0",
+            "version": "0.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/console.git",
-                "reference": "7203f6aafc5b7203e6f1bf0df17593ba4159a276"
+                "reference": "f14dc99a0ed94f6cf65d578e9a2e5e21e3872cae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/console/zipball/7203f6aafc5b7203e6f1bf0df17593ba4159a276",
-                "reference": "7203f6aafc5b7203e6f1bf0df17593ba4159a276",
+                "url": "https://api.github.com/repos/theofidry/console/zipball/f14dc99a0ed94f6cf65d578e9a2e5e21e3872cae",
+                "reference": "f14dc99a0ed94f6cf65d578e9a2e5e21e3872cae",
                 "shasum": ""
             },
             "require": {
@@ -80,7 +80,7 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/console/issues",
-                "source": "https://github.com/theofidry/console/tree/0.6.0"
+                "source": "https://github.com/theofidry/console/tree/0.6.1"
             },
             "funding": [
                 {
@@ -88,7 +88,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-09-24T20:12:42+00:00"
+            "time": "2023-10-14T08:57:23+00:00"
         },
         {
             "name": "fidry/filesystem",
