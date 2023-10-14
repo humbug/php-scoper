@@ -78,3 +78,25 @@ jobs:
                 run: make phpstan_install
 
             -   run: make phpstan
+
+    # This is a "trick", a meta task which does not change, and we can use in
+    # the protected branch rules as opposed to the E2E tests one above which
+    # may change regularly.
+    # This allows us to mark only this job as required instead of each individual
+    # ever-changing E2E tests.
+    validate-tests:
+        name: Lint Status
+        runs-on: ubuntu-latest
+        needs:
+            - cs
+            - phpstan
+        if: always()
+        steps:
+            - name: Successful run
+              if: ${{ !(contains(needs.*.result, 'failure')) }}
+              run: exit 0
+
+            - name: Failing run
+              if: ${{ contains(needs.*.result, 'failure') }}
+              run: exit 1
+

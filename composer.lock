@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a91c4aeab38b553f08275f378b3b1f3",
+    "content-hash": "a448eb840b13470ad8efbb63a138f305",
     "packages": [
         {
             "name": "fidry/console",
@@ -2780,16 +2780,16 @@
         },
         {
             "name": "fidry/makefile",
-            "version": "0.2.3",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/makefile.git",
-                "reference": "fb346e2568c2ad3c7526b0cc80ab6e18ff42e573"
+                "reference": "be5a048dcc5648d04e924facce0f85b406d731e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/makefile/zipball/fb346e2568c2ad3c7526b0cc80ab6e18ff42e573",
-                "reference": "fb346e2568c2ad3c7526b0cc80ab6e18ff42e573",
+                "url": "https://api.github.com/repos/theofidry/makefile/zipball/be5a048dcc5648d04e924facce0f85b406d731e4",
+                "reference": "be5a048dcc5648d04e924facce0f85b406d731e4",
                 "shasum": ""
             },
             "require": {
@@ -2833,7 +2833,7 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/makefile/issues",
-                "source": "https://github.com/theofidry/makefile/tree/0.2.3"
+                "source": "https://github.com/theofidry/makefile/tree/1.0.1"
             },
             "funding": [
                 {
@@ -2841,7 +2841,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-10-06T15:39:51+00:00"
+            "time": "2023-10-13T23:49:14+00:00"
         },
         {
             "name": "humbug/box",
