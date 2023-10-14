@@ -6,10 +6,9 @@ on:
     pull_request: ~
     release:
         types: [ created ]
-
-schedule:
-    # Do not make it the first of the month and/or midnight since it is a very busy time
-    - cron: "* 10 5 * *"
+    schedule:
+        # Do not make it the first of the month and/or midnight since it is a very busy time
+        - cron: "* 10 5 * *"
 
 # See https://stackoverflow.com/a/72408109
 concurrency:
@@ -155,10 +154,12 @@ jobs:
     # may change regularly.
     # This allows us to mark only this job as required instead of each individual
     # ever-changing E2E tests.
-    validate-e2e:
-        name: Check status
+    validate-tests:
+        name: End-to-End Tests Status
         runs-on: ubuntu-latest
-        needs: e2e-tests
+        needs:
+            - build-test-phar
+            - e2e-tests
         if: always()
         steps:
             - name: Successful run

@@ -4,10 +4,9 @@ on:
     push:
         branches: [ main ]
     pull_request: ~
-
-schedule:
-    # Do not make it the first of the month and/or midnight since it is a very busy time
-    - cron: "* 10 5 * *"
+    schedule:
+        # Do not make it the first of the month and/or midnight since it is a very busy time
+        - cron: "* 10 5 * *"
 
 # See https://stackoverflow.com/a/72408109
 concurrency:
@@ -57,7 +56,7 @@ jobs:
             -   name: Lint CS
                 run: cd composer-root-version-checker; make cs_lint
 
-    tests:
+    composer-root-version:
         runs-on: ubuntu-latest
         name: Tests
         strategy:
@@ -87,9 +86,11 @@ jobs:
     # the protected branch rules as opposed to the tests one above which
     # may change regularly.
     validate-tests:
-        name: Tests status
+        name: RootVersionChecker Status
         runs-on: ubuntu-latest
-        needs: tests
+        needs:
+            - cs-lint
+            - composer-root-version
         if: always()
         steps:
             - name: Successful run
