@@ -6,5 +6,11 @@ $functionAutoloadFailed = 1 === preg_match(
     '#PHP Fatal error:  Uncaught Error: Call to undefined function GuzzleHttp\\describe_type\(\)#',
     $output,
 );
+$expectedResult = false;
 
-exit($functionAutoloadFailed ? 1 : 0);
+if ($functionAutoloadFailed) {
+    echo $output;
+    echo PHP_EOL;
+}
+
+exit($functionAutoloadFailed === $expectedResult ? 0 : 1);

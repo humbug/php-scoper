@@ -5,7 +5,7 @@ namespace Acme;
 use Throwable;
 use const PHP_EOL;
 
-// Autoload the scoped vendor guzzle. This is to mimick a scoped code that would
+// Autoload the scoped vendor guzzle. This is to mimic a scoped code that would
 // load this code.
 // Triggering the autoloading will autoload the Guzzle `functions.php` file which
 // declares the _scoped_ functions.
@@ -19,9 +19,9 @@ require __DIR__.'/scoped-guzzle5-include/index.php';
 echo 'Autoload code.'.PHP_EOL;
 require __DIR__.'/vendor/autoload.php';
 
-// Will fail to find the function
-try {
-    \GuzzleHttp\describe_type('hello');
-} catch (Throwable $throwable) {
-    echo $throwable->getMessage().PHP_EOL;
-}
+// This is the test: it should have autoloaded the function file from the regular autoload
+// despite the scoped file having been loaded previously.
+\GuzzleHttp\describe_type('hello');
+
+// Mimic PHPStan that uses some autoloaded code
+
