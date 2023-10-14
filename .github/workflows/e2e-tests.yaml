@@ -154,10 +154,12 @@ jobs:
     # may change regularly.
     # This allows us to mark only this job as required instead of each individual
     # ever-changing E2E tests.
-    validate-e2e:
-        name: Check status
+    validate-tests:
+        name: End-to-End Tests Status
         runs-on: ubuntu-latest
-        needs: e2e-tests
+        needs:
+            - build-test-phar
+            - e2e-tests
         if: always()
         steps:
             - name: Successful run
