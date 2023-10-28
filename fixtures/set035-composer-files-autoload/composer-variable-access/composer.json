@@ -1,3 +1,12 @@
 {
-    "bin": "index.php"
+    "bin": "index.php",
+    "autoload": {
+        "files": [
+            "included-file.php",
+            "excluded-file.php"
+        ]
+    },
+    "require": {
+        "symfony/polyfill-php80": "^1.28"
+    }
 }

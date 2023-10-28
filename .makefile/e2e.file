@@ -310,13 +310,14 @@ e2e_034: $(PHP_SCOPER_PHAR_BIN) fixtures/set034-installed-versions/vendor
 
 .PHONY: e2e_035
 e2e_035: # Runs end-to-end tests for the fixture set 035 — Tests tha composer autoloaded files are working fine
-e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor \
+# TODO: add back the PHAR
+e2e_035: fixtures/set035-composer-files-autoload/vendor \
 		fixtures/set035-composer-files-autoload/guzzle5-include/vendor \
 		fixtures/set035-composer-files-autoload/composer-variable-access/vendor
 	rm -rf build/set035-composer-files-autoload || true
 	cp -R fixtures/set035-composer-files-autoload build/set035-composer-files-autoload
 
-	$(PHP_SCOPER_PHAR) add-prefix \
+	$(UNSCOPED_PHP_SCOPER) add-prefix \
 		--working-dir=fixtures/set035-composer-files-autoload/guzzle5-include \
 		--output-dir=../../../build/set035-composer-files-autoload/scoped-guzzle5-include \
 		--force \
@@ -326,11 +327,11 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor \
 	composer --working-dir=build/set035-composer-files-autoload/scoped-guzzle5-include dump-autoload
 	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
 
-	$(PHP_SCOPER_PHAR) add-prefix \
+	$(UNSCOPED_PHP_SCOPER) add-prefix \
 		--working-dir=fixtures/set035-composer-files-autoload/composer-variable-access \
 		--output-dir=../../../build/set035-composer-files-autoload/scoped-composer-variable-access \
 		--force \
-		--no-config \
+		--config=scoper.inc.php \
 		--no-interaction \
 		--stop-on-failure
 	composer --working-dir=build/set035-composer-files-autoload/scoped-composer-variable-access dump-autoload

@@ -4,6 +4,7 @@ MAKEFLAGS += --no-builtin-rules
 
 SRC_FILES := $(shell find bin/ src/ vendor-hotfix/ -type f)
 
+UNSCOPED_PHP_SCOPER = bin/php-scoper
 PHP_SCOPER_PHAR_BIN = bin/php-scoper.phar
 PHP_SCOPER_PHAR = $(PHP_SCOPER_PHAR_BIN)
 
