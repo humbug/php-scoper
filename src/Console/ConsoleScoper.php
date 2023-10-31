@@ -145,7 +145,7 @@ final class ConsoleScoper
         if (null !== $vendorDir && null !== $originalVendorDir) {
             $originalRootDir = dirname($originalVendorDir);
 
-            $fileHashGenerator = new ComposerFileHasher(
+            $fileHashGenerator = ComposerFileHasher::create(
                 $originalVendorDir,
                 $originalRootDir,
                 array_column($config->getExcludedFilesWithContents(), 0),

@@ -32,7 +32,7 @@ final class ComposerFileHasherTest extends TestCase
         array $filePaths,
         array $expected,
     ): void {
-        $hasher = new ComposerFileHasher($vendorDir, $rootDir, $filePaths);
+        $hasher = ComposerFileHasher::create($vendorDir, $rootDir, $filePaths);
 
         $actual = $hasher->generateHashes();
 

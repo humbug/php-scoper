@@ -25,19 +25,30 @@ final class ComposerFileHasher
     private const ROOT_PACKAGE_NAME = '__root__';
     private const PACKAGE_PATH_REGEX = '~^%s/(?<vendor>[^/]+?/[^/]+?)/(?<path>.+?)$~';
 
-    private string $vendorDirRelativeToRoot;
-    private string $packagePathRegex;
+    public static function create(
+        string $vendorDir,
+        string $rootDir,
+        array $filePaths,
+    ): self {
+        $vendorDirRelativeToRoot = Path::makeRelative($vendorDir, $rootDir);
+
+        $packagePathRegex = sprintf(
+            self::PACKAGE_PATH_REGEX,
+            $vendorDirRelativeToRoot,
+        );
+
+        return new self(
+            $rootDir,
+            $filePaths,
+            $packagePathRegex,
+        );
+    }
 
     public function __construct(
-        private string $vendorDir,
         private string $rootDir,
         private array $filePaths,
+        private string $packagePathRegex,
     ) {
-        $this->vendorDirRelativeToRoot = Path::makeRelative($this->vendorDir, $this->rootDir);
-        $this->packagePathRegex = sprintf(
-            self::PACKAGE_PATH_REGEX,
-            $this->vendorDirRelativeToRoot,
-        );
     }
 
     /**
@@ -54,7 +65,7 @@ final class ComposerFileHasher
     /**
      * @see \Composer\Autoload::getFileIdentifier()
      */
-    private function generateHash(string $filePath): ?string
+    private function generateHash(string $filePath): string
     {
         $relativePath = Path::makeRelative($filePath, $this->rootDir);
 

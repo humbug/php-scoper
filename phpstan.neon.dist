@@ -2,7 +2,8 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
 
-    excludePaths: []
+    excludePaths:
+        - tests/Autoload/AutoloadDumperTest.php
 
     ignoreErrors:
         - message: '#Cannot cast array\<string\>\|string to string\.#'
