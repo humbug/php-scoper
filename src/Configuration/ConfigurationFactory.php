@@ -390,7 +390,7 @@ final class ConfigurationFactory
     {
         $filesWithContents = [];
 
-        foreach ($files as $filePathOrFileInfo) {
+        foreach ($files as $fileKey => $filePathOrFileInfo) {
             $filePath = $filePathOrFileInfo instanceof SplFileInfo
                 ? $filePathOrFileInfo->getRealPath()
                 : realpath($filePathOrFileInfo);
@@ -413,7 +413,7 @@ final class ConfigurationFactory
                 );
             }
 
-            $filesWithContents[$filePath] = [$filePath, file_get_contents($filePath)];
+            $filesWithContents[$fileKey] = [$filePath, file_get_contents($filePath)];
         }
 
         return $filesWithContents;

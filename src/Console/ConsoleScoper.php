@@ -179,20 +179,22 @@ final class ConsoleScoper
         );
         Assert::notNull($commonDirectoryPath);
 
-        $mapFiles = static fn (array $inputFileTuple) => [
+        $mapFiles = static fn (array $inputFileTuple, string $fileKey ) => [
             Path::normalize($inputFileTuple[0]),
             $inputFileTuple[1],
-            $outputDir.str_replace($commonDirectoryPath, '', Path::normalize($inputFileTuple[0])),
+            $outputDir.str_replace($commonDirectoryPath, '', Path::normalize($fileKey)),
         ];
 
         return [
             array_map(
                 $mapFiles,
                 $filesWithContent,
+                array_keys( $filesWithContent )
             ),
             array_map(
                 $mapFiles,
                 $excludedFilesWithContents,
+                array_keys( $excludedFilesWithContents )
             ),
         ];
     }
