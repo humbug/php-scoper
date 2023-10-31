@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Application\Application;
 use Fidry\Console\Input\IO;
-use Humbug\PhpScoper\Autoload\FileHashGenerator;
+use Humbug\PhpScoper\Autoload\ComposerFileHasher;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Scoper\Scoper;
@@ -145,7 +145,7 @@ final class ConsoleScoper
         if (null !== $vendorDir && null !== $originalVendorDir) {
             $originalRootDir = dirname($originalVendorDir);
 
-            $fileHashGenerator = new FileHashGenerator(
+            $fileHashGenerator = new ComposerFileHasher(
                 $originalVendorDir,
                 $originalRootDir,
                 array_column($config->getExcludedFilesWithContents(), 0),

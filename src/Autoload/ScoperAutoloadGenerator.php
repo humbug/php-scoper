@@ -56,7 +56,7 @@ final class ScoperAutoloadGenerator
 
     public function __construct(
         private readonly SymbolsRegistry $registry,
-        private readonly array           $excludedComposerAutoloadFileHashes,
+        private readonly array $excludedComposerAutoloadFileHashes,
     ) {
         self::$eol = chr(10);
     }
@@ -113,7 +113,7 @@ final class ScoperAutoloadGenerator
                         // Restore the backup and ensure the excluded files are properly marked as loaded
                         \$GLOBALS['__composer_autoload_files'] = [
                             ...\$existingComposerAutoloadFiles,
-                            ...array_fill_keys($excludedComposerAutoloadFiles, true),
+                            ...array_fill_keys({$excludedComposerAutoloadFiles}, true),
                         ];
 
                         return \$loader;
@@ -145,7 +145,7 @@ final class ScoperAutoloadGenerator
                     // Restore the backup and ensure the excluded files are properly marked as loaded
                     \$GLOBALS['__composer_autoload_files'] = [
                         ...\$existingComposerAutoloadFiles,
-                        ...array_fill_keys($excludedComposerAutoloadFiles, true),
+                        ...array_fill_keys({$excludedComposerAutoloadFiles}, true),
                     ];
 
                     return \$loader;
