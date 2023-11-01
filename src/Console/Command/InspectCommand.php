@@ -145,7 +145,7 @@ final class InspectCommand implements Command, CommandAware
             $io->getOption(self::NO_CONFIG_OPT)->asBoolean(),
             $this->getConfigFilePath($io, $cwd),
             ConfigurationFactory::DEFAULT_FILE_NAME,
-            true,
+            false,
             $paths,
             $cwd,
         );
