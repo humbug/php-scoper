@@ -2,6 +2,7 @@
 
 namespace Acme;
 
+use Composer\InstalledVersions;
 use Throwable;
 use const PHP_EOL;
 
@@ -23,5 +24,5 @@ require __DIR__.'/vendor/autoload.php';
 // despite the scoped file having been loaded previously.
 \GuzzleHttp\describe_type('hello');
 
-// Mimic PHPStan that uses some autoloaded code
-
+echo InstalledVersions::getVersion('guzzlehttp/guzzle').PHP_EOL;
+echo 'Done.'.PHP_EOL;
