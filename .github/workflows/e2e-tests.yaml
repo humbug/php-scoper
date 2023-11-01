@@ -147,6 +147,7 @@ jobs:
                 run: sudo apt-get install -y tree
 
             -   run: echo $SHELL
+            -   run: bash --version
 
             -   name: Run e2e ${{ matrix.e2e }}
                 run: make ${{ matrix.e2e }} --debug
