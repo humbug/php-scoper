@@ -324,7 +324,7 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 	composer --working-dir=build/set035-composer-files-autoload/scoped-guzzle5-include dump-autoload
 	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
 
-	php build/set035-composer-files-autoload/index.php &> build/set035-composer-files-autoload/output || true
+	php build/set035-composer-files-autoload/index.php 2>&1 > build/set035-composer-files-autoload/output
 	php build/set035-composer-files-autoload/test.php
 
 .PHONY: e2e_036
