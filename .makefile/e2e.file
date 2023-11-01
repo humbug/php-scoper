@@ -331,7 +331,7 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 	php build/set035-composer-files-autoload/index.php
 	@echo "––––––––––––––––––––––-----"
 	touch build/set035-composer-files-autoload/output
-	php build/set035-composer-files-autoload/index.php 2>&1 build/set035-composer-files-autoload/output
+	php build/set035-composer-files-autoload/index.php 2>&1 > build/set035-composer-files-autoload/output
 	@echo "––––––––––––––––––––––-----"
 	cat build/set035-composer-files-autoload/output
 	@echo "––––––––––––––––––––––-----"
