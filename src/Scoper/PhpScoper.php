@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\PhpParser\Printer\Printer;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Lexer;
 use PhpParser\Parser;
@@ -42,8 +43,6 @@ final class PhpScoper implements Scoper
 
     /**
      * Scopes PHP files.
-     *
-     * @throws PhpParserError
      */
     public function scope(string $filePath, string $contents): string
     {
@@ -51,7 +50,11 @@ final class PhpScoper implements Scoper
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
-        return $this->scopePhp($contents);
+        try {
+            return $this->scopePhp($contents);
+        } catch (PhpParserError $parsingException) {
+            throw ParsingException::forFile($filePath, $parsingException);
+        }
     }
 
     public function scopePhp(string $php): string

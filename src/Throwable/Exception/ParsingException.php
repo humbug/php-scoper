@@ -14,6 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Throwable\Exception;
 
+use Throwable;
+
 final class ParsingException extends RuntimeException
 {
+    public static function forFile(string $filePath, Throwable $previous): self
+    {
+        return new self(
+            sprintf(
+                'Could not parse the file "%s".',
+                $filePath,
+            ),
+            previous: $previous,
+        );
+    }
 }

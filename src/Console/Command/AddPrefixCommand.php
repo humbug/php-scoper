@@ -51,6 +51,7 @@ final class AddPrefixCommand implements Command, CommandAware
     private const OUTPUT_DIR_OPT = 'output-dir';
     private const FORCE_OPT = 'force';
     private const STOP_ON_FAILURE_OPT = 'stop-on-failure';
+    private const CONTINUE_ON_FAILURE_OPT = 'continue-on-failure';
     private const CONFIG_FILE_OPT = 'config';
     private const NO_CONFIG_OPT = 'no-config';
 
@@ -108,6 +109,12 @@ final class AddPrefixCommand implements Command, CommandAware
                     'Stops on failure.',
                 ),
                 new InputOption(
+                    self::CONTINUE_ON_FAILURE_OPT,
+                    null,
+                    InputOption::VALUE_NONE,
+                    'Continue on non PHP-Parser parsing failures.',
+                ),
+                new InputOption(
                     self::CONFIG_FILE_OPT,
                     'c',
                     InputOption::VALUE_REQUIRED,
@@ -150,10 +157,38 @@ final class AddPrefixCommand implements Command, CommandAware
             $config,
             $paths,
             $outputDir,
-            $io->getOption(self::STOP_ON_FAILURE_OPT)->asBoolean(),
+            self::getStopOnFailure($io),
         );
 
         return ExitCode::SUCCESS;
+    }
+
+    private static function getStopOnFailure(IO $io): bool
+    {
+        $stopOnFailure = $io->getOption(self::STOP_ON_FAILURE_OPT)->asBoolean();
+        $continueOnFailure = $io->getOption(self::CONTINUE_ON_FAILURE_OPT)->asBoolean();
+
+        if ($stopOnFailure) {
+            $io->info(
+                sprintf(
+                    'Using the option "%s" is now deprecated. Any non PHP-Parser parsing error will now halt the process. To continue upon non-PHP-Parser parsing errors, use the option "%s".',
+                    self::STOP_ON_FAILURE_OPT,
+                    self::CONTINUE_ON_FAILURE_OPT,
+                ),
+            );
+        }
+
+        if (true === $stopOnFailure && true === $continueOnFailure) {
+            $io->info(
+                sprintf(
+                    'Only one of the two options "%s" and "%s" can be used at the same time.',
+                    self::STOP_ON_FAILURE_OPT,
+                    self::CONTINUE_ON_FAILURE_OPT,
+                ),
+            );
+        }
+
+        return $stopOnFailure;
     }
 
     /**
