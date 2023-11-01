@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Console;
 use Fidry\Console\Application\Application as FidryApplication;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
+use Humbug\PhpScoper\Console\Command\InspectCommand;
 use Humbug\PhpScoper\Console\Command\InspectSymbolCommand;
 use Humbug\PhpScoper\Container;
 use Symfony\Component\Console\Helper\FormatterHelper;
@@ -101,6 +102,11 @@ final class Application implements FidryApplication
                 $this->container->getFileSystem(),
                 $this->container->getScoperFactory(),
                 $this,
+                $this->container->getConfigurationFactory(),
+            ),
+            new InspectCommand(
+                $this->container->getFileSystem(),
+                $this->container->getScoperFactory(),
                 $this->container->getConfigurationFactory(),
             ),
             new InspectSymbolCommand(
