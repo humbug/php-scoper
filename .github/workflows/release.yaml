@@ -21,7 +21,7 @@ jobs:
         name: Build PHAR
         steps:
             -   name: Checkout
-                uses: actions/checkout@v3
+                uses: actions/checkout@v4
                 with:
                     fetch-depth: 0
 
@@ -54,7 +54,7 @@ jobs:
 
             -   name: Import GPG key
                 if: github.event_name == 'release'
-                uses: crazy-max/ghaction-import-gpg@v5
+                uses: crazy-max/ghaction-import-gpg@v6
                 with:
                     gpg_private_key: ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE }}
                     passphrase: ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}

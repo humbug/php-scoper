@@ -23,6 +23,7 @@ use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use LogicException;
 use PhpParser\Error as PhpParserError;
 use PhpParser\Lexer;
@@ -267,18 +268,14 @@ class PhpScoperTest extends TestCase
 
             PHP;
 
-        try {
-            $this->scoper->scope($filePath, $contents);
+        $this->expectExceptionObject(
+            new ParsingException(
+                'Could not parse the file "invalid-file.php".',
+                previous: new PhpParserError('Syntax error, unexpected \';\' on line 3'),
+            ),
+        );
 
-            self::fail('Expected exception to have been thrown.');
-        } catch (PhpParserError $error) {
-            self::assertEquals(
-                'Syntax error, unexpected \';\' on line 3',
-                $error->getMessage(),
-            );
-            self::assertSame(0, $error->getCode());
-            self::assertNull($error->getPrevious());
-        }
+        $this->scoper->scope($filePath, $contents);
     }
 
     public function test_creates_a_new_traverser_for_each_file(): void

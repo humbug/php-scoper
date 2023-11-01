@@ -33,7 +33,6 @@ use function count;
 use function preg_match as native_preg_match;
 use function Safe\file_get_contents;
 use function Safe\fileperms;
-use function sprintf;
 use function str_replace;
 use function strlen;
 use function usort;
@@ -227,18 +226,23 @@ final class ConsoleScoper
         bool $stopOnFailure,
         ScoperLogger $logger
     ): void {
+        $successfullyScoped = false;
+
         try {
             $scoppedContent = $scoper->scope(
                 $inputFilePath,
                 $inputContents,
             );
+
+            $successfullyScoped = true;
+        } catch (ParsingException $parsingException) {
+            $logger->outputWarnOfFailure($inputFilePath, $parsingException);
+
+            // Fallback on unchanged content
+            $scoppedContent = file_get_contents($inputFilePath);
         } catch (Throwable $throwable) {
-            $exception = new ParsingException(
-                sprintf(
-                    'Could not parse the file "%s".',
-                    $inputFilePath,
-                ),
-                0,
+            $exception = ParsingException::forFile(
+                $inputFilePath,
                 $throwable,
             );
 
@@ -258,7 +262,7 @@ final class ConsoleScoper
             $outputFilePath,
         );
 
-        if (!isset($exception)) {
+        if ($successfullyScoped) {
             $logger->outputSuccess($inputFilePath);
         }
     }

@@ -31,10 +31,10 @@ use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
+use PhpParser\Error as PhpParserError;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
@@ -104,7 +104,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
         $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
 
         $expectedFiles = [
-            'composer/installed.json' => 'f1',
+            'composer/installed.json' => '{"packages": []}}',
             'executable-file.php' => 'f5',
             'file.php' => 'f2',
             'invalid-file.php' => 'f3',
@@ -145,7 +145,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_let_the_file_unchanged_when_cannot_scope_a_file(): void
+    public function test_let_the_file_unchanged_when_cannot_scope_a_file_but_is_marked_as_continue_on_failure(): void
     {
         $input = [
             'add-prefix',
@@ -156,6 +156,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             '--output-dir' => $this->tmp,
             '--no-interaction',
             '--no-config' => null,
+            '--continue-on-failure' => null,
         ];
 
         $this->fileSystemProphecy->isAbsolutePath($root)->willReturn(true);
@@ -197,7 +198,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             } else {
                 $this->scoperProphecy
                     ->scope($inputPath, $inputContents)
-                    ->willThrow(new RootRuntimeException('Scoping of the file failed'));
+                    ->willThrow(new RuntimeException('Scoping of the file failed'));
 
                 $this->fileSystemProphecy->dumpFile($outputPath, $inputContents)->shouldBeCalled();
             }
@@ -582,7 +583,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $fileContents)
-                ->willThrow(new RuntimeException('Could not scope file'));
+                ->willThrow(new PhpParserError('Could not scope file'));
 
             $this->fileSystemProphecy->dumpFile($outputPath, $fileContents)->shouldBeCalled();
         }
