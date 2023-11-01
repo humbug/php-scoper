@@ -34,7 +34,6 @@ use Symfony\Component\Filesystem\Path;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 use function array_key_exists;
-use function file_exists;
 use function Safe\getcwd;
 use function sprintf;
 use const DIRECTORY_SEPARATOR;
@@ -158,13 +157,7 @@ final class InspectCommand implements Command, CommandAware
     {
         $configFilePath = (string) $io->getOption(self::CONFIG_FILE_OPT)->asNullableString();
 
-        if ('' !== $configFilePath) {
-            return $this->canonicalizePath($configFilePath, $cwd);
-        }
-
-        $defaultConfigFilePath = $this->canonicalizePath(ConfigurationFactory::DEFAULT_FILE_NAME, $cwd);
-
-        return file_exists($defaultConfigFilePath) ? $defaultConfigFilePath : null;
+        return '' === $configFilePath ? null : $this->canonicalizePath($configFilePath, $cwd);
     }
 
     /**

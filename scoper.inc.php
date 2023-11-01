@@ -13,35 +13,33 @@ declare(strict_types=1);
  */
 
 $jetBrainStubs = (static function (): array {
-    $packageDir = __DIR__.'/vendor/jetbrains/phpstorm-stubs';
     $files = [];
-    $ignoredDirectories = [
-        $packageDir.'/tests',
-        $packageDir.'/meta',
-    ];
 
-    $collectFiles = static function (RecursiveIteratorIterator $iterator) use (&$collectFiles, &$files, $ignoredDirectories): void {
-        foreach ($iterator as $fileInfo) {
-            /** @var SplFileInfo $fileInfo */
-            if (str_starts_with($fileInfo->getFilename(), '.')
-                || $fileInfo->isDir()
-                || !$fileInfo->isReadable()
-                || 'php' !== $fileInfo->getExtension()
-            ) {
+    foreach (new DirectoryIterator(__DIR__.'/vendor/jetbrains/phpstorm-stubs') as $directoryInfo) {
+        if ($directoryInfo->isDot()) {
+            continue;
+        }
+
+        if (false === $directoryInfo->isDir()) {
+            continue;
+        }
+
+        if (in_array($directoryInfo->getBasename(), ['tests', 'meta'], true)) {
+            continue;
+        }
+
+        foreach (new DirectoryIterator($directoryInfo->getPathName()) as $fileInfo) {
+            if ($fileInfo->isDot()) {
                 continue;
             }
 
-            foreach ($ignoredDirectories as $ignoredDirectory) {
-                if (str_starts_with($fileInfo->getPathname(),  $ignoredDirectory)) {
-                    continue 2;
-                }
+            if (1 !== preg_match('/\.php$/', $fileInfo->getBasename())) {
+                continue;
             }
 
             $files[] = $fileInfo->getPathName();
         }
-    };
-
-    $collectFiles(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($packageDir)));
+    }
 
     return $files;
 })();
@@ -52,32 +50,37 @@ return [
     'exclude-classes' => [
         'Isolated\Symfony\Component\Finder\Finder',
     ],
-    'exclude-functions' => [
-        // symfony/deprecation-contracts
-        'trigger_deprecation',
-
-        // nikic/php-parser
-        // https://github.com/nikic/PHP-Parser/issues/957
-        'assertArgs',
-        'ensureDirExists',
-        'execCmd',
-        'formatErrorMessage',
-        'magicSplit',
-        'parseArgs',
-        'preprocessGrammar',
-        'regex',
-        'removeTrailingWhitespace',
-        'resolveMacros',
-        'resolveNodes',
-        'resolveStackAccess',
-        'showHelp',
-    ],
     'exclude-constants' => [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
     ],
     'exclude-files' => $jetBrainStubs,
     'patchers' => [
+        //
+        // PHPStorm stub map: leave it unchanged
+        //
+        static function (string $filePath, string $prefix, string $contents): string {
+            if ('vendor/jetbrains/phpstorm-stubs/PhpStormStubsMap.php' !== $filePath) {
+                return $contents;
+            }
+
+            return str_replace(
+                [
+                    $prefix.'\\\\',
+                    $prefix.'\\',
+                    'namespace JetBrains\PHPStormStub;',
+                ],
+                [
+                    '',
+                    '',
+                    sprintf(
+                        'namespace %s\JetBrains\PHPStormStub;',
+                        $prefix,
+                    ),
+                ],
+                $contents,
+            );
+        },
         //
         // Reflector: leave the registered internal symbols unchanged
         //

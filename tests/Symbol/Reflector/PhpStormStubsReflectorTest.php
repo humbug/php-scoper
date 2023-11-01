@@ -16,8 +16,6 @@ namespace Humbug\PhpScoper\Symbol\Reflector;
 
 use Humbug\PhpScoper\Symbol\Reflector;
 use PHPUnit\Framework\TestCase;
-use function event_add;
-use function event_base_reinit;
 
 /**
  * @covers \Humbug\PhpScoper\Symbol\Reflector
@@ -144,7 +142,6 @@ class PhpStormStubsReflectorTest extends TestCase
         yield 'PHPDBG internal function' => [
             'phpdbg_break_file',
             true,
-            event_add()
         ];
     }
 
