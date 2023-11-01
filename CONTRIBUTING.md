@@ -10,7 +10,7 @@ make
 make help
 ```
 
-This project has a certain number of unit tests. However because it is tightly
+This project has a certain number of unit tests. However, because it is tightly
 coupled to [PHP-Parser][php-parser] and since [node visitors][node-visitors]
 behaviour and effects depends a lot on how they are combined, you can find an
 extensive integration test suite for the scoping of PHP files in
@@ -25,24 +25,34 @@ return [
     'meta' => [
         'title' => 'Title of the specification: this is used to quickly identify what is tested/covered by this file',
         
-        // Default configuration value for this file
+        // Default configuration values for this file
         'prefix' => 'Humbug',
-        'whitelist' => [],
         'expose-global-constants' => false,
-        'expose-global-functions' => true,
+        'expose-global-classes' => false,
+        'expose-global-functions' => false,
+        'expose-namespaces' => [],
+        'expose-constants' => [],
+        'expose-classes' => [],
+        'expose-functions' => [],
+        'exclude-namespaces' => [],
+        'exclude-constants' => [],
+        'exclude-classes' => [],
+        'exclude-functions' => [],
+        'expected-recorded-classes' => [],
+        'expected-recorded-functions' => [],
     ],
 
     // List of specifications
     [
         'spec' => <<<'SPEC'
-This is a multiline spec description.
-It can also be a simple string when more readable.
-SPEC
+            This is a multiline spec description.
+            It can also be a simple string when more readable.
+            SPEC
         ,
         
         // Each configuration setting defined in "meta" can be overridden
         // here for this specification
-        'whitelist' => ['Bar'],
+        'expose-global-constants' => true,
         
         // Content of the specification: this should be the content of a plain
         // PHP file as you can notice by the presence of the opening `<?php`
@@ -50,44 +60,43 @@ SPEC
         // the first part which is the content of the original PHP code and
         // the second part which is the scoped content
         'payload' => <<<'PHP'
-<?php declare(strict_types=1);
-
-namespace Acme;
-
-class Foo {}
-
-----
-<?php declare (strict_types=1);
-
-namespace Humbug\Acme;
-
-class Foo
-{
-}
-
-PHP
+            <?php declare(strict_types=1);
+            
+            namespace Acme;
+            
+            class Foo {}
+            
+            ----
+            <?php declare (strict_types=1);
+            
+            namespace Humbug\Acme;
+            
+            class Foo
+            {
+            }
+            
+            PHP
     ],
     
     // When a specification has no configuration setting that requires to be
     // overridden, the format can be simplified to: 
     'Simple spec description' => <<<'PHP'
-    <?php declare(strict_types=1);
-    
-    namespace Acme;
-    
-    class Foo {}
-    
-    ----
-    <?php declare (strict_types=1);
-    
-    namespace Humbug\Acme;
-    
-    class Foo
-    {
-    }
-    
-PHP
-    ,
+        <?php declare(strict_types=1);
+        
+        namespace Acme;
+        
+        class Foo {}
+        
+        ----
+        <?php declare (strict_types=1);
+        
+        namespace Humbug\Acme;
+        
+        class Foo
+        {
+        }
+        
+    PHP,
 ];
 
 ```

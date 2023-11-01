@@ -56,7 +56,7 @@ final class ConfigurationFactory
     public const DEFAULT_FILE_NAME = 'scoper.inc.php';
 
     public function __construct(
-        private readonly Filesystem                  $fileSystem,
+        private readonly Filesystem $fileSystem,
         private readonly SymbolsConfigurationFactory $symbolsConfigurationFactory,
     ) {
     }
