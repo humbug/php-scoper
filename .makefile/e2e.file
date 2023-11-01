@@ -324,19 +324,8 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 	composer --working-dir=build/set035-composer-files-autoload/scoped-guzzle5-include dump-autoload
 	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
 
-	@echo "––––––––––––––––––––––-----"
-	echo "$SHELL"
-	echo "$$($SHELL) --version"
-	@echo "––––––––––––––––––––––-----"
-	php build/set035-composer-files-autoload/index.php
-	@echo "––––––––––––––––––––––-----"
-	touch build/set035-composer-files-autoload/output
 	php build/set035-composer-files-autoload/index.php 2>&1 > build/set035-composer-files-autoload/output
-	@echo "––––––––––––––––––––––-----"
-	cat build/set035-composer-files-autoload/output
-	@echo "––––––––––––––––––––––-----"
 	php build/set035-composer-files-autoload/test.php
-	@echo "HOYE"
 
 .PHONY: e2e_036
 e2e_036: # Runs end-to-end tests for the fixture set e2e_036 — Minimalistic codebase
