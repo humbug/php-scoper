@@ -21,7 +21,7 @@ jobs:
         name: Check Dependencies
         steps:
             -   name: Checkout
-                uses: actions/checkout@v3
+                uses: actions/checkout@v4
                 with:
                     fetch-depth: 0
 
@@ -33,4 +33,4 @@ jobs:
                     key: db
 
             -   name: Checks dependencies for known vulnerabilities
-                uses: symfonycorp/security-checker-action@v4
+                uses: symfonycorp/security-checker-action@v5
