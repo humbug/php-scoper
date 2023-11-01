@@ -293,7 +293,10 @@ final class ConfigurationFactory
                 $file = $dirPath.DIRECTORY_SEPARATOR.$file;
             }
 
-            $excludedFiles[$index] = realpath($file);
+            unset( $excludedFiles[$index] );
+            $fileKey = str_replace( $dirPath.DIRECTORY_SEPARATOR, '', $file );
+            $file = realpath($file);
+            $excludedFiles[$fileKey] = $file;
         }
 
         return array_filter($excludedFiles);
