@@ -236,12 +236,13 @@ if (!function_exists('Prefix\trigger_deprecation')) {
 }
 ```
 
-Indeed the namespace _needs_ to be added in order to not break autoloading, in which
+Indeed, the namespace _needs_ to be added in order to not break autoloading, in which
 case wrapping the function declaration into a non-namespace could work, but is tricky
 (so not implemented so far, PoC for supporting it are welcomed) hence was not attempted.
 
 So if left alone, this will break any piece of code that relied on `\trigger_deprecation`,
 which is why PHP-Scoper will still add an alias for it, as if it was an exposed function.
+Another benefit of this, is that it allows to scope any polyfill without any issues.
 
 **WARNING**: This exclusion feature should be use very carefully as it can easily break the Composer
 auto-loading. Indeed, if you have the following package:

@@ -53,7 +53,6 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
         - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
 - [Recommendations](#recommendations)
 - [Further Reading](docs/further-reading.md#further-reading)
-    - [Polyfills](docs/further-reading.md#polyfills)
     - [How to deal with unknown third-party symbols](docs/further-reading.md#how-to-deal-with-unknown-third-party-symbols)
     - [Autoload aliases](docs/further-reading.md#autoload-aliases)
         - [Class aliases](docs/further-reading.md#class-aliases)
