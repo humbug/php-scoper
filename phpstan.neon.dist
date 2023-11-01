@@ -57,3 +57,5 @@ parameters:
           path: 'tests/Configuration/DefaultConfigurationTest.php'
         - message: '#Cannot access offset#'
           path: 'tests/AutoReview/GAE2ECollector.php'
+        - message: '#normalizeSymbolsRegistryReference#'
+          path: 'tests/Console/Command/AddInspectCommandIntegrationTest.php'
