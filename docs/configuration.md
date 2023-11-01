@@ -207,9 +207,43 @@ return [
 
 This enriches the list of Symbols PHP-Scoper's Reflector considers as "internal",
 i.e. PHP engine or extension symbols. Such symbols will be left completely 
-untouched.
+untouched.*
 
-This feature should be use very carefully as it can easily break the Composer
+*: There is _one_ exception, which is declarations of functions. If you have the function
+`trigger_deprecation` excluded, then any usage of it in the code will be left alone:
+
+```php
+use function trigger_deprecation; // Will not be turned into Prefix\trigger_deprecation
+```
+
+However, PHP-Scoper may come across its declaration:
+
+```php
+// global namespace!
+
+if (!function_exists('trigger_deprecation')) {
+    function trigger_deprecation() {}
+}
+```
+
+Then it will be scoped into:
+
+```php
+namespace Prefix;
+
+if (!function_exists('Prefix\trigger_deprecation')) {
+    function trigger_deprecation() {}
+}
+```
+
+Indeed the namespace _needs_ to be added in order to not break autoloading, in which
+case wrapping the function declaration into a non-namespace could work, but is tricky
+(so not implemented so far, PoC for supporting it are welcomed) hence was not attempted.
+
+So if left alone, this will break any piece of code that relied on `\trigger_deprecation`,
+which is why PHP-Scoper will still add an alias for it, as if it was an exposed function.
+
+**WARNING**: This exclusion feature should be use very carefully as it can easily break the Composer
 auto-loading. Indeed, if you have the following package:
 
 ```json
