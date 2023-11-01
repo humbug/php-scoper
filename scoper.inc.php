@@ -32,7 +32,7 @@ $jetBrainStubs = (static function (): array {
             }
 
             foreach ($ignoredDirectories as $ignoredDirectory) {
-                if (str_starts_with($fileInfo->getPathname(),  $ignoredDirectory)) {
+                if (str_starts_with($fileInfo->getPathname(), $ignoredDirectory)) {
                     continue 2;
                 }
             }
