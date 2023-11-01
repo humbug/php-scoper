@@ -46,6 +46,9 @@ $jetBrainStubs = (static function (): array {
     return $files;
 })();
 
+var_dump(array_map(static fn ($path) => substr($path, 72), $jetBrainStubs));
+exit;
+
 return [
     'expose-global-functions' => true,
     'expose-global-classes' => true,
@@ -61,6 +64,32 @@ return [
     ],
     'exclude-files' => $jetBrainStubs,
     'patchers' => [
+        //
+        // PHPStorm stub map: adjust the namespace to fix the autoloading, but keep it
+        // unchanged otherwise.
+        //
+        static function (string $filePath, string $prefix, string $contents): string {
+            if ('vendor/jetbrains/phpstorm-stubs/PhpStormStubsMap.php' !== $filePath) {
+                return $contents;
+            }
+
+            return str_replace(
+                [
+                    $prefix.'\\\\',
+                    $prefix.'\\',
+                    'namespace JetBrains\PHPStormStub;',
+                ],
+                [
+                    '',
+                    '',
+                    sprintf(
+                        'namespace %s\JetBrains\PHPStormStub;',
+                        $prefix,
+                    ),
+                ],
+                $contents,
+            );
+        },
         //
         // Reflector: leave the registered internal symbols unchanged
         //
