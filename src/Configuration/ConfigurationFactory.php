@@ -57,7 +57,7 @@ final class ConfigurationFactory
 
     public function __construct(
         private readonly Filesystem $fileSystem,
-        private readonly SymbolsConfigurationFactory $configurationWhitelistFactory,
+        private readonly SymbolsConfigurationFactory $symbolsConfigurationFactory,
     ) {
     }
 
@@ -91,7 +91,7 @@ final class ConfigurationFactory
         array_unshift($patchers, new SymfonyParentTraitPatcher());
         array_unshift($patchers, new ComposerPatcher());
 
-        $symbolsConfiguration = $this->configurationWhitelistFactory->createSymbolsConfiguration($config);
+        $symbolsConfiguration = $this->symbolsConfigurationFactory->createSymbolsConfiguration($config);
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
