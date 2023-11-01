@@ -27,6 +27,9 @@ $jetBrainStubs = (static function (): array {
                 || $fileInfo->isDir()
                 || !$fileInfo->isReadable()
                 || 'php' !== $fileInfo->getExtension()
+                // The map needs to be excluded from "exclude-files" as otherwise its namespace cannot be corrected
+                // via a patcher
+                || $fileInfo->getFilename() === 'PhpStormStubsMap.php'
             ) {
                 continue;
             }
