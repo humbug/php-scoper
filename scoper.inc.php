@@ -46,9 +46,6 @@ $jetBrainStubs = (static function (): array {
     return $files;
 })();
 
-var_dump(array_map(static fn ($path) => substr($path, 72), $jetBrainStubs));
-exit;
-
 return [
     'expose-global-functions' => true,
     'expose-global-classes' => true,
