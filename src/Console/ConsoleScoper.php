@@ -22,7 +22,6 @@ use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use PhpParser\Error as PhpParserError;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
@@ -225,12 +224,21 @@ final class ConsoleScoper
         bool $stopOnFailure,
         ScoperLogger $logger
     ): void {
+        $successfullyScoped = false;
+
         try {
             $scoppedContent = $scoper->scope(
                 $inputFilePath,
                 $inputContents,
             );
-        } catch (PhpParserError $throwable) {
+
+            $successfullyScoped = true;
+        } catch (ParsingException $parsingException) {
+            $logger->outputWarnOfFailure($inputFilePath, $parsingException);
+
+            // Fallback on unchanged content
+            $scoppedContent = file_get_contents($inputFilePath);
+        } catch (Throwable $throwable) {
             $exception = ParsingException::forFile(
                 $inputFilePath,
                 $throwable,
@@ -252,7 +260,7 @@ final class ConsoleScoper
             $outputFilePath,
         );
 
-        if (!isset($exception)) {
+        if ($successfullyScoped) {
             $logger->outputSuccess($inputFilePath);
         }
     }

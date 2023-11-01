@@ -145,6 +145,74 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
+    public function test_let_the_file_unchanged_when_cannot_scope_a_file_but_is_marked_as_continue_on_failure(): void
+    {
+        $input = [
+            'add-prefix',
+            '--prefix' => 'MyPrefix',
+            'paths' => [
+                $root = self::FIXTURE_PATH.'/set002/original',
+            ],
+            '--output-dir' => $this->tmp,
+            '--no-interaction',
+            '--no-config' => null,
+            '--continue-on-failure' => null,
+        ];
+
+        $this->fileSystemProphecy->isAbsolutePath($root)->willReturn(true);
+        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
+
+        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
+        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+
+        $expectedFiles = [
+            'composer/installed.json' => 'f1',
+            'executable-file.php' => 'f5',
+            'file.php' => 'f2',
+            'invalid-file.php' => 'f3',
+            'scoper.inc.php' => null,
+        ];
+
+        $root = realpath($root);
+
+        $this->fileSystemProphecy
+            ->chmod(
+                $this->tmp.'/executable-file.php',
+                493,
+            )
+            ->shouldBeCalled();
+
+        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
+            $inputPath = FS::escapePath($root.'/'.$expectedFile);
+            $outputPath = FS::escapePath($this->tmp.'/'.$expectedFile);
+
+            $inputContents = file_get_contents($inputPath);
+
+            if (null !== $prefixedContents) {
+                $this->scoperProphecy
+                    ->scope($inputPath, $inputContents)
+                    ->willReturn($prefixedContents);
+
+                $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
+            } else {
+                $this->scoperProphecy
+                    ->scope($inputPath, $inputContents)
+                    ->willThrow(new RuntimeException('Scoping of the file failed'));
+
+                $this->fileSystemProphecy->dumpFile($outputPath, $inputContents)->shouldBeCalled();
+            }
+        }
+
+        $this->appTester->run($input);
+
+        self::assertSame(0, $this->appTester->getStatusCode());
+
+        $this->scoperProphecy
+            ->scope(Argument::cetera())
+            ->shouldHaveBeenCalledTimes(count($expectedFiles));
+    }
+
     public function test_do_not_scope_duplicated_given_paths(): void
     {
         $input = [
