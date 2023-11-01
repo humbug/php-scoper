@@ -13,33 +13,38 @@ declare(strict_types=1);
  */
 
 $jetBrainStubs = (static function (): array {
+    $packageDir = __DIR__.'/vendor/jetbrains/phpstorm-stubs';
+    $ignoredDirectories = [
+        $packageDir.'/tests',
+        $packageDir.'/meta',
+    ];
     $files = [];
 
-    foreach (new DirectoryIterator(__DIR__.'/vendor/jetbrains/phpstorm-stubs') as $directoryInfo) {
-        if ($directoryInfo->isDot()) {
-            continue;
-        }
-
-        if (false === $directoryInfo->isDir()) {
-            continue;
-        }
-
-        if (in_array($directoryInfo->getBasename(), ['tests', 'meta'], true)) {
-            continue;
-        }
-
-        foreach (new DirectoryIterator($directoryInfo->getPathName()) as $fileInfo) {
-            if ($fileInfo->isDot()) {
+    $collectFiles = static function (RecursiveIteratorIterator $iterator) use (&$files, $ignoredDirectories): void {
+        foreach ($iterator as $fileInfo) {
+            /** @var SplFileInfo $fileInfo */
+            if (str_starts_with($fileInfo->getFilename(), '.')
+                || $fileInfo->isDir()
+                || !$fileInfo->isReadable()
+                || 'php' !== $fileInfo->getExtension()
+                // The map needs to be excluded from "exclude-files" as otherwise its namespace cannot be corrected
+                // via a patcher
+                || $fileInfo->getFilename() === 'PhpStormStubsMap.php'
+            ) {
                 continue;
             }
 
-            if (1 !== preg_match('/\.php$/', $fileInfo->getBasename())) {
-                continue;
+            foreach ($ignoredDirectories as $ignoredDirectory) {
+                if (str_starts_with($fileInfo->getPathname(), $ignoredDirectory)) {
+                    continue 2;
+                }
             }
 
             $files[] = $fileInfo->getPathName();
         }
-    }
+    };
+
+    $collectFiles(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($packageDir)));
 
     return $files;
 })();
@@ -50,6 +55,9 @@ return [
     'exclude-classes' => [
         'Isolated\Symfony\Component\Finder\Finder',
     ],
+    'exclude-functions' => [
+        'trigger_deprecation',
+    ],
     'exclude-constants' => [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
@@ -57,7 +65,8 @@ return [
     'exclude-files' => $jetBrainStubs,
     'patchers' => [
         //
-        // PHPStorm stub map: leave it unchanged
+        // PHPStorm stub map: adjust the namespace to fix the autoloading, but keep it
+        // unchanged otherwise.
         //
         static function (string $filePath, string $prefix, string $contents): string {
             if ('vendor/jetbrains/phpstorm-stubs/PhpStormStubsMap.php' !== $filePath) {
