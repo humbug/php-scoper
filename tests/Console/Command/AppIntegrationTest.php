@@ -102,6 +102,7 @@ class AppIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
               completion      Dump the shell completion script
               help            Display help for a command
               init            Generates a configuration file.
+              inspect         Outputs the processed file content based on the configuration.
               inspect-symbol  Checks the given symbol for a given configuration. Helpful to have an insight on how PHP-Scoper will interpret this symbol
               list            List commands
 
