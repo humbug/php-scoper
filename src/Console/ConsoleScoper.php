@@ -22,6 +22,7 @@ use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
+use PhpParser\Error as PhpParserError;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
@@ -33,7 +34,6 @@ use function count;
 use function preg_match as native_preg_match;
 use function Safe\file_get_contents;
 use function Safe\fileperms;
-use function sprintf;
 use function str_replace;
 use function strlen;
 use function usort;
@@ -230,13 +230,9 @@ final class ConsoleScoper
                 $inputFilePath,
                 $inputContents,
             );
-        } catch (Throwable $throwable) {
-            $exception = new ParsingException(
-                sprintf(
-                    'Could not parse the file "%s".',
-                    $inputFilePath,
-                ),
-                0,
+        } catch (PhpParserError $throwable) {
+            $exception = ParsingException::forFile(
+                $inputFilePath,
                 $throwable,
             );
 

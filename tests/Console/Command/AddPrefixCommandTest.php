@@ -31,10 +31,10 @@ use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
+use PhpParser\Error as PhpParserError;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
@@ -104,7 +104,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
         $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
 
         $expectedFiles = [
-            'composer/installed.json' => 'f1',
+            'composer/installed.json' => '{"packages": []}}',
             'executable-file.php' => 'f5',
             'file.php' => 'f2',
             'invalid-file.php' => 'f3',
@@ -134,73 +134,6 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
                 ->willReturn($prefixedContents);
 
             $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
-        }
-
-        $this->appTester->run($input);
-
-        self::assertSame(0, $this->appTester->getStatusCode());
-
-        $this->scoperProphecy
-            ->scope(Argument::cetera())
-            ->shouldHaveBeenCalledTimes(count($expectedFiles));
-    }
-
-    public function test_let_the_file_unchanged_when_cannot_scope_a_file(): void
-    {
-        $input = [
-            'add-prefix',
-            '--prefix' => 'MyPrefix',
-            'paths' => [
-                $root = self::FIXTURE_PATH.'/set002/original',
-            ],
-            '--output-dir' => $this->tmp,
-            '--no-interaction',
-            '--no-config' => null,
-        ];
-
-        $this->fileSystemProphecy->isAbsolutePath($root)->willReturn(true);
-        $this->fileSystemProphecy->isAbsolutePath($this->tmp)->willReturn(true);
-
-        $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
-        $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
-
-        $expectedFiles = [
-            'composer/installed.json' => 'f1',
-            'executable-file.php' => 'f5',
-            'file.php' => 'f2',
-            'invalid-file.php' => 'f3',
-            'scoper.inc.php' => null,
-        ];
-
-        $root = realpath($root);
-
-        $this->fileSystemProphecy
-            ->chmod(
-                $this->tmp.'/executable-file.php',
-                493,
-            )
-            ->shouldBeCalled();
-
-        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = FS::escapePath($root.'/'.$expectedFile);
-            $outputPath = FS::escapePath($this->tmp.'/'.$expectedFile);
-
-            $inputContents = file_get_contents($inputPath);
-
-            if (null !== $prefixedContents) {
-                $this->scoperProphecy
-                    ->scope($inputPath, $inputContents)
-                    ->willReturn($prefixedContents);
-
-                $this->fileSystemProphecy->dumpFile($outputPath, $prefixedContents)->shouldBeCalled();
-            } else {
-                $this->scoperProphecy
-                    ->scope($inputPath, $inputContents)
-                    ->willThrow(new RootRuntimeException('Scoping of the file failed'));
-
-                $this->fileSystemProphecy->dumpFile($outputPath, $inputContents)->shouldBeCalled();
-            }
         }
 
         $this->appTester->run($input);
@@ -582,7 +515,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $fileContents)
-                ->willThrow(new RuntimeException('Could not scope file'));
+                ->willThrow(new PhpParserError('Could not scope file'));
 
             $this->fileSystemProphecy->dumpFile($outputPath, $fileContents)->shouldBeCalled();
         }
