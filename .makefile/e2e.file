@@ -325,7 +325,8 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
 
 	@echo "––––––––––––––––––––––-----"
-	echo "$$SHELL"
+	echo "$SHELL"
+	echo "$$($SHELL) --version"
 	@echo "––––––––––––––––––––––-----"
 	php build/set035-composer-files-autoload/index.php
 	@echo "––––––––––––––––––––––-----"
