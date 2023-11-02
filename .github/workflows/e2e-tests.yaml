@@ -193,7 +193,7 @@ jobs:
             -   name: Retrieve built PHP-Scoper PHAR
                 uses: actions/download-artifact@v3
                 with:
-                    name: php-scoper-phar-${{ matrix.php }}
+                    name: php-scoper-phar-${{ matrix.php-version }}
                     path: bin
 
             # See https://github.com/actions/download-artifact#limitations
