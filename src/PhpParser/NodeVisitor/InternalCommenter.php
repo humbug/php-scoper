@@ -27,6 +27,7 @@ use function array_splice;
 use function count;
 use function explode;
 use function implode;
+use function is_string;
 use function rtrim;
 use function sprintf;
 use function str_contains;
@@ -66,6 +67,10 @@ final class InternalCommenter extends NodeVisitorAbstract
         }
 
         $reformattedText = $existingDoc->getReformattedText();
+
+        if (!is_string($reformattedText)) {
+            return $existingDoc->getText();
+        }
 
         if (str_contains($reformattedText, '@internal')) {
             return $reformattedText;
