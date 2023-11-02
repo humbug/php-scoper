@@ -96,6 +96,7 @@ final class ConfigurationFactory
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
         $filesWithContents = self::retrieveFilesWithContents(chain($filesFromPaths, ...$finders));
+        $tagDeclarationsAsInternal = $config[ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL] ?? true;
 
         return new Configuration(
             $path,
@@ -105,6 +106,7 @@ final class ConfigurationFactory
             self::retrieveFilesWithContents($excludedFiles),
             new PatcherChain($patchers),
             $symbolsConfiguration,
+            $tagDeclarationsAsInternal,
         );
     }
 

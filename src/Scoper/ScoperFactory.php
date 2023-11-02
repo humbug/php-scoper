@@ -70,6 +70,7 @@ class ScoperFactory
                     $enrichedReflector,
                     $prefix,
                     $symbolsRegistry,
+                    $configuration->shouldTagDeclarationsAsInternal(),
                 ),
                 $this->printer,
                 $this->lexer,

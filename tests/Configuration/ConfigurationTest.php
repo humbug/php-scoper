@@ -47,6 +47,7 @@ final class ConfigurationTest extends TestCase
             [],
             new PatcherChain([]),
             SymbolsConfiguration::create(),
+            true,
         );
     }
 
@@ -60,6 +61,7 @@ final class ConfigurationTest extends TestCase
             ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
             new FakePatcher(),
             SymbolsConfiguration::create(),
+            true,
         ];
 
         $config = new Configuration(...$values);
@@ -86,6 +88,7 @@ final class ConfigurationTest extends TestCase
             ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
             new FakePatcher(),
             SymbolsConfiguration::create(),
+            true,
         ];
 
         $config = new Configuration(...$values);
@@ -124,7 +127,8 @@ final class ConfigurationTest extends TestCase
         array $expectedFilesWithContents,
         array $expectedExcludedFilesWithContents,
         Patcher $expectedPatcher,
-        SymbolsConfiguration $expectedSymbolsConfiguration
+        SymbolsConfiguration $expectedSymbolsConfiguration,
+        bool $expectedShouldTagDeclarationsAsInternal,
     ): void {
         self::assertSame($expectedPath, $configuration->getPath());
         self::assertSame($expectedOutputDir, $configuration->getOutputDir());
@@ -141,6 +145,10 @@ final class ConfigurationTest extends TestCase
         self::assertEquals(
             $expectedSymbolsConfiguration,
             $configuration->getSymbolsConfiguration(),
+        );
+        self::assertSame(
+            $expectedShouldTagDeclarationsAsInternal,
+            $configuration->shouldTagDeclarationsAsInternal(),
         );
     }
 }
