@@ -100,3 +100,53 @@ jobs:
             - name: Failing run
               if: ${{ contains(needs.*.result, 'failure') }}
               run: exit 1
+
+    update-composer-root-version:
+        name: Update the Composer root version
+        if: ${{ github.repository == 'humbug/php-scoper' && github.ref_name == 'main' }}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v3
+                with:
+                    ref: ${{ github.head_ref }}
+                    fetch-depth: '0'  # Ensures the tags are fetched
+                    token: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.1'
+                    tools: composer
+                    coverage: none
+
+            -   name: Install the Composer dependencies
+                uses: ramsey/composer-install@v2
+                with:
+                    working-directory: 'composer-root-version-checker'
+
+            -   name: Ensure that the make target is up to date
+                run: cd composer-root-version-checker; make _vendor_install
+
+            -   name: Dump the Composer too version
+                run: cd composer-root-version-checker; make dump_root_version
+
+            -   name: Check for changes
+                run: |
+                    if [ $(git status --porcelain | wc -l) -eq "0" ]; then
+                        echo "🟢 No change detected."
+                        echo "composer_root_version_changed=false" >> $GITHUB_ENV
+                    else
+                        echo "composer_root_version_changed=true" >> $GITHUB_ENV
+                    fi
+
+            -   name: Create Pull Request
+                if: env.composer_root_version == 'true'
+                uses: peter-evans/create-pull-request@v4
+                with:
+                    token: ${{ secrets.GITHUB_TOKEN }}
+                    branch-suffix: random
+                    delete-branch: true
+                    title: "build: Update the Composer root version"
+                    committer: "php-scoper-bot <humbug-php-scoper-bot@example.com>"
+                    commit-message: "Update the Composer root version"
