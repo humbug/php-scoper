@@ -8,7 +8,7 @@ on:
         types: [ created ]
     schedule:
         # Do not make it the first of the month and/or midnight since it is a very busy time
-        - cron: "* 10 5 * *"
+        -   cron: "* 10 5 * *"
 
 # See https://stackoverflow.com/a/72408109
 concurrency:
@@ -149,6 +149,72 @@ jobs:
             -   name: Run e2e ${{ matrix.e2e }}
                 run: make ${{ matrix.e2e }} --debug
 
+
+    # Most of the job definitions come from https://github.com/sebastianbergmann/phpunit/blob/main/.github/workflows/ci.yml#L228
+    # (job name "test-phar").
+    test-phpunit-scoping:
+        runs-on: ubuntu-latest
+        needs: build-test-phar
+
+        env:
+            PHP_EXTENSIONS: none, curl, dom, json, fileinfo, iconv, libxml, mbstring, phar, soap, tokenizer, xml, xmlwriter
+            PHP_INI_VALUES: assert.exception=1, phar.readonly=0, zend.assertions=1
+
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version:
+                    - '8.2'
+                coverage:
+                    - xdebug
+
+        steps:
+            -   name: Checkout PHPUnit code
+                uses: actions/checkout@v4
+                with:
+                    repository: 'sebastianbergmann/phpunit'
+
+
+            -   name: Install PHP with extensions
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+                    coverage: ${{ matrix.coverage }}
+                    extensions: ${{ env.PHP_EXTENSIONS }}
+                    ini-values: ${{ env.PHP_INI_VALUES }}
+                    tools: none
+
+            -   name: Install java
+                uses: actions/setup-java@v3
+                with:
+                    distribution: zulu
+                    java-version: 11
+
+            -   name: Retrieve built PHP-Scoper PHAR
+                uses: actions/download-artifact@v3
+                with:
+                    name: php-scoper-phar-${{ matrix.php-version }}
+                    path: bin
+
+            # See https://github.com/actions/download-artifact#limitations
+            # the permissions are not guaranteed to be preserved
+            -   name: Ensure PHAR is executable
+                run: chmod 755 bin/php-scoper.phar
+
+            -   name: Make the downloaded PHP-Scoper PHAR the PHPUnit scoper used
+                run: mv -f bin/php-scoper.phar tools/php-scoper
+
+            -   name: Check that the PHP-Scoper PHAR works
+                run: tools/php-scoper --version
+
+            -   name: Build PHPUnit scoped PHAR
+                run: ant phar-snapshot
+
+            # To keep in sync with e2e.file#e2e_038
+            -   name: Run PHPUnit PHAR-specific tests
+                run: ant run-phar-specific-tests
+
+
     # This is a "trick", a meta task which does not change, and we can use in
     # the protected branch rules as opposed to the E2E tests one above which
     # may change regularly.
@@ -160,12 +226,13 @@ jobs:
         needs:
             - build-test-phar
             - e2e-tests
+            - test-phpunit-scoping
         if: always()
         steps:
-            - name: Successful run
-              if: ${{ !(contains(needs.*.result, 'failure')) }}
-              run: exit 0
+            -   name: Successful run
+                if: ${{ !(contains(needs.*.result, 'failure')) }}
+                run: exit 0
 
-            - name: Failing run
-              if: ${{ contains(needs.*.result, 'failure') }}
-              run: exit 1
+            -   name: Failing run
+                if: ${{ contains(needs.*.result, 'failure') }}
+                run: exit 1
