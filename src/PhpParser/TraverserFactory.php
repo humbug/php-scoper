@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\PhpParser\NodeVisitor\InternalCommenter;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
@@ -34,6 +35,7 @@ class TraverserFactory
         private readonly EnrichedReflector $reflector,
         private readonly string $prefix,
         private readonly SymbolsRegistry $symbolsRegistry,
+        private readonly bool $tagDeclarationsAsInternal,
     ) {
     }
 
@@ -45,6 +47,7 @@ class TraverserFactory
                 $this->reflector,
                 $scoper,
                 $this->symbolsRegistry,
+                $this->tagDeclarationsAsInternal,
             ),
         );
     }
@@ -72,7 +75,8 @@ class TraverserFactory
         string $prefix,
         EnrichedReflector $reflector,
         PhpScoper $scoper,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
+        bool $tagDeclarationsAsInternal,
     ): array {
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
@@ -84,7 +88,7 @@ class TraverserFactory
         $identifierResolver = new IdentifierResolver($nameResolver);
         $stringNodePrefixer = new StringNodePrefixer($scoper);
 
-        return [
+        $resolvers = [
             $nameResolver,
             new NodeVisitor\AttributeAppender\ParentNodeAppender(),
             new NodeVisitor\AttributeAppender\IdentifierNameAppender($identifierResolver),
@@ -139,5 +143,11 @@ class TraverserFactory
                 $reflector,
             ),
         ];
+
+        if ($tagDeclarationsAsInternal) {
+            $resolvers[] = new InternalCommenter();
+        }
+
+        return $resolvers;
     }
 }
