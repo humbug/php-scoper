@@ -125,9 +125,6 @@ jobs:
                 with:
                     working-directory: 'composer-root-version-checker'
 
-            -   name: Ensure that the make target is up to date
-                run: cd composer-root-version-checker; make _vendor_install
-
             -   name: Dump the Composer too version
                 run: cd composer-root-version-checker; make dump_root_version
 
