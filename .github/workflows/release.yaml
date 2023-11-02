@@ -121,7 +121,7 @@ jobs:
             # the permissions are not guaranteed to be preserved
             -   name: Ensure PHAR is executable
                 run: |
-                    chmod 755 box.phar
+                    chmod 755 php-scoper.phar
                     mv -vf php-scoper.phar bin/php-scoper.phar
                     ./bin/php-scoper.phar --ansi --version
 
