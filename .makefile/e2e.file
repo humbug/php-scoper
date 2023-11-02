@@ -1,3 +1,7 @@
+E2E_PHPUNIT_DIR = 'build/set038/phpunit'
+E2E_PHPUNIT_PHPUNIT_PHP_SCOPER = '$(E2E_PHPUNIT_DIR)/tools/php-scoper'
+E2E_PHPUNIT_SCOPED_PHPUNIT = 'build/artifacts/phpunit-snapshot.phar'
+
 .PHONY: e2e_004
 e2e_004: # Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
 e2e_004: $(PHP_SCOPER_PHAR_BIN)
@@ -370,6 +374,19 @@ e2e_037: $(PHP_SCOPER_PHAR_BIN) build/set011/bin/greet.phar
 	diff fixtures/set037-double-scoping/expected-output build/set037/output
 
 
+.PHONY: e2e_038
+e2e_038: # Runs end-to-end tests for the PHPUnit integration
+e2e_038: $(PHP_SCOPER_PHAR_BIN)
+	rm -rf $(E2E_PHPUNIT_DIR) || true
+	$(MAKE) $(E2E_PHPUNIT_DIR)
+
+	rm -rf $(E2E_PHPUNIT_PHPUNIT_PHP_SCOPER) || true
+	cp $(PHP_SCOPER_PHAR_BIN) $(E2E_PHPUNIT_PHPUNIT_PHP_SCOPER)
+
+	cd $(E2E_PHPUNIT_DIR); ant phar-snapshot
+	cd $(E2E_PHPUNIT_DIR); $(E2E_PHPUNIT_SCOPED_PHPUNIT)
+
+
 #
 # Rules from files
 #---------------------------------------------------------------------------
@@ -507,3 +524,8 @@ fixtures/set035-composer-files-autoload/guzzle5-include/vendor: fixtures/set035-
 fixtures/set035-composer-files-autoload/guzzle5-include/composer.lock: fixtures/set035-composer-files-autoload/guzzle5-include/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload/guzzle5-include update --lock && touch -c $(@)"
+
+build/set038/phpunit:
+	rm -rf $(E2E_PHPUNIT_DIR) || true
+	git clone --depth=1 --single-branch git@github.com:sebastianbergmann/phpunit.git $@
+	touch -c $@
