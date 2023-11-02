@@ -210,6 +210,7 @@ jobs:
             -   name: Build PHPUnit scoped PHAR
                 run: ant phar-snapshot
 
+            # To keep in sync with e2e.file#e2e_038
             -   name: Run PHPUnit PHAR-specific tests
                 run: ant run-phar-specific-tests
 
