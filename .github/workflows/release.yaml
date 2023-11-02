@@ -75,7 +75,6 @@ jobs:
                        bin/php-scoper.phar
 
             -   name: Upload the PHAR artifact
-                if: github.event_name == 'release'
                 uses: actions/upload-artifact@v3
                 with:
                     name: php-scoper-phar
