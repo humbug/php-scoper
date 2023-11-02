@@ -84,6 +84,10 @@ return [
         },
     ],
 
+    // Whether symbols declarations should have the PHPDoc tag "@internal" added. This helps some IDEs to not indicate
+    // to not include the symbol for auto-completion suggestions for example.
+    'tag-declarations-as-internal' => true,
+
     // List of symbols to consider internal i.e. to leave untouched.
     //
     // For more information see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#excluded-symbols

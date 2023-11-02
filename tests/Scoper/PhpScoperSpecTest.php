@@ -76,7 +76,7 @@ class PhpScoperSpecTest extends TestCase
         // SPECS_CONFIG_KEYS included
         'expected-recorded-classes',
         'expected-recorded-functions',
-        'tag-declarations-as-internal',
+        ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL,
     ];
 
     // Keys allowed on a spec level
@@ -86,7 +86,7 @@ class PhpScoperSpecTest extends TestCase
         'expected-recorded-classes',
         'expected-recorded-functions',
         'payload',
-        'tag-declarations-as-internal',
+        ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL,
     ];
 
     // Keys kept and used to build the symbols configuration
@@ -378,7 +378,7 @@ class PhpScoperSpecTest extends TestCase
             $fixtureSet['expected-recorded-functions'] ?? $meta['expected-recorded-functions'],
             $meta['minPhpVersion'] ?? null,
             $meta['maxPhpVersion'] ?? null,
-            $fixtureSet['tag-declarations-as-internal'] ?? $meta['tag-declarations-as-internal'] ?? false,
+            $fixtureSet[ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL] ?? $meta[ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL] ?? false,
         ];
     }
 
