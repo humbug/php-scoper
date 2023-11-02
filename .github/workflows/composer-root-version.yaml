@@ -103,7 +103,7 @@ jobs:
 
     update-composer-root-version:
         name: Update the Composer root version
-        if: ${{ github.repository == 'humbug/php-scoper' && github.ref_name == 'main' }}
+        #if: ${{ github.repository == 'humbug/php-scoper' && github.ref_name == 'main' }}
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout
@@ -140,13 +140,13 @@ jobs:
                         echo "composer_root_version_changed=true" >> $GITHUB_ENV
                     fi
 
-            -   name: Create Pull Request
-                if: env.composer_root_version == 'true'
-                uses: peter-evans/create-pull-request@v4
-                with:
-                    token: ${{ secrets.GITHUB_TOKEN }}
-                    branch-suffix: random
-                    delete-branch: true
-                    title: "build: Update the Composer root version"
-                    committer: "php-scoper-bot <humbug-php-scoper-bot@example.com>"
-                    commit-message: "Update the Composer root version"
+#            -   name: Create Pull Request
+#                if: env.composer_root_version == 'true'
+#                uses: peter-evans/create-pull-request@v4
+#                with:
+#                    token: ${{ secrets.GITHUB_TOKEN }}
+#                    branch-suffix: random
+#                    delete-branch: true
+#                    title: "build: Update the Composer root version"
+#                    committer: "php-scoper-bot <humbug-php-scoper-bot@example.com>"
+#                    commit-message: "Update the Composer root version"
