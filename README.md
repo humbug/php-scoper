@@ -30,8 +30,9 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 
 - [Installation](docs/installation.md#installation)
     - [Phive](docs/installation.md#phive)
-    - [PHAR](docs/installation.md#phar)
     - [Composer](docs/installation.md#composer)
+    - [Docker](docs/installation.md#docker)
+    - [GitHub](docs/installation.md#github)
 - [Usage](#usage)
 - [Configuration](docs/configuration.md#configuration)
     - [Prefix](docs/configuration.md#prefix)
