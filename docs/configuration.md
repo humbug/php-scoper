@@ -6,6 +6,7 @@
 - [Patchers](#patchers)
 - [Excluded files](#excluded-files)
 - [Excluded Symbols](#excluded-symbols)
+- [Excluding Third-Party Symbols](#excluding-third-party-symbols)
 - [Excluding namespaces](#excluding-namespaces)
 - [Exposed Symbols](#exposed-symbols)
     - [Exposing namespaces](#exposing-namespaces)
@@ -266,6 +267,46 @@ package will be faulty and will not work*. For this to work, the whole package
 It is recommended to use excluded symbols only to complement the
 [PhpStorm's stubs][phpstorm-stubs] shipped with PHP-Scoper.
 
+
+### Excluding Third-Party Symbols
+
+You might be writing code that runs inside a codebase that you don't fully control, but whose public API is consumed by your code.
+
+A primary example is creating [WordPress plugins](https://github.com/humbug/php-scoper/issues/303).
+
+In this case, you need to exclude all symbols of the third-party code base so that they're not scoped in your final build.
+
+Maintaining the list of third-party symbols can be very cumbersome, especially if the third-party codebase is large.
+
+To make this easier, [Snicco](https://github.com/snicco) created a third-party CLI tool that can be used to generate 
+PHP-Scoper compatible symbol lists for any PHP codebase you point it at. 
+
+You can find it here:
+
+https://github.com/snicco/php-scoper-excludes
+
+Apart from the general-purpose CLI tool, Snicco also maintains a couple of pre-built symbol lists. 
+
+**For WordPress Core:**
+
+```shell
+composer require sniccowp/php-scoper-wordpress-excludes
+```
+
+```php
+// scoper.inc.php
+
+$wp_classes   = json_decode( file_get_contents( 'vendor/sniccowp/php-scoper-wordpress-excludes/generated/exclude-wordpress-classes.json' ), true );
+$wp_functions = json_decode( file_get_contents( 'vendor/sniccowp/php-scoper-wordpress-excludes/generated/exclude-wordpress-functions.json' ), true );
+$wp_constants = json_decode( file_get_contents( 'vendor/sniccowp/php-scoper-wordpress-excludes/generated/exclude-wordpress-constants.json' ), true );
+
+return [
+  'exclude-classes' => $wp_classes,
+  'exclude-constants' => $wp_functions,
+  'exclude-functions' => $wp_constants,
+  // ...
+];
+```
 
 ### Excluding namespaces
 
