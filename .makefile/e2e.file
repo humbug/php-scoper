@@ -384,7 +384,7 @@ e2e_038: $(PHP_SCOPER_PHAR_BIN)
 	cp $(PHP_SCOPER_PHAR_BIN) $(E2E_PHPUNIT_PHPUNIT_PHP_SCOPER)
 
 	cd $(E2E_PHPUNIT_DIR); ant phar-snapshot
-	cd $(E2E_PHPUNIT_DIR); $(E2E_PHPUNIT_SCOPED_PHPUNIT)
+	cd $(E2E_PHPUNIT_DIR); ant run-phar-specific-tests
 
 
 #
