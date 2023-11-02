@@ -12,42 +12,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-$jetBrainStubs = (static function (): array {
-    $packageDir = __DIR__.'/vendor/jetbrains/phpstorm-stubs';
-    $ignoredDirectories = [
-        $packageDir.'/tests',
-        $packageDir.'/meta',
-    ];
-    $files = [];
-
-    $collectFiles = static function (RecursiveIteratorIterator $iterator) use (&$files, $ignoredDirectories): void {
-        foreach ($iterator as $fileInfo) {
-            /** @var SplFileInfo $fileInfo */
-            if (str_starts_with($fileInfo->getFilename(), '.')
-                || $fileInfo->isDir()
-                || !$fileInfo->isReadable()
-                || 'php' !== $fileInfo->getExtension()
-                // The map needs to be excluded from "exclude-files" as otherwise its namespace cannot be corrected
-                // via a patcher
-                || $fileInfo->getFilename() === 'PhpStormStubsMap.php'
-            ) {
-                continue;
-            }
-
-            foreach ($ignoredDirectories as $ignoredDirectory) {
-                if (str_starts_with($fileInfo->getPathname(), $ignoredDirectory)) {
-                    continue 2;
-                }
-            }
-
-            $files[] = $fileInfo->getPathName();
-        }
-    };
-
-    $collectFiles(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($packageDir)));
-
-    return $files;
-})();
+$jetBrainStubs = (require __DIR__.'/res/get-scoper-phpstorm-stubs.php')();
+$jetBrainStubsPatcher = (require __DIR__.'/res/create-scoper-phpstorm-stubs-map-patcher.php')();
 
 return [
     'expose-global-functions' => true,
@@ -64,32 +30,7 @@ return [
     ],
     'exclude-files' => $jetBrainStubs,
     'patchers' => [
-        //
-        // PHPStorm stub map: adjust the namespace to fix the autoloading, but keep it
-        // unchanged otherwise.
-        //
-        static function (string $filePath, string $prefix, string $contents): string {
-            if ('vendor/jetbrains/phpstorm-stubs/PhpStormStubsMap.php' !== $filePath) {
-                return $contents;
-            }
-
-            return str_replace(
-                [
-                    $prefix.'\\\\',
-                    $prefix.'\\',
-                    'namespace JetBrains\PHPStormStub;',
-                ],
-                [
-                    '',
-                    '',
-                    sprintf(
-                        'namespace %s\JetBrains\PHPStormStub;',
-                        $prefix,
-                    ),
-                ],
-                $contents,
-            );
-        },
+        $jetBrainStubsPatcher,
         //
         // Reflector: leave the registered internal symbols unchanged
         //
