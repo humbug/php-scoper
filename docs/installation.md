@@ -45,6 +45,14 @@ $ composer bin php-scoper require --dev humbug/php-scoper
 $ vendor/bin/php-scoper
 ```
 
+## Docker
+
+The official docker image for the project is [`humbugphp/php-scoper`][docker-image]:
+
+```shell
+docker pull humbugphp/php-scoper
+```
+
 
 <br />
 <hr />
@@ -54,5 +62,6 @@ $ vendor/bin/php-scoper
 
 [releases]: https://github.com/humbug/php-scoper/releases
 [composer]: https://getcomposer.org
+[docker-image]: https://hub.docker.com/r/humbugphp/php-scoper
 [bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
 [phive]: https://github.com/phar-io/phive
