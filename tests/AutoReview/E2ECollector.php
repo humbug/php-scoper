@@ -44,6 +44,10 @@ final class E2ECollector
         'set012',
     ];
 
+    private const E2E_TEST_WITHOUT_FIXTURE_DIR = [
+        'e2e_038',
+    ];
+
     /**
      * @return list<string>
      */
@@ -74,6 +78,7 @@ final class E2ECollector
                 iterator_to_array($finder, false),
             ),
         );
+        $names = [...$names, ...self::E2E_TEST_WITHOUT_FIXTURE_DIR];
 
         sort($names, SORT_STRING);
 
