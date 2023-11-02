@@ -45,6 +45,27 @@ $ composer bin php-scoper require --dev humbug/php-scoper
 $ vendor/bin/php-scoper
 ```
 
+## GitHub
+
+You may download the Box PHAR directly from the [GitHub release][releases] directly.
+You should however beware that it is not as secure as downloading it from the other mediums.
+Hence, it is recommended to check the signature when doing so:
+
+```shell
+# Do adjust the URL based on the latest release
+wget -O box.phar "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar"
+wget -O box.phar.asc "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar.asc"
+
+# Check that the signature matches
+gpg --verify php-scoper.phar.asc php-scoper.phar
+
+# Check the issuer (the ID can also be found from the previous command)
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 74A754C9778AA03AA451D1C1A000F927D67184EE
+
+rm php-scoper.phar.asc
+chmod +x php-scoper.phar
+```
+
 
 <br />
 <hr />
@@ -52,7 +73,7 @@ $ vendor/bin/php-scoper
 « [Table of Contents](../README.md#table-of-contents) • [Configuration](configuration.md#configuration) »
 
 
-[releases]: https://github.com/humbug/php-scoper/releases
 [composer]: https://getcomposer.org
 [bamarni/composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
 [phive]: https://github.com/phar-io/phive
+[releases]: https://github.com/humbug/php-scoper/releases
