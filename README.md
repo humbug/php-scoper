@@ -58,6 +58,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Autoload aliases](docs/further-reading.md#autoload-aliases)
         - [Class aliases](docs/further-reading.md#class-aliases)
         - [Function aliases](docs/further-reading.md#function-aliases)
+    - [Symfony support](docs/further-reading.md#symfony-support)
 - [Limitations](docs/limitations.md#limitations)
     - [Dynamic symbols](docs/limitations.md#dynamic-symbols)
     - [Date symbols](docs/limitations.md#date-symbols)
