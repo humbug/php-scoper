@@ -79,9 +79,16 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'function_exists',
         'interface_exists',
         'is_a',
+        'is_callable',
         'is_subclass_of',
         'spl_autoload_register',
         'trait_exists',
+    ];
+
+    // Function for which we know the FIRST argument IS a FQCN
+    private const SPECIAL_ARRAY_FUNCTION_NAMES = [
+        'is_callable',
+        'spl_autoload_register',
     ];
 
     private const DATETIME_CLASSES = [
@@ -315,7 +322,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $functionName = (string) $functionNode->name;
 
-        return ('spl_autoload_register' === $functionName
+        return (in_array($functionName, self::SPECIAL_ARRAY_FUNCTION_NAMES, true)
                 && array_key_exists(0, $arrayNode->items)
                 && $arrayItemNode === $arrayNode->items[0]
                 && !$this->enrichedReflector->isClassExcluded($normalizedValue)
