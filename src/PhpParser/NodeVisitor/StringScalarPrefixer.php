@@ -72,6 +72,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     // Function for which we know the argument IS a FQCN
     private const SPECIAL_FUNCTION_NAMES = [
+        'call_user_func_array',
         'class_alias',
         'class_exists',
         'define',
@@ -87,6 +88,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     // Function for which we know the FIRST argument IS a FQCN
     private const SPECIAL_ARRAY_FUNCTION_NAMES = [
+        'call_user_func_array',
         'is_callable',
         'spl_autoload_register',
     ];
