@@ -80,6 +80,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'interface_exists',
         'is_a',
         'is_subclass_of',
+        'spl_autoload_register',
         'trait_exists',
     ];
 
