@@ -408,6 +408,7 @@ _e2e_038:
 e2e_039: # Runs end-to-end tests for the fixture set e2e_037 — Codebase using scoped code
 e2e_039: $(PHP_SCOPER_PHAR_BIN)
 	rm -rf fixtures/set039-min-php-version/vendor || true
+	docker pull php:7.2-cli-alpine
 
 	composer --working-dir=fixtures/set039-min-php-version install
 
