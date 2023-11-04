@@ -116,6 +116,7 @@ Note that the path is the "regular path(s)" that can be passed to patchers.
 
 « [Configuration](configuration.md#configuration) • [Limitations](limitations.md#limitations) »
 
+[excluded-function]: configuration.md#excluded-symbols
 [excluded-symbols]: configuration.md#excluded-symbols
 [excluding a function]: configuration.md#excluded-symbols
 [exposed-symbols]: configuration.md#exposed-symbols
