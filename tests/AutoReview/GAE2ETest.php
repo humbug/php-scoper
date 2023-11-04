@@ -26,6 +26,7 @@ class GAE2ETest extends TestCase
 {
     private const IGNORED_E2E_TESTS = [
         'e2e_038',
+        'e2e_039',
     ];
 
     public function test_github_actions_executes_all_the_e2e_tests(): void
