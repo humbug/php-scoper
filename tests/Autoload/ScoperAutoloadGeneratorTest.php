@@ -58,7 +58,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup and ensure the excluded files are properly marked as loaded
-                    $GLOBALS['__composer_autoload_files'] = \merge(
+                    $GLOBALS['__composer_autoload_files'] = \array_merge(
                         $existingComposerAutoloadFiles,
                         \array_fill_keys([], true),
                     );
@@ -89,7 +89,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup and ensure the excluded files are properly marked as loaded
-                    $GLOBALS['__composer_autoload_files'] = \merge(
+                    $GLOBALS['__composer_autoload_files'] = \array_merge(
                         $existingComposerAutoloadFiles,
                         \array_fill_keys(['a610a8e036135f992c6edfb10ca9f4e9', 'e252736c6babb7c097ab6692dbcb2a5a'], true),
                     );
@@ -126,7 +126,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup and ensure the excluded files are properly marked as loaded
-                    $GLOBALS['__composer_autoload_files'] = \merge(
+                    $GLOBALS['__composer_autoload_files'] = \array_merge(
                         $existingComposerAutoloadFiles,
                         \array_fill_keys([], true),
                     );
@@ -168,7 +168,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup and ensure the excluded files are properly marked as loaded
-                    $GLOBALS['__composer_autoload_files'] = \merge(
+                    $GLOBALS['__composer_autoload_files'] = \array_merge(
                         $existingComposerAutoloadFiles,
                         \array_fill_keys([], true),
                     );
@@ -212,7 +212,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                         if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                         // Restore the backup and ensure the excluded files are properly marked as loaded
-                        $GLOBALS['__composer_autoload_files'] = \merge(
+                        $GLOBALS['__composer_autoload_files'] = \array_merge(
                             $existingComposerAutoloadFiles,
                             \array_fill_keys([], true),
                         );
@@ -265,7 +265,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                         if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                         // Restore the backup and ensure the excluded files are properly marked as loaded
-                        $GLOBALS['__composer_autoload_files'] = \merge(
+                        $GLOBALS['__composer_autoload_files'] = \array_merge(
                             $existingComposerAutoloadFiles,
                             \array_fill_keys(['a610a8e036135f992c6edfb10ca9f4e9', 'e252736c6babb7c097ab6692dbcb2a5a'], true),
                         );
@@ -318,7 +318,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                         if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                         // Restore the backup and ensure the excluded files are properly marked as loaded
-                        $GLOBALS['__composer_autoload_files'] = \merge(
+                        $GLOBALS['__composer_autoload_files'] = \array_merge(
                             $existingComposerAutoloadFiles,
                             \array_fill_keys([], true),
                         );
@@ -368,7 +368,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup and ensure the excluded files are properly marked as loaded
-                    $GLOBALS['__composer_autoload_files'] = \merge(
+                    $GLOBALS['__composer_autoload_files'] = \array_merge(
                         $existingComposerAutoloadFiles,
                         \array_fill_keys([], true),
                     );
@@ -416,7 +416,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup and ensure the excluded files are properly marked as loaded
-                    $GLOBALS['__composer_autoload_files'] = \merge(
+                    $GLOBALS['__composer_autoload_files'] = \array_merge(
                         $existingComposerAutoloadFiles,
                         \array_fill_keys([], true),
                     );
@@ -471,7 +471,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                         if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                         // Restore the backup and ensure the excluded files are properly marked as loaded
-                        $GLOBALS['__composer_autoload_files'] = \merge(
+                        $GLOBALS['__composer_autoload_files'] = \array_merge(
                             $existingComposerAutoloadFiles,
                             \array_fill_keys([], true),
                         );
@@ -540,7 +540,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                     // Restore the backup and ensure the excluded files are properly marked as loaded
-                    $GLOBALS['__composer_autoload_files'] = \merge(
+                    $GLOBALS['__composer_autoload_files'] = \array_merge(
                         $existingComposerAutoloadFiles,
                         \array_fill_keys([], true),
                     );
@@ -583,7 +583,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                         if (file_exists($installedVersionsPath)) require_once $installedVersionsPath;
 
                         // Restore the backup and ensure the excluded files are properly marked as loaded
-                        $GLOBALS['__composer_autoload_files'] = \merge(
+                        $GLOBALS['__composer_autoload_files'] = \array_merge(
                             $existingComposerAutoloadFiles,
                             \array_fill_keys([], true),
                         );
