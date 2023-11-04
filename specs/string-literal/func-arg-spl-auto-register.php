@@ -38,6 +38,8 @@ return [
     'FQCN string argument' => <<<'PHP'
     <?php
     
+    spl_autoload_register('sodiumCompatAutoloader');
+    spl_autoload_register('Sodium\compatAutoloader');
     spl_autoload_register(['Swift', 'autoload']);
     spl_autoload_register(['\Swift', 'autoload']);
     spl_autoload_register(['Humbug\\Swift', 'autoload']);
@@ -51,6 +53,8 @@ return [
     
     namespace Humbug;
     
+    \spl_autoload_register('Humbug\\sodiumCompatAutoloader');
+    \spl_autoload_register('Humbug\\Sodium\\compatAutoloader');
     \spl_autoload_register(['Humbug\\Swift', 'autoload']);
     \spl_autoload_register(['Humbug\\Swift', 'autoload']);
     \spl_autoload_register(['Humbug\\Swift', 'autoload']);
@@ -84,6 +88,23 @@ return [
         PHP,
     ],
 
+    'FQCN string argument on exposed function' => [
+        'expose-functions' => ['sodiumCompatAutoloader'],
+        'payload' => <<<'PHP'
+        <?php
+        
+        spl_autoload_register('sodiumCompatAutoloader');
+        
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        \spl_autoload_register('Humbug\\sodiumCompatAutoloader');
+        
+        PHP,
+    ],
+
     'FQCN string argument on class from an excluded namespace' => [
         'exclude-namespaces' => [
             'Symfony\Component\Yaml',
@@ -105,6 +126,26 @@ return [
             \spl_autoload_register(['Humbug\\Swift', 'autoload']);
             \spl_autoload_register(['Humbug\\Swift', 'autoload']);
             \spl_autoload_register(['DateTime', 'autoload']);
+        }
+        
+        PHP,
+    ],
+
+    'FQCN string argument on function from an excluded namespace' => [
+        'exclude-namespaces' => [
+            'Sodium',
+            '/^$/',
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        spl_autoload_register('Sodium\CompatAutoloader');
+        
+        ----
+        <?php
+        
+        namespace {
+            \spl_autoload_register('Sodium\\CompatAutoloader');
         }
         
         PHP,

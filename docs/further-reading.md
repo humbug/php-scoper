@@ -1,67 +1,10 @@
 ## Further Reading
 
-- [Polyfills](#polyfills)
 - [How to deal with unknown third-party symbols](#how-to-deal-with-unknown-third-party-symbols)
 - [Autoload aliases](#autoload-aliases)
   - [Class aliases](#class-aliases)
   - [Function aliases](#function-aliases)
-
-
-### Polyfills
-
-**Note: should be obsolete as of 0.18.0.**
-
-At the moment there is no way to automatically handles polyfills. This is mainly
-due to the nature of polyfills: the code is sometimes a bit... special and there
-is also not only one way on how to approach it.
-
-If all of what you have is Symfony polyfills however, the following should get
-you covered:
-
-```php
-<?php declare(strict_types=1);  // scoper.inc.php
-
-use Isolated\Symfony\Component\Finder\Finder;
-
-$polyfillsBootstraps = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__ . '/vendor/symfony/polyfill-*')
-            ->name('bootstrap*.php'),
-        false,
-    ),
-);
-
-$polyfillsStubs = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(__DIR__ . '/vendor/symfony/polyfill-*/Resources/stubs')
-            ->name('*.php'),
-        false,
-    ),
-);
-
-return [
-    // ...
-    
-    'exclude-namespaces' => [
-        'Symfony\Polyfill'
-    ],
-    'exclude-constants' => [
-        // Symfony global constants
-        '/^SYMFONY\_[\p{L}_]+$/',
-    ],
-    'exclude-files' => [
-        ...$polyfillsBootstraps,
-        ...$polyfillsStubs,
-    ],
-];
-
-```
+- [Symfony support](#symfony-support)
 
 
 ### How to deal with unknown third-party symbols
@@ -123,6 +66,51 @@ When [exposing a function] or when a globally declared [excluded function]
 declaration is found (see [#706]), an alias will be registered.
 
 
+### Symfony Support
+
+When using [PHP configuration][symfony-php-config] files for your services, some elements may not be prefixed correctly
+due to being strings. For example (taken directly from the Symfony docs):
+
+```php
+<?php // config/services.php
+
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+
+return function(ContainerConfigurator $container): void {
+    // default configuration for services in *this* file
+    $services = $container->services()
+        ->defaults()
+            ->autowire()      // Automatically injects dependencies in your services.
+            ->autoconfigure() // Automatically registers your services as commands, event subscribers, etc.
+    ;
+
+    // makes classes in src/ available to be used as services
+    // this creates a service per class whose id is the fully-qualified class name
+    $services->load('App\\', '../src/')
+        ->exclude('../src/{DependencyInjection,Entity,Kernel.php}');
+
+    // order is important in this file because service definitions
+    // always *replace* previous ones; add your own service configuration below
+};
+```
+
+The string `'App\\'` from `$services->load()` will not be made into `'Prefix\\App\\'`. To address this
+you need to use [patchers]. Alternatively, PHP-Scoper provides one which should should handle such cases:
+
+```php
+<?php // scoper.inc.php
+
+$symfonyPatcher = (require __DIR__.'/vendor/humbug/php-scoper/res/create-symfony-php-services-patcher.php')('config/services.php');
+
+return [
+    'patchers' => [$symfonyPatcher],
+    // ...
+];
+```
+
+Note that the path is the "regular path(s)" that can be passed to patchers.
+
+
 <br />
 <hr />
 
@@ -134,3 +122,5 @@ declaration is found (see [#706]), an alias will be registered.
 [exposing a class]: configuration.md#exposing-classes
 [exposing a function]: configuration.md#exposing-functions
 [#706]: https://github.com/humbug/php-scoper/pull/706
+[patchers]: ./configuration.md#patchers
+[symfony-php-config]: https://symfony.com/doc/current/service_container.html#explicitly-configuring-services-and-arguments

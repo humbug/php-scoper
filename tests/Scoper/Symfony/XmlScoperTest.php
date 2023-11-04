@@ -540,7 +540,7 @@ class XmlScoperTest extends TestCase
                     </services>
                 </container>
                 XML,
-            [], // Whitelisting global classes in the service definitions is not supported at the moment. Provide a PR
+            [], // Excluded global classes in the service definitions is not supported at the moment. Provide a PR
             // if you are willing to add support for it.
         ];
 

@@ -98,6 +98,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                     'exclude-files' => ['file1', 'file2'],
                     'patchers' => [],
                     'finders' => [],
+                    'tag-declarations-as-internal' => true,
 
                     'expose-global-constants' => false,
                     'expose-global-classes' => false,
