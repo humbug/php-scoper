@@ -113,7 +113,7 @@ final class ScoperAutoloadGenerator
                         // Restore the backup and ensure the excluded files are properly marked as loaded
                         \$GLOBALS['__composer_autoload_files'] = \\array_merge(
                             \$existingComposerAutoloadFiles,
-                            \\array_fill_keys({$excludedComposerAutoloadFiles}, true),
+                            \\array_fill_keys({$excludedComposerAutoloadFiles}, true)
                         );
 
                         return \$loader;
@@ -145,7 +145,7 @@ final class ScoperAutoloadGenerator
                     // Restore the backup and ensure the excluded files are properly marked as loaded
                     \$GLOBALS['__composer_autoload_files'] = \\array_merge(
                         \$existingComposerAutoloadFiles,
-                        \\array_fill_keys({$excludedComposerAutoloadFiles}, true),
+                        \\array_fill_keys({$excludedComposerAutoloadFiles}, true)
                     );
 
                     return \$loader;
