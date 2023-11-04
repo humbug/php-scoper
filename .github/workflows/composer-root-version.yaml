@@ -126,11 +126,12 @@ jobs:
                     working-directory: 'composer-root-version-checker'
 
             -   name: Dump the Composer too version
-                run: cd composer-root-version-checker; make dump_root_version
+                working-directory: composer-root-version-checker
+                run: make dump_root_version
 
             -   name: Check for changes
                 run: |
-                    if [ $(git status --porcelain | wc -l) -eq "0" ]; then
+                    if git diff --exit-code; then
                         echo "🟢 No change detected."
                         echo "composer_root_version_changed=false" >> $GITHUB_ENV
                     else
@@ -138,7 +139,7 @@ jobs:
                     fi
 
             -   name: Create Pull Request
-                if: env.composer_root_version == 'true'
+                if: env.composer_root_version_changed == 'true'
                 uses: peter-evans/create-pull-request@v4
                 with:
                     token: ${{ secrets.GITHUB_TOKEN }}
