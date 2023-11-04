@@ -428,7 +428,7 @@ e2e_039: $(PHP_SCOPER_PHAR_BIN)
 		--volume="$$PWD":/opt/php-scoper \
 		php:7.2-cli-alpine \
         php build/set039/index.php \
-		> build/set039/output
+		> build/set039/output || true
 	diff fixtures/set039-min-php-version/expected-output build/set039/output
 
 
