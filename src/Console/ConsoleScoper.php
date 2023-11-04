@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Application\Application;
 use Fidry\Console\Input\IO;
+use Humbug\PhpScoper\Autoload\ComposerFileHasher;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Scoper\Scoper;
@@ -30,6 +31,7 @@ use function array_column;
 use function array_keys;
 use function array_map;
 use function count;
+use function dirname;
 use function preg_match as native_preg_match;
 use function Safe\file_get_contents;
 use function Safe\fileperms;
@@ -132,9 +134,24 @@ final class ConsoleScoper
                 ...array_column($excludedFilesWithContents, 2),
             ],
         );
+        $originalVendorDir = self::findVendorDir(
+            [
+                ...array_column($files, 0),
+                ...array_column($excludedFilesWithContents, 0),
+            ],
+        );
 
-        if (null !== $vendorDir) {
-            $autoload = (new ScoperAutoloadGenerator($symbolsRegistry))->dump();
+        if (null !== $vendorDir && null !== $originalVendorDir) {
+            $originalRootDir = dirname($originalVendorDir);
+
+            $fileHashGenerator = ComposerFileHasher::create(
+                $originalVendorDir,
+                $originalRootDir,
+                array_column($config->getExcludedFilesWithContents(), 0),
+            );
+            $fileHashes = $fileHashGenerator->generateHashes();
+
+            $autoload = (new ScoperAutoloadGenerator($symbolsRegistry, $fileHashes))->dump();
 
             $this->fileSystem->dumpFile(
                 $vendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',

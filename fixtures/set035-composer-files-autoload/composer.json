@@ -2,5 +2,10 @@
     "bin": "index.php",
     "require": {
         "guzzlehttp/guzzle": "^6.5.8"
+    },
+    "autoload": {
+        "files": [
+            "check-non-prefixed-files.php"
+        ]
     }
 }

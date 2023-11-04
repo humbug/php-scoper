@@ -314,7 +314,10 @@ e2e_034: $(PHP_SCOPER_PHAR_BIN) fixtures/set034-installed-versions/vendor
 
 .PHONY: e2e_035
 e2e_035: # Runs end-to-end tests for the fixture set 035 — Tests tha composer autoloaded files are working fine
-e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor fixtures/set035-composer-files-autoload/guzzle5-include/vendor
+e2e_035: $(PHP_SCOPER_PHAR_BIN) \
+		fixtures/set035-composer-files-autoload/vendor \
+		fixtures/set035-composer-files-autoload/guzzle5-include/vendor \
+		fixtures/set035-composer-files-autoload/composer-variable-access/vendor
 	rm -rf build/set035-composer-files-autoload || true
 	cp -R fixtures/set035-composer-files-autoload build/set035-composer-files-autoload
 
@@ -327,6 +330,16 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 		--stop-on-failure
 	composer --working-dir=build/set035-composer-files-autoload/scoped-guzzle5-include dump-autoload
 	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
+
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set035-composer-files-autoload/composer-variable-access \
+		--output-dir=../../../build/set035-composer-files-autoload/scoped-composer-variable-access \
+		--force \
+		--config=scoper.inc.php \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set035-composer-files-autoload/scoped-composer-variable-access dump-autoload
+	rm -rf build/set035-composer-files-autoload/composer-variable-access || true
 
 	php build/set035-composer-files-autoload/index.php 2>&1 > build/set035-composer-files-autoload/output
 	php build/set035-composer-files-autoload/test.php
@@ -529,6 +542,13 @@ fixtures/set035-composer-files-autoload/guzzle5-include/vendor: fixtures/set035-
 fixtures/set035-composer-files-autoload/guzzle5-include/composer.lock: fixtures/set035-composer-files-autoload/guzzle5-include/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload/guzzle5-include update --lock && touch -c $(@)"
+
+fixtures/set035-composer-files-autoload/composer-variable-access/vendor: fixtures/set035-composer-files-autoload/composer-variable-access/composer.lock
+	composer --working-dir=fixtures/set035-composer-files-autoload/composer-variable-access install --no-dev --no-scripts
+	touch -c $@
+fixtures/set035-composer-files-autoload/composer-variable-access/composer.lock: fixtures/set035-composer-files-autoload/composer-variable-access/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload/composer-variable-access update --lock && touch -c $(@)"
 
 build/set038/phpunit:
 	rm -rf $(E2E_PHPUNIT_DIR) || true

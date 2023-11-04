@@ -54,8 +54,10 @@ final class ScoperAutoloadGenerator
     /** @var non-empty-string */
     private static string $eol;
 
-    public function __construct(private readonly SymbolsRegistry $registry)
-    {
+    public function __construct(
+        private readonly SymbolsRegistry $registry,
+        private readonly array $excludedComposerAutoloadFileHashes,
+    ) {
         self::$eol = chr(10);
     }
 
@@ -82,6 +84,16 @@ final class ScoperAutoloadGenerator
 
         $statements = implode(self::$eol, $statements);
 
+        $excludedComposerAutoloadFiles = count($this->excludedComposerAutoloadFileHashes) === 0
+            ? '[]'
+            : sprintf(
+                "['%s']",
+                implode(
+                    "', '",
+                    $this->excludedComposerAutoloadFileHashes,
+                ),
+            );
+
         if ($wrapInNamespace) {
             $dump = <<<PHP
                 <?php
@@ -91,21 +103,18 @@ final class ScoperAutoloadGenerator
                 namespace {
                     \$loader = (static function () {
                         // Backup the autoloaded Composer files
-                        if (isset(\$GLOBALS['__composer_autoload_files'])) {
-                            \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'];
-                        }
+                        \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'] ?? [];
 
                         \$loader = require_once __DIR__.'/autoload.php';
                         // Ensure InstalledVersions is available
                         \$installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
                         if (file_exists(\$installedVersionsPath)) require_once \$installedVersionsPath;
 
-                        // Restore the backup
-                        if (isset(\$existingComposerAutoloadFiles)) {
-                            \$GLOBALS['__composer_autoload_files'] = \$existingComposerAutoloadFiles;
-                        } else {
-                            unset(\$GLOBALS['__composer_autoload_files']);
-                        }
+                        // Restore the backup and ensure the excluded files are properly marked as loaded
+                        \$GLOBALS['__composer_autoload_files'] = [
+                            ...\$existingComposerAutoloadFiles,
+                            ...array_fill_keys({$excludedComposerAutoloadFiles}, true),
+                        ];
 
                         return \$loader;
                     })();
@@ -126,21 +135,18 @@ final class ScoperAutoloadGenerator
 
                 \$loader = (static function () {
                     // Backup the autoloaded Composer files
-                    if (isset(\$GLOBALS['__composer_autoload_files'])) {
-                        \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'];
-                    }
+                    \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'] ?? [];
 
                     \$loader = require_once __DIR__.'/autoload.php';
                     // Ensure InstalledVersions is available
                     \$installedVersionsPath = __DIR__.'/composer/InstalledVersions.php';
                     if (file_exists(\$installedVersionsPath)) require_once \$installedVersionsPath;
 
-                    // Restore the backup
-                    if (isset(\$existingComposerAutoloadFiles)) {
-                        \$GLOBALS['__composer_autoload_files'] = \$existingComposerAutoloadFiles;
-                    } else {
-                        unset(\$GLOBALS['__composer_autoload_files']);
-                    }
+                    // Restore the backup and ensure the excluded files are properly marked as loaded
+                    \$GLOBALS['__composer_autoload_files'] = [
+                        ...\$existingComposerAutoloadFiles,
+                        ...array_fill_keys({$excludedComposerAutoloadFiles}, true),
+                    ];
 
                     return \$loader;
                 })();
