@@ -62,7 +62,7 @@ When [exposing a class], an alias will be registered.
 
 #### Function aliases
 
-When [exposing a function] or when a globally declared [excluded function]
+When [exposing a function] or when a globally declared [excluded-function]
 declaration is found (see [#706]), an alias will be registered.
 
 
