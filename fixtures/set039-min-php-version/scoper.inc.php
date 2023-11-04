@@ -22,5 +22,7 @@ $excludedFiles = array_map(
 );
 
 return [
+    'exclude-files' => ['index.php'],
     'expose-classes' => ['App\Greeter'],
+    'expose-functions' => ['greet'],
 ];
