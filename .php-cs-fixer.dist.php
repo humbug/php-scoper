@@ -25,10 +25,7 @@ $finder = Finder::create()
         'tests',
     ])
     ->append([
-        'bin/check-composer-root-version.php',
-        'bin/dump-composer-root-version.php',
         'bin/php-scoper',
-        'bin/root-version.php',
         '.php-cs-fixer.dist.php',
         'scoper.inc.php',
     ]);
