@@ -30,14 +30,14 @@ use Symfony\Component\Filesystem\Filesystem;
 
 final class Container
 {
-    private Filesystem $filesystem;
-    private ConfigurationFactory $configFactory;
-    private Parser $parser;
-    private Reflector $reflector;
-    private ScoperFactory $scoperFactory;
-    private EnrichedReflectorFactory $enrichedReflectorFactory;
-    private Printer $printer;
-    private Lexer $lexer;
+    private ?Filesystem $filesystem;
+    private ?ConfigurationFactory $configFactory;
+    private ?Parser $parser;
+    private ?Reflector $reflector;
+    private ?ScoperFactory $scoperFactory;
+    private ?EnrichedReflectorFactory $enrichedReflectorFactory;
+    private ?Printer $printer;
+    private ?Lexer $lexer;
 
     public function getFileSystem(): Filesystem
     {
