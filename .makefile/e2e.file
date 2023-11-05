@@ -313,7 +313,7 @@ e2e_034: $(PHP_SCOPER_PHAR_BIN) fixtures/set034-installed-versions/vendor
 	diff fixtures/set034-installed-versions/expected-output build/set034-installed-versions/output
 
 .PHONY: e2e_035
-e2e_035: # Runs end-to-end tests for the fixture set 035 — Tests tha composer autoloaded files are working fine
+e2e_035: # Runs end-to-end tests for the fixture set 035 — Tests that composer autoloaded files are working fine
 e2e_035: $(PHP_SCOPER_PHAR_BIN) \
 		fixtures/set035-composer-files-autoload/vendor \
 		fixtures/set035-composer-files-autoload/guzzle5-include/vendor \
