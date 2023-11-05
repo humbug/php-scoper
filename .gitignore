@@ -6,8 +6,6 @@
 !/bin/infection.sh
 !/bin/php-scoper
 /box.json
-/build/*
-!/build/.gitkeep
 /clover.xml
 /fixtures/*/.box_dump/
 /fixtures/*/vendor/
