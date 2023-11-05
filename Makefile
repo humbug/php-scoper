@@ -38,7 +38,7 @@ BLACKFIRE = blackfire
 
 .PHONY: help
 help:
-	@printf '\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n'
+	@printf '\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n\n'
 	@sed -n -e 's|^\(.\+:\) ##\(.\+\)$$|\o033[33m\1\o033[0m \2|p' $(MAKEFILE_LIST)
 
 
