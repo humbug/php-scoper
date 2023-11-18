@@ -10,6 +10,11 @@ runs:
           run: |
               pwd
               ls -la
+              echo $(pwd)/.composer-root-version
+          shell: sh
+
+        - name: debug2
+          run: ls -l $(pwd)/.composer-root-version
           shell: sh
 
         - name: source alone
