@@ -1,0 +1,25 @@
+name: 'Install a vendor-bin tool'
+
+description: >
+    Install a tool installed via bamarni/composer-bin-plugin and runs the associated Makefile command to ensure the
+    target is up to date.
+
+inputs:
+    vendor-bin-tool:
+        required: true
+        type: string
+    makefile-command:
+        required: true
+        type: string
+
+runs:
+    using: composite
+    steps:
+        -   name: Install PHP-CS-Fixer
+            uses: ramsey/composer-install@v2
+            with:
+                working-directory: 'vendor-bin/${{ inputs.vendor-bin-tool }}'
+
+        -   name: Ensure PHP-CS-Fixer Makefile target is up to date
+            run: make ${{ inputs.makefile-command }}
+            shell: sh

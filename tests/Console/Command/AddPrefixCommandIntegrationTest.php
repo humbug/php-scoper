@@ -145,24 +145,11 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
             EOF;
 
-        $extraNormalization = static fn (string $display) => str_replace(
-            [
-                '
- 1/4 [▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░]  25%',
-                '
- 2/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░]  50%',
-                '
- 3/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  75%',
-            ],
-            ['', '', ''],
-            $display,
-        );
-
         $this->assertExpectedOutput(
             $expected,
             0,
             $this->createDisplayNormalizer(),
-            $extraNormalization,
+            self::replaceIntermediateProgressBarSteps(...),
         );
     }
 
@@ -347,6 +334,32 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
                 return $collectedFiles;
             },
             [],
+        );
+    }
+
+    private static function replaceIntermediateProgressBarSteps(string $output): string
+    {
+        return str_replace(
+            [
+                <<<'EOF'
+
+                     1/5 [▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░]  20%
+                    EOF,
+                <<<'EOF'
+
+                     2/5 [▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░]  40%
+                    EOF,
+                <<<'EOF'
+
+                     3/5 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░]  60%
+                    EOF,
+                <<<'EOF'
+
+                     4/5 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░]  80%
+                    EOF,
+            ],
+            ['', '', ''],
+            $output,
         );
     }
 }
