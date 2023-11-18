@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\Console\Command;
 
 use Fidry\Console\Command\Command;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
@@ -100,7 +100,7 @@ final readonly class InitCommand implements Command
 
     private function retrieveConfig(IO $io): ?string
     {
-        $configFile = $io->getOption(self::CONFIG_FILE_OPT)->asNullableNonEmptyString();
+        $configFile = $io->getTypedOption(self::CONFIG_FILE_OPT)->asNullableNonEmptyString();
 
         $configFile = (null === $configFile)
             ? $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT)

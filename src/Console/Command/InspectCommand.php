@@ -19,7 +19,7 @@ use Fidry\Console\Command\CommandAware;
 use Fidry\Console\Command\CommandAwareness;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\ExitCode;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
@@ -140,8 +140,8 @@ final class InspectCommand implements Command, CommandAware
 
         return $configLoader->loadConfig(
             $io,
-            $io->getOption(self::PREFIX_OPT)->asString(),
-            $io->getOption(self::NO_CONFIG_OPT)->asBoolean(),
+            $io->getTypedOption(self::PREFIX_OPT)->asString(),
+            $io->getTypedOption(self::NO_CONFIG_OPT)->asBoolean(),
             $this->getConfigFilePath($io, $cwd),
             ConfigurationFactory::DEFAULT_FILE_NAME,
             false,
@@ -155,7 +155,7 @@ final class InspectCommand implements Command, CommandAware
      */
     private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $configFilePath = (string) $io->getOption(self::CONFIG_FILE_OPT)->asNullableString();
+        $configFilePath = (string) $io->getTypedOption(self::CONFIG_FILE_OPT)->asNullableString();
 
         return '' === $configFilePath ? null : $this->canonicalizePath($configFilePath, $cwd);
     }
@@ -166,7 +166,7 @@ final class InspectCommand implements Command, CommandAware
     private function getFilePath(IO $io, string $cwd): string
     {
         return $this->canonicalizePath(
-            $io->getArgument(self::FILE_PATH_ARG)->asNonEmptyString(),
+            $io->getTypedArgument(self::FILE_PATH_ARG)->asNonEmptyString(),
             $cwd,
         );
     }
