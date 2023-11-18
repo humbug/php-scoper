@@ -31,16 +31,16 @@ use function substr;
 /**
  * Scopes the Symfony YAML configuration files.
  */
-final class YamlScoper implements Scoper
+final readonly class YamlScoper implements Scoper
 {
     private const YAML_EXTENSION_REGEX = '/\.ya?ml$/i';
     private const CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
     public function __construct(
-        private readonly Scoper $decoratedScoper,
-        private readonly string $prefix,
-        private readonly EnrichedReflector $enrichedReflector,
-        private readonly SymbolsRegistry $symbolsRegistry,
+        private Scoper $decoratedScoper,
+        private string $prefix,
+        private EnrichedReflector $enrichedReflector,
+        private SymbolsRegistry $symbolsRegistry,
     ) {
     }
 

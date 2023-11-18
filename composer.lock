@@ -4,48 +4,49 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5702d60d8bc46ebaa2b964fd841e7b42",
+    "content-hash": "e90ae077b5b70be5ff9b142a2d3cc9d0",
     "packages": [
         {
             "name": "fidry/console",
-            "version": "0.6.2",
+            "version": "0.6.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/console.git",
-                "reference": "813e9a1154f1a8e8ace8158c407ffbae8d37e8b3"
+                "reference": "32d163766a662ea216d1e0936451f2f9559566c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/console/zipball/813e9a1154f1a8e8ace8158c407ffbae8d37e8b3",
-                "reference": "813e9a1154f1a8e8ace8158c407ffbae8d37e8b3",
+                "url": "https://api.github.com/repos/theofidry/console/zipball/32d163766a662ea216d1e0936451f2f9559566c9",
+                "reference": "32d163766a662ea216d1e0936451f2f9559566c9",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.1",
-                "symfony/console": "^5.4 || ^6.3",
+                "php": "^8.2",
+                "symfony/console": "^6.3",
                 "symfony/event-dispatcher-contracts": "^2.5 || ^3.0",
                 "symfony/service-contracts": "^2.5 || ^3.0",
                 "thecodingmachine/safe": "^2.0",
                 "webmozart/assert": "^1.11"
             },
             "conflict": {
-                "symfony/dependency-injection": "<5.4.0 || >=6.0.0 <6.1.0",
-                "symfony/framework-bundle": "<5.4.0 || >=6.0.0 <6.1.0",
-                "symfony/http-kernel": "<5.4.0 || >=6.0.0 <6.1.0"
+                "psr/log": "<2.0",
+                "symfony/dependency-injection": "<6.3.0",
+                "symfony/framework-bundle": "<6.3.0",
+                "symfony/http-kernel": "<6.3.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "composer/semver": "^3.3.2",
                 "ergebnis/composer-normalize": "^2.33",
-                "fidry/makefile": "^0.2.1",
+                "fidry/makefile": "^0.2.1 || ^1.0.0",
                 "infection/infection": "^0.27",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpunit/phpunit": "^10.2",
-                "symfony/dependency-injection": "^5.4 || ^6.1",
-                "symfony/flex": "^2.3.1",
-                "symfony/framework-bundle": "^5.4 || ^6.1",
-                "symfony/http-kernel": "^5.4 || ^6.1",
-                "symfony/yaml": "^5.4 || ^6.1"
+                "symfony/dependency-injection": "^6.3",
+                "symfony/flex": "^2.4.0",
+                "symfony/framework-bundle": "^6.3",
+                "symfony/http-kernel": "^6.3",
+                "symfony/yaml": "^6.3"
             },
             "type": "library",
             "extra": {
@@ -80,7 +81,7 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/console/issues",
-                "source": "https://github.com/theofidry/console/tree/0.6.2"
+                "source": "https://github.com/theofidry/console/tree/0.6.6"
             },
             "funding": [
                 {
@@ -88,7 +89,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-10-14T10:37:40+00:00"
+            "time": "2023-11-17T21:42:29+00:00"
         },
         {
             "name": "fidry/filesystem",
@@ -3729,16 +3730,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.24.2",
+            "version": "1.24.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "bcad8d995980440892759db0c32acae7c8e79442"
+                "reference": "12f01d214f1c73b9c91fdb3b1c415e4c70652083"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/bcad8d995980440892759db0c32acae7c8e79442",
-                "reference": "bcad8d995980440892759db0c32acae7c8e79442",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/12f01d214f1c73b9c91fdb3b1c415e4c70652083",
+                "reference": "12f01d214f1c73b9c91fdb3b1c415e4c70652083",
                 "shasum": ""
             },
             "require": {
@@ -3770,9 +3771,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.24.2"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.24.3"
             },
-            "time": "2023-09-26T12:28:12+00:00"
+            "time": "2023-11-18T20:15:32+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -5504,16 +5505,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v6.3.8",
+            "version": "v6.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "3493af8a8dad7fa91c77fa473ba23ecd95334a92"
+                "reference": "e23292e8c07c85b971b44c1c4b87af52133e2add"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/3493af8a8dad7fa91c77fa473ba23ecd95334a92",
-                "reference": "3493af8a8dad7fa91c77fa473ba23ecd95334a92",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/e23292e8c07c85b971b44c1c4b87af52133e2add",
+                "reference": "e23292e8c07c85b971b44c1c4b87af52133e2add",
                 "shasum": ""
             },
             "require": {
@@ -5556,7 +5557,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v6.3.8"
+                "source": "https://github.com/symfony/yaml/tree/v6.3.3"
             },
             "funding": [
                 {
@@ -5572,7 +5573,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-11-06T10:58:05+00:00"
+            "time": "2023-07-31T07:08:24+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -5631,11 +5632,11 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1"
+        "php": "^8.2"
     },
     "platform-dev": [],
     "platform-overrides": {
-        "php": "8.1.0"
+        "php": "8.2.0"
     },
     "plugin-api-version": "2.6.0"
 }

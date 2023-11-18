@@ -17,12 +17,12 @@ namespace Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Patcher\Patcher;
 use function func_get_args;
 
-final class PatchScoper implements Scoper
+final readonly class PatchScoper implements Scoper
 {
     public function __construct(
-        private readonly Scoper $decoratedScoper,
-        private readonly string $prefix,
-        private readonly Patcher $patcher,
+        private Scoper $decoratedScoper,
+        private string $prefix,
+        private Patcher $patcher,
     ) {
     }
 

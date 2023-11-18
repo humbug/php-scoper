@@ -16,7 +16,7 @@ namespace Humbug\PhpScoper\Patcher;
 
 use function array_reduce;
 
-final class PatcherChain implements Patcher
+final readonly class PatcherChain implements Patcher
 {
     /**
      * @param array<(callable(string, string, string): string)|Patcher> $patchers

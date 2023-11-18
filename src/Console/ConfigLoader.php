@@ -33,12 +33,12 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @private
  */
-final class ConfigLoader
+final readonly class ConfigLoader
 {
     public function __construct(
-        private readonly CommandRegistry $commandRegistry,
-        private readonly Filesystem $fileSystem,
-        private readonly ConfigurationFactory $configFactory,
+        private CommandRegistry $commandRegistry,
+        private Filesystem $fileSystem,
+        private ConfigurationFactory $configFactory,
     ) {
     }
 

@@ -32,19 +32,13 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '8.2'
                     ini-values: phar.readonly=0
                     tools: composer
                     coverage: none
 
-            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
-            -   name: Configure composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
             -   name: Install Composer dependencies
-                uses: ramsey/composer-install@v2
+                uses: ./.github/actions/install-vendor
 
             -   name: Configure the PHP platform
                 run: composer config platform.php $(php -r 'echo phpversion();') && composer update --lock
@@ -110,6 +104,11 @@ jobs:
         steps:
             -   name: Checkout
                 uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.2'
 
             -   uses: actions/download-artifact@v3
                 with:

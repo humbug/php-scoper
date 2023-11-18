@@ -28,7 +28,7 @@ use function strtolower;
 use function trim;
 use const SORT_STRING;
 
-final class NamespaceRegistry
+final readonly class NamespaceRegistry
 {
     private bool $containsGlobalNamespace;
 

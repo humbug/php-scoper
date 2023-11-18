@@ -43,14 +43,14 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @private
  */
-final class ConsoleScoper
+final readonly class ConsoleScoper
 {
     private const VENDOR_DIR_PATTERN = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
 
     public function __construct(
-        private readonly Filesystem $fileSystem,
-        private readonly Application $application,
-        private readonly ScoperFactory $scoperFactory,
+        private Filesystem $fileSystem,
+        private Application $application,
+        private ScoperFactory $scoperFactory,
     ) {
     }
 

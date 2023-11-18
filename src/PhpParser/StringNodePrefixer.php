@@ -22,9 +22,9 @@ use function substr;
 /**
  * @private
  */
-final class StringNodePrefixer
+final readonly class StringNodePrefixer
 {
-    public function __construct(private readonly PhpScoper $scoper)
+    public function __construct(private PhpScoper $scoper)
     {
     }
 
@@ -40,7 +40,7 @@ final class StringNodePrefixer
             }
 
             $node->value = $newValue;
-        } catch (PhpParserError $error) {
+        } catch (PhpParserError) {
             // Continue without scoping the heredoc which for some reasons contains invalid PHP code
         }
     }
