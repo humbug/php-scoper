@@ -6,25 +6,10 @@ description: >
 runs:
     using: composite
     steps:
-        - name: Debugging
-          run: |
-              pwd
-              ls -la
-              echo $(pwd)/.composer-root-version
-          shell: sh
-
-        - name: debug2
-          run: ls -l $(pwd)/.composer-root-version
-          shell: sh
-
-        - name: source alone
-          run: source $(pwd)/.composer-root-version
-          shell: bash
-
         # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
         -   name: Configure composer root version
             run: |
-                source .composer-root-version
+                . .composer-root-version
                 echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
             shell: sh
 
