@@ -3,7 +3,7 @@
     "description": "Small utility to manipulate the Composer root version.",
     "license": "proprietary",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "psr/log": "^3.0",
         "thecodingmachine/safe": "^2.4"
     },

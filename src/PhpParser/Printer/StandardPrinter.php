@@ -16,9 +16,9 @@ namespace Humbug\PhpScoper\PhpParser\Printer;
 
 use PhpParser\PrettyPrinterAbstract;
 
-final class StandardPrinter implements Printer
+final readonly class StandardPrinter implements Printer
 {
-    public function __construct(private readonly PrettyPrinterAbstract $decoratedPrinter)
+    public function __construct(private PrettyPrinterAbstract $decoratedPrinter)
     {
     }
 

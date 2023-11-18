@@ -23,7 +23,7 @@ use function array_merge;
 /**
  * @private
  */
-final class Reflector
+final readonly class Reflector
 {
     private const MISSING_CLASSES = [
         // https://youtrack.jetbrains.com/issue/WI-29503

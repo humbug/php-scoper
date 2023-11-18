@@ -51,13 +51,13 @@ use function sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 
-final class ConfigurationFactory
+final readonly class ConfigurationFactory
 {
     public const DEFAULT_FILE_NAME = 'scoper.inc.php';
 
     public function __construct(
-        private readonly Filesystem $fileSystem,
-        private readonly SymbolsConfigurationFactory $symbolsConfigurationFactory,
+        private Filesystem $fileSystem,
+        private SymbolsConfigurationFactory $symbolsConfigurationFactory,
     ) {
     }
 

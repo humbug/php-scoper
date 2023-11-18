@@ -20,7 +20,7 @@ use function md5;
 use function preg_match;
 use function sprintf;
 
-final class ComposerFileHasher
+final readonly class ComposerFileHasher
 {
     private const ROOT_PACKAGE_NAME = '__root__';
     private const PACKAGE_PATH_REGEX = '~^%s/(?<vendor>[^/]+?/[^/]+?)/(?<path>.+?)$~';

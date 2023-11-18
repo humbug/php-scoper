@@ -33,7 +33,7 @@ final class SymbolRegistry
     /**
      * @var array<string, mixed>
      */
-    private array $names;
+    private readonly array $names;
 
     /**
      * @param string[] $names
@@ -74,8 +74,8 @@ final class SymbolRegistry
      */
     private function __construct(
         array $names,
-        private array $regexes,
-        private bool $constants
+        private readonly array $regexes,
+        private readonly bool $constants
     ) {
         $this->names = array_flip($names);
 

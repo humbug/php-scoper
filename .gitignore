@@ -1,10 +1,10 @@
+!/bin/infection.sh
+!/bin/php-scoper
 /.box_dump/
 /.php-cs-fixer.cache
 /.phpcs-cache
 /.phpunit*
 /bin/*
-!/bin/infection.sh
-!/bin/php-scoper
 /box.json
 /clover.xml
 /fixtures/*/.box_dump/

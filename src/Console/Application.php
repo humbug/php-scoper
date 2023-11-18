@@ -30,7 +30,7 @@ use function trim;
  * @private
  * @codeCoverageIgnore
  */
-final class Application implements FidryApplication
+final readonly class Application implements FidryApplication
 {
     private const LOGO = <<<'ASCII'
 
@@ -60,11 +60,11 @@ final class Application implements FidryApplication
     }
 
     public function __construct(
-        private readonly Container $container,
-        private readonly string $version,
-        private readonly string $releaseDate,
-        private readonly bool $isAutoExitEnabled,
-        private readonly bool $areExceptionsCaught,
+        private Container $container,
+        private string $version,
+        private string $releaseDate,
+        private bool $isAutoExitEnabled,
+        private bool $areExceptionsCaught,
     ) {
     }
 

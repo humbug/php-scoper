@@ -29,11 +29,11 @@ use function str_replace;
 /**
  * @private
  */
-final class AutoloadPrefixer
+final readonly class AutoloadPrefixer
 {
     public function __construct(
-        private readonly string $prefix,
-        private readonly EnrichedReflector $enrichedReflector,
+        private string $prefix,
+        private EnrichedReflector $enrichedReflector,
     ) {
     }
 

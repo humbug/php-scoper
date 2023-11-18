@@ -21,9 +21,9 @@ use PhpParser\Node\Stmt\UseUse;
 use function count;
 use function sprintf;
 
-final class UseStmtName
+final readonly class UseStmtName
 {
-    public function __construct(private readonly Name $name)
+    public function __construct(private Name $name)
     {
     }
 

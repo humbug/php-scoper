@@ -35,9 +35,9 @@ use function current;
 /**
  * @private
  */
-final class NodeTraverser implements NodeTraverserInterface
+final readonly class NodeTraverser implements NodeTraverserInterface
 {
-    public function __construct(private readonly NodeTraverserInterface $decoratedTraverser)
+    public function __construct(private NodeTraverserInterface $decoratedTraverser)
     {
     }
 
