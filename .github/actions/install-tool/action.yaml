@@ -22,3 +22,4 @@ runs:
 
         -   name: Ensure PHP-CS-Fixer Makefile target is up to date
             run: make ${{ inputs.makefile-command }}
+            shell: sh
