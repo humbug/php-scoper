@@ -19,7 +19,7 @@ runs:
 
         - name: source alone
           run: source $(pwd)/.composer-root-version
-          shell: sh
+          shell: bash
 
         # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
         -   name: Configure composer root version
