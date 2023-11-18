@@ -31,17 +31,17 @@ use function substr;
 /**
  * Scopes the Symfony XML configuration files.
  */
-final class XmlScoper implements Scoper
+final readonly class XmlScoper implements Scoper
 {
     private const XML_EXTENSION_REGEX = '/\.xml$/i';
     private const NAMESPACE_PATTERN = '/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/';
     private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
     public function __construct(
-        private readonly Scoper $decoratedScoper,
-        private readonly string $prefix,
-        private readonly EnrichedReflector $enrichedReflector,
-        private readonly SymbolsRegistry $symbolsRegistry,
+        private Scoper $decoratedScoper,
+        private string $prefix,
+        private EnrichedReflector $enrichedReflector,
+        private SymbolsRegistry $symbolsRegistry,
     ) {
     }
 

@@ -41,7 +41,7 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @private
  */
-final class InspectSymbolCommand implements Command
+final readonly class InspectSymbolCommand implements Command
 {
     private const SYMBOL_ARG = 'symbol';
     private const SYMBOL_TYPE_ARG = 'type';
@@ -49,9 +49,9 @@ final class InspectSymbolCommand implements Command
     private const NO_CONFIG_OPT = 'no-config';
 
     public function __construct(
-        private readonly Filesystem $fileSystem,
-        private readonly ConfigurationFactory $configFactory,
-        private readonly EnrichedReflectorFactory $enrichedReflectorFactory,
+        private Filesystem $fileSystem,
+        private ConfigurationFactory $configFactory,
+        private EnrichedReflectorFactory $enrichedReflectorFactory,
     ) {
     }
 

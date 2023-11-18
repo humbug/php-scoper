@@ -27,13 +27,13 @@ use function sprintf;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 
-final class InstalledPackagesScoper implements Scoper
+final readonly class InstalledPackagesScoper implements Scoper
 {
     private const COMPOSER_INSTALLED_FILE_PATTERN = '/composer(\/|\\\\)installed\.json$/';
 
     public function __construct(
-        private readonly Scoper $decoratedScoper,
-        private readonly AutoloadPrefixer $autoloadPrefixer,
+        private Scoper $decoratedScoper,
+        private AutoloadPrefixer $autoloadPrefixer,
     ) {
     }
 

@@ -25,7 +25,7 @@ use function func_get_args;
 use function ltrim;
 use function preg_match as native_preg_match;
 
-final class PhpScoper implements Scoper
+final readonly class PhpScoper implements Scoper
 {
     private const FILE_PATH_PATTERN = '/\.php$/';
     private const NOT_FILE_BINARY = '/\..+?$/';
@@ -33,11 +33,11 @@ final class PhpScoper implements Scoper
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
     public function __construct(
-        private readonly Parser $parser,
-        private readonly Scoper $decoratedScoper,
-        private readonly TraverserFactory $traverserFactory,
-        private readonly Printer $printer,
-        private readonly Lexer $lexer,
+        private Parser $parser,
+        private Scoper $decoratedScoper,
+        private TraverserFactory $traverserFactory,
+        private Printer $printer,
+        private Lexer $lexer,
     ) {
     }
 
