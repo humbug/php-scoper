@@ -1,0 +1,20 @@
+name: 'Install a vendor-bin tool'
+
+inputs:
+    vendor-bin-tool:
+        required: true
+        type: string
+    makefile-command:
+        required: true
+        type: string
+
+runs:
+    using: composite
+    steps:
+        -   name: Install PHP-CS-Fixer
+            uses: ramsey/composer-install@v2
+            with:
+                working-directory: '${{ inputs.vendor-bin-tool }}'
+
+        -   name: Ensure PHP-CS-Fixer Makefile target is up to date
+            run: make ${{ inputs.makefile-command }}

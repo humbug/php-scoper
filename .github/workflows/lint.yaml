@@ -38,12 +38,10 @@ jobs:
                 uses: ramsey/composer-install@v2
 
             -   name: Install PHP-CS-Fixer
-                uses: ramsey/composer-install@v2
+                uses: ./../actions/install-tool.yaml
                 with:
-                    working-directory: 'vendor-bin/php-cs-fixer'
-
-            -   name: Ensure PHP-CS-Fixer Makefile target is up to date
-                run: make php_cs_fixer_install
+                    vendor-bin-tool: php-cs-fixer
+                    makefile-command: php_cs_fixer_install
 
             -   run: make cs_lint
     phpstan:
