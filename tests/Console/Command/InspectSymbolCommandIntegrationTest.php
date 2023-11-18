@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Application\SymfonyApplication;
+use Fidry\Console\Bridge\Application\SymfonyApplication;
 use Fidry\Console\DisplayNormalizer;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;

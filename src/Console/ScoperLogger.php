@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Application\Application as FidryApplication;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
