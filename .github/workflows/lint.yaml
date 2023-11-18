@@ -38,7 +38,7 @@ jobs:
                 uses: ramsey/composer-install@v2
 
             -   name: Install PHP-CS-Fixer
-                uses: ./../actions/install-tool.yaml
+                uses: '${{ github.action_path }}/install-tool'
                 with:
                     vendor-bin-tool: php-cs-fixer
                     makefile-command: php_cs_fixer_install

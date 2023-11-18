@@ -1,5 +1,9 @@
 name: 'Install a vendor-bin tool'
 
+description: >
+    Install a tool installed via bamarni/composer-bin-plugin and runs the associated Makefile command to ensure the
+    target is up to date.
+
 inputs:
     vendor-bin-tool:
         required: true
