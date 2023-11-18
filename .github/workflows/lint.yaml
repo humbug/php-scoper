@@ -78,6 +78,38 @@ jobs:
                 run: make phpstan_install
 
             -   run: make phpstan
+    rector:
+        runs-on: ubuntu-latest
+        name: Rector
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.1'
+                    tools: composer
+                    coverage: none
+
+            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
+            -   name: Configure composer root version
+                run: |
+                    source .composer-root-version
+                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+
+            -   name: Install Composer dependencies
+                uses: ramsey/composer-install@v2
+
+            -   name: Install PHPStan
+                uses: ramsey/composer-install@v2
+                with:
+                    working-directory: 'vendor-bin/rector'
+
+            -   name: Ensure PHPStan Makefile target is up to date
+                run: make rector_install
+
+            -   run: make rector_lint
 
     # This is a "trick", a meta task which does not change, and we can use in
     # the protected branch rules as opposed to the E2E tests one above which
@@ -90,6 +122,7 @@ jobs:
         needs:
             - cs
             - phpstan
+            - rector
         if: always()
         steps:
             - name: Successful run
