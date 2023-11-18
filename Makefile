@@ -99,7 +99,7 @@ phpstan: $(PHPSTAN_BIN)
 
 .PHONY: autoreview
 autoreview: ## Runs the AutoReview checks
-autoreview: cs_lint phpstan covers_validator
+autoreview: cs_lint phpstan rector_lint covers_validator
 
 .PHONY: test
 test: ## Runs all the tests
@@ -273,6 +273,9 @@ vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock $(COMPOSER_BIN_PLUGI
 vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer bin phpstan update --lock && touch -c $(@)"
+
+.PHONY: rector_install
+rector_install: $(RECTOR_BIN)
 
 $(RECTOR_BIN): vendor-bin/rector/vendor
 	touch -c $@
