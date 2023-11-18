@@ -13,7 +13,7 @@ runs:
           shell: sh
 
         - name: source alone
-          run: source .composer-root-version
+          run: source $(pwd)/.composer-root-version
           shell: sh
 
         # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
