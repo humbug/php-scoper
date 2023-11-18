@@ -9,8 +9,6 @@ runs:
         # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
         -   name: Configure composer root version
             run: |
-                echo $(pwd)
-                ls -la
                 source .composer-root-version
                 echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
             shell: sh
