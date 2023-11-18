@@ -1,0 +1,17 @@
+name: 'Install Composer dependencies'
+
+description: >
+    Install the dependencies installed via Composer.
+
+runs:
+    using: composite
+    steps:
+        # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
+        -   name: Configure composer root version
+            run: |
+                source .composer-root-version
+                echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
+            shell: sh
+
+        -   name: Install Composer dependencies
+            uses: ramsey/composer-install@v2

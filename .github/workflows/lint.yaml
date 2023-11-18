@@ -28,14 +28,8 @@ jobs:
                     tools: composer
                     coverage: none
 
-            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
-            -   name: Configure composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
             -   name: Install Composer dependencies
-                uses: ramsey/composer-install@v2
+                uses: ./.github/actions/install-vendor
 
             -   name: Install PHP-CS-Fixer
                 uses: ./.github/actions/install-tool
@@ -58,22 +52,14 @@ jobs:
                     tools: composer
                     coverage: none
 
-            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
-            -   name: Configure composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
             -   name: Install Composer dependencies
-                uses: ramsey/composer-install@v2
+                uses: ./.github/actions/install-vendor
 
             -   name: Install PHPStan
-                uses: ramsey/composer-install@v2
+                uses: ./.github/actions/install-tool
                 with:
-                    working-directory: 'vendor-bin/phpstan'
-
-            -   name: Ensure PHPStan Makefile target is up to date
-                run: make phpstan_install
+                    vendor-bin-tool: phpstan
+                    makefile-command: phpstan_install
 
             -   run: make phpstan
     rector:
@@ -90,22 +76,14 @@ jobs:
                     tools: composer
                     coverage: none
 
-            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
-            -   name: Configure composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
             -   name: Install Composer dependencies
-                uses: ramsey/composer-install@v2
+                uses: ./.github/actions/install-vendor
 
-            -   name: Install PHPStan
-                uses: ramsey/composer-install@v2
+            -   name: Install Rector
+                uses: ./.github/actions/install-tool
                 with:
-                    working-directory: 'vendor-bin/rector'
-
-            -   name: Ensure PHPStan Makefile target is up to date
-                run: make rector_install
+                    vendor-bin-tool: rector
+                    makefile-command: rector_install
 
             -   run: make rector_lint
 
