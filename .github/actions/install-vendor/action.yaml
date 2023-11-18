@@ -10,7 +10,8 @@ runs:
         -   name: Configure composer root version
             run: |
                 echo $(pwd)
-                source ~/.composer-root-version
+                ls -la
+                source .composer-root-version
                 echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
             shell: sh
 
