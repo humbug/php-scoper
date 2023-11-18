@@ -6,6 +6,16 @@ description: >
 runs:
     using: composite
     steps:
+        - name: Debugging
+          run: |
+              pwd
+              ls -la
+          shell: sh
+
+        - name: source alone
+          run: source .composer-root-version
+          shell: sh
+
         # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
         -   name: Configure composer root version
             run: |
