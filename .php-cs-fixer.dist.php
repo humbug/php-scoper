@@ -28,6 +28,7 @@ $finder = Finder::create()
         'bin/php-scoper',
         '.php-cs-fixer.dist.php',
         'scoper.inc.php',
+        'rector.php',
     ]);
 
 $overriddenRules = [
