@@ -9,6 +9,9 @@ MAKEFLAGS += --no-builtin-rules
 PHPUNIT_BIN = vendor/bin/phpunit
 PHPUNIT = $(PHPUNIT_BIN)
 
+RECTOR_BIN = ../vendor-bin/rector/vendor/bin/rector
+RECTOR = $(RECTOR_BIN) --config=rector.php
+
 
 .PHONY: help
 help:
@@ -17,7 +20,7 @@ help:
 
 
 .PHONY: check
-check: cs cs_lint check_root_version phpunit
+check: rector cs autoreview check_root_version phpunit
 
 
 .PHONY: check_root_version
@@ -30,6 +33,11 @@ check_root_version: vendor
 dump_root_version:  ## Dumps the latest Composer root version
 dump_root_version: vendor
 	@./bin/dump
+
+
+.PHONY: autoreview
+autoreview:    	    ## Runs the AutoReview checks
+autoreview: cs_lint rector_lint
 
 
 .PHONY: cs
@@ -75,6 +83,14 @@ php_cs_fixer_lint:
 phpunit: $(PHPUNIT_BIN) vendor
 	$(PHPUNIT)
 
+.PHONY: rector
+rector: $(RECTOR_BIN)
+	$(RECTOR)
+
+.PHONY: rector_lint
+rector_lint: $(RECTOR_BIN)
+	$(RECTOR) --dry-run
+
 vendor: composer.lock
 	composer install
 	touch -c $@
@@ -86,3 +102,6 @@ composer.lock: composer.json
 
 $(PHPUNIT_BIN): vendor
 	touch -c $@
+
+$(RECTOR_BIN):
+	cd ..; $(MAKE) --makefile Makefile $@

@@ -20,7 +20,6 @@ return static function (RectorConfig $rectorConfig): void {
         __DIR__.'/bin/php-scoper',
         __DIR__.'/src',
         __DIR__.'/tests',
-        __DIR__.'/composer-root-version-checker',
     ]);
 
     $rectorConfig->autoloadPaths([
@@ -36,8 +35,6 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
-        __DIR__.'/composer-root-version-checker/vendor',
-
         __DIR__.'/src/PhpParser/TraverserFactory.php',
         __DIR__.'/tests/PhpParser/UseStmtNameTest.php',
         __DIR__.'/src/PhpParser/NodeVisitor/AttributeAppender/ParentNodeAppender.php',
