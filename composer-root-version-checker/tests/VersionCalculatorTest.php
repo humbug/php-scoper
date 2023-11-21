@@ -15,18 +15,17 @@ declare(strict_types=1);
 namespace Humbug\PhpScoperComposerRootChecker\Tests;
 
 use Humbug\PhpScoperComposerRootChecker\VersionCalculator;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoperComposerRootChecker\VersionCalculator
- *
  * @internal
  */
+#[CoversClass(VersionCalculator::class)]
 final class VersionCalculatorTest extends TestCase
 {
-    /**
-     * @dataProvider tagProvider
-     */
+    #[DataProvider('tagProvider')]
     public function test_it_can_calculate_the_desired_composer_root_version_from_the_tag(
         string $tag,
         string $expected
