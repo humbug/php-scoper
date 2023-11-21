@@ -5,6 +5,7 @@
   - [Class aliases](#class-aliases)
   - [Function aliases](#function-aliases)
 - [Symfony support](#symfony-support)
+- [Wordpress support](#wordpress-support)
 
 
 ### How to deal with unknown third-party symbols
@@ -111,6 +112,44 @@ return [
 Note that the path is the "regular path(s)" that can be passed to patchers.
 
 
+### Wordpress Support
+
+When writing a Wordpress plugin, you need to [exclude Wordpress' symbols](#excluded-symbols). To facilitate
+this task, [Snicco] created a third-party CLI tool [php-scoper-excludes] that can be used to generate
+PHP-Scoper compatible symbol lists for any PHP codebase you point it.
+
+### Example for WordPress Core
+
+```shell
+composer require sniccowp/php-scoper-wordpress-excludes
+```
+
+```php
+// scoper.inc.php
+
+function getWpExcludedSymbols(string $fileName): array
+{
+    $filePath = __DIR__.'/vendor/sniccowp/php-scoper-wordpress-excludes/generated/'.$fileName;
+
+    return json_decode(
+        file_get_contents($filePath),
+        true,
+    );
+}
+
+$wp_classes   = getWpExcludedSymbols('exclude-wordpress-classes.json');
+$wp_functions = getWpExcludedSymbols('exclude-wordpress-functions.json');
+$wp_constants = getWpExcludedSymbols('exclude-wordpress-constants.json');
+
+return [
+  'exclude-classes' => $wp_classes,
+  'exclude-constants' => $wp_functions,
+  'exclude-functions' => $wp_constants,
+  // ...
+];
+```
+
+
 <br />
 <hr />
 
@@ -123,5 +162,7 @@ Note that the path is the "regular path(s)" that can be passed to patchers.
 [exposing a class]: configuration.md#exposing-classes
 [exposing a function]: configuration.md#exposing-functions
 [#706]: https://github.com/humbug/php-scoper/pull/706
-[patchers]: ./configuration.md#patchers
+[Snicco]: https://github.com/snicco
 [symfony-php-config]: https://symfony.com/doc/current/service_container.html#explicitly-configuring-services-and-arguments
+[patchers]: ./configuration.md#patchers
+[php-scoper-excludes]: https://github.com/snicco/php-scoper-excludes

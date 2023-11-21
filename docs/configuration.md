@@ -468,6 +468,6 @@ namespace Humbug\Acme;
 
 
 [box]: https://github.com/box-project/box
-[symfony_finder]: https://symfony.com/doc/current/components/finder.html
 [php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
 [phpstorm-stubs]: https://github.com/JetBrains/phpstorm-stubs
+[symfony_finder]: https://symfony.com/doc/current/components/finder.html
