@@ -50,6 +50,25 @@ final class SymbolsRegistryTest extends TestCase
         );
     }
 
+    /**
+     * @dataProvider provideRecords
+     *
+     * @param array<array{FullyQualified, FullyQualified}> $functions
+     * @param array<array{FullyQualified, FullyQualified}> $classes
+     */
+    public function test_it_can_be_serialized_and_unserialized(
+        array $functions,
+        array $classes,
+    ): void {
+        $registry = self::createRegistry($functions, $classes);
+
+        $unserializedRegistry = SymbolsRegistry::unserialize(
+            $registry->serialize(),
+        );
+
+        self::assertEquals($unserializedRegistry, $registry);
+    }
+
     public static function provideRecords(): iterable
     {
         $main = new FullyQualified('PHPUnit\main');

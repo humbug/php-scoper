@@ -58,3 +58,5 @@ parameters:
           path: 'tests/AutoReview/GAE2ECollector.php'
         - message: '#normalizeSymbolsRegistryReference#'
           path: 'tests/Console/Command/AddInspectCommandIntegrationTest.php'
+        - message: '#unserialize#'
+          path: 'src/Symbol/SymbolsRegistry.php'
