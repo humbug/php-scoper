@@ -19,6 +19,9 @@ env:
     DOCKERFILE: Dockerfile
     DOCKERHUB_USERNAME: humbugphp
 
+permissions:
+    contents: write
+
 jobs:
     build-phar:
         runs-on: ubuntu-latest
