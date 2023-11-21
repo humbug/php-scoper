@@ -21,7 +21,7 @@ use function Safe\shell_exec;
 use function sprintf;
 use const PHP_EOL;
 
-final class TagFetcher
+final readonly class TagFetcher
 {
     public function __construct(private LoggerInterface $logger)
     {
