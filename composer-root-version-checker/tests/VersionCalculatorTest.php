@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoperComposerRootChecker\VersionCalculator::class)]
+#[CoversClass(VersionCalculator::class)]
 final class VersionCalculatorTest extends TestCase
 {
     #[DataProvider('tagProvider')]

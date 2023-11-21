@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoperComposerRootChecker\RootVersionProvider::class)]
+#[CoversClass(RootVersionProvider::class)]
 final class RootVersionProviderTest extends TestCase
 {
     #[DataProvider('contentProvider')]

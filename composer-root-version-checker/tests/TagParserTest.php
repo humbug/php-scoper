@@ -24,7 +24,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoperComposerRootChecker\TagParser::class)]
+#[CoversClass(TagParser::class)]
 final class TagParserTest extends TestCase
 {
     #[DataProvider('githubResponseContentProvider')]
