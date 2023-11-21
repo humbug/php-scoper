@@ -19,9 +19,6 @@ env:
     DOCKERFILE: Dockerfile
     DOCKERHUB_USERNAME: humbugphp
 
-permissions:
-    contents: write
-
 jobs:
     build-phar:
         runs-on: ubuntu-latest
@@ -85,6 +82,8 @@ jobs:
         needs:
             - 'build-phar'
         if: github.event_name == 'release'
+        permissions:
+            contents: write
         steps:
             -   uses: actions/download-artifact@v3
                 with:
