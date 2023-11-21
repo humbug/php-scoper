@@ -28,6 +28,7 @@ $finder = Finder::create()
         'bin/php-scoper',
         '.php-cs-fixer.dist.php',
         'scoper.inc.php',
+        'rector.php',
     ]);
 
 $overriddenRules = [
@@ -48,7 +49,7 @@ $overriddenRules = [
     'yoda_style' => false,
 ];
 
-$config = new FidryConfig('', 81_000);
+$config = new FidryConfig('', 82_000);
 $config->addRules($overriddenRules);
 $config->setCacheFile(__DIR__.'/build/.php-cs-fixer.cache');
 

@@ -40,6 +40,7 @@ final class MakefileTest extends BaseMakefileTestCase
 
             [33mcheck_root_version:[0m  Checks that the Composer root version is up to date
             [33mdump_root_version:[0m   Dumps the latest Composer root version
+            [33mautoreview:[0m    	     Runs the AutoReview checks
             [33mcs:[0m		     Runs the fixers
             [33mcs_lint:[0m	     Runs the linters
             [33mtest:[0m	    	     Runs the tests
