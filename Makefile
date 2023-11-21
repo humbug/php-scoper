@@ -27,6 +27,9 @@ PHPUNIT_COVERAGE_HTML = XDEBUG_MODE=coverage $(PHPUNIT) --coverage-html=$(COVERA
 COVERS_VALIDATOR_BIN = vendor-bin/covers-validator/bin/covers-validator
 COVERS_VALIDATOR = $(COVERS_VALIDATOR_BIN)
 
+RECTOR_BIN = vendor-bin/rector/vendor/bin/rector
+RECTOR = $(RECTOR_BIN)
+
 PHP_CS_FIXER_BIN = vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer
 PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix
 
@@ -96,7 +99,7 @@ phpstan: $(PHPSTAN_BIN)
 
 .PHONY: autoreview
 autoreview: ## Runs the AutoReview checks
-autoreview: cs_lint phpstan covers_validator
+autoreview: cs_lint phpstan rector_lint covers_validator
 
 .PHONY: test
 test: ## Runs all the tests
@@ -170,7 +173,9 @@ e2e: e2e_004 \
 		e2e_034 \
 		e2e_035 \
 		e2e_036 \
-		e2e_037
+		e2e_037 \
+		e2e_038 \
+		e2e_039
 
 .PHONY: blackfire
 blackfire: ## Runs Blackfire profiling
@@ -183,6 +188,14 @@ blackfire: vendor
 clean: ## Cleans all created artifacts
 clean:
 	git clean --exclude=.idea/ -ffdx
+
+.PHONY: rector
+rector: $(RECTOR_BIN) vendor
+	$(RECTOR)
+
+.PHONY: rector_lint
+rector_lint: $(RECTOR_BIN) vendor
+	$(RECTOR) --dry-run
 
 
 #
@@ -260,6 +273,18 @@ vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock $(COMPOSER_BIN_PLUGI
 vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer bin phpstan update --lock && touch -c $(@)"
+
+.PHONY: rector_install
+rector_install: $(RECTOR_BIN)
+
+$(RECTOR_BIN): vendor-bin/rector/vendor
+	touch -c $@
+vendor-bin/rector/vendor: vendor-bin/rector/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
+	composer bin rector install
+	touch -c $@
+vendor-bin/rector/composer.lock: vendor-bin/rector/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer bin rector update --lock && touch -c $(@)"
 
 $(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
 	$(BOX) compile --no-parallel

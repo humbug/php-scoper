@@ -17,8 +17,8 @@
         }
     ],
     "require": {
-        "php": "^8.1",
-        "fidry/console": "^0.5.0",
+        "php": "^8.2",
+        "fidry/console": "^0.6.6",
         "fidry/filesystem": "^1.1",
         "jetbrains/phpstorm-stubs": "^v2022.2",
         "nikic/php-parser": "^4.12",
@@ -31,7 +31,7 @@
         "bamarni/composer-bin-plugin": "^1.1",
         "ergebnis/composer-normalize": "^2.28",
         "fidry/makefile": "^1.0",
-        "humbug/box": "^4.0",
+        "humbug/box": "^4.5.1",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9.0",
         "symfony/yaml": "^6.1"
@@ -67,7 +67,7 @@
         },
         "bin-dir": "bin",
         "platform": {
-            "php": "8.1.0"
+            "php": "8.2.0"
         },
         "sort-packages": true
     },

@@ -29,7 +29,7 @@ use function str_contains;
  * - exposed symbols
  * - whether symbols from the global namespace should be exposed or not
  */
-final class EnrichedReflector
+final readonly class EnrichedReflector
 {
     public function __construct(
         private Reflector $reflector,

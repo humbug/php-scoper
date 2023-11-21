@@ -18,7 +18,7 @@ use Humbug\PhpScoper\NotInstantiable;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 
-final class SymbolsConfiguration
+final readonly class SymbolsConfiguration
 {
     use NotInstantiable;
 

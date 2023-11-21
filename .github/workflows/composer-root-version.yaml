@@ -24,29 +24,21 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '8.2'
                     tools: composer
                     coverage: none
 
-            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
-            -   name: Configure composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
-            -   name: Install the Composer (root) dependencies
-                uses: ramsey/composer-install@v2
+            -   name: Install Composer dependencies
+                uses: ./.github/actions/install-vendor
 
             -   name: Ensure that the root dependencies are updated correctly
                 run: make vendor_install
 
             -   name: Install PHP-CS-Fixer
-                uses: ramsey/composer-install@v2
+                uses: ./.github/actions/install-tool
                 with:
-                    working-directory: 'vendor-bin/php-cs-fixer'
-
-            -   name: Ensure that PHP-CS-Fixer dependencies are updated correctly
-                run: make php_cs_fixer_install
+                    vendor-bin-tool: php-cs-fixer
+                    makefile-command: php_cs_fixer_install
 
             -   name: Install the Composer dependencies
                 uses: ramsey/composer-install@v2
@@ -62,7 +54,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [ '8.1', '8.2' ]
+                php: [ '8.2' ]
 
         steps:
             -   name: Checkout
@@ -116,7 +108,7 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '8.2'
                     tools: composer
                     coverage: none
 
@@ -126,11 +118,12 @@ jobs:
                     working-directory: 'composer-root-version-checker'
 
             -   name: Dump the Composer too version
-                run: cd composer-root-version-checker; make dump_root_version
+                working-directory: composer-root-version-checker
+                run: make dump_root_version
 
             -   name: Check for changes
                 run: |
-                    if [ $(git status --porcelain | wc -l) -eq "0" ]; then
+                    if git diff --exit-code; then
                         echo "🟢 No change detected."
                         echo "composer_root_version_changed=false" >> $GITHUB_ENV
                     else
@@ -138,8 +131,8 @@ jobs:
                     fi
 
             -   name: Create Pull Request
-                if: env.composer_root_version == 'true'
-                uses: peter-evans/create-pull-request@v4
+                if: env.composer_root_version_changed == 'true'
+                uses: peter-evans/create-pull-request@v5
                 with:
                     token: ${{ secrets.GITHUB_TOKEN }}
                     branch-suffix: random

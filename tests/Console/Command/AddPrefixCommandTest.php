@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Application\SymfonyApplication;
-use Fidry\Console\Command\SymfonyCommand;
+use Fidry\Console\Bridge\Application\SymfonyApplication;
+use Fidry\Console\Bridge\Command\SymfonyCommand;
 use Fidry\FileSystem\FS;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;

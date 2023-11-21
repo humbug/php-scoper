@@ -20,16 +20,15 @@ $finder = Finder::create()
         'composer-root-version-checker/bin',
         'composer-root-version-checker/src',
         'composer-root-version-checker/tests',
+        'res',
         'src',
         'tests',
     ])
     ->append([
-        'bin/check-composer-root-version.php',
-        'bin/dump-composer-root-version.php',
         'bin/php-scoper',
-        'bin/root-version.php',
         '.php-cs-fixer.dist.php',
         'scoper.inc.php',
+        'rector.php',
     ]);
 
 $overriddenRules = [
@@ -50,7 +49,7 @@ $overriddenRules = [
     'yoda_style' => false,
 ];
 
-$config = new FidryConfig('', 81_000);
+$config = new FidryConfig('', 82_000);
 $config->addRules($overriddenRules);
 $config->setCacheFile(__DIR__.'/build/.php-cs-fixer.cache');
 

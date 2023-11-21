@@ -29,9 +29,9 @@ use function str_contains;
 use function strrpos;
 use function substr;
 
-final class SymbolsConfigurationFactory
+final readonly class SymbolsConfigurationFactory
 {
-    public function __construct(private readonly RegexChecker $regexChecker)
+    public function __construct(private RegexChecker $regexChecker)
     {
     }
 

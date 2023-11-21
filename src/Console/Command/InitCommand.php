@@ -15,9 +15,8 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console\Command;
 
 use Fidry\Console\Command\Command;
-use Fidry\Console\Command\Configuration;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
@@ -30,21 +29,21 @@ use const DIRECTORY_SEPARATOR;
  * @private
  * @codeCoverageIgnore
  */
-final class InitCommand implements Command
+final readonly class InitCommand implements Command
 {
     private const CONFIG_FILE_OPT = 'config';
     private const CONFIG_FILE_TEMPLATE = __DIR__.'/../../scoper.inc.php.tpl';
     private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
 
     public function __construct(
-        private readonly Filesystem $fileSystem,
-        private readonly FormatterHelper $formatterHelper,
+        private Filesystem $fileSystem,
+        private FormatterHelper $formatterHelper,
     ) {
     }
 
     public function getConfiguration(): CommandConfiguration
     {
-        return new Configuration(
+        return new CommandConfiguration(
             'init',
             'Generates a configuration file.',
             '',
@@ -101,7 +100,7 @@ final class InitCommand implements Command
 
     private function retrieveConfig(IO $io): ?string
     {
-        $configFile = $io->getOption(self::CONFIG_FILE_OPT)->asNullableNonEmptyString();
+        $configFile = $io->getTypedOption(self::CONFIG_FILE_OPT)->asNullableNonEmptyString();
 
         $configFile = (null === $configFile)
             ? $this->makeAbsolutePath(self::CONFIG_FILE_DEFAULT)

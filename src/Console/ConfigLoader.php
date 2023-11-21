@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Command\CommandRegistry;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -33,12 +33,12 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @private
  */
-final class ConfigLoader
+final readonly class ConfigLoader
 {
     public function __construct(
-        private readonly CommandRegistry $commandRegistry,
-        private readonly Filesystem $fileSystem,
-        private readonly ConfigurationFactory $configFactory,
+        private CommandRegistry $commandRegistry,
+        private Filesystem $fileSystem,
+        private ConfigurationFactory $configFactory,
     ) {
     }
 

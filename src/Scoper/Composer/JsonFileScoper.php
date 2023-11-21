@@ -25,11 +25,11 @@ use function sprintf;
 use const JSON_PRETTY_PRINT;
 use const JSON_THROW_ON_ERROR;
 
-final class JsonFileScoper implements Scoper
+final readonly class JsonFileScoper implements Scoper
 {
     public function __construct(
-        private readonly Scoper $decoratedScoper,
-        private readonly AutoloadPrefixer $autoloadPrefixer,
+        private Scoper $decoratedScoper,
+        private AutoloadPrefixer $autoloadPrefixer,
     ) {
     }
 

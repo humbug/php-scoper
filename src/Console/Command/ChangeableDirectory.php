@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -47,7 +47,7 @@ final class ChangeableDirectory
 
     public static function changeWorkingDirectory(IO $io): void
     {
-        $workingDir = $io->getOption(self::WORKING_DIR_OPT)->asNullableString();
+        $workingDir = $io->getTypedOption(self::WORKING_DIR_OPT)->asNullableString();
 
         if (null === $workingDir) {
             return;

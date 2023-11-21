@@ -106,6 +106,7 @@ class PhpScoperTest extends TestCase
                 ),
                 self::PREFIX,
                 $this->symbolsRegistry,
+                true,
             ),
             $this->printer,
             $this->lexer,

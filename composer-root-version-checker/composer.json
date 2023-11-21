@@ -3,14 +3,14 @@
     "description": "Small utility to manipulate the Composer root version.",
     "license": "proprietary",
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "psr/log": "^3.0",
         "thecodingmachine/safe": "^2.4"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.29",
-        "fidry/makefile": "^0.2.1",
-        "phpunit/phpunit": "^9.5"
+        "fidry/makefile": "^1.0.1",
+        "phpunit/phpunit": "^10.4"
     },
     "autoload": {
         "psr-4": {
