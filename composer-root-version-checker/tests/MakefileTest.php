@@ -15,12 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoperComposerRootChecker\Tests;
 
 use Fidry\Makefile\Test\BaseMakefileTestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
- * @coversNothing
- *
  * @internal
  */
+#[CoversNothing]
 final class MakefileTest extends BaseMakefileTestCase
 {
     protected static function getMakefilePath(): string

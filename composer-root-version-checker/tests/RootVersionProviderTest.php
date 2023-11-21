@@ -15,18 +15,17 @@ declare(strict_types=1);
 namespace Humbug\PhpScoperComposerRootChecker\Tests;
 
 use Humbug\PhpScoperComposerRootChecker\RootVersionProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoperComposerRootChecker\RootVersionProvider
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoperComposerRootChecker\RootVersionProvider::class)]
 final class RootVersionProviderTest extends TestCase
 {
-    /**
-     * @dataProvider contentProvider
-     */
+    #[DataProvider('contentProvider')]
     public function test_it_can_parse_the_composer_root_version(
         string $content,
         string $expected

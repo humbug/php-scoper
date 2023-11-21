@@ -17,18 +17,17 @@ namespace Humbug\PhpScoperComposerRootChecker\Tests;
 use Exception;
 use Humbug\PhpScoperComposerRootChecker\CouldNotParseTag;
 use Humbug\PhpScoperComposerRootChecker\TagParser;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoperComposerRootChecker\TagParser
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoperComposerRootChecker\TagParser::class)]
 final class TagParserTest extends TestCase
 {
-    /**
-     * @dataProvider githubResponseContentProvider
-     */
+    #[DataProvider('githubResponseContentProvider')]
     public function test_it_can_parse_the_tag_from_the_github_response_content(
         string $responseContent,
         string $expected
@@ -144,9 +143,7 @@ final class TagParserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidGithubResponseContentProvider
-     */
+    #[DataProvider('invalidGithubResponseContentProvider')]
     public function test_it_cannot_parse_the_tag_from_an_invalid_github_response_content(
         string $responseContent,
         Exception $exception
