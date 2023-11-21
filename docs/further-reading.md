@@ -137,9 +137,9 @@ function getWpExcludedSymbols(string $fileName): array
     );
 }
 
-$wp_classes   = getWpExcludedSymbols('exclude-wordpress-classes.json';
-$wp_functions = getWpExcludedSymbols('exclude-wordpress-functions.json';
-$wp_constants = getWpExcludedSymbols('exclude-wordpress-constants.json';
+$wp_classes   = getWpExcludedSymbols('exclude-wordpress-classes.json');
+$wp_functions = getWpExcludedSymbols('exclude-wordpress-functions.json');
+$wp_constants = getWpExcludedSymbols('exclude-wordpress-constants.json');
 
 return [
   'exclude-classes' => $wp_classes,
