@@ -76,7 +76,6 @@ class PhpScoperSpecTest extends TestCase
         // SPECS_CONFIG_KEYS included
         'expected-recorded-classes',
         'expected-recorded-functions',
-        ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL,
     ];
 
     // Keys allowed on a spec level
@@ -86,7 +85,6 @@ class PhpScoperSpecTest extends TestCase
         'expected-recorded-classes',
         'expected-recorded-functions',
         'payload',
-        ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL,
     ];
 
     // Keys kept and used to build the symbols configuration
@@ -130,8 +128,7 @@ class PhpScoperSpecTest extends TestCase
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions,
         ?int $minPhpVersion,
-        ?int $maxPhpVersion,
-        bool $tagDeclarationsAsInternal,
+        ?int $maxPhpVersion
     ): void {
         if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
             self::markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
@@ -149,7 +146,6 @@ class PhpScoperSpecTest extends TestCase
             $prefix,
             $symbolsConfiguration,
             $symbolsRegistry,
-            $tagDeclarationsAsInternal,
         );
 
         try {
@@ -265,7 +261,7 @@ class PhpScoperSpecTest extends TestCase
                     sprintf(
                         'An error occurred while parsing the file "%s": %s',
                         $file,
-                        $throwable->getMessage().PHP_EOL.$throwable->getTraceAsString(),
+                        $throwable->getMessage(),
                     ),
                 );
             }
@@ -275,8 +271,7 @@ class PhpScoperSpecTest extends TestCase
     private static function createScoper(
         string $prefix,
         SymbolsConfiguration $symbolsConfiguration,
-        SymbolsRegistry $symbolsRegistry,
-        bool $tagDeclarationsAsInternal,
+        SymbolsRegistry $symbolsRegistry
     ): Scoper {
         $container = new Container();
 
@@ -299,7 +294,6 @@ class PhpScoperSpecTest extends TestCase
                 $enrichedReflector,
                 $prefix,
                 $symbolsRegistry,
-                $tagDeclarationsAsInternal,
             ),
             $container->getPrinter(),
             $container->getLexer(),
@@ -378,7 +372,6 @@ class PhpScoperSpecTest extends TestCase
             $fixtureSet['expected-recorded-functions'] ?? $meta['expected-recorded-functions'],
             $meta['minPhpVersion'] ?? null,
             $meta['maxPhpVersion'] ?? null,
-            $fixtureSet[ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL] ?? $meta[ConfigurationKeys::TAG_DECLARATIONS_AS_INTERNAL] ?? false,
         ];
     }
 

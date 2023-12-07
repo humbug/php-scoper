@@ -38,7 +38,6 @@ final class Configuration
      * @param array<string, array{string, string}> $excludedFilesWithContents Array of tuple
      *                                                                        with the first argument being the file path and
      *                                                                        the second its contents
-     * @param bool                                 $tagDeclarationsAsInternal Whether a @internal tag should be added to the symbols declarations.
      */
     public function __construct(
         private ?string $path,
@@ -47,8 +46,7 @@ final class Configuration
         private array $filesWithContents,
         private array $excludedFilesWithContents,
         private Patcher $patcher,
-        private SymbolsConfiguration $symbolsConfiguration,
-        private bool $tagDeclarationsAsInternal,
+        private SymbolsConfiguration $symbolsConfiguration
     ) {
         self::validatePrefix($prefix);
 
@@ -84,7 +82,6 @@ final class Configuration
             $this->excludedFilesWithContents,
             $this->patcher,
             $this->symbolsConfiguration,
-            $this->tagDeclarationsAsInternal,
         );
     }
 
@@ -109,7 +106,6 @@ final class Configuration
             $this->excludedFilesWithContents,
             $this->patcher,
             $this->symbolsConfiguration,
-            $this->tagDeclarationsAsInternal,
         );
     }
 
@@ -139,7 +135,6 @@ final class Configuration
             $this->excludedFilesWithContents,
             $patcher,
             $this->symbolsConfiguration,
-            $this->tagDeclarationsAsInternal,
         );
     }
 
@@ -151,11 +146,6 @@ final class Configuration
     public function getSymbolsConfiguration(): SymbolsConfiguration
     {
         return $this->symbolsConfiguration;
-    }
-
-    public function shouldTagDeclarationsAsInternal(): bool
-    {
-        return $this->tagDeclarationsAsInternal;
     }
 
     private static function validatePrefix(string $prefix): void
