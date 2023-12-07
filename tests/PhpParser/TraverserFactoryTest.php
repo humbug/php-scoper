@@ -50,7 +50,6 @@ class TraverserFactoryTest extends TestCase
             ),
             $prefix,
             $symbolsRegistry,
-            true,
         );
 
         $firstTraverser = $traverserFactory->create($phpScoper);

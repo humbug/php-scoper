@@ -52,7 +52,6 @@ final class ScoperFactoryTest extends TestCase
                 [],
                 new FakePatcher(),
                 SymbolsConfiguration::create(),
-                true,
             ),
             new SymbolsRegistry(),
         );
