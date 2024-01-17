@@ -22,4 +22,4 @@ runs:
         -   name: Install Composer dependencies
             uses: ramsey/composer-install@v2
             with:
-                dependency-versions: ${{ inputs.dependency-version }}
+                dependency-versions: ${{ inputs.dependency-versions }}
