@@ -89,8 +89,15 @@ jobs:
                     tools: composer, flex
                     coverage: none
 
-            -   name: Install Composer dependencies
+            -   name: Install locked Composer dependencies
+                if: matrix.symfony == 'unchanged'
                 uses: ./.github/actions/install-vendor
+
+            -   name: Install highest Composer dependencies
+                if: matrix.symfony != 'unchanged'
+                uses: ./.github/actions/install-vendor
+                with:
+                    dependency-versions: highest
 
             -   name: Run tests
                 run: make phpunit
