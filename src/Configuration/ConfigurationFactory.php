@@ -374,7 +374,7 @@ final readonly class ConfigurationFactory
             ->in($pathsToSearch)
             ->append($filesToAppend)
             ->filter(
-                static fn (SplFileInfo $fileInfo) => $fileInfo->isLink() ? false : null,
+                static fn (SplFileInfo $fileInfo) => !$fileInfo->isLink(),
             )
             ->sortByName();
 
