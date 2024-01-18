@@ -3,6 +3,12 @@ name: 'Install Composer dependencies'
 description: >
     Install the dependencies installed via Composer.
 
+inputs:
+    dependency-versions:
+        description: The ramsey/composer-install dependency-versions used.
+        required: false
+        default: locked
+
 runs:
     using: composite
     steps:
@@ -15,3 +21,5 @@ runs:
 
         -   name: Install Composer dependencies
             uses: ramsey/composer-install@v2
+            with:
+                dependency-versions: ${{ inputs.dependency-versions }}
