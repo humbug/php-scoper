@@ -15,13 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\Configuration\RegexChecker;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Symbol\NamespaceRegistry
- *
  * @internal
  */
+#[CoversClass(NamespaceRegistry::class)]
 class NamespaceRegistryTest extends TestCase
 {
     private RegexChecker $regexChecker;
@@ -32,11 +33,10 @@ class NamespaceRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSymbol
-     *
      * @param string[] $namespaceRegexes
      * @param string[] $namespaceNames
      */
+    #[DataProvider('provideSymbol')]
     public function test_it_can_tell_if_a_symbol_belongs_to_a_registered_namespace(
         array $namespaceNames,
         array $namespaceRegexes,
@@ -56,9 +56,7 @@ class NamespaceRegistryTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider provideNamespaceSymbol
-     */
+    #[DataProvider('provideNamespaceSymbol')]
     public function test_it_can_tell_if_a_namespace_is_a_registered_namespace(
         array $namespaceNames,
         array $namespaceRegexes,
@@ -79,13 +77,12 @@ class NamespaceRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideNamesAndRegexes
-     *
      * @param string[]     $regexes
      * @param string[]     $names
      * @param list<string> $regexes
      * @param list<string> $names
      */
+    #[DataProvider('provideNamesAndRegexes')]
     public function test_it_optimizes_the_registered_names_and_regexes(
         array $names,
         array $regexes,

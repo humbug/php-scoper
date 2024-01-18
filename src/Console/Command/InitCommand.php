@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\Command\Command;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\IO;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
@@ -27,8 +28,8 @@ use const DIRECTORY_SEPARATOR;
 
 /**
  * @private
- * @codeCoverageIgnore
  */
+#[CodeCoverageIgnore]
 final readonly class InitCommand implements Command
 {
     private const CONFIG_FILE_OPT = 'config';

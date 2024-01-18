@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Autoload;
 
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node\Name\FullyQualified;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -23,9 +24,7 @@ use PHPUnit\Framework\TestCase;
  */
 class ScoperAutoloadGeneratorTest extends TestCase
 {
-    /**
-     * @dataProvider provideRegistry
-     */
+    #[DataProvider('provideRegistry')]
     public function test_generate_the_autoload(
         SymbolsRegistry $registry,
         array $fileHashes,

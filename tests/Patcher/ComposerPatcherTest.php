@@ -14,18 +14,17 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Patcher\ComposerPatcher
- *
  * @internal
  */
+#[CoversClass(ComposerPatcher::class)]
 class ComposerPatcherTest extends TestCase
 {
-    /**
-     * @dataProvider provideFiles
-     */
+    #[DataProvider('provideFiles')]
     public function test_patch_the_symfony_dependency_injection_container_php_dumper(string $filePath, string $contents, string $expected): void
     {
         $actual = (new ComposerPatcher())->__invoke($filePath, 'Humbug', $contents);

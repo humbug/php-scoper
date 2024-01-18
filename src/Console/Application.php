@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Console\Command\InitCommand;
 use Humbug\PhpScoper\Console\Command\InspectCommand;
 use Humbug\PhpScoper\Console\Command\InspectSymbolCommand;
 use Humbug\PhpScoper\Container;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use function Humbug\PhpScoper\get_php_scoper_version;
 use function sprintf;
@@ -28,8 +29,8 @@ use function trim;
 
 /**
  * @private
- * @codeCoverageIgnore
  */
+#[CodeCoverageIgnore]
 final readonly class Application implements FidryApplication
 {
     private const LOGO = <<<'ASCII'

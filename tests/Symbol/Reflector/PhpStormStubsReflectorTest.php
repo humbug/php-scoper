@@ -15,13 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol\Reflector;
 
 use Humbug\PhpScoper\Symbol\Reflector;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Symbol\Reflector
- *
  * @internal
  */
+#[CoversClass(Reflector::class)]
 class PhpStormStubsReflectorTest extends TestCase
 {
     private Reflector $reflector;
@@ -31,9 +32,7 @@ class PhpStormStubsReflectorTest extends TestCase
         $this->reflector = Reflector::createWithPhpStormStubs();
     }
 
-    /**
-     * @dataProvider provideClasses
-     */
+    #[DataProvider('provideClasses')]
     public function test_it_can_identify_internal_classes(string $class, bool $expected): void
     {
         $actual = $this->reflector->isClassInternal($class);
@@ -41,9 +40,7 @@ class PhpStormStubsReflectorTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider provideFunctions
-     */
+    #[DataProvider('provideFunctions')]
     public function test_it_can_identify_internal_functions(string $class, bool $expected): void
     {
         $actual = $this->reflector->isFunctionInternal($class);
@@ -51,9 +48,7 @@ class PhpStormStubsReflectorTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider provideConstants
-     */
+    #[DataProvider('provideConstants')]
     public function test_it_can_identify_internal_constants(string $class, bool $expected): void
     {
         $actual = $this->reflector->isConstantInternal($class);

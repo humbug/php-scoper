@@ -20,6 +20,8 @@ use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function array_reduce;
@@ -34,12 +36,10 @@ use function str_replace;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @coversNothing
- *
- * @group integration
- *
  * @internal
  */
+#[Group('integration')]
+#[CoversNothing]
 class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 {
     use AppTesterAbilities;

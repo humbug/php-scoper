@@ -23,13 +23,13 @@ use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Lexer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\ScoperFactory
- *
  * @internal
  */
+#[CoversClass(ScoperFactory::class)]
 final class ScoperFactoryTest extends TestCase
 {
     public function test_it_can_create_a_scoper(): void

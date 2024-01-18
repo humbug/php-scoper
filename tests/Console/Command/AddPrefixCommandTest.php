@@ -23,6 +23,8 @@ use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
+use Humbug\PhpScoper\Console\ConfigLoader;
+use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\PhpParser\FakeParser;
@@ -32,6 +34,7 @@ use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -46,12 +49,11 @@ use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
- * @covers \Humbug\PhpScoper\Console\ConfigLoader
- * @covers \Humbug\PhpScoper\Console\ConsoleScoper
- *
  * @internal
  */
+#[CoversClass(AddPrefixCommand::class)]
+#[CoversClass(ConfigLoader::class)]
+#[CoversClass(ConsoleScoper::class)]
 class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCase
 {
     use AppTesterAbilities;

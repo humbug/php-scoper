@@ -18,20 +18,20 @@ use Humbug\PhpScoper\Patcher\FakePatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\Configuration
- *
  * @internal
  */
+#[CoversClass(Configuration::class)]
 final class ConfigurationTest extends TestCase
 {
     /**
-     * @dataProvider prefixProvider
-     *
      * @param non-empty-string $prefix
      */
+    #[DataProvider('prefixProvider')]
     public function test_it_validates_the_prefix(
         string $prefix,
         string $expectedExceptionMessage

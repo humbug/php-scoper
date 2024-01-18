@@ -14,19 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 /**
- * @covers \Humbug\PhpScoper\Container
- *
  * @internal
  */
+#[CoversClass(Container::class)]
 class ContainerTest extends TestCase
 {
-    /**
-     * @dataProvider provideServiceGetter
-     */
+    #[DataProvider('provideServiceGetter')]
     public function test_it_can_instantiate_its_services(string $getterName): void
     {
         $result = (new Container())->{$getterName}();
@@ -34,9 +33,7 @@ class ContainerTest extends TestCase
         self::assertNotNull($result);
     }
 
-    /**
-     * @dataProvider provideServiceGetter
-     */
+    #[DataProvider('provideServiceGetter')]
     public function test_it_always_returns_the_same_instance_on_a_container_basis(string $getterName): void
     {
         $container = new Container();

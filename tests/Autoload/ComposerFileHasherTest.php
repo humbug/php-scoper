@@ -15,17 +15,17 @@ declare(strict_types=1);
 namespace Autoload;
 
 use Humbug\PhpScoper\Autoload\ComposerFileHasher;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Autoload\ComposerFileHasher
  * @internal
  */
+#[CoversClass(ComposerFileHasher::class)]
 final class ComposerFileHasherTest extends TestCase
 {
-    /**
-     * @dataProvider filesProvider
-     */
+    #[DataProvider('filesProvider')]
     public function test_it_can_get_the_composer_hash_of_the_files(
         string $vendorDir,
         string $rootDir,

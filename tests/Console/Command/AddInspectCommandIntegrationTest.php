@@ -19,16 +19,16 @@ use Fidry\Console\Test\AppTester;
 use Fidry\Console\Test\OutputAssertions;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use function Safe\preg_replace;
 
 /**
- * @coversNothing
- *
- * @group integration
- *
  * @internal
  */
+#[Group('integration')]
+#[CoversNothing]
 class AddInspectCommandIntegrationTest extends TestCase
 {
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';

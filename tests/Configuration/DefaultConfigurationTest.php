@@ -16,17 +16,18 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Container;
 use Isolated\Symfony\Component\Finder\Finder as IsolatedFinder;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use function class_alias;
 use function class_exists;
 
 /**
- * @coversNothing
- * @group integration
- *
  * @internal
  */
+#[Group('integration')]
+#[CoversNothing]
 final class DefaultConfigurationTest extends TestCase
 {
     private ConfigurationFactory $configurationFactory;

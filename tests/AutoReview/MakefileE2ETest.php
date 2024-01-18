@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\AutoReview;
 use Fidry\Makefile\Parser;
 use Fidry\Makefile\Rule;
 use Fidry\Makefile\Test\BaseMakefileTestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use function array_filter;
 use function array_map;
 use function array_values;
@@ -25,10 +26,9 @@ use function Safe\file_get_contents;
 use function str_starts_with;
 
 /**
- * @coversNothing
- *
  * @internal
  */
+#[CoversNothing]
 class MakefileE2ETest extends BaseMakefileTestCase
 {
     protected static function getMakefilePath(): string

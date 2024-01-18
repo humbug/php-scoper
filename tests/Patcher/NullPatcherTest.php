@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Patcher\NullPatcher
- *
  * @internal
  */
+#[CoversClass(NullPatcher::class)]
 final class NullPatcherTest extends TestCase
 {
     public function test_it_returns_the_contents_unchanged(): void

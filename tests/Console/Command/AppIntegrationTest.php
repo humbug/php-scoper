@@ -29,6 +29,8 @@ use Humbug\PhpScoper\PhpParser\FakePrinter;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Group;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -36,12 +38,10 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @coversNothing
- *
- * @group integration
- *
  * @internal
  */
+#[Group('integration')]
+#[CoversNothing]
 class AppIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 {
     use AppTesterAbilities;

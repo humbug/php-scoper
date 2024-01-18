@@ -20,9 +20,10 @@
         "php": "^8.2",
         "fidry/console": "^0.6.6",
         "fidry/filesystem": "^1.1",
-        "jetbrains/phpstorm-stubs": "^v2022.2",
+        "jetbrains/phpstorm-stubs": "^2022.2",
         "nikic/php-parser": "^4.12",
         "symfony/console": "^6.4 || ^7.0",
+        "symfony/deprecation-contracts": "^3.4",
         "symfony/filesystem": "^6.4 || ^7.0",
         "symfony/finder": "^6.4 || ^7.0",
         "thecodingmachine/safe": "^2.0"
@@ -33,7 +34,7 @@
         "fidry/makefile": "^1.0",
         "humbug/box": "^4.5.1",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^10.0",
         "symfony/yaml": "^6.4 || ^7.0"
     },
     "minimum-stability": "dev",
