@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Symbol\Reflector::class)]
+#[CoversClass(Reflector::class)]
 class UserSymbolsReflectorTest extends TestCase
 {
     #[DataProvider('symbolsProvider')]

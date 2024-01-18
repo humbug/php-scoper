@@ -25,7 +25,7 @@ use Throwable;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory::class)]
+#[CoversClass(SymbolsConfigurationFactory::class)]
 final class SymbolsConfigurationFactoryTest extends TestCase
 {
     private SymbolsConfigurationFactory $factory;

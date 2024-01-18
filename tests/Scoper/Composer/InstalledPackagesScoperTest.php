@@ -29,8 +29,8 @@ use function is_a;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer::class)]
-#[CoversClass(\Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper::class)]
+#[CoversClass(AutoloadPrefixer::class)]
+#[CoversClass(InstalledPackagesScoper::class)]
 class InstalledPackagesScoperTest extends TestCase
 {
     private const PREFIX = 'Foo';

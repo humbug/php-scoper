@@ -21,7 +21,7 @@ use function count;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\AutoReview\E2ECollector::class)]
+#[CoversClass(E2ECollector::class)]
 class E2ECollectorTest extends TestCase
 {
     public function test_it_collects_the_e2e_test_names(): void

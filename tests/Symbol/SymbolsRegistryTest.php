@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Symbol\SymbolsRegistry::class)]
+#[CoversClass(SymbolsRegistry::class)]
 final class SymbolsRegistryTest extends TestCase
 {
     /**

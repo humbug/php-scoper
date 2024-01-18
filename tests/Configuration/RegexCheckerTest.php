@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Configuration\RegexChecker::class)]
+#[CoversClass(RegexChecker::class)]
 final class RegexCheckerTest extends TestCase
 {
     private RegexChecker $regexChecker;

@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Configuration\Configuration::class)]
+#[CoversClass(Configuration::class)]
 final class ConfigurationTest extends TestCase
 {
     /**

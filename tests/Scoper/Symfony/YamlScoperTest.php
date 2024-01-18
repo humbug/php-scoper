@@ -32,7 +32,7 @@ use function is_a;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Scoper\Symfony\YamlScoper::class)]
+#[CoversClass(YamlScoper::class)]
 class YamlScoperTest extends TestCase
 {
     use ProphecyTrait;

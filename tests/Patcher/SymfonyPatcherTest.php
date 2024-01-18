@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Patcher\SymfonyPatcher::class)]
+#[CoversClass(SymfonyPatcher::class)]
 class SymfonyPatcherTest extends TestCase
 {
     #[DataProvider('provideFiles')]

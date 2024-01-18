@@ -32,7 +32,7 @@ use function is_a;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Scoper\Symfony\XmlScoper::class)]
+#[CoversClass(XmlScoper::class)]
 class XmlScoperTest extends TestCase
 {
     use ProphecyTrait;

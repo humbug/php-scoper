@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Scoper\ScoperFactory::class)]
+#[CoversClass(ScoperFactory::class)]
 final class ScoperFactoryTest extends TestCase
 {
     public function test_it_can_create_a_scoper(): void

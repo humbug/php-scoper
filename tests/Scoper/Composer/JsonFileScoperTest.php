@@ -28,8 +28,8 @@ use function is_a;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer::class)]
-#[CoversClass(\Humbug\PhpScoper\Scoper\Composer\JsonFileScoper::class)]
+#[CoversClass(AutoloadPrefixer::class)]
+#[CoversClass(JsonFileScoper::class)]
 class JsonFileScoperTest extends TestCase
 {
     private const PREFIX = 'Foo';

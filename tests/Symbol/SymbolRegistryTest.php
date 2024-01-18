@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Symbol\SymbolRegistry::class)]
+#[CoversClass(SymbolRegistry::class)]
 class SymbolRegistryTest extends TestCase
 {
     private RegexChecker $regexChecker;

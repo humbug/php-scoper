@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Symbol\Reflector::class)]
+#[CoversClass(Reflector::class)]
 class PhpStormStubsReflectorTest extends TestCase
 {
     private Reflector $reflector;

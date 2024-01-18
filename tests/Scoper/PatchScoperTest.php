@@ -25,7 +25,7 @@ use function is_a;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Scoper\PatchScoper::class)]
+#[CoversClass(PatchScoper::class)]
 class PatchScoperTest extends TestCase
 {
     use ProphecyTrait;

@@ -21,7 +21,7 @@ use function is_a;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Scoper\NullScoper::class)]
+#[CoversClass(NullScoper::class)]
 class NullScoperTest extends TestCase
 {
     public function test_is_a_scoper(): void

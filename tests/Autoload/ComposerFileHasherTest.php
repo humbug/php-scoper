@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Autoload\ComposerFileHasher::class)]
+#[CoversClass(ComposerFileHasher::class)]
 final class ComposerFileHasherTest extends TestCase
 {
     #[DataProvider('filesProvider')]

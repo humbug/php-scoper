@@ -28,7 +28,7 @@ use ReflectionClass;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\PhpParser\TraverserFactory::class)]
+#[CoversClass(TraverserFactory::class)]
 class TraverserFactoryTest extends TestCase
 {
     public function test_creates_a_new_traverser_at_each_call(): void

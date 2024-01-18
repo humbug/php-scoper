@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Patcher\NullPatcher::class)]
+#[CoversClass(NullPatcher::class)]
 final class NullPatcherTest extends TestCase
 {
     public function test_it_returns_the_contents_unchanged(): void

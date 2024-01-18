@@ -33,7 +33,7 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Configuration\ConfigurationFactory::class)]
+#[CoversClass(ConfigurationFactory::class)]
 #[Group('integration')]
 class ConfigurationFactoryTest extends FileSystemTestCase
 {

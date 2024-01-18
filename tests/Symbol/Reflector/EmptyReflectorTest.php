@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Symbol\Reflector::class)]
+#[CoversClass(Reflector::class)]
 class EmptyReflectorTest extends TestCase
 {
     private Reflector $reflector;
@@ -32,7 +32,7 @@ class EmptyReflectorTest extends TestCase
         $this->reflector = Reflector::createEmpty();
     }
 
-    #[DataProviderExternal(\Humbug\PhpScoper\Symbol\Reflector\PhpStormStubsReflectorTest::class, 'provideClasses')]
+    #[DataProviderExternal(PhpStormStubsReflectorTest::class, 'provideClasses')]
     public function test_it_can_identify_internal_classes(string $class): void
     {
         $actual = $this->reflector->isClassInternal($class);
@@ -40,7 +40,7 @@ class EmptyReflectorTest extends TestCase
         self::assertFalse($actual);
     }
 
-    #[DataProviderExternal(\Humbug\PhpScoper\Symbol\Reflector\PhpStormStubsReflectorTest::class, 'provideFunctions')]
+    #[DataProviderExternal(PhpStormStubsReflectorTest::class, 'provideFunctions')]
     public function test_it_can_identify_internal_functions(string $class, bool $expected): void
     {
         $actual = $this->reflector->isFunctionInternal($class);
@@ -48,7 +48,7 @@ class EmptyReflectorTest extends TestCase
         self::assertFalse($actual);
     }
 
-    #[DataProviderExternal(\Humbug\PhpScoper\Symbol\Reflector\PhpStormStubsReflectorTest::class, 'provideConstants')]
+    #[DataProviderExternal(PhpStormStubsReflectorTest::class, 'provideConstants')]
     public function test_it_can_identify_internal_constants(string $class, bool $expected): void
     {
         $actual = $this->reflector->isConstantInternal($class);

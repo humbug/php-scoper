@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Patcher\ComposerPatcher::class)]
+#[CoversClass(ComposerPatcher::class)]
 class ComposerPatcherTest extends TestCase
 {
     #[DataProvider('provideFiles')]

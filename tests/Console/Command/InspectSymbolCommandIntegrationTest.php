@@ -26,7 +26,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Console\Command\InspectSymbolCommand::class)]
+#[CoversClass(InspectSymbolCommand::class)]
 #[Group('integration')]
 class InspectSymbolCommandIntegrationTest extends FileSystemTestCase
 {

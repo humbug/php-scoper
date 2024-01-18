@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Symbol\EnrichedReflectorFactory::class)]
+#[CoversClass(EnrichedReflectorFactory::class)]
 final class EnrichedReflectorFactoryTest extends TestCase
 {
     public function test_it_can_create_an_enriched_reflector(): void

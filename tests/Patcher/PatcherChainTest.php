@@ -24,7 +24,7 @@ use function str_replace;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Patcher\PatcherChain::class)]
+#[CoversClass(PatcherChain::class)]
 class PatcherChainTest extends TestCase
 {
     public function test_it_applies_all_the_inner_patchers(): void

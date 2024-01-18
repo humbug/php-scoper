@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher::class)]
+#[CoversClass(SymfonyParentTraitPatcher::class)]
 class SymfonyParentTraitPatcherTest extends TestCase
 {
     #[DataProvider('provideFiles')]

@@ -23,7 +23,7 @@ use function array_values;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Configuration\ConfigurationKeys::class)]
+#[CoversClass(ConfigurationKeys::class)]
 final class ConfigurationKeysTest extends TestCase
 {
     public function test_keywords_contains_all_the_known_configuration_keys(): void

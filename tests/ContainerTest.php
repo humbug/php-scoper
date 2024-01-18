@@ -22,7 +22,7 @@ use ReflectionClass;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Container::class)]
+#[CoversClass(Container::class)]
 class ContainerTest extends TestCase
 {
     #[DataProvider('provideServiceGetter')]

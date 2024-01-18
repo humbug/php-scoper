@@ -22,7 +22,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Symbol\NamespaceRegistry::class)]
+#[CoversClass(NamespaceRegistry::class)]
 class NamespaceRegistryTest extends TestCase
 {
     private RegexChecker $regexChecker;

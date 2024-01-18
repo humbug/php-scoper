@@ -21,7 +21,7 @@ use function count;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\AutoReview\GAE2ECollector::class)]
+#[CoversClass(GAE2ECollector::class)]
 class GAE2ECollectorTest extends TestCase
 {
     public function test_it_collects_the_e2e_test_names(): void

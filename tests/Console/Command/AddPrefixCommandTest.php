@@ -23,6 +23,8 @@ use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
+use Humbug\PhpScoper\Console\ConfigLoader;
+use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\PhpParser\FakeParser;
@@ -49,9 +51,9 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Console\Command\AddPrefixCommand::class)]
-#[CoversClass(\Humbug\PhpScoper\Console\ConfigLoader::class)]
-#[CoversClass(\Humbug\PhpScoper\Console\ConsoleScoper::class)]
+#[CoversClass(AddPrefixCommand::class)]
+#[CoversClass(ConfigLoader::class)]
+#[CoversClass(ConsoleScoper::class)]
 class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCase
 {
     use AppTesterAbilities;

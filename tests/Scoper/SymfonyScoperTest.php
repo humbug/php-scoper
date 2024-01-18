@@ -26,7 +26,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-#[CoversClass(\Humbug\PhpScoper\Scoper\SymfonyScoper::class)]
+#[CoversClass(SymfonyScoper::class)]
 final class SymfonyScoperTest extends TestCase
 {
     private Scoper $scoper;
