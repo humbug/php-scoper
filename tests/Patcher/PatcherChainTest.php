@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Patcher;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use function func_get_args;
 use function implode;
@@ -21,10 +22,9 @@ use function sprintf;
 use function str_replace;
 
 /**
- * @covers \Humbug\PhpScoper\Patcher\PatcherChain
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Patcher\PatcherChain::class)]
 class PatcherChainTest extends TestCase
 {
     public function test_it_applies_all_the_inner_patchers(): void

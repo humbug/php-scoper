@@ -21,6 +21,8 @@ use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -28,10 +30,9 @@ use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\Symfony\XmlScoper
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Scoper\Symfony\XmlScoper::class)]
 class XmlScoperTest extends TestCase
 {
     use ProphecyTrait;
@@ -54,9 +55,7 @@ class XmlScoperTest extends TestCase
         self::assertTrue(is_a(XmlScoper::class, Scoper::class, true));
     }
 
-    /**
-     * @dataProvider provideXmlFilesExtensions
-     */
+    #[DataProvider('provideXmlFilesExtensions')]
     public function test_it_can_scope_xml_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
@@ -91,9 +90,7 @@ class XmlScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes($scopedCount);
     }
 
-    /**
-     * @dataProvider provideXmlFiles
-     */
+    #[DataProvider('provideXmlFiles')]
     public function test_it_scopes__xm_l_files(
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,

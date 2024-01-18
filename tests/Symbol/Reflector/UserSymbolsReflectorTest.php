@@ -16,18 +16,17 @@ namespace Humbug\PhpScoper\Symbol\Reflector;
 
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Symbol\Reflector
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Symbol\Reflector::class)]
 class UserSymbolsReflectorTest extends TestCase
 {
-    /**
-     * @dataProvider symbolsProvider
-     */
+    #[DataProvider('symbolsProvider')]
     public function test_it_can_be_enriched_with_arbitrary_symbols(
         SymbolRegistry $classes,
         SymbolRegistry $functions,

@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\NullScoper
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Scoper\NullScoper::class)]
 class NullScoperTest extends TestCase
 {
     public function test_is_a_scoper(): void

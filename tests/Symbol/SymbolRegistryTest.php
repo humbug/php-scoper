@@ -16,13 +16,14 @@ namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Symbol\SymbolRegistry
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Symbol\SymbolRegistry::class)]
 class SymbolRegistryTest extends TestCase
 {
     private RegexChecker $regexChecker;
@@ -33,11 +34,10 @@ class SymbolRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideSymbols
-     *
      * @param string[] $regexes
      * @param string[] $names
      */
+    #[DataProvider('provideSymbols')]
     public function test_it_can_tell_if_it_matches_the_symbol(
         array $names,
         array $regexes,
@@ -58,13 +58,12 @@ class SymbolRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideNamesAndRegexes
-     *
      * @param string[]     $regexes
      * @param string[]     $names
      * @param list<string> $regexes
      * @param list<string> $names
      */
+    #[DataProvider('provideNamesAndRegexes')]
     public function test_it_optimizes_the_registered_names_and_regexes(
         array $names,
         array $regexes,

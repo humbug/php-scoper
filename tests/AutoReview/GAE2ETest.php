@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\AutoReview;
 
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use function array_diff;
 
 /**
- * @coversNothing
- *
  * @internal
  */
+#[CoversNothing]
 class GAE2ETest extends TestCase
 {
     private const IGNORED_E2E_TESTS = [

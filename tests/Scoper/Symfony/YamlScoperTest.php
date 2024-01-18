@@ -21,6 +21,8 @@ use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -28,10 +30,9 @@ use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\Symfony\YamlScoper
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Scoper\Symfony\YamlScoper::class)]
 class YamlScoperTest extends TestCase
 {
     use ProphecyTrait;
@@ -54,9 +55,7 @@ class YamlScoperTest extends TestCase
         self::assertTrue(is_a(YamlScoper::class, Scoper::class, true));
     }
 
-    /**
-     * @dataProvider provideYamlFilesExtensions
-     */
+    #[DataProvider('provideYamlFilesExtensions')]
     public function test_it_can_scope_yaml_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
@@ -92,9 +91,7 @@ class YamlScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes($scopedCount);
     }
 
-    /**
-     * @dataProvider provideYamlFiles
-     */
+    #[DataProvider('provideYamlFiles')]
     public function test_it_scopes_yaml_files(
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,

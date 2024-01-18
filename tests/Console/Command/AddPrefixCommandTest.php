@@ -32,6 +32,7 @@ use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -46,12 +47,11 @@ use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
- * @covers \Humbug\PhpScoper\Console\ConfigLoader
- * @covers \Humbug\PhpScoper\Console\ConsoleScoper
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Console\Command\AddPrefixCommand::class)]
+#[CoversClass(\Humbug\PhpScoper\Console\ConfigLoader::class)]
+#[CoversClass(\Humbug\PhpScoper\Console\ConsoleScoper::class)]
 class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCase
 {
     use AppTesterAbilities;

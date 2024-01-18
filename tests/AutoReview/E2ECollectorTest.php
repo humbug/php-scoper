@@ -14,14 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\AutoReview;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use function count;
 
 /**
- * @covers \Humbug\PhpScoper\AutoReview\E2ECollector
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\AutoReview\E2ECollector::class)]
 class E2ECollectorTest extends TestCase
 {
     public function test_it_collects_the_e2e_test_names(): void

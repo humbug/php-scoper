@@ -16,23 +16,23 @@ namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\PhpScoperAssertions;
 use PhpParser\Node\Name\FullyQualified;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Symbol\SymbolsRegistry
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Symbol\SymbolsRegistry::class)]
 final class SymbolsRegistryTest extends TestCase
 {
     /**
-     * @dataProvider provideRecords
-     *
      * @param array<array{FullyQualified, FullyQualified}> $functions
      * @param array<array{FullyQualified, FullyQualified}> $classes
      * @param list<array{FullyQualified, FullyQualified}>  $expectedRecordedFunctions
      * @param list<array{FullyQualified, FullyQualified}>  $expectedRecordedClasses
      */
+    #[DataProvider('provideRecords')]
     public function test_it_records_functions_and_classes(
         array $functions,
         array $classes,
@@ -51,11 +51,10 @@ final class SymbolsRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideRecords
-     *
      * @param array<array{FullyQualified, FullyQualified}> $functions
      * @param array<array{FullyQualified, FullyQualified}> $classes
      */
+    #[DataProvider('provideRecords')]
     public function test_it_can_be_serialized_and_unserialized(
         array $functions,
         array $classes,
@@ -130,9 +129,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideRegistryToMerge
-     */
+    #[DataProvider('provideRegistryToMerge')]
     public function test_it_can_merge_two_registries_together(
         SymbolsRegistry $source,
         SymbolsRegistry $target,
@@ -304,10 +301,9 @@ final class SymbolsRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideRegistriesToMerge
-     *
      * @param SymbolsRegistry[] $sources
      */
+    #[DataProvider('provideRegistriesToMerge')]
     public function test_it_can_merge_registries_together(
         array $sources,
         array $expectedRecordedFunctions,

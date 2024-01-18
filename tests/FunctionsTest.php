@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper;
 use ArrayIterator;
 use Generator;
 use Humbug\PhpScoper\Console\Application;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function iterator_to_array;
 
@@ -40,9 +41,7 @@ class FunctionsTest extends TestCase
         self::assertStringContainsString('@', $version);
     }
 
-    /**
-     * @dataProvider provideGenerators
-     */
+    #[DataProvider('provideGenerators')]
     public function test_it_can_chain_iterators(array $iterators, array $expected): void
     {
         $actual = iterator_to_array(chain(...$iterators), true);

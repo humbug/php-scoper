@@ -28,6 +28,8 @@ use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -59,10 +61,9 @@ use const PHP_EOL;
 use const PHP_VERSION_ID;
 
 /**
- * @group integration
- *
  * @internal
  */
+#[Group('integration')]
 class PhpScoperSpecTest extends TestCase
 {
     private const SPECS_PATH = __DIR__.'/../../specs';
@@ -115,9 +116,7 @@ class PhpScoperSpecTest extends TestCase
         self::assertCount(0, $files);
     }
 
-    /**
-     * @dataProvider provideValidFiles
-     */
+    #[DataProvider('provideValidFiles')]
     public function test_can_scope_valid_files(
         string $file,
         string $spec,

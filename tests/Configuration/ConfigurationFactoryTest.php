@@ -24,17 +24,17 @@ use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use function array_keys;
 use function Safe\touch;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
- *
- * @group integration
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Configuration\ConfigurationFactory::class)]
+#[Group('integration')]
 class ConfigurationFactoryTest extends FileSystemTestCase
 {
     private ConfigurationFactory $configFactory;

@@ -19,13 +19,14 @@ use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use LogicException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\SymfonyScoper
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Scoper\SymfonyScoper::class)]
 final class SymfonyScoperTest extends TestCase
 {
     private Scoper $scoper;
@@ -43,9 +44,7 @@ final class SymfonyScoperTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider provideScopableFiles
-     */
+    #[DataProvider('provideScopableFiles')]
     public function test_it_can_scope_symfony_config_files(
         string $filePath,
         string $contents,

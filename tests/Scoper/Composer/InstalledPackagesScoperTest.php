@@ -21,15 +21,16 @@ use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer
- * @covers \Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer::class)]
+#[CoversClass(\Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper::class)]
 class InstalledPackagesScoperTest extends TestCase
 {
     private const PREFIX = 'Foo';
@@ -79,9 +80,7 @@ class InstalledPackagesScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider provideInstalledPackagesFiles
-     */
+    #[DataProvider('provideInstalledPackagesFiles')]
     public function test_it_prefixes_the_composer_autoloaders(
         EnrichedReflector $enrichedReflector,
         string $fileContents,
@@ -103,9 +102,7 @@ class InstalledPackagesScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider provideInvalidComposerFiles
-     */
+    #[DataProvider('provideInvalidComposerFiles')]
     public function test_it_requires_valid_composer2_files(
         string $contents,
         string $expectedExceptionMessage

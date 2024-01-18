@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Patcher;
 
 use Closure;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -31,9 +32,7 @@ final class SymfonyPhpServicesPatcherTest extends TestCase
         $this->patcher = (require __DIR__.'/../../res/create-symfony-php-services-patcher.php')([self::FILE_PATH]);
     }
 
-    /**
-     * @dataProvider symfonyConfigFileProvider
-     */
+    #[DataProvider('symfonyConfigFileProvider')]
     public function test_it_can_patch_a_symfony_service_file(
         string $prefix,
         string $contents,

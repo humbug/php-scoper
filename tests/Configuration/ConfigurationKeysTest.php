@@ -14,16 +14,16 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionClassConstant;
 use function array_values;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\ConfigurationKeys
- *
  * @internal
  */
+#[CoversClass(\Humbug\PhpScoper\Configuration\ConfigurationKeys::class)]
 final class ConfigurationKeysTest extends TestCase
 {
     public function test_keywords_contains_all_the_known_configuration_keys(): void
