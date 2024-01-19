@@ -54,7 +54,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [ '8.2' ]
+                php: [ '8.3' ]
 
         steps:
             -   name: Checkout
@@ -108,7 +108,7 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.2'
+                    php-version: '8.3'
                     tools: composer
                     coverage: none
 

@@ -24,6 +24,7 @@ jobs:
             matrix:
                 php:
                     - '8.2'
+                    - '8.3'
         steps:
             -   name: Checkout
                 uses: actions/checkout@v4
@@ -88,6 +89,7 @@ jobs:
                     - 'e2e_037'
                 php:
                     - '8.2'
+                    - '8.3'
                 composer:
                     - 'composer:2.2'
                     - 'composer'
@@ -138,7 +140,7 @@ jobs:
                 run: sudo apt-get install -y tree
 
             -   name: Run e2e ${{ matrix.e2e }}
-                run: make ${{ matrix.e2e }} --debug
+                run: make ${{ matrix.e2e }}
 
 
     # Most of the job definitions come from https://github.com/sebastianbergmann/phpunit/blob/main/.github/workflows/ci.yml#L228
@@ -155,7 +157,7 @@ jobs:
             fail-fast: false
             matrix:
                 php-version:
-                    - '8.2'
+                    - '8.3'
                 coverage:
                     - xdebug
 
