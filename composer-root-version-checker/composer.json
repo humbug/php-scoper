@@ -10,7 +10,7 @@
     "require-dev": {
         "ergebnis/composer-normalize": "^2.29",
         "fidry/makefile": "^1.0.1",
-        "phpunit/phpunit": "^10.4"
+        "phpunit/phpunit": "^11.0"
     },
     "autoload": {
         "psr-4": {
