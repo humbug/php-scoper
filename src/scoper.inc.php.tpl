@@ -13,13 +13,13 @@ use Isolated\Symfony\Component\Finder\Finder;
 
 // Example of collecting files to include in the scoped build but to not scope
 // leveraging the isolated finder.
-$excludedFiles = array_map(
+$excludedFiles = /*array_map(
     static fn (SplFileInfo $fileInfo) => $fileInfo->getPathName(),
     iterator_to_array(
         Finder::create()->files()->in(__DIR__),
         false,
     ),
-);
+)*/ = [];
 
 return [
     // The prefix configuration. If a non-null value is used, a random prefix
