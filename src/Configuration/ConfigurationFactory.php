@@ -293,7 +293,10 @@ final readonly class ConfigurationFactory
                 $file = $dirPath.DIRECTORY_SEPARATOR.$file;
             }
 
-            $excludedFiles[$index] = realpath($file);
+            unset( $excludedFiles[$index] );
+            $fileKey = str_replace( $dirPath.DIRECTORY_SEPARATOR, '', $file );
+            $file = realpath($file);
+            $excludedFiles[$fileKey] = $file;
         }
 
         return array_filter($excludedFiles);
@@ -390,7 +393,7 @@ final readonly class ConfigurationFactory
     {
         $filesWithContents = [];
 
-        foreach ($files as $filePathOrFileInfo) {
+        foreach ($files as $fileKey => $filePathOrFileInfo) {
             $filePath = $filePathOrFileInfo instanceof SplFileInfo
                 ? $filePathOrFileInfo->getRealPath()
                 : realpath($filePathOrFileInfo);
@@ -413,7 +416,7 @@ final readonly class ConfigurationFactory
                 );
             }
 
-            $filesWithContents[$filePath] = [$filePath, file_get_contents($filePath)];
+            $filesWithContents[$fileKey] = [$filePath, file_get_contents($filePath)];
         }
 
         return $filesWithContents;
