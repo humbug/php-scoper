@@ -192,11 +192,6 @@ To check if the isolated code is working correctly, you have a number of solutio
 - When using a PHAR (created by [Box][box] or any other PHAR building tool), 
   you can use the [`Phar::extractTo()`][phar-extract-to] method.
 
-Also take into consideration that bundling code in a PHAR is not guaranteed to work
-out of the box either. Indeed there is a number of things such as 
-
-For this reason, you should also h
-
 
 ## Contributing
 
