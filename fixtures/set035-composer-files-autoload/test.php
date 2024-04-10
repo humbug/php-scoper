@@ -16,7 +16,6 @@ Autoload Scoped code.
 5.3.4.0
 Guzzle5 loaded.
 Autoload code.
-The hashes are matching.
 6.5.8.0
 Done.
 EOF;
