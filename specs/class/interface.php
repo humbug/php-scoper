@@ -62,6 +62,54 @@ return [
     
     PHP,
 
+    'Declaration of an internal interface' => [
+        'exclude-classes' => ['NewPhp20Interface'],
+        'expected-recorded-classes' => [
+            ['NewPhp20Interface', 'Humbug\NewPhp20Interface'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        interface NewPhp20Interface {}
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        interface NewPhp20Interface
+        {
+        }
+        \class_alias('Humbug\\NewPhp20Interface', 'NewPhp20Interface', \false);
+        
+        PHP,
+    ],
+
+    'Declaration of an internal interface within an if statement' => [
+        'exclude-classes' => ['NewPhp20Interface'],
+        'expected-recorded-classes' => [
+            ['NewPhp20Interface', 'Humbug\NewPhp20Interface'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        if (PHP_VERSION_ID <= 200000) {
+            interface NewPhp20Interface {}
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        if (\PHP_VERSION_ID <= 200000) {
+            interface NewPhp20Interface
+            {
+            }
+            \class_alias('Humbug\\NewPhp20Interface', 'NewPhp20Interface', \false);
+        }
+        
+        PHP,
+    ],
+
     'Declaration in the global namespace with global classes exposed' => [
         'expose-global-classes' => true,
         'expected-recorded-classes' => [

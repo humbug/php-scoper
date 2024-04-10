@@ -38,7 +38,7 @@ BLACKFIRE = blackfire
 
 .PHONY: help
 help:
-	@echo "\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n"
+	@printf "\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n\n"
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | awk 'BEGIN {FS = ":"}; {printf "\033[33m%s:\033[0m%s\n", $$1, $$2}'
 
 
@@ -168,7 +168,8 @@ e2e: e2e_004 \
 		e2e_036 \
 		e2e_037 \
 		e2e_038 \
-		e2e_039
+		e2e_039 \
+		e2e_040
 
 .PHONY: blackfire
 blackfire: ## Runs Blackfire profiling

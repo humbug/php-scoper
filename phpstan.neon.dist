@@ -60,3 +60,5 @@ parameters:
           path: 'tests/Console/Command/AddInspectCommandIntegrationTest.php'
         - message: '#unserialize#'
           path: 'src/Symbol/SymbolsRegistry.php'
+        - message: '#Stmt\:\:\$stmts#'
+          path: 'src/PhpParser/NodeVisitor/ClassAliasStmtAppender.php'
