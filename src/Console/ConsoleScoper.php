@@ -128,7 +128,7 @@ final readonly class ConsoleScoper
             $this->dumpFileWithPermissions(...$excludedFileWithContent);
         }
 
-        $vendorDir = self::findVendorDir(
+        $scopedFilesVendorDir = self::findVendorDir(
             [
                 ...array_column($files, 2),
                 ...array_column($excludedFilesWithContents, 2),
@@ -141,7 +141,7 @@ final readonly class ConsoleScoper
             ],
         );
 
-        if (null !== $vendorDir && null !== $originalVendorDir) {
+        if (null !== $scopedFilesVendorDir && null !== $originalVendorDir) {
             $originalRootDir = dirname($originalVendorDir);
 
             $fileHashGenerator = ComposerFileHasher::create(
@@ -154,7 +154,7 @@ final readonly class ConsoleScoper
             $autoload = (new ScoperAutoloadGenerator($symbolsRegistry, $fileHashes))->dump();
 
             $this->fileSystem->dumpFile(
-                $vendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
+                $scopedFilesVendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
                 $autoload,
             );
         }

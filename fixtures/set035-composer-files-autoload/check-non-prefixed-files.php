@@ -37,3 +37,5 @@ if (count($actualExpectedMissing) !== count($expectedMissingComposerAutoloadFile
     echo var_export($actualExpectedMissing, true).PHP_EOL;
     exit(1);
 }
+
+echo 'The hashes are matching.'.PHP_EOL;
