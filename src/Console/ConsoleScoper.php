@@ -27,14 +27,12 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 use Webmozart\Assert\Assert;
-use function array_column;
 use function array_keys;
 use function array_map;
 use function array_values;
 use function count;
 use function dirname;
 use function preg_match as native_preg_match;
-use function Safe\file_get_contents;
 use function Safe\fileperms;
 use function str_replace;
 use function strlen;
@@ -131,14 +129,12 @@ final readonly class ConsoleScoper
     /**
      * @param File[] $files
      * @param File[] $excludedFilesWithContents
-     * @return void
      */
     private function dumpScoperAutoloader(
         array $files,
         array $excludedFilesWithContents,
         SymbolsRegistry $symbolsRegistry,
-    ): void
-    {
+    ): void {
         $excludeFileInputPaths = self::mapFilesToInputPath($excludedFilesWithContents);
 
         $scopedFilesVendorDir = self::findVendorDir(
@@ -202,7 +198,8 @@ final readonly class ConsoleScoper
         }
     }
 
-    private function dumpFileWithPermissions(File $file): void {
+    private function dumpFileWithPermissions(File $file): void
+    {
         $outputFilePath = $file->inputFilePath;
 
         $this->fileSystem->dumpFile($outputFilePath, $file->inputContents);
@@ -216,7 +213,7 @@ final readonly class ConsoleScoper
     }
 
     /**
-     * @param File[] $files
+     * @param  File[]   $files
      * @return string[]
      */
     private static function mapFilesToInputPath(array $files): array
@@ -228,7 +225,7 @@ final readonly class ConsoleScoper
     }
 
     /**
-     * @param File[] $files
+     * @param  File[]   $files
      * @return string[]
      */
     private static function mapFilesToOutputPath(array $files): array
