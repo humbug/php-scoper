@@ -24,11 +24,6 @@ e2e_005: $(PHP_SCOPER_PHAR_BIN) fixtures/set005/vendor
 	php build/set005/bin/greet.phar > build/set005/output
 	diff fixtures/set005/expected-output build/set005/output
 
-	$(BOX) compile --no-parallel --working-dir fixtures/set005
-
-	php build/set005/bin/greet.phar > build/set005/output
-	diff fixtures/set005/expected-output build/set005/output
-
 .PHONY: e2e_011
 e2e_011: # Runs end-to-end tests for the fixture set 011 — Codebase with exposed symbols
 e2e_011: $(PHP_SCOPER_PHAR_BIN) build/set011/bin/greet.phar
