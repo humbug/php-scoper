@@ -76,7 +76,7 @@ final readonly class ConsoleScoper
         );
 
         try {
-            $this->scopeFiles(
+            $this->doScope(
                 $config,
                 $outputDir,
                 $stopOnFailure,
@@ -93,7 +93,7 @@ final readonly class ConsoleScoper
         $logger->outputScopingEnd();
     }
 
-    private function scopeFiles(
+    private function doScope(
         Configuration $config,
         string $outputDir,
         bool $stopOnFailure,
@@ -108,54 +108,95 @@ final readonly class ConsoleScoper
 
         $symbolsRegistry = new SymbolsRegistry();
 
-        $scoper = $this->scoperFactory->createScoper(
+        $this->scopeFiles(
             $config,
+            $files,
+            $stopOnFailure,
+            $logger,
             $symbolsRegistry,
         );
-
-        foreach ($files as [$inputFilePath, $inputContents, $outputFilePath]) {
-            $this->scopeFile(
-                $scoper,
-                $inputFilePath,
-                $inputContents,
-                $outputFilePath,
-                $stopOnFailure,
-                $logger,
-            );
-        }
 
         foreach ($excludedFilesWithContents as $excludedFileWithContent) {
             $this->dumpFileWithPermissions(...$excludedFileWithContent);
         }
 
-        $vendorDir = self::findVendorDir(
+        self::dumpScoperAutoloader(
+            $files,
+            $excludedFilesWithContents,
+            $symbolsRegistry,
+        );
+    }
+
+    /**
+     * @param array<string, File> $files
+     * @param array<string, File> $excludedFilesWithContents
+     * @return void
+     */
+    private function dumpScoperAutoloader(
+        array $files,
+        array $excludedFilesWithContents,
+        SymbolsRegistry $symbolsRegistry,
+    ): void
+    {
+        $excludeFileInputPaths = self::mapFilesToInputPath($excludedFilesWithContents);
+
+        $scopedFilesVendorDir = self::findVendorDir(
             [
-                ...array_column($files, 2),
-                ...array_column($excludedFilesWithContents, 2),
+                ...self::mapFilesToOutputPath($files),
+                ...self::mapFilesToOutputPath($excludedFilesWithContents),
             ],
         );
-        $originalVendorDir = self::findVendorDir(
+        $sourceVendorDir = self::findVendorDir(
             [
-                ...array_column($files, 0),
-                ...array_column($excludedFilesWithContents, 0),
+                ...self::mapFilesToInputPath($files),
+                ...$excludeFileInputPaths,
             ],
         );
 
-        if (null !== $vendorDir && null !== $originalVendorDir) {
-            $originalRootDir = dirname($originalVendorDir);
+        if (null === $scopedFilesVendorDir || null === $sourceVendorDir) {
+            return;
+        }
 
-            $fileHashGenerator = ComposerFileHasher::create(
-                $originalVendorDir,
-                $originalRootDir,
-                array_column($config->getExcludedFilesWithContents(), 0),
-            );
-            $fileHashes = $fileHashGenerator->generateHashes();
+        $sourceRootDir = dirname($sourceVendorDir);
 
-            $autoload = (new ScoperAutoloadGenerator($symbolsRegistry, $fileHashes))->dump();
+        $fileHashGenerator = ComposerFileHasher::create(
+            $sourceVendorDir,
+            $sourceRootDir,
+            $excludeFileInputPaths,
+        );
+        $fileHashes = $fileHashGenerator->generateHashes();
 
-            $this->fileSystem->dumpFile(
-                $vendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
-                $autoload,
+        $autoload = (new ScoperAutoloadGenerator($symbolsRegistry, $fileHashes))->dump();
+
+        $this->fileSystem->dumpFile(
+            $scopedFilesVendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
+            $autoload,
+        );
+    }
+
+    /**
+     * @param File[] $files
+     */
+    private function scopeFiles(
+        Configuration $config,
+        array $files,
+        bool $stopOnFailure,
+        ScoperLogger $logger,
+        SymbolsRegistry $symbolsRegistry,
+    ): void {
+        $logger->outputFileCount(count($files));
+
+        $scoper = $this->scoperFactory->createScoper(
+            $config,
+            $symbolsRegistry,
+        );
+
+        foreach ($files as $file) {
+            $this->scopeFile(
+                $scoper,
+                $file,
+                $stopOnFailure,
+                $logger,
             );
         }
     }
@@ -176,7 +217,31 @@ final readonly class ConsoleScoper
     }
 
     /**
-     * @return array{array<array{string, string, string}>, array<array{string, string, string}>}
+     * @param File[] $files
+     * @return string[]
+     */
+    private static function mapFilesToInputPath(array $files): array
+    {
+        return array_map(
+            static fn (File $file) => $file->inputFilePath,
+            $files,
+        );
+    }
+
+    /**
+     * @param File[] $files
+     * @return string[]
+     */
+    private static function mapFilesToOutputPath(array $files): array
+    {
+        return array_map(
+            static fn (File $file) => $file->outputFilePath,
+            $files,
+        );
+    }
+
+    /**
+     * @return array{array<string, File>, array<string, File>}
      */
     private static function getFiles(Configuration $config, string $outputDir): array
     {
@@ -185,21 +250,21 @@ final readonly class ConsoleScoper
 
         $commonDirectoryPath = Path::getLongestCommonBasePath(
             ...array_map(
-                static fn (string $path) => Path::getDirectory($path),
+                Path::getDirectory(...),
                 array_keys($filesWithContent),
             ),
             ...array_map(
-                static fn (string $path) => Path::getDirectory($path),
+                Path::getDirectory(...),
                 array_keys($excludedFilesWithContents),
             ),
         );
         Assert::notNull($commonDirectoryPath);
 
-        $mapFiles = static fn (array $inputFileTuple) => [
+        $mapFiles = static fn (array $inputFileTuple) => new File(
             Path::normalize($inputFileTuple[0]),
             $inputFileTuple[1],
             $outputDir.str_replace($commonDirectoryPath, '', Path::normalize($inputFileTuple[0])),
-        ];
+        );
 
         return [
             array_map(
@@ -235,18 +300,17 @@ final readonly class ConsoleScoper
 
     private function scopeFile(
         Scoper $scoper,
-        string $inputFilePath,
-        string $inputContents,
-        string $outputFilePath,
+        File $file,
         bool $stopOnFailure,
         ScoperLogger $logger
     ): void {
         $successfullyScoped = false;
+        $inputFilePath = $file->inputFilePath;
 
         try {
             $scoppedContent = $scoper->scope(
                 $inputFilePath,
-                $inputContents,
+                $file->inputContents,
             );
 
             $successfullyScoped = true;
@@ -274,7 +338,7 @@ final readonly class ConsoleScoper
         $this->dumpFileWithPermissions(
             $inputFilePath,
             $scoppedContent,
-            $outputFilePath,
+            $file->outputFilePath,
         );
 
         if ($successfullyScoped) {
