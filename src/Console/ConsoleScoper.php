@@ -200,7 +200,7 @@ final readonly class ConsoleScoper
 
     private function dumpFileWithPermissions(File $file): void
     {
-        $outputFilePath = $file->inputFilePath;
+        $outputFilePath = $file->outputFilePath;
 
         $this->fileSystem->dumpFile($outputFilePath, $file->inputContents);
 
