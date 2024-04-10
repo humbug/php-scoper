@@ -10,6 +10,15 @@ updates:
                     - "*"
 
     -   package-ecosystem: "composer"
+        directory: "vendor-bin/*/"
+        schedule:
+            interval: "weekly"
+        groups:
+            dependencies:
+                patterns:
+                    - "*"
+
+    -   package-ecosystem: "composer"
         directory: "composer-root-version-checker"
         schedule:
             interval: "weekly"
