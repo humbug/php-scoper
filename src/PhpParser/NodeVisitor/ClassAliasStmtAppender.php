@@ -24,10 +24,11 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Switch_;
+use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeVisitorAbstract;
-use function array_map;
 use function array_reduce;
 use function in_array;
 
@@ -83,6 +84,9 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
         }
     }
 
+    /**
+     * @phpstan-assert-if-true Stmt $node
+     */
     private static function isNodeAStatementWithStatements(Node $node): bool
     {
         return $node instanceof Stmt && in_array('stmts', $node->getSubNodeNames(), true);
@@ -125,13 +129,13 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             $this->updateStatements($stmt);
         }
 
-        if ($stmt instanceof Stmt\If_) {
+        if ($stmt instanceof If_) {
             $this->updateStatements($stmt->else);
             $this->traverseNodes($stmt->elseifs);
-        } elseif ($stmt instanceof Stmt\Switch_) {
+        } elseif ($stmt instanceof Switch_) {
             $this->traverseNodes($stmt->cases);
-        } elseif ($stmt instanceof Stmt\TryCatch) {
-            $this->traverseNodes($stmt->catches ?? []);
+        } elseif ($stmt instanceof TryCatch) {
+            $this->traverseNodes($stmt->catches);
             $this->updateStatements($stmt->finally);
         }
 
