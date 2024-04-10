@@ -82,6 +82,37 @@ return [
         PHP,
     ],
 
+    'Declaration in the global namespace with global classes exposed within a condition' => [
+        'expose-global-classes' => true,
+        'expected-recorded-classes' => [
+            ['A', 'Humbug\A'],
+        ],
+        'payload' => <<<'PHP'
+        <?php
+        
+        if ($condition) {
+            class A {
+                public function a() {}
+            }
+        }
+        ----
+        <?php
+        
+        namespace Humbug;
+        
+        if ($condition) {
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+        }
+        
+        PHP,
+    ],
+
     'Declaration of an internal class' => [
         'expected-recorded-classes' => [
             ['Normalizer', 'Humbug\Normalizer'],
