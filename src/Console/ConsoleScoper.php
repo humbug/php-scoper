@@ -30,6 +30,7 @@ use Webmozart\Assert\Assert;
 use function array_column;
 use function array_keys;
 use function array_map;
+use function array_values;
 use function count;
 use function dirname;
 use function preg_match as native_preg_match;
@@ -117,7 +118,7 @@ final readonly class ConsoleScoper
         );
 
         foreach ($excludedFilesWithContents as $excludedFileWithContent) {
-            $this->dumpFileWithPermissions(...$excludedFileWithContent);
+            $this->dumpFileWithPermissions($excludedFileWithContent);
         }
 
         self::dumpScoperAutoloader(
@@ -128,8 +129,8 @@ final readonly class ConsoleScoper
     }
 
     /**
-     * @param array<string, File> $files
-     * @param array<string, File> $excludedFilesWithContents
+     * @param File[] $files
+     * @param File[] $excludedFilesWithContents
      * @return void
      */
     private function dumpScoperAutoloader(
@@ -201,14 +202,12 @@ final readonly class ConsoleScoper
         }
     }
 
-    private function dumpFileWithPermissions(
-        string $inputFilePath,
-        string $inputContents,
-        string $outputFilePath
-    ): void {
-        $this->fileSystem->dumpFile($outputFilePath, $inputContents);
+    private function dumpFileWithPermissions(File $file): void {
+        $outputFilePath = $file->inputFilePath;
 
-        $originalFilePermissions = fileperms($inputFilePath) & 0o777;
+        $this->fileSystem->dumpFile($outputFilePath, $file->inputContents);
+
+        $originalFilePermissions = fileperms($file->inputFilePath) & 0o777;
 
         if ($originalFilePermissions !== 420) {
             // Only change the permissions if necessary
@@ -241,7 +240,7 @@ final readonly class ConsoleScoper
     }
 
     /**
-     * @return array{array<string, File>, array<string, File>}
+     * @return array{list<File>, list<File>}
      */
     private static function getFiles(Configuration $config, string $outputDir): array
     {
@@ -267,13 +266,17 @@ final readonly class ConsoleScoper
         );
 
         return [
-            array_map(
-                $mapFiles,
-                $filesWithContent,
+            array_values(
+                array_map(
+                    $mapFiles,
+                    $filesWithContent,
+                ),
             ),
-            array_map(
-                $mapFiles,
-                $excludedFilesWithContents,
+            array_values(
+                array_map(
+                    $mapFiles,
+                    $excludedFilesWithContents,
+                ),
             ),
         ];
     }
@@ -318,7 +321,7 @@ final readonly class ConsoleScoper
             $logger->outputWarnOfFailure($inputFilePath, $parsingException);
 
             // Fallback on unchanged content
-            $scoppedContent = file_get_contents($inputFilePath);
+            $scoppedContent = $file->inputContents;
         } catch (Throwable $throwable) {
             $exception = ParsingException::forFile(
                 $inputFilePath,
@@ -332,13 +335,11 @@ final readonly class ConsoleScoper
             $logger->outputWarnOfFailure($inputFilePath, $exception);
 
             // Fallback on unchanged content
-            $scoppedContent = file_get_contents($inputFilePath);
+            $scoppedContent = $file->inputContents;
         }
 
         $this->dumpFileWithPermissions(
-            $inputFilePath,
-            $scoppedContent,
-            $file->outputFilePath,
+            $file->withScoppedContent($scoppedContent),
         );
 
         if ($successfullyScoped) {

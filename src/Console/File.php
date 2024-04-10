@@ -15,4 +15,13 @@ final readonly class File
         public string $outputFilePath,
     ) {
     }
+
+    public function withScoppedContent(string $scoppedContent): self
+    {
+        return new self(
+            $this->inputFilePath,
+            $scoppedContent,
+            $this->outputFilePath,
+        );
+    }
 }
