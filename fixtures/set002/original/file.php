@@ -1,5 +1,5 @@
 <?php
 
-declare (strict_types=1);
-namespace MyPrefix\MyNamespace;
+declare(strict_types=1);
 
+namespace MyNamespace;
