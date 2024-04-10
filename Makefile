@@ -24,9 +24,6 @@ PHPUNIT = $(PHPUNIT_BIN)
 PHPUNIT_COVERAGE_INFECTION = XDEBUG_MODE=coverage $(PHPUNIT) --coverage-xml=$(COVERAGE_XML) --log-junit=$(COVERAGE_DIR)/phpunit.junit.xml
 PHPUNIT_COVERAGE_HTML = XDEBUG_MODE=coverage $(PHPUNIT) --coverage-html=$(COVERAGE_HTML)
 
-COVERS_VALIDATOR_BIN = vendor-bin/covers-validator/bin/covers-validator
-COVERS_VALIDATOR = $(COVERS_VALIDATOR_BIN)
-
 RECTOR_BIN = vendor-bin/rector/vendor/bin/rector
 RECTOR = $(RECTOR_BIN)
 
@@ -41,7 +38,7 @@ BLACKFIRE = blackfire
 
 .PHONY: help
 help:
-	@echo "\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n"
+	@printf "\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n\n"
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | awk 'BEGIN {FS = ":"}; {printf "\033[33m%s:\033[0m%s\n", $$1, $$2}'
 
 
@@ -99,7 +96,7 @@ phpstan: $(PHPSTAN_BIN)
 
 .PHONY: autoreview
 autoreview: ## Runs the AutoReview checks
-autoreview: cs_lint phpstan rector_lint covers_validator
+autoreview: cs_lint phpstan rector_lint
 
 .PHONY: test
 test: ## Runs all the tests
@@ -124,10 +121,6 @@ composer_root_version_update: ## Updates the COMPOSER_ROOT_VERSION
 composer_root_version_update:
 	rm .composer-root-version || true
 	$(MAKE) .composer-root-version
-
-.PHONY: covers_validator
-covers_validator: $(COVERS_VALIDATOR_BIN)
-	$(COVERS_VALIDATOR)
 
 .PHONY: phpunit
 phpunit: $(PHPUNIT_BIN) vendor
@@ -241,14 +234,6 @@ $(PHPUNIT_BIN): composer.lock .composer-root-version
 $(BOX_BIN): composer.lock .composer-root-version
 	$(MAKE) --always-make vendor_install
 	touch -c $@
-
-$(COVERS_VALIDATOR_BIN): vendor-bin/covers-validator/vendor
-vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
-	composer bin covers-validator install
-	touch -c $@
-vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
-	@echo "$(@) is not up to date. You may want to run the following command:"
-	@echo "$$ composer bin covers-validator update --lock && touch -c $(@)"
 
 .PHONY: php_cs_fixer_install
 php_cs_fixer_install: $(PHP_CS_FIXER_BIN)
