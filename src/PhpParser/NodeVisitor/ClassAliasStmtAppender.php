@@ -27,7 +27,9 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\NodeVisitorAbstract;
+use function array_map;
 use function array_reduce;
+use function in_array;
 
 /**
  * Appends a `class_alias` statement to the exposed classes.
@@ -64,28 +66,44 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
 
     public function afterTraverse(array $nodes): array
     {
-        $newNodes = [];
+        $this->traverseNodes($nodes);
 
-        foreach ($nodes as $node) {
-            if ($node instanceof Namespace_) {
-                $node = $this->appendToNamespaceStmt($node);
-            }
-
-            $newNodes[] = $node;
-        }
-
-        return $newNodes;
+        return $nodes;
     }
 
-    private function appendToNamespaceStmt(Namespace_ $namespace): Namespace_
+    /**
+     * @param Node[] $nodes
+     */
+    private function traverseNodes(array $nodes): void
     {
-        $namespace->stmts = array_reduce(
-            $namespace->stmts,
-            fn (array $stmts, Stmt $stmt) => $this->createNamespaceStmts($stmts, $stmt),
+        foreach ($nodes as $node) {
+            if (self::isNodeAStatementWithStatements($node)) {
+                $this->updateStatements($node);
+            }
+        }
+    }
+
+    private static function isNodeAStatementWithStatements(Node $node): bool
+    {
+        return $node instanceof Stmt && in_array('stmts', $node->getSubNodeNames(), true);
+    }
+
+    /**
+     * @template T of Stmt
+     *
+     * @param T|null $statement
+     */
+    private function updateStatements(?Stmt $statement): void
+    {
+        if (null === $statement || null === $statement->stmts) {
+            return;
+        }
+
+        $statement->stmts = array_reduce(
+            $statement->stmts,
+            fn (array $stmts, Stmt $stmt) => $this->appendClassAliasStmtIfApplicable($stmts, $stmt),
             [],
         );
-
-        return $namespace;
     }
 
     /**
@@ -93,16 +111,40 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
      *
      * @return Stmt[]
      */
-    private function createNamespaceStmts(array $stmts, Stmt $stmt): array
+    private function appendClassAliasStmtIfApplicable(array $stmts, Stmt $stmt): array
     {
         $stmts[] = $stmt;
 
         $isClassOrInterface = $stmt instanceof Class_ || $stmt instanceof Interface_;
 
-        if (!$isClassOrInterface) {
-            return $stmts;
+        if ($isClassOrInterface) {
+            return $this->appendClassAliasStmtIfNecessary($stmts, $stmt);
         }
 
+        if (self::isNodeAStatementWithStatements($stmt)) {
+            $this->updateStatements($stmt);
+        }
+
+        if ($stmt instanceof Stmt\If_) {
+            $this->updateStatements($stmt->else);
+            $this->traverseNodes($stmt->elseifs);
+        } elseif ($stmt instanceof Stmt\Switch_) {
+            $this->traverseNodes($stmt->cases);
+        } elseif ($stmt instanceof Stmt\TryCatch) {
+            $this->traverseNodes($stmt->catches ?? []);
+            $this->updateStatements($stmt->finally);
+        }
+
+        return $stmts;
+    }
+
+    /**
+     * @param Stmt[] $stmts
+     *
+     * @return Stmt[]
+     */
+    private function appendClassAliasStmtIfNecessary(array $stmts, Class_|Interface_ $stmt): array
+    {
         $name = $stmt->name;
 
         if (null === $name) {
