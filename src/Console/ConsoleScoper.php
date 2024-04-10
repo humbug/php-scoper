@@ -103,8 +103,6 @@ final readonly class ConsoleScoper
 
         [$files, $excludedFilesWithContents] = self::getFiles($config, $outputDir);
 
-        $logger->outputFileCount(count($files));
-
         $symbolsRegistry = new SymbolsRegistry();
 
         $this->scopeFiles(
