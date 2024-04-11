@@ -181,6 +181,13 @@ return [
 ];
 ```
 
+If you want to check if your patcher works as expected on a specific file, you can always check the scoping
+result for a single file with the `inspect` command:
+
+```shell
+php-scoper inspect /path/to/offending/file
+```
+
 
 ### Excluded files
 
