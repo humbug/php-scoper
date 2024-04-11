@@ -124,6 +124,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     public function __construct(
         private readonly string $prefix,
         private readonly EnrichedReflector $enrichedReflector,
+        private readonly ExcludedFunctionExistsStringNodeStack $excludedFunctionExistsStringNodeStack,
     ) {
     }
 
@@ -236,9 +237,13 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         if ('function_exists' === $functionName) {
-            return $this->enrichedReflector->isFunctionExcluded($normalizedValue)
-                ? $string
-                : $this->createPrefixedString($string);
+            if ($this->enrichedReflector->isFunctionExcluded($normalizedValue)) {
+                $this->excludedFunctionExistsStringNodeStack->push($string);
+
+                return $string;
+            }
+
+            return $this->createPrefixedString($string);
         }
 
         $isConstantNode = self::isConstantNode($string);

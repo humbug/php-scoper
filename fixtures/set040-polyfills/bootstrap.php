@@ -13,3 +13,9 @@ if (!defined('NEW_PHP20_CONSTANT')) {
 if (!function_exists('new_php20_function')) {
     function new_php20_function(bool $echo = false): void { Php20::new_php20_function($echo); }
 }
+
+// 2nd declaration: in practice this can easily happen for a function polyfilled in
+// multiple packages.
+if (!function_exists('new_php20_function')) {
+    function new_php20_function(bool $echo = false): void { Php20::new_php20_function($echo); }
+}
