@@ -15,8 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
-use Infection\Str;
-use PhpParser\Node;
+use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
@@ -27,7 +26,6 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\NodeVisitorAbstract;
 
@@ -80,11 +78,13 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
 
     private static function addScopedFunctionExistsCondition(string $prefix, String_ $string): void
     {
-        [$ifStmt, $ifCondition, $boolExpr, $funcCall] = self::findFlattenedParentIfStmt($string);
+        $parentNodes = self::findFlattenedParentIfStmt($string);
 
-        if (null === $ifStmt) {
+        if (null === $parentNodes) {
             return;
         }
+
+        [$ifStmt, $ifCondition, $boolExpr, $funcCall] = $parentNodes;
 
         self::replaceCondition(
             $prefix,
@@ -103,7 +103,7 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
      *   + cond: Expr_BooleanNot
      *       + exp: Expr_FuncCall(function_exists)
      *
-     * @return null|array{If_, Expr|null, BooleanNot, FuncCall}
+     * @return null|array{If_, BooleanAnd|BooleanOr|null, BooleanNot|Identical|Equal, FuncCall}
      */
     private static function findFlattenedParentIfStmt(String_ $string): ?array
     {
@@ -115,7 +115,7 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
 
         $funcCall = ParentNodeAppender::getParent($funcCallArg);
 
-        if (!($funcCall instanceof FuncCall) || (string) $funcCall->name !== 'function_exists') {
+        if (!($funcCall instanceof FuncCall) || !($funcCall->name instanceof FullyQualified) || (string) $funcCall->name !== 'function_exists') {
             return null;
         }
 
@@ -132,9 +132,15 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
         $ifStmtOrExpr = ParentNodeAppender::getParent($boolExpr);
 
         if ($ifStmtOrExpr instanceof Expr) {
-            $ifCondition = $ifStmtOrExpr;
+            if ($ifStmtOrExpr instanceof BooleanAnd
+                || $ifStmtOrExpr instanceof BooleanOr
+            ) {
+                $ifCondition = $ifStmtOrExpr;
 
-            $ifStmt = ParentNodeAppender::getParent($ifStmtOrExpr);
+                $ifStmt = ParentNodeAppender::getParent($ifStmtOrExpr);
+            } else {
+                return null;
+            }
         } else {
             $ifCondition = null;
             $ifStmt = $ifStmtOrExpr;
@@ -147,13 +153,10 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
         return [$ifStmt, $ifCondition, $boolExpr, $funcCall];
     }
 
-    /**
-     * @template T of Stmt
-     */
     private static function replaceCondition(
         string $prefix,
         If_ $ifStmt,
-        ?Expr $ifCondition,
+        BooleanAnd|BooleanOr|null $ifCondition,
         BooleanNot|Equal|Identical $boolExpr,
         FuncCall $funcCall,
         String_ $string,
@@ -170,8 +173,11 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
         $ifStmt->cond = $newCondition;
     }
 
-    private static function createNewCondition(BooleanAnd|BooleanOr|null $previous, BooleanNot|Equal|Identical $left, BooleanNot|Equal|Identical $right): Expr
-    {
+    private static function createNewCondition(
+        BooleanAnd|BooleanOr|null $previous,
+        BooleanNot|Equal|Identical $left,
+        BooleanNot|Equal|Identical $right,
+    ): Expr {
         $newCondition = new BooleanAnd($left, $right);
 
         if (null === $previous) {
@@ -192,6 +198,10 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
     private static function createNewFuncCall(FuncCall $previous, String_ $string): FuncCall
     {
         $previousArg = $previous->args[0];
+
+        if (!($previousArg instanceof Arg)) {
+            throw UnexpectedParsingScenario::create();
+        }
 
         $newFuncCall = clone $previous;
         $newFuncCall->args = [self::createNewArgument($previousArg, $string)];
