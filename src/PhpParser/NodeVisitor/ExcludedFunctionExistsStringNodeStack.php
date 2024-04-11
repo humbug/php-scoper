@@ -14,25 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
-use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Node;
-use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
-use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeVisitorAbstract;
-use function array_pop;
-use function array_reduce;
-use function in_array;
 
 /**
  * Collection of String_ nodes which are contained within a `function_exists()` function call and for which the string

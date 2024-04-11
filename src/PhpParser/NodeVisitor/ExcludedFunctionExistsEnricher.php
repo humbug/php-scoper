@@ -14,11 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\PhpParser\Node\ClassAliasFuncCall;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
-use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
-use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
-use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Infection\Str;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
@@ -32,15 +28,8 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
-use PhpParser\Node\Stmt\Class_;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Interface_;
-use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeVisitorAbstract;
-use function array_reduce;
-use function in_array;
 
 /**
  * Ensures that when a `function_exists` function call for an excluded function within an if
@@ -160,8 +149,6 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
 
     /**
      * @template T of Stmt
-     *
-     * @param Stmt|null $statement
      */
     private static function replaceCondition(
         string $prefix,
@@ -170,8 +157,7 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
         BooleanNot|Equal|Identical $boolExpr,
         FuncCall $funcCall,
         String_ $string,
-    ): void
-    {
+    ): void {
         $scopedString = self::prefixString($prefix, $string);
 
         $scopedBoolExpr = new BooleanNot(

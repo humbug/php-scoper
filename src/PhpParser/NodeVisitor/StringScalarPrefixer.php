@@ -122,8 +122,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         REGEX;
 
     public function __construct(
-        private readonly string                                $prefix,
-        private readonly EnrichedReflector                     $enrichedReflector,
+        private readonly string $prefix,
+        private readonly EnrichedReflector $enrichedReflector,
         private readonly ExcludedFunctionExistsStringNodeStack $excludedFunctionExistsStringNodeStack,
     ) {
     }
