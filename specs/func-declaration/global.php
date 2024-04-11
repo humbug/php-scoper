@@ -614,7 +614,7 @@ return [
         
         namespace Humbug;
 
-        if (!\function_exists('trigger_deprecation')) {
+        if (!\function_exists('trigger_deprecation') && !\function_exists('Humbug\\trigger_deprecation')) {
             function trigger_deprecation()
             {
             }
