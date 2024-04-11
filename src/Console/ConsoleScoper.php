@@ -306,7 +306,7 @@ final readonly class ConsoleScoper
         $inputFilePath = $file->inputFilePath;
 
         try {
-            $scoppedContent = $scoper->scope(
+            $scopedContent = $scoper->scope(
                 $inputFilePath,
                 $file->inputContents,
             );
@@ -316,7 +316,7 @@ final readonly class ConsoleScoper
             $logger->outputWarnOfFailure($inputFilePath, $parsingException);
 
             // Fallback on unchanged content
-            $scoppedContent = $file->inputContents;
+            $scopedContent = $file->inputContents;
         } catch (Throwable $throwable) {
             $exception = ParsingException::forFile(
                 $inputFilePath,
@@ -330,11 +330,11 @@ final readonly class ConsoleScoper
             $logger->outputWarnOfFailure($inputFilePath, $exception);
 
             // Fallback on unchanged content
-            $scoppedContent = $file->inputContents;
+            $scopedContent = $file->inputContents;
         }
 
         $this->dumpFileWithPermissions(
-            $file->withScoppedContent($scoppedContent),
+            $file->withScopedContent($scopedContent),
         );
 
         if ($successfullyScoped) {

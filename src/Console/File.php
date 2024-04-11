@@ -26,11 +26,11 @@ final readonly class File
     ) {
     }
 
-    public function withScoppedContent(string $scoppedContent): self
+    public function withScopedContent(string $scopedContent): self
     {
         return new self(
             $this->inputFilePath,
-            $scoppedContent,
+            $scopedContent,
             $this->outputFilePath,
         );
     }

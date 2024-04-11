@@ -50,7 +50,7 @@ class AddInspectCommandIntegrationTest extends TestCase
         $this->appTester = AppTester::fromConsoleApp($application);
     }
 
-    public function test_it_shows_the_scopped_content_of_the_file_given(): void
+    public function test_it_shows_the_scoped_content_of_the_file_given(): void
     {
         $input = [
             'inspect',
@@ -65,7 +65,7 @@ class AddInspectCommandIntegrationTest extends TestCase
         OutputAssertions::assertSameOutput(
             <<<'PHP'
 
-                Scopped contents:
+                Scoped contents:
 
                 """
                 <?php
@@ -93,7 +93,7 @@ class AddInspectCommandIntegrationTest extends TestCase
         );
     }
 
-    public function test_it_shows_the_raw_scopped_content_of_the_file_given_in_quiet_mode(): void
+    public function test_it_shows_the_raw_scoped_content_of_the_file_given_in_quiet_mode(): void
     {
         $input = [
             'inspect',
