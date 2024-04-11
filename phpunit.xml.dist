@@ -15,10 +15,6 @@ file that was distributed with this source code.
          colors="true"
          cacheResultFile="build/.phpunit.result.cache"
 >
-    <php>
-        <env name="NO_COLOR" value="1"/>
-    </php>
-
     <testsuites>
         <testsuite name="PHP-Scoper Test Suite">
             <directory>tests</directory>

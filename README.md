@@ -53,6 +53,7 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
         - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
         - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
 - [Recommendations](#recommendations)
+- [Debugging](#debugging)
 - [Further Reading](docs/further-reading.md#further-reading)
     - [How to deal with unknown third-party symbols](docs/further-reading.md#how-to-deal-with-unknown-third-party-symbols)
     - [Autoload aliases](docs/further-reading.md#autoload-aliases)
@@ -191,6 +192,18 @@ To check if the isolated code is working correctly, you have a number of solutio
   directory.
 - When using a PHAR (created by [Box][box] or any other PHAR building tool), 
   you can use the [`Phar::extractTo()`][phar-extract-to] method.
+
+
+## Debugging
+
+Having a good breakdown like described in [Recommendations](#recommendations) will help
+to know where the issue is coming from. However, if you have a doubt or you are fiddling
+with patchers and want to check the result for a specific file without doing the whole
+scoping process, you can always check the result for that single individual file:
+
+```shell
+php-scoper inspect path/to/my-file.php
+```
 
 
 ## Contributing

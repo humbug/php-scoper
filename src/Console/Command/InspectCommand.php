@@ -120,9 +120,9 @@ final class InspectCommand implements Command, CommandAware
         $symbolsRegistry = new SymbolsRegistry();
         $fileContents = $config->getFilesWithContents()[$filePath][1];
 
-        $scoppedContents = $this->scopeFile($config, $symbolsRegistry, $filePath, $fileContents);
+        $scopedContents = $this->scopeFile($config, $symbolsRegistry, $filePath, $fileContents);
 
-        $this->printScoppedContents($io, $scoppedContents, $symbolsRegistry);
+        $this->printScopedContents($io, $scopedContents, $symbolsRegistry);
 
         return ExitCode::SUCCESS;
     }
@@ -206,19 +206,19 @@ final class InspectCommand implements Command, CommandAware
         );
     }
 
-    private function printScoppedContents(
+    private function printScopedContents(
         IO $io,
-        string $scoppedContents,
+        string $scopedContents,
         SymbolsRegistry $symbolsRegistry,
     ): void {
         if ($io->isQuiet()) {
-            $io->writeln($scoppedContents, OutputInterface::VERBOSITY_QUIET);
+            $io->writeln($scopedContents, OutputInterface::VERBOSITY_QUIET);
         } else {
             $io->writeln([
-                'Scopped contents:',
+                'Scoped contents:',
                 '',
                 '<comment>"""</comment>',
-                $scoppedContents,
+                $scopedContents,
                 '<comment>"""</comment>',
             ]);
 
