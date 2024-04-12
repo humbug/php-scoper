@@ -36,40 +36,40 @@ return [
     ],
 
     'New statement call of a namespaced class partially imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo;
-    
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace {
+            use Foo;
+
+            new Foo\Bar();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo;
         new Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo;
-    new Foo\Bar();
-    
-    PHP,
+
+        PHP,
 
     'New statement call of an exposed namespaced class partially imported with a use statement' => [
         'expose-classes' => ['Foo\Bar'],
@@ -77,78 +77,78 @@ return [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo;
+
+                new Foo\Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            namespace Humbug;
+
+            use Humbug\Foo;
+            new Foo\Bar();
+
+            PHP,
+    ],
+
+    'FQ new statement call of a namespaced class partially imported with a use statement' => <<<'PHP'
         <?php
-        
+
         namespace {
             class Foo {}
         }
-        
+
         namespace Foo {
             class Bar {}
         }
-        
+
         namespace {
             use Foo;
-        
-            new Foo\Bar();
+
+            new \Foo\Bar();
         }
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         class Foo
         {
         }
         namespace Humbug\Foo;
-        
+
         class Bar
         {
         }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
         namespace Humbug;
-        
-        use Humbug\Foo;
-        new Foo\Bar();
-        
-        PHP,
-    ],
 
-    'FQ new statement call of a namespaced class partially imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo;
-    
-        new \Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo;
-    new \Humbug\Foo\Bar();
-    
-    PHP,
+        use Humbug\Foo;
+        new \Humbug\Foo\Bar();
+
+        PHP,
 
     'FQ new statement call of an exposed namespaced class partially imported with a use statement' => [
         'expose-classes' => ['Foo\Bar'],
@@ -156,78 +156,78 @@ return [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo;
+
+                new \Foo\Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            namespace Humbug;
+
+            use Humbug\Foo;
+            new \Humbug\Foo\Bar();
+
+            PHP,
+    ],
+
+    'New statement call of a namespaced class imported with a use statement' => <<<'PHP'
         <?php
-        
+
         namespace {
             class Foo {}
         }
-        
+
         namespace Foo {
             class Bar {}
         }
-        
+
         namespace {
-            use Foo;
-        
-            new \Foo\Bar();
+            use Foo\Bar;
+
+            new Bar();
         }
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         class Foo
         {
         }
         namespace Humbug\Foo;
-        
+
         class Bar
         {
         }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
         namespace Humbug;
-        
-        use Humbug\Foo;
-        new \Humbug\Foo\Bar();
-        
-        PHP,
-    ],
 
-    'New statement call of a namespaced class imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo\Bar;
-    
+        use Humbug\Foo\Bar;
         new Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo\Bar;
-    new Bar();
-    
-    PHP,
+
+        PHP,
 
     'New statement call of an exposed namespaced class imported with a use statement' => [
         'expose-classes' => ['Foo\Bar'],
@@ -235,82 +235,82 @@ return [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace {
-            class Foo {}
-        }
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace {
-            use Foo\Bar;
-            
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo\Bar;
+
+                new Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            namespace Humbug;
+
+            use Humbug\Foo\Bar;
             new Bar();
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-        namespace Humbug;
-        
-        use Humbug\Foo\Bar;
-        new Bar();
-        
-        PHP,
+
+            PHP,
     ],
 
     'FQ new statement call of a namespaced class imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-        class Bar {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo\Bar;
-        
-        new \Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    class Bar
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo\Bar;
-    new \Humbug\Bar();
-    
-    PHP,
+        <?php
+
+        namespace {
+            class Foo {}
+            class Bar {}
+        }
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace {
+            use Foo\Bar;
+
+            new \Bar();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        class Bar
+        {
+        }
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo\Bar;
+        new \Humbug\Bar();
+
+        PHP,
 
     'FQ new statement call of a, exposed namespaced class imported with a use statement' => [
         'expose-classes' => ['Foo\Bar'],
@@ -318,44 +318,44 @@ return [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace {
-            class Foo {}
-            class Bar {}
-        }
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace {
-            use Foo\Bar;
-            
-            new \Bar();
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Foo
-        {
-        }
-        class Bar
-        {
-        }
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-        namespace Humbug;
-        
-        use Humbug\Foo\Bar;
-        new \Humbug\Bar();
-        
-        PHP,
+            <?php
+
+            namespace {
+                class Foo {}
+                class Bar {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo\Bar;
+
+                new \Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            class Bar
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            namespace Humbug;
+
+            use Humbug\Foo\Bar;
+            new \Humbug\Bar();
+
+            PHP,
     ],
 ];

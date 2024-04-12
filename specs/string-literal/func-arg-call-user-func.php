@@ -36,73 +36,73 @@ return [
     ],
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    call_user_func_array('sodiumCompatAutoloader', []);
-    call_user_func_array('Sodium\compatAutoloader', []);
-    call_user_func_array(['Swift', 'autoload'], []);
-    call_user_func_array(['\Swift', 'autoload'], []);
-    call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-    call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
-    call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
-    call_user_func_array(['DateTime', 'autoload'], []);
-    call_user_func_array(['\\DateTime', 'autoload'], []);
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \call_user_func_array('Humbug\\sodiumCompatAutoloader', []);
-    \call_user_func_array('Humbug\\Sodium\\compatAutoloader', []);
-    \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-    \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-    \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-    \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-    \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-    \call_user_func_array(['DateTime', 'autoload'], []);
-    \call_user_func_array(['\\DateTime', 'autoload'], []);
-    
-    PHP,
-
-    'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
-        'payload' => <<<'PHP'
         <?php
-        
+
+        call_user_func_array('sodiumCompatAutoloader', []);
+        call_user_func_array('Sodium\compatAutoloader', []);
         call_user_func_array(['Swift', 'autoload'], []);
+        call_user_func_array(['\Swift', 'autoload'], []);
         call_user_func_array(['Humbug\\Swift', 'autoload'], []);
         call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
+        call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
         call_user_func_array(['DateTime', 'autoload'], []);
-        
+        call_user_func_array(['\\DateTime', 'autoload'], []);
+
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
+        \call_user_func_array('Humbug\\sodiumCompatAutoloader', []);
+        \call_user_func_array('Humbug\\Sodium\\compatAutoloader', []);
+        \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+        \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
         \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
         \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
         \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
         \call_user_func_array(['DateTime', 'autoload'], []);
-        
+        \call_user_func_array(['\\DateTime', 'autoload'], []);
+
         PHP,
+
+    'FQCN string argument on exposed class' => [
+        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        'payload' => <<<'PHP'
+            <?php
+
+            call_user_func_array(['Swift', 'autoload'], []);
+            call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
+            call_user_func_array(['DateTime', 'autoload'], []);
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            \call_user_func_array(['DateTime', 'autoload'], []);
+
+            PHP,
     ],
 
     'FQCN string argument on exposed function' => [
         'expose-functions' => ['sodiumCompatAutoloader'],
         'payload' => <<<'PHP'
-        <?php
-        
-        call_user_func_array('sodiumCompatAutoloader', []);
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \call_user_func_array('Humbug\\sodiumCompatAutoloader', []);
-        
-        PHP,
+            <?php
+
+            call_user_func_array('sodiumCompatAutoloader', []);
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \call_user_func_array('Humbug\\sodiumCompatAutoloader', []);
+
+            PHP,
     ],
 
     'FQCN string argument on class from an excluded namespace' => [
@@ -111,24 +111,24 @@ return [
             '/^$/',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        call_user_func_array(['Swift', 'autoload'], []);
-        call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-        call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
-        call_user_func_array(['DateTime', 'autoload'], []);
-        
-        ----
-        <?php
-        
-        namespace {
-            \call_user_func_array(['Swift', 'autoload'], []);
-            \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-            \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-            \call_user_func_array(['DateTime', 'autoload'], []);
-        }
-        
-        PHP,
+            <?php
+
+            call_user_func_array(['Swift', 'autoload'], []);
+            call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
+            call_user_func_array(['DateTime', 'autoload'], []);
+
+            ----
+            <?php
+
+            namespace {
+                \call_user_func_array(['Swift', 'autoload'], []);
+                \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+                \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+                \call_user_func_array(['DateTime', 'autoload'], []);
+            }
+
+            PHP,
     ],
 
     'FQCN string argument on function from an excluded namespace' => [
@@ -137,84 +137,84 @@ return [
             '/^$/',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        call_user_func_array('Sodium\CompatAutoloader', []);
-        
-        ----
-        <?php
-        
-        namespace {
-            \call_user_func_array('Sodium\\CompatAutoloader', []);
-        }
-        
-        PHP,
+            <?php
+
+            call_user_func_array('Sodium\CompatAutoloader', []);
+
+            ----
+            <?php
+
+            namespace {
+                \call_user_func_array('Sodium\\CompatAutoloader', []);
+            }
+
+            PHP,
     ],
 
     'FQCN string argument with global functions not exposed' => [
         'expose-global-functions' => false,
         'payload' => <<<'PHP'
-        <?php
-        
-        call_user_func_array(['Swift', 'autoload'], []);
-        call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-        call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
-        call_user_func_array(['DateTime', 'autoload'], []);
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-        \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-        \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
-        \call_user_func_array(['DateTime', 'autoload'], []);
-        
-        PHP,
+            <?php
+
+            call_user_func_array(['Swift', 'autoload'], []);
+            call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            call_user_func_array(['\\Humbug\\Swift', 'autoload'], []);
+            call_user_func_array(['DateTime', 'autoload'], []);
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            \call_user_func_array(['Humbug\\Swift', 'autoload'], []);
+            \call_user_func_array(['DateTime', 'autoload'], []);
+
+            PHP,
     ],
 
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
-    <?php
-    
-    call_user_func_array(['Swift'.'', 'autoload'], []);
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \call_user_func_array(['Swift' . '', 'autoload'], []);
-    
-    PHP,
+        <?php
+
+        call_user_func_array(['Swift'.'', 'autoload'], []);
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \call_user_func_array(['Swift' . '', 'autoload'], []);
+
+        PHP,
 
     'FQC constant call' => <<<'PHP'
-    <?php
-    
-    namespace Symfony\Component\Yaml {
-        class Yaml {}
-    }
-    
-    namespace {
-        call_user_func_array([\Swift::class, 'autoload'], []);
-        call_user_func_array([\Humbug\Swift::class, 'autoload'], []);
-        call_user_func_array([\DateTime::class, 'autoload'], []);
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Symfony\Component\Yaml;
-    
-    class Yaml
-    {
-    }
-    namespace Humbug;
-    
-    \call_user_func_array([\Humbug\Swift::class, 'autoload'], []);
-    \call_user_func_array([\Humbug\Swift::class, 'autoload'], []);
-    \call_user_func_array([\DateTime::class, 'autoload'], []);
-    
-    PHP,
+        <?php
+
+        namespace Symfony\Component\Yaml {
+            class Yaml {}
+        }
+
+        namespace {
+            call_user_func_array([\Swift::class, 'autoload'], []);
+            call_user_func_array([\Humbug\Swift::class, 'autoload'], []);
+            call_user_func_array([\DateTime::class, 'autoload'], []);
+        }
+        ----
+        <?php
+
+        namespace Humbug\Symfony\Component\Yaml;
+
+        class Yaml
+        {
+        }
+        namespace Humbug;
+
+        \call_user_func_array([\Humbug\Swift::class, 'autoload'], []);
+        \call_user_func_array([\Humbug\Swift::class, 'autoload'], []);
+        \call_user_func_array([\DateTime::class, 'autoload'], []);
+
+        PHP,
 
     'FQC constant call on exposed class' => [
         'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
@@ -222,34 +222,34 @@ return [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Symfony\Component\Yaml {
-            class Ya_1 {}
-        }
-        
-        namespace {
-            call_user_func_array([Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
-            call_user_func_array([\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
-            call_user_func_array([Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
-            call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Symfony\Component\Yaml;
-        
-        class Ya_1
-        {
-        }
-        \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
-        namespace Humbug;
-        
-        \call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
-        \call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
-        \call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
-        \call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
-        
-        PHP
+            <?php
+
+            namespace Symfony\Component\Yaml {
+                class Ya_1 {}
+            }
+
+            namespace {
+                call_user_func_array([Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
+                call_user_func_array([\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
+                call_user_func_array([Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
+                call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
+            }
+            ----
+            <?php
+
+            namespace Humbug\Symfony\Component\Yaml;
+
+            class Ya_1
+            {
+            }
+            \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
+            namespace Humbug;
+
+            \call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
+            \call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
+            \call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
+            \call_user_func_array([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload'], []);
+
+            PHP,
     ],
 ];

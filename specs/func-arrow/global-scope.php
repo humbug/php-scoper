@@ -37,32 +37,8 @@ return [
     ],
 
     'Global function call in the global scope' => <<<'PHP'
-    <?php
-    
-    fn ($x) => $x;
-    fn (int $x) => $x;
-    fn (int $x): int => $x;
-    fn (Foo $x): Bar => $x;
-    fn (DateTimeImmutable $x): Closure => $x;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    fn($x) => $x;
-    fn(int $x) => $x;
-    fn(int $x): int => $x;
-    fn(Foo $x): Bar => $x;
-    fn(\DateTimeImmutable $x): \Closure => $x;
-    
-    PHP,
-
-    'Global function call in the global scope with global symbols exposed' => [
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'payload' => <<<'PHP'
         <?php
-        
+
         fn ($x) => $x;
         fn (int $x) => $x;
         fn (int $x): int => $x;
@@ -70,16 +46,40 @@ return [
         fn (DateTimeImmutable $x): Closure => $x;
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         fn($x) => $x;
         fn(int $x) => $x;
         fn(int $x): int => $x;
         fn(Foo $x): Bar => $x;
         fn(\DateTimeImmutable $x): \Closure => $x;
-        
+
         PHP,
+
+    'Global function call in the global scope with global symbols exposed' => [
+        'expose-global-classes' => true,
+        'expose-global-functions' => true,
+        'payload' => <<<'PHP'
+            <?php
+
+            fn ($x) => $x;
+            fn (int $x) => $x;
+            fn (int $x): int => $x;
+            fn (Foo $x): Bar => $x;
+            fn (DateTimeImmutable $x): Closure => $x;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            fn($x) => $x;
+            fn(int $x) => $x;
+            fn(int $x): int => $x;
+            fn(Foo $x): Bar => $x;
+            fn(\DateTimeImmutable $x): \Closure => $x;
+
+            PHP,
     ],
 
     'Global function call in the global scope with exposed symbols' => [
@@ -88,24 +88,24 @@ return [
             'Bar',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        fn ($x) => $x;
-        fn (int $x) => $x;
-        fn (int $x): int => $x;
-        fn (Foo $x): Bar => $x;
-        fn (DateTimeImmutable $x): Closure => $x;
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        fn($x) => $x;
-        fn(int $x) => $x;
-        fn(int $x): int => $x;
-        fn(\Humbug\Foo $x): \Humbug\Bar => $x;
-        fn(\DateTimeImmutable $x): \Closure => $x;
-        
-        PHP,
+            <?php
+
+            fn ($x) => $x;
+            fn (int $x) => $x;
+            fn (int $x): int => $x;
+            fn (Foo $x): Bar => $x;
+            fn (DateTimeImmutable $x): Closure => $x;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            fn($x) => $x;
+            fn(int $x) => $x;
+            fn(int $x): int => $x;
+            fn(\Humbug\Foo $x): \Humbug\Bar => $x;
+            fn(\DateTimeImmutable $x): \Closure => $x;
+
+            PHP,
     ],
 ];

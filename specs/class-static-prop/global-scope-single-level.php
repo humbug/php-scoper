@@ -36,22 +36,22 @@ return [
     ],
 
     'Constant call on a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    Command::$mainStaticProp;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    Command::$mainStaticProp;
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        Command::$mainStaticProp;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        Command::$mainStaticProp;
+
+        PHP,
 
     'Constant call on a class belonging to the global namespace which is excluded' => [
         'exclude-namespaces' => ['/^$/'],
@@ -59,99 +59,99 @@ return [
             ['Command', 'Humbug\Command'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        class Command {}
-        
-        Command::$mainStaticProp;
-        ----
-        <?php
-        
-        namespace {
-            class Command
-            {
+            <?php
+
+            class Command {}
+
+            Command::$mainStaticProp;
+            ----
+            <?php
+
+            namespace {
+                class Command
+                {
+                }
+                \class_alias('Humbug\\Command', 'Command', \false);
+                \Command::$mainStaticProp;
             }
-            \class_alias('Humbug\\Command', 'Command', \false);
-            \Command::$mainStaticProp;
-        }
-        
-        PHP,
+
+            PHP,
     ],
 
     'FQ constant call on a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    \Command::$mainStaticProp;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    \Humbug\Command::$mainStaticProp;
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        \Command::$mainStaticProp;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        \Humbug\Command::$mainStaticProp;
+
+        PHP,
 
     'Constant call on an internal class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    Reflector::$mainStaticProp;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Reflector::$mainStaticProp;
-    
-    PHP,
+        <?php
+
+        Reflector::$mainStaticProp;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Reflector::$mainStaticProp;
+
+        PHP,
 
     'FQ constant call on an internal class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    \Reflector::$mainStaticProp;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Reflector::$mainStaticProp;
-    
-    PHP,
+        <?php
+
+        \Reflector::$mainStaticProp;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Reflector::$mainStaticProp;
+
+        PHP,
 
     // TODO: this should not have been made into a FQC call
     'Constant call on an exposed class belonging to the global namespace' => [
         'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        Foo::$mainStaticProp;
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \Humbug\Foo::$mainStaticProp;
-        
-        PHP,
+            <?php
+
+            Foo::$mainStaticProp;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\Foo::$mainStaticProp;
+
+            PHP,
     ],
 
     'FQ constant call on an exposed class belonging to the global namespace' => [
         'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        \Foo::$mainStaticProp;
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \Humbug\Foo::$mainStaticProp;
-        
-        PHP,
+            <?php
+
+            \Foo::$mainStaticProp;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\Foo::$mainStaticProp;
+
+            PHP,
     ],
 ];

@@ -36,68 +36,68 @@ return [
     ],
 
     'Namespaced constant call with namespace partially imported' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo as A;
-    
-    A\Bar\DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo as A;
-    A\Bar\DUMMY_CONST;
-    
-    PHP,
-
-    'FQ namespaced constant call with namespace partially imported' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo as A;
-    
-    \A\Bar\DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo as A;
-    \Humbug\A\Bar\DUMMY_CONST;
-    
-    PHP,
-
-    'Exposed namespaced constant call with namespace partially imported' => [
-        'expose-constants' => ['Foo\Bar\DUMMY_CONST'],
-        'payload' => <<<'PHP'
         <?php
-        
+
         class Foo {}
-        
+
         use Foo as A;
-        
+
         A\Bar\DUMMY_CONST;
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         class Foo
         {
         }
         use Humbug\Foo as A;
-        \Foo\Bar\DUMMY_CONST;
-        
+        A\Bar\DUMMY_CONST;
+
         PHP,
+
+    'FQ namespaced constant call with namespace partially imported' => <<<'PHP'
+        <?php
+
+        class Foo {}
+
+        use Foo as A;
+
+        \A\Bar\DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        use Humbug\Foo as A;
+        \Humbug\A\Bar\DUMMY_CONST;
+
+        PHP,
+
+    'Exposed namespaced constant call with namespace partially imported' => [
+        'expose-constants' => ['Foo\Bar\DUMMY_CONST'],
+        'payload' => <<<'PHP'
+            <?php
+
+            class Foo {}
+
+            use Foo as A;
+
+            A\Bar\DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            use Humbug\Foo as A;
+            \Foo\Bar\DUMMY_CONST;
+
+            PHP,
     ],
 ];

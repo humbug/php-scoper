@@ -36,75 +36,75 @@ return [
     ],
 
     'Use statement for a function belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    use function foo as greet;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\foo as greet;
-    
-    PHP,
+        <?php
+
+        use function foo as greet;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\foo as greet;
+
+        PHP,
 
     'Use statement for a function belonging to the global namespace which has already been prefixed' => <<<'PHP'
-    <?php
-    
-    use function Humbug\foo as greet;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\foo as greet;
-    
-    PHP,
+        <?php
+
+        use function Humbug\foo as greet;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\foo as greet;
+
+        PHP,
 
     'Use statement for a namespaced function' => <<<'PHP'
-    <?php
-    
-    use function Foo\bar as greet;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\Foo\bar as greet;
-    
-    PHP,
+        <?php
+
+        use function Foo\bar as greet;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\Foo\bar as greet;
+
+        PHP,
 
     'Use statement for a namespaced function which has already been prefixed' => <<<'PHP'
-    <?php
-    
-    use function Humbug\Foo\bar as greet;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\Foo\bar as greet;
-    
-    PHP,
+        <?php
+
+        use function Humbug\Foo\bar as greet;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\Foo\bar as greet;
+
+        PHP,
 
     'Use statement for a namespaced function which has been exposed' => [
         'expose-functions' => ['Foo\bar'],
         'payload' => <<<'PHP'
-        <?php
-        
-        use function Foo\bar as greet;
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use function Humbug\Foo\bar as greet;
-        
-        PHP,
+            <?php
+
+            use function Foo\bar as greet;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use function Humbug\Foo\bar as greet;
+
+            PHP,
     ],
 ];

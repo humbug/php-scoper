@@ -36,19 +36,19 @@ return [
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    readonly class A {}
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    readonly class A
-    {
-    }
-    
-    PHP,
+        <?php
+
+        readonly class A {}
+        ----
+        <?php
+
+        namespace Humbug;
+
+        readonly class A
+        {
+        }
+
+        PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
         'expose-global-classes' => true,
@@ -56,57 +56,57 @@ return [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        readonly class A {}
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        readonly class A
-        {
-        }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
+            <?php
+
+            readonly class A {}
+            ----
+            <?php
+
+            namespace Humbug;
+
+            readonly class A
+            {
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+
+            PHP,
     ],
 
     'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    readonly class A {}
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    readonly class A
-    {
-    }
-    
-    PHP,
+        <?php
+
+        namespace Foo;
+
+        readonly class A {}
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        readonly class A
+        {
+        }
+
+        PHP,
 
     'Declaration in a namespace with global classes exposed' => [
         'expose-global-classes' => true,
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        readonly class A {}
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        readonly class A
-        {
-        }
-        
-        PHP,
+            <?php
+
+            namespace Foo;
+
+            readonly class A {}
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            readonly class A
+            {
+            }
+
+            PHP,
     ],
 
     'Declaration of an exposed readonly class' => [
@@ -115,56 +115,56 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        readonly class A {}
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        readonly class A
-        {
-        }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
+            <?php
+
+            namespace Foo;
+
+            readonly class A {}
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            readonly class A
+            {
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
     ],
 
     'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        readonly class A {}
-    }
-    
-    namespace Y {
-        readonly class B {}
-    }
-    
-    namespace Z {
-        readonly class C {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    readonly class A
-    {
-    }
-    namespace Humbug\Y;
-    
-    readonly class B
-    {
-    }
-    namespace Humbug\Z;
-    
-    readonly class C
-    {
-    }
-    
-    PHP,
+        <?php
+
+        namespace X {
+            readonly class A {}
+        }
+
+        namespace Y {
+            readonly class B {}
+        }
+
+        namespace Z {
+            readonly class C {}
+        }
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        readonly class A
+        {
+        }
+        namespace Humbug\Y;
+
+        readonly class B
+        {
+        }
+        namespace Humbug\Z;
+
+        readonly class C
+        {
+        }
+
+        PHP,
 ];

@@ -36,43 +36,10 @@ return [
     ],
 
     'Namespaced function call' => <<<'PHP'
-    <?php
-    
-    namespace X;
-    
-    PHPUnit\main();
-    ----
-    <?php
-
-    namespace Humbug\X;
-
-    PHPUnit\main();
-
-    PHP,
-
-    'FQ namespaced function call' => <<<'PHP'
-    <?php
-    
-    namespace X;
-    
-    \PHPUnit\main();
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    \Humbug\PHPUnit\main();
-    
-    PHP,
-
-    'Exposed namespaced function call' => [
-        'expose-functions' => ['PHPUnit\X\main'],
-        // No function registered to the recorded symbols here since no FQ could be resolved
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace X;
-        
+
         PHPUnit\main();
         ----
         <?php
@@ -82,6 +49,39 @@ return [
         PHPUnit\main();
 
         PHP,
+
+    'FQ namespaced function call' => <<<'PHP'
+        <?php
+
+        namespace X;
+
+        \PHPUnit\main();
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        \Humbug\PHPUnit\main();
+
+        PHP,
+
+    'Exposed namespaced function call' => [
+        'expose-functions' => ['PHPUnit\X\main'],
+        // No function registered to the recorded symbols here since no FQ could be resolved
+        'payload' => <<<'PHP'
+            <?php
+
+            namespace X;
+
+            PHPUnit\main();
+            ----
+            <?php
+
+            namespace Humbug\X;
+
+            PHPUnit\main();
+
+            PHP,
     ],
 
     'FQ exposed namespaced function call' => [
@@ -90,18 +90,18 @@ return [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace X;
-        
-        \PHPUnit\main();
-        ----
-        <?php
-        
-        namespace Humbug\X;
-        
-        \Humbug\PHPUnit\main();
-        
-        PHP,
+            <?php
+
+            namespace X;
+
+            \PHPUnit\main();
+            ----
+            <?php
+
+            namespace Humbug\X;
+
+            \Humbug\PHPUnit\main();
+
+            PHP,
     ],
 ];

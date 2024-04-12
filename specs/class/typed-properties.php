@@ -36,36 +36,36 @@ return [
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    class A {
-        public string $name;
-        
-        public ?self $instance = null;
-        
-        public static ?self $staticInstance = null;
-        
-        public ?B $foo;
-    
-        public function a() {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class A
-    {
-        public string $name;
-        public ?self $instance = null;
-        public static ?self $staticInstance = null;
-        public ?B $foo;
-        public function a()
-        {
+        <?php
+
+        class A {
+            public string $name;
+
+            public ?self $instance = null;
+
+            public static ?self $staticInstance = null;
+
+            public ?B $foo;
+
+            public function a() {}
         }
-    }
-    
-    PHP,
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class A
+        {
+            public string $name;
+            public ?self $instance = null;
+            public static ?self $staticInstance = null;
+            public ?B $foo;
+            public function a()
+            {
+            }
+        }
+
+        PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
         'expose-global-classes' => true,
@@ -73,93 +73,93 @@ return [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            class A {
+                public string $name;
+
+                public ?B $foo;
+
+                public function a() {}
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class A
+            {
+                public string $name;
+                public ?B $foo;
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+
+            PHP,
+    ],
+
+    'Declaration in a namespace' => <<<'PHP'
         <?php
-        
-        class A {
-            public string $name;
-            
-            public ?B $foo;
-        
-            public function a() {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
+
+        namespace Foo;
+
         class A
         {
             public string $name;
+            public ?self $instance = null;
+            public static ?self $staticInstance = null;
             public ?B $foo;
             public function a()
             {
             }
         }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
-    ],
+        ----
+        <?php
 
-    'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    class A
-    {
-        public string $name;
-        public ?self $instance = null;
-        public static ?self $staticInstance = null;
-        public ?B $foo;
-        public function a()
+        namespace Humbug\Foo;
+
+        class A
         {
+            public string $name;
+            public ?self $instance = null;
+            public static ?self $staticInstance = null;
+            public ?B $foo;
+            public function a()
+            {
+            }
         }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class A
-    {
-        public string $name;
-        public ?self $instance = null;
-        public static ?self $staticInstance = null;
-        public ?B $foo;
-        public function a()
-        {
-        }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Declaration in a namespace with global classes exposed' => [
         'expose-global-classes' => true,
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        class A {
-            public string $name;
-            public ?B $foo;
-            public function a() {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        class A
-        {
-            public string $name;
-            public ?B $foo;
-            public function a()
-            {
+            <?php
+
+            namespace Foo;
+
+            class A {
+                public string $name;
+                public ?B $foo;
+                public function a() {}
             }
-        }
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
+            {
+                public string $name;
+                public ?B $foo;
+                public function a()
+                {
+                }
+            }
+
+            PHP,
     ],
 
     'Declaration of a namespaced exposed class' => [
@@ -171,70 +171,70 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            class A {
+                public string $name;
+                public ?B $foo;
+                public function a() {}
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
+            {
+                public string $name;
+                public ?B $foo;
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
+    ],
+
+    'Declaration in a namespace with use statements' => <<<'PHP'
         <?php
-        
+
         namespace Foo;
-        
-        class A {
-            public string $name;
-            public ?B $foo;
-            public function a() {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
+
+        use Bar\C;
+        use DateTimeImmutable;
+
         class A
         {
             public string $name;
             public ?B $foo;
+            public ?C $foo;
+            public ?DateTimeImmutable $bar;
+            public ?Closure $baz;
             public function a()
             {
             }
         }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
-    ],
+        ----
+        <?php
 
-    'Declaration in a namespace with use statements' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    use Bar\C;
-    use DateTimeImmutable;
-    
-    class A
-    {
-        public string $name;
-        public ?B $foo;
-        public ?C $foo;
-        public ?DateTimeImmutable $bar;
-        public ?Closure $baz;
-        public function a()
+        namespace Humbug\Foo;
+
+        use Humbug\Bar\C;
+        use DateTimeImmutable;
+        class A
         {
+            public string $name;
+            public ?B $foo;
+            public ?C $foo;
+            public ?DateTimeImmutable $bar;
+            public ?Closure $baz;
+            public function a()
+            {
+            }
         }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    use Humbug\Bar\C;
-    use DateTimeImmutable;
-    class A
-    {
-        public string $name;
-        public ?B $foo;
-        public ?C $foo;
-        public ?DateTimeImmutable $bar;
-        public ?Closure $baz;
-        public function a()
-        {
-        }
-    }
-    
-    PHP,
+
+        PHP,
 ];

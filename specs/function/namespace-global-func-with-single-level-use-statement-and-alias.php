@@ -36,38 +36,38 @@ return [
     ],
 
     'Global function call imported with a use statement in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace X;
-    
-    use function main as foo;
-    
-    foo();
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    use function Humbug\main as foo;
-    foo();
-    
-    PHP,
+        <?php
+
+        namespace X;
+
+        use function main as foo;
+
+        foo();
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        use function Humbug\main as foo;
+        foo();
+
+        PHP,
 
     'Global FQ function call imported with a use statement in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace X;
-    
-    use function main as foo;
-    
-    \foo();
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    use function Humbug\main as foo;
-    \Humbug\foo();
-    
-    PHP,
+        <?php
+
+        namespace X;
+
+        use function main as foo;
+
+        \foo();
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        use function Humbug\main as foo;
+        \Humbug\foo();
+
+        PHP,
 ];
