@@ -21,6 +21,8 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
+use Humbug\PhpScoper\Scoper\Spec\SpecFixture;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
@@ -137,7 +139,6 @@ class PhpScoperSpecTest extends TestCase
         }
 
         $filePath = 'file.php';
-
         $symbolsRegistry = new SymbolsRegistry();
 
         $scoper = self::createScoper(
@@ -226,17 +227,7 @@ class PhpScoperSpecTest extends TestCase
 
     public static function provideValidFiles(): iterable
     {
-        $sourceDir = self::SECONDARY_SPECS_PATH;
-
-        $files = (new Finder())->files()->in($sourceDir);
-
-        if (0 === count($files)) {
-            $sourceDir = self::SPECS_PATH;
-
-            $files = (new Finder())->files()->in($sourceDir);
-        }
-
-        $files->sortByName();
+        [$sourceDir, $files] = SpecFinder::findSpecFiles();
 
         foreach ($files as $file) {
             /* @var SplFileInfo $file */
