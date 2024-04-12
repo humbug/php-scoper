@@ -33,6 +33,7 @@ return [
 
         'expected-recorded-classes' => [],
         'expected-recorded-functions' => [],
+        'expected-recorded-ambiguous-functions' => [],
     ],
 
     'Static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'

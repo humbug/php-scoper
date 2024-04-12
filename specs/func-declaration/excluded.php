@@ -35,6 +35,7 @@ return [
         'expected-recorded-functions' => [
             ['new_php20_function', 'Humbug\new_php20_function'],
         ],
+        'expected-recorded-ambiguous-functions' => [],
     ],
 
     'simple declaration' => <<<'PHP'

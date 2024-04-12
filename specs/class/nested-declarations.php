@@ -35,6 +35,7 @@ return [
             ['A', 'Humbug\A'],
         ],
         'expected-recorded-functions' => [],
+        'expected-recorded-ambiguous-functions' => [],
     ],
 
     'Exposed class within an if block' => <<<'PHP'

@@ -33,6 +33,7 @@ return [
 
         'expected-recorded-classes' => [],
         'expected-recorded-functions' => [],
+        'expected-recorded-ambiguous-functions' => [],
     ],
 
     'Some statements made directly in the global namespace' => <<<'PHP'

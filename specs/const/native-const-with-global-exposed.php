@@ -33,6 +33,7 @@ return [
 
         'expected-recorded-classes' => [],
         'expected-recorded-functions' => [],
+        'expected-recorded-ambiguous-functions' => [],
     ],
 
     'Internal function in a namespace' => <<<'PHP'

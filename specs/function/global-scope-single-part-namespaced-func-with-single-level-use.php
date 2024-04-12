@@ -33,6 +33,7 @@ return [
 
         'expected-recorded-classes' => [],
         'expected-recorded-functions' => [],
+        'expected-recorded-ambiguous-functions' => [],
     ],
 
     'Namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'

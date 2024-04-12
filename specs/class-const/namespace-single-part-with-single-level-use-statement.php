@@ -33,6 +33,7 @@ return [
 
         'expected-recorded-classes' => [],
         'expected-recorded-functions' => [],
+        'expected-recorded-ambiguous-functions' => [],
     ],
 
     'Constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'

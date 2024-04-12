@@ -34,6 +34,7 @@ return [
 
         'expected-recorded-classes' => [],
         'expected-recorded-functions' => [],
+        'expected-recorded-ambiguous-functions' => [],
     ],
     'match' => <<<'PHP'
     <?php declare(strict_types=1);

@@ -31,6 +31,7 @@ use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 use Throwable;
 use UnexpectedValueException;
@@ -76,6 +77,7 @@ class PhpScoperSpecTest extends TestCase
         // SPECS_CONFIG_KEYS included
         'expected-recorded-classes',
         'expected-recorded-functions',
+        'expected-recorded-ambiguous-functions',
     ];
 
     // Keys allowed on a spec level
@@ -84,6 +86,7 @@ class PhpScoperSpecTest extends TestCase
         // SPECS_CONFIG_KEYS included
         'expected-recorded-classes',
         'expected-recorded-functions',
+        'expected-recorded-ambiguous-functions',
         'payload',
     ];
 
@@ -125,6 +128,7 @@ class PhpScoperSpecTest extends TestCase
         ?string $expected,
         array $expectedRegisteredClasses,
         array $expectedRegisteredFunctions,
+        array $expectedRegisteredAmbiguousFunctions,
         ?int $minPhpVersion,
         ?int $maxPhpVersion
     ): void {
@@ -211,6 +215,7 @@ class PhpScoperSpecTest extends TestCase
             $actual,
             $expectedRegisteredClasses,
             $expectedRegisteredFunctions,
+            $expectedRegisteredAmbiguousFunctions,
         );
 
         self::assertSame($expected, $actual, $specMessage);
@@ -222,6 +227,10 @@ class PhpScoperSpecTest extends TestCase
         $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedFunctions();
 
         self::assertSameRecordedSymbols($expectedRegisteredFunctions, $actualRecordedExposedFunctions, $specMessage);
+
+        $actualRecordedAmbiguousFunctions = $symbolsRegistry->getAmbiguousFunctions();
+
+        self::assertSameRecordedSymbols($expectedRegisteredAmbiguousFunctions, $actualRecordedAmbiguousFunctions, $specMessage);
     }
 
     public static function provideValidFiles(): iterable
@@ -355,6 +364,8 @@ class PhpScoperSpecTest extends TestCase
             );
         }
 
+        self::assertSpecHasRequiredMetaKeys($meta, $file);
+
         yield [
             $file,
             $spec,
@@ -368,9 +379,42 @@ class PhpScoperSpecTest extends TestCase
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
             $fixtureSet['expected-recorded-classes'] ?? $meta['expected-recorded-classes'],
             $fixtureSet['expected-recorded-functions'] ?? $meta['expected-recorded-functions'],
+            $fixtureSet['expected-recorded-ambiguous-functions'] ?? $meta['expected-recorded-ambiguous-functions'],
             $meta['minPhpVersion'] ?? null,
             $meta['maxPhpVersion'] ?? null,
         ];
+    }
+
+    private static function assertSpecHasRequiredMetaKeys(array $meta, string $file): void
+    {
+        self::assertSpecHasMetaKey(
+            $meta,
+            'expected-recorded-classes',
+            $file,
+        );
+        self::assertSpecHasMetaKey(
+            $meta,
+            'expected-recorded-functions',
+            $file,
+        );
+        self::assertSpecHasMetaKey(
+            $meta,
+            'expected-recorded-ambiguous-functions',
+            $file,
+        );
+    }
+
+    private static function assertSpecHasMetaKey(array $meta, string $key, string $file): void
+    {
+        self::assertArrayHasKey(
+            $key,
+            $meta,
+            sprintf(
+                'Expected the spec file "%s" to have its meta key "%s" declared.',
+                Path::canonicalize($file),
+                $key,
+            ),
+        );
     }
 
     private static function createSymbolsConfiguration(
@@ -416,7 +460,8 @@ class PhpScoperSpecTest extends TestCase
         ?string $expected,
         ?string $actual,
         array $expectedRegisteredClasses,
-        array $expectedRegisteredFunctions
+        array $expectedRegisteredFunctions,
+        array $expectedRegisteredAmbiguousFunctions,
     ): string {
         $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
         $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
@@ -435,9 +480,11 @@ class PhpScoperSpecTest extends TestCase
 
         $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
         $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
+        $formattedExpectedRegisteredAmbiguousFunctions = self::formatList($expectedRegisteredAmbiguousFunctions);
 
         $formattedActualRegisteredClasses = self::formatTupleList($symbolsRegistry->getRecordedClasses());
         $formattedActualRegisteredFunctions = self::formatTupleList($symbolsRegistry->getRecordedFunctions());
+        $formattedActualRegisteredAmbiguousFunctions = self::formatList($symbolsRegistry->getAmbiguousFunctions());
 
         $titleSeparator = str_repeat(
             '=',
@@ -479,6 +526,7 @@ class PhpScoperSpecTest extends TestCase
             {$expected}
             ----------------
             recorded functions: {$formattedExpectedRegisteredFunctions}
+            recorded ambiguous functions: {$formattedExpectedRegisteredAmbiguousFunctions}
             recorded classes: {$formattedExpectedRegisteredClasses}
 
             {$titleSeparator}
@@ -487,6 +535,7 @@ class PhpScoperSpecTest extends TestCase
             {$actual}
             ----------------
             recorded functions: {$formattedActualRegisteredFunctions}
+            recorded ambiguous functions: {$formattedActualRegisteredAmbiguousFunctions}
             recorded classes: {$formattedActualRegisteredClasses}
 
             -------------------------------------------------------------------------------
@@ -541,6 +590,34 @@ class PhpScoperSpecTest extends TestCase
                 array_map(
                     static fn (array $stringTuple): string => sprintf('  - %s => %s', ...$stringTuple),
                     $stringTuples,
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @param string[] $strings
+     */
+    private static function formatList(array $strings): string
+    {
+        if (0 === count($strings)) {
+            return '[]';
+        }
+
+        if (1 === count($strings)) {
+            /** @var string $string */
+            $string = current($strings);
+
+            return sprintf('[%s]', $string);
+        }
+
+        return sprintf(
+            "[\n%s\n]",
+            implode(
+                PHP_EOL,
+                array_map(
+                    static fn (string $string): string => sprintf('  - %s', $string),
+                    $strings,
                 ),
             ),
         );

@@ -123,7 +123,13 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return null;
         }
 
-        return $name instanceof FullyQualified ? $name : null;
+        if ($name instanceof FullyQualified) {
+            return $name;
+        }
+
+        $this->symbolsRegistry->recordAmbiguousFunction($name);
+
+        return null;
     }
 
     private function retrieveResolvedNameForString(String_ $string): ?FullyQualified

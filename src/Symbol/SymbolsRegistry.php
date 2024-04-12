@@ -15,11 +15,15 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use Countable;
+use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use function array_keys;
 use function array_values;
 use function count;
 use function serialize;
+use function sort;
 use function unserialize;
+use const SORT_STRING;
 
 final class SymbolsRegistry implements Countable
 {
@@ -27,6 +31,11 @@ final class SymbolsRegistry implements Countable
      * @var array<string, array{string, string}>
      */
     private array $recordedFunctions = [];
+
+    /**
+     * @var array<string, null>
+     */
+    private array $ambiguousFunctions = [];
 
     /**
      * @var array<string, array{string, string}>
@@ -82,6 +91,22 @@ final class SymbolsRegistry implements Countable
     public function getRecordedFunctions(): array
     {
         return array_values($this->recordedFunctions);
+    }
+
+    public function recordAmbiguousFunction(Name $name): void
+    {
+        $this->ambiguousFunctions[$name->toString()] = null;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getAmbiguousFunctions(): array
+    {
+        $ambiguousFunctions = array_keys($this->ambiguousFunctions);
+        sort($ambiguousFunctions, SORT_STRING);
+
+        return $ambiguousFunctions;
     }
 
     public function recordClass(FullyQualified $original, FullyQualified $alias): void
