@@ -32,7 +32,6 @@ use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Finder\Finder;
 use Throwable;
 use UnexpectedValueException;
 use function array_diff;
@@ -66,9 +65,6 @@ use const PHP_VERSION_ID;
 #[Group('integration')]
 class PhpScoperSpecTest extends TestCase
 {
-    private const SPECS_PATH = __DIR__.'/../../specs';
-    private const SECONDARY_SPECS_PATH = __DIR__.'/../../_specs';
-
     private const SPECS_META_KEYS = [
         'minPhpVersion',
         'maxPhpVersion',
@@ -111,7 +107,7 @@ class PhpScoperSpecTest extends TestCase
      */
     public function test_it_uses_the_right_specs_directory(): void
     {
-        $files = (new Finder())->files()->in(self::SECONDARY_SPECS_PATH);
+        $files = SpecFinder::findTmpSpecFiles();
 
         self::assertCount(0, $files);
     }

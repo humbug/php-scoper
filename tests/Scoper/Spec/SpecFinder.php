@@ -19,15 +19,15 @@ use Symfony\Component\Finder\SplFileInfo;
 
 final class SpecFinder
 {
-    private const SPECS_PATH = __DIR__.'/../../../specs';
-    private const SECONDARY_SPECS_PATH = __DIR__.'/../../../_specs';
+    public const SPECS_PATH = __DIR__.'/../../../specs';
+    public const TMP_SPECS_PATH = __DIR__.'/../../../_specs';
 
     /**
      * @return array{string, iterable<SplFileInfo>}
      */
     public static function findSpecFiles(): array
     {
-        $sourceDir = self::SECONDARY_SPECS_PATH;
+        $sourceDir = self::TMP_SPECS_PATH;
         $files = self::findFiles($sourceDir);
 
         if (0 === count($files)) {
@@ -38,6 +38,14 @@ final class SpecFinder
         $files->sortByName();
 
         return [$sourceDir, $files];
+    }
+
+    /**
+     * @return iterable<SplFileInfo>
+     */
+    public static function findTmpSpecFiles(): iterable
+    {
+        return self::findFiles(self::TMP_SPECS_PATH);
     }
 
     private static function findFiles(string $sourceDir): Finder
