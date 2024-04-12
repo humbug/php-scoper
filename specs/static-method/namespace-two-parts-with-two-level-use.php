@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Static method call statement of a namespaced class imported with a use statement in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Static method call statement of a namespaced class imported with a use statement in a namespace',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Static method call statement of a class via a use statement' => <<<'PHP'
     <?php
@@ -108,8 +109,8 @@ return [
     PHP,
 
     'Static method call statement of an exposed class via a use statement' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['X\Foo\Bar'],
+        expectedRecordedClasses: [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -151,7 +152,7 @@ return [
     ],
 
     'FQ static method call statement of a non-exposed class via a use statement' => [
-        'expose-classes' => ['X\Foo\Bar'],
+        exposeClasses: ['X\Foo\Bar'],
         'payload' => <<<'PHP'
         <?php
         

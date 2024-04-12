@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Global constant declaration in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Global constant declaration in the global scope',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Constants declaration in the global namespace' => <<<'PHP'
     <?php
@@ -86,7 +87,7 @@ return [
     PHP,
 
     'Constant declarations in the global namespace which is excluded' => [
-        'exclude-namespaces' => [''],
+        excludeNamespaces: [''],
         'payload' => <<<'PHP'
         <?php
         
@@ -137,7 +138,7 @@ return [
     ],
 
     'Exposed constant declarations in the global namespace' => [
-        'expose-constants' => [
+        exposeConstants: [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
@@ -207,7 +208,7 @@ return [
     ],
 
     'Exposed grouped constants declaration in the global namespace' => [
-        'expose-constants' => ['X'],
+        exposeConstants: ['X'],
         'payload' => <<<'PHP'
         <?php
         
@@ -277,7 +278,7 @@ return [
     PHP,
 
     'Constants declaration in an excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
+        excludeNamespaces: ['Acme'],
         'payload' => <<<'PHP'
         <?php
         
@@ -331,7 +332,7 @@ return [
     ],
 
     'Exposed constants declaration in a namespace' => [
-        'expose-constants' => ['Acme\BAR_CONST'],
+        exposeConstants: ['Acme\BAR_CONST'],
         'payload' => <<<'PHP'
         <?php
         
@@ -385,7 +386,7 @@ return [
     ],
 
     'Token compatibility regression test' => [
-        'exclude-constants' => [
+        excludeConstants: [
             'NEW_TOKEN',
             'ANOTHER_NEW_TOKEN',
         ],

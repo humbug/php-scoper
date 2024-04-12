@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Namespaced function call statement in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Namespaced function call statement in the global scope',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Namespaced function call' => <<<'PHP'
     <?php
@@ -62,8 +63,8 @@ return [
     PHP,
 
     'Exposed namespaced function call' => [
-        'expose-functions' => ['PHPUnit\main'],
-        'expected-recorded-functions' => [
+        exposeFunctions: ['PHPUnit\main'],
+        expectedRecordedFunctions: [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'
@@ -81,8 +82,8 @@ return [
     ],
 
     'FQ exposed namespaced function call' => [
-        'expose-functions' => ['PHPUnit\main'],
-        'expected-recorded-functions' => [
+        exposeFunctions: ['PHPUnit\main'],
+        expectedRecordedFunctions: [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'

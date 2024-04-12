@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Final class declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Final class declaration',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Declaration in the global namespace' => <<<'PHP'
     <?php
@@ -51,8 +52,8 @@ return [
     PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -90,7 +91,7 @@ return [
     PHP,
 
     'Declaration in a namespace with global classes exposed' => [
-        'expose-global-classes' => true,
+        exposeGlobalClasses: true,
         'payload' => <<<'PHP'
         <?php
         
@@ -110,8 +111,8 @@ return [
     ],
 
     'Declaration of an exposed final class' => [
-        'expose-classes' => ['Foo\A'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['Foo\A'],
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'

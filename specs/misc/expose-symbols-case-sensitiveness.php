@@ -12,32 +12,33 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Exposing symbols case sensitiveness',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Exposing symbols case sensitiveness',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Classes marked as exposed are case insensitive' => [
-        'expose-classes' => ['acme\foo'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['acme\foo'],
+        expectedRecordedClasses: [
             ['Acme\Foo', 'Humbug\Acme\Foo'],
         ],
         'payload' => <<<'PHP'
@@ -65,7 +66,7 @@ return [
     ],
 
     'Constants marked as exposed are case sensitive' => [
-        'expose-constants' => ['Acme\Foo', 'Acme\Bar'],
+        exposeConstants: ['Acme\Foo', 'Acme\Bar'],
         'payload' => <<<'PHP'
         <?php
         
@@ -87,7 +88,7 @@ return [
     ],
 
     'The namespace of constant exposed are case insensitive' => [
-        'expose-constants' => ['acme\FOO', 'acme\BAR'],
+        exposeConstants: ['acme\FOO', 'acme\BAR'],
         'payload' => <<<'PHP'
         <?php
         
@@ -107,7 +108,7 @@ return [
     ],
 
     'Namespaces excluded are case insensitive' => [
-        'exclude-namespaces' => ['acme'],
+        excludeNamespaces: ['acme'],
         'payload' => <<<'PHP'
         <?php
         
@@ -163,7 +164,7 @@ return [
     ],
 
     'Use statements of excluded namespaces are case insensitive' => [
-        'exclude-namespaces' => ['acme'],
+        excludeNamespaces: ['acme'],
         'payload' => <<<'PHP'
         <?php
         

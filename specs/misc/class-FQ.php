@@ -12,32 +12,33 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Class name resolution',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Class name resolution',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Different kind of exposed class constant calls in the global scope' => [
-        'expose-classes' => ['Foo\Bar', 'Foo\Bar\Poz'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['Foo\Bar', 'Foo\Bar\Poz'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
             ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
         ],
@@ -186,7 +187,7 @@ return [
     PHP,
 
     'Different kind of class constant calls in a namespace' => [
-        'expose-classes' => [
+        exposeClasses: [
             'Foo\Bar',
             'Foo\Bar\Poz',
 
@@ -198,7 +199,7 @@ return [
             'A\Aoz',
             'A\Aoo\Aoz\Poz',
         ],
-        'expected-recorded-classes' => [
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
             ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
 

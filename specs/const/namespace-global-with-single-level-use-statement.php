@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Global constant imported with a use statement used in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Global constant imported with a use statement used in a namespace',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Constant call imported with a use statement' => <<<'PHP'
     <?php
@@ -72,7 +73,7 @@ return [
     PHP,
 
     'Exposed FQ constant call imported with a use statement' => [
-        'expose-constants' => ['DUMMY_CONST'],
+        exposeConstants: ['DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
         

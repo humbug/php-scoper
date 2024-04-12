@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Function declarations in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Function declarations in the global scope',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Simple function declaration' => <<<'PHP'
     <?php
@@ -52,8 +53,8 @@ return [
     PHP,
 
     'Simple exposed function' => [
-        'expose-functions' => ['foo'],
-        'expected-recorded-functions' => [
+        exposeFunctions: ['foo'],
+        expectedRecordedFunctions: [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -74,8 +75,8 @@ return [
     ],
 
     'Simple exposed function with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -156,10 +157,10 @@ return [
     PHP,
 
     'Function declaration in the global namespace with globally exposed symbols' => [
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'expose-global-constants' => true,
-        'expected-recorded-functions' => [
+        exposeGlobalClasses: true,
+        exposeGlobalFunctions: true,
+        exposeGlobalConstants: true,
+        expectedRecordedFunctions: [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -260,8 +261,8 @@ return [
     PHP,
 
     'Function declarations with return types in the global namespace with use statements' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -455,8 +456,8 @@ return [
     ],
 
     'User defined global function with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
         'payload' => <<<'PHP'
@@ -500,7 +501,7 @@ return [
 
 
     'User defined global function' => [
-        'expose-global-functions' => false,
+        
         'payload' => <<<'PHP'
         <?php
 
@@ -541,8 +542,8 @@ return [
     ],
 
     'User defined global exposed function' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
         'payload' => <<<'PHP'
@@ -585,10 +586,10 @@ return [
     ],
 
     'User defined excluded global function' => [
-        'exclude-functions' => [
+        excludeFunctions: [
             'trigger_deprecation',
         ],
-        'expected-recorded-functions' => [
+        expectedRecordedFunctions: [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
         'payload' => <<<'PHP'

@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'String literal used as a function argument of an anonymous function',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'String literal used as a function argument of an anonymous function',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'FQCN string argument' => <<<'PHP'
     <?php
@@ -142,7 +143,7 @@ return [
     PHP,
 
     'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
         'payload' => <<<'PHP'
         <?php
         
@@ -182,7 +183,7 @@ return [
     ],
 
     'FQCN string argument on class from global namespace with classes from global namespace exposed' => [
-        'expose-global-classes' => true,
+        exposeGlobalClasses: true,
         'payload' => <<<'PHP'
         <?php
         
@@ -209,7 +210,7 @@ return [
     ],
 
     'FQCN string argument on class from an excluded namespace' => [
-        'exclude-namespaces' => [
+        excludeNamespaces: [
             'Symfony\Component\Yaml',
             '/^$/',
         ],
@@ -299,8 +300,8 @@ return [
     PHP,
 
     'FQC constant call on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
+        expectedRecordedClasses: [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'

@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'String literal used as a function argument of function-related functions',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'String literal used as a function argument of function-related functions',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'FQFN string argument' => <<<'PHP'
     <?php
@@ -74,8 +75,8 @@ return [
     PHP,
 
     'FQFN string argument on exposed function' => [
-        'expose-functions' => ['Acme\foo', 'dump'],
-        'expected-recorded-functions' => [
+        exposeFunctions: ['Acme\foo', 'dump'],
+        expectedRecordedFunctions: [
             ['Acme\foo', 'Humbug\Acme\foo'],
             ['dump', 'Humbug\dump'],
         ],
@@ -119,7 +120,7 @@ return [
     ],
 
     'FQFN string argument on function from an excluded namespace' => [
-        'exclude-namespaces' => [
+        excludeNamespaces: [
             'Acme',
             '/^$/',
         ],
@@ -163,8 +164,8 @@ return [
     ],
 
     'FQFN string argument with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['dump', 'Humbug\dump'],
         ],
         'payload' => <<<'PHP'

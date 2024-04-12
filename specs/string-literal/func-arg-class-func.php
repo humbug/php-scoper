@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'String literal used as a function argument of class-related functions',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'String literal used as a function argument of class-related functions',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'FQCN string argument' => <<<'PHP'
     <?php
@@ -139,7 +140,7 @@ return [
     PHP,
 
     'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
         'payload' => <<<'PHP'
         <?php
         
@@ -215,7 +216,7 @@ return [
     ],
 
     'FQCN string argument on class from an excluded namespace' => [
-        'exclude-namespaces' => [
+        excludeNamespaces: [
             'Symfony\Component\Yaml',
             '/^$/',
         ],
@@ -294,7 +295,7 @@ return [
     ],
 
     'FQCN string argument with global functions not exposed' => [
-        'expose-global-functions' => false,
+        
         'payload' => <<<'PHP'
         <?php
         

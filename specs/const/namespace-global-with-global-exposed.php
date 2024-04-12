@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Global constant usage in a namespace with the global constants exposed',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Global constant usage in a namespace with the global constants exposed',
+        
 
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        exposeGlobalConstants: true,
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Constant call in a namespace' => <<<'PHP'
     <?php
@@ -51,7 +52,7 @@ return [
     PHP,
 
     'Exposed constant call in a namespace' => [
-        'expose-constants' => ['DUMMY_CONST'],
+        exposeConstants: ['DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
         
@@ -84,7 +85,7 @@ return [
     PHP,
 
     'Exposed FQ constant call in a namespace' => [
-        'expose-constants' => ['DUMMY_CONST'],
+        exposeConstants: ['DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
         

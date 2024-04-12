@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Static method call statement of a class imported via a use statement in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Static method call statement of a class imported via a use statement in the global scope',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+        
+        
+       
+       
+
+        
+        
+        
+       
+
+        
+       
+    ),
 
     'Static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
     <?php
@@ -78,7 +79,7 @@ return [
     PHP,
 
     'Static method call statement of a class belonging to the global namespace which has been exposed' => [
-        'expose-global-classes' => true,
+        exposeGlobalClasses: true,
         'payload' => <<<'PHP'
         <?php
         
@@ -97,7 +98,7 @@ return [
     ],
 
     'FQ static method call statement of a class belonging to the global namespace which has been exposed' => [
-        'expose-global-classes' => true,
+        exposeGlobalClasses: true,
         'payload' => <<<'PHP'
         <?php
         

@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Function declarations in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Function declarations in a namespace',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Simple function declaration' => <<<'PHP'
     <?php
@@ -54,8 +55,8 @@ return [
     PHP,
 
     'Simple exposed function' => [
-        'expose-functions' => ['Acme\foo'],
-        'expected-recorded-functions' => [
+        exposeFunctions: ['Acme\foo'],
+        expectedRecordedFunctions: [
             ['Acme\foo', 'Humbug\Acme\foo'],
         ],
         'payload' => <<<'PHP'
@@ -78,8 +79,8 @@ return [
     ],
 
     'Function declaration in a namespace' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -165,8 +166,8 @@ return [
     ],
 
     'Function declaration in a namespace with exposed classes' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -252,8 +253,8 @@ return [
     ],
 
     'Function declaration in a namespace with use statements' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -331,7 +332,7 @@ return [
     ],
 
     'Function declaration in an excluded namespace' => [
-        'exclude-namespaces' => ['/^Pi.*$/'],
+        excludeNamespaces: ['/^Pi.*$/'],
         'payload' => <<<'PHP'
         <?php
         
@@ -414,8 +415,8 @@ return [
     ],
 
     'Function declarations with return types in a namespace with use statements' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -609,8 +610,8 @@ return [
     ],
 
     'Function declaration in an exposed namespace' => [
-        'expose-namespaces' => ['Acme'],
-        'expected-recorded-functions' => [
+        exposeNamespaces: ['Acme'],
+        expectedRecordedFunctions: [
             ['Acme\foo', 'Humbug\Acme\foo'],
         ],
         'payload' => <<<'PHP'

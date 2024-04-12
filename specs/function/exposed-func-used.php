@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Exposed functions which are never declared',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Exposed functions which are never declared',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Non exposed global function call' => <<<'PHP'
     <?php
@@ -49,8 +50,8 @@ return [
     PHP,
 
     'Exposed global function call' => [
-        'expose-functions' => ['main'],
-        'expected-recorded-functions' => [
+        exposeFunctions: ['main'],
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -68,8 +69,8 @@ return [
     ],
 
     'Global function call with exposed global functions' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -100,8 +101,8 @@ return [
     PHP,
 
     'Exposed namespaced function call' => [
-        'expose-functions' => ['Acme\main'],
-        'expected-recorded-functions' => [],   // Nothing registered here since the FQ could not be resolved
+        exposeFunctions: ['Acme\main'],
+          // Nothing registered here since the FQ could not be resolved
         'payload' => <<<'PHP'
         <?php
         

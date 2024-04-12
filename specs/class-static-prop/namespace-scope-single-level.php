@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Class static property call in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Class static property call in a namespace',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Constant call on a class belonging to the global namespace or the current namespace' => <<<'PHP'
     <?php
@@ -98,7 +99,7 @@ return [
     PHP,
 
     'Constant call on an exposed class belonging to the global namespace' => [
-        'expose-classes' => ['Foo'],
+        exposeClasses: ['Foo'],
         'payload' => <<<'PHP'
         <?php
         

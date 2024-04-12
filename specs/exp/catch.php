@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Catch expressions',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Catch expressions',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Catch an internal class' => <<<'PHP'
     <?php
@@ -95,7 +96,7 @@ return [
     PHP,
 
     'Catch an exposed custom exception class' => [
-        'expose-classes' => ['FooException'],
+        exposeClasses: ['FooException'],
         'payload' => <<<'PHP'
         <?php
         
@@ -117,7 +118,7 @@ return [
     ],
 
     'Catch a custom exception class which belongs to the excluded root namespace' => [
-        'exclude-namespaces' => ['/^$/'],
+        excludeNamespaces: ['/^$/'],
         'payload' => <<<'PHP'
         <?php
         
@@ -160,7 +161,7 @@ return [
     PHP,
 
     'Catch an exposed custom exception class in a namespace' => [
-        'expose-classes' => ['Acme\FooException'],
+        exposeClasses: ['Acme\FooException'],
         'payload' => <<<'PHP'
         <?php
         
@@ -185,7 +186,7 @@ return [
 
     // TODO: should not be made into FQ here
     'Catch a custom exception class in an excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
+        excludeNamespaces: ['Acme'],
         'payload' => <<<'PHP'
         <?php
         

@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Class static property call of a namespaced class in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Class static property call of a namespaced class in a namespace',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Constant call on a namespaced class' => <<<'PHP'
     <?php
@@ -84,8 +85,8 @@ return [
     PHP,
 
     'Constant call on an exposed namespaced class' => [
-        'expose-classes' => ['X\PHPUnit\Command'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['X\PHPUnit\Command'],
+        expectedRecordedClasses: [
             ['X\PHPUnit\Command', 'Humbug\X\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'
@@ -115,8 +116,8 @@ return [
     ],
 
     'FQ constant call on an exposed namespaced class' => [
-        'expose-classes' => ['PHPUnit\Command'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['PHPUnit\Command'],
+        expectedRecordedClasses: [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'

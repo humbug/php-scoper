@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Single-level namespaced constant call in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Single-level namespaced constant call in a namespace',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        exposeGlobalFunctions: true,
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Namespaced constant call' => <<<'PHP'
     <?php
@@ -66,7 +67,7 @@ return [
     PHP,
 
     'Exposed namespaced constant call on an exposed constant' => [
-        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
+        exposeConstants: ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
         
@@ -84,7 +85,7 @@ return [
     ],
 
     'Exposed FQ namespaced constant call on an exposed constant' => [
-        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
+        exposeConstants: ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
         

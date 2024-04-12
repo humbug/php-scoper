@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Two-parts namespaced constant call in the global scope with a single-level use statement',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Two-parts namespaced constant call in the global scope with a single-level use statement',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Namespaced constant call with namespace partially imported' => <<<'PHP'
     <?php
@@ -78,7 +79,7 @@ return [
     PHP,
 
     'Exposed namespaced constant call with namespace partially imported' => [
-        'expose-constants' => ['Foo\Bar\DUMMY_CONST'],
+        exposeConstants: ['Foo\Bar\DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
         

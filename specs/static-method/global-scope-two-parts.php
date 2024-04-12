@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Static method call statement of a namespaced class in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Static method call statement of a namespaced class in the global scope',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Static method call statement of a namespaced class' => <<<'PHP'
     <?php
@@ -79,8 +80,8 @@ return [
     PHP,
 
     'Static method call statement of a namespaced class which has been exposed' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -110,8 +111,8 @@ return [
     ],
 
     'FQ static method call statement of a namespaced class which has been exposed' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

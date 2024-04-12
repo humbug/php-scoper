@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Internal symbols defined by the user',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Internal symbols defined by the user',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Known non-internal symbols (sanity test)' => <<<'PHP'
     <?php
@@ -54,9 +55,9 @@ return [
     PHP,
 
     'Known non-internal symbols with global symbols exposed (sanity check)' => [
-        'expose-global-constants' => true,
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
+        exposeGlobalConstants: true,
+        exposeGlobalClasses: true,
+        exposeGlobalFunctions: true,
         'payload' => <<<'PHP'
         <?php
         
@@ -77,9 +78,9 @@ return [
     ],
 
     'Declared internal symbols' => [
-        'exclude-classes' => ['Foo'],
-        'exclude-functions' => ['baz'],
-        'exclude-constants' => ['BAR'],
+        excludeClasses: ['Foo'],
+        excludeFunctions: ['baz'],
+        excludeConstants: ['BAR'],
         'payload' => <<<'PHP'
         <?php
         

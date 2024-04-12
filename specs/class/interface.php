@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Interface declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Interface declaration',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
+        
+        
+       
+       
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        
+        
+        
+       
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        
+       
+    ),
 
     'Declaration in the global namespace' => <<<'PHP'
     <?php
@@ -63,8 +64,8 @@ return [
     PHP,
 
     'Declaration of an internal interface' => [
-        'exclude-classes' => ['NewPhp20Interface'],
-        'expected-recorded-classes' => [
+        excludeClasses: ['NewPhp20Interface'],
+        expectedRecordedClasses: [
             ['NewPhp20Interface', 'Humbug\NewPhp20Interface'],
         ],
         'payload' => <<<'PHP'
@@ -85,8 +86,8 @@ return [
     ],
 
     'Declaration of an internal interface within an if statement' => [
-        'exclude-classes' => ['NewPhp20Interface'],
-        'expected-recorded-classes' => [
+        excludeClasses: ['NewPhp20Interface'],
+        expectedRecordedClasses: [
             ['NewPhp20Interface', 'Humbug\NewPhp20Interface'],
         ],
         'payload' => <<<'PHP'
@@ -111,8 +112,8 @@ return [
     ],
 
     'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
             ['C', 'Humbug\C'],
             ['D', 'Humbug\D'],
@@ -182,7 +183,7 @@ return [
     PHP,
 
     'Declaration in a namespace with global classes exposed' => [
-        'expose-global-classes' => true,
+        exposeGlobalClasses: true,
         'payload' => <<<'PHP'
         <?php
         
@@ -218,8 +219,8 @@ return [
     ],
 
     'Declaration of an exposed interface' => [
-        'expose-classes' => ['Foo\A'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['Foo\A'],
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'

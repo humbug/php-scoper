@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Use statements for constants',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Use statements for constants',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Constant use statement for a constant belonging to the global namespace' => <<<'PHP'
     <?php
@@ -50,7 +51,7 @@ return [
     PHP,
 
     'Constant use statement for a constant belonging to the global namespace with global exposed enabled' => [
-        'expose-global-constants' => true,
+        exposeGlobalConstants: true,
         'payload' => <<<'PHP'
         <?php
         
@@ -123,7 +124,7 @@ return [
     PHP,
 
     'Constant use statement for a namespaced constant which has been exposed' => [
-        'expose-constants' => ['Foo\BAR'],
+        exposeConstants: ['Foo\BAR'],
         'payload' => <<<'PHP'
         <?php
         
@@ -140,7 +141,7 @@ return [
     ],
 
     'Constant use statement for a namespaced constant which has NOT been exposed' => [
-        'expose-constants' => ['/^Foo\\\\Baru.*$/'],
+        exposeConstants: ['/^Foo\\\\Baru.*$/'],
         'payload' => <<<'PHP'
         <?php
        

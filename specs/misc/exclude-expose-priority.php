@@ -12,34 +12,35 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Excluding a symbol/namespace should have precedence over exposing a symbol/namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Excluding a symbol/namespace should have precedence over exposing a symbol/namespace',
+        
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+        
+        
+        
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'namespace' => [
-        'exclude-namespaces' => [
+        excludeNamespaces: [
             'Acme',
         ],
-        'expose-namespaces' => [
+        exposeNamespaces: [
             'Acme',
         ],
         'payload' => <<<'PHP'
@@ -69,10 +70,10 @@ return [
     ],
 
     'symbol' => [
-        'exclude-classes' => [
+        excludeClasses: [
             'Acme\X',
         ],
-        'expose-classes' => [
+        exposeClasses: [
             'Acme\X',
         ],
         'payload' => <<<'PHP'

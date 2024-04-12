@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Native function calls',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Native function calls',
 
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+        exposeGlobalConstants: true,
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+        exposeGlobalFunctions: true,
+
+
+
+
+
+
+
+
+
+
+
+
+    ),
 
     'Internal function in a namespace' => <<<'PHP'
     <?php

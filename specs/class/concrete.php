@@ -12,28 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Class declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Class declaration',
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+
+
+        
+        
+       
+       
+
+        
+        
+        
+       
+
+        
+       
+    ),
 
     'Declaration in the global namespace' => <<<'PHP'
     <?php
@@ -56,8 +57,8 @@ return [
     PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -83,8 +84,8 @@ return [
     ],
 
     'Declaration in the global namespace with global classes exposed within a condition' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -114,7 +115,7 @@ return [
     ],
 
     'Declaration of an internal class' => [
-        'expected-recorded-classes' => [
+        expectedRecordedClasses: [
             ['Normalizer', 'Humbug\Normalizer'],
         ],
         'payload' => <<<'PHP'
@@ -157,7 +158,7 @@ return [
     PHP,
 
     'Declaration in a namespace with global classes exposed' => [
-        'expose-global-classes' => true,
+        exposeGlobalClasses: true,
         'payload' => <<<'PHP'
         <?php
         
@@ -182,8 +183,8 @@ return [
     ],
 
     'Declaration of an exposed class' => [
-        'expose-classes' => ['Foo\A'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['Foo\A'],
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
@@ -213,8 +214,8 @@ return [
     // This is a pure anti-regression test – no need to excessively test this
     // in the other spec files
     'Declaration of an exposed class exposed via a pattern' => [
-        'expose-classes' => ['/^Foo\\\\A$/'],
-        'expected-recorded-classes' => [
+        exposeClasses: ['/^Foo\\\\A$/'],
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
@@ -295,11 +296,11 @@ return [
     PHP,
 
     'Multiple declarations in different namespaces with exposed classes' => [
-        'expose-classes' => [
+        exposeClasses: [
             'Foo\A',
             'Bar\B',
         ],
-        'expected-recorded-classes' => [
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
             ['Bar\B', 'Humbug\Bar\B'],
         ],
