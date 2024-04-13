@@ -282,8 +282,12 @@ class PhpScoperSpecTest extends TestCase
         );
     }
 
-    private static function parseSpecFile(string $file, array $meta, int|string $fixtureTitle, array|string $fixtureSet): iterable
-    {
+    private static function parseSpecFile(
+        string $file,
+        array $meta,
+        int|string $fixtureTitle,
+        array|string $fixtureSet,
+    ): iterable {
         static $specMetaKeys;
         static $specKeys;
 
