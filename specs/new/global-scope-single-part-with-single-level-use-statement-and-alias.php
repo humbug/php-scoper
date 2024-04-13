@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'New statement call of a class imported via an aliased use statement in the global scope',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'New statement call of a class belonging to the global namespace imported via an aliased use statement' => <<<'PHP'

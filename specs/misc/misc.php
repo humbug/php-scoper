@@ -17,23 +17,8 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Miscellaneous',
-        
-
         exposeGlobalConstants: true,
-        
         exposeGlobalFunctions: true,
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Empty file' => <<<'PHP'

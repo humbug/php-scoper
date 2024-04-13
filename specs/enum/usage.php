@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Enum declaration',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'typehint and create an enum' => <<<'PHP'

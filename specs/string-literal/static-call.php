@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Static call with string literal',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'On expression' => <<<'PHP'

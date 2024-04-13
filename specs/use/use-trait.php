@@ -17,23 +17,8 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Use statements for traits',
-        
-
         exposeGlobalConstants: true,
-        
         exposeGlobalFunctions: true,
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     // https://github.com/humbug/php-scoper/issues/455

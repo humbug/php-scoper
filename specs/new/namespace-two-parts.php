@@ -17,23 +17,8 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'New statement call of a namespaced class in a namespace',
-        
-
         exposeGlobalConstants: true,
-        
         exposeGlobalFunctions: true,
-        
-
-       
-
-
-
-
-
-
-
-        
-
     ),
 
     'New statement call of a class' => <<<'PHP'

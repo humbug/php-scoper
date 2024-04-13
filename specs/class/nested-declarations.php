@@ -17,25 +17,10 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Exposed class declaration',
-
-
-
-
-
-        
-        
         exposeClasses: ['A'],
-       
-
-        
-        
-        
-       
-
         expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
-       
     ),
 
     'Exposed class within an if block' => <<<'PHP'

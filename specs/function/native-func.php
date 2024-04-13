@@ -17,23 +17,8 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Native function calls',
-
-
         exposeGlobalConstants: true,
-
         exposeGlobalFunctions: true,
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Internal function in a namespace' => <<<'PHP'

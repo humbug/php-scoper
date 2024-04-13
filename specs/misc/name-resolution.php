@@ -17,27 +17,11 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Name resolution',
-
-
         exposeGlobalConstants: true,
-
         exposeGlobalFunctions: true,
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Internal class & function with the same name' => [
-
         'payload' => <<<'PHP'
             <?php
 
@@ -69,7 +53,6 @@ return [
     ],
 
     'Internal class & const with the same name' => [
-
         'payload' => <<<'PHP'
             <?php
 
