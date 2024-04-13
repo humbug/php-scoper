@@ -37,58 +37,58 @@ return [
     ),
 
     'On expression' => <<<'PHP'
-    <?php
-    
-    $fooFactory::create('Acme\Foo');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $fooFactory::create('Humbug\\Acme\\Foo');
-    
-    PHP,
+        <?php
+
+        $fooFactory::create('Acme\Foo');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $fooFactory::create('Humbug\\Acme\\Foo');
+
+        PHP,
 
     'On expression with a symbol belonging to the global scope' => <<<'PHP'
-    <?php
-    
-    $fooFactory::create('Foo');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $fooFactory::create('Foo');
-    
-    PHP,
+        <?php
+
+        $fooFactory::create('Foo');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $fooFactory::create('Foo');
+
+        PHP,
 
     'On DateTime object' => <<<'PHP'
-    <?php
-    
-    DateTime::create('Acme\Foo');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \DateTime::create('Humbug\\Acme\\Foo');
-    
-    PHP,
+        <?php
+
+        DateTime::create('Acme\Foo');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \DateTime::create('Humbug\\Acme\\Foo');
+
+        PHP,
 
     'On DateTime object with a symbol belonging to the global scope' => <<<'PHP'
-    <?php
-    
-    DateTime::create('Foo');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \DateTime::create('Foo');
-    
-    PHP,
+        <?php
+
+        DateTime::create('Foo');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \DateTime::create('Foo');
+
+        PHP,
 ];

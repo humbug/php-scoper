@@ -37,110 +37,110 @@ return [
     ),
 
     'Method casts' => <<<'PHP'
-    <?php
-    
-    class X
-    {
-        public function method1(Y&Z $a, Y $b) : Y&Z
+        <?php
+
+        class X
         {
+            public function method1(Y&Z $a, Y $b) : Y&Z
+            {
+            }
         }
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class X
-    {
-        public function method1(Y&Z $a, Y $b) : Y&Z
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class X
         {
+            public function method1(Y&Z $a, Y $b) : Y&Z
+            {
+            }
         }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Function casts' => <<<'PHP'
-    <?php
-    
-    function fun1(Y&Z $a) : Y&Z
-    {
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    function fun1(Y&Z $a) : Y&Z
-    {
-    }
+        <?php
 
-    PHP,
+        function fun1(Y&Z $a) : Y&Z
+        {
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        function fun1(Y&Z $a) : Y&Z
+        {
+        }
+
+        PHP,
 
     'Property casts' => <<<'PHP'
-    <?php
-    
-    class X
-    {
-        private Y&Z $x;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class X
-    {
-        private Y&Z $x;
-    }
-    
-    PHP,
+        <?php
+
+        class X
+        {
+            private Y&Z $x;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class X
+        {
+            private Y&Z $x;
+        }
+
+        PHP,
 
     'Trait casts' => <<<'PHP'
-    <?php
-    
-    trait X
-    {
-        private Y&Z $x;
-        public function method1(Y&Z $a) : Y&Z
+        <?php
+
+        trait X
         {
+            private Y&Z $x;
+            public function method1(Y&Z $a) : Y&Z
+            {
+            }
         }
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    trait X
-    {
-        private Y&Z $x;
-        public function method1(Y&Z $a) : Y&Z
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        trait X
         {
+            private Y&Z $x;
+            public function method1(Y&Z $a) : Y&Z
+            {
+            }
         }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Interface casts' => <<<'PHP'
-    <?php
-    
-    interface X
-    {
-        public function method1(Y&Z $a) : Y&Z;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    interface X
-    {
-        public function method1(Y&Z $a) : Y&Z;
-    }
-    
-    PHP,
+        <?php
+
+        interface X
+        {
+            public function method1(Y&Z $a) : Y&Z;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        interface X
+        {
+            public function method1(Y&Z $a) : Y&Z;
+        }
+
+        PHP,
 ];

@@ -65,9 +65,9 @@ return [
         exposeGlobalFunctions: true,
         'payload' => <<<'PHP'
         <?php
-        
+
         namespace Acme;
-        
+
         fn ($x) => $x;
         fn (int $x) => $x;
         fn (int $x): int => $x;
@@ -75,16 +75,42 @@ return [
         fn (DateTimeImmutable $x): Closure => $x;
         ----
         <?php
-        
+
         namespace Humbug\Acme;
-        
+
         fn($x) => $x;
         fn(int $x) => $x;
         fn(int $x): int => $x;
         fn(Foo $x): Bar => $x;
         fn(DateTimeImmutable $x): Closure => $x;
-        
+
         PHP,
+
+    'Global function call in the global scope with global symbols exposed' => [
+        'expose-global-classes' => true,
+        'expose-global-functions' => true,
+        'payload' => <<<'PHP'
+            <?php
+
+            namespace Acme;
+
+            fn ($x) => $x;
+            fn (int $x) => $x;
+            fn (int $x): int => $x;
+            fn (Foo $x): Bar => $x;
+            fn (DateTimeImmutable $x): Closure => $x;
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            fn($x) => $x;
+            fn(int $x) => $x;
+            fn(int $x): int => $x;
+            fn(Foo $x): Bar => $x;
+            fn(DateTimeImmutable $x): Closure => $x;
+
+            PHP,
     ],
 
     'Global function call in the global scope with exposed symbols' => [
@@ -95,26 +121,26 @@ return [
             'Acme\Humbug\Acme\Closure',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        fn ($x) => $x;
-        fn (int $x) => $x;
-        fn (int $x): int => $x;
-        fn (Foo $x): Bar => $x;
-        fn (DateTimeImmutable $x): Closure => $x;
-        ----
-        <?php
-        
-        namespace Humbug\Acme;
-        
-        fn($x) => $x;
-        fn(int $x) => $x;
-        fn(int $x): int => $x;
-        fn(Foo $x): Bar => $x;
-        fn(DateTimeImmutable $x): Closure => $x;
-        
-        PHP,
+            <?php
+
+            namespace Acme;
+
+            fn ($x) => $x;
+            fn (int $x) => $x;
+            fn (int $x): int => $x;
+            fn (Foo $x): Bar => $x;
+            fn (DateTimeImmutable $x): Closure => $x;
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            fn($x) => $x;
+            fn(int $x) => $x;
+            fn(int $x): int => $x;
+            fn(Foo $x): Bar => $x;
+            fn(DateTimeImmutable $x): Closure => $x;
+
+            PHP,
     ],
 ];

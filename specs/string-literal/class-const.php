@@ -37,30 +37,30 @@ return [
     ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    class Foo {
-        const X = 'Symfony\\Component\\Yaml\\Ya_1';
-        const X = '\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        
-        const X = 'HelloWorld';
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'HelloWorld';
-    }
-    
-    PHP,
+        <?php
+
+        class Foo {
+            const X = 'Symfony\\Component\\Yaml\\Ya_1';
+            const X = '\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+
+            const X = 'HelloWorld';
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = 'HelloWorld';
+        }
+
+        PHP,
 ];

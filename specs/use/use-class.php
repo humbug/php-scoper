@@ -37,89 +37,84 @@ return [
     ),
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
-<?php
+        <?php
 
-class Foo {}
+        class Foo {}
 
-use Foo;
+        use Foo;
 
-----
-<?php
+        ----
+        <?php
 
-namespace Humbug;
+        namespace Humbug;
 
-class Foo
-{
-}
-use Humbug\Foo;
+        class Foo
+        {
+        }
+        use Humbug\Foo;
 
-PHP
-    ,
+        PHP,
 
     'FQ use statement of a class belonging to the global scope' => <<<'PHP'
-<?php
+        <?php
 
-class Foo {}
+        class Foo {}
 
-use \Foo;
+        use \Foo;
 
-----
-<?php
+        ----
+        <?php
 
-namespace Humbug;
+        namespace Humbug;
 
-class Foo
-{
-}
-use Humbug\Foo;
+        class Foo
+        {
+        }
+        use Humbug\Foo;
 
-PHP
-    ,
-
-    'Use statement of an internal class belonging to the global scope' => <<<'PHP'
-<?php
-
-use ArrayIterator;
-
-----
-<?php
-
-namespace Humbug;
-
-use ArrayIterator;
-
-PHP
-    ,
+        PHP,
 
     'Use statement of an internal class belonging to the global scope' => <<<'PHP'
-<?php
+        <?php
 
-use \ArrayIterator;
+        use ArrayIterator;
 
-----
-<?php
+        ----
+        <?php
 
-namespace Humbug;
+        namespace Humbug;
 
-use ArrayIterator;
+        use ArrayIterator;
 
-PHP
-    ,
+        PHP,
+
+    'Use statement of an internal class belonging to the global scope' => <<<'PHP'
+        <?php
+
+        use \ArrayIterator;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use ArrayIterator;
+
+        PHP,
 
     'Use statement of a non existent class belonging to the global scope' => <<<'PHP'
-<?php
+        <?php
 
-use Unknown;
+        use Unknown;
 
-----
-<?php
+        ----
+        <?php
 
-namespace Humbug;
+        namespace Humbug;
 
-use Humbug\Unknown;
+        use Humbug\Unknown;
 
-PHP
-    ,
+        PHP,
 
     'Use statement of an exposed class belonging to the global scope' => [
         exposeClasses: ['Foo'],
@@ -127,24 +122,24 @@ PHP
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
-<?php
+            <?php
 
-class Foo {}
+            class Foo {}
 
-use Foo;
+            use Foo;
 
-----
-<?php
+            ----
+            <?php
 
-namespace Humbug;
+            namespace Humbug;
 
-class Foo
-{
-}
-\class_alias('Humbug\\Foo', 'Foo', \false);
-use Humbug\Foo;
+            class Foo
+            {
+            }
+            \class_alias('Humbug\\Foo', 'Foo', \false);
+            use Humbug\Foo;
 
-PHP
+            PHP,
     ],
 
     'Use statement of a class belonging to the global scope which has been excluded' => [
@@ -153,24 +148,24 @@ PHP
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        class Foo {}
-        
-        use Foo;
-        
-        ----
-        <?php
-        
-        namespace {
-            class Foo
-            {
-            }
-            \class_alias('Humbug\\Foo', 'Foo', \false);
+            <?php
+
+            class Foo {}
+
             use Foo;
-        }
-        
-        PHP,
+
+            ----
+            <?php
+
+            namespace {
+                class Foo
+                {
+                }
+                \class_alias('Humbug\\Foo', 'Foo', \false);
+                use Foo;
+            }
+
+            PHP,
     ],
 
     'Use statement of an exposed class belonging to the global scope which has been excluded' => [
@@ -180,75 +175,75 @@ PHP
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        class Foo {}
-        
-        use Foo;
-        
-        ----
-        <?php
-        
-        namespace {
-            class Foo
-            {
-            }
-            \class_alias('Humbug\\Foo', 'Foo', \false);
+            <?php
+
+            class Foo {}
+
             use Foo;
-        }
-        
-        PHP,
+
+            ----
+            <?php
+
+            namespace {
+                class Foo
+                {
+                }
+                \class_alias('Humbug\\Foo', 'Foo', \false);
+                use Foo;
+            }
+
+            PHP,
     ],
 
     'Use statement of two-level class' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo\Bar;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo\Bar;
-    
-    PHP,
+        <?php
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace {
+            use Foo\Bar;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo\Bar;
+
+        PHP,
 
     'Already prefixed use statement of two-level class' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
+        <?php
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace {
+            use Humbug\Foo\Bar;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
         use Humbug\Foo\Bar;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo\Bar;
-    
-    PHP,
+
+        PHP,
 
     'Use statement of two-level class which has been exposed' => [
         exposeClasses: ['Foo\Bar'],
@@ -256,86 +251,86 @@ PHP
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace {
-            use Foo\Bar;
-        }
-        
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-        namespace Humbug;
-        
-        use Humbug\Foo\Bar;
-        
-        PHP,
+            <?php
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo\Bar;
+            }
+
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            namespace Humbug;
+
+            use Humbug\Foo\Bar;
+
+            PHP,
     ],
 
     'Use statement of two-level class belonging to a excluded namespace' => [
         excludeNamespaces: ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace {
+            <?php
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo\Bar;
+            }
+
+            ----
+            <?php
+
+            namespace Foo;
+
+            class Bar
+            {
+            }
+            namespace Humbug;
+
             use Foo\Bar;
-        }
-        
-        ----
-        <?php
-        
-        namespace Foo;
-        
-        class Bar
-        {
-        }
-        namespace Humbug;
-        
-        use Foo\Bar;
-        
-        PHP,
+
+            PHP,
     ],
 
     'Use statement of exposed two-level class belonging to a excluded namespace' => [
         excludeNamespaces: ['Foo'],
         exposeClasses: ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace {
+            <?php
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo\Bar;
+            }
+
+            ----
+            <?php
+
+            namespace Foo;
+
+            class Bar
+            {
+            }
+            namespace Humbug;
+
             use Foo\Bar;
-        }
-        
-        ----
-        <?php
-        
-        namespace Foo;
-        
-        class Bar
-        {
-        }
-        namespace Humbug;
-        
-        use Foo\Bar;
-        
-        PHP,
+
+            PHP,
     ],
 ];

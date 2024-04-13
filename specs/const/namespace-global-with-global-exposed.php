@@ -37,68 +37,68 @@ return [
     ),
 
     'Constant call in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    DUMMY_CONST;
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        DUMMY_CONST;
+
+        PHP,
 
     'Exposed constant call in a namespace' => [
         exposeConstants: ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        DUMMY_CONST;
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        DUMMY_CONST;
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            DUMMY_CONST;
+
+            PHP,
     ],
 
     'FQ constant call in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    \DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    \DUMMY_CONST;
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        \DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        \DUMMY_CONST;
+
+        PHP,
 
     'Exposed FQ constant call in a namespace' => [
         exposeConstants: ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        \DUMMY_CONST;
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        \DUMMY_CONST;
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            \DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            \DUMMY_CONST;
+
+            PHP,
     ],
 ];

@@ -37,56 +37,56 @@ return [
     ),
 
     'New statement call of a class' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        use Foo;
-        
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            use Foo;
+
+            new Foo();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\Foo;
         new Foo();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\Foo;
-    new Foo();
-    
-    PHP,
+
+        PHP,
 
     'FQ new statement call of a class' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        use Foo;
-        
-        new \Foo();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\Foo;
-    new \Humbug\Foo();
-    
-    PHP,
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            use Foo;
+
+            new \Foo();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\Foo;
+        new \Humbug\Foo();
+
+        PHP,
 ];

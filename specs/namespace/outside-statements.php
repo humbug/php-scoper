@@ -37,66 +37,66 @@ return [
     ),
 
     'Declare statement' => <<<'PHP'
-    <?php
-    
-    declare(A='B');
-    
-    namespace Foo;
-    
-    ----
-    <?php
-    
-    declare (A='B');
-    namespace Humbug\Foo;
-    
-    
-    PHP,
+        <?php
+
+        declare(A='B');
+
+        namespace Foo;
+
+        ----
+        <?php
+
+        declare (A='B');
+        namespace Humbug\Foo;
+
+
+        PHP,
 
     'Comment' => <<<'PHP'
-    <?php
-    
-    /* Comment */
-    
-    namespace Foo;
-    
-    ----
-    <?php
-    
-    /* Comment */
-    namespace Humbug\Foo;
-    
-    
-    PHP,
+        <?php
+
+        /* Comment */
+
+        namespace Foo;
+
+        ----
+        <?php
+
+        /* Comment */
+        namespace Humbug\Foo;
+
+
+        PHP,
 
     'Simple comment' => <<<'PHP'
-    <?php
-    
-    // Comment
-    
-    namespace Foo;
-    
-    ----
-    <?php
-    
-    // Comment
-    namespace Humbug\Foo;
-    
-    
-    PHP,
+        <?php
+
+        // Comment
+
+        namespace Foo;
+
+        ----
+        <?php
+
+        // Comment
+        namespace Humbug\Foo;
+
+
+        PHP,
 
     'Doc block' => <<<'PHP'
-    <?php
-    
-    /** Comment */
-    
-    namespace Foo;
-    
-    ----
-    <?php
-    
-    /** Comment */
-    namespace Humbug\Foo;
-    
-    
-    PHP,
+        <?php
+
+        /** Comment */
+
+        namespace Foo;
+
+        ----
+        <?php
+
+        /** Comment */
+        namespace Humbug\Foo;
+
+
+        PHP,
 ];

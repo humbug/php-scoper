@@ -37,76 +37,76 @@ return [
     ),
 
     'New statement call of a class via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        class Foo {}
-    }
-    
-    namespace X\Foo {
-        class Bar {}
-    }
-    
-    namespace A {
-        use X\Foo;
-        
+        <?php
+
+        namespace X {
+            class Foo {}
+        }
+
+        namespace X\Foo {
+            class Bar {}
+        }
+
+        namespace A {
+            use X\Foo;
+
+            new Foo\Bar();
+        }
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        class Foo
+        {
+        }
+        namespace Humbug\X\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\X\Foo;
         new Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\X\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\X\Foo;
-    new Foo\Bar();
-    
-    PHP,
+
+        PHP,
 
     'FQ new statement call of a class via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace A {
-        use X\Foo;
-        
-        new \Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\X\Foo;
-    new \Humbug\Foo\Bar();
-    
-    PHP,
+        <?php
+
+        namespace X {
+            class Foo {}
+        }
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace A {
+            use X\Foo;
+
+            new \Foo\Bar();
+        }
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\X\Foo;
+        new \Humbug\Foo\Bar();
+
+        PHP,
 
     'New statement call of an exposed class via a use statement' => [
         exposeClasses: ['X\Foo\Bar'],
@@ -114,79 +114,79 @@ return [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace X {
-            class Foo {}
-        }
-        
-        namespace X\Foo {
-            class Bar {}
-        }
-        
-        namespace A {
-            use X\Foo;
-            
+            <?php
+
+            namespace X {
+                class Foo {}
+            }
+
+            namespace X\Foo {
+                class Bar {}
+            }
+
+            namespace A {
+                use X\Foo;
+
+                new Foo\Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug\X;
+
+            class Foo
+            {
+            }
+            namespace Humbug\X\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
+            namespace Humbug\A;
+
+            use Humbug\X\Foo;
             new Foo\Bar();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\X;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\X\Foo;
-        
-        class Bar
-        {
-        }
-        \class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
-        namespace Humbug\A;
-        
-        use Humbug\X\Foo;
-        new Foo\Bar();
-        
-        PHP,
+
+            PHP,
     ],
 
     'FQ new statement call of a non-exposed class via a use statement' => [
         exposeClasses: ['X\Foo\Bar'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace X {
-            class Foo {}
-        }
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace A {
-            use X\Foo;
-            
-            new \Foo\Bar();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\X;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        namespace Humbug\A;
-        
-        use Humbug\X\Foo;
-        new \Humbug\Foo\Bar();
-        
-        PHP,
+            <?php
+
+            namespace X {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace A {
+                use X\Foo;
+
+                new \Foo\Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug\X;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            namespace Humbug\A;
+
+            use Humbug\X\Foo;
+            new \Humbug\Foo\Bar();
+
+            PHP,
     ],
 ];

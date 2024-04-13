@@ -37,19 +37,19 @@ return [
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    final class A {}
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    final class A
-    {
-    }
-    
-    PHP,
+        <?php
+
+        final class A {}
+        ----
+        <?php
+
+        namespace Humbug;
+
+        final class A
+        {
+        }
+
+        PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
         exposeGlobalClasses: true,
@@ -57,57 +57,57 @@ return [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        final class A {}
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        final class A
-        {
-        }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
+            <?php
+
+            final class A {}
+            ----
+            <?php
+
+            namespace Humbug;
+
+            final class A
+            {
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+
+            PHP,
     ],
 
     'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    final class A {}
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    final class A
-    {
-    }
-    
-    PHP,
+        <?php
+
+        namespace Foo;
+
+        final class A {}
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        final class A
+        {
+        }
+
+        PHP,
 
     'Declaration in a namespace with global classes exposed' => [
         exposeGlobalClasses: true,
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        final class A {}
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        final class A
-        {
-        }
-        
-        PHP,
+            <?php
+
+            namespace Foo;
+
+            final class A {}
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            final class A
+            {
+            }
+
+            PHP,
     ],
 
     'Declaration of an exposed final class' => [
@@ -116,56 +116,56 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        final class A {}
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        final class A
-        {
-        }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
+            <?php
+
+            namespace Foo;
+
+            final class A {}
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            final class A
+            {
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
     ],
 
     'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        final class A {}
-    }
-    
-    namespace Y {
-        final class B {}
-    }
-    
-    namespace Z {
-        final class C {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    final class A
-    {
-    }
-    namespace Humbug\Y;
-    
-    final class B
-    {
-    }
-    namespace Humbug\Z;
-    
-    final class C
-    {
-    }
-    
-    PHP,
+        <?php
+
+        namespace X {
+            final class A {}
+        }
+
+        namespace Y {
+            final class B {}
+        }
+
+        namespace Z {
+            final class C {}
+        }
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        final class A
+        {
+        }
+        namespace Humbug\Y;
+
+        final class B
+        {
+        }
+        namespace Humbug\Z;
+
+        final class C
+        {
+        }
+
+        PHP,
 ];

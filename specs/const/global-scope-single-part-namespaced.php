@@ -66,15 +66,43 @@ return [
         exposeConstants: ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
-        
+
         PHPUnit\DUMMY_CONST;
         ----
         <?php
 
         namespace Humbug;
 
-        \PHPUnit\DUMMY_CONST;
+        \Humbug\PHPUnit\DUMMY_CONST;
 
         PHP,
+
+    'FQ namespaced constant call' => <<<'PHP'
+        <?php
+
+        \PHPUnit\DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Humbug\PHPUnit\DUMMY_CONST;
+
+        PHP,
+
+    'Namespaced constant call on an exposed constant' => [
+        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
+        'payload' => <<<'PHP'
+            <?php
+
+            PHPUnit\DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \PHPUnit\DUMMY_CONST;
+
+            PHP,
     ],
 ];

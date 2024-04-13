@@ -37,54 +37,54 @@ return [
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    trait A {
-        public function a() {}
-    }
-    
-    class B {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
+        <?php
+
+        trait A {
+            public function a() {}
         }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
+
+        class B {
+            use C;
+            use D {
+                a as protected b;
+                c as d;
+                e as private;
+            }
+            use E, F, G {
+                E::a insteadof F, G;
+                E::b as protected c;
+                E::d as e;
+                E::f as private;
+            }
         }
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    trait A
-    {
-        public function a()
+        ----
+        <?php
+
+        namespace Humbug;
+
+        trait A
         {
+            public function a()
+            {
+            }
         }
-    }
-    class B
-    {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
+        class B
+        {
+            use C;
+            use D {
+                a as protected b;
+                c as d;
+                e as private;
+            }
+            use E, F, G {
+                E::a insteadof F, G;
+                E::b as protected c;
+                E::d as e;
+                E::f as private;
+            }
         }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
         exposeGlobalClasses: true,
@@ -92,12 +92,66 @@ return [
             ['B', 'Humbug\B'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            trait A {
+                public function a() {}
+            }
+
+            class B {
+                use C;
+                use D {
+                    a as protected b;
+                    c as d;
+                    e as private;
+                }
+                use E, F, G {
+                    E::a insteadof F, G;
+                    E::b as protected c;
+                    E::d as e;
+                    E::f as private;
+                }
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            trait A
+            {
+                public function a()
+                {
+                }
+            }
+            class B
+            {
+                use C;
+                use D {
+                    a as protected b;
+                    c as d;
+                    e as private;
+                }
+                use E, F, G {
+                    E::a insteadof F, G;
+                    E::b as protected c;
+                    E::d as e;
+                    E::f as private;
+                }
+            }
+            \class_alias('Humbug\\B', 'B', \false);
+
+            PHP,
+    ],
+
+    'Declaration in a namespace' => <<<'PHP'
         <?php
-        
+
+        namespace Foo;
+
         trait A {
             public function a() {}
         }
-        
+
         class B {
             use C;
             use D {
@@ -114,9 +168,9 @@ return [
         }
         ----
         <?php
-        
-        namespace Humbug;
-        
+
+        namespace Humbug\Foo;
+
         trait A
         {
             public function a()
@@ -138,122 +192,143 @@ return [
                 E::f as private;
             }
         }
-        \class_alias('Humbug\\B', 'B', \false);
-        
-        PHP,
-    ],
 
-    'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    trait A {
-        public function a() {}
-    }
-    
-    class B {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
-        }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    trait A
-    {
-        public function a()
-        {
-        }
-    }
-    class B
-    {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
-        }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
-    }
-    
-    PHP,
+        PHP,
 
     'Declaration of an exposed trait' => [
         exposeClasses: ['Foo\A'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        trait A {
-            public function a() {}
-        }
-        
-        class B {
-            use C;
-            use D {
-                a as protected b;
-                c as d;
-                e as private;
+            <?php
+
+            namespace Foo;
+
+            trait A {
+                public function a() {}
             }
-            use E, F, G {
-                E::a insteadof F, G;
-                E::b as protected c;
-                E::d as e;
-                E::f as private;
+
+            class B {
+                use C;
+                use D {
+                    a as protected b;
+                    c as d;
+                    e as private;
+                }
+                use E, F, G {
+                    E::a insteadof F, G;
+                    E::b as protected c;
+                    E::d as e;
+                    E::f as private;
+                }
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            trait A
+            {
+                public function a()
+                {
+                }
+            }
+            class B
+            {
+                use C;
+                use D {
+                    a as protected b;
+                    c as d;
+                    e as private;
+                }
+                use E, F, G {
+                    E::a insteadof F, G;
+                    E::b as protected c;
+                    E::d as e;
+                    E::f as private;
+                }
+            }
+
+            PHP,
+    ],
+
+    'Multiple declarations in different namespaces' => <<<'PHP'
+        <?php
+
+        namespace X {
+            trait XA
+            {
+                public function a()
+                {
+                }
+            }
+            class XB
+            {
+                use C;
+                use D {
+                    a as protected b;
+                    c as d;
+                    e as private;
+                }
+                use E, F, G {
+                    E::a insteadof F, G;
+                    E::b as protected c;
+                    E::d as e;
+                    E::f as private;
+                }
+            }
+        }
+
+        namespace Y {
+            trait YA
+            {
+                public function a()
+                {
+                }
+            }
+            class YB
+            {
+                use C;
+                use D {
+                    a as protected b;
+                    c as d;
+                    e as private;
+                }
+                use E, F, G {
+                    E::a insteadof F, G;
+                    E::b as protected c;
+                    E::d as e;
+                    E::f as private;
+                }
+            }
+        }
+
+        namespace Z {
+            trait ZA
+            {
+                public function a()
+                {
+                }
+            }
+            class ZB
+            {
+                use C;
+                use D {
+                    a as protected b;
+                    c as d;
+                    e as private;
+                }
+                use E, F, G {
+                    E::a insteadof F, G;
+                    E::b as protected c;
+                    E::d as e;
+                    E::f as private;
+                }
             }
         }
         ----
         <?php
-        
-        namespace Humbug\Foo;
-        
-        trait A
-        {
-            public function a()
-            {
-            }
-        }
-        class B
-        {
-            use C;
-            use D {
-                a as protected b;
-                c as d;
-                e as private;
-            }
-            use E, F, G {
-                E::a insteadof F, G;
-                E::b as protected c;
-                E::d as e;
-                E::f as private;
-            }
-        }
-        
-        PHP,
-    ],
 
-    'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace X {
+        namespace Humbug\X;
+
         trait XA
         {
             public function a()
@@ -275,9 +350,8 @@ return [
                 E::f as private;
             }
         }
-    }
-    
-    namespace Y {
+        namespace Humbug\Y;
+
         trait YA
         {
             public function a()
@@ -299,9 +373,8 @@ return [
                 E::f as private;
             }
         }
-    }
-    
-    namespace Z {
+        namespace Humbug\Z;
+
         trait ZA
         {
             public function a()
@@ -323,79 +396,6 @@ return [
                 E::f as private;
             }
         }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    trait XA
-    {
-        public function a()
-        {
-        }
-    }
-    class XB
-    {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
-        }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
-    }
-    namespace Humbug\Y;
-    
-    trait YA
-    {
-        public function a()
-        {
-        }
-    }
-    class YB
-    {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
-        }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
-    }
-    namespace Humbug\Z;
-    
-    trait ZA
-    {
-        public function a()
-        {
-        }
-    }
-    class ZB
-    {
-        use C;
-        use D {
-            a as protected b;
-            c as d;
-            e as private;
-        }
-        use E, F, G {
-            E::a insteadof F, G;
-            E::b as protected c;
-            E::d as e;
-            E::f as private;
-        }
-    }
-    
-    PHP,
+
+        PHP,
 ];

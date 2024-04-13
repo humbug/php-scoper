@@ -82,23 +82,67 @@ return [
         exposeConstants: ['Foo\Bar\DUMMY_CONST'],
         'payload' => <<<'PHP'
         <?php
-        
+
         class Foo {}
-        
+
         use Foo;
-        
+
         Foo\Bar\DUMMY_CONST;
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         class Foo
         {
         }
         use Humbug\Foo;
-        \Foo\Bar\DUMMY_CONST;
-        
+        Foo\Bar\DUMMY_CONST;
+
         PHP,
+
+    'FQ namespaced constant call with namespace partially imported' => <<<'PHP'
+        <?php
+
+        class Foo {}
+
+        use Foo;
+
+        \Foo\Bar\DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        use Humbug\Foo;
+        \Humbug\Foo\Bar\DUMMY_CONST;
+
+        PHP,
+
+    'Exposed namespaced constant call with namespace partially imported' => [
+        'expose-constants' => ['Foo\Bar\DUMMY_CONST'],
+        'payload' => <<<'PHP'
+            <?php
+
+            class Foo {}
+
+            use Foo;
+
+            Foo\Bar\DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            use Humbug\Foo;
+            \Foo\Bar\DUMMY_CONST;
+
+            PHP,
     ],
 ];

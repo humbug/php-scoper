@@ -37,59 +37,59 @@ return [
     ),
 
     'Constant call imported with an aliased use statement' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    use const DUMMY_CONST as FOO;
-    
-    FOO;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    use const Humbug\DUMMY_CONST as FOO;
-    FOO;
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        use const DUMMY_CONST as FOO;
+
+        FOO;
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        use const Humbug\DUMMY_CONST as FOO;
+        FOO;
+
+        PHP,
 
     'Constant FQ call imported with an aliased use statement' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    use const DUMMY_CONST as FOO;
-    
-    \FOO;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    use const Humbug\DUMMY_CONST as FOO;
-    \Humbug\FOO;
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        use const DUMMY_CONST as FOO;
+
+        \FOO;
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        use const Humbug\DUMMY_CONST as FOO;
+        \Humbug\FOO;
+
+        PHP,
 
     'Exposed constant call imported with an aliased use statement' => [
         exposeConstants: ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        use const DUMMY_CONST as FOO;
-        
-        \FOO;
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        use const DUMMY_CONST as FOO;
-        \Humbug\FOO;
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            use const DUMMY_CONST as FOO;
+
+            \FOO;
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            use const DUMMY_CONST as FOO;
+            \Humbug\FOO;
+
+            PHP,
     ],
 ];

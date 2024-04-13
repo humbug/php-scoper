@@ -37,19 +37,19 @@ return [
     ),
 
     'Constant call in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    DUMMY_CONST;
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        DUMMY_CONST;
+
+        PHP,
 
     // In theory this case CAN be wrong. There is however a very high chance it
     // is not as it implies having both A\DUMMY_CONST and DUMMY_CONST in the
@@ -57,51 +57,51 @@ return [
     'Exposed constant call in a namespace' => [
         exposeConstants: ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        DUMMY_CONST;
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        \DUMMY_CONST;
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            \DUMMY_CONST;
+
+            PHP,
     ],
 
     'FQ constant call in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    \DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    \Humbug\DUMMY_CONST;
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        \DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        \Humbug\DUMMY_CONST;
+
+        PHP,
 
     'Exposed FQ constant call in a namespace' => [
         exposeConstants: ['DUMMY_CONST'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        \DUMMY_CONST;
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        \DUMMY_CONST;
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            \DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            \DUMMY_CONST;
+
+            PHP,
     ],
 ];

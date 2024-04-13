@@ -37,51 +37,51 @@ return [
     ),
 
     'Internal function in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    $x = DIRECTORY_SEPARATOR;
-    
-    if (!defined('PATH_SEPARATOR')) {
-        define('PATH_SEPARATOR', "\n");
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    $x = \DIRECTORY_SEPARATOR;
-    if (!\defined('PATH_SEPARATOR')) {
-        \define('PATH_SEPARATOR', "\n");
-    }
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        $x = DIRECTORY_SEPARATOR;
+
+        if (!defined('PATH_SEPARATOR')) {
+            define('PATH_SEPARATOR', "\n");
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        $x = \DIRECTORY_SEPARATOR;
+        if (!\defined('PATH_SEPARATOR')) {
+            \define('PATH_SEPARATOR', "\n");
+        }
+
+        PHP,
 
     'Namespaced function having the same name as an internal function' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    use const Acme\DIRECTORY_SEPARATOR;
-    
-    $x = DIRECTORY_SEPARATOR;
-    
-    if (!defined('PATH_SEPARATOR')) {
-        define('PATH_SEPARATOR', "\n");
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use const Humbug\Acme\DIRECTORY_SEPARATOR;
-    $x = DIRECTORY_SEPARATOR;
-    if (!\defined('PATH_SEPARATOR')) {
-        \define('PATH_SEPARATOR', "\n");
-    }
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        use const Acme\DIRECTORY_SEPARATOR;
+
+        $x = DIRECTORY_SEPARATOR;
+
+        if (!defined('PATH_SEPARATOR')) {
+            define('PATH_SEPARATOR', "\n");
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use const Humbug\Acme\DIRECTORY_SEPARATOR;
+        $x = DIRECTORY_SEPARATOR;
+        if (!\defined('PATH_SEPARATOR')) {
+            \define('PATH_SEPARATOR', "\n");
+        }
+
+        PHP,
 ];

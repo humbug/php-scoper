@@ -37,33 +37,33 @@ return [
     ),
 
     <<<'PHP'
-    <?php
-    
-    use function A\{b};
-    use function A\{B\c, d};
-    use function \A\B\{C\g, e};
-    
-    b();
-    c();
-    d();
-    g();
-    e();
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\A\b;
-    use function Humbug\A\B\c;
-    use function Humbug\A\d;
-    use function Humbug\A\B\C\g;
-    use function Humbug\A\B\e;
-    b();
-    c();
-    d();
-    g();
-    e();
-    
-    PHP,
+        <?php
+
+        use function A\{b};
+        use function A\{B\c, d};
+        use function \A\B\{C\g, e};
+
+        b();
+        c();
+        d();
+        g();
+        e();
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\A\b;
+        use function Humbug\A\B\c;
+        use function Humbug\A\d;
+        use function Humbug\A\B\C\g;
+        use function Humbug\A\B\e;
+        b();
+        c();
+        d();
+        g();
+        e();
+
+        PHP,
 ];

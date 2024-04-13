@@ -37,89 +37,89 @@ return [
     ),
 
     'Use statement for a function belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    use function foo;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\foo;
-    
-    PHP,
+        <?php
+
+        use function foo;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\foo;
+
+        PHP,
 
     'Use statement for an internal function belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    use function is_array;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function is_array;
-    
-    PHP,
+        <?php
+
+        use function is_array;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function is_array;
+
+        PHP,
 
     'Use statement for a function belonging to the global namespace which has already been prefixed' => <<<'PHP'
-    <?php
-    
-    use function Humbug\foo;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\foo;
-    
-    PHP,
+        <?php
+
+        use function Humbug\foo;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\foo;
+
+        PHP,
 
     'Use statement for a namespaced function' => <<<'PHP'
-    <?php
-    
-    use function Foo\bar;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\Foo\bar;
-    
-    PHP,
+        <?php
+
+        use function Foo\bar;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\Foo\bar;
+
+        PHP,
 
     'Use statement for a namespaced function which has already been prefixed' => <<<'PHP'
-    <?php
-    
-    use function Humbug\Foo\bar;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\Foo\bar;
-    
-    PHP,
+        <?php
+
+        use function Humbug\Foo\bar;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\Foo\bar;
+
+        PHP,
 
     'Use statement for a namespaced function which has been exposed' => [
         exposeFunctions: ['Foo\bar'],
         'payload' => <<<'PHP'
-        <?php
-        
-        use function Foo\bar;
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use function Humbug\Foo\bar;
-        
-        PHP,
+            <?php
+
+            use function Foo\bar;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use function Humbug\Foo\bar;
+
+            PHP,
     ],
 ];

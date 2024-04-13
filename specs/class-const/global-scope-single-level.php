@@ -37,22 +37,22 @@ return [
     ),
 
     'Constant call on a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    Command::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    Command::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        Command::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        Command::MAIN_CONST;
+
+        PHP,
 
     'Constant call on a class belonging to the global namespace which is excluded' => [
         excludeNamespaces: ['/^$/'],
@@ -60,98 +60,98 @@ return [
             ['Command', 'Humbug\Command'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        class Command {}
-        
-        Command::MAIN_CONST;
-        ----
-        <?php
-        
-        namespace {
-            class Command
-            {
+            <?php
+
+            class Command {}
+
+            Command::MAIN_CONST;
+            ----
+            <?php
+
+            namespace {
+                class Command
+                {
+                }
+                \class_alias('Humbug\\Command', 'Command', \false);
+                \Command::MAIN_CONST;
             }
-            \class_alias('Humbug\\Command', 'Command', \false);
-            \Command::MAIN_CONST;
-        }
-        
-        PHP,
+
+            PHP,
     ],
 
     'FQ constant call on a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    \Command::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    \Humbug\Command::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        \Command::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        \Humbug\Command::MAIN_CONST;
+
+        PHP,
 
     'Constant call on an internal class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    Reflector::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Reflector::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        Reflector::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Reflector::MAIN_CONST;
+
+        PHP,
 
     'FQ constant call on an internal class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    \Reflector::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Reflector::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        \Reflector::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Reflector::MAIN_CONST;
+
+        PHP,
 
     'Constant call on an exposed class belonging to the global namespace' => [
         exposeClasses: ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        Foo::MAIN_CONST;
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \Humbug\Foo::MAIN_CONST;
-        
-        PHP,
+            <?php
+
+            Foo::MAIN_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\Foo::MAIN_CONST;
+
+            PHP,
     ],
 
     'FQ constant call on an exposed class belonging to the global namespace' => [
         exposeClasses: ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        \Foo::MAIN_CONST;
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \Humbug\Foo::MAIN_CONST;
-        
-        PHP,
+            <?php
+
+            \Foo::MAIN_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\Foo::MAIN_CONST;
+
+            PHP,
     ],
 ];

@@ -20,20 +20,20 @@ return [
     ),
 
     'Global function call imported with a use statement in the global scope' => <<<'PHP'
-    <?php
-    
-    use function main as foo;
-    
-    foo();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\main as foo;
-    foo();
-    
-    PHP,
+        <?php
+
+        use function main as foo;
+
+        foo();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\main as foo;
+        foo();
+
+        PHP,
 
     'Global function call imported with a use statement in the global scope with global functions exposed' => [
         exposeGlobalFunctions: true,
@@ -41,37 +41,37 @@ return [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        use function main as foo;
-        
-        foo();
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use function Humbug\main as foo;
-        foo();
-        
-        PHP,
+            <?php
+
+            use function main as foo;
+
+            foo();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use function Humbug\main as foo;
+            foo();
+
+            PHP,
     ],
 
     'Global FQ function call imported with a use statement in the global scope' => <<<'PHP'
-    <?php
-    
-    use function main as foo;
-    
-    \foo();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use function Humbug\main as foo;
-    \Humbug\foo();
-    
-    PHP,
+        <?php
+
+        use function main as foo;
+
+        \foo();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use function Humbug\main as foo;
+        \Humbug\foo();
+
+        PHP,
 
     'Global FQ function call imported with a use statement in the global scope with global functions exposed' => [
         exposeGlobalFunctions: true,
@@ -79,19 +79,19 @@ return [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        use function main as foo;
-        
-        \foo();
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use function Humbug\main as foo;
-        \Humbug\foo();
-        
-        PHP,
+            <?php
+
+            use function main as foo;
+
+            \foo();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use function Humbug\main as foo;
+            \Humbug\foo();
+
+            PHP,
     ],
 ];

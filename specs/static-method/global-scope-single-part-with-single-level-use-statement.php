@@ -37,82 +37,82 @@ return [
     ),
 
     'Static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo;
-    
-    Foo::main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo;
-    Foo::main();
-    
-    PHP,
+        <?php
+
+        class Foo {}
+
+        use Foo;
+
+        Foo::main();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        use Humbug\Foo;
+        Foo::main();
+
+        PHP,
 
     'FQ static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo;
-    
-    \Foo::main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo;
-    \Humbug\Foo::main();
-    
-    PHP,
+        <?php
+
+        class Foo {}
+
+        use Foo;
+
+        \Foo::main();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        use Humbug\Foo;
+        \Humbug\Foo::main();
+
+        PHP,
 
     'Static method call statement of a class belonging to the global namespace which has been exposed' => [
         exposeGlobalClasses: true,
         'payload' => <<<'PHP'
-        <?php
-        
-        use Closure;
-        
-        Closure::bind();
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use Closure;
-        Closure::bind();
-        
-        PHP,
+            <?php
+
+            use Closure;
+
+            Closure::bind();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use Closure;
+            Closure::bind();
+
+            PHP,
     ],
 
     'FQ static method call statement of a class belonging to the global namespace which has been exposed' => [
         exposeGlobalClasses: true,
         'payload' => <<<'PHP'
-        <?php
-        
-        use Closure;
-        
-        \Closure::bind();
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use Closure;
-        \Closure::bind();
-        
-        PHP,
+            <?php
+
+            use Closure;
+
+            \Closure::bind();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use Closure;
+            \Closure::bind();
+
+            PHP,
     ],
 ];

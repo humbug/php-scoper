@@ -37,172 +37,172 @@ return [
     ),
 
     'Method casts' => <<<'PHP'
-    <?php
-    
-    class X
-    {
-        public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+        <?php
+
+        class X
         {
+            public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+            {
+            }
+            public function method2(?Y $b) : ?Z
+            {
+            }
+            public function method3(self|null $b) : static|null
+            {
+            }
         }
-        public function method2(?Y $b) : ?Z
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class X
         {
+            public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+            {
+            }
+            public function method2(?Y $b) : ?Z
+            {
+            }
+            public function method3(self|null $b) : static|null
+            {
+            }
         }
-        public function method3(self|null $b) : static|null
-        {
-        }
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class X
-    {
-        public function method1(Y|Z $a, null|Y $b) : null|Y|Z
-        {
-        }
-        public function method2(?Y $b) : ?Z
-        {
-        }
-        public function method3(self|null $b) : static|null
-        {
-        }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Function casts' => <<<'PHP'
-    <?php
-    
-    function fun1(Y|Z $a, null|Y $b) : null|Y|Z
-    {
-    }
-    function fun2(?Y $b) : ?Z
-    {
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    function fun1(Y|Z $a, null|Y $b) : null|Y|Z
-    {
-    }
-    function fun2(?Y $b) : ?Z
-    {
-    }
+        <?php
 
-    PHP,
+        function fun1(Y|Z $a, null|Y $b) : null|Y|Z
+        {
+        }
+        function fun2(?Y $b) : ?Z
+        {
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        function fun1(Y|Z $a, null|Y $b) : null|Y|Z
+        {
+        }
+        function fun2(?Y $b) : ?Z
+        {
+        }
+
+        PHP,
 
     'Property casts' => <<<'PHP'
-    <?php
-    
-    class X
-    {
-        private null|Y|Z $x;
-        private ?X $y;
-        private null|self $z;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class X
-    {
-        private null|Y|Z $x;
-        private ?X $y;
-        private null|self $z;
-    }
-    
-    PHP,
+        <?php
+
+        class X
+        {
+            private null|Y|Z $x;
+            private ?X $y;
+            private null|self $z;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class X
+        {
+            private null|Y|Z $x;
+            private ?X $y;
+            private null|self $z;
+        }
+
+        PHP,
 
     'Trait casts' => <<<'PHP'
-    <?php
-    
-    trait X
-    {
-        private null|Y|Z $x;
-        private ?X $y;
-        private null|self $z;
-        public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+        <?php
+
+        trait X
         {
+            private null|Y|Z $x;
+            private ?X $y;
+            private null|self $z;
+            public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+            {
+            }
+            public function method2(?Y $b) : ?Z
+            {
+            }
+            public function method3(self|null $b) : static|null
+            {
+            }
         }
-        public function method2(?Y $b) : ?Z
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        trait X
         {
+            private null|Y|Z $x;
+            private ?X $y;
+            private null|self $z;
+            public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+            {
+            }
+            public function method2(?Y $b) : ?Z
+            {
+            }
+            public function method3(self|null $b) : static|null
+            {
+            }
         }
-        public function method3(self|null $b) : static|null
-        {
-        }
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    trait X
-    {
-        private null|Y|Z $x;
-        private ?X $y;
-        private null|self $z;
-        public function method1(Y|Z $a, null|Y $b) : null|Y|Z
-        {
-        }
-        public function method2(?Y $b) : ?Z
-        {
-        }
-        public function method3(self|null $b) : static|null
-        {
-        }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Interface casts' => <<<'PHP'
-    <?php
-    
-    interface X
-    {
-        public function method1(Y|Z $a, null|Y $b) : null|Y|Z;
-        public function method2(?Y $b) : ?Z;
-        public function method3(self|null $b) : static|null;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    interface X
-    {
-        public function method1(Y|Z $a, null|Y $b) : null|Y|Z;
-        public function method2(?Y $b) : ?Z;
-        public function method3(self|null $b) : static|null;
-    }
-    
-    PHP,
+        <?php
+
+        interface X
+        {
+            public function method1(Y|Z $a, null|Y $b) : null|Y|Z;
+            public function method2(?Y $b) : ?Z;
+            public function method3(self|null $b) : static|null;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        interface X
+        {
+            public function method1(Y|Z $a, null|Y $b) : null|Y|Z;
+            public function method2(?Y $b) : ?Z;
+            public function method3(self|null $b) : static|null;
+        }
+
+        PHP,
 
     'Untouched scalar casts' => <<<'PHP'
-    <?php
-    
-    interface X
-    {
-        public function method1(string|int $b) : string|int;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    interface X
-    {
-        public function method1(string|int $b) : string|int;
-    }
-    
-    PHP,
+        <?php
+
+        interface X
+        {
+            public function method1(string|int $b) : string|int;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        interface X
+        {
+            public function method1(string|int $b) : string|int;
+        }
+
+        PHP,
 ];

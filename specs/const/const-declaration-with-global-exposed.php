@@ -63,7 +63,7 @@ return [
         excludeNamespaces: [''],
         'payload' => <<<'PHP'
         <?php
-        
+
         const FOO_CONST = foo();
         define('BAR_CONST', foo());
         define('Acme\BAR_CONST', foo());
@@ -72,17 +72,42 @@ return [
         define(\Acme\BAR_CONST, foo());
         ----
         <?php
-        
-        namespace {
-            const FOO_CONST = \foo();
-            \define('BAR_CONST', \foo());
-            \define('Acme\\BAR_CONST', \foo());
-            \define(\FOO_CONST, \foo());
-            \define(\FOO_CONST, \foo());
-            \define(\Acme\BAR_CONST, \foo());
-        }
-        
+
+        namespace Humbug;
+
+        \define('FOO_CONST', foo());
+        \define('BAR_CONST', foo());
+        \define('Humbug\\Acme\\BAR_CONST', foo());
+        \define(\FOO_CONST, foo());
+        \define(\FOO_CONST, foo());
+        \define(\Humbug\Acme\BAR_CONST, foo());
+
         PHP,
+
+    'Constants declaration in the global namespace which is excluded' => [
+        'exclude-namespaces' => [''],
+        'payload' => <<<'PHP'
+            <?php
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace {
+                const FOO_CONST = \foo();
+                \define('BAR_CONST', \foo());
+                \define('Acme\\BAR_CONST', \foo());
+                \define(\FOO_CONST, \foo());
+                \define(\FOO_CONST, \foo());
+                \define(\Acme\BAR_CONST, \foo());
+            }
+
+            PHP,
     ],
 
     'Exposed constants declaration in the global namespace' => [
@@ -92,27 +117,27 @@ return [
             'Acme\BAR_CONST',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \define('FOO_CONST', foo());
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(\FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
+            <?php
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \define('FOO_CONST', foo());
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(\FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
     ],
 
     'Excluded constants declaration in the global namespace' => [
@@ -122,135 +147,135 @@ return [
             'Acme\BAR_CONST',
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \define('FOO_CONST', foo());
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(\FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
+    ],
+
+    'Constants declaration in a namespace' => <<<'PHP'
         <?php
-        
+
+        namespace Acme;
+
         const FOO_CONST = foo();
         define('BAR_CONST', foo());
         define('Acme\BAR_CONST', foo());
         define(FOO_CONST, foo());
         define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
+        define(\Acme\FOO_CONST, foo());
         ----
         <?php
-        
-        namespace Humbug;
-        
-        \define('FOO_CONST', foo());
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(\FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
-    ],
 
-    'Constants declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    const FOO_CONST = foo();
-    define('BAR_CONST', foo());
-    define('Acme\BAR_CONST', foo());
-    define(FOO_CONST, foo());
-    define(\FOO_CONST, foo());
-    define(\Acme\FOO_CONST, foo());
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    const FOO_CONST = foo();
-    \define('BAR_CONST', foo());
-    \define('Humbug\\Acme\\BAR_CONST', foo());
-    \define(FOO_CONST, foo());
-    \define(\FOO_CONST, foo());
-    \define(\Humbug\Acme\FOO_CONST, foo());
-    
-    PHP,
+        namespace Humbug\Acme;
+
+        const FOO_CONST = foo();
+        \define('BAR_CONST', foo());
+        \define('Humbug\\Acme\\BAR_CONST', foo());
+        \define(FOO_CONST, foo());
+        \define(\FOO_CONST, foo());
+        \define(\Humbug\Acme\FOO_CONST, foo());
+
+        PHP,
 
     'Constants declaration in an excluded namespace' => [
         excludeNamespaces: ['Acme'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
-        ----
-        <?php
-        
-        namespace Acme;
-        
-        const FOO_CONST = foo();
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
+            <?php
+
+            namespace Acme;
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Acme;
+
+            const FOO_CONST = foo();
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
     ],
 
     'Exposed constants declaration in a namespace' => [
         exposeConstants: ['Acme\BAR_CONST'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
-        ----
-        <?php
-        
-        namespace Humbug\Acme;
-        
-        const FOO_CONST = foo();
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
+            <?php
+
+            namespace Acme;
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            const FOO_CONST = foo();
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
     ],
 
     'Exposed constants declaration in an exposed namespace' => [
         exposeNamespaces: ['Acme'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
-        ----
-        <?php
-        
-        namespace Humbug\Acme;
-        
-        \define('Acme\\FOO_CONST', foo());
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
+            <?php
+
+            namespace Acme;
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            \define('Acme\\FOO_CONST', foo());
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
     ],
 ];

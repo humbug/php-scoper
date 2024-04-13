@@ -37,76 +37,76 @@ return [
     ),
 
     'Namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        function main() {}
-    }
-    
-    namespace {
-        use Foo as X;
-        
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace Foo {
+            function main() {}
+        }
+
+        namespace {
+            use Foo as X;
+
+            X\main();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+
+        function main()
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo as X;
         X\main();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    function main()
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo as X;
-    X\main();
-    
-    PHP,
+
+        PHP,
 
     'FQ namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace X {
-        function main() {}
-    }
-    
-    namespace {
-        use Foo as X;
-        
-        \X\main();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\X;
-    
-    function main()
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo as X;
-    \Humbug\X\main();
-    
-    PHP,
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace X {
+            function main() {}
+        }
+
+        namespace {
+            use Foo as X;
+
+            \X\main();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\X;
+
+        function main()
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo as X;
+        \Humbug\X\main();
+
+        PHP,
 
     'Exposed namespaced function call imported with a partial use statement in the global scope' => [
         exposeFunctions: ['Foo\main'],
@@ -114,39 +114,39 @@ return [
             ['Foo\main', 'Humbug\Foo\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace {
-            class Foo {}
-        }
-        
-        namespace Foo {
-            function main() {}
-        }
-        
-        namespace {
-            use Foo as X;
-            
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                function main() {}
+            }
+
+            namespace {
+                use Foo as X;
+
+                X\main();
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            function main()
+            {
+            }
+            namespace Humbug;
+
+            use Humbug\Foo as X;
             X\main();
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\Foo;
-        
-        function main()
-        {
-        }
-        namespace Humbug;
-        
-        use Humbug\Foo as X;
-        X\main();
-        
-        PHP,
+
+            PHP,
     ],
 ];

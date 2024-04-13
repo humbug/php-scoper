@@ -37,44 +37,44 @@ return [
     ),
 
     'Known non-internal symbols (sanity test)' => <<<'PHP'
-    <?php
-    
-    use Foo;
-    use const BAR;
-    use function baz;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use Humbug\Foo;
-    use const Humbug\BAR;
-    use function Humbug\baz;
-    
-    PHP,
+        <?php
+
+        use Foo;
+        use const BAR;
+        use function baz;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use Humbug\Foo;
+        use const Humbug\BAR;
+        use function Humbug\baz;
+
+        PHP,
 
     'Known non-internal symbols with global symbols exposed (sanity check)' => [
         exposeGlobalConstants: true,
         exposeGlobalClasses: true,
         exposeGlobalFunctions: true,
         'payload' => <<<'PHP'
-        <?php
-        
-        use Foo;
-        use const BAR;
-        use function baz;
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use Humbug\Foo;
-        use const BAR;
-        use function Humbug\baz;
-        
-        PHP,
+            <?php
+
+            use Foo;
+            use const BAR;
+            use function baz;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use Humbug\Foo;
+            use const BAR;
+            use function Humbug\baz;
+
+            PHP,
     ],
 
     'Declared internal symbols' => [
@@ -82,21 +82,21 @@ return [
         excludeFunctions: ['baz'],
         excludeConstants: ['BAR'],
         'payload' => <<<'PHP'
-        <?php
-        
-        use Foo;
-        use const BAR;
-        use function baz;
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use Foo;
-        use const BAR;
-        use function baz;
-        
-        PHP,
+            <?php
+
+            use Foo;
+            use const BAR;
+            use function baz;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use Foo;
+            use const BAR;
+            use function baz;
+
+            PHP,
     ],
 ];

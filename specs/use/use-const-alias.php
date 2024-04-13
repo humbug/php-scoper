@@ -37,92 +37,92 @@ return [
     ),
 
     'Constant use statement for a constant belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    use const FOO as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\FOO as A;
-    
-    PHP,
+        <?php
+
+        use const FOO as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use const Humbug\FOO as A;
+
+        PHP,
 
     'Constant use statement for a constant belonging to the global namespace with global constant exposed' => [
         exposeGlobalConstants: true,
         'payload' => <<<'PHP'
-        <?php
-        
-        use const FOO as A;
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use const FOO as A;
-        
-        PHP,
+            <?php
+
+            use const FOO as A;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use const FOO as A;
+
+            PHP,
     ],
 
     'Constant use statement for a constant belonging to the global namespace and which has already been prefixed' => <<<'PHP'
-    <?php
-    
-    use const Humbug\FOO as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\FOO as A;
-    
-    PHP,
+        <?php
+
+        use const Humbug\FOO as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use const Humbug\FOO as A;
+
+        PHP,
 
     'Constant use statement for a namespaced constant' => <<<'PHP'
-    <?php
-    
-    use const Foo\BAR as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\Foo\BAR as A;
-    
-    PHP,
+        <?php
+
+        use const Foo\BAR as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use const Humbug\Foo\BAR as A;
+
+        PHP,
 
     'Constant use statement for a namespaced constant which has already been prefixed' => <<<'PHP'
-    <?php
-    
-    use const Humbug\Foo\BAR as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\Foo\BAR as A;
-    
-    PHP,
+        <?php
+
+        use const Humbug\Foo\BAR as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use const Humbug\Foo\BAR as A;
+
+        PHP,
 
     'Constant use statement for a namespaced constant which has been exposed' => [
         exposeConstants: ['Foo\BAR'],
         'payload' => <<<'PHP'
-        <?php
-        
-        use const Foo\BAR as A;
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        use const Foo\BAR as A;
-        
-        PHP,
+            <?php
+
+            use const Foo\BAR as A;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use const Foo\BAR as A;
+
+            PHP,
     ],
 ];

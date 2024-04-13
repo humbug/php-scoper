@@ -37,72 +37,72 @@ return [
     ),
 
     'New statement call of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace {
-        use Foo;
-        
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace {
+            use Foo;
+
+            new Foo();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo;
         new Foo();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo;
-    new Foo();
-    
-    PHP,
+
+        PHP,
 
     'FQ new statement call of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace {
-        use Foo;
-        
-        new \Foo();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo;
-    new \Humbug\Foo();
-    
-    PHP,
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace {
+            use Foo;
+
+            new \Foo();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo;
+        new \Humbug\Foo();
+
+        PHP,
 
     'New statement call of an internal class' => <<<'PHP'
-    <?php
-    
-    use ArrayIterator;
-    
-    new ArrayIterator([]);
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use ArrayIterator;
-    new ArrayIterator([]);
-    
-    PHP,
+        <?php
+
+        use ArrayIterator;
+
+        new ArrayIterator([]);
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use ArrayIterator;
+        new ArrayIterator([]);
+
+        PHP,
 ];

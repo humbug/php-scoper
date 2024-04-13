@@ -37,17 +37,17 @@ return [
     ),
 
     'Non exposed global function call' => <<<'PHP'
-    <?php
-    
-    function_exists('main');
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \function_exists('Humbug\\main');
-    
-    PHP,
+        <?php
+
+        function_exists('main');
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \function_exists('Humbug\\main');
+
+        PHP,
 
     'Exposed global function call' => [
         exposeFunctions: ['main'],
@@ -55,17 +55,17 @@ return [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        function_exists('main');
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \function_exists('Humbug\\main');
-        
-        PHP,
+            <?php
+
+            function_exists('main');
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \function_exists('Humbug\\main');
+
+            PHP,
     ],
 
     'Global function call with exposed global functions' => [
@@ -74,31 +74,31 @@ return [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        function_exists('main');
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \function_exists('Humbug\\main');
-        
-        PHP,
+            <?php
+
+            function_exists('main');
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \function_exists('Humbug\\main');
+
+            PHP,
     ],
 
     'Global function call with non-exposed global functions' => <<<'PHP'
-    <?php
-    
-    function_exists('main');
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \function_exists('Humbug\\main');
-    
-    PHP,
+        <?php
+
+        function_exists('main');
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \function_exists('Humbug\\main');
+
+        PHP,
 
     'Exposed namespaced function call' => [
         exposeFunctions: ['Acme\main'],
@@ -106,36 +106,36 @@ return [
             ['Acme\main', 'Humbug\Acme\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        function_exists('Acme\main');
-        ----
-        <?php
-        
-        namespace Humbug\Acme;
-        
-        \function_exists('Humbug\\Acme\\main');
-        
-        PHP,
+            <?php
+
+            namespace Acme;
+
+            function_exists('Acme\main');
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            \function_exists('Humbug\\Acme\\main');
+
+            PHP,
     ],
 
     'Namespaced function call from excluded namespace' => [
         excludeNamespaces: ['Acme'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        function_exists('Acme\main');
-        ----
-        <?php
-        
-        namespace Acme;
-        
-        \function_exists('Acme\\main');
-        
-        PHP,
+            <?php
+
+            namespace Acme;
+
+            function_exists('Acme\main');
+            ----
+            <?php
+
+            namespace Acme;
+
+            \function_exists('Acme\\main');
+
+            PHP,
     ],
 ];

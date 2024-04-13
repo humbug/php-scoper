@@ -37,98 +37,98 @@ return [
     ),
 
     'Static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        use Foo;
-        
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            use Foo;
+
+            Foo::main();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\Foo;
         Foo::main();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\Foo;
-    Foo::main();
-    
-    PHP,
+
+        PHP,
 
     'FQ static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        use Foo;
-        
-        \Foo::main();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\Foo;
-    \Humbug\Foo::main();
-    
-    PHP,
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            use Foo;
+
+            \Foo::main();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\Foo;
+        \Humbug\Foo::main();
+
+        PHP,
 
     'Static method call statement of a class belonging to the global namespace which has been exposed' => [
         exposeGlobalClasses: true,
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        use Closure;
-        
-        Closure::bind();
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        use Closure;
-        Closure::bind();
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            use Closure;
+
+            Closure::bind();
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            use Closure;
+            Closure::bind();
+
+            PHP,
     ],
 
     'FQ static method call statement of a class belonging to the global namespace which has been exposed' => [
         exposeGlobalClasses: true,
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        use Closure;
-        
-        \Closure::bind();
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        use Closure;
-        \Closure::bind();
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            use Closure;
+
+            \Closure::bind();
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            use Closure;
+            \Closure::bind();
+
+            PHP,
     ],
 ];

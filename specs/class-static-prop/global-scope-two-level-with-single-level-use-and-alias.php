@@ -37,103 +37,103 @@ return [
     ),
 
     'Constant call on a namespaced class partially imported with an aliased use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo as X;
-        
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace {
+            use Foo as X;
+
+            X\Bar::$mainStaticProp;
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo as X;
         X\Bar::$mainStaticProp;
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo as X;
-    X\Bar::$mainStaticProp;
-    
-    PHP,
+
+        PHP,
 
     'Constant call on a namespaced class imported with an aliased use statement' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo\Bar as X;
-        
+        <?php
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace {
+            use Foo\Bar as X;
+
+            X::$mainStaticProp;
+        }
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo\Bar as X;
         X::$mainStaticProp;
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo\Bar as X;
-    X::$mainStaticProp;
-    
-    PHP,
+
+        PHP,
 
     'FQ constant call on a namespaced class imported with an aliased use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace X {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo as X;
-        
-        \X\Bar::$mainStaticProp;
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\X;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo as X;
-    \Humbug\X\Bar::$mainStaticProp;
-    
-    PHP,
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace X {
+            class Bar {}
+        }
+
+        namespace {
+            use Foo as X;
+
+            \X\Bar::$mainStaticProp;
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\X;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo as X;
+        \Humbug\X\Bar::$mainStaticProp;
+
+        PHP,
 
     'FQ Constant call on an exposed namespaced class partially imported with an aliased use statement' => [
         exposeClasses: ['Foo\Bar'],
@@ -141,79 +141,79 @@ return [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace {
-            class Foo {}
-        }
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace {
-            use Foo as X;
-            
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo as X;
+
+                X\Bar::$mainStaticProp;
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            namespace Humbug;
+
+            use Humbug\Foo as X;
             X\Bar::$mainStaticProp;
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-        namespace Humbug;
-        
-        use Humbug\Foo as X;
-        X\Bar::$mainStaticProp;
-        
-        PHP,
+
+            PHP,
     ],
 
     'FQ constant call on an exposed namespaced class imported with an aliased use statement' => [
         exposeClasses: ['Foo\Bar'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace {
-            class Foo {}
-        }
-        
-        namespace X {
-            class Bar {}
-        }
-        
-        namespace {
-            use Foo as X;
-            
-            \X\Bar::$mainStaticProp;
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\X;
-        
-        class Bar
-        {
-        }
-        namespace Humbug;
-        
-        use Humbug\Foo as X;
-        \Humbug\X\Bar::$mainStaticProp;
-        
-        PHP,
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace X {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo as X;
+
+                \X\Bar::$mainStaticProp;
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\X;
+
+            class Bar
+            {
+            }
+            namespace Humbug;
+
+            use Humbug\Foo as X;
+            \Humbug\X\Bar::$mainStaticProp;
+
+            PHP,
     ],
 ];

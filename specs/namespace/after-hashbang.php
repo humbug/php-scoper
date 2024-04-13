@@ -37,16 +37,16 @@ return [
     ),
 
     <<<'PHP'
-    #!/usr/bin/env php
-    <?php
-    
-    namespace Foo;
-    
-    ----
-    #!/usr/bin/env php
-    <?php 
-    namespace Humbug\Foo;
-    
-    
-    PHP,
+        #!/usr/bin/env php
+        <?php
+
+        namespace Foo;
+
+        ----
+        #!/usr/bin/env php
+        <?php
+        namespace Humbug\Foo;
+
+
+        PHP,
 ];

@@ -37,143 +37,143 @@ return [
     ),
 
     'minimal enum declaration' => <<<'PHP'
-    <?php
-    
-    enum Status {
-        case DRAFT;
-        case PUBLISHED;
-        case ARCHIVED;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    enum Status
-    {
-        case DRAFT;
-        case PUBLISHED;
-        case ARCHIVED;
-    }
-    
-    PHP,
+        enum Status {
+            case DRAFT;
+            case PUBLISHED;
+            case ARCHIVED;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        enum Status
+        {
+            case DRAFT;
+            case PUBLISHED;
+            case ARCHIVED;
+        }
+
+        PHP,
 
     'enum with methods' => <<<'PHP'
-    <?php
-    
-    enum Status {
-        case DRAFT;
-        case PUBLISHED;
-        case ARCHIVED;
-        
-        public function color(): string {
-            return match($this) {
-                Status::DRAFT => 'grey',   
-                Status::PUBLISHED => 'green',   
-                self::ARCHIVED => 'red',   
-            };
-        }
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    enum Status
-    {
-        case DRAFT;
-        case PUBLISHED;
-        case ARCHIVED;
-        public function color() : string
-        {
-            return match ($this) {
-                Status::DRAFT => 'grey',
-                Status::PUBLISHED => 'green',
-                self::ARCHIVED => 'red',
-            };
+        enum Status {
+            case DRAFT;
+            case PUBLISHED;
+            case ARCHIVED;
+
+            public function color(): string {
+                return match($this) {
+                    Status::DRAFT => 'grey',
+                    Status::PUBLISHED => 'green',
+                    self::ARCHIVED => 'red',
+                };
+            }
         }
-    }
-    
-    PHP,
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        enum Status
+        {
+            case DRAFT;
+            case PUBLISHED;
+            case ARCHIVED;
+            public function color() : string
+            {
+                return match ($this) {
+                    Status::DRAFT => 'grey',
+                    Status::PUBLISHED => 'green',
+                    self::ARCHIVED => 'red',
+                };
+            }
+        }
+
+        PHP,
 
     'enum with interface' => <<<'PHP'
-    <?php
-    
-    enum Status implements HasColor {
-        case DRAFT = 'draft';
-        case PUBLISHED = 'published';
-        case ARCHIVED = 'archived';
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    enum Status implements \HasColor
-    {
-        case DRAFT = 'draft';
-        case PUBLISHED = 'published';
-        case ARCHIVED = 'archived';
-    }
-    
-    PHP,
+        enum Status implements HasColor {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        enum Status implements \HasColor
+        {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        PHP,
 
     'class with Enum name' => <<<'PHP'
-    <?php
-    
-    class Enum {}
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    class Enum
-    {
-    }
-    
-    PHP,
+        class Enum {}
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Enum
+        {
+        }
+
+        PHP,
 
     'backed enum' => <<<'PHP'
-    <?php
-    
-    enum Status: string {
-        case DRAFT = 'draft';
-        case PUBLISHED = 'published';
-        case ARCHIVED = 'archived';
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    enum Status : string
-    {
-        case DRAFT = 'draft';
-        case PUBLISHED = 'published';
-        case ARCHIVED = 'archived';
-    }
+        enum Status: string {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
 
-    PHP,
+        ----
+        <?php
+
+        namespace Humbug;
+
+        enum Status : string
+        {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        PHP,
 
     'excluded enum (doesn\'t work)' => [
         excludeClasses: ['Status'],
         'payload' => <<<'PHP'
             <?php
-            
+
             enum Status {
                 case DRAFT;
                 case PUBLISHED;
                 case ARCHIVED;
             }
-            
+
             ----
             <?php
-            
+
             namespace Humbug;
 
             enum Status
@@ -182,24 +182,24 @@ return [
                 case PUBLISHED;
                 case ARCHIVED;
             }
-            
-            PHP
+
+            PHP,
     ],
 
     'exposed enum (doesn\'t work)' => [
         exposeClasses: ['Status'],
         'payload' => <<<'PHP'
             <?php
-            
+
             enum Status {
                 case DRAFT;
                 case PUBLISHED;
                 case ARCHIVED;
             }
-            
+
             ----
             <?php
-            
+
             namespace Humbug;
 
             enum Status
@@ -208,7 +208,7 @@ return [
                 case PUBLISHED;
                 case ARCHIVED;
             }
-            
-            PHP
+
+            PHP,
     ],
 ];

@@ -37,33 +37,33 @@ return [
        
     ),
     'match' => <<<'PHP'
-    <?php declare(strict_types=1);
-        
-    namespace Acme {
-        use Acme\Foo\Match;
-    
-        class Foo implements Match {}
-    }
-    
-    namespace Acme\Foo {
-        interface Match {}
-    }
-        
-    ----
-    <?php
-    
-    declare (strict_types=1);
-    namespace Humbug\Acme;
-    
-    use Humbug\Acme\Foo\Match;
-    class Foo implements Match
-    {
-    }
-    namespace Humbug\Acme\Foo;
-    
-    interface Match
-    {
-    }
-    
-    PHP,
+        <?php declare(strict_types=1);
+
+        namespace Acme {
+            use Acme\Foo\Match;
+
+            class Foo implements Match {}
+        }
+
+        namespace Acme\Foo {
+            interface Match {}
+        }
+
+        ----
+        <?php
+
+        declare (strict_types=1);
+        namespace Humbug\Acme;
+
+        use Humbug\Acme\Foo\Match;
+        class Foo implements Match
+        {
+        }
+        namespace Humbug\Acme\Foo;
+
+        interface Match
+        {
+        }
+
+        PHP,
 ];

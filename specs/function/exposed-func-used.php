@@ -37,17 +37,17 @@ return [
     ),
 
     'Non exposed global function call' => <<<'PHP'
-    <?php
-    
-    main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    main();
-    
-    PHP,
+        <?php
+
+        main();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        main();
+
+        PHP,
 
     'Exposed global function call' => [
         exposeFunctions: ['main'],
@@ -55,17 +55,17 @@ return [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        main();
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \Humbug\main();
-        
-        PHP,
+            <?php
+
+            main();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\main();
+
+            PHP,
     ],
 
     'Global function call with exposed global functions' => [
@@ -74,48 +74,48 @@ return [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        main();
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        main();
-        
-        PHP,
+            <?php
+
+            main();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            main();
+
+            PHP,
     ],
 
     'Global function call with non-exposed global functions' => <<<'PHP'
-    <?php
-    
-    main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    main();
-    
-    PHP,
+        <?php
+
+        main();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        main();
+
+        PHP,
 
     'Exposed namespaced function call' => [
         exposeFunctions: ['Acme\main'],
           // Nothing registered here since the FQ could not be resolved
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        main();
-        ----
-        <?php
-        
-        namespace Humbug\Acme;
-        
-        main();
-        
-        PHP,
+            <?php
+
+            namespace Acme;
+
+            main();
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            main();
+
+            PHP,
     ],
 ];

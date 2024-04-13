@@ -37,31 +37,31 @@ return [
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    class C {}
-    class D {}
-    
-    interface A extends C, D, Iterator {
-        public function a();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class C
-    {
-    }
-    class D
-    {
-    }
-    interface A extends C, D, \Iterator
-    {
-        public function a();
-    }
-    
-    PHP,
+        <?php
+
+        class C {}
+        class D {}
+
+        interface A extends C, D, Iterator {
+            public function a();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class C
+        {
+        }
+        class D
+        {
+        }
+        interface A extends C, D, \Iterator
+        {
+            public function a();
+        }
+
+        PHP,
 
     'Declaration of an internal interface' => [
         excludeClasses: ['NewPhp20Interface'],
@@ -69,20 +69,20 @@ return [
             ['NewPhp20Interface', 'Humbug\NewPhp20Interface'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        interface NewPhp20Interface {}
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        interface NewPhp20Interface
-        {
-        }
-        \class_alias('Humbug\\NewPhp20Interface', 'NewPhp20Interface', \false);
-        
-        PHP,
+            <?php
+
+            interface NewPhp20Interface {}
+            ----
+            <?php
+
+            namespace Humbug;
+
+            interface NewPhp20Interface
+            {
+            }
+            \class_alias('Humbug\\NewPhp20Interface', 'NewPhp20Interface', \false);
+
+            PHP,
     ],
 
     'Declaration of an internal interface within an if statement' => [
@@ -91,24 +91,24 @@ return [
             ['NewPhp20Interface', 'Humbug\NewPhp20Interface'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        if (PHP_VERSION_ID <= 200000) {
-            interface NewPhp20Interface {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        if (\PHP_VERSION_ID <= 200000) {
-            interface NewPhp20Interface
-            {
+            <?php
+
+            if (PHP_VERSION_ID <= 200000) {
+                interface NewPhp20Interface {}
             }
-            \class_alias('Humbug\\NewPhp20Interface', 'NewPhp20Interface', \false);
-        }
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug;
+
+            if (\PHP_VERSION_ID <= 200000) {
+                interface NewPhp20Interface
+                {
+                }
+                \class_alias('Humbug\\NewPhp20Interface', 'NewPhp20Interface', \false);
+            }
+
+            PHP,
     ],
 
     'Declaration in the global namespace with global classes exposed' => [
@@ -119,103 +119,103 @@ return [
             ['D', 'Humbug\D'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            class C {}
+            class D {}
+
+            interface A extends C, D, Iterator {
+                public function a();
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class C
+            {
+            }
+            \class_alias('Humbug\\C', 'C', \false);
+            class D
+            {
+            }
+            \class_alias('Humbug\\D', 'D', \false);
+            interface A extends C, D, \Iterator
+            {
+                public function a();
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+
+            PHP,
+    ],
+
+    'Declaration in a namespace' => <<<'PHP'
         <?php
-        
+
+        namespace Foo;
+
+        use Iterator;
+
         class C {}
         class D {}
-        
-        interface A extends C, D, Iterator {
+
+        interface A extends C, D, Iterator
+        {
             public function a();
         }
         ----
         <?php
-        
-        namespace Humbug;
-        
+
+        namespace Humbug\Foo;
+
+        use Iterator;
         class C
         {
         }
-        \class_alias('Humbug\\C', 'C', \false);
         class D
         {
         }
-        \class_alias('Humbug\\D', 'D', \false);
-        interface A extends C, D, \Iterator
+        interface A extends C, D, Iterator
         {
             public function a();
         }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
-    ],
 
-    'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    use Iterator;
-    
-    class C {}
-    class D {}
-    
-    interface A extends C, D, Iterator
-    {
-        public function a();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    use Iterator;
-    class C
-    {
-    }
-    class D
-    {
-    }
-    interface A extends C, D, Iterator
-    {
-        public function a();
-    }
-    
-    PHP,
+        PHP,
 
     'Declaration in a namespace with global classes exposed' => [
         exposeGlobalClasses: true,
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        use Iterator;
-        
-        class C {}
-        class D {}
-        
-        interface A extends C, D, Iterator
-        {
-            public function a();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        use Iterator;
-        class C
-        {
-        }
-        class D
-        {
-        }
-        interface A extends C, D, Iterator
-        {
-            public function a();
-        }
-        
-        PHP,
+            <?php
+
+            namespace Foo;
+
+            use Iterator;
+
+            class C {}
+            class D {}
+
+            interface A extends C, D, Iterator
+            {
+                public function a();
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            use Iterator;
+            class C
+            {
+            }
+            class D
+            {
+            }
+            interface A extends C, D, Iterator
+            {
+                public function a();
+            }
+
+            PHP,
     ],
 
     'Declaration of an exposed interface' => [
@@ -224,111 +224,111 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        use Iterator;
-        
-        class C {}
-        class D {}
-        
-        interface A extends C, D, Iterator
-        {
-            public function a();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        use Iterator;
-        class C
-        {
-        }
-        class D
-        {
-        }
-        interface A extends C, D, Iterator
-        {
-            public function a();
-        }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
+            <?php
+
+            namespace Foo;
+
+            use Iterator;
+
+            class C {}
+            class D {}
+
+            interface A extends C, D, Iterator
+            {
+                public function a();
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            use Iterator;
+            class C
+            {
+            }
+            class D
+            {
+            }
+            interface A extends C, D, Iterator
+            {
+                public function a();
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
     ],
 
     'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        class D {}
-        class E {}
-    
+        <?php
+
+        namespace X {
+            class D {}
+            class E {}
+
+            interface A extends D, E
+            {
+                public function a();
+            }
+        }
+
+        namespace Y {
+            class D {}
+            class E {}
+
+            interface B extends D, E
+            {
+                public function a();
+            }
+        }
+
+        namespace Z {
+            class D {}
+            class E {}
+
+            interface C extends D, E
+            {
+                public function a();
+            }
+        }
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        class D
+        {
+        }
+        class E
+        {
+        }
         interface A extends D, E
         {
             public function a();
         }
-    }
-    
-    namespace Y {
-        class D {}
-        class E {}
-    
+        namespace Humbug\Y;
+
+        class D
+        {
+        }
+        class E
+        {
+        }
         interface B extends D, E
         {
             public function a();
         }
-    }
-    
-    namespace Z {
-        class D {}
-        class E {}
-    
+        namespace Humbug\Z;
+
+        class D
+        {
+        }
+        class E
+        {
+        }
         interface C extends D, E
         {
             public function a();
         }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    class D
-    {
-    }
-    class E
-    {
-    }
-    interface A extends D, E
-    {
-        public function a();
-    }
-    namespace Humbug\Y;
-    
-    class D
-    {
-    }
-    class E
-    {
-    }
-    interface B extends D, E
-    {
-        public function a();
-    }
-    namespace Humbug\Z;
-    
-    class D
-    {
-    }
-    class E
-    {
-    }
-    interface C extends D, E
-    {
-        public function a();
-    }
-    
-    PHP,
+
+        PHP,
 ];

@@ -37,57 +37,57 @@ return [
     ),
 
     'Empty file' => <<<'PHP'
-    <?php
-    
-    ----
-    <?php
-    
-    
-    
-    PHP,
+        <?php
+
+        ----
+        <?php
+
+
+
+        PHP,
 
     'Empty php file with a declare statement' => <<<'PHP'
-    <?php declare(strict_types=1);
-    
-    ----
-    <?php
-    
-    declare (strict_types=1);
-    
-    PHP,
+        <?php declare(strict_types=1);
+
+        ----
+        <?php
+
+        declare (strict_types=1);
+
+        PHP,
 
     'Account for PHP case insentitiveness when resolving FQCNs' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-        class X {}
-        class StdClasS {}
-    }
-    
-    namespace {
-        use FOO\x as Y;
-        use Foo\stdClass;
-        
-        var_dump(new y());
-        var_dump(new STDCLASS());
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class X
-    {
-    }
-    class StdClasS
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\FOO\x as Y;
-    use Humbug\Foo\stdClass;
-    \var_dump(new y());
-    \var_dump(new STDCLASS());
-    
-    PHP,
+        <?php
+
+        namespace Foo {
+            class X {}
+            class StdClasS {}
+        }
+
+        namespace {
+            use FOO\x as Y;
+            use Foo\stdClass;
+
+            var_dump(new y());
+            var_dump(new STDCLASS());
+        }
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class X
+        {
+        }
+        class StdClasS
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\FOO\x as Y;
+        use Humbug\Foo\stdClass;
+        \var_dump(new y());
+        \var_dump(new STDCLASS());
+
+        PHP,
 ];

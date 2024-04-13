@@ -37,27 +37,27 @@ return [
     ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    class Foo {
-        var $x = 'Symfony\\Component\\Yaml\\Ya_1';
-        var $x = '\\Symfony\\Component\\Yaml\\Ya_1';
-        var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        var $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-        var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    }
-    
-    PHP,
+        <?php
+
+        class Foo {
+            var $x = 'Symfony\\Component\\Yaml\\Ya_1';
+            var $x = '\\Symfony\\Component\\Yaml\\Ya_1';
+            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            var $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        }
+
+        PHP,
 ];

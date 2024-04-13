@@ -37,52 +37,52 @@ return [
     ),
 
     'New statement call of a namespaced class' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
+        <?php
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace {
+            new Foo\Bar();
+        }
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
         new Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    new Foo\Bar();
-    
-    PHP,
+
+        PHP,
 
     'FQ new statement call of a namespaced class' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        new \Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    new \Humbug\Foo\Bar();
-    
-    PHP,
+        <?php
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace {
+            new \Foo\Bar();
+        }
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug;
+
+        new \Humbug\Foo\Bar();
+
+        PHP,
 
     'New statement call of an exposed namespaced class' => [
         exposeClasses: ['Foo\Bar'],
@@ -90,29 +90,29 @@ return [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace {
-            new Foo\Bar();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-        namespace Humbug;
-        
-        new \Humbug\Foo\Bar();
-        
-        PHP,
+            <?php
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                new Foo\Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            namespace Humbug;
+
+            new \Humbug\Foo\Bar();
+
+            PHP,
     ],
 
     'FQ new statement call of an exposed namespaced class' => [
@@ -121,28 +121,28 @@ return [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace {
-            new \Foo\Bar();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
-        namespace Humbug;
-        
-        new \Humbug\Foo\Bar();
-        
-        PHP,
+            <?php
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                new \Foo\Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            namespace Humbug;
+
+            new \Humbug\Foo\Bar();
+
+            PHP,
     ],
 ];

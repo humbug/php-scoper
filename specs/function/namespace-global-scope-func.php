@@ -39,34 +39,34 @@ return [
     // We don't do anything as there is no ways to distinguish between a namespaced function call
     // from the same namespace and a function registered in the global scope
     'single-part' => <<<'PHP'
-    <?php
-    
-    namespace X;
-    
-    main();
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    main();
-    
-    PHP,
+        <?php
+
+        namespace X;
+
+        main();
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        main();
+
+        PHP,
 
     'FQ single-part' => <<<'PHP'
-    <?php
-    
-    namespace X;
-    
-    \main();
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    \Humbug\main();
-    
-    PHP,
+        <?php
+
+        namespace X;
+
+        \main();
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        \Humbug\main();
+
+        PHP,
 
     // In theory this case CAN be wrong. There is however a very high chance it
     // is not as it implies having both A\foo() and foo() in the
@@ -74,18 +74,18 @@ return [
     'Exposed constant call in a namespace' => [
         exposeFunctions: ['foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        foo();
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        \Humbug\foo();
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            foo();
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            \Humbug\foo();
+
+            PHP,
     ],
 ];

@@ -37,24 +37,24 @@ return [
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    class A {
-        public function a() {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class A
-    {
-        public function a()
-        {
+        <?php
+
+        class A {
+            public function a() {}
         }
-    }
-    
-    PHP,
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class A
+        {
+            public function a()
+            {
+            }
+        }
+
+        PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
         exposeGlobalClasses: true,
@@ -62,25 +62,25 @@ return [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        class A {
-            public function a() {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class A
-        {
-            public function a()
-            {
+            <?php
+
+            class A {
+                public function a() {}
             }
-        }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+
+            PHP,
     ],
 
     'Declaration in the global namespace with global classes exposed within a condition' => [
@@ -89,29 +89,29 @@ return [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        if ($condition) {
-            class A {
-                public function a() {}
-            }
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        if ($condition) {
-            class A
-            {
-                public function a()
-                {
+            <?php
+
+            if ($condition) {
+                class A {
+                    public function a() {}
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
-        }
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug;
+
+            if ($condition) {
+                class A
+                {
+                    public function a()
+                    {
+                    }
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+            }
+
+            PHP,
     ],
 
     'Declaration of an internal class' => [
@@ -119,20 +119,20 @@ return [
             ['Normalizer', 'Humbug\Normalizer'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        class Normalizer {}
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Normalizer
-        {
-        }
-        \class_alias('Humbug\\Normalizer', 'Normalizer', \false);
-        
-        PHP,
+            <?php
+
+            class Normalizer {}
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Normalizer
+            {
+            }
+            \class_alias('Humbug\\Normalizer', 'Normalizer', \false);
+
+            PHP,
     ],
 
     'Declaration in a namespace' => <<<'PHP'
@@ -161,25 +161,49 @@ return [
         exposeGlobalClasses: true,
         'payload' => <<<'PHP'
         <?php
-        
+
         namespace Foo;
-        
+
         class A {
             public function a() {}
         }
         ----
         <?php
-        
+
         namespace Humbug\Foo;
-        
+
         class A
         {
             public function a()
             {
             }
         }
-        
+
         PHP,
+
+    'Declaration in a namespace with global classes exposed' => [
+        'expose-global-classes' => true,
+        'payload' => <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            class A {
+                public function a() {}
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+
+            PHP,
     ],
 
     'Declaration of an exposed class' => [
@@ -188,27 +212,27 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        class A {
-            public function a() {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        class A
-        {
-            public function a()
-            {
+            <?php
+
+            namespace Foo;
+
+            class A {
+                public function a() {}
             }
-        }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
     ],
 
     // This is a pure anti-regression test – no need to excessively test this
@@ -219,81 +243,81 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            class A {
+                public function a() {}
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
+    ],
+
+    'Multiple declarations in different namespaces' => <<<'PHP'
         <?php
-        
-        namespace Foo;
-        
-        class A {
-            public function a() {}
+
+        namespace Foo {
+
+            class A {
+                public function a() {}
+            }
+        }
+
+        namespace Bar {
+
+            class B {
+                public function b() {}
+            }
+        }
+
+        namespace {
+
+            class C {
+                public function c() {}
+            }
         }
         ----
         <?php
-        
+
         namespace Humbug\Foo;
-        
+
         class A
         {
             public function a()
             {
             }
         }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
-    ],
+        namespace Humbug\Bar;
 
-    'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-    
-        class A {
-            public function a() {}
-        }
-    }
-    
-    namespace Bar {
-    
-        class B {
-            public function b() {}
-        }
-    }
-    
-    namespace {
-    
-        class C {
-            public function c() {}
-        }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class A
-    {
-        public function a()
+        class B
         {
+            public function b()
+            {
+            }
         }
-    }
-    namespace Humbug\Bar;
-    
-    class B
-    {
-        public function b()
+        namespace Humbug;
+
+        class C
         {
+            public function c()
+            {
+            }
         }
-    }
-    namespace Humbug;
-    
-    class C
-    {
-        public function c()
-        {
-        }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Multiple declarations in different namespaces with exposed classes' => [
         exposeClasses: [
@@ -305,118 +329,118 @@ return [
             ['Bar\B', 'Humbug\Bar\B'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo {
-        
-            class A {
-                public function a() {}
+            <?php
+
+            namespace Foo {
+
+                class A {
+                    public function a() {}
+                }
+
+                class B {
+                    public function b() {}
+                }
+
+                class C {
+                    public function c() {}
+                }
             }
-            
-            class B {
-                public function b() {}
+
+            namespace Bar {
+
+                class A {
+                    public function a() {}
+                }
+
+                class B {
+                    public function b() {}
+                }
+
+                class C {
+                    public function c() {}
+                }
             }
-            
-            class C {
-                public function c() {}
+
+            namespace {
+
+                class A {
+                    public function a() {}
+                }
+
+                class B {
+                    public function b() {}
+                }
+
+                class C {
+                    public function c() {}
+                }
             }
-        }
-        
-        namespace Bar {
-        
-            class A {
-                public function a() {}
-            }
-            
-            class B {
-                public function b() {}
-            }
-            
-            class C {
-                public function c() {}
-            }
-        }
-        
-        namespace {
-        
-            class A {
-                public function a() {}
-            }
-            
-            class B {
-                public function b() {}
-            }
-            
-            class C {
-                public function c() {}
-            }
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        class A
-        {
-            public function a()
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
             {
+                public function a()
+                {
+                }
             }
-        }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        class B
-        {
-            public function b()
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            class B
             {
+                public function b()
+                {
+                }
             }
-        }
-        class C
-        {
-            public function c()
+            class C
             {
+                public function c()
+                {
+                }
             }
-        }
-        namespace Humbug\Bar;
-        
-        class A
-        {
-            public function a()
+            namespace Humbug\Bar;
+
+            class A
             {
+                public function a()
+                {
+                }
             }
-        }
-        class B
-        {
-            public function b()
+            class B
             {
+                public function b()
+                {
+                }
             }
-        }
-        \class_alias('Humbug\\Bar\\B', 'Bar\\B', \false);
-        class C
-        {
-            public function c()
+            \class_alias('Humbug\\Bar\\B', 'Bar\\B', \false);
+            class C
             {
+                public function c()
+                {
+                }
             }
-        }
-        namespace Humbug;
-        
-        class A
-        {
-            public function a()
+            namespace Humbug;
+
+            class A
             {
+                public function a()
+                {
+                }
             }
-        }
-        class B
-        {
-            public function b()
+            class B
             {
+                public function b()
+                {
+                }
             }
-        }
-        class C
-        {
-            public function c()
+            class C
             {
+                public function c()
+                {
+                }
             }
-        }
-        
-        PHP,
+
+            PHP,
     ],
 ];

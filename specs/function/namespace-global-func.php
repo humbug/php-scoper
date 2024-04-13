@@ -37,32 +37,32 @@ return [
     ),
 
     'Global function call in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    main();
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    main();
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        main();
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        main();
+
+        PHP,
 
     'Global FQ function call in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    \main();
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    \Humbug\main();
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        \main();
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        \Humbug\main();
+
+        PHP,
 ];

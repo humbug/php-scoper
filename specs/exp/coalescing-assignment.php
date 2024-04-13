@@ -38,65 +38,64 @@ return [
     ),
 
     'Instance of an internal class' => <<<'PHP'
-    <?php
-    
-    $x ??= new stdClass();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $x ??= new \stdClass();
-    
-    PHP,
+        <?php
+
+        $x ??= new stdClass();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $x ??= new \stdClass();
+
+        PHP,
 
     'Instance of an internal class in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    use stdClass;
-    
-    $x ??= new stdClass();
-    
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use stdClass;
-    $x ??= new stdClass();
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        use stdClass;
+
+        $x ??= new stdClass();
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use stdClass;
+        $x ??= new stdClass();
+
+        PHP,
 
     'Instance of a custom exception class' => <<<'PHP'
-    <?php
-    
-    $x ??= new Foo();
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $x ??= new Foo();
-    
-    PHP,
+        <?php
+
+        $x ??= new Foo();
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $x ??= new Foo();
+
+        PHP,
 
     'Instance of a custom exception class in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    $x ??= new Foo();
-    
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    $x ??= new Foo();
-    
-    PHP
-    ,
+        <?php
+
+        namespace Acme;
+
+        $x ??= new Foo();
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        $x ??= new Foo();
+
+        PHP,
 ];

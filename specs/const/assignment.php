@@ -37,64 +37,64 @@ return [
     ),
 
     'Constant assignment in the global namespace' => <<<'PHP'
-    <?php
-    
-    $x = DIRECTORY_SEPARATOR;
-    $x = Client::class;
-    $x = Client::VERSION;
-    $x = \Client::class;
-    $x = \Client::VERSION;
-    $x = Guzzle\Client::class;
-    $x = Guzzle\Client::VERSION;
-    $x = \Guzzle\Client::class;
-    $x = \Guzzle\Client::VERSION;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    $x = \DIRECTORY_SEPARATOR;
-    $x = Client::class;
-    $x = Client::VERSION;
-    $x = \Humbug\Client::class;
-    $x = \Humbug\Client::VERSION;
-    $x = Guzzle\Client::class;
-    $x = Guzzle\Client::VERSION;
-    $x = \Humbug\Guzzle\Client::class;
-    $x = \Humbug\Guzzle\Client::VERSION;
+        $x = DIRECTORY_SEPARATOR;
+        $x = Client::class;
+        $x = Client::VERSION;
+        $x = \Client::class;
+        $x = \Client::VERSION;
+        $x = Guzzle\Client::class;
+        $x = Guzzle\Client::VERSION;
+        $x = \Guzzle\Client::class;
+        $x = \Guzzle\Client::VERSION;
 
-    PHP,
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $x = \DIRECTORY_SEPARATOR;
+        $x = Client::class;
+        $x = Client::VERSION;
+        $x = \Humbug\Client::class;
+        $x = \Humbug\Client::VERSION;
+        $x = Guzzle\Client::class;
+        $x = Guzzle\Client::VERSION;
+        $x = \Humbug\Guzzle\Client::class;
+        $x = \Humbug\Guzzle\Client::VERSION;
+
+        PHP,
 
     'Constant assignment in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    $x = DIRECTORY_SEPARATOR;
-    $x = Client::class;
-    $x = Client::VERSION;
-    $x = \Client::class;
-    $x = \Client::VERSION;
-    $x = Guzzle\Client::class;
-    $x = Guzzle\Client::VERSION;
-    $x = \Guzzle\Client::class;
-    $x = \Guzzle\Client::VERSION;
-    
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
+        <?php
 
-    $x = \DIRECTORY_SEPARATOR;
-    $x = Client::class;
-    $x = Client::VERSION;
-    $x = \Humbug\Client::class;
-    $x = \Humbug\Client::VERSION;
-    $x = Guzzle\Client::class;
-    $x = Guzzle\Client::VERSION;
-    $x = \Humbug\Guzzle\Client::class;
-    $x = \Humbug\Guzzle\Client::VERSION;
+        namespace Acme;
 
-    PHP,
+        $x = DIRECTORY_SEPARATOR;
+        $x = Client::class;
+        $x = Client::VERSION;
+        $x = \Client::class;
+        $x = \Client::VERSION;
+        $x = Guzzle\Client::class;
+        $x = Guzzle\Client::VERSION;
+        $x = \Guzzle\Client::class;
+        $x = \Guzzle\Client::VERSION;
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        $x = \DIRECTORY_SEPARATOR;
+        $x = Client::class;
+        $x = Client::VERSION;
+        $x = \Humbug\Client::class;
+        $x = \Humbug\Client::VERSION;
+        $x = Guzzle\Client::class;
+        $x = Guzzle\Client::VERSION;
+        $x = \Humbug\Guzzle\Client::class;
+        $x = \Humbug\Guzzle\Client::VERSION;
+
+        PHP,
 ];

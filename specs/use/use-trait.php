@@ -38,47 +38,47 @@ return [
 
     // https://github.com/humbug/php-scoper/issues/455
     'Use statement of a FQCN trait' => <<<'PHP'
-    <?php
-    
-    namespace IvoPetkov;
-    
-    class HTML5DOMDocument {
-        use \IvoPetkov\Internal\QuerySelector;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug\IvoPetkov;
-    
-    class HTML5DOMDocument
-    {
-        use \Humbug\IvoPetkov\Internal\QuerySelector;
-    }
-    
-    PHP,
+        <?php
+
+        namespace IvoPetkov;
+
+        class HTML5DOMDocument {
+            use \IvoPetkov\Internal\QuerySelector;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\IvoPetkov;
+
+        class HTML5DOMDocument
+        {
+            use \Humbug\IvoPetkov\Internal\QuerySelector;
+        }
+
+        PHP,
 
     'Use statement of an imported trait' => <<<'PHP'
-    <?php
-    
-    namespace IvoPetkov;
-    
-    use IvoPetkov\Internal\QuerySelector;
-    
-    class HTML5DOMDocument {
-        use QuerySelector;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug\IvoPetkov;
-    
-    use Humbug\IvoPetkov\Internal\QuerySelector;
-    class HTML5DOMDocument
-    {
-        use QuerySelector;
-    }
-    
-    PHP,
+        <?php
+
+        namespace IvoPetkov;
+
+        use IvoPetkov\Internal\QuerySelector;
+
+        class HTML5DOMDocument {
+            use QuerySelector;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\IvoPetkov;
+
+        use Humbug\IvoPetkov\Internal\QuerySelector;
+        class HTML5DOMDocument
+        {
+            use QuerySelector;
+        }
+
+        PHP,
 ];
