@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -143,9 +144,9 @@ return [
 
         PHP,
 
-    'excluded enum (doesn\'t work)' => [
-        'exclude-classes' => ['Status'],
-        'payload' => <<<'PHP'
+    'excluded enum (doesn\'t work)' => SpecWithConfig::create(
+        excludeClasses: ['Status'],
+        spec: <<<'PHP'
             <?php
 
             enum Status {
@@ -167,11 +168,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'exposed enum (doesn\'t work)' => [
-        'expose-classes' => ['Status'],
-        'payload' => <<<'PHP'
+    'exposed enum (doesn\'t work)' => SpecWithConfig::create(
+        exposeClasses: ['Status'],
+        spec: <<<'PHP'
             <?php
 
             enum Status {
@@ -193,5 +194,5 @@ return [
             }
 
             PHP,
-    ],
+    ),
 ];

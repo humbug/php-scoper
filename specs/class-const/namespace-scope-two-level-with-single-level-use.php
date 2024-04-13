@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -127,12 +128,12 @@ return [
 
         PHP,
 
-    'FQ Constant call on an exposed namespaced class partially imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'FQ Constant call on an exposed namespaced class partially imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -168,14 +169,14 @@ return [
             Foo\Bar::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 
-    'FQ constant call on an exposed namespaced class imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'FQ constant call on an exposed namespaced class imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -211,5 +212,5 @@ return [
             \Humbug\Foo\Bar::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 ];

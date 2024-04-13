@@ -14,24 +14,41 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Spec;
 
-final readonly class Meta
+final class Meta extends SpecConfig
 {
     public function __construct(
-        public string $title,
-        public string $prefix = 'Humbug',
-        public bool $exposeGlobalConstants = false,
-        public bool $exposeGlobalClasses = false,
-        public bool $exposeGlobalFunctions = false,
-        public array $exposeNamespaces = [],
-        public array $exposeConstants = [],
-        public array $exposeClasses = [],
-        public array $exposeFunctions = [],
-        public array $excludeNamespaces = [],
-        public array $excludeConstants = [],
-        public array $excludeClasses = [],
-        public array $excludeFunctions = [],
-        public array $expectedRecordedClasses = [],
-        public array $expectedRecordedFunctions = [],
+        public readonly string $title,
+        public readonly string $prefix = 'Humbug',
+        ?int $minPhpVersion = null,
+        ?int $maxPhpVersion = null,
+        bool $exposeGlobalConstants = false,
+        bool $exposeGlobalClasses = false,
+        bool $exposeGlobalFunctions = false,
+        array $exposeNamespaces = [],
+        array $exposeConstants = [],
+        array $exposeClasses = [],
+        array $exposeFunctions = [],
+        array $excludeNamespaces = [],
+        array $excludeConstants = [],
+        array $excludeClasses = [],
+        array $excludeFunctions = [],
+        public readonly array $expectedRecordedClasses = [],
+        public readonly array $expectedRecordedFunctions = [],
     ) {
+        parent::__construct(
+            $minPhpVersion,
+            $maxPhpVersion,
+            $exposeGlobalConstants,
+            $exposeGlobalClasses,
+            $exposeGlobalFunctions,
+            $exposeNamespaces,
+            $exposeConstants,
+            $exposeClasses,
+            $exposeFunctions,
+            $excludeNamespaces,
+            $excludeConstants,
+            $excludeClasses,
+            $excludeFunctions,
+        );
     }
 }

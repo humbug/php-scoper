@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -61,9 +62,9 @@ return [
 
         PHP,
 
-    'Static method call statement of a class belonging to the global namespace which has been exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
+    'Static method call statement of a class belonging to the global namespace which has been exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
             <?php
 
             use Closure;
@@ -78,11 +79,11 @@ return [
             Closure::bind();
 
             PHP,
-    ],
+    ),
 
-    'FQ static method call statement of a class belonging to the global namespace which has been exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a class belonging to the global namespace which has been exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
             <?php
 
             use Closure;
@@ -97,5 +98,5 @@ return [
             \Closure::bind();
 
             PHP,
-    ],
+    ),
 ];

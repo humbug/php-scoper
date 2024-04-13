@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -51,12 +52,12 @@ return [
 
         PHP,
 
-    'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+    'Declaration in the global namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             class A {
@@ -82,7 +83,7 @@ return [
             \class_alias('Humbug\\A', 'A', \false);
 
             PHP,
-    ],
+    ),
 
     'Declaration in a namespace' => <<<'PHP'
         <?php
@@ -117,9 +118,9 @@ return [
 
         PHP,
 
-    'Declaration in a namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
+    'Declaration in a namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
             <?php
 
             namespace Foo;
@@ -144,17 +145,17 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Declaration of a namespaced exposed class' => [
-        'expose-classes' => [
+    'Declaration of a namespaced exposed class' => SpecWithConfig::create(
+        exposeClasses: [
             'Foo\A',
             'Foo\B',
         ],
-        'expected-recorded-classes' => [
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo;
@@ -180,7 +181,7 @@ return [
             \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
             PHP,
-    ],
+    ),
 
     'Declaration in a namespace with use statements' => <<<'PHP'
         <?php

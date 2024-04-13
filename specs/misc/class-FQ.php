@@ -13,19 +13,20 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
         title: 'Class name resolution',
     ),
 
-    'Different kind of exposed class constant calls in the global scope' => [
-        'expose-classes' => ['Foo\Bar', 'Foo\Bar\Poz'],
-        'expected-recorded-classes' => [
+    'Different kind of exposed class constant calls in the global scope' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar', 'Foo\Bar\Poz'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
             ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -97,7 +98,7 @@ return [
             \Humbug\Foo\Bar\Poz::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 
     'Different kind of class constant calls in the global scope' => <<<'PHP'
         <?php
@@ -169,8 +170,8 @@ return [
 
         PHP,
 
-    'Different kind of class constant calls in a namespace' => [
-        'expose-classes' => [
+    'Different kind of class constant calls in a namespace' => SpecWithConfig::create(
+        exposeClasses: [
             'Foo\Bar',
             'Foo\Bar\Poz',
 
@@ -182,7 +183,7 @@ return [
             'A\Aoz',
             'A\Aoo\Aoz\Poz',
         ],
-        'expected-recorded-classes' => [
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
             ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
 
@@ -193,7 +194,7 @@ return [
             ['A\Aoo\Aoz', 'Humbug\A\Aoo\Aoz'],
             ['A\Aoo\Aoz\Poz', 'Humbug\A\Aoo\Aoz\Poz'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -330,5 +331,5 @@ return [
             Foo\Bar\Poz::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 ];

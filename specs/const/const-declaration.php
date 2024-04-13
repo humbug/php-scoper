@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -69,9 +70,9 @@ return [
 
         PHP,
 
-    'Constant declarations in the global namespace which is excluded' => [
-        'exclude-namespaces' => [''],
-        'payload' => <<<'PHP'
+    'Constant declarations in the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: [''],
+        spec: <<<'PHP'
             <?php
 
             const FOO_CONST = foo();
@@ -118,17 +119,17 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Exposed constant declarations in the global namespace' => [
-        'expose-constants' => [
+    'Exposed constant declarations in the global namespace' => SpecWithConfig::create(
+        exposeConstants: [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
             'BAZ',
             'Emca\BAZ',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             const FOO_CONST = foo();
@@ -188,11 +189,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Exposed grouped constants declaration in the global namespace' => [
-        'expose-constants' => ['X'],
-        'payload' => <<<'PHP'
+    'Exposed grouped constants declaration in the global namespace' => SpecWithConfig::create(
+        exposeConstants: ['X'],
+        spec: <<<'PHP'
             <?php
 
             const X = 'x', Y = '';
@@ -207,7 +208,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Constants declaration in a namespace' => <<<'PHP'
         <?php
@@ -260,9 +261,9 @@ return [
 
         PHP,
 
-    'Constants declaration in an excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
+    'Constants declaration in an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -312,11 +313,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Exposed constants declaration in a namespace' => [
-        'expose-constants' => ['Acme\BAR_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed constants declaration in a namespace' => SpecWithConfig::create(
+        exposeConstants: ['Acme\BAR_CONST'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -366,14 +367,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Token compatibility regression test' => [
-        'exclude-constants' => [
+    'Token compatibility regression test' => SpecWithConfig::create(
+        excludeConstants: [
             'NEW_TOKEN',
             'ANOTHER_NEW_TOKEN',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -452,7 +453,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Define check of a global class constant' => <<<'PHP'
         <?php

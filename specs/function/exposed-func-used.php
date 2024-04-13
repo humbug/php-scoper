@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -32,12 +33,12 @@ return [
 
         PHP,
 
-    'Exposed global function call' => [
-        'expose-functions' => ['main'],
-        'expected-recorded-functions' => [
+    'Exposed global function call' => SpecWithConfig::create(
+        exposeFunctions: ['main'],
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             main();
@@ -49,14 +50,14 @@ return [
             \Humbug\main();
 
             PHP,
-    ],
+    ),
 
-    'Global function call with exposed global functions' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'Global function call with exposed global functions' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             main();
@@ -68,7 +69,7 @@ return [
             main();
 
             PHP,
-    ],
+    ),
 
     'Global function call with non-exposed global functions' => <<<'PHP'
         <?php
@@ -83,10 +84,10 @@ return [
 
         PHP,
 
-    'Exposed namespaced function call' => [
-        'expose-functions' => ['Acme\main'],
-        'expected-recorded-functions' => [],   // Nothing registered here since the FQ could not be resolved
-        'payload' => <<<'PHP'
+    'Exposed namespaced function call' => SpecWithConfig::create(
+        exposeFunctions: ['Acme\main'],
+        expectedRecordedFunctions: [],   // Nothing registered here since the FQ could not be resolved
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -100,5 +101,5 @@ return [
             main();
 
             PHP,
-    ],
+    ),
 ];

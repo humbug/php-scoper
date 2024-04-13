@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -47,9 +48,9 @@ return [
 
         PHP,
 
-    'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml'],
-        'payload' => <<<'PHP'
+    'FQCN string argument on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Yaml'],
+        spec: <<<'PHP'
             <?php
 
             new X('Symfony\\Component\\Yaml\\Ya_1l', ['Symfony\\Component\\Yaml\\Ya_1l']);
@@ -70,11 +71,11 @@ return [
             new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
 
             PHP,
-    ],
+    ),
 
-    'FQCN string argument on classes belonging to an excluded namespace' => [
-        'exclude-namespaces' => ['Symfony\Component'],
-        'payload' => <<<'PHP'
+    'FQCN string argument on classes belonging to an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Symfony\Component'],
+        spec: <<<'PHP'
             <?php
 
             new X('Symfony\\Yaml', ['Symfony\\Yaml']);
@@ -95,7 +96,7 @@ return [
             new X('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['\\Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
 
             PHP,
-    ],
+    ),
 
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
         <?php
@@ -143,12 +144,12 @@ return [
 
         PHP,
 
-    'FQC constant call on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
-        'expected-recorded-classes' => [
+    'FQC constant call on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
+        expectedRecordedClasses: [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Symfony\Component\Yaml {
@@ -178,5 +179,5 @@ return [
             new X(\Humbug\Symfony\Component\Yaml\Ya_1::class, [\Humbug\Symfony\Component\Yaml\Ya_1::class]);
 
             PHP,
-    ],
+    ),
 ];

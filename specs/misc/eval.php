@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -162,12 +163,12 @@ return [
 
         PHP,
 
-    'string with exposed function' => [
-        'expose-functions' => ['Acme\foo'],
-        'expected-recorded-functions' => [
+    'string with exposed function' => SpecWithConfig::create(
+        exposeFunctions: ['Acme\foo'],
+        expectedRecordedFunctions: [
             ['Acme\foo', 'Humbug\Acme\foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             eval('<?php
@@ -193,5 +194,5 @@ return [
             ');
 
             PHP,
-    ],
+    ),
 ];

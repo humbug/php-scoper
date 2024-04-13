@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -33,9 +34,9 @@ return [
 
         PHP,
 
-    'Constant use statement for a constant belonging to the global namespace with global constant exposed' => [
-        'expose-global-constants' => true,
-        'payload' => <<<'PHP'
+    'Constant use statement for a constant belonging to the global namespace with global constant exposed' => SpecWithConfig::create(
+        exposeGlobalConstants: true,
+        spec: <<<'PHP'
             <?php
 
             use const FOO as A;
@@ -48,7 +49,7 @@ return [
             use const FOO as A;
 
             PHP,
-    ],
+    ),
 
     'Constant use statement for a constant belonging to the global namespace and which has already been prefixed' => <<<'PHP'
         <?php
@@ -92,9 +93,9 @@ return [
 
         PHP,
 
-    'Constant use statement for a namespaced constant which has been exposed' => [
-        'expose-constants' => ['Foo\BAR'],
-        'payload' => <<<'PHP'
+    'Constant use statement for a namespaced constant which has been exposed' => SpecWithConfig::create(
+        exposeConstants: ['Foo\BAR'],
+        spec: <<<'PHP'
             <?php
 
             use const Foo\BAR as A;
@@ -107,5 +108,5 @@ return [
             use const Foo\BAR as A;
 
             PHP,
-    ],
+    ),
 ];

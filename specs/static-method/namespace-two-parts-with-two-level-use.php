@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -91,12 +92,12 @@ return [
 
         PHP,
 
-    'Static method call statement of an exposed class via a use statement' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'expected-recorded-classes' => [
+    'Static method call statement of an exposed class via a use statement' => SpecWithConfig::create(
+        exposeClasses: ['X\Foo\Bar'],
+        expectedRecordedClasses: [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace X {
@@ -132,11 +133,11 @@ return [
             Foo\Bar::main();
 
             PHP,
-    ],
+    ),
 
-    'FQ static method call statement of a non-exposed class via a use statement' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a non-exposed class via a use statement' => SpecWithConfig::create(
+        exposeClasses: ['X\Foo\Bar'],
+        spec: <<<'PHP'
             <?php
 
             namespace X {
@@ -171,5 +172,5 @@ return [
             \Humbug\Foo\Bar::main();
 
             PHP,
-    ],
+    ),
 ];

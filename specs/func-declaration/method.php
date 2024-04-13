@@ -13,18 +13,19 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
         title: 'Method declarations',
     ),
 
-    'Method declarations' => [
-        'expose-classes' => ['X\Y', 'BAR_CONST'],
-        'expected-recorded-classes' => [
+    'Method declarations' => SpecWithConfig::create(
+        exposeClasses: ['X\Y', 'BAR_CONST'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -105,14 +106,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Method declarations with return types' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+    'Method declarations with return types' => SpecWithConfig::create(
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -305,5 +306,5 @@ return [
             }
 
             PHP,
-    ],
+    ),
 ];

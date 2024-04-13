@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -122,9 +123,9 @@ return [
 
         PHP,
 
-    'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
-        'payload' => <<<'PHP'
+    'FQCN string argument on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        spec: <<<'PHP'
             <?php
 
             is_a($swift, 'Swift');
@@ -196,14 +197,14 @@ return [
             \class_alias('DateTime', 'DateTimeInterface');
 
             PHP,
-    ],
+    ),
 
-    'FQCN string argument on class from an excluded namespace' => [
-        'exclude-namespaces' => [
+    'FQCN string argument on class from an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: [
             'Symfony\Component\Yaml',
             '/^$/',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             is_a($swift, 'Swift');
@@ -275,11 +276,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'FQCN string argument with global functions not exposed' => [
-        'expose-global-functions' => false,
-        'payload' => <<<'PHP'
+    'FQCN string argument with global functions not exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: false,
+        spec: <<<'PHP'
             <?php
 
             is_a($swift, 'Swift');
@@ -351,7 +352,7 @@ return [
             \class_alias('DateTime', 'DateTimeInterface');
 
             PHP,
-    ],
+    ),
 
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
         <?php

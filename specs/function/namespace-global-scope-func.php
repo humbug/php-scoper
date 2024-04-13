@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -55,9 +56,9 @@ return [
     // In theory this case CAN be wrong. There is however a very high chance it
     // is not as it implies having both A\foo() and foo() in the
     // codebase with only foo() exposed.
-    'Exposed constant call in a namespace' => [
-        'expose-functions' => ['foo'],
-        'payload' => <<<'PHP'
+    'Exposed constant call in a namespace' => SpecWithConfig::create(
+        exposeFunctions: ['foo'],
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -71,5 +72,5 @@ return [
             \Humbug\foo();
 
             PHP,
-    ],
+    ),
 ];

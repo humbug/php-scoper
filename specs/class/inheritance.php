@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -76,12 +77,12 @@ return [
 
         PHP,
 
-    'Declaration of an exposed class' => [
-        'expose-classes' => ['Foo\B'],
-        'expected-recorded-classes' => [
+    'Declaration of an exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Foo\B'],
+        expectedRecordedClasses: [
             ['Foo\B', 'Humbug\Foo\B'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo;
@@ -109,7 +110,7 @@ return [
             \class_alias('Humbug\\Foo\\B', 'Foo\\B', \false);
 
             PHP,
-    ],
+    ),
 
     'Declaration in a different namespace imported via a use statement' => <<<'PHP'
         <?php

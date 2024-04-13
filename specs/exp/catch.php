@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -78,9 +79,9 @@ return [
 
         PHP,
 
-    'Catch an exposed custom exception class' => [
-        'expose-classes' => ['FooException'],
-        'payload' => <<<'PHP'
+    'Catch an exposed custom exception class' => SpecWithConfig::create(
+        exposeClasses: ['FooException'],
+        spec: <<<'PHP'
             <?php
 
             try {
@@ -98,11 +99,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Catch a custom exception class which belongs to the excluded root namespace' => [
-        'exclude-namespaces' => ['/^$/'],
-        'payload' => <<<'PHP'
+    'Catch a custom exception class which belongs to the excluded root namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['/^$/'],
+        spec: <<<'PHP'
             <?php
 
             try {
@@ -120,7 +121,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Catch a custom exception class in a namespace' => <<<'PHP'
         <?php
@@ -143,9 +144,9 @@ return [
 
         PHP,
 
-    'Catch an exposed custom exception class in a namespace' => [
-        'expose-classes' => ['Acme\FooException'],
-        'payload' => <<<'PHP'
+    'Catch an exposed custom exception class in a namespace' => SpecWithConfig::create(
+        exposeClasses: ['Acme\FooException'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -165,12 +166,12 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     // TODO: should not be made into FQ here
-    'Catch a custom exception class in an excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
+    'Catch a custom exception class in an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -190,7 +191,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Catch an custom exception class in a namespace imported with a use statement' => <<<'PHP'
         <?php

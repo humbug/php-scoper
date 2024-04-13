@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -38,12 +39,12 @@ return [
 
         PHP,
 
-    'Declaration of an exposed class in the global namespace' => [
-        'expose-classes' => ['A'],
-        'expected-recorded-classes' => [
+    'Declaration of an exposed class in the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['A'],
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             if (true) {
@@ -62,7 +63,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Declaration in a namespace' => <<<'PHP'
         <?php
@@ -85,12 +86,12 @@ return [
 
         PHP,
 
-    'Declaration of an exposed class' => [
-        'expose-classes' => ['Foo\A'],
-        'expected-recorded-classes' => [
+    'Declaration of an exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Foo\A'],
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo;
@@ -111,7 +112,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Multiple declarations in different namespaces' => <<<'PHP'
         <?php

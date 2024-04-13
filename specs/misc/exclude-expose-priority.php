@@ -13,20 +13,17 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
         title: 'Excluding a symbol/namespace should have precedence over exposing a symbol/namespace',
     ),
 
-    'namespace' => [
-        'exclude-namespaces' => [
-            'Acme',
-        ],
-        'expose-namespaces' => [
-            'Acme',
-        ],
-        'payload' => <<<'PHP'
+    'namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        exposeNamespaces: ['Acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme {
@@ -50,16 +47,16 @@ return [
             new \Acme\X();
 
             PHP,
-    ],
+    ),
 
-    'symbol' => [
-        'exclude-classes' => [
+    'symbol' => SpecWithConfig::create(
+        excludeClasses: [
             'Acme\X',
         ],
-        'expose-classes' => [
+        exposeClasses: [
             'Acme\X',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Acme {
@@ -83,5 +80,5 @@ return [
             new \Acme\X();
 
             PHP,
-    ],
+    ),
 ];

@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -37,9 +38,9 @@ return [
     // In theory this case CAN be wrong. There is however a very high chance it
     // is not as it implies having both A\DUMMY_CONST and DUMMY_CONST in the
     // codebase with only DUMMY_CONST exposed.
-    'Exposed constant call in a namespace' => [
-        'expose-constants' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed constant call in a namespace' => SpecWithConfig::create(
+        exposeConstants: ['DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -53,7 +54,7 @@ return [
             \DUMMY_CONST;
 
             PHP,
-    ],
+    ),
 
     'FQ constant call in a namespace' => <<<'PHP'
         <?php
@@ -70,9 +71,9 @@ return [
 
         PHP,
 
-    'Exposed FQ constant call in a namespace' => [
-        'expose-constants' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed FQ constant call in a namespace' => SpecWithConfig::create(
+        exposeConstants: ['DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -86,5 +87,5 @@ return [
             \DUMMY_CONST;
 
             PHP,
-    ],
+    ),
 ];

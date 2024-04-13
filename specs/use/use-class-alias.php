@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -113,9 +114,9 @@ return [
 
         PHP,
 
-    'Use statement of two-level class which has been exposed' => [
-        'expose-classes' => ['Foo\Bar'],
-        'payload' => <<<'PHP'
+    'Use statement of two-level class which has been exposed' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        spec: <<<'PHP'
             <?php
 
             use Foo\Bar as A;
@@ -128,5 +129,5 @@ return [
             use Humbug\Foo\Bar as A;
 
             PHP,
-    ],
+    ),
 ];

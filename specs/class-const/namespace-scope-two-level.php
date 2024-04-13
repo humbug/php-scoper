@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -67,12 +68,12 @@ return [
 
         PHP,
 
-    'Constant call on an exposed namespaced class' => [
-        'expose-classes' => ['X\PHPUnit\Command'],
-        'expected-recorded-classes' => [
+    'Constant call on an exposed namespaced class' => SpecWithConfig::create(
+        exposeClasses: ['X\PHPUnit\Command'],
+        expectedRecordedClasses: [
             ['X\PHPUnit\Command', 'Humbug\X\PHPUnit\Command'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace X\PHPUnit {
@@ -96,11 +97,11 @@ return [
             PHPUnit\Command::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 
-    'Constant call on a namespaced class belonging to an excluded namespace' => [
-        'exclude-namespaces' => ['X\PHPUnit'],
-        'payload' => <<<'PHP'
+    'Constant call on a namespaced class belonging to an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['X\PHPUnit'],
+        spec: <<<'PHP'
             <?php
 
             namespace X\PHPUnit {
@@ -123,11 +124,11 @@ return [
             \X\PHPUnit\Command::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 
-    'Constant call on a namespaced class belonging to an excluded namespace (2)' => [
-        'exclude-namespaces' => ['/^.*$/'],
-        'payload' => <<<'PHP'
+    'Constant call on a namespaced class belonging to an excluded namespace (2)' => SpecWithConfig::create(
+        excludeNamespaces: ['/^.*$/'],
+        spec: <<<'PHP'
             <?php
 
             namespace X\PHPUnit {
@@ -150,14 +151,14 @@ return [
             \X\PHPUnit\Command::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 
-    'FQ constant call on an exposed namespaced class' => [
-        'expose-classes' => ['PHPUnit\Command'],
-        'expected-recorded-classes' => [
+    'FQ constant call on an exposed namespaced class' => SpecWithConfig::create(
+        exposeClasses: ['PHPUnit\Command'],
+        expectedRecordedClasses: [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace PHPUnit {
@@ -181,5 +182,5 @@ return [
             \Humbug\PHPUnit\Command::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 ];

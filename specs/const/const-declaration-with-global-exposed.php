@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -43,9 +44,9 @@ return [
 
         PHP,
 
-    'Constants declaration in the global namespace which is excluded' => [
-        'exclude-namespaces' => [''],
-        'payload' => <<<'PHP'
+    'Constants declaration in the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: [''],
+        spec: <<<'PHP'
             <?php
 
             const FOO_CONST = foo();
@@ -67,15 +68,15 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Exposed constants declaration in the global namespace' => [
-        'expose-constants' => [
+    'Exposed constants declaration in the global namespace' => SpecWithConfig::create(
+        exposeConstants: [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             const FOO_CONST = foo();
@@ -97,15 +98,15 @@ return [
             \define(\Acme\BAR_CONST, foo());
 
             PHP,
-    ],
+    ),
 
-    'Excluded constants declaration in the global namespace' => [
-        'exclude-constants' => [
+    'Excluded constants declaration in the global namespace' => SpecWithConfig::create(
+        excludeConstants: [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             const FOO_CONST = foo();
@@ -127,7 +128,7 @@ return [
             \define(\Acme\BAR_CONST, foo());
 
             PHP,
-    ],
+    ),
 
     'Constants declaration in a namespace' => <<<'PHP'
         <?php
@@ -154,9 +155,9 @@ return [
 
         PHP,
 
-    'Constants declaration in an excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
+    'Constants declaration in an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -180,11 +181,11 @@ return [
             \define(\Acme\BAR_CONST, foo());
 
             PHP,
-    ],
+    ),
 
-    'Exposed constants declaration in a namespace' => [
-        'expose-constants' => ['Acme\BAR_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed constants declaration in a namespace' => SpecWithConfig::create(
+        exposeConstants: ['Acme\BAR_CONST'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -208,11 +209,11 @@ return [
             \define(\Acme\BAR_CONST, foo());
 
             PHP,
-    ],
+    ),
 
-    'Exposed constants declaration in an exposed namespace' => [
-        'expose-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
+    'Exposed constants declaration in an exposed namespace' => SpecWithConfig::create(
+        exposeNamespaces: ['Acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -236,5 +237,5 @@ return [
             \define(\Acme\BAR_CONST, foo());
 
             PHP,
-    ],
+    ),
 ];

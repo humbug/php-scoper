@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -37,11 +38,11 @@ return [
 
         PHP,
 
-    'Known non-internal symbols with global symbols exposed (sanity check)' => [
-        'expose-global-constants' => true,
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'payload' => <<<'PHP'
+    'Known non-internal symbols with global symbols exposed (sanity check)' => SpecWithConfig::create(
+        exposeGlobalConstants: true,
+        exposeGlobalClasses: true,
+        exposeGlobalFunctions: true,
+        spec: <<<'PHP'
             <?php
 
             use Foo;
@@ -58,13 +59,13 @@ return [
             use function Humbug\baz;
 
             PHP,
-    ],
+    ),
 
-    'Declared internal symbols' => [
-        'exclude-classes' => ['Foo'],
-        'exclude-functions' => ['baz'],
-        'exclude-constants' => ['BAR'],
-        'payload' => <<<'PHP'
+    'Declared internal symbols' => SpecWithConfig::create(
+        excludeClasses: ['Foo'],
+        excludeFunctions: ['baz'],
+        excludeConstants: ['BAR'],
+        spec: <<<'PHP'
             <?php
 
             use Foo;
@@ -81,5 +82,5 @@ return [
             use function baz;
 
             PHP,
-    ],
+    ),
 ];

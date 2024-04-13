@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -75,9 +76,9 @@ return [
 
         PHP,
 
-    'Use statement for a namespaced function which has been exposed' => [
-        'expose-functions' => ['Foo\bar'],
-        'payload' => <<<'PHP'
+    'Use statement for a namespaced function which has been exposed' => SpecWithConfig::create(
+        exposeFunctions: ['Foo\bar'],
+        spec: <<<'PHP'
             <?php
 
             use function Foo\bar as greet;
@@ -90,5 +91,5 @@ return [
             use function Humbug\Foo\bar as greet;
 
             PHP,
-    ],
+    ),
 ];

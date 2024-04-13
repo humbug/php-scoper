@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -35,9 +36,9 @@ return [
 
         PHP,
 
-    'Exposed constant call imported with an aliased use statement' => [
-        'expose-constants' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed constant call imported with an aliased use statement' => SpecWithConfig::create(
+        exposeConstants: ['DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             use const DUMMY_CONST as FOO;
@@ -52,7 +53,7 @@ return [
             FOO;
 
             PHP,
-    ],
+    ),
 
     'Constant FQ call imported with an aliased use statement' => <<<'PHP'
         <?php

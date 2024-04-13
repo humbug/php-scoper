@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -61,12 +62,12 @@ return [
 
         PHP,
 
-    'Exposed namespaced function call imported with a partial use statement in the global scope' => [
-        'expose-functions' => ['Foo\main'],
-        'expected-recorded-functions' => [
+    'Exposed namespaced function call imported with a partial use statement in the global scope' => SpecWithConfig::create(
+        exposeFunctions: ['Foo\main'],
+        expectedRecordedFunctions: [
             ['Foo\main', 'Humbug\Foo\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -101,5 +102,5 @@ return [
             Foo\main();
 
             PHP,
-    ],
+    ),
 ];

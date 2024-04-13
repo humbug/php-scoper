@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -57,9 +58,9 @@ return [
 
         PHP,
 
-    'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
-        'payload' => <<<'PHP'
+    'FQCN string argument on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        spec: <<<'PHP'
             <?php
 
             foo('Symfony\\Component\\Yaml\\Ya_1');
@@ -87,11 +88,11 @@ return [
             foo(['Swift', 'autoload']);
 
             PHP,
-    ],
+    ),
 
-    'FQCN string argument on class from global namespace with classes from global namespace exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
+    'FQCN string argument on class from global namespace with classes from global namespace exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
             <?php
 
             foo('DateTime');
@@ -110,14 +111,14 @@ return [
             foo(['Swift', 'autoload']);
 
             PHP,
-    ],
+    ),
 
-    'FQCN string argument on class from an excluded namespace' => [
-        'exclude-namespaces' => [
+    'FQCN string argument on class from an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: [
             'Symfony\Component\Yaml',
             '/^$/',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             foo('Symfony\\Component\\Yaml\\Ya_1');
@@ -145,7 +146,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
         <?php
@@ -205,12 +206,12 @@ return [
 
         PHP,
 
-    'FQC constant call on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
-        'expected-recorded-classes' => [
+    'FQC constant call on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
+        expectedRecordedClasses: [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Symfony\Component\Yaml {
@@ -240,5 +241,5 @@ return [
             foo(\Humbug\Symfony\Component\Yaml\Ya_1::class);
 
             PHP,
-    ],
+    ),
 ];

@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -61,9 +62,9 @@ return [
 
         PHP,
 
-    'Exposed namespaced constant call with namespace partially imported' => [
-        'expose-constants' => ['Foo\Bar\DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed namespaced constant call with namespace partially imported' => SpecWithConfig::create(
+        exposeConstants: ['Foo\Bar\DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             class Foo {}
@@ -83,5 +84,5 @@ return [
             \Foo\Bar\DUMMY_CONST;
 
             PHP,
-    ],
+    ),
 ];

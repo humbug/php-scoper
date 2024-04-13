@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -93,9 +94,9 @@ return [
 
         PHP,
 
-    'Constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
+    'Constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
             <?php
 
             use Foo;
@@ -110,11 +111,11 @@ return [
             Foo::$mainStaticProp;
 
             PHP,
-    ],
+    ),
 
-    'FQ constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
+    'FQ constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
             <?php
 
             use Foo;
@@ -129,5 +130,5 @@ return [
             \Humbug\Foo::$mainStaticProp;
 
             PHP,
-    ],
+    ),
 ];

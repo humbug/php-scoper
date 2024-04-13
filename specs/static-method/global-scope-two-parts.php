@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -62,12 +63,12 @@ return [
 
         PHP,
 
-    'Static method call statement of a namespaced class which has been exposed' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'Static method call statement of a namespaced class which has been exposed' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo {
@@ -91,14 +92,14 @@ return [
             \Humbug\Foo\Bar::main();
 
             PHP,
-    ],
+    ),
 
-    'FQ static method call statement of a namespaced class which has been exposed' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'FQ static method call statement of a namespaced class which has been exposed' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo {
@@ -122,5 +123,5 @@ return [
             \Humbug\Foo\Bar::main();
 
             PHP,
-    ],
+    ),
 ];

@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -35,12 +36,12 @@ return [
 
         PHP,
 
-    'Global function call imported with a use statement in the global scope with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'Global function call imported with a use statement in the global scope with global functions exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             use function main as foo;
@@ -55,7 +56,7 @@ return [
             foo();
 
             PHP,
-    ],
+    ),
 
     'Global FQ function call imported with a use statement in the global scope' => <<<'PHP'
         <?php
@@ -73,12 +74,12 @@ return [
 
         PHP,
 
-    'Global FQ function call imported with a use statement in the global scope with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'Global FQ function call imported with a use statement in the global scope with global functions exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['foo', 'Humbug\foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             use function main as foo;
@@ -93,5 +94,5 @@ return [
             \Humbug\foo();
 
             PHP,
-    ],
+    ),
 ];

@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -21,9 +22,9 @@ return [
         exposeGlobalFunctions: true,
     ),
 
-    'Internal class & function with the same name' => [
-        'expected-recorded-functions' => [],
-        'payload' => <<<'PHP'
+    'Internal class & function with the same name' => SpecWithConfig::create(
+        expectedRecordedFunctions: [],
+        spec: <<<'PHP'
             <?php
 
             namespace PHPUnit\Framework;
@@ -51,11 +52,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Internal class & const with the same name' => [
-        'expected-recorded-functions' => [],
-        'payload' => <<<'PHP'
+    'Internal class & const with the same name' => SpecWithConfig::create(
+        expectedRecordedFunctions: [],
+        spec: <<<'PHP'
             <?php
 
             namespace PHPUnit\Framework;
@@ -83,5 +84,5 @@ return [
             }
 
             PHP,
-    ],
+    ),
 ];

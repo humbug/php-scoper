@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -122,9 +123,9 @@ return [
 
         PHP,
 
-    'FQ constant call on an exposed class which is imported via an aliased use statement and which belongs to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
+    'FQ constant call on an exposed class which is imported via an aliased use statement and which belongs to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -150,5 +151,5 @@ return [
             \Humbug\X::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 ];

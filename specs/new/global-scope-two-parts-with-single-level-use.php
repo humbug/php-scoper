@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -55,12 +56,12 @@ return [
 
         PHP,
 
-    'New statement call of an exposed namespaced class partially imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'New statement call of an exposed namespaced class partially imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -96,7 +97,7 @@ return [
             new Foo\Bar();
 
             PHP,
-    ],
+    ),
 
     'FQ new statement call of a namespaced class partially imported with a use statement' => <<<'PHP'
         <?php
@@ -134,12 +135,12 @@ return [
 
         PHP,
 
-    'FQ new statement call of an exposed namespaced class partially imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'FQ new statement call of an exposed namespaced class partially imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -175,7 +176,7 @@ return [
             new \Humbug\Foo\Bar();
 
             PHP,
-    ],
+    ),
 
     'New statement call of a namespaced class imported with a use statement' => <<<'PHP'
         <?php
@@ -213,12 +214,12 @@ return [
 
         PHP,
 
-    'New statement call of an exposed namespaced class imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'New statement call of an exposed namespaced class imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -254,7 +255,7 @@ return [
             new Bar();
 
             PHP,
-    ],
+    ),
 
     'FQ new statement call of a namespaced class imported with a use statement' => <<<'PHP'
         <?php
@@ -296,12 +297,12 @@ return [
 
         PHP,
 
-    'FQ new statement call of a, exposed namespaced class imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'FQ new statement call of a, exposed namespaced class imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -341,5 +342,5 @@ return [
             new \Humbug\Bar();
 
             PHP,
-    ],
+    ),
 ];

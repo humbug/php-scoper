@@ -21,23 +21,21 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Scoper\Spec\Meta;
 use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 use UnexpectedValueException;
-use function array_diff;
 use function array_filter;
-use function array_key_exists;
-use function array_keys;
 use function array_map;
 use function array_merge;
 use function array_slice;
@@ -47,11 +45,9 @@ use function count;
 use function current;
 use function explode;
 use function implode;
-use function is_array;
 use function is_string;
 use function min;
 use function rtrim;
-use function Safe\preg_split;
 use function sprintf;
 use function str_repeat;
 use function str_starts_with;
@@ -230,25 +226,28 @@ class PhpScoperSpecTest extends TestCase
 
         foreach ($files as $file) {
             try {
-                $fixtures = include $file;
+                // TODO: can extract rename
+                $specs = include $file;
 
-                $meta = $fixtures['meta'];
-                unset($fixtures['meta']);
+                $meta = $specs['meta'];
+                unset($specs['meta']);
 
-                foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield from self::parseSpecFile(
+                foreach ($specs as $title => $spec) {
+                    yield from self::parseSpec(
                         basename($sourceDir).'/'.$file->getRelativePathname(),
                         $meta,
-                        $fixtureTitle,
-                        $fixtureSet,
+                        $title,
+                        $spec,
                     );
                 }
             } catch (Throwable $throwable) {
                 self::fail(
                     sprintf(
-                        'An error occurred while parsing the file "%s": %s',
+                        'An error occurred while parsing the file "%s": %s%s%s',
                         $file,
                         $throwable->getMessage(),
+                        "\n\n",
+                        $throwable->getTraceAsString(),
                     ),
                 );
             }
@@ -287,8 +286,13 @@ class PhpScoperSpecTest extends TestCase
         );
     }
 
-    private static function parseSpecFile(string $file, array $meta, int|string $fixtureTitle, array|string $fixtureSet): iterable
-    {
+    // TODO: can extract CS
+    private static function parseSpec(
+        string $file,
+        Meta $meta,
+        int|string $title,
+        SpecWithConfig|string $specWithConfigOrSimpleSpec,
+    ): iterable {
         static $specMetaKeys;
         static $specKeys;
 
@@ -306,90 +310,41 @@ class PhpScoperSpecTest extends TestCase
             ];
         }
 
-        $spec = sprintf(
+        $specWithConfig = is_string($specWithConfigOrSimpleSpec)
+            ? SpecWithConfig::fromSimpleSpec($specWithConfigOrSimpleSpec)
+            : $specWithConfigOrSimpleSpec;
+
+        // TODO: can extract this change, 'spec' is unused
+        $completeTitle = sprintf(
             '[%s] %s',
-            $meta['title'],
-            $fixtureSet['spec'] ?? $fixtureTitle,
+            $meta->title,
+            $title,
         );
-
-        $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
-
-        $payloadParts = preg_split("/\n----(?:\n|$)/", $payload);
-
-        self::assertSame(
-            [],
-            $diff = array_diff(
-                array_keys($meta),
-                $specMetaKeys,
-            ),
-            sprintf(
-                'Expected the keys found in the meta section to be known keys, unknown keys: "%s"',
-                implode('", "', $diff),
-            ),
-        );
-
-        if (is_array($fixtureSet)) {
-            $diff = array_diff(
-                array_keys($fixtureSet),
-                $specKeys,
-            );
-
-            self::assertSame(
-                [],
-                $diff,
-                sprintf(
-                    'Expected the keys found in the spec section to be known keys, unknown keys: "%s"',
-                    implode('", "', $diff),
-                ),
-            );
-        }
 
         yield [
             $file,
-            $spec,
-            $payloadParts[0],   // Input
-            $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
-            self::createSymbolsConfiguration(
-                $file,
-                is_string($fixtureSet) ? [] : $fixtureSet,
-                $meta,
-            ),
-            '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
-            $fixtureSet['expected-recorded-classes'] ?? $meta['expected-recorded-classes'],
-            $fixtureSet['expected-recorded-functions'] ?? $meta['expected-recorded-functions'],
-            $meta['minPhpVersion'] ?? null,
-            $meta['maxPhpVersion'] ?? null,
+            $completeTitle,
+            $specWithConfig->inputCode,
+            $specWithConfigOrSimpleSpec->prefix ?? $meta->prefix,
+            self::createSymbolsConfiguration($specWithConfig, $meta),
+            $specWithConfig->expectedOutputCode,
+            $specWithConfigOrSimpleSpec->expectedRecordedClasses ?? $meta->expectedRecordedClasses,
+            $specWithConfigOrSimpleSpec->expectedRecordedFunctions ?? $meta->expectedRecordedFunctions,
+            $specWithConfigOrSimpleSpec->minPhpVersion ?? $meta->minPhpVersion,
+            $specWithConfigOrSimpleSpec->maxPhpVersion ?? $meta->maxPhpVersion,
         ];
     }
 
     private static function createSymbolsConfiguration(
-        string $file,
-        array|string $fixtureSet,
-        array $meta
+        SpecWithConfig $specWithConfig,
+        Meta $meta
     ): SymbolsConfiguration {
-        if (is_string($fixtureSet)) {
-            $fixtureSet = [];
-        }
+        $mergedConfig = array_merge(
+            $meta->getSymbolsConfig(),
+            $specWithConfig->getSymbolsConfig(),
+        );
 
-        $mergedConfig = array_merge($meta, $fixtureSet);
-
-        $config = [];
-
-        foreach (self::SPECS_CONFIG_KEYS as $key) {
-            if (!array_key_exists($key, $mergedConfig)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Missing the key "%s" for the file "%s"',
-                        $key,
-                        $file,
-                    ),
-                );
-            }
-
-            $config[$key] = $mergedConfig[$key];
-        }
-
-        return (new SymbolsConfigurationFactory(new RegexChecker()))->createSymbolsConfiguration($config);
+        return (new SymbolsConfigurationFactory(new RegexChecker()))->createSymbolsConfiguration($mergedConfig);
     }
 
     /**

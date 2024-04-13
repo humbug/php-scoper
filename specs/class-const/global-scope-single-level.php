@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -37,12 +38,12 @@ return [
 
         PHP,
 
-    'Constant call on a class belonging to the global namespace which is excluded' => [
-        'exclude-namespaces' => ['/^$/'],
-        'expected-recorded-classes' => [
+    'Constant call on a class belonging to the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: ['/^$/'],
+        expectedRecordedClasses: [
             ['Command', 'Humbug\Command'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             class Command {}
@@ -60,7 +61,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'FQ constant call on a class belonging to the global namespace' => <<<'PHP'
         <?php
@@ -106,9 +107,9 @@ return [
 
         PHP,
 
-    'Constant call on an exposed class belonging to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
+    'Constant call on an exposed class belonging to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
             <?php
 
             Foo::MAIN_CONST;
@@ -120,11 +121,11 @@ return [
             \Humbug\Foo::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 
-    'FQ constant call on an exposed class belonging to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
+    'FQ constant call on an exposed class belonging to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
             <?php
 
             \Foo::MAIN_CONST;
@@ -136,5 +137,5 @@ return [
             \Humbug\Foo::MAIN_CONST;
 
             PHP,
-    ],
+    ),
 ];

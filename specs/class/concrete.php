@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -39,12 +40,12 @@ return [
 
         PHP,
 
-    'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+    'Declaration in the global namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             class A {
@@ -64,14 +65,14 @@ return [
             \class_alias('Humbug\\A', 'A', \false);
 
             PHP,
-    ],
+    ),
 
-    'Declaration in the global namespace with global classes exposed within a condition' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+    'Declaration in the global namespace with global classes exposed within a condition' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             if ($condition) {
@@ -95,13 +96,13 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Declaration of an internal class' => [
-        'expected-recorded-classes' => [
+    'Declaration of an internal class' => SpecWithConfig::create(
+        expectedRecordedClasses: [
             ['Normalizer', 'Humbug\Normalizer'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             class Normalizer {}
@@ -116,7 +117,7 @@ return [
             \class_alias('Humbug\\Normalizer', 'Normalizer', \false);
 
             PHP,
-    ],
+    ),
 
     'Declaration in a namespace' => <<<'PHP'
         <?php
@@ -140,9 +141,9 @@ return [
 
         PHP,
 
-    'Declaration in a namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
+    'Declaration in a namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
             <?php
 
             namespace Foo;
@@ -163,14 +164,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Declaration of an exposed class' => [
-        'expose-classes' => ['Foo\A'],
-        'expected-recorded-classes' => [
+    'Declaration of an exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Foo\A'],
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo;
@@ -192,16 +193,16 @@ return [
             \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
             PHP,
-    ],
+    ),
 
     // This is a pure anti-regression test – no need to excessively test this
     // in the other spec files
-    'Declaration of an exposed class exposed via a pattern' => [
-        'expose-classes' => ['/^Foo\\\\A$/'],
-        'expected-recorded-classes' => [
+    'Declaration of an exposed class exposed via a pattern' => SpecWithConfig::create(
+        exposeClasses: ['/^Foo\\\\A$/'],
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo;
@@ -223,7 +224,7 @@ return [
             \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
 
             PHP,
-    ],
+    ),
 
     'Multiple declarations in different namespaces' => <<<'PHP'
         <?php
@@ -278,16 +279,16 @@ return [
 
         PHP,
 
-    'Multiple declarations in different namespaces with exposed classes' => [
-        'expose-classes' => [
+    'Multiple declarations in different namespaces with exposed classes' => SpecWithConfig::create(
+        exposeClasses: [
             'Foo\A',
             'Bar\B',
         ],
-        'expected-recorded-classes' => [
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
             ['Bar\B', 'Humbug\Bar\B'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo {
@@ -401,5 +402,5 @@ return [
             }
 
             PHP,
-    ],
+    ),
 ];

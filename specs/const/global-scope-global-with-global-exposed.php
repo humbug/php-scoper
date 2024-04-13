@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -33,9 +34,9 @@ return [
 
         PHP,
 
-    'Exposed constant call in the global namespace' => [
-        'expose-constants' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed constant call in the global namespace' => SpecWithConfig::create(
+        exposeConstants: ['DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             DUMMY_CONST;
@@ -47,11 +48,11 @@ return [
             \DUMMY_CONST;
 
             PHP,
-    ],
+    ),
 
-    'Constant call in the global namespace which is excluded' => [
-        'exclude-namespaces' => [''],
-        'payload' => <<<'PHP'
+    'Constant call in the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: [''],
+        spec: <<<'PHP'
             <?php
 
             DUMMY_CONST;
@@ -63,7 +64,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Internal constant call in the global namespace' => <<<'PHP'
         <?php

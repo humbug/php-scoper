@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -73,10 +74,10 @@ return [
 
         PHP,
 
-    'Global function call in the global scope with global symbols exposed' => [
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'payload' => <<<'PHP'
+    'Global function call in the global scope with global symbols exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        exposeGlobalFunctions: true,
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -129,16 +130,16 @@ return [
             };
 
             PHP,
-    ],
+    ),
 
-    'Global function call in the global scope with exposed symbols' => [
-        'expose-classes' => [
+    'Global function call in the global scope with exposed symbols' => SpecWithConfig::create(
+        exposeClasses: [
             'Acme\Foo',
             'Acme\Bar',
             'Acme\Humbug\Acme\DateTimeImmutable',
             'Acme\HumbugClosure',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -191,5 +192,5 @@ return [
             };
 
             PHP,
-    ],
+    ),
 ];

@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -21,8 +22,8 @@ return [
         exposeGlobalFunctions: true,
     ),
 
-    'New statement call of a class' => [
-        'payload' => <<<'PHP'
+    'New statement call of a class' => SpecWithConfig::create(
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -41,10 +42,10 @@ return [
             new Foo();
 
             PHP,
-    ],
+    ),
 
-    'FQ new statement call of a class belonging to the global namespace' => [
-        'payload' => <<<'PHP'
+    'FQ new statement call of a class belonging to the global namespace' => SpecWithConfig::create(
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -67,5 +68,5 @@ return [
             new \Humbug\Foo();
 
             PHP,
-    ],
+    ),
 ];

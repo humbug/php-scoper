@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -55,9 +56,9 @@ return [
 
         PHP,
 
-    'Exposed FQ constant call imported with a use statement' => [
-        'expose-constants' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed FQ constant call imported with a use statement' => SpecWithConfig::create(
+        exposeConstants: ['DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -74,5 +75,5 @@ return [
             \DUMMY_CONST;
 
             PHP,
-    ],
+    ),
 ];

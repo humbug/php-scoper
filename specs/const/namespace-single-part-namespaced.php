@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -50,9 +51,9 @@ return [
 
         PHP,
 
-    'Exposed namespaced constant call on an exposed constant' => [
-        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed namespaced constant call on an exposed constant' => SpecWithConfig::create(
+        exposeConstants: ['PHPUnit\DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -66,11 +67,11 @@ return [
             PHPUnit\DUMMY_CONST;
 
             PHP,
-    ],
+    ),
 
-    'Exposed FQ namespaced constant call on an exposed constant' => [
-        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed FQ namespaced constant call on an exposed constant' => SpecWithConfig::create(
+        exposeConstants: ['PHPUnit\DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -84,5 +85,5 @@ return [
             \PHPUnit\DUMMY_CONST;
 
             PHP,
-    ],
+    ),
 ];

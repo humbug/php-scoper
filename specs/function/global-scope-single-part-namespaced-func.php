@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -45,12 +46,12 @@ return [
 
         PHP,
 
-    'Exposed namespaced function call' => [
-        'expose-functions' => ['PHPUnit\main'],
-        'expected-recorded-functions' => [
+    'Exposed namespaced function call' => SpecWithConfig::create(
+        exposeFunctions: ['PHPUnit\main'],
+        expectedRecordedFunctions: [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             PHPUnit\main();
@@ -62,14 +63,14 @@ return [
             \Humbug\PHPUnit\main();
 
             PHP,
-    ],
+    ),
 
-    'FQ exposed namespaced function call' => [
-        'expose-functions' => ['PHPUnit\main'],
-        'expected-recorded-functions' => [
+    'FQ exposed namespaced function call' => SpecWithConfig::create(
+        exposeFunctions: ['PHPUnit\main'],
+        expectedRecordedFunctions: [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             \PHPUnit\main();
@@ -81,5 +82,5 @@ return [
             \Humbug\PHPUnit\main();
 
             PHP,
-    ],
+    ),
 ];

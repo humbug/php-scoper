@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -70,12 +71,12 @@ return [
 
         PHP,
 
-    'Multiple group use statement with exposed classes' => [
-        'expose-classes' => [
+    'Multiple group use statement with exposed classes' => SpecWithConfig::create(
+        exposeClasses: [
             'A\B',
             'A\B\C',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             use A\{B};
@@ -105,5 +106,5 @@ return [
             E::class;
 
             PHP,
-    ],
+    ),
 ];
