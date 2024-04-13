@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Class declaration with an extend',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -94,8 +77,8 @@ return [
         PHP,
 
     'Declaration of an exposed class' => [
-        exposeClasses: ['Foo\B'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\B'],
+        'expected-recorded-classes' => [
             ['Foo\B', 'Humbug\Foo\B'],
         ],
         'payload' => <<<'PHP'

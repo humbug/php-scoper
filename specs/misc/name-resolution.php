@@ -22,6 +22,7 @@ return [
     ),
 
     'Internal class & function with the same name' => [
+        'expected-recorded-functions' => [],
         'payload' => <<<'PHP'
             <?php
 
@@ -53,6 +54,7 @@ return [
     ],
 
     'Internal class & const with the same name' => [
+        'expected-recorded-functions' => [],
         'payload' => <<<'PHP'
             <?php
 

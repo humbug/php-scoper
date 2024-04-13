@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Use statements for functions',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Use statement for a function belonging to the global namespace' => <<<'PHP'
@@ -107,7 +90,7 @@ return [
         PHP,
 
     'Use statement for a namespaced function which has been exposed' => [
-        exposeFunctions: ['Foo\bar'],
+        'expose-functions' => ['Foo\bar'],
         'payload' => <<<'PHP'
             <?php
 

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Class static property call in a namespace',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Constant call on a class belonging to the global namespace or the current namespace' => <<<'PHP'
@@ -99,7 +82,7 @@ return [
         PHP,
 
     'Constant call on an exposed class belonging to the global namespace' => [
-        exposeClasses: ['Foo'],
+        'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 

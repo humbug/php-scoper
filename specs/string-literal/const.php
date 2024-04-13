@@ -17,56 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'String literal assigned as a constant',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    const X = 'Yaml';
-    const X = '\\Yaml';
-    const X = 'Closure';
-    const X = '\\Closure';
-    const X = 'Symfony\\Component\\Yaml\\Ya_1';
-    const X = '\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    const X = 'Yaml';
-    const X = '\\Yaml';
-    const X = 'Closure';
-    const X = '\\Closure';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    
-    PHP,
-
-    'FQCN string argument on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Yaml'],
-        'payload' => <<<'PHP'
         <?php
 
         const X = 'Yaml';
@@ -120,7 +73,7 @@ return [
     ],
 
     'FQCN string argument on classes belonging to an excluded namespace' => [
-        excludeNamespaces: ['Symfony\Component'],
+        'exclude-namespaces' => ['Symfony\Component'],
         'payload' => <<<'PHP'
             <?php
 
@@ -191,8 +144,8 @@ return [
         PHP,
 
     'FQC constant call on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
+        'expected-recorded-classes' => [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'

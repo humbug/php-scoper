@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Static method call statement of a namespaced class in the global scope',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Static method call statement of a namespaced class' => <<<'PHP'
@@ -80,8 +63,8 @@ return [
         PHP,
 
     'Static method call statement of a namespaced class which has been exposed' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -111,8 +94,8 @@ return [
     ],
 
     'FQ static method call statement of a namespaced class which has been exposed' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

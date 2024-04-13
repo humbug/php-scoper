@@ -16,25 +16,8 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 
 return [
     'meta' => new Meta(
-        'minPhpVersion' => 70400,
+        minPhpVersion: 70_400,
         title: 'Null coalescing assignment operator',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Instance of an internal class' => <<<'PHP'

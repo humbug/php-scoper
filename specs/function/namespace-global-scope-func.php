@@ -17,23 +17,7 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'global function call in a namespace',
-        
-
         exposeGlobalConstants: true,
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     // We don't do anything as there is no ways to distinguish between a namespaced function call
@@ -72,7 +56,7 @@ return [
     // is not as it implies having both A\foo() and foo() in the
     // codebase with only foo() exposed.
     'Exposed constant call in a namespace' => [
-        exposeFunctions: ['foo'],
+        'expose-functions' => ['foo'],
         'payload' => <<<'PHP'
             <?php
 

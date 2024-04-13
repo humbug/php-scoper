@@ -17,23 +17,7 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Single-level namespaced constant call in the global scope which is imported via a use statement',
-
-
-
-
         exposeGlobalFunctions: true,
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Constant call on an imported single-level namespace' => <<<'PHP'
@@ -58,42 +42,6 @@ return [
         PHP,
 
     'FQ constant call on an imported single-level namespace' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        const DUMMY_CONST = '';
-    }
-    
-    namespace {
-        use Foo;
-        
-        \Foo\DUMMY_CONST;
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    const DUMMY_CONST = '';
-    namespace Humbug;
-    
-    use Humbug\Foo;
-    \Humbug\Foo\DUMMY_CONST;
-    
-    PHP,
-
-    'Exposed constant call on an imported single-level namespace' => [
-        exposeConstants: ['Foo\DUMMY_CONST'],
-        'payload' => <<<'PHP'
         <?php
 
         namespace {

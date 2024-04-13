@@ -16,54 +16,11 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 
 return [
     'meta' => new Meta(
-        'minPhpVersion' => 70400,
+        minPhpVersion: 70_400,
         title: 'Arrow function in a namespace',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Global function call in the global scope' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    fn ($x) => $x;
-    fn (int $x) => $x;
-    fn (int $x): int => $x;
-    fn (Foo $x): Bar => $x;
-    fn (DateTimeImmutable $x): Closure => $x;
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    fn($x) => $x;
-    fn(int $x) => $x;
-    fn(int $x): int => $x;
-    fn(Foo $x): Bar => $x;
-    fn(DateTimeImmutable $x): Closure => $x;
-    
-    PHP,
-
-    'Global function call in the global scope with global symbols exposed' => [
-        exposeGlobalClasses: true,
-        exposeGlobalFunctions: true,
-        'payload' => <<<'PHP'
         <?php
 
         namespace Acme;
@@ -114,7 +71,7 @@ return [
     ],
 
     'Global function call in the global scope with exposed symbols' => [
-        exposeClasses: [
+        'expose-classes' => [
             'Acme\Foo',
             'Acme\Bar',
             'Acme\Humbug\Acme\DateTimeImmutable',

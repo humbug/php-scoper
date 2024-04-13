@@ -17,47 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Function declarations in the global scope',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Simple function declaration' => <<<'PHP'
-    <?php
-
-    function foo() {}
-
-    ----
-    <?php
-
-    namespace Humbug;
-
-    function foo()
-    {
-    }
-
-    PHP,
-
-    'Simple exposed function' => [
-        exposeFunctions: ['foo'],
-        expectedRecordedFunctions: [
-            ['foo', 'Humbug\foo'],
-        ],
-        'payload' => <<<'PHP'
         <?php
 
         function foo() {}
@@ -96,8 +58,8 @@ return [
     ],
 
     'Simple exposed function with global functions exposed' => [
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
+        'expose-global-functions' => true,
+        'expected-recorded-functions' => [
             ['foo', 'Humbug\foo'],
         ],
         'payload' => <<<'PHP'
@@ -118,175 +80,6 @@ return [
     ],
 
     'Function declaration in the global namespace' => <<<'PHP'
-    <?php
-
-    namespace {
-        class Foo {}
-    }
-
-    namespace Foo {
-        class Bar {}
-    }
-
-    namespace X {
-        class Y {}
-    }
-
-    namespace {
-        const FOO_CONST = 'foo';
-        const BAR_CONST = 'foo';
-
-        function foo(
-            Foo $arg0,
-            \Foo $arg1,
-            Foo\Bar $arg2,
-            \Foo\Bar $arg3,
-            ArrayIterator $arg4,
-            \ArrayIterator $arg5,
-            X\Y $arg6,
-            \X\Y $arg7,
-            string $foo = FOO_CONST,
-            string $bar = BAR_CONST
-        ) {}
-    }
-    ----
-    <?php
-
-    namespace Humbug;
-
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-
-    class Bar
-    {
-    }
-    namespace Humbug\X;
-
-    class Y
-    {
-    }
-    namespace Humbug;
-
-    const FOO_CONST = 'foo';
-    const BAR_CONST = 'foo';
-    function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, X\Y $arg6, \Humbug\X\Y $arg7, string $foo = \Humbug\FOO_CONST, string $bar = \Humbug\BAR_CONST)
-    {
-    }
-
-    PHP,
-
-    'Function declaration in the global namespace with globally exposed symbols' => [
-        exposeGlobalClasses: true,
-        exposeGlobalFunctions: true,
-        exposeGlobalConstants: true,
-        expectedRecordedFunctions: [
-            ['foo', 'Humbug\foo'],
-        ],
-        'payload' => <<<'PHP'
-        <?php
-
-        function foo(string $foo = FOO_CONST) {}
-        ----
-        <?php
-
-        namespace Humbug;
-
-        function foo(string $foo = \FOO_CONST)
-        {
-        }
-
-        PHP,
-    ],
-
-    'Function declaration in the global namespace with use statements' => <<<'PHP'
-    <?php
-
-    namespace {
-        class Foo {}
-    }
-
-    namespace Foo {
-        class Bar {}
-    }
-
-    namespace X {
-        class Y {}
-    }
-
-    namespace {
-        use Foo;
-        use ArrayIterator;
-
-        function foo(
-            string $arg0,
-            ?string $arg1,
-            ?string $arg2 = null,
-
-            Foo $arg3,
-            ?Foo $arg4,
-            Foo $arg5 = null,
-
-            \Foo $arg6,
-            ?\Foo $arg7,
-            \Foo $arg8 = null,
-
-            Foo\Bar $arg9,
-            ?Foo\Bar $arg10,
-            Foo\Bar $arg11 = null,
-
-            \Foo\Bar $arg7,
-            ?\Foo\Bar $arg12,
-            \Foo\Bar $arg13 = null,
-
-            ArrayIterator $arg14,
-            ?ArrayIterator $arg15,
-            ?ArrayIterator $arg16 = null,
-
-            \ArrayIterator $arg17,
-            ?\ArrayIterator $arg18,
-            \ArrayIterator $arg19 = null,
-
-            X\Y $arg20,
-            \X\Y $arg21
-        ) {}
-    }
-
-    ----
-    <?php
-
-    namespace Humbug;
-
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-
-    class Bar
-    {
-    }
-    namespace Humbug\X;
-
-    class Y
-    {
-    }
-    namespace Humbug;
-
-    use Humbug\Foo;
-    use ArrayIterator;
-    function foo(string $arg0, ?string $arg1, ?string $arg2 = null, Foo $arg3, ?Foo $arg4, Foo $arg5 = null, \Humbug\Foo $arg6, ?\Humbug\Foo $arg7, \Humbug\Foo $arg8 = null, Foo\Bar $arg9, ?Foo\Bar $arg10, Foo\Bar $arg11 = null, \Humbug\Foo\Bar $arg7, ?\Humbug\Foo\Bar $arg12, \Humbug\Foo\Bar $arg13 = null, ArrayIterator $arg14, ?ArrayIterator $arg15, ?ArrayIterator $arg16 = null, \ArrayIterator $arg17, ?\ArrayIterator $arg18, \ArrayIterator $arg19 = null, X\Y $arg20, \Humbug\X\Y $arg21)
-    {
-    }
-
-    PHP,
-
-    'Function declarations with return types in the global namespace with use statements' => [
-        exposeClasses: ['X\Y'],
-        expectedRecordedClasses: [
-            ['X\Y', 'Humbug\X\Y'],
-        ],
-        'payload' => <<<'PHP'
         <?php
 
         namespace {
@@ -646,8 +439,8 @@ return [
     ],
 
     'User defined global function with global functions exposed' => [
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
+        'expose-global-functions' => true,
+        'expected-recorded-functions' => [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
         'payload' => <<<'PHP'
@@ -690,7 +483,7 @@ return [
     ],
 
     'User defined global function' => [
-        
+        'expose-global-functions' => false,
         'payload' => <<<'PHP'
             <?php
 
@@ -731,8 +524,8 @@ return [
     ],
 
     'User defined global exposed function' => [
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
+        'expose-global-functions' => true,
+        'expected-recorded-functions' => [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
         'payload' => <<<'PHP'
@@ -775,10 +568,10 @@ return [
     ],
 
     'User defined excluded global function' => [
-        excludeFunctions: [
+        'exclude-functions' => [
             'trigger_deprecation',
         ],
-        expectedRecordedFunctions: [
+        'expected-recorded-functions' => [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
         'payload' => <<<'PHP'

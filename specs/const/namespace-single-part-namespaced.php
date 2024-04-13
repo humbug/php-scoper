@@ -17,58 +17,10 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Single-level namespaced constant call in a namespace',
-        
-
-        
-        
         exposeGlobalFunctions: true,
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Namespaced constant call' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    PHPUnit\DUMMY_CONST;
-    ----
-    <?php
-
-    namespace Humbug\A;
-
-    PHPUnit\DUMMY_CONST;
-
-    PHP,
-
-    'FQ namespaced constant call' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    \PHPUnit\DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    \Humbug\PHPUnit\DUMMY_CONST;
-    
-    PHP,
-
-    'Exposed namespaced constant call on an exposed constant' => [
-        exposeConstants: ['PHPUnit\DUMMY_CONST'],
-        'payload' => <<<'PHP'
         <?php
 
         namespace A;
@@ -117,7 +69,7 @@ return [
     ],
 
     'Exposed FQ namespaced constant call on an exposed constant' => [
-        exposeConstants: ['PHPUnit\DUMMY_CONST'],
+        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
             <?php
 

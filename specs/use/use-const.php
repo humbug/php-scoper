@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Use statements for constants',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Constant use statement for a constant belonging to the global namespace' => <<<'PHP'
@@ -51,7 +34,7 @@ return [
         PHP,
 
     'Constant use statement for a constant belonging to the global namespace with global exposed enabled' => [
-        exposeGlobalConstants: true,
+        'expose-global-constants' => true,
         'payload' => <<<'PHP'
             <?php
 
@@ -124,7 +107,7 @@ return [
         PHP,
 
     'Constant use statement for a namespaced constant which has been exposed' => [
-        exposeConstants: ['Foo\BAR'],
+        'expose-constants' => ['Foo\BAR'],
         'payload' => <<<'PHP'
             <?php
 
@@ -141,7 +124,7 @@ return [
     ],
 
     'Constant use statement for a namespaced constant which has NOT been exposed' => [
-        exposeConstants: ['/^Foo\\\\Baru.*$/'],
+        'expose-constants' => ['/^Foo\\\\Baru.*$/'],
         'payload' => <<<'PHP'
             <?php
 

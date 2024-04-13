@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Trait declaration',
-
-
-        
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -87,8 +70,8 @@ return [
         PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
-        exposeGlobalClasses: true,
-        expectedRecordedClasses: [
+        'expose-global-classes' => true,
+        'expected-recorded-classes' => [
             ['B', 'Humbug\B'],
         ],
         'payload' => <<<'PHP'
@@ -196,7 +179,7 @@ return [
         PHP,
 
     'Declaration of an exposed trait' => [
-        exposeClasses: ['Foo\A'],
+        'expose-classes' => ['Foo\A'],
         'payload' => <<<'PHP'
             <?php
 

@@ -17,28 +17,11 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Exposing symbols case sensitiveness',
-
-
-        
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Classes marked as exposed are case insensitive' => [
-        exposeClasses: ['acme\foo'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['acme\foo'],
+        'expected-recorded-classes' => [
             ['Acme\Foo', 'Humbug\Acme\Foo'],
         ],
         'payload' => <<<'PHP'
@@ -66,7 +49,7 @@ return [
     ],
 
     'Constants marked as exposed are case sensitive' => [
-        exposeConstants: ['Acme\Foo', 'Acme\Bar'],
+        'expose-constants' => ['Acme\Foo', 'Acme\Bar'],
         'payload' => <<<'PHP'
             <?php
 
@@ -88,7 +71,7 @@ return [
     ],
 
     'The namespace of constant exposed are case insensitive' => [
-        exposeConstants: ['acme\FOO', 'acme\BAR'],
+        'expose-constants' => ['acme\FOO', 'acme\BAR'],
         'payload' => <<<'PHP'
             <?php
 
@@ -108,7 +91,7 @@ return [
     ],
 
     'Namespaces excluded are case insensitive' => [
-        excludeNamespaces: ['acme'],
+        'exclude-namespaces' => ['acme'],
         'payload' => <<<'PHP'
             <?php
 
@@ -164,7 +147,7 @@ return [
     ],
 
     'Use statements of excluded namespaces are case insensitive' => [
-        excludeNamespaces: ['acme'],
+        'exclude-namespaces' => ['acme'],
         'payload' => <<<'PHP'
             <?php
 

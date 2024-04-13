@@ -17,23 +17,7 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Global constant usage in a namespace with the global constants exposed',
-        
-
         exposeGlobalConstants: true,
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Constant call in a namespace' => <<<'PHP'
@@ -52,7 +36,7 @@ return [
         PHP,
 
     'Exposed constant call in a namespace' => [
-        exposeConstants: ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
             <?php
 
@@ -85,7 +69,7 @@ return [
         PHP,
 
     'Exposed FQ constant call in a namespace' => [
-        exposeConstants: ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
             <?php
 

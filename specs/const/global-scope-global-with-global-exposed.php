@@ -17,23 +17,7 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Global constant usage in the global scope with the global constants exposed',
-        
-
         exposeGlobalConstants: true,
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Constant call in the global namespace' => <<<'PHP'
@@ -50,7 +34,7 @@ return [
         PHP,
 
     'Exposed constant call in the global namespace' => [
-        exposeConstants: ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
             <?php
 
@@ -66,7 +50,7 @@ return [
     ],
 
     'Constant call in the global namespace which is excluded' => [
-        excludeNamespaces: [''],
+        'exclude-namespaces' => [''],
         'payload' => <<<'PHP'
             <?php
 

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'New statement call of a namespaced class imported with a use statement in a namespace',
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'New statement call of a class via a use statement' => <<<'PHP'
@@ -109,8 +92,8 @@ return [
         PHP,
 
     'New statement call of an exposed class via a use statement' => [
-        exposeClasses: ['X\Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['X\Foo\Bar'],
+        'expected-recorded-classes' => [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -152,7 +135,7 @@ return [
     ],
 
     'FQ new statement call of a non-exposed class via a use statement' => [
-        exposeClasses: ['X\Foo\Bar'],
+        'expose-classes' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
             <?php
 

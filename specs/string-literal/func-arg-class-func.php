@@ -17,131 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'String literal used as a function argument of class-related functions',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    is_a($swift, 'Swift');
-    is_a($swift, '\\Swift');
-    is_a($swift, 'Humbug\\Swift');
-    is_a($swift, '\\Humbug\\Swift');
-    is_a($swift, 'DateTime');
-    is_a($swift, '\\DateTime');
-    
-    is_subclass_of($swift, 'Swift');
-    is_subclass_of($swift, '\\Swift');
-    is_subclass_of($swift, 'Humbug\\Swift');
-    is_subclass_of($swift, '\\Humbug\\Swift');
-    is_subclass_of($swift, 'DateTime');
-    is_subclass_of($swift, '\\DateTime');
-    is_subclass_of('Mailer', 'Swift');
-    is_subclass_of('\\Mailer', '\\Swift');
-    is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
-    is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
-    is_subclass_of('\\Humbug\\Mailer', '\\Humbug\\Swift');
-    is_subclass_of('Mailer', 'DateTime');
-    is_subclass_of('\\Mailer', '\\DateTime');
-    
-    interface_exists('Swift');
-    interface_exists('\\Swift');
-    interface_exists('Humbug\\Swift');
-    interface_exists('\\Humbug\\Swift');
-    interface_exists('DateTime');
-    interface_exists('\\DateTime');
-    
-    class_exists('Swift');
-    class_exists('\\Swift');
-    class_exists('Humbug\\Swift');
-    class_exists('\\Humbug\\Swift');
-    class_exists('DateTime');
-    class_exists('\\DateTime');
-    
-    trait_exists('Swift');
-    trait_exists('\\Swift');
-    trait_exists('Humbug\\Swift');
-    trait_exists('\\Humbug\\Swift');
-    trait_exists('DateTime');
-    trait_exists('\\DateTime');
-    
-    class_alias('Swift', 'Mailer');
-    class_alias('\\Swift', '\\Mailer');
-    class_alias('Humbug\\Swift', 'Mailer');
-    class_alias('\\Humbug\\Swift', '\\Mailer');
-    class_alias('DateTime', 'DateTimeInterface');
-    class_alias('\\DateTime', '\\DateTimeInterface');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \is_a($swift, 'Humbug\\Swift');
-    \is_a($swift, 'Humbug\\Swift');
-    \is_a($swift, 'Humbug\\Swift');
-    \is_a($swift, 'Humbug\\Swift');
-    \is_a($swift, 'DateTime');
-    \is_a($swift, '\\DateTime');
-    \is_subclass_of($swift, 'Humbug\\Swift');
-    \is_subclass_of($swift, 'Humbug\\Swift');
-    \is_subclass_of($swift, 'Humbug\\Swift');
-    \is_subclass_of($swift, 'Humbug\\Swift');
-    \is_subclass_of($swift, 'DateTime');
-    \is_subclass_of($swift, '\\DateTime');
-    \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
-    \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
-    \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
-    \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
-    \is_subclass_of('Humbug\\Mailer', 'Humbug\\Swift');
-    \is_subclass_of('Humbug\\Mailer', 'DateTime');
-    \is_subclass_of('Humbug\\Mailer', '\\DateTime');
-    \interface_exists('Humbug\\Swift');
-    \interface_exists('Humbug\\Swift');
-    \interface_exists('Humbug\\Swift');
-    \interface_exists('Humbug\\Swift');
-    \interface_exists('DateTime');
-    \interface_exists('\\DateTime');
-    \class_exists('Humbug\\Swift');
-    \class_exists('Humbug\\Swift');
-    \class_exists('Humbug\\Swift');
-    \class_exists('Humbug\\Swift');
-    \class_exists('DateTime');
-    \class_exists('\\DateTime');
-    \trait_exists('Humbug\\Swift');
-    \trait_exists('Humbug\\Swift');
-    \trait_exists('Humbug\\Swift');
-    \trait_exists('Humbug\\Swift');
-    \trait_exists('DateTime');
-    \trait_exists('\\DateTime');
-    \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
-    \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
-    \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
-    \class_alias('Humbug\\Swift', 'Humbug\\Mailer');
-    \class_alias('DateTime', 'DateTimeInterface');
-    \class_alias('\\DateTime', '\\DateTimeInterface');
-    
-    PHP,
-
-    'FQCN string argument on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
-        'payload' => <<<'PHP'
         <?php
 
         is_a($swift, 'Swift');
@@ -321,7 +199,7 @@ return [
     ],
 
     'FQCN string argument on class from an excluded namespace' => [
-        excludeNamespaces: [
+        'exclude-namespaces' => [
             'Symfony\Component\Yaml',
             '/^$/',
         ],
@@ -400,7 +278,7 @@ return [
     ],
 
     'FQCN string argument with global functions not exposed' => [
-        
+        'expose-global-functions' => false,
         'payload' => <<<'PHP'
             <?php
 

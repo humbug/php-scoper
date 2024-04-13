@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Static method call statement of a namespaced class imported with a use statement in the global scope',
-
-
-
-
-
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Static method call statement of a namespaced class partially imported with a use statement' => <<<'PHP'
@@ -168,8 +151,8 @@ return [
         PHP,
 
     'Static method call statement of an exposed namespaced class partially imported with a use statement' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -211,8 +194,8 @@ return [
     ],
 
     'Static method call statement of an exposed namespaced class partially imported with a use statement static method call statement of an exposed namespaced class imported with a use statement' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -245,8 +228,8 @@ return [
     ],
 
     'FQ static method call statement of an exposed namespaced class partially imported with a use statement' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -288,8 +271,8 @@ return [
     ],
 
     'FQ static method call statement of an exposed namespaced class imported with a use statement' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

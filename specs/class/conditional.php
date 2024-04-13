@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Conditional class declaration',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -56,8 +39,8 @@ return [
         PHP,
 
     'Declaration of an exposed class in the global namespace' => [
-        exposeClasses: ['A'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['A'],
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -103,8 +86,8 @@ return [
         PHP,
 
     'Declaration of an exposed class' => [
-        exposeClasses: ['Foo\A'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\A'],
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Use statements for classes with group use statements',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Multiple group use statement' => <<<'PHP'
@@ -88,7 +71,7 @@ return [
         PHP,
 
     'Multiple group use statement with exposed classes' => [
-        exposeClasses: [
+        'expose-classes' => [
             'A\B',
             'A\B\C',
         ],

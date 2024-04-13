@@ -17,51 +17,10 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Global constant declaration & usage in the global scope with the global constants exposed',
-        
-
         exposeGlobalConstants: true,
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Constants declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    const FOO_CONST = foo();
-    define('BAR_CONST', foo());
-    define('Acme\BAR_CONST', foo());
-    define(FOO_CONST, foo());
-    define(\FOO_CONST, foo());
-    define(\Acme\BAR_CONST, foo());
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \define('FOO_CONST', foo());
-    \define('BAR_CONST', foo());
-    \define('Humbug\\Acme\\BAR_CONST', foo());
-    \define(\FOO_CONST, foo());
-    \define(\FOO_CONST, foo());
-    \define(\Humbug\Acme\BAR_CONST, foo());
-    
-    PHP,
-
-    'Constants declaration in the global namespace which is excluded' => [
-        excludeNamespaces: [''],
-        'payload' => <<<'PHP'
         <?php
 
         const FOO_CONST = foo();
@@ -111,7 +70,7 @@ return [
     ],
 
     'Exposed constants declaration in the global namespace' => [
-        exposeConstants: [
+        'expose-constants' => [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
@@ -141,7 +100,7 @@ return [
     ],
 
     'Excluded constants declaration in the global namespace' => [
-        excludeConstants: [
+        'exclude-constants' => [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
@@ -196,7 +155,7 @@ return [
         PHP,
 
     'Constants declaration in an excluded namespace' => [
-        excludeNamespaces: ['Acme'],
+        'exclude-namespaces' => ['Acme'],
         'payload' => <<<'PHP'
             <?php
 
@@ -224,7 +183,7 @@ return [
     ],
 
     'Exposed constants declaration in a namespace' => [
-        exposeConstants: ['Acme\BAR_CONST'],
+        'expose-constants' => ['Acme\BAR_CONST'],
         'payload' => <<<'PHP'
             <?php
 
@@ -252,7 +211,7 @@ return [
     ],
 
     'Exposed constants declaration in an exposed namespace' => [
-        exposeNamespaces: ['Acme'],
+        'expose-namespaces' => ['Acme'],
         'payload' => <<<'PHP'
             <?php
 

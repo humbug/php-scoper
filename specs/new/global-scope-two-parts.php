@@ -17,23 +17,8 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'New statement call of a namespaced class in the global scope',
-
-
         exposeGlobalConstants: true,
-
         exposeGlobalFunctions: true,
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'New statement call of a namespaced class' => <<<'PHP'
@@ -85,8 +70,8 @@ return [
         PHP,
 
     'New statement call of an exposed namespaced class' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -116,8 +101,8 @@ return [
     ],
 
     'FQ new statement call of an exposed namespaced class' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

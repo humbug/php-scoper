@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Namespaced function call imported with a use statement in the global scope',
-        
-
-        
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
@@ -79,8 +62,8 @@ return [
         PHP,
 
     'Exposed namespaced function call imported with a partial use statement in the global scope' => [
-        exposeFunctions: ['Foo\main'],
-        expectedRecordedFunctions: [
+        'expose-functions' => ['Foo\main'],
+        'expected-recorded-functions' => [
             ['Foo\main', 'Humbug\Foo\main'],
         ],
         'payload' => <<<'PHP'

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Internal symbols defined by the user',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Known non-internal symbols (sanity test)' => <<<'PHP'
@@ -55,9 +38,9 @@ return [
         PHP,
 
     'Known non-internal symbols with global symbols exposed (sanity check)' => [
-        exposeGlobalConstants: true,
-        exposeGlobalClasses: true,
-        exposeGlobalFunctions: true,
+        'expose-global-constants' => true,
+        'expose-global-classes' => true,
+        'expose-global-functions' => true,
         'payload' => <<<'PHP'
             <?php
 
@@ -78,9 +61,9 @@ return [
     ],
 
     'Declared internal symbols' => [
-        excludeClasses: ['Foo'],
-        excludeFunctions: ['baz'],
-        excludeConstants: ['BAR'],
+        'exclude-classes' => ['Foo'],
+        'exclude-functions' => ['baz'],
+        'exclude-constants' => ['BAR'],
         'payload' => <<<'PHP'
             <?php
 

@@ -17,28 +17,11 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Method declarations',
-
-
-
-
-
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Method declarations' => [
-        exposeClasses: ['X\Y', 'BAR_CONST'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['X\Y', 'BAR_CONST'],
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'
@@ -125,8 +108,8 @@ return [
     ],
 
     'Method declarations with return types' => [
-        exposeClasses: ['X\Y'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['X\Y'],
+        'expected-recorded-classes' => [
             ['X\Y', 'Humbug\X\Y'],
         ],
         'payload' => <<<'PHP'

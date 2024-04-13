@@ -17,78 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Global constant declaration in the global scope',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Constants declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    const FOO_CONST = foo();
-    const X = 'x', Y = '';
-    if (!defined('BAR_CONST')) {
-        define('BAR_CONST', foo());
-    }
-    if (!defined('Acme\BAR_CONST')) {
-        define('Acme\BAR_CONST', foo());
-    }
-    if (!defined('FOO_CONST')) {
-        define(FOO_CONST, foo());
-    }
-    if (!defined('FOO_CONST')) {
-        define(\FOO_CONST, foo());
-    }
-    if (!defined('Acme\BAR_CONST')) {
-        define(\Acme\BAR_CONST, foo());
-    }
-    const PHP_VERSION = 81400;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    const FOO_CONST = foo();
-    if (\true) {
-        const X = 'x';
-        const Y = '';
-    }
-    if (!\defined('Humbug\\BAR_CONST')) {
-        \define('Humbug\\BAR_CONST', foo());
-    }
-    if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-        \define('Humbug\\Acme\\BAR_CONST', foo());
-    }
-    if (!\defined('Humbug\\FOO_CONST')) {
-        \define(\Humbug\FOO_CONST, foo());
-    }
-    if (!\defined('Humbug\\FOO_CONST')) {
-        \define(\Humbug\FOO_CONST, foo());
-    }
-    if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-        \define(\Humbug\Acme\BAR_CONST, foo());
-    }
-    \define('PHP_VERSION', 81400);
-    
-    PHP,
-
-    'Constant declarations in the global namespace which is excluded' => [
-        excludeNamespaces: [''],
-        'payload' => <<<'PHP'
         <?php
 
         const FOO_CONST = foo();
@@ -190,7 +121,7 @@ return [
     ],
 
     'Exposed constant declarations in the global namespace' => [
-        exposeConstants: [
+        'expose-constants' => [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
@@ -260,7 +191,7 @@ return [
     ],
 
     'Exposed grouped constants declaration in the global namespace' => [
-        exposeConstants: ['X'],
+        'expose-constants' => ['X'],
         'payload' => <<<'PHP'
             <?php
 
@@ -279,59 +210,6 @@ return [
     ],
 
     'Constants declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    const FOO_CONST = foo();
-    const X = 'x', Y = '';
-    
-    if (!defined('BAR_CONST')) {
-        define('BAR_CONST', foo());
-    }
-    if (!defined('Acme\BAR_CONST')) {
-        define('Acme\BAR_CONST', foo());
-    }
-    if (!defined('Acme\FOO_CONST')) {
-        define(FOO_CONST, foo());
-    }
-    if (!defined('FOO_CONST')) {
-        define(\FOO_CONST, foo());
-    }
-    if (!defined('Acme\BAR_CONST')) {
-        define(\Acme\BAR_CONST, foo());
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    const FOO_CONST = foo();
-    if (\true) {
-        const X = 'x';
-        const Y = '';
-    }
-    if (!\defined('Humbug\\BAR_CONST')) {
-        \define('Humbug\\BAR_CONST', foo());
-    }
-    if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-        \define('Humbug\\Acme\\BAR_CONST', foo());
-    }
-    if (!\defined('Humbug\\Acme\\FOO_CONST')) {
-        \define(FOO_CONST, foo());
-    }
-    if (!\defined('Humbug\\FOO_CONST')) {
-        \define(\Humbug\FOO_CONST, foo());
-    }
-    if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-        \define(\Humbug\Acme\BAR_CONST, foo());
-    }
-    
-    PHP,
-
-    'Constants declaration in an excluded namespace' => [
-        excludeNamespaces: ['Acme'],
-        'payload' => <<<'PHP'
         <?php
 
         namespace Acme;
@@ -357,34 +235,6 @@ return [
         ----
         <?php
 
-    'Exposed constants declaration in a namespace' => [
-        exposeConstants: ['Acme\BAR_CONST'],
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        const FOO_CONST = foo();
-        const X = 'x', Y = '';
-        
-        if (!defined('BAR_CONST')) {
-            define('BAR_CONST', foo());
-        }
-        if (!defined('Acme\BAR_CONST')) {
-            define('Acme\BAR_CONST', foo());
-        }
-        if (!defined('Acme\FOO_CONST')) {
-            define(FOO_CONST, foo());
-        }
-        if (!defined('FOO_CONST')) {
-            define(\FOO_CONST, foo());
-        }
-        if (!defined('Acme\BAR_CONST')) {
-            define(\Acme\BAR_CONST, foo());
-        }
-        ----
-        <?php
-        
         namespace Humbug\Acme;
 
         const FOO_CONST = foo();
@@ -519,7 +369,7 @@ return [
     ],
 
     'Token compatibility regression test' => [
-        excludeConstants: [
+        'exclude-constants' => [
             'NEW_TOKEN',
             'ANOTHER_NEW_TOKEN',
         ],

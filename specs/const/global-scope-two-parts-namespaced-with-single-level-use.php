@@ -17,70 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Two-parts namespaced constant call in the global scope with a single-level use statement',
-        
-
-        
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Namespaced constant call with namespace partially imported' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo;
-    
-    Foo\Bar\DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo;
-    Foo\Bar\DUMMY_CONST;
-    
-    PHP,
-
-    'FQ namespaced constant call with namespace partially imported' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo;
-    
-    \Foo\Bar\DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo;
-    \Humbug\Foo\Bar\DUMMY_CONST;
-    
-    PHP,
-
-    'Exposed namespaced constant call with namespace partially imported' => [
-        exposeConstants: ['Foo\Bar\DUMMY_CONST'],
-        'payload' => <<<'PHP'
         <?php
 
         class Foo {}

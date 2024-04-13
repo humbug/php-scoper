@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Global constant imported with a use statement used in a namespace',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Constant call imported with a use statement' => <<<'PHP'
@@ -73,7 +56,7 @@ return [
         PHP,
 
     'Exposed FQ constant call imported with a use statement' => [
-        exposeConstants: ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
             <?php
 

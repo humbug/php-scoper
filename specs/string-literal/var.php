@@ -17,72 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'String literal assigned to a variable',
-
-
-
-
-
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    $x = 'Yaml';
-    $x = '\\Yaml';
-    $x = 'Closure';
-    $x = '\\Closure';
-    $x = 'Symfony\\Component\\Yaml\\Ya_1';
-    $x = '\\Symfony\\Component\\Yaml\\Ya_1';
-    $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $x = 'Yaml';
-    $x = '\\Yaml';
-    $x = 'Closure';
-    $x = '\\Closure';
-    $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    
-    PHP,
-
-    'Invalid FQCN strings' => <<<'PHP'
-    <?php
-    
-    $regex = '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
-    $shortcuts = preg_split('{(\|)-?}', ltrim($shortcut, '-'));
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $regex = '%if \\(defined\\(\\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
-    $shortcuts = \preg_split('{(\\|)-?}', \ltrim($shortcut, '-'));
-    
-    PHP,
-
-    'FQCN string argument on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Yaml'],
-        'payload' => <<<'PHP'
         <?php
 
         $x = 'Yaml';
@@ -152,7 +89,7 @@ return [
     ],
 
     'FQCN string argument on classes belonging to an excluded namespace' => [
-        excludeNamespaces: ['Symfony\Component'],
+        'exclude-namespaces' => ['Symfony\Component'],
         'payload' => <<<'PHP'
             <?php
 
@@ -223,8 +160,8 @@ return [
         PHP,
 
     'FQC constant call on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
+        'expected-recorded-classes' => [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'

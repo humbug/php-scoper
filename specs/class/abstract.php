@@ -17,53 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Abstract class declaration',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    abstract class A {
-        public function a() {}
-        abstract public function b();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    abstract class A
-    {
-        public function a()
-        {
-        }
-        public abstract function b();
-    }
-    
-    PHP,
-
-    'Declaration in the global namespace with global classes exposed' => [
-        exposeGlobalClasses: true,
-        expectedRecordedClasses: [
-            ['A', 'Humbug\A'],
-        ],
-        'payload' => <<<'PHP'
         <?php
 
         abstract class A {
@@ -83,9 +39,11 @@ return [
             public abstract function b();
         }
 
-    'Declaration in the global namespace with the global namespace excluded' => [
-        excludeNamespaces: ['/^$/'],
-        expectedRecordedClasses: [
+        PHP,
+
+    'Declaration in the global namespace with global classes exposed' => [
+        'expose-global-classes' => true,
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -142,8 +100,8 @@ return [
     ],
 
     'Declaration of an exposed class in the global namespace' => [
-        exposeClasses: ['A'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['A'],
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -171,9 +129,9 @@ return [
     ],
 
     'Declaration of an exposed class in the global namespace which is excluded' => [
-        excludeNamespaces: ['/^$/'],
-        exposeClasses: ['A'],
-        expectedRecordedClasses: [
+        'exclude-namespaces' => ['/^$/'],
+        'expose-classes' => ['A'],
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -248,59 +206,11 @@ return [
                 public abstract function b();
             }
 
-    'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    abstract class A {
-        public function a() {}
-        abstract public function b();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    abstract class A
-    {
-        public function a()
-        {
-        }
-        public abstract function b();
-    }
-    
-    PHP,
-
-    'Declaration in a namespace with global classes exposed' => [
-        exposeGlobalClasses: true,
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A {
-            public function a() {}
-            abstract public function b();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        abstract class A
-        {
-            public function a()
-            {
-            }
-            public abstract function b();
-        }
-        
-        PHP,
+            PHP,
     ],
 
     'Declaration in an excluded namespace' => [
-        excludeNamespaces: ['Foo'],
+        'exclude-namespaces' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 
@@ -327,8 +237,8 @@ return [
     ],
 
     'Declaration in an exposed namespace' => [
-        exposeNamespaces: ['Foo'],
-        expectedRecordedClasses: [
+        'expose-namespaces' => ['Foo'],
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
@@ -358,8 +268,8 @@ return [
     ],
 
     'Declaration of an exposed class in a namespace' => [
-        exposeClasses: ['Foo\A'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\A'],
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
@@ -389,7 +299,7 @@ return [
     ],
 
     'Declaration of an exposed namespaced class belonging to an excluded namespace' => [
-        excludeNamespaces: ['Foo'],
+        'exclude-namespaces' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 
@@ -434,7 +344,7 @@ return [
     ],
 
     'Declaration of a class belonging to an excluded namespace' => [
-        excludeNamespaces: ['Foo'],
+        'exclude-namespaces' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 
@@ -461,8 +371,8 @@ return [
     ],
 
     'Multiple declarations in different namespaces with exposed classes' => [
-        exposeClasses: ['Foo\WA', 'Bar\WB', 'WC'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\WA', 'Bar\WB', 'WC'],
+        'expected-recorded-classes' => [
             ['Foo\WA', 'Humbug\Foo\WA'],
             ['Bar\WB', 'Humbug\Bar\WB'],
             ['WC', 'Humbug\WC'],

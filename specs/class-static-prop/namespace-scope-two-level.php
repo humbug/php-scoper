@@ -17,79 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Class static property call of a namespaced class in a namespace',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Constant call on a namespaced class' => <<<'PHP'
-    <?php
-    
-    namespace X\PHPUnit {
-        class Command {}
-    }
-    
-    namespace X {
-        PHPUnit\Command::$mainStaticProp;
-    }
-    ----
-    <?php
-
-    namespace Humbug\X\PHPUnit;
-
-    class Command
-    {
-    }
-    namespace Humbug\X;
-
-    PHPUnit\Command::$mainStaticProp;
-
-    PHP,
-
-    'FQ constant call on a namespaced class' => <<<'PHP'
-    <?php
-    
-    namespace PHPUnit {
-        class Command {}
-    }
-    
-    namespace X {
-        \PHPUnit\Command::$mainStaticProp;
-    }
-    ----
-    <?php
-    
-    namespace Humbug\PHPUnit;
-    
-    class Command
-    {
-    }
-    namespace Humbug\X;
-    
-    \Humbug\PHPUnit\Command::$mainStaticProp;
-    
-    PHP,
-
-    'Constant call on an exposed namespaced class' => [
-        exposeClasses: ['X\PHPUnit\Command'],
-        expectedRecordedClasses: [
-            ['X\PHPUnit\Command', 'Humbug\X\PHPUnit\Command'],
-        ],
-        'payload' => <<<'PHP'
         <?php
 
         namespace X\PHPUnit {
@@ -169,8 +99,8 @@ return [
     ],
 
     'FQ constant call on an exposed namespaced class' => [
-        exposeClasses: ['PHPUnit\Command'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['PHPUnit\Command'],
+        'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'

@@ -17,30 +17,13 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Excluding a symbol/namespace should have precedence over exposing a symbol/namespace',
-        
-
-        
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'namespace' => [
-        excludeNamespaces: [
+        'exclude-namespaces' => [
             'Acme',
         ],
-        exposeNamespaces: [
+        'expose-namespaces' => [
             'Acme',
         ],
         'payload' => <<<'PHP'
@@ -70,10 +53,10 @@ return [
     ],
 
     'symbol' => [
-        excludeClasses: [
+        'exclude-classes' => [
             'Acme\X',
         ],
-        exposeClasses: [
+        'expose-classes' => [
             'Acme\X',
         ],
         'payload' => <<<'PHP'

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Exposed functions which are never declared but for which the existence is checked',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Non exposed global function call' => <<<'PHP'
@@ -50,8 +33,8 @@ return [
         PHP,
 
     'Exposed global function call' => [
-        exposeFunctions: ['main'],
-        expectedRecordedFunctions: [
+        'expose-functions' => ['main'],
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -69,8 +52,8 @@ return [
     ],
 
     'Global function call with exposed global functions' => [
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
+        'expose-global-functions' => true,
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -101,8 +84,8 @@ return [
         PHP,
 
     'Exposed namespaced function call' => [
-        exposeFunctions: ['Acme\main'],
-        expectedRecordedFunctions: [
+        'expose-functions' => ['Acme\main'],
+        'expected-recorded-functions' => [
             ['Acme\main', 'Humbug\Acme\main'],
         ],
         'payload' => <<<'PHP'
@@ -122,7 +105,7 @@ return [
     ],
 
     'Namespaced function call from excluded namespace' => [
-        excludeNamespaces: ['Acme'],
+        'exclude-namespaces' => ['Acme'],
         'payload' => <<<'PHP'
             <?php
 

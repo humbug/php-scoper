@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'New statement call of a namespaced class imported with a use statement in the global scope',
-        
-
-        
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'New statement call of a namespaced class partially imported with a use statement' => <<<'PHP'
@@ -73,8 +56,8 @@ return [
         PHP,
 
     'New statement call of an exposed namespaced class partially imported with a use statement' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -152,8 +135,8 @@ return [
         PHP,
 
     'FQ new statement call of an exposed namespaced class partially imported with a use statement' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -231,8 +214,8 @@ return [
         PHP,
 
     'New statement call of an exposed namespaced class imported with a use statement' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -314,8 +297,8 @@ return [
         PHP,
 
     'FQ new statement call of a, exposed namespaced class imported with a use statement' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'

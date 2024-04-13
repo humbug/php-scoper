@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Class constant call of a class imported with a use statement in a namespace',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
@@ -127,7 +110,7 @@ return [
         PHP,
 
     'Constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => [
-        exposeClasses: ['Foo'],
+        'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 
@@ -148,7 +131,7 @@ return [
     ],
 
     'FQ constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => [
-        exposeClasses: ['Foo'],
+        'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 

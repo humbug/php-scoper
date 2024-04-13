@@ -52,8 +52,8 @@ return [
         PHP,
 
     'Global function call imported with a use statement in the global scope with global functions exposed' => [
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
+        'expose-global-functions' => true,
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -90,8 +90,8 @@ return [
         PHP,
 
     'Global FQ function call imported with a use statement in the global scope with global functions exposed' => [
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
+        'expose-global-functions' => true,
+        'expected-recorded-functions' => [
             ['main', 'Humbug\main'],
         ],
         'payload' => <<<'PHP'
@@ -112,8 +112,8 @@ return [
     ],
 
     'Uppercase global FQ function call imported with a use statement in the global scope with global functions exposed' => [
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
+        'expose-global-functions' => true,
+        'expected-recorded-functions' => [
             ['MAIN', 'Humbug\MAIN'],
         ],
         'payload' => <<<'PHP'

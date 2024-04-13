@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'String literal used as a function argument of function-related functions',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'FQFN string argument' => <<<'PHP'
@@ -75,8 +58,8 @@ return [
         PHP,
 
     'FQFN string argument on exposed function' => [
-        exposeFunctions: ['Acme\foo', 'dump'],
-        expectedRecordedFunctions: [
+        'expose-functions' => ['Acme\foo', 'dump'],
+        'expected-recorded-functions' => [
             ['Acme\foo', 'Humbug\Acme\foo'],
             ['dump', 'Humbug\dump'],
         ],
@@ -120,7 +103,7 @@ return [
     ],
 
     'FQFN string argument on function from an excluded namespace' => [
-        excludeNamespaces: [
+        'exclude-namespaces' => [
             'Acme',
             '/^$/',
         ],
@@ -164,8 +147,8 @@ return [
     ],
 
     'FQFN string argument with global functions exposed' => [
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
+        'expose-global-functions' => true,
+        'expected-recorded-functions' => [
             ['dump', 'Humbug\dump'],
         ],
         'payload' => <<<'PHP'

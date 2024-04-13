@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Class static property call in the global scope',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Constant call on a class belonging to the global namespace' => <<<'PHP'
@@ -55,8 +38,8 @@ return [
         PHP,
 
     'Constant call on a class belonging to the global namespace which is excluded' => [
-        excludeNamespaces: ['/^$/'],
-        expectedRecordedClasses: [
+        'exclude-namespaces' => ['/^$/'],
+        'expected-recorded-classes' => [
             ['Command', 'Humbug\Command'],
         ],
         'payload' => <<<'PHP'
@@ -125,7 +108,7 @@ return [
 
     // TODO: this should not have been made into a FQC call
     'Constant call on an exposed class belonging to the global namespace' => [
-        exposeClasses: ['Foo'],
+        'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 
@@ -141,7 +124,7 @@ return [
     ],
 
     'FQ constant call on an exposed class belonging to the global namespace' => [
-        exposeClasses: ['Foo'],
+        'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 

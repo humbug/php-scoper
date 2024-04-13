@@ -17,79 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Class constant call of a namespaced class in a namespace',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Constant call on a namespaced class' => <<<'PHP'
-    <?php
-    
-    namespace X\PHPUnit {
-        class Command {}
-    }
-    
-    namespace X {
-        PHPUnit\Command::MAIN_CONST;
-    }
-    ----
-    <?php
-
-    namespace Humbug\X\PHPUnit;
-
-    class Command
-    {
-    }
-    namespace Humbug\X;
-
-    PHPUnit\Command::MAIN_CONST;
-
-    PHP,
-
-    'FQ constant call on a namespaced class' => <<<'PHP'
-    <?php
-    
-    namespace PHPUnit {
-        class Command {}
-    }
-    
-    namespace X {
-        \PHPUnit\Command::MAIN_CONST;
-    }
-    ----
-    <?php
-    
-    namespace Humbug\PHPUnit;
-    
-    class Command
-    {
-    }
-    namespace Humbug\X;
-    
-    \Humbug\PHPUnit\Command::MAIN_CONST;
-    
-    PHP,
-
-    'Constant call on an exposed namespaced class' => [
-        exposeClasses: ['X\PHPUnit\Command'],
-        expectedRecordedClasses: [
-            ['X\PHPUnit\Command', 'Humbug\X\PHPUnit\Command'],
-        ],
-        'payload' => <<<'PHP'
         <?php
 
         namespace X\PHPUnit {
@@ -113,9 +43,7 @@ return [
 
         PHP,
 
-    'Constant call on a namespaced class belonging to an excluded namespace' => [
-        excludeNamespaces: ['X\PHPUnit'],
-        'payload' => <<<'PHP'
+    'FQ constant call on a namespaced class' => <<<'PHP'
         <?php
 
         namespace PHPUnit {
@@ -198,7 +126,7 @@ return [
     ],
 
     'Constant call on a namespaced class belonging to an excluded namespace (2)' => [
-        excludeNamespaces: ['/^.*$/'],
+        'exclude-namespaces' => ['/^.*$/'],
         'payload' => <<<'PHP'
             <?php
 
@@ -225,8 +153,8 @@ return [
     ],
 
     'FQ constant call on an exposed namespaced class' => [
-        exposeClasses: ['PHPUnit\Command'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['PHPUnit\Command'],
+        'expected-recorded-classes' => [
             ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
         ],
         'payload' => <<<'PHP'

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Aliased use statements',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
@@ -131,7 +114,7 @@ return [
         PHP,
 
     'Use statement of two-level class which has been exposed' => [
-        exposeClasses: ['Foo\Bar'],
+        'expose-classes' => ['Foo\Bar'],
         'payload' => <<<'PHP'
             <?php
 

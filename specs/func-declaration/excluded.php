@@ -17,26 +17,11 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Function declarations in the global scope',
-
-
-
-
-
-
-
-
-
-
-
-
-
         excludeFunctions: ['new_php20_function'],
-
-
         expectedRecordedFunctions: [
             ['new_php20_function', 'Humbug\new_php20_function'],
         ],
-    ],
+    ),
 
     'simple declaration' => <<<'PHP'
         <?php

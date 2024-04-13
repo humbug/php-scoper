@@ -16,26 +16,10 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 
 return [
     'meta' => new Meta(
-        'maxPhpVersion' => 70499,
+        maxPhpVersion: 70_499,
         title: 'Match',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
+
     'match' => <<<'PHP'
         <?php declare(strict_types=1);
 

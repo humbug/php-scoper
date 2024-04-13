@@ -17,23 +17,8 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Use statements',
-        
-
         exposeGlobalConstants: true,
-        
         exposeGlobalFunctions: true,
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
@@ -117,8 +102,8 @@ return [
         PHP,
 
     'Use statement of an exposed class belonging to the global scope' => [
-        exposeClasses: ['Foo'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo'],
+        'expected-recorded-classes' => [
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
@@ -143,8 +128,8 @@ return [
     ],
 
     'Use statement of a class belonging to the global scope which has been excluded' => [
-        excludeNamespaces: [''],
-        expectedRecordedClasses: [
+        'exclude-namespaces' => [''],
+        'expected-recorded-classes' => [
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
@@ -169,9 +154,9 @@ return [
     ],
 
     'Use statement of an exposed class belonging to the global scope which has been excluded' => [
-        excludeNamespaces: [''],
-        exposeClasses: ['Foo'],
-        expectedRecordedClasses: [
+        'exclude-namespaces' => [''],
+        'expose-classes' => ['Foo'],
+        'expected-recorded-classes' => [
             ['Foo', 'Humbug\Foo'],
         ],
         'payload' => <<<'PHP'
@@ -246,8 +231,8 @@ return [
         PHP,
 
     'Use statement of two-level class which has been exposed' => [
-        exposeClasses: ['Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -278,7 +263,7 @@ return [
     ],
 
     'Use statement of two-level class belonging to a excluded namespace' => [
-        excludeNamespaces: ['Foo'],
+        'exclude-namespaces' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 
@@ -306,8 +291,8 @@ return [
     ],
 
     'Use statement of exposed two-level class belonging to a excluded namespace' => [
-        excludeNamespaces: ['Foo'],
-        exposeClasses: ['Foo'],
+        'exclude-namespaces' => ['Foo'],
+        'expose-classes' => ['Foo'],
         'payload' => <<<'PHP'
             <?php
 

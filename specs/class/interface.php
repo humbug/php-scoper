@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Interface declaration',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -64,8 +47,8 @@ return [
         PHP,
 
     'Declaration of an internal interface' => [
-        excludeClasses: ['NewPhp20Interface'],
-        expectedRecordedClasses: [
+        'exclude-classes' => ['NewPhp20Interface'],
+        'expected-recorded-classes' => [
             ['NewPhp20Interface', 'Humbug\NewPhp20Interface'],
         ],
         'payload' => <<<'PHP'
@@ -86,8 +69,8 @@ return [
     ],
 
     'Declaration of an internal interface within an if statement' => [
-        excludeClasses: ['NewPhp20Interface'],
-        expectedRecordedClasses: [
+        'exclude-classes' => ['NewPhp20Interface'],
+        'expected-recorded-classes' => [
             ['NewPhp20Interface', 'Humbug\NewPhp20Interface'],
         ],
         'payload' => <<<'PHP'
@@ -112,8 +95,8 @@ return [
     ],
 
     'Declaration in the global namespace with global classes exposed' => [
-        exposeGlobalClasses: true,
-        expectedRecordedClasses: [
+        'expose-global-classes' => true,
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
             ['C', 'Humbug\C'],
             ['D', 'Humbug\D'],
@@ -183,7 +166,7 @@ return [
         PHP,
 
     'Declaration in a namespace with global classes exposed' => [
-        exposeGlobalClasses: true,
+        'expose-global-classes' => true,
         'payload' => <<<'PHP'
             <?php
 
@@ -219,8 +202,8 @@ return [
     ],
 
     'Declaration of an exposed interface' => [
-        exposeClasses: ['Foo\A'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\A'],
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'

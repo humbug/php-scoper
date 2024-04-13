@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'String literal used as a function argument of an anonymous function',
-
-
-        
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'FQCN string argument' => <<<'PHP'
@@ -143,62 +126,26 @@ return [
         PHP,
 
     'FQCN string argument on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
         'payload' => <<<'PHP'
             <?php
 
-    'FQCN string argument on class from global namespace with classes from global namespace exposed' => [
-        exposeGlobalClasses: true,
-        'payload' => <<<'PHP'
-        <?php
-        
-        (function($x = 'DateTime') {})();
-        (function($x = 'Swift') {})();
-        (function($x = ['DateTime', 'autoload']) {})();
-        (function($x = ['Swift', 'autoload']) {})();
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        (function ($x = 'DateTime') {
-        })();
-        (function ($x = 'Swift') {
-        })();
-        (function ($x = ['DateTime', 'autoload']) {
-        })();
-        (function ($x = ['Swift', 'autoload']) {
-        })();
-        
-        PHP
-    ],
+            (function($x = 'Symfony\\Component\\Yaml\\Ya_1') {})();
+            (function($x = '\\Symfony\\Component\\Yaml\\Ya_1') {})();
+            (function($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {})();
+            (function($x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1') {})();
 
-    'FQCN string argument on class from an excluded namespace' => [
-        excludeNamespaces: [
-            'Symfony\Component\Yaml',
-            '/^$/',
-        ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        (function($x = 'Symfony\\Component\\Yaml\\Ya_1') {})();
-        (function($x = '\\Symfony\\Component\\Yaml\\Ya_1') {})();
-        (function($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {})();
-        (function($x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1') {})();
-        
-        (function($x = 'DateTime') {})();
-        (function($x = 'Swift') {})();
-        (function($x = ['DateTime', 'autoload']) {})();
-        (function($x = ['Swift', 'autoload']) {})();
-        
-        ----
-        <?php
-        
-        namespace {
-            (function ($x = 'Symfony\\Component\\Yaml\\Ya_1') {
-            })();
-            (function ($x = '\\Symfony\\Component\\Yaml\\Ya_1') {
+            (function($x = 'DateTime') {})();
+            (function($x = 'Swift') {})();
+            (function($x = ['DateTime', 'autoload']) {})();
+            (function($x = ['Swift', 'autoload']) {})();
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
             })();
             (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
             })();
@@ -336,8 +283,8 @@ return [
         PHP,
 
     'FQC constant call on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
+        'expected-recorded-classes' => [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'

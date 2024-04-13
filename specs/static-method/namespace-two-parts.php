@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Static method call statement of a namespaced class in a namespace',
-        
-
-        
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Static method call statement of a class' => <<<'PHP'
@@ -85,8 +68,8 @@ return [
         PHP,
 
     'Static method call statement of an exposed class' => [
-        exposeClasses: ['X\Foo\Bar'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['X\Foo\Bar'],
+        'expected-recorded-classes' => [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
         'payload' => <<<'PHP'
@@ -116,7 +99,7 @@ return [
     ],
 
     'FQ static method call statement of a non-exposed class' => [
-        exposeClasses: ['X\Foo\Bar'],
+        'expose-classes' => ['X\Foo\Bar'],
         'payload' => <<<'PHP'
             <?php
 

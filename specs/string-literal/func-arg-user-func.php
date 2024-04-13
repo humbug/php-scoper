@@ -17,66 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'String literal used as a function argument of a user-defined function',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    foo('Symfony\\Component\\Yaml\\Ya_1');
-    foo('\\Symfony\\Component\\Yaml\\Ya_1');
-    foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-    foo('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-    
-    foo('DateTime');
-    foo('\\DateTime');
-    foo('Swift');
-    foo('\\Swift');
-    
-    foo(['DateTime', 'autoload']);
-    foo(['\\DateTime', 'autoload']);
-    foo(['Swift', 'autoload']);
-    foo(['\\Swift', 'autoload']);
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-    foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-    foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-    foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-    foo('DateTime');
-    foo('\\DateTime');
-    foo('Swift');
-    foo('\\Swift');
-    foo(['DateTime', 'autoload']);
-    foo(['\\DateTime', 'autoload']);
-    foo(['Swift', 'autoload']);
-    foo(['\\Swift', 'autoload']);
-    
-    PHP,
-
-    'FQCN string argument on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
-        'payload' => <<<'PHP'
         <?php
 
         foo('Symfony\\Component\\Yaml\\Ya_1');
@@ -147,7 +90,7 @@ return [
     ],
 
     'FQCN string argument on class from global namespace with classes from global namespace exposed' => [
-        exposeGlobalClasses: true,
+        'expose-global-classes' => true,
         'payload' => <<<'PHP'
             <?php
 
@@ -170,7 +113,7 @@ return [
     ],
 
     'FQCN string argument on class from an excluded namespace' => [
-        excludeNamespaces: [
+        'exclude-namespaces' => [
             'Symfony\Component\Yaml',
             '/^$/',
         ],
@@ -263,8 +206,8 @@ return [
         PHP,
 
     'FQC constant call on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
+        'expected-recorded-classes' => [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'

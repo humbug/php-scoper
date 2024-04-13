@@ -17,83 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Closure in a namespace',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Global function call in the global scope' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    function ($x) { return $x; };
-    function (int $x) { return $x; };
-    function (int $x): int { return $x; };
-    function (Foo $x): Bar { return $x; };
-    function (DateTimeImmutable $x): Closure { return $x; };
-    
-    static function ($x) { return $x; };
-    static function (int $x) { return $x; };
-    static function (int $x): int { return $x; };
-    static function (Foo $x): Bar { return $x; };
-    static function (DateTimeImmutable $x): Closure { return $x; };
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    function ($x) {
-        return $x;
-    };
-    function (int $x) {
-        return $x;
-    };
-    function (int $x) : int {
-        return $x;
-    };
-    function (Foo $x) : Bar {
-        return $x;
-    };
-    function (DateTimeImmutable $x) : Closure {
-        return $x;
-    };
-    static function ($x) {
-        return $x;
-    };
-    static function (int $x) {
-        return $x;
-    };
-    static function (int $x) : int {
-        return $x;
-    };
-    static function (Foo $x) : Bar {
-        return $x;
-    };
-    static function (DateTimeImmutable $x) : Closure {
-        return $x;
-    };
-    
-    PHP,
-
-    'Global function call in the global scope with global symbols exposed' => [
-        exposeGlobalClasses: true,
-        exposeGlobalFunctions: true,
-        'payload' => <<<'PHP'
         <?php
 
         namespace Acme;
@@ -206,7 +132,7 @@ return [
     ],
 
     'Global function call in the global scope with exposed symbols' => [
-        exposeClasses: [
+        'expose-classes' => [
             'Acme\Foo',
             'Acme\Bar',
             'Acme\Humbug\Acme\DateTimeImmutable',

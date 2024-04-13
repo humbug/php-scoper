@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Enum declaration',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'minimal enum declaration' => <<<'PHP'
@@ -161,7 +144,7 @@ return [
         PHP,
 
     'excluded enum (doesn\'t work)' => [
-        excludeClasses: ['Status'],
+        'exclude-classes' => ['Status'],
         'payload' => <<<'PHP'
             <?php
 
@@ -187,7 +170,7 @@ return [
     ],
 
     'exposed enum (doesn\'t work)' => [
-        exposeClasses: ['Status'],
+        'expose-classes' => ['Status'],
         'payload' => <<<'PHP'
             <?php
 

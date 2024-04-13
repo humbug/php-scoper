@@ -17,28 +17,11 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Class name resolution',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Different kind of exposed class constant calls in the global scope' => [
-        exposeClasses: ['Foo\Bar', 'Foo\Bar\Poz'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\Bar', 'Foo\Bar\Poz'],
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
             ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
         ],
@@ -187,7 +170,7 @@ return [
         PHP,
 
     'Different kind of class constant calls in a namespace' => [
-        exposeClasses: [
+        'expose-classes' => [
             'Foo\Bar',
             'Foo\Bar\Poz',
 
@@ -199,7 +182,7 @@ return [
             'A\Aoz',
             'A\Aoo\Aoz\Poz',
         ],
-        expectedRecordedClasses: [
+        'expected-recorded-classes' => [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
             ['Foo\Bar\Poz', 'Humbug\Foo\Bar\Poz'],
 

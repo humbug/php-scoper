@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Global constant imported with an aliased use statement used in the global scope',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Constant call imported with an aliased use statement' => <<<'PHP'
@@ -53,7 +36,7 @@ return [
         PHP,
 
     'Exposed constant call imported with an aliased use statement' => [
-        exposeConstants: ['DUMMY_CONST'],
+        'expose-constants' => ['DUMMY_CONST'],
         'payload' => <<<'PHP'
             <?php
 

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Readonly class declaration',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Declaration in the global namespace' => <<<'PHP'
@@ -52,8 +35,8 @@ return [
         PHP,
 
     'Declaration in the global namespace with global classes exposed' => [
-        exposeGlobalClasses: true,
-        expectedRecordedClasses: [
+        'expose-global-classes' => true,
+        'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
@@ -91,7 +74,7 @@ return [
         PHP,
 
     'Declaration in a namespace with global classes exposed' => [
-        exposeGlobalClasses: true,
+        'expose-global-classes' => true,
         'payload' => <<<'PHP'
             <?php
 
@@ -111,8 +94,8 @@ return [
     ],
 
     'Declaration of an exposed readonly class' => [
-        exposeClasses: ['Foo\A'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Foo\A'],
+        'expected-recorded-classes' => [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'

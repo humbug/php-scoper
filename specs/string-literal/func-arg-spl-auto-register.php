@@ -17,58 +17,9 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'String literal used as a function argument of an spl_auto_register call',
-
-
-
-
-
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    spl_autoload_register('sodiumCompatAutoloader');
-    spl_autoload_register('Sodium\compatAutoloader');
-    spl_autoload_register(['Swift', 'autoload']);
-    spl_autoload_register(['\Swift', 'autoload']);
-    spl_autoload_register(['Humbug\\Swift', 'autoload']);
-    spl_autoload_register(['\\Humbug\\Swift', 'autoload']);
-    spl_autoload_register(['\\Humbug\\Swift', 'autoload']);
-    spl_autoload_register(['DateTime', 'autoload']);
-    spl_autoload_register(['\\DateTime', 'autoload']);
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \spl_autoload_register('Humbug\\sodiumCompatAutoloader');
-    \spl_autoload_register('Humbug\\Sodium\\compatAutoloader');
-    \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-    \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-    \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-    \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-    \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-    \spl_autoload_register(['DateTime', 'autoload']);
-    \spl_autoload_register(['\\DateTime', 'autoload']);
-    
-    PHP,
-
-    'FQCN string argument on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
-        'payload' => <<<'PHP'
         <?php
 
         spl_autoload_register('sodiumCompatAutoloader');
@@ -122,7 +73,7 @@ return [
     ],
 
     'FQCN string argument on exposed function' => [
-        exposeFunctions: ['sodiumCompatAutoloader'],
+        'expose-functions' => ['sodiumCompatAutoloader'],
         'payload' => <<<'PHP'
             <?php
 
@@ -139,7 +90,7 @@ return [
     ],
 
     'FQCN string argument on class from an excluded namespace' => [
-        excludeNamespaces: [
+        'exclude-namespaces' => [
             'Symfony\Component\Yaml',
             '/^$/',
         ],
@@ -165,7 +116,7 @@ return [
     ],
 
     'FQCN string argument on function from an excluded namespace' => [
-        excludeNamespaces: [
+        'exclude-namespaces' => [
             'Sodium',
             '/^$/',
         ],
@@ -185,7 +136,7 @@ return [
     ],
 
     'FQCN string argument with global functions not exposed' => [
-
+        'expose-global-functions' => false,
         'payload' => <<<'PHP'
             <?php
 
@@ -250,8 +201,8 @@ return [
         PHP,
 
     'FQC constant call on exposed class' => [
-        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
-        expectedRecordedClasses: [
+        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
+        'expected-recorded-classes' => [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
         'payload' => <<<'PHP'

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Namespaced function call statement in the global scope',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     ),
 
     'Namespaced function call' => <<<'PHP'
@@ -50,24 +33,6 @@ return [
         PHP,
 
     'FQ namespaced function call' => <<<'PHP'
-    <?php
-    
-    \PHPUnit\main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Humbug\PHPUnit\main();
-    
-    PHP,
-
-    'Exposed namespaced function call' => [
-        exposeFunctions: ['PHPUnit\main'],
-        expectedRecordedFunctions: [
-            ['PHPUnit\main', 'Humbug\PHPUnit\main'],
-        ],
-        'payload' => <<<'PHP'
         <?php
 
         \PHPUnit\main();
@@ -100,8 +65,8 @@ return [
     ],
 
     'FQ exposed namespaced function call' => [
-        exposeFunctions: ['PHPUnit\main'],
-        expectedRecordedFunctions: [
+        'expose-functions' => ['PHPUnit\main'],
+        'expected-recorded-functions' => [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'

@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Static method call statement of a class imported via a use statement in the global scope',
-
-
-
-
-
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
@@ -79,7 +62,7 @@ return [
         PHP,
 
     'Static method call statement of a class belonging to the global namespace which has been exposed' => [
-        exposeGlobalClasses: true,
+        'expose-global-classes' => true,
         'payload' => <<<'PHP'
             <?php
 
@@ -98,7 +81,7 @@ return [
     ],
 
     'FQ static method call statement of a class belonging to the global namespace which has been exposed' => [
-        exposeGlobalClasses: true,
+        'expose-global-classes' => true,
         'payload' => <<<'PHP'
             <?php
 

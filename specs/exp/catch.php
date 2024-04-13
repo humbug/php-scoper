@@ -17,23 +17,6 @@ use Humbug\PhpScoper\Scoper\Spec\Meta;
 return [
     'meta' => new Meta(
         title: 'Catch expressions',
-        
-
-        
-        
-        
-        
-        
-       
-       
-
-        
-        
-        
-       
-
-        
-       
     ),
 
     'Catch an internal class' => <<<'PHP'
@@ -77,27 +60,6 @@ return [
         PHP,
 
     'Catch a custom exception class' => <<<'PHP'
-    <?php
-    
-    try {
-        echo "foo";
-    } catch (FooException $t) {
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    try {
-        echo "foo";
-    } catch (FooException $t) {
-    }
-    
-    PHP,
-
-    'Catch an exposed custom exception class' => [
-        exposeClasses: ['FooException'],
-        'payload' => <<<'PHP'
         <?php
 
         try {
@@ -139,7 +101,7 @@ return [
     ],
 
     'Catch a custom exception class which belongs to the excluded root namespace' => [
-        excludeNamespaces: ['/^$/'],
+        'exclude-namespaces' => ['/^$/'],
         'payload' => <<<'PHP'
             <?php
 
@@ -182,7 +144,7 @@ return [
         PHP,
 
     'Catch an exposed custom exception class in a namespace' => [
-        exposeClasses: ['Acme\FooException'],
+        'expose-classes' => ['Acme\FooException'],
         'payload' => <<<'PHP'
             <?php
 
@@ -207,7 +169,7 @@ return [
 
     // TODO: should not be made into FQ here
     'Catch a custom exception class in an excluded namespace' => [
-        excludeNamespaces: ['Acme'],
+        'exclude-namespaces' => ['Acme'],
         'payload' => <<<'PHP'
             <?php
 
