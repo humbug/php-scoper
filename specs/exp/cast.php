@@ -36,26 +36,26 @@ return [
     ],
 
     'Cast variable' => <<<'PHP'
-    <?php
-    
-    $x = new stdClass();
-    
-    (bool) $x;
-    (int) $x;
-    (float) $x;
-    (array) $x;
-    (object) $x;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $x = new \stdClass();
-    (bool) $x;
-    (int) $x;
-    (float) $x;
-    (array) $x;
-    (object) $x;
-    
-    PHP,
+        <?php
+
+        $x = new stdClass();
+
+        (bool) $x;
+        (int) $x;
+        (float) $x;
+        (array) $x;
+        (object) $x;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $x = new \stdClass();
+        (bool) $x;
+        (int) $x;
+        (float) $x;
+        (array) $x;
+        (object) $x;
+
+        PHP,
 ];

@@ -36,70 +36,70 @@ return [
     ],
 
     'typehint and create an enum' => <<<'PHP'
-    <?php
+        <?php
 
-    namespace Acme;
-    
-    use Status;
+        namespace Acme;
 
-    class BlogPost
-    {
-        public function __construct(
-            public Status $status, 
-        ) {}
-    }
-    $post = new BlogPost(Status::DRAFT);
+        use Status;
 
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use Humbug\Status;
-    class BlogPost
-    {
-        public function __construct(public Status $status)
+        class BlogPost
         {
+            public function __construct(
+                public Status $status,
+            ) {}
         }
-    }
-    $post = new BlogPost(Status::DRAFT);
-    
-    PHP,
+        $post = new BlogPost(Status::DRAFT);
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use Humbug\Status;
+        class BlogPost
+        {
+            public function __construct(public Status $status)
+            {
+            }
+        }
+        $post = new BlogPost(Status::DRAFT);
+
+        PHP,
 
     'use an enum method' => <<<'PHP'
-    <?php
+        <?php
 
-    namespace Acme;
-    
-    use Status;
+        namespace Acme;
 
-    $status = Status::ARCHIVED;
-    $status->color();
+        use Status;
 
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use Humbug\Status;
-    $status = Status::ARCHIVED;
-    $status->color();
-    
-    PHP,
+        $status = Status::ARCHIVED;
+        $status->color();
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use Humbug\Status;
+        $status = Status::ARCHIVED;
+        $status->color();
+
+        PHP,
 
     'use instance of enum' => <<<'PHP'
-    <?php
+        <?php
 
-    namespace Acme;
-    
-    $statusC instanceof \Post\Status;
+        namespace Acme;
 
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
+        $statusC instanceof \Post\Status;
 
-    $statusC instanceof \Humbug\Post\Status;
+        ----
+        <?php
 
-    PHP,
+        namespace Humbug\Acme;
+
+        $statusC instanceof \Humbug\Post\Status;
+
+        PHP,
 ];

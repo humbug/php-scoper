@@ -38,70 +38,19 @@ return [
     ],
 
     'Exposed class within an if block' => <<<'PHP'
-    <?php
+        <?php
 
-    if ($condition) {
-        class A {
-            public function a() {}
-        }
-    }
-    ----
-    <?php
-
-    namespace Humbug;
-
-    if ($condition) {
-        class A
-        {
-            public function a()
-            {
-            }
-        }
-        \class_alias('Humbug\\A', 'A', \false);
-    }
-
-    PHP,
-
-    'Exposed interface within an if block' => <<<'PHP'
-    <?php
-
-    if ($condition) {
-        interface A {
-            public function a();
-        }
-    }
-    ----
-    <?php
-
-    namespace Humbug;
-
-    if ($condition) {
-        interface A
-        {
-            public function a();
-        }
-        \class_alias('Humbug\\A', 'A', \false);
-    }
-
-    PHP,
-
-    'Exposed class within a nested if block' => <<<'PHP'
-    <?php
-
-    if ($condition) {
-        if ($anotherCondition) {
+        if ($condition) {
             class A {
                 public function a() {}
             }
         }
-    }
-    ----
-    <?php
+        ----
+        <?php
 
-    namespace Humbug;
+        namespace Humbug;
 
-    if ($condition) {
-        if ($anotherCondition) {
+        if ($condition) {
             class A
             {
                 public function a()
@@ -110,186 +59,237 @@ return [
             }
             \class_alias('Humbug\\A', 'A', \false);
         }
-    }
 
-    PHP,
+        PHP,
+
+    'Exposed interface within an if block' => <<<'PHP'
+        <?php
+
+        if ($condition) {
+            interface A {
+                public function a();
+            }
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        if ($condition) {
+            interface A
+            {
+                public function a();
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+        }
+
+        PHP,
+
+    'Exposed class within a nested if block' => <<<'PHP'
+        <?php
+
+        if ($condition) {
+            if ($anotherCondition) {
+                class A {
+                    public function a() {}
+                }
+            }
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        if ($condition) {
+            if ($anotherCondition) {
+                class A
+                {
+                    public function a()
+                    {
+                    }
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+            }
+        }
+
+        PHP,
 
     'Exposed class within an else' => <<<'PHP'
-    <?php
+        <?php
 
-    if ($condition) {
-    } else {
-        class A {
-            public function a() {}
-        }
-    }
-    ----
-    <?php
-
-    namespace Humbug;
-
-    if ($condition) {
-    } else {
-        class A
-        {
-            public function a()
-            {
+        if ($condition) {
+        } else {
+            class A {
+                public function a() {}
             }
         }
-        \class_alias('Humbug\\A', 'A', \false);
-    }
+        ----
+        <?php
 
-    PHP,
+        namespace Humbug;
+
+        if ($condition) {
+        } else {
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+        }
+
+        PHP,
 
     'Exposed class within an elseif' => <<<'PHP'
-    <?php
+        <?php
 
-    if ($condition) {
-    } elseif ($anotherCondition) {
-        class A {
-            public function a() {}
-        }
-    }
-    ----
-    <?php
-
-    namespace Humbug;
-
-    if ($condition) {
-    } elseif ($anotherCondition) {
-        class A
-        {
-            public function a()
-            {
+        if ($condition) {
+        } elseif ($anotherCondition) {
+            class A {
+                public function a() {}
             }
         }
-        \class_alias('Humbug\\A', 'A', \false);
-    }
+        ----
+        <?php
 
-    PHP,
+        namespace Humbug;
+
+        if ($condition) {
+        } elseif ($anotherCondition) {
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+        }
+
+        PHP,
 
     'Exposed class within a switch case' => <<<'PHP'
-    <?php
-    
-    switch ($condition) {
-        case $case1Condition:
-            class A {
-                public function a1() {}
-            }
-            break;
-            
-        case $case2Condition:
-            class A {
-                public function a2() {}
-            }
-            break;
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    switch ($condition) {
-        case $case1Condition:
-            class A
-            {
-                public function a1()
-                {
+        <?php
+
+        switch ($condition) {
+            case $case1Condition:
+                class A {
+                    public function a1() {}
                 }
-            }
-            \class_alias('Humbug\\A', 'A', \false);
-            break;
-        case $case2Condition:
-            class A
-            {
-                public function a2()
-                {
+                break;
+
+            case $case2Condition:
+                class A {
+                    public function a2() {}
                 }
-            }
-            \class_alias('Humbug\\A', 'A', \false);
-            break;
-    }
-    
-    PHP,
+                break;
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        switch ($condition) {
+            case $case1Condition:
+                class A
+                {
+                    public function a1()
+                    {
+                    }
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+                break;
+            case $case2Condition:
+                class A
+                {
+                    public function a2()
+                    {
+                    }
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+                break;
+        }
+
+        PHP,
 
     'Exposed class within a try statement' => <<<'PHP'
-    <?php
+        <?php
 
-    try {
-        class A {
-            public function a() {}
-        }
-    } catch (\Error) {
-    }
-    ----
-    <?php
-
-    namespace Humbug;
-
-    try {
-        class A
-        {
-            public function a()
-            {
+        try {
+            class A {
+                public function a() {}
             }
+        } catch (\Error) {
         }
-        \class_alias('Humbug\\A', 'A', \false);
-    } catch (\Error) {
-    }
+        ----
+        <?php
 
-    PHP,
+        namespace Humbug;
+
+        try {
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+        } catch (\Error) {
+        }
+
+        PHP,
 
     'Exposed class within a catch statement' => <<<'PHP'
-    <?php
+        <?php
 
-    try {
-    } catch (\Error) {
-        class A {
-            public function a() {}
-        }
-    }
-    ----
-    <?php
-
-    namespace Humbug;
-
-    try {
-    } catch (\Error) {
-        class A
-        {
-            public function a()
-            {
+        try {
+        } catch (\Error) {
+            class A {
+                public function a() {}
             }
         }
-        \class_alias('Humbug\\A', 'A', \false);
-    }
+        ----
+        <?php
 
-    PHP,
+        namespace Humbug;
+
+        try {
+        } catch (\Error) {
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+        }
+
+        PHP,
 
     'Exposed class within a finally statement' => <<<'PHP'
-    <?php
+        <?php
 
-    try {
-    } finally {
-        class A {
-            public function a() {}
-        }
-    }
-    ----
-    <?php
-
-    namespace Humbug;
-
-    try {
-    } finally {
-        class A
-        {
-            public function a()
-            {
+        try {
+        } finally {
+            class A {
+                public function a() {}
             }
         }
-        \class_alias('Humbug\\A', 'A', \false);
-    }
+        ----
+        <?php
 
-    PHP,
+        namespace Humbug;
+
+        try {
+        } finally {
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+        }
+
+        PHP,
 ];

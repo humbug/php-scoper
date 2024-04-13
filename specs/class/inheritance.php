@@ -36,61 +36,61 @@ return [
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    class A {
-        public function a() {}
-    }
-    
-    class B extends A implements Iterator {
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class A
-    {
-        public function a()
+        <?php
+
+        class A {
+            public function a() {}
+        }
+
+        class B extends A implements Iterator {
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class A
+        {
+            public function a()
+            {
+            }
+        }
+        class B extends A implements \Iterator
         {
         }
-    }
-    class B extends A implements \Iterator
-    {
-    }
-    
-    PHP,
+
+        PHP,
 
     'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    use Iterator;
-    
-    class A {
-        public function a() {}
-    }
-    
-    class B extends A implements Iterator {
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    use Iterator;
-    class A
-    {
-        public function a()
+        <?php
+
+        namespace Foo;
+
+        use Iterator;
+
+        class A {
+            public function a() {}
+        }
+
+        class B extends A implements Iterator {
+        }
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        use Iterator;
+        class A
+        {
+            public function a()
+            {
+            }
+        }
+        class B extends A implements Iterator
         {
         }
-    }
-    class B extends A implements Iterator
-    {
-    }
-    
-    PHP,
+
+        PHP,
 
     'Declaration of an exposed class' => [
         'expose-classes' => ['Foo\B'],
@@ -98,99 +98,99 @@ return [
             ['Foo\B', 'Humbug\Foo\B'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            class A {
+                public function a() {}
+            }
+
+            class B extends A {
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
+            {
+                public function a()
+                {
+                }
+            }
+            class B extends A
+            {
+            }
+            \class_alias('Humbug\\Foo\\B', 'Foo\\B', \false);
+
+            PHP,
+    ],
+
+    'Declaration in a different namespace imported via a use statement' => <<<'PHP'
         <?php
-        
+
         namespace Foo;
-        
+
         class A {
             public function a() {}
         }
-        
+
+        namespace Bar;
+
+        use Foo\A;
+
         class B extends A {
         }
         ----
         <?php
-        
+
         namespace Humbug\Foo;
-        
+
         class A
         {
             public function a()
             {
             }
         }
+        namespace Humbug\Bar;
+
+        use Humbug\Foo\A;
         class B extends A
         {
         }
-        \class_alias('Humbug\\Foo\\B', 'Foo\\B', \false);
-        
-        PHP,
-    ],
 
-    'Declaration in a different namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    class A {
-        public function a() {}
-    }
-    
-    namespace Bar;
-    
-    use Foo\A;
-    
-    class B extends A {
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class A
-    {
-        public function a()
-        {
-        }
-    }
-    namespace Humbug\Bar;
-    
-    use Humbug\Foo\A;
-    class B extends A
-    {
-    }
-    
-    PHP,
+        PHP,
 
     'Declaration in a different namespace imported via a FQ call' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    class A {
-        public function a() {}
-    }
-    
-    namespace Bar;
-    
-    class B extends \Foo\A {
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class A
-    {
-        public function a()
+        <?php
+
+        namespace Foo;
+
+        class A {
+            public function a() {}
+        }
+
+        namespace Bar;
+
+        class B extends \Foo\A {
+        }
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class A
+        {
+            public function a()
+            {
+            }
+        }
+        namespace Humbug\Bar;
+
+        class B extends \Humbug\Foo\A
         {
         }
-    }
-    namespace Humbug\Bar;
-    
-    class B extends \Humbug\Foo\A
-    {
-    }
-    
-    PHP,
+
+        PHP,
 ];

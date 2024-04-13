@@ -36,42 +36,10 @@ return [
     ],
 
     'Namespaced constant call' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    PHPUnit\DUMMY_CONST;
-    ----
-    <?php
-
-    namespace Humbug\A;
-
-    PHPUnit\DUMMY_CONST;
-
-    PHP,
-
-    'FQ namespaced constant call' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    \PHPUnit\DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    \Humbug\PHPUnit\DUMMY_CONST;
-    
-    PHP,
-
-    'Exposed namespaced constant call on an exposed constant' => [
-        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace A;
-        
+
         PHPUnit\DUMMY_CONST;
         ----
         <?php
@@ -81,23 +49,55 @@ return [
         PHPUnit\DUMMY_CONST;
 
         PHP,
+
+    'FQ namespaced constant call' => <<<'PHP'
+        <?php
+
+        namespace A;
+
+        \PHPUnit\DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        \Humbug\PHPUnit\DUMMY_CONST;
+
+        PHP,
+
+    'Exposed namespaced constant call on an exposed constant' => [
+        'expose-constants' => ['PHPUnit\DUMMY_CONST'],
+        'payload' => <<<'PHP'
+            <?php
+
+            namespace A;
+
+            PHPUnit\DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            PHPUnit\DUMMY_CONST;
+
+            PHP,
     ],
 
     'Exposed FQ namespaced constant call on an exposed constant' => [
         'expose-constants' => ['PHPUnit\DUMMY_CONST'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        \PHPUnit\DUMMY_CONST;
-        ----
-        <?php
-        
-        namespace Humbug\A;
-        
-        \PHPUnit\DUMMY_CONST;
-        
-        PHP,
+            <?php
+
+            namespace A;
+
+            \PHPUnit\DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            \PHPUnit\DUMMY_CONST;
+
+            PHP,
     ],
 ];

@@ -36,55 +36,55 @@ return [
     ],
 
     'Some statements made directly in the global namespace' => <<<'PHP'
-    <?php declare(strict_types=1);
-    
-    if (\true) {
-        echo "yo";
-    }
-    
-    if (\false) {
-        echo "oy";
-    }
-    
-    ----
-    <?php
-    
-    declare (strict_types=1);
-    namespace Humbug;
-    
-    if (\true) {
-        echo "yo";
-    }
-    if (\false) {
-        echo "oy";
-    }
-    
-    PHP,
+        <?php declare(strict_types=1);
+
+        if (\true) {
+            echo "yo";
+        }
+
+        if (\false) {
+            echo "oy";
+        }
+
+        ----
+        <?php
+
+        declare (strict_types=1);
+        namespace Humbug;
+
+        if (\true) {
+            echo "yo";
+        }
+        if (\false) {
+            echo "oy";
+        }
+
+        PHP,
 
     'Some statements made directly in the global namespace with a shebang' => <<<'PHP'
-    #!/usr/bin/env php
-    <?php declare(strict_types=1);
-    
-    if (\true) {
-        echo "yo";
-    }
-    
-    if (\false) {
-        echo "oy";
-    }
-    
-    ----
-    #!/usr/bin/env php
-    <?php 
-    declare (strict_types=1);
-    namespace Humbug;
-    
-    if (\true) {
-        echo "yo";
-    }
-    if (\false) {
-        echo "oy";
-    }
-    
-    PHP,
+        #!/usr/bin/env php
+        <?php declare(strict_types=1);
+
+        if (\true) {
+            echo "yo";
+        }
+
+        if (\false) {
+            echo "oy";
+        }
+
+        ----
+        #!/usr/bin/env php
+        <?php
+        declare (strict_types=1);
+        namespace Humbug;
+
+        if (\true) {
+            echo "yo";
+        }
+        if (\false) {
+            echo "oy";
+        }
+
+        PHP,
 ];

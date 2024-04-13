@@ -36,64 +36,64 @@ return [
     ],
 
     'Static method call statement of a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    Command::main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    Command::main();
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        Command::main();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        Command::main();
+
+        PHP,
 
     'FQ static method call statement of a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    \Command::main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    \Humbug\Command::main();
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        \Command::main();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        \Humbug\Command::main();
+
+        PHP,
 
     'Static method call statement of an internal class' => <<<'PHP'
-    <?php
-    
-    Closure::bind();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Closure::bind();
-    
-    PHP,
+        <?php
+
+        Closure::bind();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Closure::bind();
+
+        PHP,
 
     'FQ static method call statement of an internal class' => <<<'PHP'
-    <?php
-    
-    \Closure::bind();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Closure::bind();
-    
-    PHP,
+        <?php
+
+        \Closure::bind();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Closure::bind();
+
+        PHP,
 ];

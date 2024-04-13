@@ -37,49 +37,49 @@ return [
 
     'New statement call of a class' => [
         'payload' => <<<'PHP'
-<?php
+            <?php
 
-namespace A;
+            namespace A;
 
-class Foo {}
+            class Foo {}
 
-new Foo();
-----
-<?php
+            new Foo();
+            ----
+            <?php
 
-namespace Humbug\A;
+            namespace Humbug\A;
 
-class Foo
-{
-}
-new Foo();
+            class Foo
+            {
+            }
+            new Foo();
 
-PHP
+            PHP,
     ],
 
     'FQ new statement call of a class belonging to the global namespace' => [
         'payload' => <<<'PHP'
-<?php
+            <?php
 
-namespace {
-    class Foo {}
-}
+            namespace {
+                class Foo {}
+            }
 
-namespace A {
-    new \Foo();
-}
-----
-<?php
+            namespace A {
+                new \Foo();
+            }
+            ----
+            <?php
 
-namespace Humbug;
+            namespace Humbug;
 
-class Foo
-{
-}
-namespace Humbug\A;
+            class Foo
+            {
+            }
+            namespace Humbug\A;
 
-new \Humbug\Foo();
+            new \Humbug\Foo();
 
-PHP
+            PHP,
     ],
 ];

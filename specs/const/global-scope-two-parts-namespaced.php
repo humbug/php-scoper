@@ -36,44 +36,44 @@ return [
     ],
 
     'Namespaced constant call' => <<<'PHP'
-    <?php
-    
-    PHPUnit\Command\DUMMY_CONST;
-    ----
-    <?php
-
-    namespace Humbug;
-
-    \Humbug\PHPUnit\Command\DUMMY_CONST;
-
-    PHP,
-
-    'FQ namespaced constant call' => <<<'PHP'
-    <?php
-    
-    \PHPUnit\Command\DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Humbug\PHPUnit\Command\DUMMY_CONST;
-    
-    PHP,
-
-    'Namespaced constant call on an exposed constant' => [
-        'expose-constants' => ['PHPUnit\Command\DUMMY_CONST'],
-        'payload' => <<<'PHP'
         <?php
-        
+
         PHPUnit\Command\DUMMY_CONST;
         ----
         <?php
 
         namespace Humbug;
 
-        \PHPUnit\Command\DUMMY_CONST;
+        \Humbug\PHPUnit\Command\DUMMY_CONST;
 
         PHP,
+
+    'FQ namespaced constant call' => <<<'PHP'
+        <?php
+
+        \PHPUnit\Command\DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Humbug\PHPUnit\Command\DUMMY_CONST;
+
+        PHP,
+
+    'Namespaced constant call on an exposed constant' => [
+        'expose-constants' => ['PHPUnit\Command\DUMMY_CONST'],
+        'payload' => <<<'PHP'
+            <?php
+
+            PHPUnit\Command\DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \PHPUnit\Command\DUMMY_CONST;
+
+            PHP,
     ],
 ];

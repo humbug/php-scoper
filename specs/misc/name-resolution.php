@@ -38,64 +38,64 @@ return [
     'Internal class & function with the same name' => [
         'expected-recorded-functions' => [],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace PHPUnit\Framework;
-        
-        use function assert;
-        
-        abstract class TestCase extends Assert {
-            function __construct() {
-                \assert();
+            <?php
+
+            namespace PHPUnit\Framework;
+
+            use function assert;
+
+            abstract class TestCase extends Assert {
+                function __construct() {
+                    \assert();
+                }
             }
-        }
-        
-        ----
-        <?php
-        
-        namespace Humbug\PHPUnit\Framework;
-        
-        use function assert;
-        abstract class TestCase extends Assert
-        {
-            function __construct()
+
+            ----
+            <?php
+
+            namespace Humbug\PHPUnit\Framework;
+
+            use function assert;
+            abstract class TestCase extends Assert
             {
-                \assert();
+                function __construct()
+                {
+                    \assert();
+                }
             }
-        }
-        
-        PHP,
+
+            PHP,
     ],
 
     'Internal class & const with the same name' => [
         'expected-recorded-functions' => [],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace PHPUnit\Framework;
-        
-        use const SORT_NUMERIC;
-        
-        abstract class TestCase extends SORT_NUMERIC {
-            function __construct() {
-                echo SORT_NUMERIC;
+            <?php
+
+            namespace PHPUnit\Framework;
+
+            use const SORT_NUMERIC;
+
+            abstract class TestCase extends SORT_NUMERIC {
+                function __construct() {
+                    echo SORT_NUMERIC;
+                }
             }
-        }
-        
-        ----
-        <?php
-        
-        namespace Humbug\PHPUnit\Framework;
-        
-        use const SORT_NUMERIC;
-        abstract class TestCase extends SORT_NUMERIC
-        {
-            function __construct()
+
+            ----
+            <?php
+
+            namespace Humbug\PHPUnit\Framework;
+
+            use const SORT_NUMERIC;
+            abstract class TestCase extends SORT_NUMERIC
             {
-                echo SORT_NUMERIC;
+                function __construct()
+                {
+                    echo SORT_NUMERIC;
+                }
             }
-        }
-        
-        PHP,
+
+            PHP,
     ],
 ];

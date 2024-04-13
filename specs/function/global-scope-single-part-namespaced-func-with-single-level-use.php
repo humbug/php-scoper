@@ -36,46 +36,46 @@ return [
     ],
 
     'Namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo;
-    
-    Foo\main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo;
-    Foo\main();
-    
-    PHP,
+        <?php
+
+        class Foo {}
+
+        use Foo;
+
+        Foo\main();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        use Humbug\Foo;
+        Foo\main();
+
+        PHP,
 
     'FQ namespaced function call imported with a partial use statement in the global scope' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo;
-    
-    \Foo\main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo;
-    \Humbug\Foo\main();
-    
-    PHP,
+        <?php
+
+        class Foo {}
+
+        use Foo;
+
+        \Foo\main();
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        use Humbug\Foo;
+        \Humbug\Foo\main();
+
+        PHP,
 
     'Exposed namespaced function call imported with a partial use statement in the global scope' => [
         'expose-functions' => ['Foo\main'],
@@ -83,39 +83,39 @@ return [
             ['Foo\main', 'Humbug\Foo\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace {
-            class Foo {}
-        }
-        
-        namespace Foo {
-            function main() {}
-        }
-        
-        namespace {
-            use Foo;
-            
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                function main() {}
+            }
+
+            namespace {
+                use Foo;
+
+                Foo\main();
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            function main()
+            {
+            }
+            namespace Humbug;
+
+            use Humbug\Foo;
             Foo\main();
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\Foo;
-        
-        function main()
-        {
-        }
-        namespace Humbug;
-        
-        use Humbug\Foo;
-        Foo\main();
-        
-        PHP,
+
+            PHP,
     ],
 ];

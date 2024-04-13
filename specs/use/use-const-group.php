@@ -36,33 +36,33 @@ return [
     ],
 
     <<<'PHP'
-    <?php
-    
-    use const A\{B};
-    use const A\{B\C, D};
-    use const \A\B\{C\D as ABCD, E};
-    
-    B;
-    C;
-    D;
-    ABCD;
-    E;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\A\B;
-    use const Humbug\A\B\C;
-    use const Humbug\A\D;
-    use const Humbug\A\B\C\D as ABCD;
-    use const Humbug\A\B\E;
-    B;
-    C;
-    D;
-    ABCD;
-    E;
-    
-    PHP,
+        <?php
+
+        use const A\{B};
+        use const A\{B\C, D};
+        use const \A\B\{C\D as ABCD, E};
+
+        B;
+        C;
+        D;
+        ABCD;
+        E;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use const Humbug\A\B;
+        use const Humbug\A\B\C;
+        use const Humbug\A\D;
+        use const Humbug\A\B\C\D as ABCD;
+        use const Humbug\A\B\E;
+        B;
+        C;
+        D;
+        ABCD;
+        E;
+
+        PHP,
 ];

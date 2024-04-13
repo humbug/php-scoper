@@ -36,73 +36,16 @@ return [
     ],
 
     'Global function call in the global scope' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    function ($x) { return $x; };
-    function (int $x) { return $x; };
-    function (int $x): int { return $x; };
-    function (Foo $x): Bar { return $x; };
-    function (DateTimeImmutable $x): Closure { return $x; };
-    
-    static function ($x) { return $x; };
-    static function (int $x) { return $x; };
-    static function (int $x): int { return $x; };
-    static function (Foo $x): Bar { return $x; };
-    static function (DateTimeImmutable $x): Closure { return $x; };
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    function ($x) {
-        return $x;
-    };
-    function (int $x) {
-        return $x;
-    };
-    function (int $x) : int {
-        return $x;
-    };
-    function (Foo $x) : Bar {
-        return $x;
-    };
-    function (DateTimeImmutable $x) : Closure {
-        return $x;
-    };
-    static function ($x) {
-        return $x;
-    };
-    static function (int $x) {
-        return $x;
-    };
-    static function (int $x) : int {
-        return $x;
-    };
-    static function (Foo $x) : Bar {
-        return $x;
-    };
-    static function (DateTimeImmutable $x) : Closure {
-        return $x;
-    };
-    
-    PHP,
-
-    'Global function call in the global scope with global symbols exposed' => [
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace Acme;
-        
+
         function ($x) { return $x; };
         function (int $x) { return $x; };
         function (int $x): int { return $x; };
         function (Foo $x): Bar { return $x; };
         function (DateTimeImmutable $x): Closure { return $x; };
-        
+
         static function ($x) { return $x; };
         static function (int $x) { return $x; };
         static function (int $x): int { return $x; };
@@ -110,9 +53,9 @@ return [
         static function (DateTimeImmutable $x): Closure { return $x; };
         ----
         <?php
-        
+
         namespace Humbug\Acme;
-        
+
         function ($x) {
             return $x;
         };
@@ -143,8 +86,65 @@ return [
         static function (DateTimeImmutable $x) : Closure {
             return $x;
         };
-        
+
         PHP,
+
+    'Global function call in the global scope with global symbols exposed' => [
+        'expose-global-classes' => true,
+        'expose-global-functions' => true,
+        'payload' => <<<'PHP'
+            <?php
+
+            namespace Acme;
+
+            function ($x) { return $x; };
+            function (int $x) { return $x; };
+            function (int $x): int { return $x; };
+            function (Foo $x): Bar { return $x; };
+            function (DateTimeImmutable $x): Closure { return $x; };
+
+            static function ($x) { return $x; };
+            static function (int $x) { return $x; };
+            static function (int $x): int { return $x; };
+            static function (Foo $x): Bar { return $x; };
+            static function (DateTimeImmutable $x): Closure { return $x; };
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            function ($x) {
+                return $x;
+            };
+            function (int $x) {
+                return $x;
+            };
+            function (int $x) : int {
+                return $x;
+            };
+            function (Foo $x) : Bar {
+                return $x;
+            };
+            function (DateTimeImmutable $x) : Closure {
+                return $x;
+            };
+            static function ($x) {
+                return $x;
+            };
+            static function (int $x) {
+                return $x;
+            };
+            static function (int $x) : int {
+                return $x;
+            };
+            static function (Foo $x) : Bar {
+                return $x;
+            };
+            static function (DateTimeImmutable $x) : Closure {
+                return $x;
+            };
+
+            PHP,
     ],
 
     'Global function call in the global scope with exposed symbols' => [
@@ -155,57 +155,57 @@ return [
             'Acme\HumbugClosure',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        function ($x) { return $x; };
-        function (int $x) { return $x; };
-        function (int $x): int { return $x; };
-        function (Foo $x): Bar { return $x; };
-        function (DateTimeImmutable $x): Closure { return $x; };
-        
-        static function ($x) { return $x; };
-        static function (int $x) { return $x; };
-        static function (int $x): int { return $x; };
-        static function (Foo $x): Bar { return $x; };
-        static function (DateTimeImmutable $x): Closure { return $x; };
-        ----
-        <?php
-        
-        namespace Humbug\Acme;
-        
-        function ($x) {
-            return $x;
-        };
-        function (int $x) {
-            return $x;
-        };
-        function (int $x) : int {
-            return $x;
-        };
-        function (Foo $x) : Bar {
-            return $x;
-        };
-        function (DateTimeImmutable $x) : Closure {
-            return $x;
-        };
-        static function ($x) {
-            return $x;
-        };
-        static function (int $x) {
-            return $x;
-        };
-        static function (int $x) : int {
-            return $x;
-        };
-        static function (Foo $x) : Bar {
-            return $x;
-        };
-        static function (DateTimeImmutable $x) : Closure {
-            return $x;
-        };
-        
-        PHP,
+            <?php
+
+            namespace Acme;
+
+            function ($x) { return $x; };
+            function (int $x) { return $x; };
+            function (int $x): int { return $x; };
+            function (Foo $x): Bar { return $x; };
+            function (DateTimeImmutable $x): Closure { return $x; };
+
+            static function ($x) { return $x; };
+            static function (int $x) { return $x; };
+            static function (int $x): int { return $x; };
+            static function (Foo $x): Bar { return $x; };
+            static function (DateTimeImmutable $x): Closure { return $x; };
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            function ($x) {
+                return $x;
+            };
+            function (int $x) {
+                return $x;
+            };
+            function (int $x) : int {
+                return $x;
+            };
+            function (Foo $x) : Bar {
+                return $x;
+            };
+            function (DateTimeImmutable $x) : Closure {
+                return $x;
+            };
+            static function ($x) {
+                return $x;
+            };
+            static function (int $x) {
+                return $x;
+            };
+            static function (int $x) : int {
+                return $x;
+            };
+            static function (Foo $x) : Bar {
+                return $x;
+            };
+            static function (DateTimeImmutable $x) : Closure {
+                return $x;
+            };
+
+            PHP,
     ],
 ];
