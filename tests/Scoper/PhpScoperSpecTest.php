@@ -50,6 +50,7 @@ use function implode;
 use function is_array;
 use function is_string;
 use function min;
+use function rtrim;
 use function Safe\preg_split;
 use function sprintf;
 use function str_repeat;
@@ -147,7 +148,9 @@ class PhpScoperSpecTest extends TestCase
         );
 
         try {
-            $actual = $scoper->scope($filePath, $contents);
+            $actual = self::trimTrailingSpaces(
+                $scoper->scope($filePath, $contents),
+            );
 
             if (null === $expected) {
                 self::fail('Expected exception to be thrown.');
@@ -542,6 +545,17 @@ class PhpScoperSpecTest extends TestCase
                     static fn (array $stringTuple): string => sprintf('  - %s => %s', ...$stringTuple),
                     $stringTuples,
                 ),
+            ),
+        );
+    }
+
+    private static function trimTrailingSpaces(string $value): string
+    {
+        return implode(
+            "\n",
+            array_map(
+                rtrim(...),
+                explode("\n", $value),
             ),
         );
     }
