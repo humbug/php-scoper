@@ -65,7 +65,7 @@ return [
             namespace Humbug\Acme;
 
             const FOO = 'foo';
-            \define('Humbug\\Acme\\BAR', 'bar');
+            define('Humbug\\Acme\\BAR', 'bar');
             echo \Humbug\Acme\BAR;
 
             PHP,
@@ -86,7 +86,7 @@ return [
             namespace Humbug\Acme;
 
             \define('Acme\\FOO', 'foo');
-            \define('Acme\\BAR', 'bar');
+            define('Acme\\BAR', 'bar');
 
             PHP,
     ),
@@ -131,7 +131,7 @@ return [
                 }
             }
             const FOO = 'foo';
-            \define('Acme\\BAR', 'bar');
+            define('Acme\\BAR', 'bar');
             namespace Humbug\Bar;
 
             use Acme\Foo;

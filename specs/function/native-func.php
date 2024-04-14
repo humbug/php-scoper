@@ -33,7 +33,7 @@ return [
 
         namespace Humbug\Acme;
 
-        $x = \is_array([]);
+        $x = is_array([]);
 
         PHP,
 
