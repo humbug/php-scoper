@@ -21,6 +21,7 @@ use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
 use Humbug\PhpScoper\Scoper\Spec\SpecFormatter;
 use Humbug\PhpScoper\Scoper\Spec\SpecParser;
+use Humbug\PhpScoper\Scoper\Spec\UnparsableFile;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -191,13 +192,7 @@ class PhpScoperSpecTest extends TestCase
                     );
                 }
             } catch (Throwable $throwable) {
-                self::fail(
-                    sprintf(
-                        'An error occurred while parsing the file "%s": %s',
-                        $file,
-                        $throwable->getMessage(),
-                    ),
-                );
+                throw UnparsableFile::create($file, $throwable);
             }
         }
     }
