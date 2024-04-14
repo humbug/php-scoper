@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\SplFileInfo;
@@ -81,15 +82,19 @@ class SpecParser extends TestCase
     /**
      * @throws UnparsableFile
      */
-    public static function parseSpecFile(string $sourceDir, SplFileInfo $file): iterable
-    {
+    public static function parseSpecFile(
+        string $sourceDir,
+        SplFileInfo $file,
+    ): iterable {
         try {
-            $fixtures = include $file;
+            $specs = include $file;
 
-            $meta = $fixtures['meta'];
-            unset($fixtures['meta']);
+            self::checkSpecFileSchema($specs);
 
-            foreach ($fixtures as $fixtureTitle => $fixtureSet) {
+            $meta = $specs['meta'];
+            unset($specs['meta']);
+
+            foreach ($specs as $fixtureTitle => $fixtureSet) {
                 yield from self::parseSpec(
                     basename($sourceDir).'/'.$file->getRelativePathname(),
                     $meta,
@@ -99,6 +104,21 @@ class SpecParser extends TestCase
             }
         } catch (Throwable $throwable) {
             throw UnparsableFile::create($file, $throwable);
+        }
+    }
+
+    /**
+     * @phpstan-assert array{'meta': array, array-key: string|array} $specs
+     */
+    private static function checkSpecFileSchema(mixed $specs): void
+    {
+        Assert::assertIsArray($specs);
+
+        Assert::assertArrayHasKey('meta', $specs);
+        Assert::assertIsArray($specs['meta']);
+
+        foreach ($specs as $title => $spec) {
+            Assert::assertTrue(is_string($spec) || is_array($spec));
         }
     }
 
