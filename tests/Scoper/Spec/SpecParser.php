@@ -57,6 +57,8 @@ class SpecParser extends TestCase
     private const SPECS_SPEC_KEYS = [
         ConfigurationKeys::PREFIX_KEYWORD,
         // SPECS_CONFIG_KEYS included
+        'minPhpVersion',
+        'maxPhpVersion',
         'expected-recorded-classes',
         'expected-recorded-functions',
         'payload',
@@ -196,8 +198,8 @@ class SpecParser extends TestCase
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
             $fixtureSet['expected-recorded-classes'] ?? $meta['expected-recorded-classes'],
             $fixtureSet['expected-recorded-functions'] ?? $meta['expected-recorded-functions'],
-            $meta['minPhpVersion'] ?? null,
-            $meta['maxPhpVersion'] ?? null,
+            $fixtureSet['minPhpVersion'] ?? $meta['minPhpVersion'] ?? null,
+            $fixtureSet['maxPhpVersion'] ?? $meta['maxPhpVersion'] ?? null,
         ];
     }
 
