@@ -12,12 +12,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper\Spec;
+namespace Humbug\PhpScoper\SpecFramework;
 
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\NotInstantiable;
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+use Humbug\PhpScoper\SpecFramework\Throwable\UnparsableFile;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -39,7 +42,7 @@ class SpecParser extends TestCase
     /**
      * @throws UnparsableFile
      *
-     * @return iterable<SpecScenario>
+     * @return iterable<string, SpecScenario>
      */
     public static function parseSpecFile(
         string $sourceDir,
@@ -54,8 +57,10 @@ class SpecParser extends TestCase
             unset($specs['meta']);
 
             foreach ($specs as $title => $spec) {
-                yield self::parseSpec(
-                    basename($sourceDir).'/'.$file->getRelativePathname(),
+                $relativePath = basename($sourceDir).'/'.$file->getRelativePathname();
+
+                yield $relativePath.': '.$title => self::parseSpec(
+                    $relativePath,
                     $meta,
                     $title,
                     $spec,

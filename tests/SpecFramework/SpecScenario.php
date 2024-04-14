@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper\Spec;
+namespace Humbug\PhpScoper\SpecFramework;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -83,16 +83,10 @@ final readonly class SpecScenario
         SymbolsRegistry $symbolsRegistry,
         ?string $actualCode,
     ): void {
-        $specMessage = SpecFormatter::createSpecMessage(
-            $this->file,
-            $this->title,
-            $this->inputCode,
-            $this->symbolsConfiguration,
+        $specMessage = SpecPrinter::createSpecMessage(
+            $this,
             $symbolsRegistry,
-            $this->expectedCode,
             $actualCode,
-            $this->expectedRegisteredClasses,
-            $this->expectedRegisteredFunctions,
         );
 
         $assert->assertSame($this->expectedCode, $actualCode, $specMessage);

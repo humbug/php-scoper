@@ -12,11 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper\Spec;
+namespace Humbug\PhpScoper\SpecFrameworkTest;
 
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\SpecFramework\SpecParser;
+use Humbug\PhpScoper\SpecFramework\SpecScenario;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -65,7 +67,7 @@ final class SpecParserTest extends TestCase
         yield 'simple spec' => [
             self::FIXTURE_DIR.'/simple-spec-file.php',
             [
-                new SpecScenario(
+                'Fixtures/simple-spec-file.php: 0' => new SpecScenario(
                     null,
                     null,
                     'Fixtures/simple-spec-file.php',
@@ -81,7 +83,7 @@ final class SpecParserTest extends TestCase
                     [],
                     [],
                 ),
-                new SpecScenario(
+                'Fixtures/simple-spec-file.php: A spec with a title' => new SpecScenario(
                     null,
                     null,
                     'Fixtures/simple-spec-file.php',
@@ -103,7 +105,7 @@ final class SpecParserTest extends TestCase
         yield 'complete spec' => [
             self::FIXTURE_DIR.'/complete-spec-file.php',
             [
-                new SpecScenario(
+                'Fixtures/complete-spec-file.php: Spec with default meta values' => new SpecScenario(
                     72_000,
                     83_000,
                     'Fixtures/complete-spec-file.php',
@@ -127,7 +129,7 @@ final class SpecParserTest extends TestCase
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                 ),
-                new SpecScenario(
+                'Fixtures/complete-spec-file.php: Spec with the more verbose form' => new SpecScenario(
                     72_000,
                     83_000,
                     'Fixtures/complete-spec-file.php',
@@ -151,7 +153,7 @@ final class SpecParserTest extends TestCase
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                 ),
-                new SpecScenario(
+                'Fixtures/complete-spec-file.php: Spec with overridden meta values' => new SpecScenario(
                     73_000,
                     82_000,
                     'Fixtures/complete-spec-file.php',

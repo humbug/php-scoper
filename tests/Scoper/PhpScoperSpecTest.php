@@ -17,11 +17,11 @@ namespace Humbug\PhpScoper\Scoper;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
-use Humbug\PhpScoper\Scoper\Spec\SpecNormalizer;
-use Humbug\PhpScoper\Scoper\Spec\SpecParser;
-use Humbug\PhpScoper\Scoper\Spec\SpecScenario;
-use Humbug\PhpScoper\Scoper\Spec\UnparsableSpec;
+use Humbug\PhpScoper\SpecFramework\SpecFinder;
+use Humbug\PhpScoper\SpecFramework\SpecNormalizer;
+use Humbug\PhpScoper\SpecFramework\SpecParser;
+use Humbug\PhpScoper\SpecFramework\SpecScenario;
+use Humbug\PhpScoper\SpecFramework\Throwable\UnparsableSpec;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -100,8 +100,8 @@ class PhpScoperSpecTest extends TestCase
         foreach ($files as $file) {
             $scenarios = SpecParser::parseSpecFile($sourceDir, $file);
 
-            foreach ($scenarios as $scenario) {
-                yield [$scenario];
+            foreach ($scenarios as $label => $scenario) {
+                yield $label => [$scenario];
             }
         }
     }

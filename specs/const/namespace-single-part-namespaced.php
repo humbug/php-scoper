@@ -12,8 +12,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Humbug\PhpScoper\Scoper\Spec\Meta;
-use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
 
 return [
     'meta' => new Meta(
