@@ -83,16 +83,10 @@ final readonly class SpecScenario
         SymbolsRegistry $symbolsRegistry,
         ?string $actualCode,
     ): void {
-        $specMessage = SpecFormatter::createSpecMessage(
-            $this->file,
-            $this->title,
-            $this->inputCode,
-            $this->symbolsConfiguration,
+        $specMessage = SpecPrinter::createSpecMessage(
+            $this,
             $symbolsRegistry,
-            $this->expectedCode,
             $actualCode,
-            $this->expectedRegisteredClasses,
-            $this->expectedRegisteredFunctions,
         );
 
         $assert->assertSame($this->expectedCode, $actualCode, $specMessage);
