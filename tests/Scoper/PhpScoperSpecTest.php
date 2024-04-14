@@ -305,7 +305,6 @@ class PhpScoperSpecTest extends TestCase
             ];
         }
 
-        throw new Error('hello');
         $spec = sprintf(
             '[%s] %s',
             $meta['title'],
