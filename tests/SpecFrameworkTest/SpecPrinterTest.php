@@ -20,7 +20,6 @@ use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\SpecFramework\SpecPrinter;
 use Humbug\PhpScoper\SpecFramework\SpecScenario;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -345,14 +344,14 @@ final class SpecPrinterTest extends TestCase
                 [],
                 [],
             ),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'recorded_function' => 'Humbug\recorded_function',
-                    'another_recorded_function' => 'Humbug\another_recorded_function',
+                    ['recorded_function', 'Humbug\recorded_function'],
+                    ['another_recorded_function', 'Humbug\another_recorded_function'],
                 ],
                 [
-                    'RecordedClass' => 'Humbug\RecordedClass',
-                    'AnotherRecordedClass' => 'Humbug\AnotherRecordedClass',
+                    ['RecordedClass', 'Humbug\RecordedClass'],
+                    ['AnotherRecordedClass', 'Humbug\AnotherRecordedClass'],
                 ],
             ),
             $actualCode,
@@ -425,32 +424,5 @@ final class SpecPrinterTest extends TestCase
         }
 
         return $factory->createSymbolsConfiguration($config);
-    }
-
-    /**
-     * @param array<string, string> $functions
-     * @param array<string, string> $classes
-     */
-    private static function createRegistry(
-        array $functions,
-        array $classes,
-    ): SymbolsRegistry {
-        $registry = new SymbolsRegistry();
-
-        foreach ($functions as $original => $alias) {
-            $registry->recordFunction(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        foreach ($classes as $original => $alias) {
-            $registry->recordClass(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        return $registry;
     }
 }
