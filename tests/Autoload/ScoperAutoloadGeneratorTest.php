@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Autoload;
 
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -598,32 +597,5 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 PHP,
         ];
-    }
-
-    /**
-     * @param array<string, string> $functions
-     * @param array<string, string> $classes
-     */
-    private static function createRegistry(
-        array $functions,
-        array $classes
-    ): SymbolsRegistry {
-        $registry = new SymbolsRegistry();
-
-        foreach ($functions as $original => $alias) {
-            $registry->recordFunction(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        foreach ($classes as $original => $alias) {
-            $registry->recordClass(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        return $registry;
     }
 }
