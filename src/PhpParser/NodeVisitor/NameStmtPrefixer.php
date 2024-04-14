@@ -384,7 +384,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         // explicitly register a constant to be exposed or that the constant
         // is internal that it is the constant in question and not the one
         // relative to the namespace.
-        // Indeed it would otherwise mean that the user has for example Acme\FOO
+        // Indeed, it would otherwise mean that the user has for example Acme\FOO
         // and \FOO in the codebase AND decide to expose \FOO.
         // It is not only unlikely but sketchy, hence should not be an issue
         // in practice.
@@ -432,19 +432,19 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 : null;
         }
 
-        if ($this->enrichedReflector->isFunctionInternal($resolvedNameString)) {
-            return new FullyQualified(
-                $originalName->toString(),
-                $originalName->getAttributes(),
-            );
-        }
+//        if ($this->enrichedReflector->isFunctionInternal($resolvedNameString)) {
+//            return new FullyQualified(
+//                $originalName->toString(),
+//                $originalName->getAttributes(),
+//            );
+//        }
+//
+//        if ($this->enrichedReflector->isExposedFunction($resolvedNameString)) {
+//            return $this->enrichedReflector->isExposedFunctionFromGlobalNamespace($resolvedNameString)
+//                ? $resolvedName
+//                : null;
+//        }
 
-        if ($this->enrichedReflector->isExposedFunction($resolvedNameString)) {
-            return $this->enrichedReflector->isExposedFunctionFromGlobalNamespace($resolvedNameString)
-                ? $resolvedName
-                : null;
-        }
-
-        return $resolvedName;
+        return $originalName;
     }
 }

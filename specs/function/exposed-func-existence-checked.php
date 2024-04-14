@@ -100,7 +100,7 @@ return [
 
             namespace Humbug\Acme;
 
-            \function_exists('Humbug\\Acme\\main');
+            function_exists('Humbug\\Acme\\main');
 
             PHP,
     ),
@@ -118,7 +118,7 @@ return [
 
             namespace Acme;
 
-            \function_exists('Acme\\main');
+            function_exists('Acme\\main');
 
             PHP,
     ),

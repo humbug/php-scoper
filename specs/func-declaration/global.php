@@ -605,7 +605,7 @@ return [
             }
             namespace Humbug\A;
 
-            \trigger_deprecation();
+            trigger_deprecation();
             namespace Humbug\B;
 
             use function trigger_deprecation;
