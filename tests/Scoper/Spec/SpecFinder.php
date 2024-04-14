@@ -14,11 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Spec;
 
+use Humbug\PhpScoper\NotInstantiable;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 final class SpecFinder
 {
+    use NotInstantiable;
+
     public const SPECS_PATH = __DIR__.'/../../../specs';
     public const TMP_SPECS_PATH = __DIR__.'/../../../_specs';
 
