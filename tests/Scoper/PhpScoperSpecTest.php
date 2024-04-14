@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Error;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
@@ -22,6 +21,7 @@ use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
 use Humbug\PhpScoper\Scoper\Spec\SpecFormatter;
 use Humbug\PhpScoper\Scoper\Spec\SpecNormalizer;
 use Humbug\PhpScoper\Scoper\Spec\SpecParser;
+use Humbug\PhpScoper\Scoper\Spec\UnparsableSpec;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -109,15 +109,7 @@ class PhpScoperSpecTest extends TestCase
                 $error,
             );
         } catch (Throwable $throwable) {
-            throw new Error(
-                sprintf(
-                    'Could not parse the spec %s: %s',
-                    $spec,
-                    $throwable->getMessage().$throwable->getTraceAsString(),
-                ),
-                0,
-                $throwable,
-            );
+            throw UnparsableSpec::create($spec, $throwable);
         }
 
         $specMessage = SpecFormatter::createSpecMessage(
@@ -204,15 +196,7 @@ class PhpScoperSpecTest extends TestCase
         PhpParserError $error,
     ): never {
         if (!str_starts_with($error->getMessage(), 'Syntax error,')) {
-            throw new Error(
-                sprintf(
-                    'Could not parse the spec %s: %s',
-                    $spec,
-                    $error->getMessage(),
-                ),
-                0,
-                $error,
-            );
+            throw UnparsableSpec::create($spec, $error);
         }
 
         $lines = array_values(array_filter(explode("\n", $contents)));
