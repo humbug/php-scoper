@@ -21,7 +21,6 @@ use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
 use Humbug\PhpScoper\Scoper\Spec\SpecFormatter;
 use Humbug\PhpScoper\Scoper\Spec\SpecParser;
-use Humbug\PhpScoper\Scoper\Spec\UnparsableFile;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -35,7 +34,6 @@ use function array_filter;
 use function array_map;
 use function array_slice;
 use function array_values;
-use function basename;
 use function explode;
 use function implode;
 use function rtrim;
@@ -177,23 +175,7 @@ class PhpScoperSpecTest extends TestCase
         [$sourceDir, $files] = SpecFinder::findSpecFiles();
 
         foreach ($files as $file) {
-            try {
-                $fixtures = include $file;
-
-                $meta = $fixtures['meta'];
-                unset($fixtures['meta']);
-
-                foreach ($fixtures as $fixtureTitle => $fixtureSet) {
-                    yield from SpecParser::parseSpecFile(
-                        basename($sourceDir).'/'.$file->getRelativePathname(),
-                        $meta,
-                        $fixtureTitle,
-                        $fixtureSet,
-                    );
-                }
-            } catch (Throwable $throwable) {
-                throw UnparsableFile::create($file, $throwable);
-            }
+            yield from SpecParser::parseSpecFile($sourceDir, $file);
         }
     }
 
