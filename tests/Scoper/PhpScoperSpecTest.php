@@ -175,10 +175,7 @@ class PhpScoperSpecTest extends TestCase
         [$sourceDir, $files] = SpecFinder::findSpecFiles();
 
         foreach ($files as $file) {
-            yield SpecParser::parseSpecFile(
-                $sourceDir,
-                $file,
-            );
+            yield from SpecParser::parseSpecFile($sourceDir, $file);
         }
     }
 

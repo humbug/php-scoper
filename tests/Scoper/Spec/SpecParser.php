@@ -31,6 +31,7 @@ use function array_keys;
 use function array_merge;
 use function implode;
 use function is_array;
+use function is_int;
 use function is_string;
 use function Safe\preg_split;
 use function sprintf;
@@ -108,7 +109,7 @@ class SpecParser extends TestCase
     }
 
     /**
-     * @phpstan-assert array{'meta': array, string: array} $specs
+     * @phpstan-assert array{'meta': array, array-key: string|array} $specs
      */
     private static function checkSpecFileSchema(mixed $specs): void
     {
@@ -118,8 +119,7 @@ class SpecParser extends TestCase
         Assert::assertIsArray($specs['meta']);
 
         foreach ($specs as $title => $spec) {
-            Assert::assertIsString($title);
-            Assert::assertIsArray($spec);
+            Assert::assertTrue(is_string($spec) || is_array($spec));
         }
     }
 
