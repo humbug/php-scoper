@@ -84,6 +84,8 @@ class SpecParser extends TestCase
 
     /**
      * @throws UnparsableFile
+     *
+     * @return iterable<SpecScenario>
      */
     public static function parseSpecFile(
         string $sourceDir,
@@ -134,7 +136,7 @@ class SpecParser extends TestCase
         array $meta,
         int|string $title,
         array|string $fixtureSet,
-    ): array {
+    ): SpecScenario {
         static $specMetaKeys;
         static $specKeys;
 
@@ -190,10 +192,12 @@ class SpecParser extends TestCase
             );
         }
 
-        return [
+        return new SpecScenario(
+            $fixtureSet['minPhpVersion'] ?? $meta['minPhpVersion'] ?? null,
+            $fixtureSet['maxPhpVersion'] ?? $meta['maxPhpVersion'] ?? null,
             $file,
             $completeTitle,
-            $payloadParts[0],   // Input
+            $payloadParts[0],
             $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
             self::createSymbolsConfiguration(
                 $file,
@@ -203,9 +207,7 @@ class SpecParser extends TestCase
             '' === $payloadParts[1] ? null : $payloadParts[1],   // Expected output; null means an exception is expected,
             $fixtureSet['expected-recorded-classes'] ?? $meta['expected-recorded-classes'],
             $fixtureSet['expected-recorded-functions'] ?? $meta['expected-recorded-functions'],
-            $fixtureSet['minPhpVersion'] ?? $meta['minPhpVersion'] ?? null,
-            $fixtureSet['maxPhpVersion'] ?? $meta['maxPhpVersion'] ?? null,
-        ];
+        );
     }
 
     private static function createSymbolsConfiguration(
