@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
 use Humbug\PhpScoper\Scoper\Spec\SpecFormatter;
+use Humbug\PhpScoper\Scoper\Spec\SpecNormalizer;
 use Humbug\PhpScoper\Scoper\Spec\SpecParser;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
@@ -31,12 +32,10 @@ use PHPUnit\Framework\TestCase;
 use Throwable;
 use UnexpectedValueException;
 use function array_filter;
-use function array_map;
 use function array_slice;
 use function array_values;
 use function explode;
 use function implode;
-use function rtrim;
 use function sprintf;
 use function str_starts_with;
 use function usort;
@@ -91,7 +90,7 @@ class PhpScoperSpecTest extends TestCase
         );
 
         try {
-            $actual = self::trimTrailingSpaces(
+            $actual = SpecNormalizer::trimTrailingSpaces(
                 $scoper->scope($filePath, $contents),
             );
 
@@ -208,17 +207,6 @@ class PhpScoperSpecTest extends TestCase
             ),
             $container->getPrinter(),
             $container->getLexer(),
-        );
-    }
-
-    private static function trimTrailingSpaces(string $value): string
-    {
-        return implode(
-            "\n",
-            array_map(
-                rtrim(...),
-                explode("\n", $value),
-            ),
         );
     }
 
