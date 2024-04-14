@@ -120,7 +120,11 @@ class SpecParser extends TestCase
         Assert::assertArrayHasKey('meta', $specs);
         Assert::assertIsArray($specs['meta']);
 
-        foreach ($specs as $title => $spec) {
+        foreach ($specs as $key => $spec) {
+            if ('meta' === $key) {
+                continue;
+            }
+
             Assert::assertTrue(is_string($spec) || is_array($spec));
         }
     }
