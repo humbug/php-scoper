@@ -31,6 +31,7 @@ use function array_keys;
 use function array_merge;
 use function implode;
 use function is_array;
+use function is_int;
 use function is_string;
 use function Safe\preg_split;
 use function sprintf;
@@ -125,7 +126,7 @@ class SpecParser extends TestCase
     private static function parseSpec(
         string $file,
         array $meta,
-        int|string $fixtureTitle,
+        int|string $title,
         array|string $fixtureSet,
     ): array {
         static $specMetaKeys;
@@ -145,10 +146,10 @@ class SpecParser extends TestCase
             ];
         }
 
-        $spec = sprintf(
+        $completeTitle = sprintf(
             '[%s] %s',
             $meta['title'],
-            $fixtureTitle,
+            is_int($title) ? 'spec #'.$title : $title,
         );
 
         $payload = is_string($fixtureSet) ? $fixtureSet : $fixtureSet['payload'];
@@ -185,7 +186,7 @@ class SpecParser extends TestCase
 
         return [
             $file,
-            $spec,
+            $completeTitle,
             $payloadParts[0],   // Input
             $fixtureSet[ConfigurationKeys::PREFIX_KEYWORD] ?? $meta[ConfigurationKeys::PREFIX_KEYWORD],
             self::createSymbolsConfiguration(

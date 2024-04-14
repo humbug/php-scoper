@@ -67,7 +67,7 @@ final class SpecParserTest extends TestCase
             [
                 [
                     'Fixtures/simple-spec-file.php',
-                    '[Example of simple spec file] 0',
+                    '[Example of simple spec file] spec #0',
                     $specCode,
                     'Humbug',
                     SymbolsConfiguration::create(
