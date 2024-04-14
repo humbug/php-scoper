@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper\Spec;
+namespace Humbug\PhpScoper\SpecFramework;
 
 use Humbug\PhpScoper\NotInstantiable;
 use Symfony\Component\Finder\Finder;
@@ -22,8 +22,8 @@ final class SpecFinder
 {
     use NotInstantiable;
 
-    public const SPECS_PATH = __DIR__.'/../../../specs';
-    public const TMP_SPECS_PATH = __DIR__.'/../../../_specs';
+    public const SPECS_PATH = __DIR__.'/../../specs';
+    public const TMP_SPECS_PATH = __DIR__.'/../../_specs';
 
     /**
      * @return array{string, iterable<SplFileInfo>}

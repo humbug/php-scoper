@@ -12,7 +12,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper\Spec;
+namespace Humbug\PhpScoper\SpecFramework;
 
 use Humbug\PhpScoper\NotInstantiable;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
