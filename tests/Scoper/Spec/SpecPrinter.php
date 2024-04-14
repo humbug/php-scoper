@@ -14,12 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Spec;
 
-use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\NotInstantiable;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use function array_map;
 use function count;
@@ -34,26 +32,23 @@ use const PHP_EOL;
 /**
  * @internal
  */
-#[Group('integration')]
-class SpecFormatter extends TestCase
+final class SpecPrinter extends TestCase
 {
     use NotInstantiable;
 
-    /**
-     * @param string[][] $expectedRegisteredClasses
-     * @param string[][] $expectedRegisteredFunctions
-     */
     public static function createSpecMessage(
-        string $file,
-        string $spec,
-        string $contents,
-        SymbolsConfiguration $symbolsConfiguration,
+        SpecScenario $scenario,
         SymbolsRegistry $symbolsRegistry,
-        ?string $expected,
-        ?string $actual,
-        array $expectedRegisteredClasses,
-        array $expectedRegisteredFunctions
+        ?string $actualCode,
     ): string {
+        $file = $scenario->file;
+        $title = $scenario->title;
+        $inputCode = $scenario->inputCode;
+        $symbolsConfiguration = $scenario->symbolsConfiguration;
+        $expectedCode = $scenario->expectedCode;
+        $expectedRegisteredClasses = $scenario->expectedRegisteredClasses;
+        $expectedRegisteredFunctions = $scenario->expectedRegisteredFunctions;
+
         $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
         $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
         $formattedExposeGlobalFunctions = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalFunctions());
@@ -78,7 +73,7 @@ class SpecFormatter extends TestCase
         $titleSeparator = str_repeat(
             '=',
             min(
-                strlen($spec),
+                strlen($title),
                 80,
             ),
         );
@@ -87,7 +82,7 @@ class SpecFormatter extends TestCase
             {$titleSeparator}
             SPECIFICATION
             {$titleSeparator}
-            {$spec}
+            {$title}
             {$file}
 
             {$titleSeparator}
@@ -107,12 +102,12 @@ class SpecFormatter extends TestCase
             (raw) internal functions: {$formattedInternalFunctions}
             (raw) internal constants: {$formattedInternalConstants}
             {$titleSeparator}
-            {$contents}
+            {$inputCode}
 
             {$titleSeparator}
             EXPECTED
             {$titleSeparator}
-            {$expected}
+            {$expectedCode}
             ----------------
             recorded functions: {$formattedExpectedRegisteredFunctions}
             recorded classes: {$formattedExpectedRegisteredClasses}
@@ -120,7 +115,7 @@ class SpecFormatter extends TestCase
             {$titleSeparator}
             ACTUAL
             {$titleSeparator}
-            {$actual}
+            {$actualCode}
             ----------------
             recorded functions: {$formattedActualRegisteredFunctions}
             recorded classes: {$formattedActualRegisteredClasses}
