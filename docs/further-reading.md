@@ -4,6 +4,7 @@
 - [Autoload aliases](#autoload-aliases)
   - [Class aliases](#class-aliases)
   - [Function aliases](#function-aliases)
+- [Laravel support](#laravel-support)
 - [Symfony support](#symfony-support)
 - [Wordpress support](#wordpress-support)
 
@@ -65,6 +66,48 @@ When [exposing a class], an alias will be registered.
 
 When [exposing a function] or when a globally declared [excluded-function]
 declaration is found (see [#706]), an alias will be registered.
+
+
+### Laravel support
+
+PHP-Scoper supports laravel out of the box for the most part. There is one problematic piece that is not
+supported and that is the views. However, this can be fixed by hand without too much problems:
+
+```php
+// scoper.inc.php
+<?php declare(strict_types=1);
+
+use Isolated\Symfony\Component\Finder\Finder;
+
+$consoleViewFiles = array_map(
+    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
+    iterator_to_array(
+        Finder::create()
+            ->in('vendor/laravel/framework/src/Illuminate/Console/resources/views')
+            ->files(),
+        false,
+    ),
+);
+
+return [
+    'exclude-files' => [
+        ...$consoleViewFiles,
+    ],
+    'patchers' => [
+        static function (string $filePath, string $prefix, string $contents): string {
+            if (!str_ends_with($filePath, 'vendor/laravel/framework/src/Illuminate/Console/View/Components/Factory.php')) {
+                return $contents;
+            }
+
+            return str_replace(
+                '$component = \'\\\\Illuminate\\\\Console\\\\View\\\\Components\\\\\' . ucfirst($method);',
+                '$component = \'\\\\'.$prefix.'\\\\Illuminate\\\\Console\\\\View\\\\Components\\\\\' . ucfirst($method);',
+                $contents,
+            );
+        },
+    ],
+];
+```
 
 
 ### Symfony Support

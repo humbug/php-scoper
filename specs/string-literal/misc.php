@@ -44,7 +44,7 @@ return [
         declare (strict_types=1);
         namespace Humbug\Acme;
 
-        \sprintf(<<<'_PHP'
+        sprintf(<<<'_PHP'
         if (!function_exists('%1$s')) {
             function %1$s() {
                 return \%2$s(func_get_args());

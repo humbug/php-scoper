@@ -243,20 +243,20 @@ return [
             const X = 'x';
             const Y = '';
         }
-        if (!\defined('Humbug\\BAR_CONST')) {
-            \define('Humbug\\BAR_CONST', foo());
+        if (!defined('Humbug\\BAR_CONST')) {
+            define('Humbug\\BAR_CONST', foo());
         }
-        if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-            \define('Humbug\\Acme\\BAR_CONST', foo());
+        if (!defined('Humbug\\Acme\\BAR_CONST')) {
+            define('Humbug\\Acme\\BAR_CONST', foo());
         }
-        if (!\defined('Humbug\\Acme\\FOO_CONST')) {
-            \define(FOO_CONST, foo());
+        if (!defined('Humbug\\Acme\\FOO_CONST')) {
+            define(FOO_CONST, foo());
         }
-        if (!\defined('Humbug\\FOO_CONST')) {
-            \define(\Humbug\FOO_CONST, foo());
+        if (!defined('Humbug\\FOO_CONST')) {
+            define(\Humbug\FOO_CONST, foo());
         }
-        if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-            \define(\Humbug\Acme\BAR_CONST, foo());
+        if (!defined('Humbug\\Acme\\BAR_CONST')) {
+            define(\Humbug\Acme\BAR_CONST, foo());
         }
 
         PHP,
@@ -296,20 +296,20 @@ return [
                 const X = 'x';
                 const Y = '';
             }
-            if (!\defined('Humbug\\BAR_CONST')) {
-                \define('Humbug\\BAR_CONST', foo());
+            if (!defined('Humbug\\BAR_CONST')) {
+                define('Humbug\\BAR_CONST', foo());
             }
-            if (!\defined('Acme\\BAR_CONST')) {
-                \define('Acme\\BAR_CONST', foo());
+            if (!defined('Acme\\BAR_CONST')) {
+                define('Acme\\BAR_CONST', foo());
             }
-            if (!\defined('Acme\\FOO_CONST')) {
-                \define(FOO_CONST, foo());
+            if (!defined('Acme\\FOO_CONST')) {
+                define(FOO_CONST, foo());
             }
-            if (!\defined('Humbug\\FOO_CONST')) {
-                \define(\Humbug\FOO_CONST, foo());
+            if (!defined('Humbug\\FOO_CONST')) {
+                define(\Humbug\FOO_CONST, foo());
             }
-            if (!\defined('Acme\\BAR_CONST')) {
-                \define(\Acme\BAR_CONST, foo());
+            if (!defined('Acme\\BAR_CONST')) {
+                define(\Acme\BAR_CONST, foo());
             }
 
             PHP,
@@ -350,20 +350,20 @@ return [
                 const X = 'x';
                 const Y = '';
             }
-            if (!\defined('Humbug\\BAR_CONST')) {
-                \define('Humbug\\BAR_CONST', foo());
+            if (!defined('Humbug\\BAR_CONST')) {
+                define('Humbug\\BAR_CONST', foo());
             }
-            if (!\defined('Acme\\BAR_CONST')) {
-                \define('Acme\\BAR_CONST', foo());
+            if (!defined('Acme\\BAR_CONST')) {
+                define('Acme\\BAR_CONST', foo());
             }
-            if (!\defined('Humbug\\Acme\\FOO_CONST')) {
-                \define(FOO_CONST, foo());
+            if (!defined('Humbug\\Acme\\FOO_CONST')) {
+                define(FOO_CONST, foo());
             }
-            if (!\defined('Humbug\\FOO_CONST')) {
-                \define(\Humbug\FOO_CONST, foo());
+            if (!defined('Humbug\\FOO_CONST')) {
+                define(\Humbug\FOO_CONST, foo());
             }
-            if (!\defined('Acme\\BAR_CONST')) {
-                \define(\Acme\BAR_CONST, foo());
+            if (!defined('Acme\\BAR_CONST')) {
+                define(\Acme\BAR_CONST, foo());
             }
 
             PHP,
@@ -388,8 +388,8 @@ return [
                     }
 
                     function isAnotherNewToken(int $token): bool {
-                        if (!\defined('ANOTHER_NEW_TOKEN')) {
-                            \define('ANOTHER_NEW_TOKEN', 502);
+                        if (!defined('ANOTHER_NEW_TOKEN')) {
+                            define('ANOTHER_NEW_TOKEN', 502);
                         }
 
                         return ANOTHER_NEW_TOKEN === $token;
@@ -404,8 +404,8 @@ return [
                     }
 
                     function isAnotherNewToken(int $token): bool {
-                        if (!\defined('ANOTHER_NEW_TOKEN')) {
-                            \define('ANOTHER_NEW_TOKEN', 502);
+                        if (!defined('ANOTHER_NEW_TOKEN')) {
+                            define('ANOTHER_NEW_TOKEN', 502);
                         }
 
                         return \ANOTHER_NEW_TOKEN === $token;
@@ -429,8 +429,8 @@ return [
                 }
                 function isAnotherNewToken(int $token) : bool
                 {
-                    if (!\defined('ANOTHER_NEW_TOKEN')) {
-                        \define('ANOTHER_NEW_TOKEN', 502);
+                    if (!defined('ANOTHER_NEW_TOKEN')) {
+                        define('ANOTHER_NEW_TOKEN', 502);
                     }
                     return \ANOTHER_NEW_TOKEN === $token;
                 }
@@ -445,8 +445,8 @@ return [
                 }
                 function isAnotherNewToken(int $token) : bool
                 {
-                    if (!\defined('ANOTHER_NEW_TOKEN')) {
-                        \define('ANOTHER_NEW_TOKEN', 502);
+                    if (!defined('ANOTHER_NEW_TOKEN')) {
+                        define('ANOTHER_NEW_TOKEN', 502);
                     }
                     return \ANOTHER_NEW_TOKEN === $token;
                 }

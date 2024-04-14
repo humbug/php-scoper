@@ -12,6 +12,7 @@
 - [Files autoloading](#files-autoloading)
 - [Exposing/Excluding traits](#exposingexcluding-traits)
 - [Exposing/Excluding enums](#exposingexcluding-enums)
+- [Declaring a custom namespaced function `function_exists()`](#declaring-a-custom-namespaced-function-function_exists)
 
 
 ### Dynamic symbols
@@ -261,6 +262,27 @@ that extends the scoped trait, but this is currently not implemented.
 
 There is currently no way to expose or exclude an enum. The problem being there
 is no way to alias one.
+
+
+### Declaring a custom namespaced function `function_exists()`
+
+When PHP-Scoper encounters a call such as this one:
+
+```php
+namespace App;
+
+function_exists('NewApp\main');
+```
+
+That the string contained by `function_exists` is a fully-qualified class name.
+This is true however if `function_exists()` is the native PHP one. However,
+technically, if the function `App\function_exists()` does exist, then the call
+above would call `App\function_exists()` and not `function_exists()`.
+
+This is a very unlikely scenario which is why PHP-Scoper will assume it is the
+PHP native one.
+
+If, by any chance, this is a problem, you will have to fix it with [patchers].
 
 
 <br />

@@ -53,9 +53,6 @@ return [
 
         PHP,
 
-    // In theory this case CAN be wrong. There is however a very high chance it
-    // is not as it implies having both A\foo() and foo() in the
-    // codebase with only foo() exposed.
     'Exposed constant call in a namespace' => SpecWithConfig::create(
         exposeFunctions: ['foo'],
         spec: <<<'PHP'
@@ -69,7 +66,7 @@ return [
 
             namespace Humbug\A;
 
-            \Humbug\foo();
+            foo();
 
             PHP,
     ),
