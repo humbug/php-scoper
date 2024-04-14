@@ -20,8 +20,11 @@ use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
+use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
 use function array_diff;
 use function array_key_exists;
 use function array_keys;
@@ -76,7 +79,50 @@ class SpecParser extends TestCase
         ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
     ];
 
-    public static function parseSpec(
+    /**
+     * @throws UnparsableFile
+     */
+    public static function parseSpecFile(
+        string $sourceDir,
+        SplFileInfo $file,
+    ): iterable {
+        try {
+            $specs = include $file;
+
+            self::checkSpecFileSchema($specs);
+
+            $meta = $specs['meta'];
+            unset($specs['meta']);
+
+            foreach ($specs as $fixtureTitle => $fixtureSet) {
+                yield from self::parseSpec(
+                    basename($sourceDir).'/'.$file->getRelativePathname(),
+                    $meta,
+                    $fixtureTitle,
+                    $fixtureSet,
+                );
+            }
+        } catch (Throwable $throwable) {
+            throw UnparsableFile::create($file, $throwable);
+        }
+    }
+
+    /**
+     * @phpstan-assert array{'meta': array, array-key: string|array} $specs
+     */
+    private static function checkSpecFileSchema(mixed $specs): void
+    {
+        Assert::assertIsArray($specs);
+
+        Assert::assertArrayHasKey('meta', $specs);
+        Assert::assertIsArray($specs['meta']);
+
+        foreach ($specs as $title => $spec) {
+            Assert::assertTrue(is_string($spec) || is_array($spec));
+        }
+    }
+
+    private static function parseSpec(
         string $file,
         array $meta,
         int|string $fixtureTitle,

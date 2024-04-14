@@ -18,12 +18,9 @@ use Error;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
-use Humbug\PhpScoper\Scoper\Spec\Meta;
 use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
 use Humbug\PhpScoper\Scoper\Spec\SpecFormatter;
 use Humbug\PhpScoper\Scoper\Spec\SpecParser;
-use Humbug\PhpScoper\Scoper\Spec\UnparsableFile;
-use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -37,11 +34,8 @@ use function array_filter;
 use function array_map;
 use function array_slice;
 use function array_values;
-use function basename;
 use function explode;
 use function implode;
-use function is_string;
-use function min;
 use function rtrim;
 use function sprintf;
 use function str_starts_with;
@@ -181,24 +175,7 @@ class PhpScoperSpecTest extends TestCase
         [$sourceDir, $files] = SpecFinder::findSpecFiles();
 
         foreach ($files as $file) {
-            try {
-                // TODO: can extract rename
-                $specs = include $file;
-
-                $meta = $specs['meta'];
-                unset($specs['meta']);
-
-                foreach ($specs as $title => $spec) {
-                    yield from SpecParser::parseSpec(
-                        basename($sourceDir).'/'.$file->getRelativePathname(),
-                        $meta,
-                        $title,
-                        $spec,
-                    );
-                }
-            } catch (Throwable $throwable) {
-                throw UnparsableFile::create($file, $throwable);
-            }
+            yield from SpecParser::parseSpecFile($sourceDir, $file);
         }
     }
 
