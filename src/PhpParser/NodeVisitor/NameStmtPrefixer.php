@@ -432,19 +432,6 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
                 : null;
         }
 
-//        if ($this->enrichedReflector->isFunctionInternal($resolvedNameString)) {
-//            return new FullyQualified(
-//                $originalName->toString(),
-//                $originalName->getAttributes(),
-//            );
-//        }
-//
-//        if ($this->enrichedReflector->isExposedFunction($resolvedNameString)) {
-//            return $this->enrichedReflector->isExposedFunctionFromGlobalNamespace($resolvedNameString)
-//                ? $resolvedName
-//                : null;
-//        }
-
         return $originalName;
     }
 }
