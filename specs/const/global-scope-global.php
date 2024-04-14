@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Global constant usage in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Global constant usage in the global scope',
+    ),
 
     'Constant call in the global namespace' => <<<'PHP'
         <?php
@@ -48,9 +33,9 @@ return [
 
         PHP,
 
-    'Exposed constant call in the global namespace' => [
-        'expose-constants' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
+    'Exposed constant call in the global namespace' => SpecWithConfig::create(
+        exposeConstants: ['DUMMY_CONST'],
+        spec: <<<'PHP'
             <?php
 
             DUMMY_CONST;
@@ -62,11 +47,11 @@ return [
             \DUMMY_CONST;
 
             PHP,
-    ],
+    ),
 
-    'Constant call in the global namespace which is excluded' => [
-        'exclude-namespaces' => [''],
-        'payload' => <<<'PHP'
+    'Constant call in the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: [''],
+        spec: <<<'PHP'
             <?php
 
             DUMMY_CONST;
@@ -78,7 +63,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Internal constant call in the global namespace' => <<<'PHP'
         <?php

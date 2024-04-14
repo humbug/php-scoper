@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Catch expressions',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Catch expressions',
+    ),
 
     'Catch an internal class' => <<<'PHP'
         <?php
@@ -94,9 +79,9 @@ return [
 
         PHP,
 
-    'Catch an exposed custom exception class' => [
-        'expose-classes' => ['FooException'],
-        'payload' => <<<'PHP'
+    'Catch an exposed custom exception class' => SpecWithConfig::create(
+        exposeClasses: ['FooException'],
+        spec: <<<'PHP'
             <?php
 
             try {
@@ -114,11 +99,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Catch a custom exception class which belongs to the excluded root namespace' => [
-        'exclude-namespaces' => ['/^$/'],
-        'payload' => <<<'PHP'
+    'Catch a custom exception class which belongs to the excluded root namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['/^$/'],
+        spec: <<<'PHP'
             <?php
 
             try {
@@ -136,7 +121,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Catch a custom exception class in a namespace' => <<<'PHP'
         <?php
@@ -159,9 +144,9 @@ return [
 
         PHP,
 
-    'Catch an exposed custom exception class in a namespace' => [
-        'expose-classes' => ['Acme\FooException'],
-        'payload' => <<<'PHP'
+    'Catch an exposed custom exception class in a namespace' => SpecWithConfig::create(
+        exposeClasses: ['Acme\FooException'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -181,12 +166,12 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     // TODO: should not be made into FQ here
-    'Catch a custom exception class in an excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
+    'Catch a custom exception class in an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -206,7 +191,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Catch an custom exception class in a namespace imported with a use statement' => <<<'PHP'
         <?php

@@ -62,7 +62,7 @@ final class SpecParserTest extends TestCase
 
             PHP;
 
-        yield [
+        yield 'simple spec' => [
             self::FIXTURE_DIR.'/simple-spec-file.php',
             [
                 new SpecScenario(
@@ -100,7 +100,7 @@ final class SpecParserTest extends TestCase
             ],
         ];
 
-        yield [
+        yield 'complete spec' => [
             self::FIXTURE_DIR.'/complete-spec-file.php',
             [
                 new SpecScenario(

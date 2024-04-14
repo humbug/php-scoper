@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'New statement call of a namespaced class imported with a use statement in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'New statement call of a namespaced class imported with a use statement in the global scope',
+    ),
 
     'New statement call of a namespaced class partially imported with a use statement' => <<<'PHP'
         <?php
@@ -71,12 +56,12 @@ return [
 
         PHP,
 
-    'New statement call of an exposed namespaced class partially imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'New statement call of an exposed namespaced class partially imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -112,7 +97,7 @@ return [
             new Foo\Bar();
 
             PHP,
-    ],
+    ),
 
     'FQ new statement call of a namespaced class partially imported with a use statement' => <<<'PHP'
         <?php
@@ -150,12 +135,12 @@ return [
 
         PHP,
 
-    'FQ new statement call of an exposed namespaced class partially imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'FQ new statement call of an exposed namespaced class partially imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -191,7 +176,7 @@ return [
             new \Humbug\Foo\Bar();
 
             PHP,
-    ],
+    ),
 
     'New statement call of a namespaced class imported with a use statement' => <<<'PHP'
         <?php
@@ -229,12 +214,12 @@ return [
 
         PHP,
 
-    'New statement call of an exposed namespaced class imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'New statement call of an exposed namespaced class imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -270,7 +255,7 @@ return [
             new Bar();
 
             PHP,
-    ],
+    ),
 
     'FQ new statement call of a namespaced class imported with a use statement' => <<<'PHP'
         <?php
@@ -312,12 +297,12 @@ return [
 
         PHP,
 
-    'FQ new statement call of a, exposed namespaced class imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'FQ new statement call of a, exposed namespaced class imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -357,5 +342,5 @@ return [
             new \Humbug\Bar();
 
             PHP,
-    ],
+    ),
 ];

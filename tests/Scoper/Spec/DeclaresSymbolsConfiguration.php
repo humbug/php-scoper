@@ -12,24 +12,12 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Humbug\PhpScoper\Scoper\Spec\Meta;
+namespace Humbug\PhpScoper\Scoper\Spec;
 
-return [
-    'meta' => new Meta(
-        title: 'Namespace declarations after a hashbang',
-    ),
-
-    <<<'PHP'
-        #!/usr/bin/env php
-        <?php
-
-        namespace Foo;
-
-        ----
-        #!/usr/bin/env php
-        <?php
-        namespace Humbug\Foo;
-
-
-        PHP,
-];
+interface DeclaresSymbolsConfiguration
+{
+    /**
+     * @return array<ConfigurationKeys::*, mixed>
+     */
+    public function getSymbolsConfig(): array;
+}

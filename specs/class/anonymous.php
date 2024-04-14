@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Anonymous class declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Anonymous class declaration',
+    ),
 
     'Declaration in the global namespace' => <<<'PHP'
         <?php
@@ -100,14 +85,14 @@ return [
 
         PHP,
 
-    'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+    'Declaration in the global namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
             ['B', 'Humbug\B'],
             ['C', 'Humbug\C'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             interface B {}
@@ -174,16 +159,16 @@ return [
             \class_alias('Humbug\\A', 'A', \false);
 
             PHP,
-    ],
+    ),
 
-    'Declaration in the global namespace which is excluded' => [
-        'exclude-namespaces' => ['/^$/'],
-        'expected-recorded-classes' => [
+    'Declaration in the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: ['/^$/'],
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
             ['B', 'Humbug\B'],
             ['C', 'Humbug\C'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             interface B {}
@@ -250,15 +235,15 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Declaration in the global namespace with some exposed classes' => [
-        'expose-classes' => ['A', 'C'],
-        'expected-recorded-classes' => [
+    'Declaration in the global namespace with some exposed classes' => SpecWithConfig::create(
+        exposeClasses: ['A', 'C'],
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
             ['C', 'Humbug\C'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             interface B {}
@@ -324,7 +309,7 @@ return [
             \class_alias('Humbug\\A', 'A', \false);
 
             PHP,
-    ],
+    ),
 
     'Declaration in a namespace' => <<<'PHP'
         <?php

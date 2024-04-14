@@ -12,35 +12,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Exposing symbols case sensitiveness',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Exposing symbols case sensitiveness',
+    ),
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
-
-    'Classes marked as exposed are case insensitive' => [
-        'expose-classes' => ['acme\foo'],
-        'expected-recorded-classes' => [
+    'Classes marked as exposed are case insensitive' => SpecWithConfig::create(
+        exposeClasses: ['acme\foo'],
+        expectedRecordedClasses: [
             ['Acme\Foo', 'Humbug\Acme\Foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -62,11 +47,11 @@ return [
             \class_alias('Humbug\\Acme\\Foo', 'Acme\\Foo', \false);
 
             PHP,
-    ],
+    ),
 
-    'Constants marked as exposed are case sensitive' => [
-        'expose-constants' => ['Acme\Foo', 'Acme\Bar'],
-        'payload' => <<<'PHP'
+    'Constants marked as exposed are case sensitive' => SpecWithConfig::create(
+        exposeConstants: ['Acme\Foo', 'Acme\Bar'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -84,11 +69,11 @@ return [
             echo \Humbug\Acme\BAR;
 
             PHP,
-    ],
+    ),
 
-    'The namespace of constant exposed are case insensitive' => [
-        'expose-constants' => ['acme\FOO', 'acme\BAR'],
-        'payload' => <<<'PHP'
+    'The namespace of constant exposed are case insensitive' => SpecWithConfig::create(
+        exposeConstants: ['acme\FOO', 'acme\BAR'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -104,11 +89,11 @@ return [
             \define('Acme\\BAR', 'bar');
 
             PHP,
-    ],
+    ),
 
-    'Namespaces excluded are case insensitive' => [
-        'exclude-namespaces' => ['acme'],
-        'payload' => <<<'PHP'
+    'Namespaces excluded are case insensitive' => SpecWithConfig::create(
+        excludeNamespaces: ['acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -160,11 +145,11 @@ return [
             \acmE\BAR;
 
             PHP,
-    ],
+    ),
 
-    'Use statements of excluded namespaces are case insensitive' => [
-        'exclude-namespaces' => ['acme'],
-        'payload' => <<<'PHP'
+    'Use statements of excluded namespaces are case insensitive' => SpecWithConfig::create(
+        excludeNamespaces: ['acme'],
+        spec: <<<'PHP'
             <?php
 
             use Acme\Foo;
@@ -180,5 +165,5 @@ return [
             use const Acme\BAR;
 
             PHP,
-    ],
+    ),
 ];

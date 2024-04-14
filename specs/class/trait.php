@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Trait declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Trait declaration',
+    ),
 
     'Declaration in the global namespace' => <<<'PHP'
         <?php
@@ -85,12 +70,12 @@ return [
 
         PHP,
 
-    'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+    'Declaration in the global namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['B', 'Humbug\B'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             trait A {
@@ -140,7 +125,7 @@ return [
             \class_alias('Humbug\\B', 'B', \false);
 
             PHP,
-    ],
+    ),
 
     'Declaration in a namespace' => <<<'PHP'
         <?php
@@ -194,9 +179,9 @@ return [
 
         PHP,
 
-    'Declaration of an exposed trait' => [
-        'expose-classes' => ['Foo\A'],
-        'payload' => <<<'PHP'
+    'Declaration of an exposed trait' => SpecWithConfig::create(
+        exposeClasses: ['Foo\A'],
+        spec: <<<'PHP'
             <?php
 
             namespace Foo;
@@ -247,7 +232,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Multiple declarations in different namespaces' => <<<'PHP'
         <?php

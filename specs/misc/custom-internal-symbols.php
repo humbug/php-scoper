@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Internal symbols defined by the user',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Internal symbols defined by the user',
+    ),
 
     'Known non-internal symbols (sanity test)' => <<<'PHP'
         <?php
@@ -53,11 +38,11 @@ return [
 
         PHP,
 
-    'Known non-internal symbols with global symbols exposed (sanity check)' => [
-        'expose-global-constants' => true,
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'payload' => <<<'PHP'
+    'Known non-internal symbols with global symbols exposed (sanity check)' => SpecWithConfig::create(
+        exposeGlobalConstants: true,
+        exposeGlobalClasses: true,
+        exposeGlobalFunctions: true,
+        spec: <<<'PHP'
             <?php
 
             use Foo;
@@ -74,13 +59,13 @@ return [
             use function Humbug\baz;
 
             PHP,
-    ],
+    ),
 
-    'Declared internal symbols' => [
-        'exclude-classes' => ['Foo'],
-        'exclude-functions' => ['baz'],
-        'exclude-constants' => ['BAR'],
-        'payload' => <<<'PHP'
+    'Declared internal symbols' => SpecWithConfig::create(
+        excludeClasses: ['Foo'],
+        excludeFunctions: ['baz'],
+        excludeConstants: ['BAR'],
+        spec: <<<'PHP'
             <?php
 
             use Foo;
@@ -97,5 +82,5 @@ return [
             use function baz;
 
             PHP,
-    ],
+    ),
 ];

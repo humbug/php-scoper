@@ -12,28 +12,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'New statement call of a namespaced class in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'New statement call of a namespaced class in a namespace',
+        exposeGlobalConstants: true,
+        exposeGlobalFunctions: true,
+    ),
 
     'New statement call of a class' => <<<'PHP'
         <?php

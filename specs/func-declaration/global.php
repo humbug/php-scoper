@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Function declarations in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Function declarations in the global scope',
+    ),
 
     'Simple function declaration' => <<<'PHP'
         <?php
@@ -51,12 +36,12 @@ return [
 
         PHP,
 
-    'Simple exposed function' => [
-        'expose-functions' => ['foo'],
-        'expected-recorded-functions' => [
+    'Simple exposed function' => SpecWithConfig::create(
+        exposeFunctions: ['foo'],
+        expectedRecordedFunctions: [
             ['foo', 'Humbug\foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             function foo() {}
@@ -71,14 +56,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Simple exposed function with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'Simple exposed function with global functions exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['foo', 'Humbug\foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             function foo() {}
@@ -93,7 +78,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Function declaration in the global namespace' => <<<'PHP'
         <?php
@@ -155,14 +140,14 @@ return [
 
         PHP,
 
-    'Function declaration in the global namespace with globally exposed symbols' => [
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'expose-global-constants' => true,
-        'expected-recorded-functions' => [
+    'Function declaration in the global namespace with globally exposed symbols' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        exposeGlobalFunctions: true,
+        exposeGlobalConstants: true,
+        expectedRecordedFunctions: [
             ['foo', 'Humbug\foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             function foo(string $foo = FOO_CONST) {}
@@ -176,7 +161,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Function declaration in the global namespace with use statements' => <<<'PHP'
         <?php
@@ -259,12 +244,12 @@ return [
 
         PHP,
 
-    'Function declarations with return types in the global namespace with use statements' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+    'Function declarations with return types in the global namespace with use statements' => SpecWithConfig::create(
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -452,14 +437,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'User defined global function with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'User defined global function with global functions exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -496,11 +481,11 @@ return [
             trigger_deprecation();
 
             PHP,
-    ],
+    ),
 
-    'User defined global function' => [
-        'expose-global-functions' => false,
-        'payload' => <<<'PHP'
+    'User defined global function' => SpecWithConfig::create(
+        exposeGlobalFunctions: false,
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -537,14 +522,14 @@ return [
             trigger_deprecation();
 
             PHP,
-    ],
+    ),
 
-    'User defined global exposed function' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'User defined global exposed function' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -581,16 +566,16 @@ return [
             trigger_deprecation();
 
             PHP,
-    ],
+    ),
 
-    'User defined excluded global function' => [
-        'exclude-functions' => [
+    'User defined excluded global function' => SpecWithConfig::create(
+        excludeFunctions: [
             'trigger_deprecation',
         ],
-        'expected-recorded-functions' => [
+        expectedRecordedFunctions: [
             ['trigger_deprecation', 'Humbug\trigger_deprecation'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -627,5 +612,5 @@ return [
             trigger_deprecation();
 
             PHP,
-    ],
+    ),
 ];

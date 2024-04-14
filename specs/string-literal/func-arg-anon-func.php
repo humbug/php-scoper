@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'String literal used as a function argument of an anonymous function',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'String literal used as a function argument of an anonymous function',
+    ),
 
     'FQCN string argument' => <<<'PHP'
         <?php
@@ -141,9 +126,9 @@ return [
 
         PHP,
 
-    'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
-        'payload' => <<<'PHP'
+    'FQCN string argument on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        spec: <<<'PHP'
             <?php
 
             (function($x = 'Symfony\\Component\\Yaml\\Ya_1') {})();
@@ -179,11 +164,11 @@ return [
             })();
 
             PHP,
-    ],
+    ),
 
-    'FQCN string argument on class from global namespace with classes from global namespace exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
+    'FQCN string argument on class from global namespace with classes from global namespace exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
             <?php
 
             (function($x = 'DateTime') {})();
@@ -206,14 +191,14 @@ return [
             })();
 
             PHP,
-    ],
+    ),
 
-    'FQCN string argument on class from an excluded namespace' => [
-        'exclude-namespaces' => [
+    'FQCN string argument on class from an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: [
             'Symfony\Component\Yaml',
             '/^$/',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             (function($x = 'Symfony\\Component\\Yaml\\Ya_1') {})();
@@ -249,7 +234,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'FQC constant call' => <<<'PHP'
         <?php
@@ -298,12 +283,12 @@ return [
 
         PHP,
 
-    'FQC constant call on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
-        'expected-recorded-classes' => [
+    'FQC constant call on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
+        expectedRecordedClasses: [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Symfony\Component\Yaml {
@@ -337,5 +322,5 @@ return [
             })();
 
             PHP,
-    ],
+    ),
 ];

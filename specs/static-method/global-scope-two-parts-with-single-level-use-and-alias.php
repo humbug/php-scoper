@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Static method call statement of a namespaced class imported with an aliased use statement in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Static method call statement of a namespaced class imported with an aliased use statement in the global scope',
+    ),
 
     'Static method call statement of a namespaced class partially imported with an aliased use statement' => <<<'PHP'
         <?php
@@ -166,12 +151,12 @@ return [
 
         PHP,
 
-    'Static method call statement of an exposed namespaced class partially imported with an aliased use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'Static method call statement of an exposed namespaced class partially imported with an aliased use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -207,14 +192,14 @@ return [
             A\Bar::main();
 
             PHP,
-    ],
+    ),
 
-    'Static method call statement of an exposed namespaced class imported with an aliased use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'Static method call statement of an exposed namespaced class imported with an aliased use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo {
@@ -241,11 +226,11 @@ return [
             A::main();
 
             PHP,
-    ],
+    ),
 
-    'FQ static method call statement of an exposed namespaced class partially imported with an aliased use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'payload' => <<<'PHP'
+    'FQ static method call statement of an exposed namespaced class partially imported with an aliased use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -280,14 +265,14 @@ return [
             \Humbug\A\Bar::main();
 
             PHP,
-    ],
+    ),
 
-    'FQ static method call statement of an exposed namespaced class imported with an aliased use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'FQ static method call statement of an exposed namespaced class imported with an aliased use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -323,5 +308,5 @@ return [
             \Humbug\A::main();
 
             PHP,
-    ],
+    ),
 ];

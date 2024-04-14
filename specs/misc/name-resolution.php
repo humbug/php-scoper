@@ -12,32 +12,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Name resolution',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Name resolution',
+        exposeGlobalConstants: true,
+        exposeGlobalFunctions: true,
+    ),
 
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
-
-    'Internal class & function with the same name' => [
-        'expected-recorded-functions' => [],
-        'payload' => <<<'PHP'
+    'Internal class & function with the same name' => SpecWithConfig::create(
+        expectedRecordedFunctions: [],
+        spec: <<<'PHP'
             <?php
 
             namespace PHPUnit\Framework;
@@ -65,11 +52,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Internal class & const with the same name' => [
-        'expected-recorded-functions' => [],
-        'payload' => <<<'PHP'
+    'Internal class & const with the same name' => SpecWithConfig::create(
+        expectedRecordedFunctions: [],
+        spec: <<<'PHP'
             <?php
 
             namespace PHPUnit\Framework;
@@ -97,5 +84,5 @@ return [
             }
 
             PHP,
-    ],
+    ),
 ];

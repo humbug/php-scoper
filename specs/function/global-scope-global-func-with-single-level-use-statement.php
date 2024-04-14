@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Global function call imported with a use statement in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        'Global function call imported with a use statement in the global scope',
+    ),
 
     'Global function call imported with a use statement in the global scope' => <<<'PHP'
         <?php
@@ -67,12 +52,12 @@ return [
 
         PHP,
 
-    'Global function call imported with a use statement in the global scope with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'Global function call imported with a use statement in the global scope with global functions exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             use function main;
@@ -87,7 +72,7 @@ return [
             main();
 
             PHP,
-    ],
+    ),
 
     'Global FQ function call imported with a use statement in the global scope' => <<<'PHP'
         <?php
@@ -105,12 +90,12 @@ return [
 
         PHP,
 
-    'Global FQ function call imported with a use statement in the global scope with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'Global FQ function call imported with a use statement in the global scope with global functions exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             use function main;
@@ -125,14 +110,14 @@ return [
             \Humbug\main();
 
             PHP,
-    ],
+    ),
 
-    'Uppercase global FQ function call imported with a use statement in the global scope with global functions exposed' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'Uppercase global FQ function call imported with a use statement in the global scope with global functions exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['MAIN', 'Humbug\MAIN'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             use function main;
@@ -147,5 +132,5 @@ return [
             \Humbug\MAIN();
 
             PHP,
-    ],
+    ),
 ];

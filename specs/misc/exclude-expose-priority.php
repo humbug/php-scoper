@@ -12,37 +12,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Excluding a symbol/namespace should have precedence over exposing a symbol/namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Excluding a symbol/namespace should have precedence over exposing a symbol/namespace',
+    ),
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
-
-    'namespace' => [
-        'exclude-namespaces' => [
-            'Acme',
-        ],
-        'expose-namespaces' => [
-            'Acme',
-        ],
-        'payload' => <<<'PHP'
+    'namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        exposeNamespaces: ['Acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme {
@@ -66,16 +47,16 @@ return [
             new \Acme\X();
 
             PHP,
-    ],
+    ),
 
-    'symbol' => [
-        'exclude-classes' => [
+    'symbol' => SpecWithConfig::create(
+        excludeClasses: [
             'Acme\X',
         ],
-        'expose-classes' => [
+        exposeClasses: [
             'Acme\X',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Acme {
@@ -99,5 +80,5 @@ return [
             new \Acme\X();
 
             PHP,
-    ],
+    ),
 ];

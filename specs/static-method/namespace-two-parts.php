@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Static method call statement of a namespaced class in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Static method call statement of a namespaced class in a namespace',
+    ),
 
     'Static method call statement of a class' => <<<'PHP'
         <?php
@@ -83,12 +68,12 @@ return [
 
         PHP,
 
-    'Static method call statement of an exposed class' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'expected-recorded-classes' => [
+    'Static method call statement of an exposed class' => SpecWithConfig::create(
+        exposeClasses: ['X\Foo\Bar'],
+        expectedRecordedClasses: [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace X\Foo {
@@ -112,11 +97,11 @@ return [
             Foo\Bar::main();
 
             PHP,
-    ],
+    ),
 
-    'FQ static method call statement of a non-exposed class' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a non-exposed class' => SpecWithConfig::create(
+        exposeClasses: ['X\Foo\Bar'],
+        spec: <<<'PHP'
             <?php
 
             namespace Foo {
@@ -139,5 +124,5 @@ return [
             \Humbug\Foo\Bar::main();
 
             PHP,
-    ],
+    ),
 ];

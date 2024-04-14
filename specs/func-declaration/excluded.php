@@ -12,30 +12,16 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Function declarations in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => ['new_php20_function'],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [
+    'meta' => new Meta(
+        title: 'Function declarations in the global scope',
+        excludeFunctions: ['new_php20_function'],
+        expectedRecordedFunctions: [
             ['new_php20_function', 'Humbug\new_php20_function'],
         ],
-    ],
+    ),
 
     'simple declaration' => <<<'PHP'
         <?php

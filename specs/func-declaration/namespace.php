@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Function declarations in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Function declarations in a namespace',
+    ),
 
     'Simple function declaration' => <<<'PHP'
         <?php
@@ -53,12 +38,12 @@ return [
 
         PHP,
 
-    'Simple exposed function' => [
-        'expose-functions' => ['Acme\foo'],
-        'expected-recorded-functions' => [
+    'Simple exposed function' => SpecWithConfig::create(
+        exposeFunctions: ['Acme\foo'],
+        expectedRecordedFunctions: [
             ['Acme\foo', 'Humbug\Acme\foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -75,14 +60,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Function declaration in a namespace' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+    'Function declaration in a namespace' => SpecWithConfig::create(
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -162,14 +147,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Function declaration in a namespace with exposed classes' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+    'Function declaration in a namespace with exposed classes' => SpecWithConfig::create(
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -249,14 +234,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Function declaration in a namespace with use statements' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+    'Function declaration in a namespace with use statements' => SpecWithConfig::create(
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -328,11 +313,11 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Function declaration in an excluded namespace' => [
-        'exclude-namespaces' => ['/^Pi.*$/'],
-        'payload' => <<<'PHP'
+    'Function declaration in an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['/^Pi.*$/'],
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -411,14 +396,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Function declarations with return types in a namespace with use statements' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+    'Function declarations with return types in a namespace with use statements' => SpecWithConfig::create(
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -606,14 +591,14 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Function declaration in an exposed namespace' => [
-        'expose-namespaces' => ['Acme'],
-        'expected-recorded-functions' => [
+    'Function declaration in an exposed namespace' => SpecWithConfig::create(
+        exposeNamespaces: ['Acme'],
+        expectedRecordedFunctions: [
             ['Acme\foo', 'Humbug\Acme\foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -630,5 +615,5 @@ return [
             }
 
             PHP,
-    ],
+    ),
 ];

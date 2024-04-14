@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Exposed functions which are never declared but for which the existence is checked',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Exposed functions which are never declared but for which the existence is checked',
+    ),
 
     'Non exposed global function call' => <<<'PHP'
         <?php
@@ -48,12 +33,12 @@ return [
 
         PHP,
 
-    'Exposed global function call' => [
-        'expose-functions' => ['main'],
-        'expected-recorded-functions' => [
+    'Exposed global function call' => SpecWithConfig::create(
+        exposeFunctions: ['main'],
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             function_exists('main');
@@ -65,14 +50,14 @@ return [
             \function_exists('Humbug\\main');
 
             PHP,
-    ],
+    ),
 
-    'Global function call with exposed global functions' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+    'Global function call with exposed global functions' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             function_exists('main');
@@ -84,7 +69,7 @@ return [
             \function_exists('Humbug\\main');
 
             PHP,
-    ],
+    ),
 
     'Global function call with non-exposed global functions' => <<<'PHP'
         <?php
@@ -99,12 +84,12 @@ return [
 
         PHP,
 
-    'Exposed namespaced function call' => [
-        'expose-functions' => ['Acme\main'],
-        'expected-recorded-functions' => [
+    'Exposed namespaced function call' => SpecWithConfig::create(
+        exposeFunctions: ['Acme\main'],
+        expectedRecordedFunctions: [
             ['Acme\main', 'Humbug\Acme\main'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -118,11 +103,11 @@ return [
             \function_exists('Humbug\\Acme\\main');
 
             PHP,
-    ],
+    ),
 
-    'Namespaced function call from excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
+    'Namespaced function call from excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -136,5 +121,5 @@ return [
             \function_exists('Acme\\main');
 
             PHP,
-    ],
+    ),
 ];

@@ -12,29 +12,14 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'minPhpVersion' => 70400,
-        'title' => 'Arrow function in a namespace with use statements',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        minPhpVersion: 70_400,
+        title: 'Arrow function in a namespace with use statements',
+    ),
 
     'Global function call in the global scope' => <<<'PHP'
         <?php
@@ -68,10 +53,10 @@ return [
 
         PHP,
 
-    'Global function call in the global scope with global symbols exposed' => [
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'payload' => <<<'PHP'
+    'Global function call in the global scope with global symbols exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        exposeGlobalFunctions: true,
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -102,14 +87,14 @@ return [
             fn(DateTimeImmutable $x): Closure => $x;
 
             PHP,
-    ],
+    ),
 
-    'Global function call in the global scope with exposed symbols' => [
-        'expose-classes' => [
+    'Global function call in the global scope with exposed symbols' => SpecWithConfig::create(
+        exposeClasses: [
             'X\Foo',
             'X\Bar',
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Acme;
@@ -140,5 +125,5 @@ return [
             fn(DateTimeImmutable $x): Closure => $x;
 
             PHP,
-    ],
+    ),
 ];

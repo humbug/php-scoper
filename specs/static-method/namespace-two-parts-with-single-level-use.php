@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Static method call statement of a class imported with a use statement in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Static method call statement of a class imported with a use statement in a namespace',
+    ),
 
     'Static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
         <?php
@@ -89,9 +74,9 @@ return [
 
         PHP,
 
-    'Static method call statement of a class belonging to the global namespace which has been exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
+    'Static method call statement of a class belonging to the global namespace which has been exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -108,11 +93,11 @@ return [
             Closure::bind();
 
             PHP,
-    ],
+    ),
 
-    'FQ static method call statement of a class belonging to the global namespace which has been exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
+    'FQ static method call statement of a class belonging to the global namespace which has been exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -129,5 +114,5 @@ return [
             \Closure::bind();
 
             PHP,
-    ],
+    ),
 ];

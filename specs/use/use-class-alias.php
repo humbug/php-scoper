@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Aliased use statements',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Aliased use statements',
+    ),
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
         <?php
@@ -129,9 +114,9 @@ return [
 
         PHP,
 
-    'Use statement of two-level class which has been exposed' => [
-        'expose-classes' => ['Foo\Bar'],
-        'payload' => <<<'PHP'
+    'Use statement of two-level class which has been exposed' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        spec: <<<'PHP'
             <?php
 
             use Foo\Bar as A;
@@ -144,5 +129,5 @@ return [
             use Humbug\Foo\Bar as A;
 
             PHP,
-    ],
+    ),
 ];

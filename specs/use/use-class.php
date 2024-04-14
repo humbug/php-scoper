@@ -12,28 +12,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Use statements',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Use statements',
+        exposeGlobalConstants: true,
+        exposeGlobalFunctions: true,
+    ),
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
         <?php
@@ -115,12 +102,12 @@ return [
 
         PHP,
 
-    'Use statement of an exposed class belonging to the global scope' => [
-        'expose-classes' => ['Foo'],
-        'expected-recorded-classes' => [
+    'Use statement of an exposed class belonging to the global scope' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        expectedRecordedClasses: [
             ['Foo', 'Humbug\Foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             class Foo {}
@@ -139,14 +126,14 @@ return [
             use Humbug\Foo;
 
             PHP,
-    ],
+    ),
 
-    'Use statement of a class belonging to the global scope which has been excluded' => [
-        'exclude-namespaces' => [''],
-        'expected-recorded-classes' => [
+    'Use statement of a class belonging to the global scope which has been excluded' => SpecWithConfig::create(
+        excludeNamespaces: [''],
+        expectedRecordedClasses: [
             ['Foo', 'Humbug\Foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             class Foo {}
@@ -165,15 +152,15 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
-    'Use statement of an exposed class belonging to the global scope which has been excluded' => [
-        'exclude-namespaces' => [''],
-        'expose-classes' => ['Foo'],
-        'expected-recorded-classes' => [
+    'Use statement of an exposed class belonging to the global scope which has been excluded' => SpecWithConfig::create(
+        excludeNamespaces: [''],
+        exposeClasses: ['Foo'],
+        expectedRecordedClasses: [
             ['Foo', 'Humbug\Foo'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             class Foo {}
@@ -192,7 +179,7 @@ return [
             }
 
             PHP,
-    ],
+    ),
 
     'Use statement of two-level class' => <<<'PHP'
         <?php
@@ -244,12 +231,12 @@ return [
 
         PHP,
 
-    'Use statement of two-level class which has been exposed' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
+    'Use statement of two-level class which has been exposed' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
             ['Foo\Bar', 'Humbug\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Foo {
@@ -274,11 +261,11 @@ return [
             use Humbug\Foo\Bar;
 
             PHP,
-    ],
+    ),
 
-    'Use statement of two-level class belonging to a excluded namespace' => [
-        'exclude-namespaces' => ['Foo'],
-        'payload' => <<<'PHP'
+    'Use statement of two-level class belonging to a excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Foo'],
+        spec: <<<'PHP'
             <?php
 
             namespace Foo {
@@ -302,12 +289,12 @@ return [
             use Foo\Bar;
 
             PHP,
-    ],
+    ),
 
-    'Use statement of exposed two-level class belonging to a excluded namespace' => [
-        'exclude-namespaces' => ['Foo'],
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
+    'Use statement of exposed two-level class belonging to a excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Foo'],
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
             <?php
 
             namespace Foo {
@@ -331,5 +318,5 @@ return [
             use Foo\Bar;
 
             PHP,
-    ],
+    ),
 ];

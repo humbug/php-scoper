@@ -12,31 +12,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'New statement call in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'New statement call in a namespace',
+        exposeGlobalConstants: true,
+        exposeGlobalFunctions: true,
+    ),
 
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
-
-    'New statement call of a class' => [
-        'payload' => <<<'PHP'
+    'New statement call of a class' => SpecWithConfig::create(
+        spec: <<<'PHP'
             <?php
 
             namespace A;
@@ -55,10 +42,10 @@ return [
             new Foo();
 
             PHP,
-    ],
+    ),
 
-    'FQ new statement call of a class belonging to the global namespace' => [
-        'payload' => <<<'PHP'
+    'FQ new statement call of a class belonging to the global namespace' => SpecWithConfig::create(
+        spec: <<<'PHP'
             <?php
 
             namespace {
@@ -81,5 +68,5 @@ return [
             new \Humbug\Foo();
 
             PHP,
-    ],
+    ),
 ];

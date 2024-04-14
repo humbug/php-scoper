@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'String literal assigned as a constant',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'String literal assigned as a constant',
+    ),
 
     'FQCN string argument' => <<<'PHP'
         <?php
@@ -63,9 +48,9 @@ return [
 
         PHP,
 
-    'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml'],
-        'payload' => <<<'PHP'
+    'FQCN string argument on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Yaml'],
+        spec: <<<'PHP'
             <?php
 
             const X = 'Symfony\\Component\\Yaml\\Ya_1l';
@@ -86,11 +71,11 @@ return [
             const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
             PHP,
-    ],
+    ),
 
-    'FQCN string argument on classes belonging to an excluded namespace' => [
-        'exclude-namespaces' => ['Symfony\Component'],
-        'payload' => <<<'PHP'
+    'FQCN string argument on classes belonging to an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Symfony\Component'],
+        spec: <<<'PHP'
             <?php
 
             const X = 'Symfony\\Yaml';
@@ -111,7 +96,7 @@ return [
             const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
 
             PHP,
-    ],
+    ),
 
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
         <?php
@@ -159,12 +144,12 @@ return [
 
         PHP,
 
-    'FQC constant call on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
-        'expected-recorded-classes' => [
+    'FQC constant call on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
+        expectedRecordedClasses: [
             ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace Symfony\Component\Yaml {
@@ -194,5 +179,5 @@ return [
             const X = \Humbug\Symfony\Component\Yaml\Ya_1::class;
 
             PHP,
-    ],
+    ),
 ];

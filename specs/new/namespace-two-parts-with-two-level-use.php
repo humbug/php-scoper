@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'New statement call of a namespaced class imported with a use statement in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'New statement call of a namespaced class imported with a use statement in a namespace',
+    ),
 
     'New statement call of a class via a use statement' => <<<'PHP'
         <?php
@@ -107,12 +92,12 @@ return [
 
         PHP,
 
-    'New statement call of an exposed class via a use statement' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'expected-recorded-classes' => [
+    'New statement call of an exposed class via a use statement' => SpecWithConfig::create(
+        exposeClasses: ['X\Foo\Bar'],
+        expectedRecordedClasses: [
             ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
             <?php
 
             namespace X {
@@ -148,11 +133,11 @@ return [
             new Foo\Bar();
 
             PHP,
-    ],
+    ),
 
-    'FQ new statement call of a non-exposed class via a use statement' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'payload' => <<<'PHP'
+    'FQ new statement call of a non-exposed class via a use statement' => SpecWithConfig::create(
+        exposeClasses: ['X\Foo\Bar'],
+        spec: <<<'PHP'
             <?php
 
             namespace X {
@@ -187,5 +172,5 @@ return [
             new \Humbug\Foo\Bar();
 
             PHP,
-    ],
+    ),
 ];

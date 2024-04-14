@@ -12,31 +12,29 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Example of simple spec file',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'minPhpVersion' => 72_000,
-        'maxPhpVersion' => 83_000,
-
-        'expose-global-constants' => true,
-        'expose-global-classes' => true,
-        'expose-global-functions' => true,
-        'expose-namespaces' => ['ExposedNamespace'],
-        'expose-constants' => ['EXPOSED_CONST'],
-        'expose-classes' => ['ExposedClass'],
-        'expose-functions' => ['exposed_function'],
-
-        'exclude-namespaces' => ['ExcludedNamespace'],
-        'exclude-constants' => ['EXCLUDED_CONST'],
-        'exclude-classes' => ['ExcludedClass'],
-        'exclude-functions' => ['excluded_function'],
-
-        'expected-recorded-classes' => ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
-        'expected-recorded-functions' => ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
-    ],
+    'meta' => new Meta(
+        title: 'Example of simple spec file',
+        prefix: 'Humbug',
+        minPhpVersion: 72_000,
+        maxPhpVersion: 83_000,
+        exposeGlobalConstants: true,
+        exposeGlobalClasses: true,
+        exposeGlobalFunctions: true,
+        exposeNamespaces: ['ExposedNamespace'],
+        exposeConstants: ['EXPOSED_CONST'],
+        exposeClasses: ['ExposedClass'],
+        exposeFunctions: ['exposed_function'],
+        excludeNamespaces: ['ExcludedNamespace'],
+        excludeConstants: ['EXCLUDED_CONST'],
+        excludeClasses: ['ExcludedClass'],
+        excludeFunctions: ['excluded_function'],
+        expectedRecordedClasses: ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
+        expectedRecordedFunctions: ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+    ),
 
     'Spec with default meta values' => <<<'PHP'
         echo "Hello world!";
@@ -48,8 +46,8 @@ return [
 
         PHP,
 
-    'Spec with the more verbose form' => [
-        'payload' => <<<'PHP'
+    'Spec with the more verbose form' => SpecWithConfig::create(
+        spec: <<<'PHP'
             echo "Hello world!";
 
             ----
@@ -58,31 +56,26 @@ return [
             echo "Hello world!";
 
             PHP,
-    ],
+    ),
 
-    'Spec with overridden meta values' => [
-        'prefix' => 'AnotherPrefix',
-
-        'minPhpVersion' => 73_000,
-        'maxPhpVersion' => 82_000,
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => ['AnotherExposedNamespace'],
-        'expose-constants' => ['ANOTHER_EXPOSED_CONST'],
-        'expose-classes' => ['AnotherExposedClass'],
-        'expose-functions' => ['another_exposed_function'],
-
-        'exclude-namespaces' => ['AnotherExcludedNamespace'],
-        'exclude-constants' => ['ANOTHER_EXCLUDED_CONST'],
-        'exclude-classes' => ['AnotherExcludedClass'],
-        'exclude-functions' => ['another_excluded_function'],
-
-        'expected-recorded-classes' => ['AnotherRecordedClass'],
-        'expected-recorded-functions' => ['AnotherRecordedFunction'],
-
-        'payload' => <<<'PHP'
+    'Spec with overridden meta values' => SpecWithConfig::create(
+        prefix: 'AnotherPrefix',
+        minPhpVersion: 73_000,
+        maxPhpVersion: 82_000,
+        exposeGlobalConstants: false,
+        exposeGlobalClasses: false,
+        exposeGlobalFunctions: false,
+        exposeNamespaces: ['AnotherExposedNamespace'],
+        exposeConstants: ['ANOTHER_EXPOSED_CONST'],
+        exposeClasses: ['AnotherExposedClass'],
+        exposeFunctions: ['another_exposed_function'],
+        excludeNamespaces: ['AnotherExcludedNamespace'],
+        excludeConstants: ['ANOTHER_EXCLUDED_CONST'],
+        excludeClasses: ['AnotherExcludedClass'],
+        excludeFunctions: ['another_excluded_function'],
+        expectedRecordedClasses: ['AnotherRecordedClass'],
+        expectedRecordedFunctions: ['AnotherRecordedFunction'],
+        spec: <<<'PHP'
             echo "Hello world!";
 
             ----
@@ -91,5 +84,5 @@ return [
             echo "Hello world!";
 
             PHP,
-    ],
+    ),
 ];

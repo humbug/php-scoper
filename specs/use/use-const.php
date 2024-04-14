@@ -12,28 +12,13 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Use statements for constants',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Use statements for constants',
+    ),
 
     'Constant use statement for a constant belonging to the global namespace' => <<<'PHP'
         <?php
@@ -49,9 +34,9 @@ return [
 
         PHP,
 
-    'Constant use statement for a constant belonging to the global namespace with global exposed enabled' => [
-        'expose-global-constants' => true,
-        'payload' => <<<'PHP'
+    'Constant use statement for a constant belonging to the global namespace with global exposed enabled' => SpecWithConfig::create(
+        exposeGlobalConstants: true,
+        spec: <<<'PHP'
             <?php
 
             use const FOO;
@@ -64,7 +49,7 @@ return [
             use const FOO;
 
             PHP,
-    ],
+    ),
 
     'Constant use statement for an internal constant belonging to the global namespace' => <<<'PHP'
         <?php
@@ -122,9 +107,9 @@ return [
 
         PHP,
 
-    'Constant use statement for a namespaced constant which has been exposed' => [
-        'expose-constants' => ['Foo\BAR'],
-        'payload' => <<<'PHP'
+    'Constant use statement for a namespaced constant which has been exposed' => SpecWithConfig::create(
+        exposeConstants: ['Foo\BAR'],
+        spec: <<<'PHP'
             <?php
 
             use const Foo\BAR;
@@ -137,11 +122,11 @@ return [
             use const Foo\BAR;
 
             PHP,
-    ],
+    ),
 
-    'Constant use statement for a namespaced constant which has NOT been exposed' => [
-        'expose-constants' => ['/^Foo\\\\Baru.*$/'],
-        'payload' => <<<'PHP'
+    'Constant use statement for a namespaced constant which has NOT been exposed' => SpecWithConfig::create(
+        exposeConstants: ['/^Foo\\\\Baru.*$/'],
+        spec: <<<'PHP'
             <?php
 
             use const Foo\BAR;
@@ -154,5 +139,5 @@ return [
             use const Humbug\Foo\BAR;
 
             PHP,
-    ],
+    ),
 ];
