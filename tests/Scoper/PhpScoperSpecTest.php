@@ -71,16 +71,13 @@ class PhpScoperSpecTest extends TestCase
         ?int $minPhpVersion,
         ?int $maxPhpVersion
     ): void {
-        if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
-            self::markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
-        }
-
-        if (null !== $maxPhpVersion && $maxPhpVersion <= PHP_VERSION_ID) {
-            self::markTestSkipped(sprintf('Max PHP version not matched for spec %s', $spec));
-        }
+        self::checkPHPVersionRequirements(
+            $spec,
+            $minPhpVersion,
+            $maxPhpVersion,
+        );
 
         $filePath = 'file.php';
-
         $symbolsRegistry = new SymbolsRegistry();
 
         $scoper = self::createScoper(
@@ -106,33 +103,10 @@ class PhpScoperSpecTest extends TestCase
 
             return;
         } catch (PhpParserError $error) {
-            if (!str_starts_with($error->getMessage(), 'Syntax error,')) {
-                throw new Error(
-                    sprintf(
-                        'Could not parse the spec %s: %s',
-                        $spec,
-                        $error->getMessage(),
-                    ),
-                    0,
-                    $error,
-                );
-            }
-
-            $lines = array_values(array_filter(explode("\n", $contents)));
-
-            $startLine = $error->getAttributes()['startLine'] - 1;
-            $endLine = $error->getAttributes()['endLine'] + 1;
-
-            self::fail(
-                sprintf(
-                    'Unexpected parse error found in the following lines: %s%s%s',
-                    $error->getMessage(),
-                    "\n\n> ",
-                    implode(
-                        "\n> ",
-                        array_slice($lines, $startLine, $endLine - $startLine + 1),
-                    ),
-                ),
+            self::handlePhpParserError(
+                $spec,
+                $contents,
+                $error,
             );
         } catch (Throwable $throwable) {
             throw new Error(
@@ -207,6 +181,55 @@ class PhpScoperSpecTest extends TestCase
             ),
             $container->getPrinter(),
             $container->getLexer(),
+        );
+    }
+
+    private static function checkPHPVersionRequirements(
+        string $spec,
+        ?int $minPhpVersion,
+        ?int $maxPhpVersion,
+    ): void {
+        if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
+            self::markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
+        }
+
+        if (null !== $maxPhpVersion && $maxPhpVersion <= PHP_VERSION_ID) {
+            self::markTestSkipped(sprintf('Max PHP version not matched for spec %s', $spec));
+        }
+    }
+
+    private static function handlePhpParserError(
+        string $spec,
+        string $contents,
+        PhpParserError $error,
+    ): never {
+        if (!str_starts_with($error->getMessage(), 'Syntax error,')) {
+            throw new Error(
+                sprintf(
+                    'Could not parse the spec %s: %s',
+                    $spec,
+                    $error->getMessage(),
+                ),
+                0,
+                $error,
+            );
+        }
+
+        $lines = array_values(array_filter(explode("\n", $contents)));
+
+        $startLine = $error->getAttributes()['startLine'] - 1;
+        $endLine = $error->getAttributes()['endLine'] + 1;
+
+        self::fail(
+            sprintf(
+                'Unexpected parse error found in the following lines: %s%s%s',
+                $error->getMessage(),
+                "\n\n> ",
+                implode(
+                    "\n> ",
+                    array_slice($lines, $startLine, $endLine - $startLine + 1),
+                ),
+            ),
         );
     }
 
