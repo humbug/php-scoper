@@ -18,6 +18,9 @@ return [
         // Default values. If not specified will be the one used
         'prefix' => 'Humbug',
 
+        'minPhpVersion' => 72_000,
+        'maxPhpVersion' => 83_000,
+
         'expose-global-constants' => true,
         'expose-global-classes' => true,
         'expose-global-functions' => true,
@@ -59,6 +62,9 @@ return [
 
     'Spec with overridden meta values' => [
         'prefix' => 'AnotherPrefix',
+
+        'minPhpVersion' => 73_000,
+        'maxPhpVersion' => 82_000,
 
         'expose-global-constants' => false,
         'expose-global-classes' => false,

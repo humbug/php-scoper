@@ -124,8 +124,8 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
-                    null,
-                    null,
+                    72_000,
+                    83_000,
                 ],
                 [
                     'Fixtures/complete-spec-file.php',
@@ -148,8 +148,8 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
-                    null,
-                    null,
+                    72_000,
+                    83_000,
                 ],
                 [
                     'Fixtures/complete-spec-file.php',
@@ -172,8 +172,8 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['AnotherRecordedClass'],
                     ['AnotherRecordedFunction'],
-                    null,
-                    null,
+                    73_000,
+                    82_000,
                 ],
             ],
         ];
