@@ -10,6 +10,17 @@ updates:
                     - "*"
 
     -   package-ecosystem: "composer"
+        directory: "."
+        schedule:
+            interval: "weekly"
+        groups:
+            jetbrains-phpstorm-stubs:
+                patterns:
+                    - "jetbrains\/phpstorm-stubs"
+                update-types:
+                    - "major"
+
+    -   package-ecosystem: "composer"
         directory: "vendor-bin/*/"
         schedule:
             interval: "weekly"
