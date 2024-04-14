@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Autoload;
 
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -102,12 +101,11 @@ class ScoperAutoloadGeneratorTest extends TestCase
         ];
 
         yield 'global functions recorded' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'bar' => 'Humbug\bar',
-                    'foo' => 'Humbug\foo',
+                    ['bar', 'Humbug\bar'],
+                    ['foo', 'Humbug\foo'],
                 ],
-                [],
             ),
             [],
             <<<'PHP'
@@ -144,12 +142,11 @@ class ScoperAutoloadGeneratorTest extends TestCase
         ];
 
         yield 'global functions recorded unordered' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'foo' => 'Humbug\foo',
-                    'bar' => 'Humbug\bar',
+                    ['foo', 'Humbug\foo'],
+                    ['bar', 'Humbug\bar'],
                 ],
-                [],
             ),
             [],
             <<<'PHP'
@@ -186,13 +183,12 @@ class ScoperAutoloadGeneratorTest extends TestCase
         ];
 
         yield 'namespaced functions recorded' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'Acme\bar' => 'Humbug\Acme\bar',
-                    'Acme\foo' => 'Humbug\Acme\foo',
-                    'Emca\baz' => 'Humbug\Emca\baz',
+                    ['Acme\bar', 'Humbug\Acme\bar'],
+                    ['Acme\foo', 'Humbug\Acme\foo'],
+                    ['Emca\baz', 'Humbug\Emca\baz'],
                 ],
-                [],
             ),
             [],
             <<<'PHP'
@@ -239,13 +235,12 @@ class ScoperAutoloadGeneratorTest extends TestCase
         ];
 
         yield 'namespaced functions recorded with hashes' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'Acme\bar' => 'Humbug\Acme\bar',
-                    'Acme\foo' => 'Humbug\Acme\foo',
-                    'Emca\baz' => 'Humbug\Emca\baz',
+                    ['Acme\bar', 'Humbug\Acme\bar'],
+                    ['Acme\foo', 'Humbug\Acme\foo'],
+                    ['Emca\baz', 'Humbug\Emca\baz'],
                 ],
-                [],
             ),
             ['a610a8e036135f992c6edfb10ca9f4e9', 'e252736c6babb7c097ab6692dbcb2a5a'],
             <<<'PHP'
@@ -292,13 +287,12 @@ class ScoperAutoloadGeneratorTest extends TestCase
         ];
 
         yield 'namespaced functions recorded unordered' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'Acme\foo' => 'Humbug\Acme\foo',
-                    'Emca\baz' => 'Humbug\Emca\baz',
-                    'Acme\bar' => 'Humbug\Acme\bar',
+                    ['Acme\foo', 'Humbug\Acme\foo'],
+                    ['Emca\baz', 'Humbug\Emca\baz'],
+                    ['Acme\bar', 'Humbug\Acme\bar'],
                 ],
-                [],
             ),
             [],
             <<<'PHP'
@@ -345,10 +339,9 @@ class ScoperAutoloadGeneratorTest extends TestCase
         ];
 
         yield 'classes recorded' => [
-            self::createRegistry(
-                [],
-                [
-                    'A\Foo' => 'Humbug\A\Foo',
+            SymbolsRegistry::create(
+                classes: [
+                    ['A\Foo', 'Humbug\A\Foo'],
                 ],
             ),
             [],
@@ -392,11 +385,10 @@ class ScoperAutoloadGeneratorTest extends TestCase
         ];
 
         yield 'global classes recorded' => [
-            self::createRegistry(
-                [],
-                [
-                    'Foo' => 'Humbug\Foo',
-                    'Bar' => 'Humbug\Bar',
+            SymbolsRegistry::create(
+                classes: [
+                    ['Foo', 'Humbug\Foo'],
+                    ['Bar', 'Humbug\Bar'],
                 ],
             ),
             [],
@@ -441,16 +433,16 @@ class ScoperAutoloadGeneratorTest extends TestCase
         ];
 
         yield 'nominal' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'bar' => 'Humbug\bar',
-                    'foo' => 'Humbug\foo',
-                    'Acme\foo' => 'Humbug\Acme\foo',
-                    'Acme\bar' => 'Humbug\Acme\bar',
-                    'Emca\baz' => 'Humbug\Emca\baz',
+                    ['bar', 'Humbug\bar'],
+                    ['foo', 'Humbug\foo'],
+                    ['Acme\foo', 'Humbug\Acme\foo'],
+                    ['Acme\bar', 'Humbug\Acme\bar'],
+                    ['Emca\baz', 'Humbug\Emca\baz'],
                 ],
                 [
-                    'A\Foo' => 'Humbug\A\Foo',
+                    ['A\Foo', 'Humbug\A\Foo'],
                 ],
             ),
             [],
@@ -517,11 +509,10 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
         // https://github.com/humbug/php-scoper/issues/267
         yield '__autoload global function with no namespaced functions' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    '__autoload' => 'Humbug\__autoload',
+                    ['__autoload', 'Humbug\__autoload'],
                 ],
-                [],
             ),
             [],
             <<<'PHP'
@@ -558,12 +549,11 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
         // https://github.com/humbug/php-scoper/issues/267
         yield '__autoload global function with namespaced functions' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    '__autoload' => 'Humbug\__autoload',
-                    'Acme\foo' => 'Humbug\Acme\foo',
+                    ['__autoload', 'Humbug\__autoload'],
+                    ['Acme\foo', 'Humbug\Acme\foo'],
                 ],
-                [],
             ),
             [],
             <<<'PHP'
@@ -607,32 +597,5 @@ class ScoperAutoloadGeneratorTest extends TestCase
 
                 PHP,
         ];
-    }
-
-    /**
-     * @param array<string, string> $functions
-     * @param array<string, string> $classes
-     */
-    private static function createRegistry(
-        array $functions,
-        array $classes
-    ): SymbolsRegistry {
-        $registry = new SymbolsRegistry();
-
-        foreach ($functions as $original => $alias) {
-            $registry->recordFunction(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        foreach ($classes as $original => $alias) {
-            $registry->recordClass(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        return $registry;
     }
 }
