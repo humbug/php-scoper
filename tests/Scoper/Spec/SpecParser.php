@@ -31,7 +31,6 @@ use function array_keys;
 use function array_merge;
 use function implode;
 use function is_array;
-use function is_int;
 use function is_string;
 use function Safe\preg_split;
 use function sprintf;
