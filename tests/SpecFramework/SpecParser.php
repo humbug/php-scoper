@@ -57,8 +57,10 @@ class SpecParser extends TestCase
             unset($specs['meta']);
 
             foreach ($specs as $title => $spec) {
-                yield $title => self::parseSpec(
-                    basename($sourceDir).'/'.$file->getRelativePathname(),
+                $relativePath = basename($sourceDir).'/'.$file->getRelativePathname();
+
+                yield $relativePath.': '.$title => self::parseSpec(
+                    $relativePath,
                     $meta,
                     $title,
                     $spec,
