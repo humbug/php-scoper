@@ -117,17 +117,21 @@ final readonly class SpecWithConfig implements DeclaresSymbolsConfiguration
 
     public function getSymbolsConfig(): array
     {
-        return array_filter([
-            ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => $this->exposeGlobalConstants,
-            ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => $this->exposeGlobalClasses,
-            ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => $this->exposeGlobalFunctions,
-            ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD => $this->exposeNamespaces,
-            ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD => $this->exposeConstants,
-            ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD => $this->exposeFunctions,
-            ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD => $this->exposeClasses,
-            ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD => $this->excludeConstants,
-            ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD => $this->exposeClasses,
-            ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD => $this->exposeFunctions,
-        ]);
+        return array_filter(
+            [
+                ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => $this->exposeGlobalConstants,
+                ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => $this->exposeGlobalClasses,
+                ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => $this->exposeGlobalFunctions,
+                ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD => $this->exposeNamespaces,
+                ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD => $this->exposeConstants,
+                ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD => $this->exposeFunctions,
+                ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD => $this->exposeClasses,
+                ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => $this->excludeNamespaces,
+                ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD => $this->excludeConstants,
+                ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD => $this->excludeClasses,
+                ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD => $this->excludeFunctions,
+            ],
+            static fn (mixed $value) => null !== $value,
+        );
     }
 }

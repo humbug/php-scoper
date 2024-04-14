@@ -25,7 +25,6 @@ use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 use function array_merge;
 use function is_int;
-use function is_int;
 use function is_string;
 use function sprintf;
 
@@ -68,7 +67,7 @@ class SpecParser extends TestCase
     }
 
     /**
-     * @phpstan-assert array{'meta': array, array-key: string|array} $specs
+     * @phpstan-assert array{'meta': Meta, array-key: string|SpecWithConfig} $specs
      */
     private static function checkSpecFileSchema(mixed $specs): void
     {
@@ -82,10 +81,6 @@ class SpecParser extends TestCase
                 continue;
             }
 
-            if ('meta' === $key) {
-                continue;
-            }
-
             Assert::assertTrue(is_string($spec) || $spec instanceof SpecWithConfig);
         }
     }
@@ -95,7 +90,7 @@ class SpecParser extends TestCase
         Meta $meta,
         int|string $title,
         SpecWithConfig|string $specWithConfigOrSimpleSpec,
-    ): array {
+    ): SpecScenario {
         $completeTitle = sprintf(
             '[%s] %s',
             $meta->title,
@@ -107,8 +102,8 @@ class SpecParser extends TestCase
             : $specWithConfigOrSimpleSpec;
 
         return new SpecScenario(
-            $fixtureSet['minPhpVersion'] ?? $meta['minPhpVersion'] ?? null,
-            $fixtureSet['maxPhpVersion'] ?? $meta['maxPhpVersion'] ?? null,
+            $specWithConfig->minPhpVersion ?? $meta->minPhpVersion ?? null,
+            $specWithConfig->maxPhpVersion ?? $meta->maxPhpVersion ?? null,
             $file,
             $completeTitle,
             $specWithConfig->inputCode,
@@ -117,9 +112,7 @@ class SpecParser extends TestCase
             $specWithConfig->expectedOutputCode,
             $specWithConfigOrSimpleSpec->expectedRecordedClasses ?? $meta->expectedRecordedClasses,
             $specWithConfigOrSimpleSpec->expectedRecordedFunctions ?? $meta->expectedRecordedFunctions,
-            $specWithConfigOrSimpleSpec->minPhpVersion ?? $meta->minPhpVersion,
-            $specWithConfigOrSimpleSpec->maxPhpVersion ?? $meta->maxPhpVersion,
-        ];
+        );
     }
 
     private static function createSymbolsConfiguration(

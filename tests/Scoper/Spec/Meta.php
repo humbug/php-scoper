@@ -49,9 +49,10 @@ final readonly class Meta implements DeclaresSymbolsConfiguration
             ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD => $this->exposeConstants,
             ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD => $this->exposeFunctions,
             ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD => $this->exposeClasses,
+            ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => $this->excludeNamespaces,
             ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD => $this->excludeConstants,
-            ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD => $this->exposeClasses,
-            ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD => $this->exposeFunctions,
+            ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD => $this->excludeClasses,
+            ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD => $this->excludeFunctions,
         ];
     }
 }
