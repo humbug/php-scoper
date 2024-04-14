@@ -97,12 +97,12 @@ class SpecParser extends TestCase
             $meta = $specs['meta'];
             unset($specs['meta']);
 
-            foreach ($specs as $fixtureTitle => $fixtureSet) {
+            foreach ($specs as $title => $spec) {
                 yield self::parseSpec(
                     basename($sourceDir).'/'.$file->getRelativePathname(),
                     $meta,
-                    $fixtureTitle,
-                    $fixtureSet,
+                    $title,
+                    $spec,
                 );
             }
         } catch (Throwable $throwable) {
