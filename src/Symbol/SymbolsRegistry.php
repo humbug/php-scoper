@@ -34,6 +34,33 @@ final class SymbolsRegistry implements Countable
     private array $recordedClasses = [];
 
     /**
+     * @param array<array{string, string}>             $functions
+     * @param array<array{class-string, class-string}> $classes
+     */
+    public static function create(
+        array $functions = [],
+        array $classes = [],
+    ): self {
+        $registry = new self();
+
+        foreach ($functions as [$original, $alias]) {
+            $registry->recordFunction(
+                new FullyQualified($original),
+                new FullyQualified($alias),
+            );
+        }
+
+        foreach ($classes as [$original, $alias]) {
+            $registry->recordClass(
+                new FullyQualified($original),
+                new FullyQualified($alias),
+            );
+        }
+
+        return $registry;
+    }
+
+    /**
      * @param self[] $symbolsRegistries
      */
     public static function createFromRegistries(array $symbolsRegistries): self

@@ -40,7 +40,7 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedClasses,
         int $expectedCount
     ): void {
-        $registry = self::createRegistry($functions, $classes);
+        $registry = SymbolsRegistry::create($functions, $classes);
 
         self::assertStateIs(
             $registry,
@@ -59,7 +59,7 @@ final class SymbolsRegistryTest extends TestCase
         array $functions,
         array $classes,
     ): void {
-        $registry = self::createRegistry($functions, $classes);
+        $registry = SymbolsRegistry::create($functions, $classes);
 
         $unserializedRegistry = SymbolsRegistry::unserialize(
             $registry->serialize(),
@@ -174,7 +174,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
 
         yield 'elements in the source' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                 ],
@@ -194,7 +194,7 @@ final class SymbolsRegistryTest extends TestCase
 
         yield 'elements in the target' => [
             new SymbolsRegistry(),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                 ],
@@ -212,7 +212,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
 
         yield 'elements on both sides' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                 ],
@@ -220,7 +220,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$testCase, $scopedTestCase],
                 ],
             ),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$dump, $scopedDump],
                 ],
@@ -240,7 +240,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
 
         yield 'elements on both sides with duplicates entries from the target' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                 ],
@@ -248,7 +248,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$testCase, $scopedTestCase],
                 ],
             ),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                     [$dump, $scopedDump],
@@ -270,7 +270,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
 
         yield 'elements on both sides with duplicates entries from the source' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                     [$dump, $scopedDump],
@@ -280,7 +280,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$finder, $scopedFinder],
                 ],
             ),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$dump, $scopedDump],
                 ],
@@ -349,15 +349,15 @@ final class SymbolsRegistryTest extends TestCase
 
         yield 'nominal' => [
             [
-                self::createRegistry(
+                SymbolsRegistry::create(
                     [[$main, $scopedMain]],
                     [[$testCase, $scopedTestCase]],
                 ),
-                self::createRegistry(
+                SymbolsRegistry::create(
                     [[$dump, $scopedDump]],
                     [[$finder, $scopedFinder]],
                 ),
-                self::createRegistry(
+                SymbolsRegistry::create(
                     [[$dd, $scopedDd]],
                     [[$fileSystem, $scopedFileSystem]],
                 ),
@@ -378,7 +378,7 @@ final class SymbolsRegistryTest extends TestCase
 
     public function test_it_exposes_recorded_classes(): void
     {
-        $registry = self::createRegistry(
+        $registry = SymbolsRegistry::create(
             [[new FullyQualified('foo'), new FullyQualified('Humbug\foo')]],
             [[new FullyQualified('Bar'), new FullyQualified('Humbug\Bar')]],
         );
@@ -407,20 +407,5 @@ final class SymbolsRegistryTest extends TestCase
             $symbolsRegistry->getRecordedClasses(),
         );
         self::assertCount($expectedCount, $symbolsRegistry);
-    }
-
-    private static function createRegistry(array $functions, array $classes): SymbolsRegistry
-    {
-        $registry = new SymbolsRegistry();
-
-        foreach ($functions as [$original, $alias]) {
-            $registry->recordFunction($original, $alias);
-        }
-
-        foreach ($classes as [$original, $alias]) {
-            $registry->recordClass($original, $alias);
-        }
-
-        return $registry;
     }
 }

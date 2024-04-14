@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Autoload;
 
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use KevinGH\Box\Composer\AutoloadDumper;
-use PhpParser\Node\Name\FullyQualified;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -107,12 +106,11 @@ final class AutoloadDumperTest extends TestCase
         ];
 
         yield 'global symbols' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'bar' => 'Humbug\bar',
-                    'foo' => 'Humbug\foo',
+                    ['bar', 'Humbug\bar'],
+                    ['foo', 'Humbug\foo'],
                 ],
-                [],
             ),
             [],
             <<<'PHP'
@@ -204,12 +202,11 @@ final class AutoloadDumperTest extends TestCase
         ];
 
         yield 'global symbols with file hashes' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'bar' => 'Humbug\bar',
-                    'foo' => 'Humbug\foo',
+                    ['bar', 'Humbug\bar'],
+                    ['foo', 'Humbug\foo'],
                 ],
-                [],
             ),
             ['a610a8e036135f992c6edfb10ca9f4e9', 'e252736c6babb7c097ab6692dbcb2a5a'],
             <<<'PHP'
@@ -301,13 +298,12 @@ final class AutoloadDumperTest extends TestCase
         ];
 
         yield 'namespaced symbols' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
-                    'Acme\bar' => 'Humbug\Acme\bar',
-                    'Acme\foo' => 'Humbug\Acme\foo',
-                    'Emca\baz' => 'Humbug\Emca\baz',
+                    ['Acme\bar', 'Humbug\Acme\bar'],
+                    ['Acme\foo', 'Humbug\Acme\foo'],
+                    ['Emca\baz', 'Humbug\Emca\baz'],
                 ],
-                [],
             ),
             [],
             <<<'PHP'
@@ -407,32 +403,5 @@ final class AutoloadDumperTest extends TestCase
 
                 PHP,
         ];
-    }
-
-    /**
-     * @param array<string, string> $functions
-     * @param array<string, string> $classes
-     */
-    private static function createRegistry(
-        array $functions,
-        array $classes
-    ): SymbolsRegistry {
-        $registry = new SymbolsRegistry();
-
-        foreach ($functions as $original => $alias) {
-            $registry->recordFunction(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        foreach ($classes as $original => $alias) {
-            $registry->recordClass(
-                new FullyQualified($original),
-                new FullyQualified($alias),
-            );
-        }
-
-        return $registry;
     }
 }
