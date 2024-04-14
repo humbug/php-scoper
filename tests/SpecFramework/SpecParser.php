@@ -42,7 +42,7 @@ class SpecParser extends TestCase
     /**
      * @throws UnparsableFile
      *
-     * @return iterable<SpecScenario>
+     * @return iterable<string, SpecScenario>
      */
     public static function parseSpecFile(
         string $sourceDir,
@@ -57,7 +57,7 @@ class SpecParser extends TestCase
             unset($specs['meta']);
 
             foreach ($specs as $title => $spec) {
-                yield self::parseSpec(
+                yield $title => self::parseSpec(
                     basename($sourceDir).'/'.$file->getRelativePathname(),
                     $meta,
                     $title,

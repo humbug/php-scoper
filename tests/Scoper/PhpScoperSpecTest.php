@@ -100,8 +100,8 @@ class PhpScoperSpecTest extends TestCase
         foreach ($files as $file) {
             $scenarios = SpecParser::parseSpecFile($sourceDir, $file);
 
-            foreach ($scenarios as $scenario) {
-                yield [$scenario];
+            foreach ($scenarios as $label => $scenario) {
+                yield $label => [$scenario];
             }
         }
     }
