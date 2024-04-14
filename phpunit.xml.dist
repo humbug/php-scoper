@@ -24,6 +24,7 @@ file that was distributed with this source code.
     <source>
         <include>
             <directory>src</directory>
+            <directory>tests/SpecFramework</directory>
         </include>
     </source>
 </phpunit>
