@@ -20,6 +20,7 @@ $finder = Finder::create()
         'composer-root-version-checker/bin',
         'composer-root-version-checker/src',
         'composer-root-version-checker/tests',
+        'specs',
         'res',
         'src',
         'tests',

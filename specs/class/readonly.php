@@ -12,160 +12,144 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Readonly class declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Readonly class declaration',
+    ),
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    readonly class A {}
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    readonly class A
-    {
-    }
-    
-    PHP,
+        <?php
 
-    'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+        readonly class A {}
+        ----
+        <?php
+
+        namespace Humbug;
+
+        readonly class A
+        {
+        }
+
+        PHP,
+
+    'Declaration in the global namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        readonly class A {}
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        readonly class A
-        {
-        }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
-    ],
+        spec: <<<'PHP'
+            <?php
+
+            readonly class A {}
+            ----
+            <?php
+
+            namespace Humbug;
+
+            readonly class A
+            {
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+
+            PHP,
+    ),
 
     'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    readonly class A {}
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    readonly class A
-    {
-    }
-    
-    PHP,
-
-    'Declaration in a namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace Foo;
-        
+
         readonly class A {}
         ----
         <?php
-        
+
         namespace Humbug\Foo;
-        
+
         readonly class A
         {
         }
-        
-        PHP,
-    ],
 
-    'Declaration of an exposed readonly class' => [
-        'expose-classes' => ['Foo\A'],
-        'expected-recorded-classes' => [
+        PHP,
+
+    'Declaration in a namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            readonly class A {}
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            readonly class A
+            {
+            }
+
+            PHP,
+    ),
+
+    'Declaration of an exposed readonly class' => SpecWithConfig::create(
+        exposeClasses: ['Foo\A'],
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            readonly class A {}
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            readonly class A
+            {
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
+    ),
+
+    'Multiple declarations in different namespaces' => <<<'PHP'
         <?php
-        
-        namespace Foo;
-        
-        readonly class A {}
+
+        namespace X {
+            readonly class A {}
+        }
+
+        namespace Y {
+            readonly class B {}
+        }
+
+        namespace Z {
+            readonly class C {}
+        }
         ----
         <?php
-        
-        namespace Humbug\Foo;
-        
+
+        namespace Humbug\X;
+
         readonly class A
         {
         }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
-    ],
+        namespace Humbug\Y;
 
-    'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        readonly class A {}
-    }
-    
-    namespace Y {
-        readonly class B {}
-    }
-    
-    namespace Z {
-        readonly class C {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    readonly class A
-    {
-    }
-    namespace Humbug\Y;
-    
-    readonly class B
-    {
-    }
-    namespace Humbug\Z;
-    
-    readonly class C
-    {
-    }
-    
-    PHP,
+        readonly class B
+        {
+        }
+        namespace Humbug\Z;
+
+        readonly class C
+        {
+        }
+
+        PHP,
 ];

@@ -12,68 +12,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Namespaced function call statement in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Namespaced function call statement in a namespace',
+        exposeGlobalConstants: true,
+    ),
 
     'Namespaced function call' => <<<'PHP'
-    <?php
-    
-    namespace X;
-    
-    PHPUnit\main();
-    ----
-    <?php
-
-    namespace Humbug\X;
-
-    PHPUnit\main();
-
-    PHP,
-
-    'FQ namespaced function call' => <<<'PHP'
-    <?php
-    
-    namespace X;
-    
-    \PHPUnit\main();
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    \Humbug\PHPUnit\main();
-    
-    PHP,
-
-    'Exposed namespaced function call' => [
-        'expose-functions' => ['PHPUnit\X\main'],
-        // No function registered to the recorded symbols here since no FQ could be resolved
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace X;
-        
+
         PHPUnit\main();
         ----
         <?php
@@ -83,26 +35,59 @@ return [
         PHPUnit\main();
 
         PHP,
-    ],
 
-    'FQ exposed namespaced function call' => [
-        'expose-functions' => ['PHPUnit\main'],
-        'expected-recorded-functions' => [
-            ['PHPUnit\main', 'Humbug\PHPUnit\main'],
-        ],
-        'payload' => <<<'PHP'
+    'FQ namespaced function call' => <<<'PHP'
         <?php
-        
+
         namespace X;
-        
+
         \PHPUnit\main();
         ----
         <?php
-        
+
         namespace Humbug\X;
-        
+
         \Humbug\PHPUnit\main();
-        
+
         PHP,
-    ],
+
+    'Exposed namespaced function call' => SpecWithConfig::create(
+        exposeFunctions: ['PHPUnit\X\main'],
+        // No function registered to the recorded symbols here since no FQ could be resolved
+        spec: <<<'PHP'
+            <?php
+
+            namespace X;
+
+            PHPUnit\main();
+            ----
+            <?php
+
+            namespace Humbug\X;
+
+            PHPUnit\main();
+
+            PHP,
+    ),
+
+    'FQ exposed namespaced function call' => SpecWithConfig::create(
+        exposeFunctions: ['PHPUnit\main'],
+        expectedRecordedFunctions: [
+            ['PHPUnit\main', 'Humbug\PHPUnit\main'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            namespace X;
+
+            \PHPUnit\main();
+            ----
+            <?php
+
+            namespace Humbug\X;
+
+            \Humbug\PHPUnit\main();
+
+            PHP,
+    ),
 ];

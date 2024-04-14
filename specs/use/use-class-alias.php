@@ -12,138 +12,122 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Aliased use statements',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Aliased use statements',
+    ),
 
     'Use statement of a class belonging to the global scope' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo as A;
-    
-    PHP,
-
-    'FQ use statement of a class belonging to the global scope' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use \Foo as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo as A;
-    
-    PHP,
-
-    'Use statement of an internal class belonging to the global scope' => <<<'PHP'
-    <?php
-    
-    use ArrayIterator as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use ArrayIterator as A;
-    
-    PHP,
-
-    'FQ use statement of an internal class belonging to the global scope' => <<<'PHP'
-    <?php
-    
-    use \ArrayIterator as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use ArrayIterator as A;
-    
-    PHP,
-
-    'Use statement of two-level class' => <<<'PHP'
-    <?php
-    
-    use Foo\Bar as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use Humbug\Foo\Bar as A;
-    
-    PHP,
-
-    'Use statement of two-level class which has been already prefixed' => <<<'PHP'
-    <?php
-    
-    use Humbug\Foo\Bar as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use Humbug\Foo\Bar as A;
-    
-    PHP,
-
-    'Use statement of two-level class which has been exposed' => [
-        'expose-classes' => ['Foo\Bar'],
-        'payload' => <<<'PHP'
         <?php
-        
-        use Foo\Bar as A;
-        
+
+        class Foo {}
+
+        use Foo as A;
+
         ----
         <?php
-        
+
         namespace Humbug;
-        
-        use Humbug\Foo\Bar as A;
-        
+
+        class Foo
+        {
+        }
+        use Humbug\Foo as A;
+
         PHP,
-    ],
+
+    'FQ use statement of a class belonging to the global scope' => <<<'PHP'
+        <?php
+
+        class Foo {}
+
+        use \Foo as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        use Humbug\Foo as A;
+
+        PHP,
+
+    'Use statement of an internal class belonging to the global scope' => <<<'PHP'
+        <?php
+
+        use ArrayIterator as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use ArrayIterator as A;
+
+        PHP,
+
+    'FQ use statement of an internal class belonging to the global scope' => <<<'PHP'
+        <?php
+
+        use \ArrayIterator as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use ArrayIterator as A;
+
+        PHP,
+
+    'Use statement of two-level class' => <<<'PHP'
+        <?php
+
+        use Foo\Bar as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use Humbug\Foo\Bar as A;
+
+        PHP,
+
+    'Use statement of two-level class which has been already prefixed' => <<<'PHP'
+        <?php
+
+        use Humbug\Foo\Bar as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use Humbug\Foo\Bar as A;
+
+        PHP,
+
+    'Use statement of two-level class which has been exposed' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        spec: <<<'PHP'
+            <?php
+
+            use Foo\Bar as A;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use Humbug\Foo\Bar as A;
+
+            PHP,
+    ),
 ];

@@ -12,110 +12,94 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Exposed functions which are never declared',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Exposed functions which are never declared',
+    ),
 
     'Non exposed global function call' => <<<'PHP'
-    <?php
-    
-    main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    main();
-    
-    PHP,
-
-    'Exposed global function call' => [
-        'expose-functions' => ['main'],
-        'expected-recorded-functions' => [
-            ['main', 'Humbug\main'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         main();
         ----
         <?php
-        
-        namespace Humbug;
-        
-        \Humbug\main();
-        
-        PHP,
-    ],
 
-    'Global function call with exposed global functions' => [
-        'expose-global-functions' => true,
-        'expected-recorded-functions' => [
+        namespace Humbug;
+
+        main();
+
+        PHP,
+
+    'Exposed global function call' => SpecWithConfig::create(
+        exposeFunctions: ['main'],
+        expectedRecordedFunctions: [
             ['main', 'Humbug\main'],
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        main();
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        main();
-        
-        PHP,
-    ],
+        spec: <<<'PHP'
+            <?php
+
+            main();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\main();
+
+            PHP,
+    ),
+
+    'Global function call with exposed global functions' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [
+            ['main', 'Humbug\main'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            main();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            main();
+
+            PHP,
+    ),
 
     'Global function call with non-exposed global functions' => <<<'PHP'
-    <?php
-    
-    main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    main();
-    
-    PHP,
-
-    'Exposed namespaced function call' => [
-        'expose-functions' => ['Acme\main'],
-        'expected-recorded-functions' => [],   // Nothing registered here since the FQ could not be resolved
-        'payload' => <<<'PHP'
         <?php
-        
-        namespace Acme;
-        
+
         main();
         ----
         <?php
-        
-        namespace Humbug\Acme;
-        
+
+        namespace Humbug;
+
         main();
-        
+
         PHP,
-    ],
+
+    'Exposed namespaced function call' => SpecWithConfig::create(
+        exposeFunctions: ['Acme\main'],
+        expectedRecordedFunctions: [],   // Nothing registered here since the FQ could not be resolved
+        spec: <<<'PHP'
+            <?php
+
+            namespace Acme;
+
+            main();
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            main();
+
+            PHP,
+    ),
 ];

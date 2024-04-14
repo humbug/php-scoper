@@ -12,83 +12,66 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Static call with string literal',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Static call with string literal',
+    ),
 
     'On expression' => <<<'PHP'
-    <?php
-    
-    $fooFactory::create('Acme\Foo');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $fooFactory::create('Humbug\\Acme\\Foo');
-    
-    PHP,
+        <?php
+
+        $fooFactory::create('Acme\Foo');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $fooFactory::create('Humbug\\Acme\\Foo');
+
+        PHP,
 
     'On expression with a symbol belonging to the global scope' => <<<'PHP'
-    <?php
-    
-    $fooFactory::create('Foo');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $fooFactory::create('Foo');
-    
-    PHP,
+        <?php
+
+        $fooFactory::create('Foo');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $fooFactory::create('Foo');
+
+        PHP,
 
     'On DateTime object' => <<<'PHP'
-    <?php
-    
-    DateTime::create('Acme\Foo');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \DateTime::create('Humbug\\Acme\\Foo');
-    
-    PHP,
+        <?php
+
+        DateTime::create('Acme\Foo');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \DateTime::create('Humbug\\Acme\\Foo');
+
+        PHP,
 
     'On DateTime object with a symbol belonging to the global scope' => <<<'PHP'
-    <?php
-    
-    DateTime::create('Foo');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \DateTime::create('Foo');
-    
-    PHP,
+        <?php
+
+        DateTime::create('Foo');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \DateTime::create('Foo');
+
+        PHP,
 ];

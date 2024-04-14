@@ -12,168 +12,152 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Enum declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Enum declaration',
+    ),
 
     'minimal enum declaration' => <<<'PHP'
-    <?php
-    
-    enum Status {
-        case DRAFT;
-        case PUBLISHED;
-        case ARCHIVED;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    enum Status
-    {
-        case DRAFT;
-        case PUBLISHED;
-        case ARCHIVED;
-    }
-    
-    PHP,
+        enum Status {
+            case DRAFT;
+            case PUBLISHED;
+            case ARCHIVED;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        enum Status
+        {
+            case DRAFT;
+            case PUBLISHED;
+            case ARCHIVED;
+        }
+
+        PHP,
 
     'enum with methods' => <<<'PHP'
-    <?php
-    
-    enum Status {
-        case DRAFT;
-        case PUBLISHED;
-        case ARCHIVED;
-        
-        public function color(): string {
-            return match($this) {
-                Status::DRAFT => 'grey',   
-                Status::PUBLISHED => 'green',   
-                self::ARCHIVED => 'red',   
-            };
-        }
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    enum Status
-    {
-        case DRAFT;
-        case PUBLISHED;
-        case ARCHIVED;
-        public function color() : string
-        {
-            return match ($this) {
-                Status::DRAFT => 'grey',
-                Status::PUBLISHED => 'green',
-                self::ARCHIVED => 'red',
-            };
+        enum Status {
+            case DRAFT;
+            case PUBLISHED;
+            case ARCHIVED;
+
+            public function color(): string {
+                return match($this) {
+                    Status::DRAFT => 'grey',
+                    Status::PUBLISHED => 'green',
+                    self::ARCHIVED => 'red',
+                };
+            }
         }
-    }
-    
-    PHP,
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        enum Status
+        {
+            case DRAFT;
+            case PUBLISHED;
+            case ARCHIVED;
+            public function color() : string
+            {
+                return match ($this) {
+                    Status::DRAFT => 'grey',
+                    Status::PUBLISHED => 'green',
+                    self::ARCHIVED => 'red',
+                };
+            }
+        }
+
+        PHP,
 
     'enum with interface' => <<<'PHP'
-    <?php
-    
-    enum Status implements HasColor {
-        case DRAFT = 'draft';
-        case PUBLISHED = 'published';
-        case ARCHIVED = 'archived';
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    enum Status implements \HasColor
-    {
-        case DRAFT = 'draft';
-        case PUBLISHED = 'published';
-        case ARCHIVED = 'archived';
-    }
-    
-    PHP,
+        enum Status implements HasColor {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        enum Status implements \HasColor
+        {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        PHP,
 
     'class with Enum name' => <<<'PHP'
-    <?php
-    
-    class Enum {}
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    class Enum
-    {
-    }
-    
-    PHP,
+        class Enum {}
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Enum
+        {
+        }
+
+        PHP,
 
     'backed enum' => <<<'PHP'
-    <?php
-    
-    enum Status: string {
-        case DRAFT = 'draft';
-        case PUBLISHED = 'published';
-        case ARCHIVED = 'archived';
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    enum Status : string
-    {
-        case DRAFT = 'draft';
-        case PUBLISHED = 'published';
-        case ARCHIVED = 'archived';
-    }
+        enum Status: string {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
 
-    PHP,
+        ----
+        <?php
 
-    'excluded enum (doesn\'t work)' => [
-        'exclude-classes' => ['Status'],
-        'payload' => <<<'PHP'
+        namespace Humbug;
+
+        enum Status : string
+        {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        PHP,
+
+    'excluded enum (doesn\'t work)' => SpecWithConfig::create(
+        excludeClasses: ['Status'],
+        spec: <<<'PHP'
             <?php
-            
+
             enum Status {
                 case DRAFT;
                 case PUBLISHED;
                 case ARCHIVED;
             }
-            
+
             ----
             <?php
-            
+
             namespace Humbug;
 
             enum Status
@@ -182,24 +166,24 @@ return [
                 case PUBLISHED;
                 case ARCHIVED;
             }
-            
-            PHP
-    ],
 
-    'exposed enum (doesn\'t work)' => [
-        'expose-classes' => ['Status'],
-        'payload' => <<<'PHP'
+            PHP,
+    ),
+
+    'exposed enum (doesn\'t work)' => SpecWithConfig::create(
+        exposeClasses: ['Status'],
+        spec: <<<'PHP'
             <?php
-            
+
             enum Status {
                 case DRAFT;
                 case PUBLISHED;
                 case ARCHIVED;
             }
-            
+
             ----
             <?php
-            
+
             namespace Humbug;
 
             enum Status
@@ -208,7 +192,7 @@ return [
                 case PUBLISHED;
                 case ARCHIVED;
             }
-            
-            PHP
-    ],
+
+            PHP,
+    ),
 ];

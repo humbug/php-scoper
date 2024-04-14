@@ -12,168 +12,152 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Conditional class declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Conditional class declaration',
+    ),
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    if (true) {
-        class A {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    if (\true) {
-        class A
-        {
-        }
-    }
-    
-    PHP,
+        <?php
 
-    'Declaration of an exposed class in the global namespace' => [
-        'expose-classes' => ['A'],
-        'expected-recorded-classes' => [
+        if (true) {
+            class A {}
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        if (\true) {
+            class A
+            {
+            }
+        }
+
+        PHP,
+
+    'Declaration of an exposed class in the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['A'],
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        if (true) {
-            class A {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        if (\true) {
-            class A
-            {
+        spec: <<<'PHP'
+            <?php
+
+            if (true) {
+                class A {}
             }
-            \class_alias('Humbug\\A', 'A', \false);
-        }
-        
-        PHP,
-    ],
+            ----
+            <?php
+
+            namespace Humbug;
+
+            if (\true) {
+                class A
+                {
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+            }
+
+            PHP,
+    ),
 
     'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    if (true) {
-        class A {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    if (\true) {
-        class A
-        {
-        }
-    }
-    
-    PHP,
-
-    'Declaration of an exposed class' => [
-        'expose-classes' => ['Foo\A'],
-        'expected-recorded-classes' => [
-            ['Foo\A', 'Humbug\Foo\A'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace Foo;
-        
+
         if (true) {
             class A {}
         }
         ----
         <?php
-        
+
         namespace Humbug\Foo;
-        
+
         if (\true) {
             class A
             {
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
         }
-        
+
         PHP,
-    ],
+
+    'Declaration of an exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Foo\A'],
+        expectedRecordedClasses: [
+            ['Foo\A', 'Humbug\Foo\A'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            if (true) {
+                class A {}
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            if (\true) {
+                class A
+                {
+                }
+                \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            }
+
+            PHP,
+    ),
 
     'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        if (true) {
-            class A {}
+        <?php
+
+        namespace X {
+            if (true) {
+                class A {}
+            }
         }
-    }
-    
-    namespace Y {
-        if (true) {
-            class B {}
+
+        namespace Y {
+            if (true) {
+                class B {}
+            }
         }
-    }
-    
-    namespace Z {
-        if (true) {
-            class C {}
+
+        namespace Z {
+            if (true) {
+                class C {}
+            }
         }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    if (\true) {
-        class A
-        {
+        ----
+        <?php
+
+        namespace Humbug\X;
+
+        if (\true) {
+            class A
+            {
+            }
         }
-    }
-    namespace Humbug\Y;
-    
-    if (\true) {
-        class B
-        {
+        namespace Humbug\Y;
+
+        if (\true) {
+            class B
+            {
+            }
         }
-    }
-    namespace Humbug\Z;
-    
-    if (\true) {
-        class C
-        {
+        namespace Humbug\Z;
+
+        if (\true) {
+            class C
+            {
+            }
         }
-    }
-    
-    PHP,
+
+        PHP,
 ];

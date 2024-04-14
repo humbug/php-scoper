@@ -12,58 +12,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Global constant declaration & usage in the global scope with the global constants exposed',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Global constant declaration & usage in the global scope with the global constants exposed',
+        exposeGlobalConstants: true,
+    ),
 
     'Constants declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    const FOO_CONST = foo();
-    define('BAR_CONST', foo());
-    define('Acme\BAR_CONST', foo());
-    define(FOO_CONST, foo());
-    define(\FOO_CONST, foo());
-    define(\Acme\BAR_CONST, foo());
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \define('FOO_CONST', foo());
-    \define('BAR_CONST', foo());
-    \define('Humbug\\Acme\\BAR_CONST', foo());
-    \define(\FOO_CONST, foo());
-    \define(\FOO_CONST, foo());
-    \define(\Humbug\Acme\BAR_CONST, foo());
-    
-    PHP,
-
-    'Constants declaration in the global namespace which is excluded' => [
-        'exclude-namespaces' => [''],
-        'payload' => <<<'PHP'
         <?php
-        
+
         const FOO_CONST = foo();
         define('BAR_CONST', foo());
         define('Acme\BAR_CONST', foo());
@@ -72,185 +32,210 @@ return [
         define(\Acme\BAR_CONST, foo());
         ----
         <?php
-        
-        namespace {
-            const FOO_CONST = \foo();
-            \define('BAR_CONST', \foo());
-            \define('Acme\\BAR_CONST', \foo());
-            \define(\FOO_CONST, \foo());
-            \define(\FOO_CONST, \foo());
-            \define(\Acme\BAR_CONST, \foo());
-        }
-        
-        PHP,
-    ],
 
-    'Exposed constants declaration in the global namespace' => [
-        'expose-constants' => [
+        namespace Humbug;
+
+        \define('FOO_CONST', foo());
+        \define('BAR_CONST', foo());
+        \define('Humbug\\Acme\\BAR_CONST', foo());
+        \define(\FOO_CONST, foo());
+        \define(\FOO_CONST, foo());
+        \define(\Humbug\Acme\BAR_CONST, foo());
+
+        PHP,
+
+    'Constants declaration in the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: [''],
+        spec: <<<'PHP'
+            <?php
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace {
+                const FOO_CONST = \foo();
+                \define('BAR_CONST', \foo());
+                \define('Acme\\BAR_CONST', \foo());
+                \define(\FOO_CONST, \foo());
+                \define(\FOO_CONST, \foo());
+                \define(\Acme\BAR_CONST, \foo());
+            }
+
+            PHP,
+    ),
+
+    'Exposed constants declaration in the global namespace' => SpecWithConfig::create(
+        exposeConstants: [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \define('FOO_CONST', foo());
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(\FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
-    ],
+        spec: <<<'PHP'
+            <?php
 
-    'Excluded constants declaration in the global namespace' => [
-        'exclude-constants' => [
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \define('FOO_CONST', foo());
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(\FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
+    ),
+
+    'Excluded constants declaration in the global namespace' => SpecWithConfig::create(
+        excludeConstants: [
             'FOO_CONST',
             'BAR_CONST',
             'Acme\BAR_CONST',
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \define('FOO_CONST', foo());
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(\FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
-    ],
+        spec: <<<'PHP'
+            <?php
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \define('FOO_CONST', foo());
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(\FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
+    ),
 
     'Constants declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    const FOO_CONST = foo();
-    define('BAR_CONST', foo());
-    define('Acme\BAR_CONST', foo());
-    define(FOO_CONST, foo());
-    define(\FOO_CONST, foo());
-    define(\Acme\FOO_CONST, foo());
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    const FOO_CONST = foo();
-    \define('BAR_CONST', foo());
-    \define('Humbug\\Acme\\BAR_CONST', foo());
-    \define(FOO_CONST, foo());
-    \define(\FOO_CONST, foo());
-    \define(\Humbug\Acme\FOO_CONST, foo());
-    
-    PHP,
-
-    'Constants declaration in an excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace Acme;
-        
+
         const FOO_CONST = foo();
         define('BAR_CONST', foo());
         define('Acme\BAR_CONST', foo());
         define(FOO_CONST, foo());
         define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
+        define(\Acme\FOO_CONST, foo());
         ----
         <?php
-        
-        namespace Acme;
-        
-        const FOO_CONST = foo();
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
-    ],
 
-    'Exposed constants declaration in a namespace' => [
-        'expose-constants' => ['Acme\BAR_CONST'],
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
-        ----
-        <?php
-        
         namespace Humbug\Acme;
-        
-        const FOO_CONST = foo();
-        \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
-        \define(FOO_CONST, foo());
-        \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
-        PHP,
-    ],
 
-    'Exposed constants declaration in an exposed namespace' => [
-        'expose-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme;
-        
         const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\BAR_CONST, foo());
-        ----
-        <?php
-        
-        namespace Humbug\Acme;
-        
-        \define('Acme\\FOO_CONST', foo());
         \define('BAR_CONST', foo());
-        \define('Acme\\BAR_CONST', foo());
+        \define('Humbug\\Acme\\BAR_CONST', foo());
         \define(FOO_CONST, foo());
         \define(\FOO_CONST, foo());
-        \define(\Acme\BAR_CONST, foo());
-        
+        \define(\Humbug\Acme\FOO_CONST, foo());
+
         PHP,
-    ],
+
+    'Constants declaration in an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        spec: <<<'PHP'
+            <?php
+
+            namespace Acme;
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Acme;
+
+            const FOO_CONST = foo();
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
+    ),
+
+    'Exposed constants declaration in a namespace' => SpecWithConfig::create(
+        exposeConstants: ['Acme\BAR_CONST'],
+        spec: <<<'PHP'
+            <?php
+
+            namespace Acme;
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            const FOO_CONST = foo();
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
+    ),
+
+    'Exposed constants declaration in an exposed namespace' => SpecWithConfig::create(
+        exposeNamespaces: ['Acme'],
+        spec: <<<'PHP'
+            <?php
+
+            namespace Acme;
+
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\BAR_CONST, foo());
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            \define('Acme\\FOO_CONST', foo());
+            \define('BAR_CONST', foo());
+            \define('Acme\\BAR_CONST', foo());
+            \define(FOO_CONST, foo());
+            \define(\FOO_CONST, foo());
+            \define(\Acme\BAR_CONST, foo());
+
+            PHP,
+    ),
 ];

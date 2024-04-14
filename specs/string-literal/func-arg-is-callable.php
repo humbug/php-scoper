@@ -12,245 +12,229 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'String literal used as a function argument of an is_callable call',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'String literal used as a function argument of an is_callable call',
+    ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    is_callable('sodiumCompatAutoloader');
-    is_callable('Sodium\compatAutoloader');
-    is_callable(['Swift', 'autoload']);
-    is_callable(['\Swift', 'autoload']);
-    is_callable(['Humbug\\Swift', 'autoload']);
-    is_callable(['\\Humbug\\Swift', 'autoload']);
-    is_callable(['\\Humbug\\Swift', 'autoload']);
-    is_callable(['DateTime', 'autoload']);
-    is_callable(['\\DateTime', 'autoload']);
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \is_callable('Humbug\\sodiumCompatAutoloader');
-    \is_callable('Humbug\\Sodium\\compatAutoloader');
-    \is_callable(['Humbug\\Swift', 'autoload']);
-    \is_callable(['Humbug\\Swift', 'autoload']);
-    \is_callable(['Humbug\\Swift', 'autoload']);
-    \is_callable(['Humbug\\Swift', 'autoload']);
-    \is_callable(['Humbug\\Swift', 'autoload']);
-    \is_callable(['DateTime', 'autoload']);
-    \is_callable(['\\DateTime', 'autoload']);
-    
-    PHP,
-
-    'FQCN string argument on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Yaml', 'Swift'],
-        'payload' => <<<'PHP'
         <?php
-        
+
+        is_callable('sodiumCompatAutoloader');
+        is_callable('Sodium\compatAutoloader');
         is_callable(['Swift', 'autoload']);
+        is_callable(['\Swift', 'autoload']);
         is_callable(['Humbug\\Swift', 'autoload']);
         is_callable(['\\Humbug\\Swift', 'autoload']);
+        is_callable(['\\Humbug\\Swift', 'autoload']);
         is_callable(['DateTime', 'autoload']);
-        
+        is_callable(['\\DateTime', 'autoload']);
+
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
+        \is_callable('Humbug\\sodiumCompatAutoloader');
+        \is_callable('Humbug\\Sodium\\compatAutoloader');
+        \is_callable(['Humbug\\Swift', 'autoload']);
+        \is_callable(['Humbug\\Swift', 'autoload']);
         \is_callable(['Humbug\\Swift', 'autoload']);
         \is_callable(['Humbug\\Swift', 'autoload']);
         \is_callable(['Humbug\\Swift', 'autoload']);
         \is_callable(['DateTime', 'autoload']);
-        
-        PHP,
-    ],
+        \is_callable(['\\DateTime', 'autoload']);
 
-    'FQCN string argument on exposed function' => [
-        'expose-functions' => ['sodiumCompatAutoloader'],
-        'payload' => <<<'PHP'
-        <?php
-        
-        is_callable('sodiumCompatAutoloader');
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \is_callable('Humbug\\sodiumCompatAutoloader');
-        
         PHP,
-    ],
 
-    'FQCN string argument on class from an excluded namespace' => [
-        'exclude-namespaces' => [
-            'Symfony\Component\Yaml',
-            '/^$/',
-        ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        is_callable(['Swift', 'autoload']);
-        is_callable(['Humbug\\Swift', 'autoload']);
-        is_callable(['\\Humbug\\Swift', 'autoload']);
-        is_callable(['DateTime', 'autoload']);
-        
-        ----
-        <?php
-        
-        namespace {
-            \is_callable(['Swift', 'autoload']);
+    'FQCN string argument on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Yaml', 'Swift'],
+        spec: <<<'PHP'
+            <?php
+
+            is_callable(['Swift', 'autoload']);
+            is_callable(['Humbug\\Swift', 'autoload']);
+            is_callable(['\\Humbug\\Swift', 'autoload']);
+            is_callable(['DateTime', 'autoload']);
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \is_callable(['Humbug\\Swift', 'autoload']);
             \is_callable(['Humbug\\Swift', 'autoload']);
             \is_callable(['Humbug\\Swift', 'autoload']);
             \is_callable(['DateTime', 'autoload']);
-        }
-        
-        PHP,
-    ],
 
-    'FQCN string argument on function from an excluded namespace' => [
-        'exclude-namespaces' => [
+            PHP,
+    ),
+
+    'FQCN string argument on exposed function' => SpecWithConfig::create(
+        exposeFunctions: ['sodiumCompatAutoloader'],
+        spec: <<<'PHP'
+            <?php
+
+            is_callable('sodiumCompatAutoloader');
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \is_callable('Humbug\\sodiumCompatAutoloader');
+
+            PHP,
+    ),
+
+    'FQCN string argument on class from an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: [
+            'Symfony\Component\Yaml',
+            '/^$/',
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            is_callable(['Swift', 'autoload']);
+            is_callable(['Humbug\\Swift', 'autoload']);
+            is_callable(['\\Humbug\\Swift', 'autoload']);
+            is_callable(['DateTime', 'autoload']);
+
+            ----
+            <?php
+
+            namespace {
+                \is_callable(['Swift', 'autoload']);
+                \is_callable(['Humbug\\Swift', 'autoload']);
+                \is_callable(['Humbug\\Swift', 'autoload']);
+                \is_callable(['DateTime', 'autoload']);
+            }
+
+            PHP,
+    ),
+
+    'FQCN string argument on function from an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: [
             'Sodium',
             '/^$/',
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        is_callable('Sodium\CompatAutoloader');
-        
-        ----
-        <?php
-        
-        namespace {
-            \is_callable('Sodium\\CompatAutoloader');
-        }
-        
-        PHP,
-    ],
+        spec: <<<'PHP'
+            <?php
 
-    'FQCN string argument with global functions not exposed' => [
-        'expose-global-functions' => false,
-        'payload' => <<<'PHP'
-        <?php
-        
-        is_callable(['Swift', 'autoload']);
-        is_callable(['Humbug\\Swift', 'autoload']);
-        is_callable(['\\Humbug\\Swift', 'autoload']);
-        is_callable(['DateTime', 'autoload']);
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \is_callable(['Humbug\\Swift', 'autoload']);
-        \is_callable(['Humbug\\Swift', 'autoload']);
-        \is_callable(['Humbug\\Swift', 'autoload']);
-        \is_callable(['DateTime', 'autoload']);
-        
-        PHP,
-    ],
+            is_callable('Sodium\CompatAutoloader');
+
+            ----
+            <?php
+
+            namespace {
+                \is_callable('Sodium\\CompatAutoloader');
+            }
+
+            PHP,
+    ),
+
+    'FQCN string argument with global functions not exposed' => SpecWithConfig::create(
+        exposeGlobalFunctions: false,
+        spec: <<<'PHP'
+            <?php
+
+            is_callable(['Swift', 'autoload']);
+            is_callable(['Humbug\\Swift', 'autoload']);
+            is_callable(['\\Humbug\\Swift', 'autoload']);
+            is_callable(['DateTime', 'autoload']);
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \is_callable(['Humbug\\Swift', 'autoload']);
+            \is_callable(['Humbug\\Swift', 'autoload']);
+            \is_callable(['Humbug\\Swift', 'autoload']);
+            \is_callable(['DateTime', 'autoload']);
+
+            PHP,
+    ),
 
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
-    <?php
-    
-    is_callable(['Swift'.'', 'autoload']);
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \is_callable(['Swift' . '', 'autoload']);
-    
-    PHP,
+        <?php
+
+        is_callable(['Swift'.'', 'autoload']);
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \is_callable(['Swift' . '', 'autoload']);
+
+        PHP,
 
     'FQC constant call' => <<<'PHP'
-    <?php
-    
-    namespace Symfony\Component\Yaml {
-        class Yaml {}
-    }
-    
-    namespace {
-        is_callable([\Swift::class, 'autoload']);
-        is_callable([\Humbug\Swift::class, 'autoload']);
-        is_callable([\DateTime::class, 'autoload']);
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Symfony\Component\Yaml;
-    
-    class Yaml
-    {
-    }
-    namespace Humbug;
-    
-    \is_callable([\Humbug\Swift::class, 'autoload']);
-    \is_callable([\Humbug\Swift::class, 'autoload']);
-    \is_callable([\DateTime::class, 'autoload']);
-    
-    PHP,
-
-    'FQC constant call on exposed class' => [
-        'expose-classes' => ['Symfony\Component\Yaml\Ya_1'],
-        'expected-recorded-classes' => [
-            ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace Symfony\Component\Yaml {
-            class Ya_1 {}
+            class Yaml {}
         }
-        
+
         namespace {
-            is_callable([Symfony\Component\Yaml\Ya_1::class, 'autoload']);
-            is_callable([\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
-            is_callable([Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
-            is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+            is_callable([\Swift::class, 'autoload']);
+            is_callable([\Humbug\Swift::class, 'autoload']);
+            is_callable([\DateTime::class, 'autoload']);
         }
         ----
         <?php
-        
+
         namespace Humbug\Symfony\Component\Yaml;
-        
-        class Ya_1
+
+        class Yaml
         {
         }
-        \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
         namespace Humbug;
-        
-        \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
-        \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
-        \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
-        \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
-        
-        PHP
-    ],
+
+        \is_callable([\Humbug\Swift::class, 'autoload']);
+        \is_callable([\Humbug\Swift::class, 'autoload']);
+        \is_callable([\DateTime::class, 'autoload']);
+
+        PHP,
+
+    'FQC constant call on exposed class' => SpecWithConfig::create(
+        exposeClasses: ['Symfony\Component\Yaml\Ya_1'],
+        expectedRecordedClasses: [
+            ['Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            namespace Symfony\Component\Yaml {
+                class Ya_1 {}
+            }
+
+            namespace {
+                is_callable([Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+                is_callable([\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+                is_callable([Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+                is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+            }
+            ----
+            <?php
+
+            namespace Humbug\Symfony\Component\Yaml;
+
+            class Ya_1
+            {
+            }
+            \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
+            namespace Humbug;
+
+            \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+            \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+            \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+            \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);
+
+            PHP,
+    ),
 ];

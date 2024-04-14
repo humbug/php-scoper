@@ -12,135 +12,118 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Union types',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Union types',
+    ),
 
     'Method casts' => <<<'PHP'
-    <?php
-    
-    class X
-    {
-        public function method1(Y&Z $a, Y $b) : Y&Z
+        <?php
+
+        class X
         {
+            public function method1(Y&Z $a, Y $b) : Y&Z
+            {
+            }
         }
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class X
-    {
-        public function method1(Y&Z $a, Y $b) : Y&Z
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class X
         {
+            public function method1(Y&Z $a, Y $b) : Y&Z
+            {
+            }
         }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Function casts' => <<<'PHP'
-    <?php
-    
-    function fun1(Y&Z $a) : Y&Z
-    {
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    function fun1(Y&Z $a) : Y&Z
-    {
-    }
+        <?php
 
-    PHP,
+        function fun1(Y&Z $a) : Y&Z
+        {
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        function fun1(Y&Z $a) : Y&Z
+        {
+        }
+
+        PHP,
 
     'Property casts' => <<<'PHP'
-    <?php
-    
-    class X
-    {
-        private Y&Z $x;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class X
-    {
-        private Y&Z $x;
-    }
-    
-    PHP,
+        <?php
+
+        class X
+        {
+            private Y&Z $x;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class X
+        {
+            private Y&Z $x;
+        }
+
+        PHP,
 
     'Trait casts' => <<<'PHP'
-    <?php
-    
-    trait X
-    {
-        private Y&Z $x;
-        public function method1(Y&Z $a) : Y&Z
+        <?php
+
+        trait X
         {
+            private Y&Z $x;
+            public function method1(Y&Z $a) : Y&Z
+            {
+            }
         }
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    trait X
-    {
-        private Y&Z $x;
-        public function method1(Y&Z $a) : Y&Z
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        trait X
         {
+            private Y&Z $x;
+            public function method1(Y&Z $a) : Y&Z
+            {
+            }
         }
-    }
-    
-    PHP,
+
+        PHP,
 
     'Interface casts' => <<<'PHP'
-    <?php
-    
-    interface X
-    {
-        public function method1(Y&Z $a) : Y&Z;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    interface X
-    {
-        public function method1(Y&Z $a) : Y&Z;
-    }
-    
-    PHP,
+        <?php
+
+        interface X
+        {
+            public function method1(Y&Z $a) : Y&Z;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        interface X
+        {
+            public function method1(Y&Z $a) : Y&Z;
+        }
+
+        PHP,
 ];

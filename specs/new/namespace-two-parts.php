@@ -12,84 +12,69 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'New statement call of a namespaced class in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'New statement call of a namespaced class in a namespace',
+        exposeGlobalConstants: true,
+        exposeGlobalFunctions: true,
+    ),
 
     'New statement call of a class' => <<<'PHP'
-    <?php
-    
-    namespace X\Foo {
-        class Bar {}
-    }
-    
-    namespace X {
+        <?php
+
+        namespace X\Foo {
+            class Bar {}
+        }
+
+        namespace X {
+            new Foo\Bar();
+        }
+        ----
+        <?php
+
+        namespace Humbug\X\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug\X;
+
         new Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug\X;
-    
-    new Foo\Bar();
-    
-    PHP,
+
+        PHP,
 
     'FQ new statement call of a class' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace X\Foo {
-        class Bar {}
-    }
-    
-    namespace X {
-        new \Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug\X\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug\X;
-    
-    new \Humbug\Foo\Bar();
-    
-    PHP,
+        <?php
+
+        namespace Foo {
+            class Bar {}
+        }
+
+        namespace X\Foo {
+            class Bar {}
+        }
+
+        namespace X {
+            new \Foo\Bar();
+        }
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug\X\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug\X;
+
+        new \Humbug\Foo\Bar();
+
+        PHP,
 ];

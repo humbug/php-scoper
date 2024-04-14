@@ -12,94 +12,77 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Scalar literal returned',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Scalar literal returned',
+    ),
 
     'String argument' => <<<'PHP'
-    <?php
-    
-    function () {
-        return 'Symfony\\Component\\Yaml\\Ya_1';
-    };
-    
-    function () {
-        return '\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    
-    function () {
-        return '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    
-    function () {
-        return 'Closure';
-    };
-    
-    function () {
-        return 'usedAttributes';
-    };
-    
-    function () {
-        return 'FOO';
-    };
-    
-    function () {
-        return 'PHP_EOL';
-    };
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    function () {
-        return 'Closure';
-    };
-    function () {
-        return 'usedAttributes';
-    };
-    function () {
-        return 'FOO';
-    };
-    function () {
-        return 'PHP_EOL';
-    };
-    
-    PHP,
+        <?php
+
+        function () {
+            return 'Symfony\\Component\\Yaml\\Ya_1';
+        };
+
+        function () {
+            return '\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+
+        function () {
+            return '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+
+        function () {
+            return 'Closure';
+        };
+
+        function () {
+            return 'usedAttributes';
+        };
+
+        function () {
+            return 'FOO';
+        };
+
+        function () {
+            return 'PHP_EOL';
+        };
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+        function () {
+            return 'Closure';
+        };
+        function () {
+            return 'usedAttributes';
+        };
+        function () {
+            return 'FOO';
+        };
+        function () {
+            return 'PHP_EOL';
+        };
+
+        PHP,
 ];

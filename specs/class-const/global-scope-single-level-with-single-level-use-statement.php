@@ -12,139 +12,123 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\Scoper\Spec\Meta;
+use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Class constant call of a class imported with a use statement in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-        'expected-recorded-ambiguous-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Class constant call of a class imported with a use statement in the global scope',
+    ),
 
     'Constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    use Command;
-    
-    Command::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    use Humbug\Command;
-    Command::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        use Command;
+
+        Command::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        use Humbug\Command;
+        Command::MAIN_CONST;
+
+        PHP,
 
     'FQ constant call on a class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    use Command;
-    
-    \Command::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    use Humbug\Command;
-    \Humbug\Command::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        use Command;
+
+        \Command::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        use Humbug\Command;
+        \Humbug\Command::MAIN_CONST;
+
+        PHP,
 
     'Constant call on an internal class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    use Reflector;
-    
-    Reflector::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use Reflector;
-    Reflector::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        use Reflector;
+
+        Reflector::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use Reflector;
+        Reflector::MAIN_CONST;
+
+        PHP,
 
     'FQ constant call on an internal class which is imported via a use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    use Reflector;
-    
-    \Reflector::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use Reflector;
-    \Reflector::MAIN_CONST;
-    
-    PHP,
-
-    'Constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
         <?php
-        
-        use Foo;
-        
-        Foo::MAIN_CONST;
+
+        use Reflector;
+
+        \Reflector::MAIN_CONST;
         ----
         <?php
-        
-        namespace Humbug;
-        
-        use Humbug\Foo;
-        Foo::MAIN_CONST;
-        
-        PHP,
-    ],
 
-    'FQ constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
-        <?php
-        
-        use Foo;
-        
-        \Foo::MAIN_CONST;
-        ----
-        <?php
-        
         namespace Humbug;
-        
-        use Humbug\Foo;
-        \Humbug\Foo::MAIN_CONST;
-        
+
+        use Reflector;
+        \Reflector::MAIN_CONST;
+
         PHP,
-    ],
+
+    'Constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
+            <?php
+
+            use Foo;
+
+            Foo::MAIN_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use Humbug\Foo;
+            Foo::MAIN_CONST;
+
+            PHP,
+    ),
+
+    'FQ constant call on an exposed class which is imported via a use statement and which belongs to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
+            <?php
+
+            use Foo;
+
+            \Foo::MAIN_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use Humbug\Foo;
+            \Humbug\Foo::MAIN_CONST;
+
+            PHP,
+    ),
 ];

@@ -24,8 +24,6 @@ parameters:
           path: 'src/PhpParser/NodeVisitor/Resolver/OriginalNameResolver.php'
         - message: '#NamespaceManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/NamespaceStmt/NamespaceManipulator.php'
-        - message: '#Dead catch#'
-          path: 'tests/Scoper/PhpScoperSpecTest.php'
         - message: '#DummyScoperFactory extends @final#'
           path: 'tests/Console/Command/DummyScoperFactory.php'
         - message: '#Anonymous function should return string but returns array#'
