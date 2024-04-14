@@ -14,11 +14,12 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Spec;
 
+use Humbug\PhpScoper\Configuration\ConfigurationKeys;
 use PHPUnit\Framework\Assert;
 use function Safe\preg_split;
 use function trim;
 
-final class SpecWithConfig extends SpecConfig
+final readonly class SpecWithConfig implements DeclaresSymbolsConfiguration
 {
     public const SPEC_DELIMITER = "/\n----(?:\n|$)/";
 
@@ -32,17 +33,17 @@ final class SpecWithConfig extends SpecConfig
         ?string $prefix = null,
         ?int $minPhpVersion = null,
         ?int $maxPhpVersion = null,
-        bool $exposeGlobalConstants = false,
-        bool $exposeGlobalClasses = false,
-        bool $exposeGlobalFunctions = false,
-        array $exposeNamespaces = [],
-        array $exposeConstants = [],
-        array $exposeClasses = [],
-        array $exposeFunctions = [],
-        array $excludeNamespaces = [],
-        array $excludeConstants = [],
-        array $excludeClasses = [],
-        array $excludeFunctions = [],
+        ?bool $exposeGlobalConstants = null,
+        ?bool $exposeGlobalClasses = null,
+        ?bool $exposeGlobalFunctions = null,
+        ?array $exposeNamespaces = null,
+        ?array $exposeConstants = null,
+        ?array $exposeClasses = null,
+        ?array $exposeFunctions = null,
+        ?array $excludeNamespaces = null,
+        ?array $excludeConstants = null,
+        ?array $excludeClasses = null,
+        ?array $excludeFunctions = null,
         ?array $expectedRecordedClasses = null,
         ?array $expectedRecordedFunctions = null,
     ): self {
@@ -71,40 +72,25 @@ final class SpecWithConfig extends SpecConfig
     }
 
     private function __construct(
-        public readonly string $inputCode,
-        public readonly ?string $expectedOutputCode,
-        public readonly ?string $prefix,
-        ?int $minPhpVersion,
-        ?int $maxPhpVersion,
-        bool $exposeGlobalConstants,
-        bool $exposeGlobalClasses,
-        bool $exposeGlobalFunctions,
-        array $exposeNamespaces,
-        array $exposeConstants,
-        array $exposeClasses,
-        array $exposeFunctions,
-        array $excludeNamespaces,
-        array $excludeConstants,
-        array $excludeClasses,
-        array $excludeFunctions,
-        public readonly ?array $expectedRecordedClasses,
-        public readonly ?array $expectedRecordedFunctions,
+        public string $inputCode,
+        public ?string $expectedOutputCode,
+        public ?string $prefix,
+        public ?int $minPhpVersion,
+        public ?int $maxPhpVersion,
+        public ?bool $exposeGlobalConstants,
+        public ?bool $exposeGlobalClasses,
+        public ?bool $exposeGlobalFunctions,
+        public ?array $exposeNamespaces,
+        public ?array $exposeConstants,
+        public ?array $exposeClasses,
+        public ?array $exposeFunctions,
+        public ?array $excludeNamespaces,
+        public ?array $excludeConstants,
+        public ?array $excludeClasses,
+        public ?array $excludeFunctions,
+        public ?array $expectedRecordedClasses,
+        public ?array $expectedRecordedFunctions,
     ) {
-        parent::__construct(
-            $minPhpVersion,
-            $maxPhpVersion,
-            $exposeGlobalConstants,
-            $exposeGlobalClasses,
-            $exposeGlobalFunctions,
-            $exposeNamespaces,
-            $exposeConstants,
-            $exposeClasses,
-            $exposeFunctions,
-            $excludeNamespaces,
-            $excludeConstants,
-            $excludeClasses,
-            $excludeFunctions,
-        );
     }
 
     /**
@@ -127,5 +113,21 @@ final class SpecWithConfig extends SpecConfig
         }
 
         return [$inputCode, $expectedOutputCode];
+    }
+
+    public function getSymbolsConfig(): array
+    {
+        return array_filter([
+            ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => $this->exposeGlobalConstants,
+            ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => $this->exposeGlobalClasses,
+            ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => $this->exposeGlobalFunctions,
+            ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD => $this->exposeNamespaces,
+            ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD => $this->exposeConstants,
+            ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD => $this->exposeFunctions,
+            ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD => $this->exposeClasses,
+            ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD => $this->excludeConstants,
+            ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD => $this->exposeClasses,
+            ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD => $this->exposeFunctions,
+        ]);
     }
 }

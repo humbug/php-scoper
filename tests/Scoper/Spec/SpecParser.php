@@ -117,11 +117,17 @@ class SpecParser extends TestCase
         SpecWithConfig $specWithConfig,
         Meta $meta,
     ): SymbolsConfiguration {
+        static $factory;
+
+        if (!isset($factory)) {
+            $factory = new SymbolsConfigurationFactory(new RegexChecker());
+        }
+
         $mergedConfig = array_merge(
             $meta->getSymbolsConfig(),
             $specWithConfig->getSymbolsConfig(),
         );
 
-        return (new SymbolsConfigurationFactory(new RegexChecker()))->createSymbolsConfiguration($mergedConfig);
+        return $factory->createSymbolsConfiguration($mergedConfig);
     }
 }

@@ -14,41 +14,44 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Spec;
 
-final class Meta extends SpecConfig
+use Humbug\PhpScoper\Configuration\ConfigurationKeys;
+
+final readonly class Meta implements DeclaresSymbolsConfiguration
 {
     public function __construct(
-        public readonly string $title,
-        public readonly string $prefix = 'Humbug',
-        ?int $minPhpVersion = null,
-        ?int $maxPhpVersion = null,
-        bool $exposeGlobalConstants = false,
-        bool $exposeGlobalClasses = false,
-        bool $exposeGlobalFunctions = false,
-        array $exposeNamespaces = [],
-        array $exposeConstants = [],
-        array $exposeClasses = [],
-        array $exposeFunctions = [],
-        array $excludeNamespaces = [],
-        array $excludeConstants = [],
-        array $excludeClasses = [],
-        array $excludeFunctions = [],
-        public readonly array $expectedRecordedClasses = [],
-        public readonly array $expectedRecordedFunctions = [],
+        public string $title,
+        public string $prefix = 'Humbug',
+        public ?int $minPhpVersion = null,
+        public ?int $maxPhpVersion = null,
+        public bool $exposeGlobalConstants = false,
+        public bool $exposeGlobalClasses = false,
+        public bool $exposeGlobalFunctions = false,
+        public array $exposeNamespaces = [],
+        public array $exposeConstants = [],
+        public array $exposeClasses = [],
+        public array $exposeFunctions = [],
+        public array $excludeNamespaces = [],
+        public array $excludeConstants = [],
+        public array $excludeClasses = [],
+        public array $excludeFunctions = [],
+        public array $expectedRecordedClasses = [],
+        public array $expectedRecordedFunctions = [],
     ) {
-        parent::__construct(
-            $minPhpVersion,
-            $maxPhpVersion,
-            $exposeGlobalConstants,
-            $exposeGlobalClasses,
-            $exposeGlobalFunctions,
-            $exposeNamespaces,
-            $exposeConstants,
-            $exposeClasses,
-            $exposeFunctions,
-            $excludeNamespaces,
-            $excludeConstants,
-            $excludeClasses,
-            $excludeFunctions,
-        );
+    }
+
+    public function getSymbolsConfig(): array
+    {
+        return [
+            ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD => $this->exposeGlobalConstants,
+            ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD => $this->exposeGlobalClasses,
+            ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => $this->exposeGlobalFunctions,
+            ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD => $this->exposeNamespaces,
+            ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD => $this->exposeConstants,
+            ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD => $this->exposeFunctions,
+            ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD => $this->exposeClasses,
+            ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD => $this->excludeConstants,
+            ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD => $this->exposeClasses,
+            ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD => $this->exposeFunctions,
+        ];
     }
 }

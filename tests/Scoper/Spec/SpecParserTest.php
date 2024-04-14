@@ -62,12 +62,12 @@ final class SpecParserTest extends TestCase
 
             PHP;
 
-        yield [
+        yield 'simple spec' => [
             self::FIXTURE_DIR.'/simple-spec-file.php',
             [
                 [
                     'Fixtures/simple-spec-file.php',
-                    '[Example of simple spec file] 0',
+                    '[Example of simple spec file] spec #0',
                     $specCode,
                     'Humbug',
                     SymbolsConfiguration::create(
@@ -100,7 +100,7 @@ final class SpecParserTest extends TestCase
             ],
         ];
 
-        yield [
+        yield 'complete spec' => [
             self::FIXTURE_DIR.'/complete-spec-file.php',
             [
                 [
@@ -124,8 +124,8 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
-                    null,
-                    null,
+                    72_000,
+                    83_000,
                 ],
                 [
                     'Fixtures/complete-spec-file.php',
@@ -148,8 +148,8 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
-                    null,
-                    null,
+                    72_000,
+                    83_000,
                 ],
                 [
                     'Fixtures/complete-spec-file.php',
@@ -172,8 +172,8 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['AnotherRecordedClass'],
                     ['AnotherRecordedFunction'],
-                    null,
-                    null,
+                    73_000,
+                    82_000,
                 ],
             ],
         ];
