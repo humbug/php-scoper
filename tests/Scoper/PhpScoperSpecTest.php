@@ -15,19 +15,17 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Error;
-use Humbug\PhpScoper\Configuration\ConfigurationKeys;
-use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
-use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Spec\Meta;
 use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
+use Humbug\PhpScoper\Scoper\Spec\SpecFormatter;
+use Humbug\PhpScoper\Scoper\Spec\SpecParser;
+use Humbug\PhpScoper\Scoper\Spec\UnparsableFile;
 use Humbug\PhpScoper\Scoper\Spec\SpecWithConfig;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
-use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
-use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -37,23 +35,17 @@ use Throwable;
 use UnexpectedValueException;
 use function array_filter;
 use function array_map;
-use function array_merge;
 use function array_slice;
 use function array_values;
 use function basename;
-use function count;
-use function current;
 use function explode;
 use function implode;
 use function is_string;
 use function min;
 use function rtrim;
 use function sprintf;
-use function str_repeat;
 use function str_starts_with;
-use function strlen;
 use function usort;
-use const PHP_EOL;
 use const PHP_VERSION_ID;
 
 /**
@@ -62,42 +54,6 @@ use const PHP_VERSION_ID;
 #[Group('integration')]
 class PhpScoperSpecTest extends TestCase
 {
-    private const SPECS_META_KEYS = [
-        'minPhpVersion',
-        'maxPhpVersion',
-        'title',
-        ConfigurationKeys::PREFIX_KEYWORD,
-        // SPECS_CONFIG_KEYS included
-        'expected-recorded-classes',
-        'expected-recorded-functions',
-    ];
-
-    // Keys allowed on a spec level
-    private const SPECS_SPEC_KEYS = [
-        ConfigurationKeys::PREFIX_KEYWORD,
-        // SPECS_CONFIG_KEYS included
-        'expected-recorded-classes',
-        'expected-recorded-functions',
-        'payload',
-    ];
-
-    // Keys kept and used to build the symbols configuration
-    private const SPECS_CONFIG_KEYS = [
-        ConfigurationKeys::EXPOSE_GLOBAL_CONSTANTS_KEYWORD,
-        ConfigurationKeys::EXPOSE_GLOBAL_CLASSES_KEYWORD,
-        ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD,
-
-        ConfigurationKeys::EXPOSE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::EXPOSE_CLASSES_SYMBOLS_KEYWORD,
-        ConfigurationKeys::EXPOSE_FUNCTIONS_SYMBOLS_KEYWORD,
-        ConfigurationKeys::EXPOSE_CONSTANTS_SYMBOLS_KEYWORD,
-
-        ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD,
-        ConfigurationKeys::CLASSES_INTERNAL_SYMBOLS_KEYWORD,
-        ConfigurationKeys::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
-        ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
-    ];
-
     /**
      * This test is to ensure no file is left in _specs for the CI. It is fine otherwise for this test to fail locally
      * when developing something.
@@ -197,7 +153,7 @@ class PhpScoperSpecTest extends TestCase
             );
         }
 
-        $specMessage = self::createSpecMessage(
+        $specMessage = SpecFormatter::createSpecMessage(
             $file,
             $spec,
             $contents,
@@ -233,7 +189,7 @@ class PhpScoperSpecTest extends TestCase
                 unset($specs['meta']);
 
                 foreach ($specs as $title => $spec) {
-                    yield from self::parseSpec(
+                    yield from SpecParser::parseSpec(
                         basename($sourceDir).'/'.$file->getRelativePathname(),
                         $meta,
                         $title,
@@ -241,15 +197,7 @@ class PhpScoperSpecTest extends TestCase
                     );
                 }
             } catch (Throwable $throwable) {
-                self::fail(
-                    sprintf(
-                        'An error occurred while parsing the file "%s": %s%s%s',
-                        $file,
-                        $throwable->getMessage(),
-                        "\n\n",
-                        $throwable->getTraceAsString(),
-                    ),
-                );
+                throw UnparsableFile::create($file, $throwable);
             }
         }
     }
@@ -286,210 +234,6 @@ class PhpScoperSpecTest extends TestCase
         );
     }
 
-    // TODO: can extract CS
-    private static function parseSpec(
-        string $file,
-        Meta $meta,
-        int|string $title,
-        SpecWithConfig|string $specWithConfigOrSimpleSpec,
-    ): iterable {
-        static $specMetaKeys;
-        static $specKeys;
-
-        if (!isset($specMetaKeys)) {
-            $specMetaKeys = [
-                ...self::SPECS_META_KEYS,
-                ...self::SPECS_CONFIG_KEYS,
-            ];
-        }
-
-        if (!isset($specKeys)) {
-            $specKeys = [
-                ...self::SPECS_SPEC_KEYS,
-                ...self::SPECS_CONFIG_KEYS,
-            ];
-        }
-
-        $specWithConfig = is_string($specWithConfigOrSimpleSpec)
-            ? SpecWithConfig::fromSimpleSpec($specWithConfigOrSimpleSpec)
-            : $specWithConfigOrSimpleSpec;
-
-        // TODO: can extract this change, 'spec' is unused
-        $completeTitle = sprintf(
-            '[%s] %s',
-            $meta->title,
-            $title,
-        );
-
-        yield [
-            $file,
-            $completeTitle,
-            $specWithConfig->inputCode,
-            $specWithConfigOrSimpleSpec->prefix ?? $meta->prefix,
-            self::createSymbolsConfiguration($specWithConfig, $meta),
-            $specWithConfig->expectedOutputCode,
-            $specWithConfigOrSimpleSpec->expectedRecordedClasses ?? $meta->expectedRecordedClasses,
-            $specWithConfigOrSimpleSpec->expectedRecordedFunctions ?? $meta->expectedRecordedFunctions,
-            $specWithConfigOrSimpleSpec->minPhpVersion ?? $meta->minPhpVersion,
-            $specWithConfigOrSimpleSpec->maxPhpVersion ?? $meta->maxPhpVersion,
-        ];
-    }
-
-    private static function createSymbolsConfiguration(
-        SpecWithConfig $specWithConfig,
-        Meta $meta
-    ): SymbolsConfiguration {
-        $mergedConfig = array_merge(
-            $meta->getSymbolsConfig(),
-            $specWithConfig->getSymbolsConfig(),
-        );
-
-        return (new SymbolsConfigurationFactory(new RegexChecker()))->createSymbolsConfiguration($mergedConfig);
-    }
-
-    /**
-     * @param string[][] $expectedRegisteredClasses
-     * @param string[][] $expectedRegisteredFunctions
-     */
-    private static function createSpecMessage(
-        string $file,
-        string $spec,
-        string $contents,
-        SymbolsConfiguration $symbolsConfiguration,
-        SymbolsRegistry $symbolsRegistry,
-        ?string $expected,
-        ?string $actual,
-        array $expectedRegisteredClasses,
-        array $expectedRegisteredFunctions
-    ): string {
-        $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
-        $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
-        $formattedExposeGlobalFunctions = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalFunctions());
-
-        $formattedNamespacesToExclude = self::formatNamespaceRegistry($symbolsConfiguration->getExcludedNamespaces());
-        $formattedNamespacesToExpose = self::formatNamespaceRegistry($symbolsConfiguration->getExposedNamespaces());
-
-        $formattedClassesToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedClasses());
-        $formattedFunctionsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedFunctions());
-        $formattedConstantsToExpose = self::formatSymbolRegistry($symbolsConfiguration->getExposedConstants());
-
-        $formattedInternalClasses = self::formatSymbolRegistry($symbolsConfiguration->getExcludedClasses());
-        $formattedInternalFunctions = self::formatSymbolRegistry($symbolsConfiguration->getExcludedFunctions());
-        $formattedInternalConstants = self::formatSymbolRegistry($symbolsConfiguration->getExcludedConstants());
-
-        $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
-        $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
-
-        $formattedActualRegisteredClasses = self::formatTupleList($symbolsRegistry->getRecordedClasses());
-        $formattedActualRegisteredFunctions = self::formatTupleList($symbolsRegistry->getRecordedFunctions());
-
-        $titleSeparator = str_repeat(
-            '=',
-            min(
-                strlen($spec),
-                80,
-            ),
-        );
-
-        return <<<OUTPUT
-            {$titleSeparator}
-            SPECIFICATION
-            {$titleSeparator}
-            {$spec}
-            {$file}
-
-            {$titleSeparator}
-            INPUT
-            expose global classes: {$formattedExposeGlobalClasses}
-            expose global functions: {$formattedExposeGlobalFunctions}
-            expose global constants: {$formattedExposeGlobalConstants}
-
-            exclude namespaces: {$formattedNamespacesToExclude}
-            expose namespaces: {$formattedNamespacesToExpose}
-
-            expose classes: {$formattedClassesToExpose}
-            expose functions: {$formattedFunctionsToExpose}
-            expose constants: {$formattedConstantsToExpose}
-
-            (raw) internal classes: {$formattedInternalClasses}
-            (raw) internal functions: {$formattedInternalFunctions}
-            (raw) internal constants: {$formattedInternalConstants}
-            {$titleSeparator}
-            {$contents}
-
-            {$titleSeparator}
-            EXPECTED
-            {$titleSeparator}
-            {$expected}
-            ----------------
-            recorded functions: {$formattedExpectedRegisteredFunctions}
-            recorded classes: {$formattedExpectedRegisteredClasses}
-
-            {$titleSeparator}
-            ACTUAL
-            {$titleSeparator}
-            {$actual}
-            ----------------
-            recorded functions: {$formattedActualRegisteredFunctions}
-            recorded classes: {$formattedActualRegisteredClasses}
-
-            -------------------------------------------------------------------------------
-            OUTPUT;
-    }
-
-    /**
-     * @param string[] $strings
-     */
-    private static function formatSimpleList(array $strings): string
-    {
-        if (0 === count($strings)) {
-            return '[]';
-        }
-
-        if (1 === count($strings)) {
-            return '[ '.current($strings).' ]';
-        }
-
-        return sprintf(
-            "[\n%s\n]",
-            implode(
-                PHP_EOL,
-                array_map(
-                    static fn (string $string): string => '  - '.$string,
-                    $strings,
-                ),
-            ),
-        );
-    }
-
-    /**
-     * @param string[][] $stringTuples
-     */
-    private static function formatTupleList(array $stringTuples): string
-    {
-        if (0 === count($stringTuples)) {
-            return '[]';
-        }
-
-        if (1 === count($stringTuples)) {
-            /** @var string[] $tuple */
-            $tuple = current($stringTuples);
-
-            return sprintf('[%s => %s]', ...$tuple);
-        }
-
-        return sprintf(
-            "[\n%s\n]",
-            implode(
-                PHP_EOL,
-                array_map(
-                    static fn (array $stringTuple): string => sprintf('  - %s => %s', ...$stringTuple),
-                    $stringTuples,
-                ),
-            ),
-        );
-    }
-
     private static function trimTrailingSpaces(string $value): string
     {
         return implode(
@@ -499,27 +243,6 @@ class PhpScoperSpecTest extends TestCase
                 explode("\n", $value),
             ),
         );
-    }
-
-    private static function convertBoolToString(bool $bool): string
-    {
-        return true === $bool ? 'true' : 'false';
-    }
-
-    private static function formatNamespaceRegistry(NamespaceRegistry $namespaceRegistry): string
-    {
-        return self::formatSimpleList([
-            ...$namespaceRegistry->getNames(),
-            ...$namespaceRegistry->getRegexes(),
-        ]);
-    }
-
-    private static function formatSymbolRegistry(SymbolRegistry $symbolRegistry): string
-    {
-        return self::formatSimpleList([
-            ...$symbolRegistry->getNames(),
-            ...$symbolRegistry->getRegexes(),
-        ]);
     }
 
     /**
