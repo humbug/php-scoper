@@ -109,7 +109,7 @@ final readonly class SpecScenario
         self::assertSameRecordedSymbols(
             $assert,
             $this->expectedRecordedAmbiguousFunctions,
-            $symbolsRegistry->getAmbiguousFunctions(),
+            $symbolsRegistry->getRecordedAmbiguousFunctions(),
             $specMessage,
         );
     }

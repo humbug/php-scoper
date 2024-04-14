@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -21,21 +22,26 @@ return [
         exposeGlobalFunctions: true,
     ),
 
-    'Internal function in a namespace' => <<<'PHP'
-        <?php
+    'Internal function in a namespace' => SpecWithConfig::create(
+        expectedRecordedAmbiguousFunctions: [
+            ['is_array', 'Humbug\Acme\is_array'],
+        ],
+        spec: <<<'PHP'
+            <?php
 
-        namespace Acme;
+            namespace Acme;
 
-        $x = is_array([]);
+            $x = is_array([]);
 
-        ----
-        <?php
+            ----
+            <?php
 
-        namespace Humbug\Acme;
+            namespace Humbug\Acme;
 
-        $x = is_array([]);
+            $x = is_array([]);
 
-        PHP,
+            PHP,
+    ),
 
     'Namespaced function having the same name as an internal function' => <<<'PHP'
         <?php

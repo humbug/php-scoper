@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\Symbol;
 use Countable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use function array_diff_key;
 use function array_values;
 use function count;
 use function serialize;
@@ -125,9 +126,14 @@ final class SymbolsRegistry implements Countable
     /**
      * @return list<array{string, string}>
      */
-    public function getAmbiguousFunctions(): array
+    public function getRecordedAmbiguousFunctions(): array
     {
-        return array_values($this->ambiguousFunctions);
+        $filteredAmbiguousFunctions = array_diff_key(
+            $this->ambiguousFunctions,
+            $this->recordedFunctions,
+        );
+
+        return array_values($filteredAmbiguousFunctions);
     }
 
     public function recordClass(FullyQualified $original, FullyQualified $alias): void

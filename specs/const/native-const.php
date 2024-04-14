@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
 
 return [
     'meta' => new Meta(
@@ -20,52 +21,64 @@ return [
         exposeGlobalFunctions: true,
     ),
 
-    'Internal function in a namespace' => <<<'PHP'
-        <?php
+    'Internal function in a namespace' => SpecWithConfig::create(
+        expectedRecordedAmbiguousFunctions: [
+            ['define', 'Humbug\Acme\define'],
+            ['defined', 'Humbug\Acme\defined'],
+        ],
+        spec: <<<'PHP'
+            <?php
 
-        namespace Acme;
+            namespace Acme;
 
-        $x = DIRECTORY_SEPARATOR;
+            $x = DIRECTORY_SEPARATOR;
 
-        if (!defined('PATH_SEPARATOR')) {
-            define('PATH_SEPARATOR', "\n");
-        }
+            if (!defined('PATH_SEPARATOR')) {
+                define('PATH_SEPARATOR', "\n");
+            }
 
-        ----
-        <?php
+            ----
+            <?php
 
-        namespace Humbug\Acme;
+            namespace Humbug\Acme;
 
-        $x = \DIRECTORY_SEPARATOR;
-        if (!defined('PATH_SEPARATOR')) {
-            define('PATH_SEPARATOR', "\n");
-        }
+            $x = \DIRECTORY_SEPARATOR;
+            if (!defined('PATH_SEPARATOR')) {
+                define('PATH_SEPARATOR', "\n");
+            }
 
-        PHP,
+            PHP,
+    ),
 
-    'Namespaced function having the same name as an internal function' => <<<'PHP'
-        <?php
+    'Namespaced function having the same name as an internal function' => SpecWithConfig::create(
+        expectedRecordedAmbiguousFunctions: [
+            ['define', 'Humbug\Acme\define'],
+            ['defined', 'Humbug\Acme\defined'],
+        ],
+        spec: <<<'PHP'
+            <?php
 
-        namespace Acme;
+            namespace Acme;
 
-        use const Acme\DIRECTORY_SEPARATOR;
+            use const Acme\DIRECTORY_SEPARATOR;
 
-        $x = DIRECTORY_SEPARATOR;
+            $x = DIRECTORY_SEPARATOR;
 
-        if (!defined('PATH_SEPARATOR')) {
-            define('PATH_SEPARATOR', "\n");
-        }
+            if (!defined('PATH_SEPARATOR')) {
+                define('PATH_SEPARATOR', "\n");
+            }
 
-        ----
-        <?php
+            ----
+            <?php
 
-        namespace Humbug\Acme;
+            namespace Humbug\Acme;
 
-        use const Humbug\Acme\DIRECTORY_SEPARATOR;
-        $x = DIRECTORY_SEPARATOR;
-        if (!defined('PATH_SEPARATOR')) {
-            define('PATH_SEPARATOR', "\n");
-        }
+            use const Humbug\Acme\DIRECTORY_SEPARATOR;
+            $x = DIRECTORY_SEPARATOR;
+            if (!defined('PATH_SEPARATOR')) {
+                define('PATH_SEPARATOR', "\n");
+            }
 
-        PHP,
+            PHP,
+    ),
 ];

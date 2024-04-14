@@ -23,20 +23,26 @@ return [
 
     // We don't do anything as there is no ways to distinguish between a namespaced function call
     // from the same namespace and a function registered in the global scope
-    'single-part' => <<<'PHP'
-        <?php
+    'single-part' => SpecWithConfig::create(
+        exposeFunctions: ['foo'],
+        expectedRecordedAmbiguousFunctions: [
+            ['main', 'Humbug\X\main'],
+        ],
+        spec: <<<'PHP'
+            <?php
 
-        namespace X;
+            namespace X;
 
-        main();
-        ----
-        <?php
+            main();
+            ----
+            <?php
 
-        namespace Humbug\X;
+            namespace Humbug\X;
 
-        main();
+            main();
 
-        PHP,
+            PHP,
+    ),
 
     'FQ single-part' => <<<'PHP'
         <?php
@@ -55,6 +61,9 @@ return [
 
     'Exposed constant call in a namespace' => SpecWithConfig::create(
         exposeFunctions: ['foo'],
+        expectedRecordedAmbiguousFunctions: [
+            ['foo', 'Humbug\A\foo'],
+        ],
         spec: <<<'PHP'
             <?php
 

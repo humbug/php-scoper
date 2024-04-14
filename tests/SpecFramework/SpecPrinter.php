@@ -41,14 +41,7 @@ final class SpecPrinter extends TestCase
         SymbolsRegistry $symbolsRegistry,
         ?string $actualCode,
     ): string {
-        $file = $scenario->file;
-        $title = $scenario->title;
-        $inputCode = $scenario->inputCode;
         $symbolsConfiguration = $scenario->symbolsConfiguration;
-        $expectedCode = $scenario->expectedCode;
-        $expectedRegisteredClasses = $scenario->expectedRegisteredClasses;
-        $expectedRegisteredFunctions = $scenario->expectedRegisteredFunctions;
-
         $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
         $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
         $formattedExposeGlobalFunctions = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalFunctions());
@@ -64,16 +57,18 @@ final class SpecPrinter extends TestCase
         $formattedInternalFunctions = self::formatSymbolRegistry($symbolsConfiguration->getExcludedFunctions());
         $formattedInternalConstants = self::formatSymbolRegistry($symbolsConfiguration->getExcludedConstants());
 
-        $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
-        $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
+        $formattedExpectedRegisteredClasses = self::formatTupleList($scenario->expectedRegisteredClasses);
+        $formattedExpectedRegisteredFunctions = self::formatTupleList($scenario->expectedRegisteredFunctions);
+        $formattedExpectedRegisteredAmbiguousFunctions = self::formatTupleList($scenario->expectedRecordedAmbiguousFunctions);
 
         $formattedActualRegisteredClasses = self::formatTupleList($symbolsRegistry->getRecordedClasses());
         $formattedActualRegisteredFunctions = self::formatTupleList($symbolsRegistry->getRecordedFunctions());
+        $formattedActualRegisteredAmbiguousFunctions = self::formatTupleList($symbolsRegistry->getRecordedAmbiguousFunctions());
 
         $titleSeparator = str_repeat(
             '=',
             min(
-                strlen($title),
+                strlen($scenario->title),
                 80,
             ),
         );
@@ -82,8 +77,8 @@ final class SpecPrinter extends TestCase
             {$titleSeparator}
             SPECIFICATION
             {$titleSeparator}
-            {$title}
-            {$file}
+            {$scenario->title}
+            {$scenario->file}
 
             {$titleSeparator}
             INPUT
@@ -102,15 +97,16 @@ final class SpecPrinter extends TestCase
             (raw) internal functions: {$formattedInternalFunctions}
             (raw) internal constants: {$formattedInternalConstants}
             {$titleSeparator}
-            {$inputCode}
+            {$scenario->inputCode}
 
             {$titleSeparator}
             EXPECTED
             {$titleSeparator}
-            {$expectedCode}
+            {$scenario->expectedCode}
             ----------------
             recorded functions: {$formattedExpectedRegisteredFunctions}
-            recorded classes: {$formattedExpectedRegisteredClasses}
+            recorded ambiguous functions: {$formattedExpectedRegisteredFunctions}
+            recorded classes: {$formattedExpectedRegisteredAmbiguousFunctions}
 
             {$titleSeparator}
             ACTUAL
@@ -118,6 +114,7 @@ final class SpecPrinter extends TestCase
             {$actualCode}
             ----------------
             recorded functions: {$formattedActualRegisteredFunctions}
+            recorded ambiguous functions: {$formattedActualRegisteredAmbiguousFunctions}
             recorded classes: {$formattedActualRegisteredClasses}
 
             -------------------------------------------------------------------------------

@@ -485,6 +485,9 @@ return [
 
     'User defined global function' => SpecWithConfig::create(
         exposeGlobalFunctions: false,
+        expectedRecordedAmbiguousFunctions: [
+            ['trigger_deprecation', 'Humbug\A\trigger_deprecation'],
+        ],
         spec: <<<'PHP'
             <?php
 
