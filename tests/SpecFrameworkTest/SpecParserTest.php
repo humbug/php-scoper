@@ -67,7 +67,7 @@ final class SpecParserTest extends TestCase
         yield 'simple spec' => [
             self::FIXTURE_DIR.'/simple-spec-file.php',
             [
-                new SpecScenario(
+                'Fixtures/simple-spec-file.php: 0' => new SpecScenario(
                     null,
                     null,
                     'Fixtures/simple-spec-file.php',
@@ -83,7 +83,7 @@ final class SpecParserTest extends TestCase
                     [],
                     [],
                 ),
-                new SpecScenario(
+                'Fixtures/simple-spec-file.php: A spec with a title' => new SpecScenario(
                     null,
                     null,
                     'Fixtures/simple-spec-file.php',
@@ -105,7 +105,7 @@ final class SpecParserTest extends TestCase
         yield 'complete spec' => [
             self::FIXTURE_DIR.'/complete-spec-file.php',
             [
-                new SpecScenario(
+                'Fixtures/complete-spec-file.php: Spec with default meta values' => new SpecScenario(
                     72_000,
                     83_000,
                     'Fixtures/complete-spec-file.php',
@@ -129,7 +129,7 @@ final class SpecParserTest extends TestCase
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                 ),
-                new SpecScenario(
+                'Fixtures/complete-spec-file.php: Spec with the more verbose form' => new SpecScenario(
                     72_000,
                     83_000,
                     'Fixtures/complete-spec-file.php',
@@ -153,7 +153,7 @@ final class SpecParserTest extends TestCase
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                 ),
-                new SpecScenario(
+                'Fixtures/complete-spec-file.php: Spec with overridden meta values' => new SpecScenario(
                     73_000,
                     82_000,
                     'Fixtures/complete-spec-file.php',
