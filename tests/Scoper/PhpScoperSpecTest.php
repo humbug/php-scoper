@@ -14,13 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Error;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Spec\SpecFinder;
-use Humbug\PhpScoper\Scoper\Spec\SpecFormatter;
+use Humbug\PhpScoper\Scoper\Spec\SpecNormalizer;
 use Humbug\PhpScoper\Scoper\Spec\SpecParser;
+use Humbug\PhpScoper\Scoper\Spec\SpecScenario;
+use Humbug\PhpScoper\Scoper\Spec\UnparsableSpec;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -31,16 +32,12 @@ use PHPUnit\Framework\TestCase;
 use Throwable;
 use UnexpectedValueException;
 use function array_filter;
-use function array_map;
 use function array_slice;
 use function array_values;
 use function explode;
 use function implode;
-use function rtrim;
 use function sprintf;
 use function str_starts_with;
-use function usort;
-use const PHP_VERSION_ID;
 
 /**
  * @internal
@@ -60,114 +57,40 @@ class PhpScoperSpecTest extends TestCase
     }
 
     #[DataProvider('provideValidFiles')]
-    public function test_can_scope_valid_files(
-        string $file,
-        string $spec,
-        string $contents,
-        string $prefix,
-        SymbolsConfiguration $symbolsConfiguration,
-        ?string $expected,
-        array $expectedRegisteredClasses,
-        array $expectedRegisteredFunctions,
-        ?int $minPhpVersion,
-        ?int $maxPhpVersion
-    ): void {
-        if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
-            self::markTestSkipped(sprintf('Min PHP version not matched for spec %s', $spec));
-        }
-
-        if (null !== $maxPhpVersion && $maxPhpVersion <= PHP_VERSION_ID) {
-            self::markTestSkipped(sprintf('Max PHP version not matched for spec %s', $spec));
-        }
+    public function test_can_scope_valid_files(SpecScenario $scenario): void
+    {
+        $scenario->checkPHPVersionRequirements();
 
         $filePath = 'file.php';
-
         $symbolsRegistry = new SymbolsRegistry();
 
         $scoper = self::createScoper(
-            $prefix,
-            $symbolsConfiguration,
+            $scenario->prefix,
+            $scenario->symbolsConfiguration,
             $symbolsRegistry,
         );
 
         try {
-            $actual = self::trimTrailingSpaces(
-                $scoper->scope($filePath, $contents),
+            $actual = SpecNormalizer::trimTrailingSpaces(
+                $scoper->scope($filePath, $scenario->inputCode),
             );
 
-            if (null === $expected) {
-                self::fail('Expected exception to be thrown.');
-            }
+            $scenario->failIfExpectedFailure($this);
         } catch (UnexpectedValueException $exception) {
-            if (null !== $expected) {
-                throw $exception;
-            }
-
-            self::assertTrue(true);
+            $scenario->assertExpectedFailure($this, $exception);
 
             return;
         } catch (PhpParserError $error) {
-            if (!str_starts_with($error->getMessage(), 'Syntax error,')) {
-                throw new Error(
-                    sprintf(
-                        'Could not parse the spec %s: %s',
-                        $spec,
-                        $error->getMessage(),
-                    ),
-                    0,
-                    $error,
-                );
-            }
-
-            $lines = array_values(array_filter(explode("\n", $contents)));
-
-            $startLine = $error->getAttributes()['startLine'] - 1;
-            $endLine = $error->getAttributes()['endLine'] + 1;
-
-            self::fail(
-                sprintf(
-                    'Unexpected parse error found in the following lines: %s%s%s',
-                    $error->getMessage(),
-                    "\n\n> ",
-                    implode(
-                        "\n> ",
-                        array_slice($lines, $startLine, $endLine - $startLine + 1),
-                    ),
-                ),
-            );
+            self::handlePhpParserError($scenario, $error);
         } catch (Throwable $throwable) {
-            throw new Error(
-                sprintf(
-                    'Could not parse the spec %s: %s',
-                    $spec,
-                    $throwable->getMessage().$throwable->getTraceAsString(),
-                ),
-                0,
-                $throwable,
-            );
+            throw UnparsableSpec::create($scenario->title, $throwable);
         }
 
-        $specMessage = SpecFormatter::createSpecMessage(
-            $file,
-            $spec,
-            $contents,
-            $symbolsConfiguration,
+        $scenario->assertExpectedResult(
+            $this,
             $symbolsRegistry,
-            $expected,
             $actual,
-            $expectedRegisteredClasses,
-            $expectedRegisteredFunctions,
         );
-
-        self::assertSame($expected, $actual, $specMessage);
-
-        $actualRecordedExposedClasses = $symbolsRegistry->getRecordedClasses();
-
-        self::assertSameRecordedSymbols($expectedRegisteredClasses, $actualRecordedExposedClasses, $specMessage);
-
-        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedFunctions();
-
-        self::assertSameRecordedSymbols($expectedRegisteredFunctions, $actualRecordedExposedFunctions, $specMessage);
     }
 
     public static function provideValidFiles(): iterable
@@ -175,7 +98,11 @@ class PhpScoperSpecTest extends TestCase
         [$sourceDir, $files] = SpecFinder::findSpecFiles();
 
         foreach ($files as $file) {
-            yield from SpecParser::parseSpecFile($sourceDir, $file);
+            $scenarios = SpecParser::parseSpecFile($sourceDir, $file);
+
+            foreach ($scenarios as $scenario) {
+                yield [$scenario];
+            }
         }
     }
 
@@ -211,28 +138,29 @@ class PhpScoperSpecTest extends TestCase
         );
     }
 
-    private static function trimTrailingSpaces(string $value): string
-    {
-        return implode(
-            "\n",
-            array_map(
-                rtrim(...),
-                explode("\n", $value),
+    private static function handlePhpParserError(
+        SpecScenario $scenario,
+        PhpParserError $error,
+    ): never {
+        if (!str_starts_with($error->getMessage(), 'Syntax error,')) {
+            throw UnparsableSpec::create($scenario->title, $error);
+        }
+
+        $lines = array_values(array_filter(explode("\n", $scenario->inputCode)));
+
+        $startLine = $error->getAttributes()['startLine'] - 1;
+        $endLine = $error->getAttributes()['endLine'] + 1;
+
+        self::fail(
+            sprintf(
+                'Unexpected parse error found in the following lines: %s%s%s',
+                $error->getMessage(),
+                "\n\n> ",
+                implode(
+                    "\n> ",
+                    array_slice($lines, $startLine, $endLine - $startLine + 1),
+                ),
             ),
         );
-    }
-
-    /**
-     * @param string[][] $expected
-     * @param string[][] $actual
-     */
-    private static function assertSameRecordedSymbols(array $expected, array $actual, string $message): void
-    {
-        $sort = static fn (array $a, array $b) => $a[0] <=> $b[0];
-
-        usort($expected, $sort);
-        usort($actual, $sort);
-
-        self::assertSame($expected, $actual, $message);
     }
 }

@@ -65,7 +65,9 @@ final class SpecParserTest extends TestCase
         yield 'simple spec' => [
             self::FIXTURE_DIR.'/simple-spec-file.php',
             [
-                [
+                new SpecScenario(
+                    null,
+                    null,
                     'Fixtures/simple-spec-file.php',
                     '[Example of simple spec file] spec #0',
                     $specCode,
@@ -78,10 +80,10 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     [],
                     [],
+                ),
+                new SpecScenario(
                     null,
                     null,
-                ],
-                [
                     'Fixtures/simple-spec-file.php',
                     '[Example of simple spec file] A spec with a title',
                     $specCode,
@@ -94,16 +96,16 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     [],
                     [],
-                    null,
-                    null,
-                ],
+                ),
             ],
         ];
 
         yield 'complete spec' => [
             self::FIXTURE_DIR.'/complete-spec-file.php',
             [
-                [
+                new SpecScenario(
+                    72_000,
+                    83_000,
                     'Fixtures/complete-spec-file.php',
                     '[Example of simple spec file] Spec with default meta values',
                     $specCode,
@@ -124,10 +126,10 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+                ),
+                new SpecScenario(
                     72_000,
                     83_000,
-                ],
-                [
                     'Fixtures/complete-spec-file.php',
                     '[Example of simple spec file] Spec with the more verbose form',
                     $specCode,
@@ -148,10 +150,10 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
-                    72_000,
-                    83_000,
-                ],
-                [
+                ),
+                new SpecScenario(
+                    73_000,
+                    82_000,
                     'Fixtures/complete-spec-file.php',
                     '[Example of simple spec file] Spec with overridden meta values',
                     $specCode,
@@ -172,9 +174,7 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['AnotherRecordedClass'],
                     ['AnotherRecordedFunction'],
-                    73_000,
-                    82_000,
-                ],
+                ),
             ],
         ];
     }

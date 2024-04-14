@@ -25,6 +25,7 @@ use Symfony\Component\Finder\SplFileInfo;
 use Throwable;
 use function array_merge;
 use function is_int;
+use function is_int;
 use function is_string;
 use function sprintf;
 
@@ -38,6 +39,8 @@ class SpecParser extends TestCase
 
     /**
      * @throws UnparsableFile
+     *
+     * @return iterable<SpecScenario>
      */
     public static function parseSpecFile(
         string $sourceDir,
@@ -51,12 +54,12 @@ class SpecParser extends TestCase
             $meta = $specs['meta'];
             unset($specs['meta']);
 
-            foreach ($specs as $fixtureTitle => $fixtureSet) {
+            foreach ($specs as $title => $spec) {
                 yield self::parseSpec(
                     basename($sourceDir).'/'.$file->getRelativePathname(),
                     $meta,
-                    $fixtureTitle,
-                    $fixtureSet,
+                    $title,
+                    $spec,
                 );
             }
         } catch (Throwable $throwable) {
@@ -75,6 +78,10 @@ class SpecParser extends TestCase
         Assert::assertInstanceOf(Meta::class, $specs['meta']);
 
         foreach ($specs as $key => $spec) {
+            if ('meta' === $key) {
+                continue;
+            }
+
             if ('meta' === $key) {
                 continue;
             }
@@ -99,7 +106,9 @@ class SpecParser extends TestCase
             ? SpecWithConfig::fromSimpleSpec($specWithConfigOrSimpleSpec)
             : $specWithConfigOrSimpleSpec;
 
-        return [
+        return new SpecScenario(
+            $fixtureSet['minPhpVersion'] ?? $meta['minPhpVersion'] ?? null,
+            $fixtureSet['maxPhpVersion'] ?? $meta['maxPhpVersion'] ?? null,
             $file,
             $completeTitle,
             $specWithConfig->inputCode,

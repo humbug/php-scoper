@@ -14,20 +14,23 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Spec;
 
-use Humbug\PhpScoper\NotInstantiable;
+use DomainException;
+use Throwable;
+use function sprintf;
 
-final class SpecNormalizer
+final class UnparsableSpec extends DomainException
 {
-    use NotInstantiable;
-
-    public static function trimTrailingSpaces(string $value): string
-    {
-        return implode(
-            "\n",
-            array_map(
-                rtrim(...),
-                explode("\n", $value),
+    public static function create(
+        string $specTitle,
+        Throwable $throwable,
+    ): self {
+        return new self(
+            sprintf(
+                'Could not parse the spec "%s": %s',
+                $specTitle,
+                $throwable->getMessage(),
             ),
+            previous: $throwable,
         );
     }
 }
