@@ -22,6 +22,8 @@ use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
 use function array_diff;
 use function array_key_exists;
 use function array_keys;
@@ -76,7 +78,31 @@ class SpecParser extends TestCase
         ConfigurationKeys::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
     ];
 
-    public static function parseSpecFile(
+    /**
+     * @throws UnparsableFile
+     */
+    public static function parseSpecFile(string $sourceDir, SplFileInfo $file): iterable
+    {
+        try {
+            $fixtures = include $file;
+
+            $meta = $fixtures['meta'];
+            unset($fixtures['meta']);
+
+            foreach ($fixtures as $fixtureTitle => $fixtureSet) {
+                yield from self::parseSpec(
+                    basename($sourceDir).'/'.$file->getRelativePathname(),
+                    $meta,
+                    $fixtureTitle,
+                    $fixtureSet,
+                );
+            }
+        } catch (Throwable $throwable) {
+            throw UnparsableFile::create($file, $throwable);
+        }
+    }
+
+    private static function parseSpec(
         string $file,
         array $meta,
         int|string $fixtureTitle,
