@@ -36,44 +36,17 @@ return [
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    abstract class A {
-        public function a() {}
-        abstract public function b();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    abstract class A
-    {
-        public function a()
-        {
-        }
-        public abstract function b();
-    }
-    
-    PHP,
-
-    'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
-            ['A', 'Humbug\A'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         abstract class A {
             public function a() {}
             abstract public function b();
         }
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         abstract class A
         {
             public function a()
@@ -81,27 +54,26 @@ return [
             }
             public abstract function b();
         }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
-    ],
 
-    'Declaration in the global namespace with the global namespace excluded' => [
-        'exclude-namespaces' => ['/^$/'],
+        PHP,
+
+    'Declaration in the global namespace with global classes exposed' => [
+        'expose-global-classes' => true,
         'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        abstract class A {
-            public function a() {}
-            abstract public function b();
-        }
-        ----
-        <?php
-        
-        namespace {
+            <?php
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
             abstract class A
             {
                 public function a()
@@ -110,9 +82,37 @@ return [
                 public abstract function b();
             }
             \class_alias('Humbug\\A', 'A', \false);
-        }
-        
-        PHP,
+
+            PHP,
+    ],
+
+    'Declaration in the global namespace with the global namespace excluded' => [
+        'exclude-namespaces' => ['/^$/'],
+        'expected-recorded-classes' => [
+            ['A', 'Humbug\A'],
+        ],
+        'payload' => <<<'PHP'
+            <?php
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
+            }
+            ----
+            <?php
+
+            namespace {
+                abstract class A
+                {
+                    public function a()
+                    {
+                    }
+                    public abstract function b();
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+            }
+
+            PHP,
     ],
 
     'Declaration of an exposed class in the global namespace' => [
@@ -121,27 +121,27 @@ return [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        abstract class A {
-            public function a() {}
-            abstract public function b();
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        abstract class A
-        {
-            public function a()
-            {
+            <?php
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
             }
-            public abstract function b();
-        }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug;
+
+            abstract class A
+            {
+                public function a()
+                {
+                }
+                public abstract function b();
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+
+            PHP,
     ],
 
     'Declaration of an exposed class in the global namespace which is excluded' => [
@@ -151,16 +151,69 @@ return [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
+            }
+            ----
+            <?php
+
+            namespace {
+                abstract class A
+                {
+                    public function a()
+                    {
+                    }
+                    public abstract function b();
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+            }
+
+            PHP,
+    ],
+
+    'Declaration in a namespace' => <<<'PHP'
         <?php
-        
+
+        namespace Foo;
+
         abstract class A {
             public function a() {}
             abstract public function b();
         }
         ----
         <?php
-        
-        namespace {
+
+        namespace Humbug\Foo;
+
+        abstract class A
+        {
+            public function a()
+            {
+            }
+            public abstract function b();
+        }
+
+        PHP,
+
+    'Declaration in a namespace with global classes exposed' => [
+        'expose-global-classes' => true,
+        'payload' => <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
             abstract class A
             {
                 public function a()
@@ -168,88 +221,35 @@ return [
                 }
                 public abstract function b();
             }
-            \class_alias('Humbug\\A', 'A', \false);
-        }
-        
-        PHP,
-    ],
 
-    'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    abstract class A {
-        public function a() {}
-        abstract public function b();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    abstract class A
-    {
-        public function a()
-        {
-        }
-        public abstract function b();
-    }
-    
-    PHP,
-
-    'Declaration in a namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A {
-            public function a() {}
-            abstract public function b();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        abstract class A
-        {
-            public function a()
-            {
-            }
-            public abstract function b();
-        }
-        
-        PHP,
+            PHP,
     ],
 
     'Declaration in an excluded namespace' => [
         'exclude-namespaces' => ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A {
-            public function a() {}
-            abstract public function b();
-        }
-        ----
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A
-        {
-            public function a()
-            {
+            <?php
+
+            namespace Foo;
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
             }
-            public abstract function b();
-        }
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Foo;
+
+            abstract class A
+            {
+                public function a()
+                {
+                }
+                public abstract function b();
+            }
+
+            PHP,
     ],
 
     'Declaration in an exposed namespace' => [
@@ -258,29 +258,29 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A {
-            public function a() {}
-            abstract public function b();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        abstract class A
-        {
-            public function a()
-            {
+            <?php
+
+            namespace Foo;
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
             }
-            public abstract function b();
-        }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            abstract class A
+            {
+                public function a()
+                {
+                }
+                public abstract function b();
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
     ],
 
     'Declaration of an exposed class in a namespace' => [
@@ -289,101 +289,101 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A {
-            public function a() {}
-            abstract public function b();
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        abstract class A
-        {
-            public function a()
-            {
+            <?php
+
+            namespace Foo;
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
             }
-            public abstract function b();
-        }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            abstract class A
+            {
+                public function a()
+                {
+                }
+                public abstract function b();
+            }
+            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+
+            PHP,
     ],
 
     'Declaration of an exposed namespaced class belonging to an excluded namespace' => [
         'exclude-namespaces' => ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A {
-            public function a() {}
-        }
-        
-        abstract class AA {}
-        
-        abstract class B {}
-        
-        namespace Foo\A;
-        
-        abstract class B {}
-        
-        ----
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A
-        {
-            public function a()
+            <?php
+
+            namespace Foo;
+
+            abstract class A {
+                public function a() {}
+            }
+
+            abstract class AA {}
+
+            abstract class B {}
+
+            namespace Foo\A;
+
+            abstract class B {}
+
+            ----
+            <?php
+
+            namespace Foo;
+
+            abstract class A
+            {
+                public function a()
+                {
+                }
+            }
+            abstract class AA
             {
             }
-        }
-        abstract class AA
-        {
-        }
-        abstract class B
-        {
-        }
-        namespace Foo\A;
-        
-        abstract class B
-        {
-        }
-        
-        PHP,
+            abstract class B
+            {
+            }
+            namespace Foo\A;
+
+            abstract class B
+            {
+            }
+
+            PHP,
     ],
 
     'Declaration of a class belonging to an excluded namespace' => [
         'exclude-namespaces' => ['Foo'],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A {
-            public function a() {}
-            abstract public function b();
-        }
-        ----
-        <?php
-        
-        namespace Foo;
-        
-        abstract class A
-        {
-            public function a()
-            {
+            <?php
+
+            namespace Foo;
+
+            abstract class A {
+                public function a() {}
+                abstract public function b();
             }
-            public abstract function b();
-        }
-        
-        PHP,
+            ----
+            <?php
+
+            namespace Foo;
+
+            abstract class A
+            {
+                public function a()
+                {
+                }
+                public abstract function b();
+            }
+
+            PHP,
     ],
 
     'Multiple declarations in different namespaces with exposed classes' => [
@@ -394,89 +394,89 @@ return [
             ['WC', 'Humbug\WC'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Foo {
-        
-            abstract class A {
-                public function a() {}
+            <?php
+
+            namespace Foo {
+
+                abstract class A {
+                    public function a() {}
+                }
+
+                abstract class WA {
+                    public function a() {}
+                }
             }
-        
-            abstract class WA {
-                public function a() {}
+
+            namespace Bar {
+
+                abstract class B {
+                    public function b() {}
+                }
+
+                abstract class WB {
+                    public function b() {}
+                }
             }
-        }
-        
-        namespace Bar {
-        
-            abstract class B {
-                public function b() {}
+
+            namespace {
+
+                abstract class C {
+                    public function c() {}
+                }
+
+                abstract class WC {
+                    public function c() {}
+                }
             }
-        
-            abstract class WB {
-                public function b() {}
-            }
-        }
-        
-        namespace {
-        
-            abstract class C {
-                public function c() {}
-            }
-        
-            abstract class WC {
-                public function c() {}
-            }
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
-        abstract class A
-        {
-            public function a()
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            abstract class A
             {
+                public function a()
+                {
+                }
             }
-        }
-        abstract class WA
-        {
-            public function a()
+            abstract class WA
             {
+                public function a()
+                {
+                }
             }
-        }
-        \class_alias('Humbug\\Foo\\WA', 'Foo\\WA', \false);
-        namespace Humbug\Bar;
-        
-        abstract class B
-        {
-            public function b()
+            \class_alias('Humbug\\Foo\\WA', 'Foo\\WA', \false);
+            namespace Humbug\Bar;
+
+            abstract class B
             {
+                public function b()
+                {
+                }
             }
-        }
-        abstract class WB
-        {
-            public function b()
+            abstract class WB
             {
+                public function b()
+                {
+                }
             }
-        }
-        \class_alias('Humbug\\Bar\\WB', 'Bar\\WB', \false);
-        namespace Humbug;
-        
-        abstract class C
-        {
-            public function c()
+            \class_alias('Humbug\\Bar\\WB', 'Bar\\WB', \false);
+            namespace Humbug;
+
+            abstract class C
             {
+                public function c()
+                {
+                }
             }
-        }
-        abstract class WC
-        {
-            public function c()
+            abstract class WC
             {
+                public function c()
+                {
+                }
             }
-        }
-        \class_alias('Humbug\\WC', 'WC', \false);
-        
-        PHP,
+            \class_alias('Humbug\\WC', 'WC', \false);
+
+            PHP,
     ],
 ];

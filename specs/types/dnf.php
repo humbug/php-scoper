@@ -36,44 +36,44 @@ return [
     ],
 
     'Property' => <<<'PHP'
-    <?php
-    
-    class X
-    {
-        public (A&B)|(X&Y) $prop1;
-        public (\U\A&\U\B)|(\U\X&\U\Y) $prop2;
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
+        <?php
 
-    class X
-    {
-        public (A&B)|(X&Y) $prop1;
-        public (\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y) $prop2;
-    }
-    
-    PHP,
+        class X
+        {
+            public (A&B)|(X&Y) $prop1;
+            public (\U\A&\U\B)|(\U\X&\U\Y) $prop2;
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class X
+        {
+            public (A&B)|(X&Y) $prop1;
+            public (\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y) $prop2;
+        }
+
+        PHP,
 
     'Function' => <<<'PHP'
-    <?php
-    
-    function test((A&B)|(X&Y) $a): (A&B)|(X&Y) {}
-    function test((\U\A&\U\B)|(\U\X&\U\Y) $a): (\U\A&\U\B)|(\U\X&\U\Y) {}
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    function test((A&B)|(X&Y) $a) : (A&B)|(X&Y)
-    {
-    }
-    function test((\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y) $a) : (\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y)
-    {
-    }
-    
-    PHP,
+        <?php
+
+        function test((A&B)|(X&Y) $a): (A&B)|(X&Y) {}
+        function test((\U\A&\U\B)|(\U\X&\U\Y) $a): (\U\A&\U\B)|(\U\X&\U\Y) {}
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        function test((A&B)|(X&Y) $a) : (A&B)|(X&Y)
+        {
+        }
+        function test((\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y) $a) : (\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y)
+        {
+        }
+
+        PHP,
 ];

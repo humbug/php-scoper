@@ -36,83 +36,11 @@ return [
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    interface B {}
-    interface C {}
-    
-    new class {
-        public function test() {}
-    };
-    new class extends A implements B, C, Iterator {};
-    new class() {
-        public $foo;
-    };
-    new class($a, $b) extends A {
-        use T;
-    };
-    
-    class A {
-        public function test() {
-            return new class($this) extends A {
-                const A = 'B';
-            };
-        }
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    interface B
-    {
-    }
-    interface C
-    {
-    }
-    new class
-    {
-        public function test()
-        {
-        }
-    };
-    new class extends A implements B, C, \Iterator
-    {
-    };
-    new class
-    {
-        public $foo;
-    };
-    new class($a, $b) extends A
-    {
-        use T;
-    };
-    class A
-    {
-        public function test()
-        {
-            return new class($this) extends A
-            {
-                const A = 'B';
-            };
-        }
-    }
-    
-    PHP,
-
-    'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
-            ['A', 'Humbug\A'],
-            ['B', 'Humbug\B'],
-            ['C', 'Humbug\C'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         interface B {}
         interface C {}
-        
+
         new class {
             public function test() {}
         };
@@ -123,7 +51,7 @@ return [
         new class($a, $b) extends A {
             use T;
         };
-        
+
         class A {
             public function test() {
                 return new class($this) extends A {
@@ -133,17 +61,15 @@ return [
         }
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         interface B
         {
         }
-        \class_alias('Humbug\\B', 'B', \false);
         interface C
         {
         }
-        \class_alias('Humbug\\C', 'C', \false);
         new class
         {
             public function test()
@@ -171,46 +97,45 @@ return [
                 };
             }
         }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
-    ],
 
-    'Declaration in the global namespace which is excluded' => [
-        'exclude-namespaces' => ['/^$/'],
+        PHP,
+
+    'Declaration in the global namespace with global classes exposed' => [
+        'expose-global-classes' => true,
         'expected-recorded-classes' => [
             ['A', 'Humbug\A'],
             ['B', 'Humbug\B'],
             ['C', 'Humbug\C'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        interface B {}
-        interface C {}
-        
-        new class {
-            public function test() {}
-        };
-        new class extends A implements B, C, Iterator {};
-        new class() {
-            public $foo;
-        };
-        new class($a, $b) extends A {
-            use T;
-        };
-        
-        class A {
-            public function test() {
-                return new class($this) extends A {
-                    const A = 'B';
-                };
+            <?php
+
+            interface B {}
+            interface C {}
+
+            new class {
+                public function test() {}
+            };
+            new class extends A implements B, C, Iterator {};
+            new class() {
+                public $foo;
+            };
+            new class($a, $b) extends A {
+                use T;
+            };
+
+            class A {
+                public function test() {
+                    return new class($this) extends A {
+                        const A = 'B';
+                    };
+                }
             }
-        }
-        ----
-        <?php
-        
-        namespace {
+            ----
+            <?php
+
+            namespace Humbug;
+
             interface B
             {
             }
@@ -225,31 +150,106 @@ return [
                 {
                 }
             };
-            new class extends \A implements \B, \C, \Iterator
+            new class extends A implements B, C, \Iterator
             {
             };
             new class
             {
                 public $foo;
             };
-            new class($a, $b) extends \A
+            new class($a, $b) extends A
             {
-                use \T;
+                use T;
             };
             class A
             {
                 public function test()
                 {
-                    return new class($this) extends \A
+                    return new class($this) extends A
                     {
                         const A = 'B';
                     };
                 }
             }
             \class_alias('Humbug\\A', 'A', \false);
-        }
-        
-        PHP,
+
+            PHP,
+    ],
+
+    'Declaration in the global namespace which is excluded' => [
+        'exclude-namespaces' => ['/^$/'],
+        'expected-recorded-classes' => [
+            ['A', 'Humbug\A'],
+            ['B', 'Humbug\B'],
+            ['C', 'Humbug\C'],
+        ],
+        'payload' => <<<'PHP'
+            <?php
+
+            interface B {}
+            interface C {}
+
+            new class {
+                public function test() {}
+            };
+            new class extends A implements B, C, Iterator {};
+            new class() {
+                public $foo;
+            };
+            new class($a, $b) extends A {
+                use T;
+            };
+
+            class A {
+                public function test() {
+                    return new class($this) extends A {
+                        const A = 'B';
+                    };
+                }
+            }
+            ----
+            <?php
+
+            namespace {
+                interface B
+                {
+                }
+                \class_alias('Humbug\\B', 'B', \false);
+                interface C
+                {
+                }
+                \class_alias('Humbug\\C', 'C', \false);
+                new class
+                {
+                    public function test()
+                    {
+                    }
+                };
+                new class extends \A implements \B, \C, \Iterator
+                {
+                };
+                new class
+                {
+                    public $foo;
+                };
+                new class($a, $b) extends \A
+                {
+                    use \T;
+                };
+                class A
+                {
+                    public function test()
+                    {
+                        return new class($this) extends \A
+                        {
+                            const A = 'B';
+                        };
+                    }
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+            }
+
+            PHP,
     ],
 
     'Declaration in the global namespace with some exposed classes' => [
@@ -259,22 +259,95 @@ return [
             ['C', 'Humbug\C'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            interface B {}
+            interface C {}
+
+            new class {
+                public function test() {}
+            };
+            new class extends A implements B, C, Iterator {};
+            new class() {
+                public $foo;
+            };
+            new class($a, $b) extends A {
+                use T;
+            };
+
+            class A {
+                public function test() {
+                    return new class($this) extends A {
+                        const A = 'B';
+                    };
+                }
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            interface B
+            {
+            }
+            interface C
+            {
+            }
+            \class_alias('Humbug\\C', 'C', \false);
+            new class
+            {
+                public function test()
+                {
+                }
+            };
+            new class extends \Humbug\A implements B, \Humbug\C, \Iterator
+            {
+            };
+            new class
+            {
+                public $foo;
+            };
+            new class($a, $b) extends \Humbug\A
+            {
+                use T;
+            };
+            class A
+            {
+                public function test()
+                {
+                    return new class($this) extends \Humbug\A
+                    {
+                        const A = 'B';
+                    };
+                }
+            }
+            \class_alias('Humbug\\A', 'A', \false);
+
+            PHP,
+    ],
+
+    'Declaration in a namespace' => <<<'PHP'
         <?php
-        
+
+        namespace Foo;
+
         interface B {}
         interface C {}
-        
+
         new class {
             public function test() {}
         };
-        new class extends A implements B, C, Iterator {};
+
+        new class extends A implements B, C, \Iterator {};
+
         new class() {
             public $foo;
         };
+
         new class($a, $b) extends A {
             use T;
         };
-        
+
         class A {
             public function test() {
                 return new class($this) extends A {
@@ -284,30 +357,29 @@ return [
         }
         ----
         <?php
-        
-        namespace Humbug;
-        
+
+        namespace Humbug\Foo;
+
         interface B
         {
         }
         interface C
         {
         }
-        \class_alias('Humbug\\C', 'C', \false);
         new class
         {
             public function test()
             {
             }
         };
-        new class extends \Humbug\A implements B, \Humbug\C, \Iterator
+        new class extends A implements B, C, \Iterator
         {
         };
         new class
         {
             public $foo;
         };
-        new class($a, $b) extends \Humbug\A
+        new class($a, $b) extends A
         {
             use T;
         };
@@ -315,169 +387,97 @@ return [
         {
             public function test()
             {
-                return new class($this) extends \Humbug\A
+                return new class($this) extends A
                 {
                     const A = 'B';
                 };
             }
         }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
-    ],
 
-    'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    interface B {}
-    interface C {}
-    
-    new class {
-        public function test() {}
-    };
-    
-    new class extends A implements B, C, \Iterator {};
-    
-    new class() {
-        public $foo;
-    };
-    
-    new class($a, $b) extends A {
-        use T;
-    };
-    
-    class A {
-        public function test() {
-            return new class($this) extends A {
-                const A = 'B';
-            };
-        }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    interface B
-    {
-    }
-    interface C
-    {
-    }
-    new class
-    {
-        public function test()
-        {
-        }
-    };
-    new class extends A implements B, C, \Iterator
-    {
-    };
-    new class
-    {
-        public $foo;
-    };
-    new class($a, $b) extends A
-    {
-        use T;
-    };
-    class A
-    {
-        public function test()
-        {
-            return new class($this) extends A
-            {
-                const A = 'B';
-            };
-        }
-    }
-    
-    PHP,
+        PHP,
 
     'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class A {
-            public function test() {
-                return new class($this) extends A {
+        <?php
+
+        namespace {
+            class A {
+                public function test() {
+                    return new class($this) extends A {
+                        const A = 'B';
+                    };
+                }
+            }
+        }
+
+        namespace Foo {
+            use A;
+
+            interface B {}
+            interface C {}
+
+            new class {
+                public function test() {}
+            };
+
+            new class extends A implements B, C, \Iterator {};
+        }
+
+        namespace Bar {
+            use A;
+
+            new class() {
+                public $foo;
+            };
+
+            new class($a, $b) extends A {
+                use T;
+            };
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class A
+        {
+            public function test()
+            {
+                return new class($this) extends A
+                {
                     const A = 'B';
                 };
             }
         }
-    }
-    
-    namespace Foo {
-        use A;
-    
-        interface B {}
-        interface C {}
-    
-        new class {
-            public function test() {}
+        namespace Humbug\Foo;
+
+        use Humbug\A;
+        interface B
+        {
+        }
+        interface C
+        {
+        }
+        new class
+        {
+            public function test()
+            {
+            }
         };
-    
-        new class extends A implements B, C, \Iterator {};
-    }
-    
-    namespace Bar {
-        use A;
-    
-        new class() {
+        new class extends A implements B, C, \Iterator
+        {
+        };
+        namespace Humbug\Bar;
+
+        use Humbug\A;
+        new class
+        {
             public $foo;
         };
-    
-        new class($a, $b) extends A {
+        new class($a, $b) extends A
+        {
             use T;
         };
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class A
-    {
-        public function test()
-        {
-            return new class($this) extends A
-            {
-                const A = 'B';
-            };
-        }
-    }
-    namespace Humbug\Foo;
-    
-    use Humbug\A;
-    interface B
-    {
-    }
-    interface C
-    {
-    }
-    new class
-    {
-        public function test()
-        {
-        }
-    };
-    new class extends A implements B, C, \Iterator
-    {
-    };
-    namespace Humbug\Bar;
-    
-    use Humbug\A;
-    new class
-    {
-        public $foo;
-    };
-    new class($a, $b) extends A
-    {
-        use T;
-    };
-    
-    PHP,
+
+        PHP,
 ];

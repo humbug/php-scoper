@@ -36,61 +36,61 @@ return [
     ],
 
     'Static method call statement of a class' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    class Foo {}
-    
-    Foo::main();
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    class Foo
-    {
-    }
-    Foo::main();
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        class Foo {}
+
+        Foo::main();
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        class Foo
+        {
+        }
+        Foo::main();
+
+        PHP,
 
     'FQ static method call statement of a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        \Foo::main();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    \Humbug\Foo::main();
-    
-    PHP,
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            \Foo::main();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\A;
+
+        \Humbug\Foo::main();
+
+        PHP,
 
     'FQ static method call statement of a class belonging to the global namespace which has been exposed' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    \Closure::bind();
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    \Closure::bind();
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        \Closure::bind();
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        \Closure::bind();
+
+        PHP,
 ];

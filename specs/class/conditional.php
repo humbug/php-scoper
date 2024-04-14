@@ -36,23 +36,23 @@ return [
     ],
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    if (true) {
-        class A {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    if (\true) {
-        class A
-        {
+        <?php
+
+        if (true) {
+            class A {}
         }
-    }
-    
-    PHP,
+        ----
+        <?php
+
+        namespace Humbug;
+
+        if (\true) {
+            class A
+            {
+            }
+        }
+
+        PHP,
 
     'Declaration of an exposed class in the global namespace' => [
         'expose-classes' => ['A'],
@@ -60,46 +60,46 @@ return [
             ['A', 'Humbug\A'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            if (true) {
+                class A {}
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            if (\true) {
+                class A
+                {
+                }
+                \class_alias('Humbug\\A', 'A', \false);
+            }
+
+            PHP,
+    ],
+
+    'Declaration in a namespace' => <<<'PHP'
         <?php
-        
+
+        namespace Foo;
+
         if (true) {
             class A {}
         }
         ----
         <?php
-        
-        namespace Humbug;
-        
+
+        namespace Humbug\Foo;
+
         if (\true) {
             class A
             {
             }
-            \class_alias('Humbug\\A', 'A', \false);
         }
-        
-        PHP,
-    ],
 
-    'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    if (true) {
-        class A {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    if (\true) {
-        class A
-        {
-        }
-    }
-    
-    PHP,
+        PHP,
 
     'Declaration of an exposed class' => [
         'expose-classes' => ['Foo\A'],
@@ -107,72 +107,72 @@ return [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
         'payload' => <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            if (true) {
+                class A {}
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            if (\true) {
+                class A
+                {
+                }
+                \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            }
+
+            PHP,
+    ],
+
+    'Multiple declarations in different namespaces' => <<<'PHP'
         <?php
-        
-        namespace Foo;
-        
-        if (true) {
-            class A {}
+
+        namespace X {
+            if (true) {
+                class A {}
+            }
+        }
+
+        namespace Y {
+            if (true) {
+                class B {}
+            }
+        }
+
+        namespace Z {
+            if (true) {
+                class C {}
+            }
         }
         ----
         <?php
-        
-        namespace Humbug\Foo;
-        
+
+        namespace Humbug\X;
+
         if (\true) {
             class A
             {
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
         }
-        
-        PHP,
-    ],
+        namespace Humbug\Y;
 
-    'Multiple declarations in different namespaces' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        if (true) {
-            class A {}
+        if (\true) {
+            class B
+            {
+            }
         }
-    }
-    
-    namespace Y {
-        if (true) {
-            class B {}
+        namespace Humbug\Z;
+
+        if (\true) {
+            class C
+            {
+            }
         }
-    }
-    
-    namespace Z {
-        if (true) {
-            class C {}
-        }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    if (\true) {
-        class A
-        {
-        }
-    }
-    namespace Humbug\Y;
-    
-    if (\true) {
-        class B
-        {
-        }
-    }
-    namespace Humbug\Z;
-    
-    if (\true) {
-        class C
-        {
-        }
-    }
-    
-    PHP,
+
+        PHP,
 ];

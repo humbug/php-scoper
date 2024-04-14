@@ -36,69 +36,69 @@ return [
     ],
 
     'String argument' => <<<'PHP'
-    <?php
-    
-    function () {
-        return 'Symfony\\Component\\Yaml\\Ya_1';
-    };
-    
-    function () {
-        return '\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    
-    function () {
-        return '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    
-    function () {
-        return 'Closure';
-    };
-    
-    function () {
-        return 'usedAttributes';
-    };
-    
-    function () {
-        return 'FOO';
-    };
-    
-    function () {
-        return 'PHP_EOL';
-    };
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    function () {
-        return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-    };
-    function () {
-        return 'Closure';
-    };
-    function () {
-        return 'usedAttributes';
-    };
-    function () {
-        return 'FOO';
-    };
-    function () {
-        return 'PHP_EOL';
-    };
-    
-    PHP,
+        <?php
+
+        function () {
+            return 'Symfony\\Component\\Yaml\\Ya_1';
+        };
+
+        function () {
+            return '\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+
+        function () {
+            return '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+
+        function () {
+            return 'Closure';
+        };
+
+        function () {
+            return 'usedAttributes';
+        };
+
+        function () {
+            return 'FOO';
+        };
+
+        function () {
+            return 'PHP_EOL';
+        };
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+        function () {
+            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        };
+        function () {
+            return 'Closure';
+        };
+        function () {
+            return 'usedAttributes';
+        };
+        function () {
+            return 'FOO';
+        };
+        function () {
+            return 'PHP_EOL';
+        };
+
+        PHP,
 ];

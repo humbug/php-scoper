@@ -36,40 +36,22 @@ return [
     ],
 
     'Namespaced function call' => <<<'PHP'
-    <?php
-    
-    PHPUnit\main();
-    ----
-    <?php
+        <?php
 
-    namespace Humbug;
+        PHPUnit\main();
+        ----
+        <?php
 
-    PHPUnit\main();
+        namespace Humbug;
 
-    PHP,
+        PHPUnit\main();
+
+        PHP,
 
     'FQ namespaced function call' => <<<'PHP'
-    <?php
-    
-    \PHPUnit\main();
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Humbug\PHPUnit\main();
-    
-    PHP,
-
-    'Exposed namespaced function call' => [
-        'expose-functions' => ['PHPUnit\main'],
-        'expected-recorded-functions' => [
-            ['PHPUnit\main', 'Humbug\PHPUnit\main'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
-        PHPUnit\main();
+
+        \PHPUnit\main();
         ----
         <?php
 
@@ -78,6 +60,24 @@ return [
         \Humbug\PHPUnit\main();
 
         PHP,
+
+    'Exposed namespaced function call' => [
+        'expose-functions' => ['PHPUnit\main'],
+        'expected-recorded-functions' => [
+            ['PHPUnit\main', 'Humbug\PHPUnit\main'],
+        ],
+        'payload' => <<<'PHP'
+            <?php
+
+            PHPUnit\main();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\PHPUnit\main();
+
+            PHP,
     ],
 
     'FQ exposed namespaced function call' => [
@@ -86,16 +86,16 @@ return [
             ['PHPUnit\main', 'Humbug\PHPUnit\main'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        \PHPUnit\main();
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \Humbug\PHPUnit\main();
-        
-        PHP,
+            <?php
+
+            \PHPUnit\main();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\PHPUnit\main();
+
+            PHP,
     ],
 ];

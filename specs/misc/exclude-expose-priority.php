@@ -43,29 +43,29 @@ return [
             'Acme',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme {
-            class X {}
-        }
-        
-        namespace {
+            <?php
+
+            namespace Acme {
+                class X {}
+            }
+
+            namespace {
+                new \Acme\X();
+            }
+
+            ----
+            <?php
+
+            namespace Acme;
+
+            class X
+            {
+            }
+            namespace Humbug;
+
             new \Acme\X();
-        }
-        
-        ----
-        <?php
 
-        namespace Acme;
-        
-        class X
-        {
-        }
-        namespace Humbug;
-        
-        new \Acme\X();
-
-        PHP,
+            PHP,
     ],
 
     'symbol' => [
@@ -76,28 +76,28 @@ return [
             'Acme\X',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme {
-            class X {}
-        }
-        
-        namespace {
+            <?php
+
+            namespace Acme {
+                class X {}
+            }
+
+            namespace {
+                new \Acme\X();
+            }
+
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            class X
+            {
+            }
+            namespace Humbug;
+
             new \Acme\X();
-        }
-        
-        ----
-        <?php
 
-        namespace Humbug\Acme;
-        
-        class X
-        {
-        }
-        namespace Humbug;
-        
-        new \Acme\X();
-
-        PHP,
+            PHP,
     ],
 ];

@@ -36,42 +36,42 @@ return [
     ],
 
     'FQFN string argument' => <<<'PHP'
-    <?php
-    
-    function_exists('Acme\foo');
-    function_exists('\\Acme\\foo');
-    function_exists('Humbug\\Acme\\foo');
-    function_exists('\\Humbug\\Acme\\foo');
-    
-    function_exists('dump');
-    function_exists('\\dump');
-    function_exists('Humbug\\dump');
-    function_exists('\\Humbug\\dump');
-    
-    function_exists('var_dump');
-    function_exists('\\var_dump');
-    function_exists('Humbug\\var_dump');
-    function_exists('\\Humbug\\var_dump');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \function_exists('Humbug\\Acme\\foo');
-    \function_exists('Humbug\\Acme\\foo');
-    \function_exists('Humbug\\Acme\\foo');
-    \function_exists('Humbug\\Acme\\foo');
-    \function_exists('Humbug\\dump');
-    \function_exists('Humbug\\dump');
-    \function_exists('Humbug\\dump');
-    \function_exists('Humbug\\dump');
-    \function_exists('var_dump');
-    \function_exists('\\var_dump');
-    \function_exists('Humbug\\var_dump');
-    \function_exists('Humbug\\var_dump');
-    
-    PHP,
+        <?php
+
+        function_exists('Acme\foo');
+        function_exists('\\Acme\\foo');
+        function_exists('Humbug\\Acme\\foo');
+        function_exists('\\Humbug\\Acme\\foo');
+
+        function_exists('dump');
+        function_exists('\\dump');
+        function_exists('Humbug\\dump');
+        function_exists('\\Humbug\\dump');
+
+        function_exists('var_dump');
+        function_exists('\\var_dump');
+        function_exists('Humbug\\var_dump');
+        function_exists('\\Humbug\\var_dump');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \function_exists('Humbug\\Acme\\foo');
+        \function_exists('Humbug\\Acme\\foo');
+        \function_exists('Humbug\\Acme\\foo');
+        \function_exists('Humbug\\Acme\\foo');
+        \function_exists('Humbug\\dump');
+        \function_exists('Humbug\\dump');
+        \function_exists('Humbug\\dump');
+        \function_exists('Humbug\\dump');
+        \function_exists('var_dump');
+        \function_exists('\\var_dump');
+        \function_exists('Humbug\\var_dump');
+        \function_exists('Humbug\\var_dump');
+
+        PHP,
 
     'FQFN string argument on exposed function' => [
         'expose-functions' => ['Acme\foo', 'dump'],
@@ -80,42 +80,42 @@ return [
             ['dump', 'Humbug\dump'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        function_exists('Acme\foo');
-        function_exists('\\Acme\\foo');
-        function_exists('Humbug\\Acme\\foo');
-        function_exists('\\Humbug\\Acme\\foo');
-        
-        function_exists('dump');
-        function_exists('\\dump');
-        function_exists('Humbug\\dump');
-        function_exists('\\Humbug\\dump');
-        
-        function_exists('var_dump');
-        function_exists('\\var_dump');
-        function_exists('Humbug\\var_dump');
-        function_exists('\\Humbug\\var_dump');
-        
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
-        \function_exists('var_dump');
-        \function_exists('\\var_dump');
-        \function_exists('Humbug\\var_dump');
-        \function_exists('Humbug\\var_dump');
-        
-        PHP,
+            <?php
+
+            function_exists('Acme\foo');
+            function_exists('\\Acme\\foo');
+            function_exists('Humbug\\Acme\\foo');
+            function_exists('\\Humbug\\Acme\\foo');
+
+            function_exists('dump');
+            function_exists('\\dump');
+            function_exists('Humbug\\dump');
+            function_exists('\\Humbug\\dump');
+
+            function_exists('var_dump');
+            function_exists('\\var_dump');
+            function_exists('Humbug\\var_dump');
+            function_exists('\\Humbug\\var_dump');
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('Humbug\\dump');
+            \function_exists('Humbug\\dump');
+            \function_exists('Humbug\\dump');
+            \function_exists('Humbug\\dump');
+            \function_exists('var_dump');
+            \function_exists('\\var_dump');
+            \function_exists('Humbug\\var_dump');
+            \function_exists('Humbug\\var_dump');
+
+            PHP,
     ],
 
     'FQFN string argument on function from an excluded namespace' => [
@@ -124,42 +124,42 @@ return [
             '/^$/',
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        function_exists('Acme\foo');
-        function_exists('\\Acme\\foo');
-        function_exists('Humbug\\Acme\\foo');
-        function_exists('\\Humbug\\Acme\\foo');
-        
-        function_exists('dump');
-        function_exists('\\dump');
-        function_exists('Humbug\\dump');
-        function_exists('\\Humbug\\dump');
-        
-        function_exists('var_dump');
-        function_exists('\\var_dump');
-        function_exists('Humbug\\var_dump');
-        function_exists('\\Humbug\\var_dump');
-        
-        ----
-        <?php
-        
-        namespace {
-            \function_exists('Acme\\foo');
-            \function_exists('\\Acme\\foo');
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('\\Humbug\\Acme\\foo');
-            \function_exists('dump');
-            \function_exists('\\dump');
-            \function_exists('Humbug\\dump');
-            \function_exists('Humbug\\dump');
-            \function_exists('var_dump');
-            \function_exists('\\var_dump');
-            \function_exists('Humbug\\var_dump');
-            \function_exists('Humbug\\var_dump');
-        }
-        
-        PHP,
+            <?php
+
+            function_exists('Acme\foo');
+            function_exists('\\Acme\\foo');
+            function_exists('Humbug\\Acme\\foo');
+            function_exists('\\Humbug\\Acme\\foo');
+
+            function_exists('dump');
+            function_exists('\\dump');
+            function_exists('Humbug\\dump');
+            function_exists('\\Humbug\\dump');
+
+            function_exists('var_dump');
+            function_exists('\\var_dump');
+            function_exists('Humbug\\var_dump');
+            function_exists('\\Humbug\\var_dump');
+
+            ----
+            <?php
+
+            namespace {
+                \function_exists('Acme\\foo');
+                \function_exists('\\Acme\\foo');
+                \function_exists('Humbug\\Acme\\foo');
+                \function_exists('\\Humbug\\Acme\\foo');
+                \function_exists('dump');
+                \function_exists('\\dump');
+                \function_exists('Humbug\\dump');
+                \function_exists('Humbug\\dump');
+                \function_exists('var_dump');
+                \function_exists('\\var_dump');
+                \function_exists('Humbug\\var_dump');
+                \function_exists('Humbug\\var_dump');
+            }
+
+            PHP,
     ],
 
     'FQFN string argument with global functions exposed' => [
@@ -168,79 +168,79 @@ return [
             ['dump', 'Humbug\dump'],
         ],
         'payload' => <<<'PHP'
-        <?php
-        
-        function_exists('Acme\foo');
-        function_exists('\\Acme\\foo');
-        function_exists('Humbug\\Acme\\foo');
-        function_exists('\\Humbug\\Acme\\foo');
-        
-        function_exists('dump');
-        function_exists('\\dump');
-        function_exists('Humbug\\dump');
-        function_exists('\\Humbug\\dump');
-        
-        function_exists('var_dump');
-        function_exists('\\var_dump');
-        function_exists('Humbug\\var_dump');
-        function_exists('\\Humbug\\var_dump');
-        
-        ----
-        <?php
-        
-        namespace Humbug;
+            <?php
 
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
-        \function_exists('var_dump');
-        \function_exists('\\var_dump');
-        \function_exists('Humbug\\var_dump');
-        \function_exists('Humbug\\var_dump');
+            function_exists('Acme\foo');
+            function_exists('\\Acme\\foo');
+            function_exists('Humbug\\Acme\\foo');
+            function_exists('\\Humbug\\Acme\\foo');
 
-        PHP,
+            function_exists('dump');
+            function_exists('\\dump');
+            function_exists('Humbug\\dump');
+            function_exists('\\Humbug\\dump');
+
+            function_exists('var_dump');
+            function_exists('\\var_dump');
+            function_exists('Humbug\\var_dump');
+            function_exists('\\Humbug\\var_dump');
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('Humbug\\Acme\\foo');
+            \function_exists('Humbug\\dump');
+            \function_exists('Humbug\\dump');
+            \function_exists('Humbug\\dump');
+            \function_exists('Humbug\\dump');
+            \function_exists('var_dump');
+            \function_exists('\\var_dump');
+            \function_exists('Humbug\\var_dump');
+            \function_exists('Humbug\\var_dump');
+
+            PHP,
     ],
 
     'FQCN string argument formed by concatenated strings' => <<<'PHP'
-    <?php
-    
-    function_exists('Acme\foo'.'');
-    function_exists('\\Acme\\foo'.'');
-    function_exists('Humbug\\Acme\\foo'.'');
-    function_exists('\\Humbug\\Acme\\foo'.'');
-    
-    function_exists('dump'.'');
-    function_exists('\\dump'.'');
-    function_exists('Humbug\\dump'.'');
-    function_exists('\\Humbug\\dump'.'');
-    
-    function_exists('var_dump'.'');
-    function_exists('\\var_dump'.'');
-    function_exists('Humbug\\var_dump'.'');
-    function_exists('\\Humbug\\var_dump'.'');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \function_exists('Acme\\foo' . '');
-    \function_exists('\\Acme\\foo' . '');
-    \function_exists('Humbug\\Acme\\foo' . '');
-    \function_exists('\\Humbug\\Acme\\foo' . '');
-    \function_exists('dump' . '');
-    \function_exists('\\dump' . '');
-    \function_exists('Humbug\\dump' . '');
-    \function_exists('\\Humbug\\dump' . '');
-    \function_exists('var_dump' . '');
-    \function_exists('\\var_dump' . '');
-    \function_exists('Humbug\\var_dump' . '');
-    \function_exists('\\Humbug\\var_dump' . '');
-    
-    PHP,
+        <?php
+
+        function_exists('Acme\foo'.'');
+        function_exists('\\Acme\\foo'.'');
+        function_exists('Humbug\\Acme\\foo'.'');
+        function_exists('\\Humbug\\Acme\\foo'.'');
+
+        function_exists('dump'.'');
+        function_exists('\\dump'.'');
+        function_exists('Humbug\\dump'.'');
+        function_exists('\\Humbug\\dump'.'');
+
+        function_exists('var_dump'.'');
+        function_exists('\\var_dump'.'');
+        function_exists('Humbug\\var_dump'.'');
+        function_exists('\\Humbug\\var_dump'.'');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \function_exists('Acme\\foo' . '');
+        \function_exists('\\Acme\\foo' . '');
+        \function_exists('Humbug\\Acme\\foo' . '');
+        \function_exists('\\Humbug\\Acme\\foo' . '');
+        \function_exists('dump' . '');
+        \function_exists('\\dump' . '');
+        \function_exists('Humbug\\dump' . '');
+        \function_exists('\\Humbug\\dump' . '');
+        \function_exists('var_dump' . '');
+        \function_exists('\\var_dump' . '');
+        \function_exists('Humbug\\var_dump' . '');
+        \function_exists('\\Humbug\\var_dump' . '');
+
+        PHP,
 ];
