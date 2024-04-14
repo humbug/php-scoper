@@ -35,6 +35,7 @@ final readonly class SpecScenario
         public ?string $expectedCode,
         public array $expectedRegisteredClasses,
         public array $expectedRegisteredFunctions,
+        public array $expectedRecordedAmbiguousFunctions,
     ) {
     }
 
@@ -91,21 +92,24 @@ final readonly class SpecScenario
 
         $assert->assertSame($this->expectedCode, $actualCode, $specMessage);
 
-        $actualRecordedExposedClasses = $symbolsRegistry->getRecordedClasses();
-
         self::assertSameRecordedSymbols(
             $assert,
             $this->expectedRegisteredClasses,
-            $actualRecordedExposedClasses,
+            $symbolsRegistry->getRecordedClasses(),
             $specMessage,
         );
-
-        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedFunctions();
 
         self::assertSameRecordedSymbols(
             $assert,
             $this->expectedRegisteredFunctions,
-            $actualRecordedExposedFunctions,
+            $symbolsRegistry->getRecordedFunctions(),
+            $specMessage,
+        );
+
+        self::assertSameRecordedSymbols(
+            $assert,
+            $this->expectedRecordedAmbiguousFunctions,
+            $symbolsRegistry->getAmbiguousFunctions(),
             $specMessage,
         );
     }

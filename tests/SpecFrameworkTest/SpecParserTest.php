@@ -82,6 +82,7 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     [],
                     [],
+                    [],
                 ),
                 'Fixtures/simple-spec-file.php: A spec with a title' => new SpecScenario(
                     null,
@@ -96,6 +97,7 @@ final class SpecParserTest extends TestCase
                         exposeGlobalClasses: false,
                     ),
                     $expectedCode,
+                    [],
                     [],
                     [],
                 ),
@@ -128,6 +130,7 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+                    ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                 ),
                 'Fixtures/complete-spec-file.php: Spec with the more verbose form' => new SpecScenario(
                     72_000,
@@ -152,6 +155,7 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+                    ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                 ),
                 'Fixtures/complete-spec-file.php: Spec with overridden meta values' => new SpecScenario(
                     73_000,
@@ -174,7 +178,8 @@ final class SpecParserTest extends TestCase
                         'exclude-functions' => ['another_excluded_function'],
                     ]),
                     $expectedCode,
-                    ['AnotherRecordedClass'],
+                    ['AnotherRecordedClass'],   // TODO: this is not correct
+                    ['AnotherRecordedFunction'],
                     ['AnotherRecordedFunction'],
                 ),
             ],

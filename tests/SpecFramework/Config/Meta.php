@@ -36,6 +36,7 @@ final readonly class Meta implements DeclaresSymbolsConfiguration
         public array $excludeFunctions = [],
         public array $expectedRecordedClasses = [],
         public array $expectedRecordedFunctions = [],
+        public array $expectedRecordedAmbiguousFunctions = [],
     ) {
     }
 

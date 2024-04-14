@@ -127,7 +127,15 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
             return $name;
         }
 
-        $this->symbolsRegistry->recordAmbiguousFunction($name);
+        if (!$this->enrichedReflector->isFunctionExcluded($name->toString())) {
+            $this->symbolsRegistry->recordAmbiguousFunction(
+                $name,
+                FullyQualifiedFactory::concat(
+                    $this->prefix,
+                    $name->getAttribute('namespacedName'),
+                ),
+            );
+        }
 
         return null;
     }

@@ -34,6 +34,7 @@ return [
         excludeFunctions: ['excluded_function'],
         expectedRecordedClasses: ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
         expectedRecordedFunctions: ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+        expectedRecordedAmbiguousFunctions: ['recorded_ambiguous_function', 'Humbug\recorded_ambiguous_function'],
     ),
 
     'Spec with default meta values' => <<<'PHP'

@@ -17,13 +17,10 @@ namespace Humbug\PhpScoper\Symbol;
 use Countable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use function array_keys;
 use function array_values;
 use function count;
 use function serialize;
-use function sort;
 use function unserialize;
-use const SORT_STRING;
 
 final class SymbolsRegistry implements Countable
 {
@@ -33,7 +30,7 @@ final class SymbolsRegistry implements Countable
     private array $recordedFunctions = [];
 
     /**
-     * @var array<string, null>
+     * @var array<string, array{string, string}>
      */
     private array $ambiguousFunctions = [];
 
@@ -120,20 +117,17 @@ final class SymbolsRegistry implements Countable
         return array_values($this->recordedFunctions);
     }
 
-    public function recordAmbiguousFunction(Name $name): void
+    public function recordAmbiguousFunction(Name $original, FullyQualified $alias): void
     {
-        $this->ambiguousFunctions[$name->toString()] = null;
+        $this->ambiguousFunctions[(string) $original] = [(string) $original, (string) $alias];
     }
 
     /**
-     * @return list<string>
+     * @return list<array{string, string}>
      */
     public function getAmbiguousFunctions(): array
     {
-        $ambiguousFunctions = array_keys($this->ambiguousFunctions);
-        sort($ambiguousFunctions, SORT_STRING);
-
-        return $ambiguousFunctions;
+        return array_values($this->ambiguousFunctions);
     }
 
     public function recordClass(FullyQualified $original, FullyQualified $alias): void

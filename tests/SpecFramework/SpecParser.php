@@ -117,6 +117,7 @@ class SpecParser extends TestCase
             $specWithConfig->expectedOutputCode,
             $specWithConfigOrSimpleSpec->expectedRecordedClasses ?? $meta->expectedRecordedClasses,
             $specWithConfigOrSimpleSpec->expectedRecordedFunctions ?? $meta->expectedRecordedFunctions,
+            $specWithConfigOrSimpleSpec->expectedRecordedAmbiguousFunctions ?? $meta->expectedRecordedAmbiguousFunctions,
         );
     }
 
