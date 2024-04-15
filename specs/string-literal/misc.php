@@ -13,45 +13,51 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
 
 return [
     'meta' => new Meta(
         title: 'String literal assigned to a variable',
     ),
 
-    'PHP heredoc as argument' => <<<'PHP'
-        <?php
+    'PHP heredoc as argument' => SpecWithConfig::create(
+        expectedRecordedAmbiguousFunctions: [
+            ['sprintf', 'Humbug\sprintf'],
+        ],
+        spec: <<<'PHP'
+            <?php
 
-        declare(strict_types=1);
+            declare(strict_types=1);
 
-        namespace Acme;
+            namespace Acme;
 
-        sprintf( <<<'_PHP'
-        if (!function_exists('%1$s')) {
-            function %1$s() {
-                return \%2$s(func_get_args());
+            sprintf( <<<'_PHP'
+            if (!function_exists('%1$s')) {
+                function %1$s() {
+                    return \%2$s(func_get_args());
+                }
             }
-        }
-        _PHP
-                ,
-                'foo',
-                'bar'
-        );
+            _PHP
+                    ,
+                    'foo',
+                    'bar'
+            );
 
-        ----
-        <?php
+            ----
+            <?php
 
-        declare (strict_types=1);
-        namespace Humbug\Acme;
+            declare (strict_types=1);
+            namespace Humbug\Acme;
 
-        sprintf(<<<'_PHP'
-        if (!function_exists('%1$s')) {
-            function %1$s() {
-                return \%2$s(func_get_args());
+            sprintf(<<<'_PHP'
+            if (!function_exists('%1$s')) {
+                function %1$s() {
+                    return \%2$s(func_get_args());
+                }
             }
-        }
-        _PHP
-        , 'foo', 'bar');
+            _PHP
+            , 'foo', 'bar');
 
-        PHP,
+            PHP,
+    ),
 ];

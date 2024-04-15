@@ -72,6 +72,9 @@ final class ScoperAutoloadGenerator
         $exposedFunctions = self::sortExposedFunctions(
             $this->registry->getRecordedFunctions(),
         );
+        $ambiguousFallbackFunctions = self::sortExposedFunctions(
+            $this->registry->getRecordedAmbiguousFunctions(),
+        );
 
         $wrapInNamespace = self::hasNamespacedFunctions($exposedFunctions);
 
@@ -84,6 +87,12 @@ final class ScoperAutoloadGenerator
             self::$eol,
             ...self::createFunctionAliasStatements(
                 $exposedFunctions,
+                $wrapInNamespace,
+            ),
+            self::$eol,
+            self::$eol,
+            ...self::createFunctionAliasStatements(
+                $ambiguousFallbackFunctions,
                 $wrapInNamespace,
             ),
         ];
@@ -276,6 +285,35 @@ final class ScoperAutoloadGenerator
      * @return list<string>
      */
     private static function createFunctionAliasStatements(
+        array $exposedFunctions,
+        bool $wrapInNamespace
+    ): array {
+        $functionsGroupedByNamespace = self::groupFunctionsByNamespace($exposedFunctions);
+
+        $statements = array_map(
+            static fn (string $namespace) => self::createNamespacedFunctionAliasStatement(
+                $wrapInNamespace,
+                $namespace,
+                $functionsGroupedByNamespace[$namespace],
+            ),
+            array_keys($functionsGroupedByNamespace),
+        );
+
+        if ([] === $statements) {
+            return $statements;
+        }
+
+        array_unshift($statements, self::FUNCTION_ALIASES_DOC);
+
+        return $statements;
+    }
+
+    /**
+     * @param list<array{string, string}> $exposedFunctions
+     *
+     * @return list<string>
+     */
+    private static function createFunctionFallbackAliasStatements(
         array $exposedFunctions,
         bool $wrapInNamespace
     ): array {

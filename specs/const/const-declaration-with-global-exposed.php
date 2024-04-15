@@ -130,33 +130,43 @@ return [
             PHP,
     ),
 
-    'Constants declaration in a namespace' => <<<'PHP'
-        <?php
+    'Constants declaration in a namespace' => SpecWithConfig::create(
+        expectedRecordedAmbiguousFunctions: [
+            ['define', 'Humbug\define'],
+            ['foo', 'Humbug\foo'],
+        ],
+        spec: <<<'PHP'
+            <?php
 
-        namespace Acme;
+            namespace Acme;
 
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Acme\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Acme\FOO_CONST, foo());
-        ----
-        <?php
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Acme\FOO_CONST, foo());
+            ----
+            <?php
 
-        namespace Humbug\Acme;
+            namespace Humbug\Acme;
 
-        const FOO_CONST = foo();
-        define('BAR_CONST', foo());
-        define('Humbug\\Acme\\BAR_CONST', foo());
-        define(FOO_CONST, foo());
-        define(\FOO_CONST, foo());
-        define(\Humbug\Acme\FOO_CONST, foo());
+            const FOO_CONST = foo();
+            define('BAR_CONST', foo());
+            define('Humbug\\Acme\\BAR_CONST', foo());
+            define(FOO_CONST, foo());
+            define(\FOO_CONST, foo());
+            define(\Humbug\Acme\FOO_CONST, foo());
 
-        PHP,
+            PHP,
+    ),
 
     'Constants declaration in an excluded namespace' => SpecWithConfig::create(
         excludeNamespaces: ['Acme'],
+        expectedRecordedAmbiguousFunctions: [
+            ['define', 'Humbug\define'],
+            ['foo', 'Humbug\foo'],
+        ],
         spec: <<<'PHP'
             <?php
 
@@ -185,6 +195,10 @@ return [
 
     'Exposed constants declaration in a namespace' => SpecWithConfig::create(
         exposeConstants: ['Acme\BAR_CONST'],
+        expectedRecordedAmbiguousFunctions: [
+            ['define', 'Humbug\define'],
+            ['foo', 'Humbug\foo'],
+        ],
         spec: <<<'PHP'
             <?php
 

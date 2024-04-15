@@ -59,8 +59,7 @@ class TraverserFactory
      */
     private static function createTraverser(
         array $nodeVisitors,
-    ): NodeTraverserInterface
-    {
+    ): NodeTraverserInterface {
         $traverser = new NodeTraverser(
             new PhpParserNodeTraverser(),
         );

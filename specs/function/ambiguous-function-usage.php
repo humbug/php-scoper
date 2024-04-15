@@ -21,45 +21,38 @@ return [
         exposeGlobalFunctions: true,
     ),
 
-    'Function call in namespace without a use statement' => SpecWithConfig::create(
-        expectedRecordedAmbiguousFunctions: [['main', 'Humbug\Acme\main']],
-        spec: <<<'PHP'
-            <?php
+    'Function call in namespace without a use statement' => <<<'PHP'
+        <?php
 
-            namespace Acme;
+        namespace Acme;
 
-            main();
-            ----
-            <?php
+        main();
+        ----
+        <?php
 
-            namespace Humbug\Acme;
+        namespace Humbug\Acme;
 
-            main();
+        main();
 
-            PHP,
-    ),
+        PHP,
 
-    'Internal function call in namespace without a use statement' => SpecWithConfig::create(
-        expectedRecordedAmbiguousFunctions: [['array_values', 'Humbug\Acme\array_values']],
-        spec: <<<'PHP'
-            <?php
+    'Internal function call in namespace without a use statement' => <<<'PHP'
+        <?php
 
-            namespace Acme;
+        namespace Acme;
 
-            array_values();
-            ----
-            <?php
+        array_values();
+        ----
+        <?php
 
-            namespace Humbug\Acme;
+        namespace Humbug\Acme;
 
-            array_values();
+        array_values();
 
-            PHP,
-    ),
+        PHP,
 
     'Excluded function call in namespace without a use statement' => SpecWithConfig::create(
         excludeFunctions: ['main'],
-        expectedRecordedAmbiguousFunctions: [['main', 'Humbug\Acme\main']],
         spec: <<<'PHP'
             <?php
 
@@ -95,8 +88,7 @@ return [
     ),
 
     'Namespaced function call belonging to an exposed namespace' => SpecWithConfig::create(
-        exposeFunctions: ['Acme'],
-        expectedRecordedAmbiguousFunctions: [['main', 'Humbug\Acme\main']],
+        exposeNamespaces: ['Acme'],
         spec: <<<'PHP'
             <?php
 
