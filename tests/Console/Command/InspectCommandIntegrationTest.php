@@ -29,7 +29,7 @@ use function Safe\preg_replace;
  */
 #[Group('integration')]
 #[CoversNothing]
-class AddInspectCommandIntegrationTest extends TestCase
+class InspectCommandIntegrationTest extends TestCase
 {
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
 
@@ -81,6 +81,7 @@ class AddInspectCommandIntegrationTest extends TestCase
                 """
                 Humbug\PhpScoper\Symbol\SymbolsRegistry {#140
                   -recordedFunctions: []
+                  -recordedAmbiguousFunctions: []
                   -recordedClasses: []
                 }
 
