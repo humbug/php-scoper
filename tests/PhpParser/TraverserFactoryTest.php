@@ -42,14 +42,16 @@ class TraverserFactoryTest extends TestCase
             new Lexer(),
         );
         $symbolsRegistry = new SymbolsRegistry();
+        $symbolsConfiguration = SymbolsConfiguration::create();
 
         $traverserFactory = new TraverserFactory(
             new EnrichedReflector(
                 Reflector::createEmpty(),
-                SymbolsConfiguration::create(),
+                $symbolsConfiguration,
             ),
             $prefix,
             $symbolsRegistry,
+            $symbolsConfiguration,
         );
 
         $firstTraverser = $traverserFactory->create($phpScoper);

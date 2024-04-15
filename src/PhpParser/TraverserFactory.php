@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ExcludedFunctionExistsEnricher;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ExcludedFunctionExistsStringNodeStack;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
@@ -36,6 +37,7 @@ class TraverserFactory
         private readonly EnrichedReflector $reflector,
         private readonly string $prefix,
         private readonly SymbolsRegistry $symbolsRegistry,
+        private readonly SymbolsConfiguration $symbolsConfiguration,
     ) {
     }
 
@@ -47,6 +49,7 @@ class TraverserFactory
                 $this->reflector,
                 $scoper,
                 $this->symbolsRegistry,
+                $this->symbolsConfiguration,
             ),
         );
     }
@@ -54,7 +57,9 @@ class TraverserFactory
     /**
      * @param PhpParserNodeVisitor[] $nodeVisitors
      */
-    private static function createTraverser(array $nodeVisitors): NodeTraverserInterface
+    private static function createTraverser(
+        array $nodeVisitors,
+    ): NodeTraverserInterface
     {
         $traverser = new NodeTraverser(
             new PhpParserNodeTraverser(),
@@ -74,7 +79,8 @@ class TraverserFactory
         string $prefix,
         EnrichedReflector $reflector,
         PhpScoper $scoper,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
+        SymbolsConfiguration $symbolsConfiguration,
     ): array {
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();
@@ -113,6 +119,7 @@ class TraverserFactory
                 $identifierResolver,
                 $symbolsRegistry,
                 $reflector,
+                $symbolsConfiguration,
             ),
             new NodeVisitor\ClassIdentifierRecorder(
                 $prefix,

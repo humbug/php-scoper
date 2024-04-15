@@ -132,6 +132,7 @@ class PhpScoperSpecTest extends TestCase
                 $enrichedReflector,
                 $prefix,
                 $symbolsRegistry,
+                $symbolsConfiguration,
             ),
             $container->getPrinter(),
             $container->getLexer(),

@@ -51,9 +51,6 @@ return [
 
     'Constants marked as exposed are case sensitive' => SpecWithConfig::create(
         exposeConstants: ['Acme\Foo', 'Acme\Bar'],
-        expectedRecordedAmbiguousFunctions: [
-            ['define', 'Humbug\Acme\define'],
-        ],
         spec: <<<'PHP'
             <?php
 
@@ -76,9 +73,6 @@ return [
 
     'The namespace of constant exposed are case insensitive' => SpecWithConfig::create(
         exposeConstants: ['acme\FOO', 'acme\BAR'],
-        expectedRecordedAmbiguousFunctions: [
-            ['define', 'Humbug\Acme\define'],
-        ],
         spec: <<<'PHP'
             <?php
 
@@ -99,9 +93,6 @@ return [
 
     'Namespaces excluded are case insensitive' => SpecWithConfig::create(
         excludeNamespaces: ['acme'],
-        expectedRecordedAmbiguousFunctions: [
-            ['define', 'Humbug\Acme\define'],
-        ],
         spec: <<<'PHP'
             <?php
 

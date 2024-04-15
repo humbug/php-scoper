@@ -13,32 +13,26 @@ declare(strict_types=1);
  */
 
 use Humbug\PhpScoper\SpecFramework\Config\Meta;
-use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
 
 return [
     'meta' => new Meta(
         title: 'Global function call in a namespace',
     ),
 
-    'Global function call in a namespace' => SpecWithConfig::create(
-        expectedRecordedAmbiguousFunctions: [
-            ['main', 'Humbug\A\main'],
-        ],
-        spec: <<<'PHP'
-            <?php
+    'Global function call in a namespace' => <<<'PHP'
+        <?php
 
-            namespace A;
+        namespace A;
 
-            main();
-            ----
-            <?php
+        main();
+        ----
+        <?php
 
-            namespace Humbug\A;
+        namespace Humbug\A;
 
-            main();
+        main();
 
-            PHP,
-    ),
+        PHP,
 
     'Global FQ function call in a namespace' => <<<'PHP'
         <?php

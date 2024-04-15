@@ -114,7 +114,7 @@ return [
                 public function normalize() : parent
                 {
                     $instance = clone $this;
-                    $instance->name = \strtoupper($this->name);
+                    $instance->name = strtoupper($this->name);
                     return $instance;
                 }
             }
@@ -154,7 +154,7 @@ return [
             public function normalize() : parent
             {
                 $instance = clone $this;
-                $instance->name = \strtoupper($this->name);
+                $instance->name = strtoupper($this->name);
                 return $instance;
             }
         }

@@ -41,6 +41,12 @@ final class ScoperAutoloadGenerator
         // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
         EOF;
 
+    // TODO: correct link
+    private const CLASS_ALIASES_FALLBACK_DOC = <<<'EOF'
+        // Global class aliases fallback. For more information see:
+        // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
+        EOF;
+
     private const EXPOSE_CLASS_DECLARATION = <<<'PHP'
         if (!function_exists('humbug_phpscoper_expose_class')) {
             function humbug_phpscoper_expose_class($exposed, $prefixed) {

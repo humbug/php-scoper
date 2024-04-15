@@ -89,9 +89,6 @@ return [
         expectedRecordedFunctions: [
             ['Acme\main', 'Humbug\Acme\main'],
         ],
-        expectedRecordedAmbiguousFunctions: [
-            ['function_exists', 'Humbug\Acme\function_exists'],
-        ],
         spec: <<<'PHP'
             <?php
 
@@ -110,9 +107,6 @@ return [
 
     'Namespaced function call from excluded namespace' => SpecWithConfig::create(
         excludeNamespaces: ['Acme'],
-        expectedRecordedAmbiguousFunctions: [
-            ['function_exists', 'Humbug\Acme\function_exists'],
-        ],
         spec: <<<'PHP'
             <?php
 

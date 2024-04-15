@@ -17,13 +17,11 @@ use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
 
 return [
     'meta' => new Meta(
-        title: 'Functions for the fully-qualified class name could not be resolved with expose global functions enabled',
-        exposeGlobalFunctions: true,
+        title: 'Functions for the fully-qualified class name could not be resolved with expose global functions disabled',
+        exposeGlobalFunctions: false,
     ),
 
-    'Function call in namespace without a use statement' => SpecWithConfig::create(
-        expectedRecordedAmbiguousFunctions: [['main', 'Humbug\Acme\main']],
-        spec: <<<'PHP'
+    'Function call in namespace without a use statement' => <<<'PHP'
             <?php
 
             namespace Acme;
@@ -37,11 +35,8 @@ return [
             main();
 
             PHP,
-    ),
 
-    'Internal function call in namespace without a use statement' => SpecWithConfig::create(
-        expectedRecordedAmbiguousFunctions: [['array_values', 'Humbug\Acme\array_values']],
-        spec: <<<'PHP'
+    'Internal function call in namespace without a use statement' => <<<'PHP'
             <?php
 
             namespace Acme;
@@ -55,11 +50,9 @@ return [
             array_values();
 
             PHP,
-    ),
 
     'Excluded function call in namespace without a use statement' => SpecWithConfig::create(
         excludeFunctions: ['main'],
-        expectedRecordedAmbiguousFunctions: [['main', 'Humbug\Acme\main']],
         spec: <<<'PHP'
             <?php
 
@@ -96,7 +89,6 @@ return [
 
     'Namespaced function call belonging to an exposed namespace' => SpecWithConfig::create(
         exposeFunctions: ['Acme'],
-        expectedRecordedAmbiguousFunctions: [['main', 'Humbug\Acme\main']],
         spec: <<<'PHP'
             <?php
 

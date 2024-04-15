@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
@@ -42,6 +43,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         private readonly IdentifierResolver $identifierResolver,
         private readonly SymbolsRegistry $symbolsRegistry,
         private readonly EnrichedReflector $enrichedReflector,
+        private readonly SymbolsConfiguration $symbolsConfiguration,
     ) {
     }
 
@@ -129,7 +131,9 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $namespacedName = $name->getAttribute('namespacedName');
 
-        if (!$this->enrichedReflector->isExposedFunction($namespacedName->toString())) {
+        if ($this->symbolsConfiguration->shouldExposeGlobalFunctions()
+            && !$this->enrichedReflector->isExposedFunction($namespacedName->toString())
+        ) {
             $this->symbolsRegistry->recordAmbiguousFunction(
                 $name,
                 FullyQualifiedFactory::concat(

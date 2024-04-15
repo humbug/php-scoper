@@ -96,16 +96,19 @@ class PhpScoperTest extends TestCase
 
         $this->lexer = $lexerProphecy->reveal();
 
+        $symbolsConfiguration = SymbolsConfiguration::create();
+
         $this->scoper = new PhpScoper(
             create_parser(),
             new FakeScoper(),
             new TraverserFactory(
                 new EnrichedReflector(
                     Reflector::createEmpty(),
-                    SymbolsConfiguration::create(),
+                    $symbolsConfiguration,
                 ),
                 self::PREFIX,
                 $this->symbolsRegistry,
+                $symbolsConfiguration,
             ),
             $this->printer,
             $this->lexer,

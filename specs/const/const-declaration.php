@@ -210,71 +210,59 @@ return [
             PHP,
     ),
 
-    'Constants declaration in a namespace' => SpecWithConfig::create(
-        expectedRecordedAmbiguousFunctions: [
-            ['define', 'Humbug\Acme\define'],
-            ['defined', 'Humbug\Acme\defined'],
-            ['foo', 'Humbug\Acme\foo'],
-        ],
-        spec: <<<'PHP'
-            <?php
+    'Constants declaration in a namespace' => <<<'PHP'
+        <?php
 
-            namespace Acme;
+        namespace Acme;
 
-            const FOO_CONST = foo();
-            const X = 'x', Y = '';
+        const FOO_CONST = foo();
+        const X = 'x', Y = '';
 
-            if (!defined('BAR_CONST')) {
-                define('BAR_CONST', foo());
-            }
-            if (!defined('Acme\BAR_CONST')) {
-                define('Acme\BAR_CONST', foo());
-            }
-            if (!defined('Acme\FOO_CONST')) {
-                define(FOO_CONST, foo());
-            }
-            if (!defined('FOO_CONST')) {
-                define(\FOO_CONST, foo());
-            }
-            if (!defined('Acme\BAR_CONST')) {
-                define(\Acme\BAR_CONST, foo());
-            }
-            ----
-            <?php
+        if (!defined('BAR_CONST')) {
+            define('BAR_CONST', foo());
+        }
+        if (!defined('Acme\BAR_CONST')) {
+            define('Acme\BAR_CONST', foo());
+        }
+        if (!defined('Acme\FOO_CONST')) {
+            define(FOO_CONST, foo());
+        }
+        if (!defined('FOO_CONST')) {
+            define(\FOO_CONST, foo());
+        }
+        if (!defined('Acme\BAR_CONST')) {
+            define(\Acme\BAR_CONST, foo());
+        }
+        ----
+        <?php
 
-            namespace Humbug\Acme;
+        namespace Humbug\Acme;
 
-            const FOO_CONST = foo();
-            if (\true) {
-                const X = 'x';
-                const Y = '';
-            }
-            if (!defined('Humbug\\BAR_CONST')) {
-                define('Humbug\\BAR_CONST', foo());
-            }
-            if (!defined('Humbug\\Acme\\BAR_CONST')) {
-                define('Humbug\\Acme\\BAR_CONST', foo());
-            }
-            if (!defined('Humbug\\Acme\\FOO_CONST')) {
-                define(FOO_CONST, foo());
-            }
-            if (!defined('Humbug\\FOO_CONST')) {
-                define(\Humbug\FOO_CONST, foo());
-            }
-            if (!defined('Humbug\\Acme\\BAR_CONST')) {
-                define(\Humbug\Acme\BAR_CONST, foo());
-            }
+        const FOO_CONST = foo();
+        if (\true) {
+            const X = 'x';
+            const Y = '';
+        }
+        if (!defined('Humbug\\BAR_CONST')) {
+            define('Humbug\\BAR_CONST', foo());
+        }
+        if (!defined('Humbug\\Acme\\BAR_CONST')) {
+            define('Humbug\\Acme\\BAR_CONST', foo());
+        }
+        if (!defined('Humbug\\Acme\\FOO_CONST')) {
+            define(FOO_CONST, foo());
+        }
+        if (!defined('Humbug\\FOO_CONST')) {
+            define(\Humbug\FOO_CONST, foo());
+        }
+        if (!defined('Humbug\\Acme\\BAR_CONST')) {
+            define(\Humbug\Acme\BAR_CONST, foo());
+        }
 
-            PHP,
-    ),
+        PHP,
 
     'Constants declaration in an excluded namespace' => SpecWithConfig::create(
         excludeNamespaces: ['Acme'],
-        expectedRecordedAmbiguousFunctions: [
-            ['define', 'Humbug\Acme\define'],
-            ['defined', 'Humbug\Acme\defined'],
-            ['foo', 'Humbug\Acme\foo'],
-        ],
         spec: <<<'PHP'
             <?php
 
@@ -329,11 +317,6 @@ return [
 
     'Exposed constants declaration in a namespace' => SpecWithConfig::create(
         exposeConstants: ['Acme\BAR_CONST'],
-        expectedRecordedAmbiguousFunctions: [
-            ['define', 'Humbug\Acme\define'],
-            ['defined', 'Humbug\Acme\defined'],
-            ['foo', 'Humbug\Acme\foo'],
-        ],
         spec: <<<'PHP'
             <?php
 
@@ -390,10 +373,6 @@ return [
         excludeConstants: [
             'NEW_TOKEN',
             'ANOTHER_NEW_TOKEN',
-        ],
-        expectedRecordedAmbiguousFunctions: [
-            ['define', 'Humbug\FQ_PHPParser\define'],
-            ['defined', 'Humbug\FQ_PHPParser\defined'],
         ],
         spec: <<<'PHP'
             <?php
