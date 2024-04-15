@@ -1,0 +1,12 @@
+{
+    "bin": "index.php",
+    "autoload": {
+        "files": [
+            "src/N1/n1_function.php",
+            "src/n2_function.php"
+        ],
+        "psr-4": {
+            "Set041\\": "src/"
+        }
+    }
+}
