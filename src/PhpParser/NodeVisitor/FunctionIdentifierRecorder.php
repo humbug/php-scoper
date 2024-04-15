@@ -130,8 +130,11 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         $namespacedName = $name->getAttribute('namespacedName');
-        // $namespacedName = $name;
 
+        // If global functions are exposed ambiguous functions are already handled.
+        // Otherwise, if the namespaced function is exposed, then this function
+        // call cannot hit the global function fallback, hence it should not
+        // be recorded as ambiguous.
         if (!$this->symbolsConfiguration->shouldExposeGlobalFunctions()
             && !$this->enrichedReflector->isExposedFunction($namespacedName->toString())
         ) {

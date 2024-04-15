@@ -105,8 +105,8 @@ final class SpecPrinter extends TestCase
             {$scenario->expectedCode}
             ----------------
             recorded functions: {$formattedExpectedRegisteredFunctions}
-            recorded ambiguous functions: {$formattedExpectedRegisteredFunctions}
-            recorded classes: {$formattedExpectedRegisteredAmbiguousFunctions}
+            recorded ambiguous functions: {$formattedExpectedRegisteredAmbiguousFunctions}
+            recorded classes: {$formattedExpectedRegisteredClasses}
 
             {$titleSeparator}
             ACTUAL

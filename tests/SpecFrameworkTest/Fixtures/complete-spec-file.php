@@ -76,6 +76,7 @@ return [
         excludeFunctions: ['another_excluded_function'],
         expectedRecordedClasses: ['AnotherRecordedClass'],
         expectedRecordedFunctions: ['AnotherRecordedFunction'],
+        expectedRecordedAmbiguousFunctions: ['recorded_ambiguous_function'],
         spec: <<<'PHP'
             echo "Hello world!";
 

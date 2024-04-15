@@ -130,7 +130,7 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
-                    ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+                    ['recorded_ambiguous_function', 'Humbug\recorded_ambiguous_function'],
                 ),
                 'Fixtures/complete-spec-file.php: Spec with the more verbose form' => new SpecScenario(
                     72_000,
@@ -155,7 +155,7 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
-                    ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+                    ['recorded_ambiguous_function', 'Humbug\recorded_ambiguous_function'],
                 ),
                 'Fixtures/complete-spec-file.php: Spec with overridden meta values' => new SpecScenario(
                     73_000,
@@ -180,7 +180,7 @@ final class SpecParserTest extends TestCase
                     $expectedCode,
                     ['AnotherRecordedClass'],   // TODO: this is not correct
                     ['AnotherRecordedFunction'],
-                    ['AnotherRecordedFunction'],
+                    ['recorded_ambiguous_function'],
                 ),
             ],
         ];

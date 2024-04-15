@@ -119,6 +119,7 @@ final class SpecPrinterTest extends TestCase
 
                 ----------------
                 recorded functions: []
+                recorded ambiguous functions: []
                 recorded classes: []
 
                 =============================================================
@@ -130,6 +131,7 @@ final class SpecPrinterTest extends TestCase
 
                 ----------------
                 recorded functions: []
+                recorded ambiguous functions: []
                 recorded classes: []
 
                 -------------------------------------------------------------------------------
@@ -160,7 +162,7 @@ final class SpecPrinterTest extends TestCase
                 $expectedCode,
                 [['Acme\RecordedClass', 'Humbug\Acme\RecordedClass']],
                 [['Acme\recorded_function', 'Humbug\Acme\recorded_function']],
-                [['Acme\ambiguous_function', 'Humbug\Acme\ambiguous_function']],
+                [['Acme\ambiguous_function', 'Humbug\ambiguous_function']],
             ),
             new SymbolsRegistry(),
             $actualCode,
@@ -200,6 +202,7 @@ final class SpecPrinterTest extends TestCase
 
                 ----------------
                 recorded functions: [Acme\recorded_function => Humbug\Acme\recorded_function]
+                recorded ambiguous functions: [Acme\ambiguous_function => Humbug\ambiguous_function]
                 recorded classes: [Acme\RecordedClass => Humbug\Acme\RecordedClass]
 
                 =============================================================
@@ -211,6 +214,7 @@ final class SpecPrinterTest extends TestCase
 
                 ----------------
                 recorded functions: []
+                recorded ambiguous functions: []
                 recorded classes: []
 
                 -------------------------------------------------------------------------------
@@ -248,8 +252,8 @@ final class SpecPrinterTest extends TestCase
                     ['Acme\another_recorded_function', 'Humbug\Acme\another_recorded_function'],
                 ],
                 [
-                    ['Acme\ambiguous_function', 'Humbug\Acme\ambiguous_function'],
-                    ['Acme\another_ambiguous_function', 'Humbug\Acme\another_ambiguous_function'],
+                    ['Acme\ambiguous_function', 'Humbug\ambiguous_function'],
+                    ['Acme\another_ambiguous_function', 'Humbug\another_ambiguous_function'],
                 ],
             ),
             new SymbolsRegistry(),
@@ -317,6 +321,10 @@ final class SpecPrinterTest extends TestCase
                   - Acme\recorded_function => Humbug\Acme\recorded_function
                   - Acme\another_recorded_function => Humbug\Acme\another_recorded_function
                 ]
+                recorded ambiguous functions: [
+                  - Acme\ambiguous_function => Humbug\ambiguous_function
+                  - Acme\another_ambiguous_function => Humbug\another_ambiguous_function
+                ]
                 recorded classes: [
                   - Acme\RecordedClass => Humbug\Acme\RecordedClass
                   - Acme\AnotherRecordedClass => Humbug\Acme\AnotherRecordedClass
@@ -331,6 +339,7 @@ final class SpecPrinterTest extends TestCase
 
                 ----------------
                 recorded functions: []
+                recorded ambiguous functions: []
                 recorded classes: []
 
                 -------------------------------------------------------------------------------
@@ -359,6 +368,10 @@ final class SpecPrinterTest extends TestCase
                 [
                     ['RecordedClass', 'Humbug\RecordedClass'],
                     ['AnotherRecordedClass', 'Humbug\AnotherRecordedClass'],
+                ],
+                [
+                    ['recorded_ambiguous_function', 'Humbug\recorded_ambiguous_function'],
+                    ['another_recorded_ambiguous_function', 'Humbug\another_recorded_ambiguous_function'],
                 ],
             ),
             $actualCode,
@@ -398,6 +411,7 @@ final class SpecPrinterTest extends TestCase
 
                 ----------------
                 recorded functions: []
+                recorded ambiguous functions: []
                 recorded classes: []
 
                 =============================================================
@@ -411,6 +425,10 @@ final class SpecPrinterTest extends TestCase
                 recorded functions: [
                   - recorded_function => Humbug\recorded_function
                   - another_recorded_function => Humbug\another_recorded_function
+                ]
+                recorded ambiguous functions: [
+                  - recorded_ambiguous_function => Humbug\recorded_ambiguous_function
+                  - another_recorded_ambiguous_function => Humbug\another_recorded_ambiguous_function
                 ]
                 recorded classes: [
                   - RecordedClass => Humbug\RecordedClass

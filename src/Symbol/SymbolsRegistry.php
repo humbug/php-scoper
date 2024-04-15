@@ -43,10 +43,12 @@ final class SymbolsRegistry implements Countable
     /**
      * @param array<array{string|FullyQualified, string|FullyQualified}> $functions
      * @param array<array{string|FullyQualified, string|FullyQualified}> $classes
+     * @param array<array{string|Name, string|FullyQualified}>           $ambiguousFunctions
      */
     public static function create(
         array $functions = [],
         array $classes = [],
+        array $ambiguousFunctions = [],
     ): self {
         $registry = new self();
 
@@ -60,6 +62,13 @@ final class SymbolsRegistry implements Countable
         foreach ($classes as [$original, $alias]) {
             $registry->recordClass(
                 $original instanceof FullyQualified ? $original : new FullyQualified($original),
+                $alias instanceof FullyQualified ? $alias : new FullyQualified($alias),
+            );
+        }
+
+        foreach ($ambiguousFunctions as [$original, $alias]) {
+            $registry->recordAmbiguousFunction(
+                $original instanceof Name ? $original : new Name($original),
                 $alias instanceof FullyQualified ? $alias : new FullyQualified($alias),
             );
         }
