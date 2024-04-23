@@ -26,16 +26,19 @@ use PHPUnit\Framework\TestCase;
 #[CoversNothing]
 final class AutoloadDumperTest extends TestCase
 {
+    private const VENDOR_DIR = 'vendorDir';
+
     #[DataProvider('autoloadProvider')]
     public function test_it_can_generate_the_autoload(
         SymbolsRegistry $symbolsRegistry,
-        array $excludedComposerAutoloadFileHashes,
+        array $excludedComposerAutoloadFiles,
         string $autoloadContents,
         string $expected,
     ): void {
         $actual = AutoloadDumper::generateAutoloadStatements(
             $symbolsRegistry,
-            $excludedComposerAutoloadFileHashes,
+            self::VENDOR_DIR,
+            $excludedComposerAutoloadFiles,
             $autoloadContents,
         );
 
@@ -208,7 +211,10 @@ final class AutoloadDumperTest extends TestCase
                     ['foo', 'Humbug\foo'],
                 ],
             ),
-            ['a610a8e036135f992c6edfb10ca9f4e9', 'e252736c6babb7c097ab6692dbcb2a5a'],
+            [
+                self::VENDOR_DIR.'/kelunik/certificate/src/LICENSE',    // md5('kelunik/certificate:src/LICENSE') = 24a0ad71fabbc534855ce40aa8cd9aeb
+                'Makefile', // md5('__root__:Makefile') = 5d8c5ac47d2a3ca636c805ed2fe856a5
+            ],
             <<<'PHP'
                 <?php
 
@@ -281,7 +287,7 @@ final class AutoloadDumperTest extends TestCase
                     // Restore the backup and ensure the excluded files are properly marked as loaded
                     $GLOBALS['__composer_autoload_files'] = \array_merge(
                         $existingComposerAutoloadFiles,
-                        \array_fill_keys(['a610a8e036135f992c6edfb10ca9f4e9', 'e252736c6babb7c097ab6692dbcb2a5a'], true)
+                        \array_fill_keys(['24a0ad71fabbc534855ce40aa8cd9aeb', '5d8c5ac47d2a3ca636c805ed2fe856a5'], true)
                     );
 
                     return $loader;
