@@ -18,7 +18,7 @@
     ],
     "require": {
         "php": "^8.2",
-        "fidry/console": "^0.6.6",
+        "fidry/console": "^0.6.10",
         "fidry/filesystem": "^1.1",
         "jetbrains/phpstorm-stubs": "^2022.2",
         "nikic/php-parser": "^4.12",

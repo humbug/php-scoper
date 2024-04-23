@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c15283979a3692e5e68971b53ffd0d18",
+    "content-hash": "9974693309d51104e97e4e69f9b4256f",
     "packages": [
         {
             "name": "fidry/console",
