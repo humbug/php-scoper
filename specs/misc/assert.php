@@ -39,51 +39,51 @@ return [
     'usage in the global namespace whilst exposed' => SpecWithConfig::create(
         exposeFunctions: ['assert'],
         spec: <<<'PHP'
-        <?php
+            <?php
 
-        assert();
-        \assert();
+            assert();
+            \assert();
 
-        ----
-        <?php
+            ----
+            <?php
 
-        namespace Humbug;
+            namespace Humbug;
 
-        \assert();
-        \assert();
+            \assert();
+            \assert();
 
-        PHP,
+            PHP,
     ),
 
     'usage in the global namespace whilst excluded' => SpecWithConfig::create(
         excludeFunctions: ['assert'],
         spec: <<<'PHP'
-        <?php
+            <?php
 
-        assert();
-        \assert();
+            assert();
+            \assert();
 
-        ----
-        <?php
+            ----
+            <?php
 
-        namespace Humbug;
+            namespace Humbug;
 
-        \assert();
-        \assert();
+            \assert();
+            \assert();
 
-        PHP,
+            PHP,
     ),
 
     'usage in a namespace' => <<<'PHP'
         <?php
-        
+
         namespace Box;
 
         assert();
         \assert();
-        
+
         namespace PhpScoper;
-        
+
         use function assert;
 
         assert();
@@ -97,7 +97,7 @@ return [
         assert();
         \assert();
         namespace Humbug\PhpScoper;
-        
+
         use function assert;
         assert();
         \assert();
@@ -107,66 +107,66 @@ return [
     'usage in a namespace whilst exposed' => SpecWithConfig::create(
         exposeFunctions: ['assert'],
         spec: <<<'PHP'
-        <?php
-        
-        namespace Box;
+            <?php
 
-        assert();
-        \assert();
-        
-        namespace PhpScoper;
-        
-        use function assert;
+            namespace Box;
 
-        assert();
-        \assert();
+            assert();
+            \assert();
 
-        ----
-        <?php
+            namespace PhpScoper;
 
-        namespace Humbug\Box;
+            use function assert;
 
-        assert();
-        \assert();
-        namespace Humbug\PhpScoper;
-        
-        use function assert;
-        assert();
-        \assert();
+            assert();
+            \assert();
 
-        PHP,
+            ----
+            <?php
+
+            namespace Humbug\Box;
+
+            assert();
+            \assert();
+            namespace Humbug\PhpScoper;
+
+            use function assert;
+            assert();
+            \assert();
+
+            PHP,
     ),
 
     'usage in a namespace whilst excluded' => SpecWithConfig::create(
         excludeFunctions: ['assert'],
         spec: <<<'PHP'
-        <?php
+            <?php
 
-        namespace Box;
+            namespace Box;
 
-        assert();
-        \assert();
-        
-        namespace PhpScoper;
-        
-        use function assert;
+            assert();
+            \assert();
 
-        assert();
-        \assert();
+            namespace PhpScoper;
 
-        ----
-        <?php
+            use function assert;
 
-        namespace Humbug\Box;
+            assert();
+            \assert();
 
-        assert();
-        \assert();
-        namespace Humbug\PhpScoper;
-        
-        use function assert;
-        assert();
-        \assert();
+            ----
+            <?php
 
-        PHP,
+            namespace Humbug\Box;
+
+            assert();
+            \assert();
+            namespace Humbug\PhpScoper;
+
+            use function assert;
+            assert();
+            \assert();
+
+            PHP,
     ),
 ];
