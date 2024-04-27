@@ -29,6 +29,7 @@ use Throwable;
 use Webmozart\Assert\Assert;
 use function array_keys;
 use function array_map;
+use function array_unique;
 use function array_values;
 use function count;
 use function dirname;
@@ -242,17 +243,7 @@ final readonly class ConsoleScoper
         $filesWithContent = $config->getFilesWithContents();
         $excludedFilesWithContents = $config->getExcludedFilesWithContents();
 
-        $commonDirectoryPath = Path::getLongestCommonBasePath(
-            ...array_map(
-                Path::getDirectory(...),
-                array_keys($filesWithContent),
-            ),
-            ...array_map(
-                Path::getDirectory(...),
-                array_keys($excludedFilesWithContents),
-            ),
-        );
-        Assert::notNull($commonDirectoryPath);
+        $commonDirectoryPath = self::getCommonDirectoryPath($config);
 
         $mapFiles = static fn (array $inputFileTuple) => new File(
             Path::normalize($inputFileTuple[0]),
@@ -274,6 +265,32 @@ final readonly class ConsoleScoper
                 ),
             ),
         ];
+    }
+
+    private static function getCommonDirectoryPath(Configuration $config): string
+    {
+        $configPath = $config->getPath();
+        $filesWithContent = $config->getFilesWithContents();
+        $excludedFilesWithContents = $config->getExcludedFilesWithContents();
+
+        $directoryPaths = [
+            ...array_map(
+                Path::getDirectory(...),
+                array_keys($filesWithContent),
+            ),
+            ...array_map(
+                Path::getDirectory(...),
+                array_keys($excludedFilesWithContents),
+            ),
+        ];
+
+        if (null !== $configPath) {
+            $directoryPaths[] = $configPath;
+        }
+
+        return Path::getLongestCommonBasePath(
+            ...array_unique($directoryPaths),
+        );
     }
 
     private static function findVendorDir(array $outputFilePaths): ?string
