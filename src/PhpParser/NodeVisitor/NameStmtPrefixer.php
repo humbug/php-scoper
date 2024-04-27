@@ -429,7 +429,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         if ($resolvedName->isFullyQualified()) {
             return $this->enrichedReflector->isFunctionExcluded($resolvedNameString)
                 ? $resolvedName
-                : null;
+                : FullyQualifiedFactory::concat(
+                    $this->prefix,
+                    $resolvedName->toString(),
+                    $resolvedName->getAttributes(),
+                );
         }
 
         return $originalName;

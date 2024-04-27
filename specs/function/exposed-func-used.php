@@ -33,11 +33,8 @@ return [
 
         PHP,
 
-    'Exposed global function call' => SpecWithConfig::create(
+    'Exposed global function call from global namespace' => SpecWithConfig::create(
         exposeFunctions: ['main'],
-        expectedRecordedFunctions: [
-            ['main', 'Humbug\main'],
-        ],
         spec: <<<'PHP'
             <?php
 
@@ -52,11 +49,26 @@ return [
             PHP,
     ),
 
+    'Exposed global function call from a namespace' => SpecWithConfig::create(
+        exposeFunctions: ['main'],
+        spec: <<<'PHP'
+            <?php
+            
+            namespace Acme;
+
+            main();
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            main();
+
+            PHP,
+    ),
+
     'Global function call with exposed global functions' => SpecWithConfig::create(
         exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [
-            ['main', 'Humbug\main'],
-        ],
         spec: <<<'PHP'
             <?php
 
@@ -67,6 +79,23 @@ return [
             namespace Humbug;
 
             main();
+
+            PHP,
+    ),
+
+    'Global function call with reserved functions name' => SpecWithConfig::create(
+        exposeGlobalFunctions: true,
+        expectedRecordedFunctions: [],
+        spec: <<<'PHP'
+            <?php
+
+            assert();
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \assert();
 
             PHP,
     ),
