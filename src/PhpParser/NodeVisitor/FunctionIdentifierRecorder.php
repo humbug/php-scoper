@@ -69,9 +69,9 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         Node $node,
         FullyQualified $resolvedName,
     ): bool {
-//        if ($this->enrichedReflector->isExposedFunction($resolvedName->toString())) {
-//            return true;
-//        }
+        if ($this->enrichedReflector->isExposedFunction($resolvedName->toString())) {
+            return true;
+        }
 
         // If is a function declaration, excluded global functions need to be
         // aliased since otherwise any usage without the FQCN in a namespace
@@ -81,8 +81,8 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         return self::isFunctionDeclaration($node)
             && $this->enrichedReflector->belongsToGlobalNamespace($resolvedName->toString())
             && (
-                $this->enrichedReflector->isExposedFunction($resolvedName->toString())
-                || $this->enrichedReflector->isFunctionExcluded($resolvedName->toString())
+                $this->enrichedReflector->isFunctionExcluded($resolvedName->toString())
+                || $this->enrichedReflector->isExposedFunction($resolvedName->toString())
             );
     }
 
