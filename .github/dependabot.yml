@@ -16,7 +16,7 @@ updates:
         groups:
             jetbrains-phpstorm-stubs:
                 patterns:
-                    - "jetbrains\/phpstorm-stubs"
+                    - "jetbrains/phpstorm-stubs"
                 update-types:
                     - "major"
 

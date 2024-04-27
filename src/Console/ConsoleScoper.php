@@ -288,9 +288,10 @@ final readonly class ConsoleScoper
             $directoryPaths[] = $configPath;
         }
 
-        return Path::getLongestCommonBasePath(
-            ...array_unique($directoryPaths),
-        );
+        $commonPath = Path::getLongestCommonBasePath(...array_unique($directoryPaths));
+        Assert::notNull($commonPath, 'Expected to find a common path.');
+
+        return $commonPath;
     }
 
     private static function findVendorDir(array $outputFilePaths): ?string

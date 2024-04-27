@@ -2,6 +2,7 @@
 !/bin/php-scoper
 /.box_dump/
 /.direnv/
+/.envrc.local
 /.php-cs-fixer.cache
 /.phpcs-cache
 /.phpunit*
