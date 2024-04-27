@@ -20,7 +20,7 @@
         "php": "^8.2",
         "fidry/console": "^0.6.10",
         "fidry/filesystem": "^1.1",
-        "jetbrains/phpstorm-stubs": "^2022.2",
+        "jetbrains/phpstorm-stubs": "^2024.1",
         "nikic/php-parser": "^4.12",
         "symfony/console": "^6.4 || ^7.0",
         "symfony/filesystem": "^6.4 || ^7.0",
