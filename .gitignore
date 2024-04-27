@@ -1,6 +1,7 @@
 !/bin/infection.sh
 !/bin/php-scoper
 /.box_dump/
+/.direnv/
 /.php-cs-fixer.cache
 /.phpcs-cache
 /.phpunit*
