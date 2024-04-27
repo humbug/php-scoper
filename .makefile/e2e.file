@@ -195,7 +195,7 @@ e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
 		--stop-on-failure
 	composer --working-dir=build/set027-laravel dump-autoload --no-dev
 
-	NO_COLOR=1 php build/set027-laravel/artisan -V > build/set027-laravel/output
+	php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
 
 .PHONY: e2e_028
