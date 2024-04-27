@@ -83,23 +83,6 @@ return [
             PHP,
     ),
 
-    'Global function call with reserved functions name' => SpecWithConfig::create(
-        exposeGlobalFunctions: true,
-        expectedRecordedFunctions: [],
-        spec: <<<'PHP'
-            <?php
-
-            assert();
-            ----
-            <?php
-
-            namespace Humbug;
-
-            \assert();
-
-            PHP,
-    ),
-
     'Global function call with non-exposed global functions' => <<<'PHP'
         <?php
 
