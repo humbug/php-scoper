@@ -17,23 +17,24 @@ use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
 
 return [
     'meta' => new Meta(
-        title: 'Example of simple spec file',
-        prefix: 'Humbug',
-        minPhpVersion: 72_000,
-        maxPhpVersion: 83_000,
-        exposeGlobalConstants: true,
-        exposeGlobalClasses: true,
-        exposeGlobalFunctions: true,
-        exposeNamespaces: ['ExposedNamespace'],
-        exposeConstants: ['EXPOSED_CONST'],
-        exposeClasses: ['ExposedClass'],
-        exposeFunctions: ['exposed_function'],
-        excludeNamespaces: ['ExcludedNamespace'],
-        excludeConstants: ['EXCLUDED_CONST'],
-        excludeClasses: ['ExcludedClass'],
-        excludeFunctions: ['excluded_function'],
-        expectedRecordedClasses: ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
-        expectedRecordedFunctions: ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+        title:                                'Example of simple spec file',
+        prefix:                               'Humbug',
+        minPhpVersion:                        72_000,
+        maxPhpVersion:                        83_000,
+        exposeGlobalConstants:                true,
+        exposeGlobalClasses:                  true,
+        exposeGlobalFunctions:                true,
+        exposeNamespaces:                     ['ExposedNamespace'],
+        exposeConstants:                      ['EXPOSED_CONST'],
+        exposeClasses:                        ['ExposedClass'],
+        exposeFunctions:                      ['exposed_function'],
+        excludeNamespaces:                    ['ExcludedNamespace'],
+        excludeConstants:                     ['EXCLUDED_CONST'],
+        excludeClasses:                       ['ExcludedClass'],
+        excludeFunctions:                     ['excluded_function'],
+        expectedRecordedClasses:              ['Acme\RecordedClass', 'Humbug\Acme\RecordedClass'],
+        expectedRecordedFunctionDeclarations: ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
+        expectedRecordedAmbiguousFunctionCalls: ['Acme\recorded_another_function'],
     ),
 
     'Spec with default meta values' => <<<'PHP'
@@ -73,8 +74,9 @@ return [
         excludeConstants: ['ANOTHER_EXCLUDED_CONST'],
         excludeClasses: ['AnotherExcludedClass'],
         excludeFunctions: ['another_excluded_function'],
-        expectedRecordedClasses: ['AnotherRecordedClass'],
-        expectedRecordedFunctions: ['AnotherRecordedFunction'],
+        expectedRecordedClasses: [['AnotherRecordedClass', 'AnotherPrefix\AnotherRecordedClass']],
+        expectedRecordedFunctionDeclarations: [['AnotherRecordedFunction', 'AnotherPrefix\AnotherRecordedFunction']],
+        expectedRecordedAmbiguousFunctionCalls: ['AnotherRecordedFunction'],
         spec: <<<'PHP'
             echo "Hello world!";
 

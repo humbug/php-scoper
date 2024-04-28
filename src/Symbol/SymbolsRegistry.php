@@ -17,6 +17,9 @@ namespace Humbug\PhpScoper\Symbol;
 use Countable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
+use function array_intersect_key;
+use function array_merge;
+use function array_sum;
 use function array_values;
 use function count;
 use function serialize;
@@ -27,7 +30,7 @@ final class SymbolsRegistry implements Countable
     /**
      * @var array<string, string>
      */
-    private array $recordedAmbiguousFunctions = [];
+    private array $recordedAmbiguousFunctionCalls = [];
 
     /**
      * @var array<string, array{string, string}>
@@ -35,35 +38,51 @@ final class SymbolsRegistry implements Countable
     private array $recordedFunctionDeclarations = [];
 
     /**
+     * @var list<array{string, string}>
+     */
+    private array $recordedFunctions;
+
+    /**
      * @var array<string, array{string, string}>
      */
     private array $recordedClasses = [];
 
     /**
-     * @param array<array{string|FullyQualified, string|FullyQualified}> $functions
+     * @param array<array{string|FullyQualified, string|FullyQualified}> $functionDeclarations
+     * @param array<string|Name> $ambiguousFunctionCalls
      * @param array<array{string|FullyQualified, string|FullyQualified}> $classes
      */
     public static function create(
-        array $functions = [],
+        array $functionDeclarations = [],
+        array $ambiguousFunctionCalls = [],
         array $classes = [],
     ): self {
         $registry = new self();
 
-        foreach ($functions as [$original, $alias]) {
-            $registry->recordAmbiguousFunctionCall(
-                $original instanceof FullyQualified ? $original : new FullyQualified($original),
-                $alias instanceof FullyQualified ? $alias : new FullyQualified($alias),
+        foreach ($functionDeclarations as [$original, $alias]) {
+            $registry->recordFunctionDeclaration(
+                self::toFQN($original),
+                self::toFQN($alias),
             );
+        }
+
+        foreach ($ambiguousFunctionCalls as $ambiguousFunctionCall) {
+            $registry->recordAmbiguousFunctionCall(self::toFQN($ambiguousFunctionCall));
         }
 
         foreach ($classes as [$original, $alias]) {
             $registry->recordClass(
-                $original instanceof FullyQualified ? $original : new FullyQualified($original),
-                $alias instanceof FullyQualified ? $alias : new FullyQualified($alias),
+                self::toFQN($original),
+                self::toFQN($alias),
             );
         }
 
         return $registry;
+    }
+
+    private static function toFQN(string|Name $value): FullyQualified
+    {
+        return $value instanceof FullyQualified ? $value : new FullyQualified($value);
     }
 
     /**
@@ -95,31 +114,39 @@ final class SymbolsRegistry implements Countable
 
     public function merge(self $symbolsRegistry): void
     {
-        foreach ($symbolsRegistry->getRecordedAmbiguousFunctions() as [$original, $alias]) {
-            $this->recordedAmbiguousFunctions[$original] = [$original, $alias];
-        }
-
-        foreach ($symbolsRegistry->getRecordedClasses() as [$original, $alias]) {
-            $this->recordedClasses[$original] = [$original, $alias];
-        }
+        $this->recordedFunctionDeclarations = array_merge(
+            $this->recordedFunctionDeclarations,
+            $symbolsRegistry->recordedFunctionDeclarations,
+        );
+        $this->recordedAmbiguousFunctionCalls = array_merge(
+            $this->recordedAmbiguousFunctionCalls,
+            $symbolsRegistry->recordedAmbiguousFunctionCalls,
+        );
+        $this->recordedClasses = array_merge(
+            $this->recordedClasses,
+            $symbolsRegistry->recordedClasses,
+        );
+        unset($this->recordedFunctions);
     }
 
     public function recordAmbiguousFunctionCall(Name $original): void
     {
-        $this->recordedAmbiguousFunctions[(string) $original] = (string) $original;
+        $this->recordedAmbiguousFunctionCalls[(string) $original] = (string) $original;
+        unset($this->recordedFunctions);
     }
 
     /**
      * @return list<string>
      */
-    public function getRecordedAmbiguousFunctions(): array
+    public function getRecordedAmbiguousFunctionCalls(): array
     {
-        return array_values($this->recordedAmbiguousFunctions);
+        return array_values($this->recordedAmbiguousFunctionCalls);
     }
 
-    public function recordFunctionDeclaration(Name $original, FullyQualified $alias): void
+    public function recordFunctionDeclaration(FullyQualified $original, FullyQualified $alias): void
     {
-        $this->recordedFunctionDeclarations[(string) $original] = [(string) $original, (string) $alias];
+        $this->recordedFunctionDeclarations[(string) $alias] = [(string) $original, (string) $alias];
+        unset($this->recordedFunctions);
     }
 
     /**
@@ -128,6 +155,25 @@ final class SymbolsRegistry implements Countable
     public function getRecordedFunctionDeclarations(): array
     {
         return array_values($this->recordedFunctionDeclarations);
+    }
+
+    /**
+     * @return list<array{string, string}>
+     */
+    public function getRecordedFunctions(): array
+    {
+        if (isset($this->recordedFunctions)) {
+            return $this->recordedFunctions;
+        }
+
+        $this->recordedFunctions = array_values(
+            array_intersect_key(
+                $this->recordedFunctionDeclarations,
+                $this->recordedAmbiguousFunctionCalls,
+            ),
+        );
+
+        return $this->recordedFunctions;
     }
 
     public function recordClass(FullyQualified $original, FullyQualified $alias): void
@@ -153,6 +199,6 @@ final class SymbolsRegistry implements Countable
 
     public function count(): int
     {
-        return count($this->recordedAmbiguousFunctions) + count($this->recordedClasses);
+        return count($this->recordedFunctionDeclarations) + count($this->getRecordedFunctions();
     }
 }

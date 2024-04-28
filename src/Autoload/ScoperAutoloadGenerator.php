@@ -64,7 +64,7 @@ final class ScoperAutoloadGenerator
     public function dump(): string
     {
         $exposedFunctions = self::sortExposedFunctions(
-            $this->registry->getRecordedAmbiguousFunctions(),
+            $this->registry->getRecordedAmbiguousFunctionCalls(),
         );
 
         $wrapInNamespace = self::hasNamespacedFunctions($exposedFunctions);

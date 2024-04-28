@@ -79,6 +79,7 @@ final class SpecPrinterTest extends TestCase
                 $expectedCode,
                 [],
                 [],
+                [],
             ),
             new SymbolsRegistry(),
             $actualCode,
@@ -117,7 +118,8 @@ final class SpecPrinterTest extends TestCase
                 echo "Hello world!";
 
                 ----------------
-                recorded functions: []
+                recorded function declarations: []
+                recorded ambiguous function calls: []
                 recorded classes: []
 
                 =============================================================
@@ -128,7 +130,8 @@ final class SpecPrinterTest extends TestCase
                 echo "Hello world!";
 
                 ----------------
-                recorded functions: []
+                recorded function declarations: []
+                recorded ambiguous function calls: []
                 recorded classes: []
 
                 -------------------------------------------------------------------------------
@@ -159,6 +162,7 @@ final class SpecPrinterTest extends TestCase
                 $expectedCode,
                 [['Acme\RecordedClass', 'Humbug\Acme\RecordedClass']],
                 [['Acme\recorded_function', 'Humbug\Acme\recorded_function']],
+                ['Acme\recorded_function'],
             ),
             new SymbolsRegistry(),
             $actualCode,
@@ -197,7 +201,8 @@ final class SpecPrinterTest extends TestCase
                 echo "Hello world!";
 
                 ----------------
-                recorded functions: [Acme\recorded_function => Humbug\Acme\recorded_function]
+                recorded function declarations: [Acme\recorded_function => Humbug\Acme\recorded_function]
+                recorded ambiguous function calls: [Acme\recorded_function]
                 recorded classes: [Acme\RecordedClass => Humbug\Acme\RecordedClass]
 
                 =============================================================
@@ -208,7 +213,8 @@ final class SpecPrinterTest extends TestCase
                 echo "Hello world!";
 
                 ----------------
-                recorded functions: []
+                recorded function declarations: []
+                recorded ambiguous function calls: []
                 recorded classes: []
 
                 -------------------------------------------------------------------------------
@@ -244,6 +250,10 @@ final class SpecPrinterTest extends TestCase
                 [
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                     ['Acme\another_recorded_function', 'Humbug\Acme\another_recorded_function'],
+                ],
+                [
+                    'App\recorded_function',
+                    'App\another_recorded_function',
                 ],
             ),
             new SymbolsRegistry(),
@@ -307,9 +317,13 @@ final class SpecPrinterTest extends TestCase
                 echo "Hello world!";
 
                 ----------------
-                recorded functions: [
+                recorded function declarations: [
                   - Acme\recorded_function => Humbug\Acme\recorded_function
                   - Acme\another_recorded_function => Humbug\Acme\another_recorded_function
+                ]
+                recorded ambiguous function calls: [
+                  - App\recorded_function
+                  - App\recorded_another_function
                 ]
                 recorded classes: [
                   - Acme\RecordedClass => Humbug\Acme\RecordedClass
@@ -324,7 +338,8 @@ final class SpecPrinterTest extends TestCase
                 echo "Hello world!";
 
                 ----------------
-                recorded functions: []
+                recorded function declarations: []
+                recorded ambiguous function calls: []
                 recorded classes: []
 
                 -------------------------------------------------------------------------------
@@ -343,11 +358,16 @@ final class SpecPrinterTest extends TestCase
                 $expectedCode,
                 [],
                 [],
+                [],
             ),
             SymbolsRegistry::create(
                 [
                     ['recorded_function', 'Humbug\recorded_function'],
                     ['another_recorded_function', 'Humbug\another_recorded_function'],
+                ],
+                [
+                    'App\recorded_function',
+                    'App\another_recorded_function',
                 ],
                 [
                     ['RecordedClass', 'Humbug\RecordedClass'],
@@ -390,7 +410,8 @@ final class SpecPrinterTest extends TestCase
                 echo "Hello world!";
 
                 ----------------
-                recorded functions: []
+                recorded function declarations: []
+                recorded ambiguous function calls: []
                 recorded classes: []
 
                 =============================================================
@@ -401,9 +422,13 @@ final class SpecPrinterTest extends TestCase
                 echo "Hello world!";
 
                 ----------------
-                recorded functions: [
+                recorded function declarations: [
                   - recorded_function => Humbug\recorded_function
                   - another_recorded_function => Humbug\another_recorded_function
+                ]
+                recorded ambiguous function calls: [
+                  - App\recorded_function
+                  - App\another_recorded_function
                 ]
                 recorded classes: [
                   - RecordedClass => Humbug\RecordedClass

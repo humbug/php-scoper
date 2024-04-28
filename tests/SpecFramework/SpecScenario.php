@@ -24,6 +24,11 @@ use function usort;
 
 final readonly class SpecScenario
 {
+    /**
+     * @param array<array{string, string}> $expectedRecordedClasses
+     * @param array<array{string, string}> $expectedRecordedFunctionsDeclarations
+     * @param string[] $expectedRecordedAmbiguousFunctions
+     */
     public function __construct(
         public ?int $minPhpVersion,
         public ?int $maxPhpVersion,
@@ -33,8 +38,9 @@ final readonly class SpecScenario
         public string $prefix,
         public SymbolsConfiguration $symbolsConfiguration,
         public ?string $expectedCode,
-        public array $expectedRegisteredClasses,
-        public array $expectedRegisteredFunctions,
+        public array $expectedRecordedClasses,
+        public array $expectedRecordedFunctionsDeclarations,
+        public array $expectedRecordedAmbiguousFunctions,
     ) {
     }
 
@@ -69,8 +75,10 @@ final readonly class SpecScenario
         }
     }
 
-    public function assertExpectedFailure(TestCase $assert, Throwable $failure): void
-    {
+    public function assertExpectedFailure(
+        TestCase $assert,
+        Throwable $failure,
+    ): void {
         if (null !== $this->expectedCode) {
             throw $failure;
         }
@@ -89,22 +97,35 @@ final readonly class SpecScenario
             $actualCode,
         );
 
-        $assert->assertSame($this->expectedCode, $actualCode, $specMessage);
+        $assert->assertSame(
+            $this->expectedCode,
+            $actualCode,
+            $specMessage,
+        );
 
         $actualRecordedExposedClasses = $symbolsRegistry->getRecordedClasses();
 
         self::assertSameRecordedSymbols(
             $assert,
-            $this->expectedRegisteredClasses,
+            $this->expectedRecordedClasses,
             $actualRecordedExposedClasses,
             $specMessage,
         );
 
-        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedAmbiguousFunctions();
+        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedAmbiguousFunctionCalls();
 
         self::assertSameRecordedSymbols(
             $assert,
-            $this->expectedRegisteredFunctions,
+            $this->expectedRecordedFunctionsDeclarations,
+            $actualRecordedExposedFunctions,
+            $specMessage,
+        );
+
+        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedAmbiguousFunctionCalls();
+
+        self::assertSameRecordedSymbols(
+            $assert,
+            $this->expectedRecordedFunctionsDeclarations,
             $actualRecordedExposedFunctions,
             $specMessage,
         );
@@ -120,11 +141,24 @@ final readonly class SpecScenario
         array $actual,
         string $message,
     ): void {
-        $sort = static fn (array $a, array $b) => $a[0] <=> $b[0];
+        $sort = static fn(
+            array $a,
+            array $b,
+        ) => $a[0] <=> $b[0];
 
-        usort($expected, $sort);
-        usort($actual, $sort);
+        usort(
+            $expected,
+            $sort,
+        );
+        usort(
+            $actual,
+            $sort,
+        );
 
-        $assert->assertSame($expected, $actual, $message);
+        $assert->assertSame(
+            $expected,
+            $actual,
+            $message,
+        );
     }
 }

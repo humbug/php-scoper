@@ -45,7 +45,8 @@ final readonly class SpecWithConfig implements DeclaresSymbolsConfiguration
         ?array $excludeClasses = null,
         ?array $excludeFunctions = null,
         ?array $expectedRecordedClasses = null,
-        ?array $expectedRecordedFunctions = null,
+        ?array $expectedRecordedFunctionDeclarations = null,
+        ?array $expectedRecordedAmbiguousFunctionCalls = null,
     ): self {
         [$inputCode, $expectedOutputCode] = self::parseSpec($spec);
 
@@ -67,7 +68,8 @@ final readonly class SpecWithConfig implements DeclaresSymbolsConfiguration
             $excludeClasses,
             $excludeFunctions,
             $expectedRecordedClasses,
-            $expectedRecordedFunctions,
+            $expectedRecordedFunctionDeclarations,
+            $expectedRecordedAmbiguousFunctionCalls,
         );
     }
 
@@ -89,7 +91,8 @@ final readonly class SpecWithConfig implements DeclaresSymbolsConfiguration
         public ?array $excludeClasses,
         public ?array $excludeFunctions,
         public ?array $expectedRecordedClasses,
-        public ?array $expectedRecordedFunctions,
+        public ?array $expectedRecordedFunctionDeclarations,
+        public ?array $expectedRecordedAmbiguousFunctionCalls,
     ) {
     }
 

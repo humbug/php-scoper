@@ -128,7 +128,8 @@ class SpecParser extends TestCase
             self::createSymbolsConfiguration($specWithConfig, $meta),
             $specWithConfig->expectedOutputCode,
             $specWithConfigOrSimpleSpec->expectedRecordedClasses ?? $meta->expectedRecordedClasses,
-            $specWithConfigOrSimpleSpec->expectedRecordedFunctions ?? $meta->expectedRecordedFunctions,
+            $specWithConfigOrSimpleSpec->expectedRecordedFunctionDeclarations ?? $meta->expectedRecordedFunctionDeclarations,
+            $specWithConfigOrSimpleSpec->expectedRecordedAmbiguousFunctionCalls ?? $meta->expectedRecordedAmbiguousFunctionCalls,
         );
     }
 

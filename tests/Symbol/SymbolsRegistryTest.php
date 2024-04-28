@@ -400,7 +400,7 @@ final class SymbolsRegistryTest extends TestCase
     ): void {
         PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedRecordedFunctions,
-            $symbolsRegistry->getRecordedAmbiguousFunctions(),
+            $symbolsRegistry->getRecordedAmbiguousFunctionCalls(),
         );
         PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedRecordedClasses,

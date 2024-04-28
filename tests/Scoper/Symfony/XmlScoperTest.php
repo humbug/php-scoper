@@ -117,7 +117,7 @@ class XmlScoperTest extends TestCase
         self::assertSame($expected, $actual);
 
         self::assertSame($expectedClasses, $symbolsRegistry->getRecordedClasses());
-        self::assertSame([], $symbolsRegistry->getRecordedAmbiguousFunctions());
+        self::assertSame([], $symbolsRegistry->getRecordedAmbiguousFunctionCalls());
 
         $this->decoratedScoperProphecy
             ->scope(Argument::cetera())

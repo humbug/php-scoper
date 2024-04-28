@@ -46,8 +46,9 @@ final class SpecPrinter extends TestCase
         $inputCode = $scenario->inputCode;
         $symbolsConfiguration = $scenario->symbolsConfiguration;
         $expectedCode = $scenario->expectedCode;
-        $expectedRegisteredClasses = $scenario->expectedRegisteredClasses;
-        $expectedRegisteredFunctions = $scenario->expectedRegisteredFunctions;
+        $expectedRecordedClasses = $scenario->expectedRecordedClasses;
+        $expectedRecordedFunctionsDeclarations = $scenario->expectedRecordedFunctionsDeclarations;
+        $expectedRecordedAmbiguousFunctionCalls = $scenario->expectedRecordedAmbiguousFunctions;
 
         $formattedExposeGlobalClasses = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalClasses());
         $formattedExposeGlobalConstants = self::convertBoolToString($symbolsConfiguration->shouldExposeGlobalConstants());
@@ -64,11 +65,13 @@ final class SpecPrinter extends TestCase
         $formattedInternalFunctions = self::formatSymbolRegistry($symbolsConfiguration->getExcludedFunctions());
         $formattedInternalConstants = self::formatSymbolRegistry($symbolsConfiguration->getExcludedConstants());
 
-        $formattedExpectedRegisteredClasses = self::formatTupleList($expectedRegisteredClasses);
-        $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
+        $formattedExpectedRecordedClasses = self::formatTupleList($expectedRecordedClasses);
+        $formattedExpectedRecordedFunctionDeclarations = self::formatTupleList($expectedRecordedFunctionsDeclarations);
+        $formattedExpectedRecordedAmbiguousFunctionCalls = self::formatList($expectedRecordedAmbiguousFunctionCalls);
 
-        $formattedActualRegisteredClasses = self::formatTupleList($symbolsRegistry->getRecordedClasses());
-        $formattedActualRegisteredFunctions = self::formatTupleList($symbolsRegistry->getRecordedAmbiguousFunctions());
+        $formattedActualRecordedClasses = self::formatTupleList($symbolsRegistry->getRecordedClasses());
+        $formattedActualRecordedFunctionDeclarations = self::formatTupleList($symbolsRegistry->getRecordedFunctionDeclarations());
+        $formattedActualRecordedAmbiguousFunctionCalls = self::formatList($symbolsRegistry->getRecordedAmbiguousFunctionCalls());
 
         $titleSeparator = str_repeat(
             '=',
@@ -109,16 +112,18 @@ final class SpecPrinter extends TestCase
             {$titleSeparator}
             {$expectedCode}
             ----------------
-            recorded functions: {$formattedExpectedRegisteredFunctions}
-            recorded classes: {$formattedExpectedRegisteredClasses}
+            recorded function declarations: {$formattedExpectedRecordedFunctionDeclarations}
+            recorded ambiguous function calls: {$formattedExpectedRecordedAmbiguousFunctionCalls}
+            recorded classes: {$formattedExpectedRecordedClasses}
 
             {$titleSeparator}
             ACTUAL
             {$titleSeparator}
             {$actualCode}
             ----------------
-            recorded functions: {$formattedActualRegisteredFunctions}
-            recorded classes: {$formattedActualRegisteredClasses}
+            recorded function declarations: {$formattedActualRecordedFunctionDeclarations}
+            recorded ambiguous function calls: {$formattedActualRecordedAmbiguousFunctionCalls}
+            recorded classes: {$formattedActualRecordedClasses}
 
             -------------------------------------------------------------------------------
             OUTPUT;
@@ -150,7 +155,7 @@ final class SpecPrinter extends TestCase
     }
 
     /**
-     * @param string[][] $stringTuples
+     * @param array<array{string, string}> $stringTuples
      */
     private static function formatTupleList(array $stringTuples): string
     {
@@ -172,6 +177,34 @@ final class SpecPrinter extends TestCase
                 array_map(
                     static fn (array $stringTuple): string => sprintf('  - %s => %s', ...$stringTuple),
                     $stringTuples,
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @param string[] $strings
+     */
+    private static function formatList(array $strings): string
+    {
+        if (0 === count($strings)) {
+            return '[]';
+        }
+
+        if (1 === count($strings)) {
+            /** @var string $string */
+            $string = current($strings);
+
+            return sprintf('[%s]', $string);
+        }
+
+        return sprintf(
+            "[\n%s\n]",
+            implode(
+                PHP_EOL,
+                array_map(
+                    static fn (string $string): string => sprintf('  - %s', $string),
+                    $strings,
                 ),
             ),
         );

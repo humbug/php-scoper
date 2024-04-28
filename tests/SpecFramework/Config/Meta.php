@@ -18,6 +18,11 @@ use Humbug\PhpScoper\Configuration\ConfigurationKeys;
 
 final readonly class Meta implements DeclaresSymbolsConfiguration
 {
+    /**
+     * @param array<array{string, string}> $expectedRecordedClasses
+     * @param array<array{string, string}> $expectedRecordedFunctionsDeclarations
+     * @param string[] $expectedRecordedAmbiguousFunctions
+     */
     public function __construct(
         public string $title,
         public string $prefix = 'Humbug',
@@ -35,7 +40,8 @@ final readonly class Meta implements DeclaresSymbolsConfiguration
         public array $excludeClasses = [],
         public array $excludeFunctions = [],
         public array $expectedRecordedClasses = [],
-        public array $expectedRecordedFunctions = [],
+        public array $expectedRecordedFunctionDeclarations = [],
+        public array $expectedRecordedAmbiguousFunctionCalls = [],
     ) {
     }
 
