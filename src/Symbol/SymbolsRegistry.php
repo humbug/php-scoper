@@ -129,6 +129,12 @@ final class SymbolsRegistry implements Countable
         unset($this->recordedFunctions);
     }
 
+    // TODO: should only record func call that are:
+    //  - ambiguous
+    //  - where the non prefixed namespace is:
+    //      - not internal
+    //      - exposed
+    //  - should record the prefix name
     public function recordAmbiguousFunctionCall(Name $original): void
     {
         $this->recordedAmbiguousFunctionCalls[(string) $original] = (string) $original;
@@ -143,6 +149,7 @@ final class SymbolsRegistry implements Countable
         return array_values($this->recordedAmbiguousFunctionCalls);
     }
 
+    // TODO: should record all function declarations, namespaced or not
     public function recordFunctionDeclaration(FullyQualified $original, FullyQualified $alias): void
     {
         $this->recordedFunctionDeclarations[(string) $alias] = [(string) $original, (string) $alias];
