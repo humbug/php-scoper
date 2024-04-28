@@ -30,8 +30,8 @@ use function array_merge;
 use function explode;
 use function is_int;
 use function is_string;
-use function sprintf;
 use function Safe\preg_match;
+use function sprintf;
 use function substr;
 use function substr_count;
 use const PREG_OFFSET_CAPTURE;
@@ -131,6 +131,29 @@ class SpecParser extends TestCase
             $specWithConfigOrSimpleSpec->expectedRecordedFunctionDeclarations ?? $meta->expectedRecordedFunctionDeclarations,
             $specWithConfigOrSimpleSpec->expectedRecordedAmbiguousFunctionCalls ?? $meta->expectedRecordedAmbiguousFunctionCalls,
         );
+    }
+
+    /**
+     * @return positive-int|0
+     */
+    private static function findLineNumber(string $fileContents, int|string $title): ?int
+    {
+        if (is_int($title)) {
+            return null;
+        }
+
+        $titleRegex = sprintf(
+            '/ *\'%s\' => (?:SpecWithConfig|<<<\'PHP\')/',
+            $title,
+        );
+
+        if (1 !== preg_match($titleRegex, $fileContents, $matches, PREG_OFFSET_CAPTURE)) {
+            return null;
+        }
+
+        $titlePosition = $matches[0][1];
+
+        return substr_count(substr($fileContents, 0, $titlePosition), "\n") + 1;
     }
 
     /**
