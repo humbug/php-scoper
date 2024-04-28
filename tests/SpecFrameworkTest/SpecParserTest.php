@@ -86,7 +86,7 @@ final class SpecParserTest extends TestCase
                 'Fixtures/simple-spec-file.php: A spec with a title' => new SpecScenario(
                     null,
                     null,
-                    'Fixtures/simple-spec-file.php',
+                    'Fixtures/simple-spec-file.php:33',
                     '[Example of simple spec file] A spec with a title',
                     $specCode,
                     'Humbug',
@@ -108,7 +108,7 @@ final class SpecParserTest extends TestCase
                 'Fixtures/complete-spec-file.php: Spec with default meta values' => new SpecScenario(
                     72_000,
                     83_000,
-                    'Fixtures/complete-spec-file.php',
+                    'Fixtures/complete-spec-file.php:39',
                     '[Example of simple spec file] Spec with default meta values',
                     $specCode,
                     'Humbug',
@@ -132,7 +132,7 @@ final class SpecParserTest extends TestCase
                 'Fixtures/complete-spec-file.php: Spec with the more verbose form' => new SpecScenario(
                     72_000,
                     83_000,
-                    'Fixtures/complete-spec-file.php',
+                    'Fixtures/complete-spec-file.php:49',
                     '[Example of simple spec file] Spec with the more verbose form',
                     $specCode,
                     'Humbug',
@@ -156,7 +156,7 @@ final class SpecParserTest extends TestCase
                 'Fixtures/complete-spec-file.php: Spec with overridden meta values' => new SpecScenario(
                     73_000,
                     82_000,
-                    'Fixtures/complete-spec-file.php',
+                    'Fixtures/complete-spec-file.php:61',
                     '[Example of simple spec file] Spec with overridden meta values',
                     $specCode,
                     'AnotherPrefix',
