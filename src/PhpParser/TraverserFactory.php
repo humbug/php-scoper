@@ -108,12 +108,13 @@ class TraverserFactory
                 $reflector,
             ),
 
-            new NodeVisitor\FunctionIdentifierRecorder(
+            new NodeVisitor\FunctionDeclarationRecorder(
                 $prefix,
                 $identifierResolver,
                 $symbolsRegistry,
                 $reflector,
             ),
+            new NodeVisitor\AmbiguousFunctionCallRecorder($symbolsRegistry),
             new NodeVisitor\ClassIdentifierRecorder(
                 $prefix,
                 $identifierResolver,

@@ -118,7 +118,7 @@ class YamlScoperTest extends TestCase
         self::assertSame($expected, $actual);
 
         self::assertSame($expectedClasses, $symbolsRegistry->getRecordedClasses());
-        self::assertSame([], $symbolsRegistry->getRecordedFunctions());
+        self::assertSame([], $symbolsRegistry->getRecordedAmbiguousFunctions());
 
         $this->decoratedScoperProphecy
             ->scope(Argument::cetera())

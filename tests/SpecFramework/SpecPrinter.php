@@ -68,7 +68,7 @@ final class SpecPrinter extends TestCase
         $formattedExpectedRegisteredFunctions = self::formatTupleList($expectedRegisteredFunctions);
 
         $formattedActualRegisteredClasses = self::formatTupleList($symbolsRegistry->getRecordedClasses());
-        $formattedActualRegisteredFunctions = self::formatTupleList($symbolsRegistry->getRecordedFunctions());
+        $formattedActualRegisteredFunctions = self::formatTupleList($symbolsRegistry->getRecordedAmbiguousFunctions());
 
         $titleSeparator = str_repeat(
             '=',

@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\Node;
 
 use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
+use PhpParser\Node;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 
@@ -27,12 +28,20 @@ final class FullyQualifiedFactory
      * @param string|string[]|Name|null $name1
      * @param string|string[]|Name|null $name2
      */
-    public static function concat($name1, $name2, array $attributes = []): FullyQualified
+    public static function concat($name1, $name2, ?array $attributes = null): FullyQualified
     {
         if (null === $name1 && null === $name2) {
             throw new InvalidArgumentException('Expected one of the names to not be null');
         }
 
-        return FullyQualified::concat($name1, $name2, $attributes);
+        if (null === $name1 && $name2 instanceof Node) {
+            $attributes ??= $name2->getAttributes();
+        } elseif (null === $name2 && $name1 instanceof Node) {
+            $attributes ??= $name1->getAttributes();
+        } elseif ($name2 instanceof Node) {
+            $attributes ??= $name2->getAttributes();
+        }
+
+        return FullyQualified::concat($name1, $name2, $attributes ?? []);
     }
 }

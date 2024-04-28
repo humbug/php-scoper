@@ -35,8 +35,9 @@ use PhpParser\NodeVisitorAbstract;
  *
  * @private
  */
-final class FunctionIdentifierRecorder extends NodeVisitorAbstract
+final class FunctionDeclarationRecorder extends NodeVisitorAbstract
 {
+
     public function __construct(
         private readonly string $prefix,
         private readonly IdentifierResolver $identifierResolver,
@@ -55,12 +56,31 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
         $resolvedName = $this->retrieveResolvedName($node);
 
-        if (null !== $resolvedName && $this->shouldBeAliased($node, $resolvedName)) {
-            $this->symbolsRegistry->recordFunction(
-                $resolvedName,
+        if ($node instanceof Name
+            && !($node instanceof FullyQualified)
+            && self::isForFuncCall($node)
+        ) {
+            $this->symbolsRegistry->recordAmbiguousFunctionCall(
+                $node,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),
             );
         }
+
+        return self::isFunctionDeclaration($node)
+            && $this->enrichedReflector->belongsToGlobalNamespace($resolvedName->toString())
+            && (
+                $this->enrichedReflector->isFunctionExcluded($resolvedName->toString())
+                || $this->enrichedReflector->isExposedFunction($resolvedName->toString())
+            );
+
+//        $resolvedName = $this->retrieveResolvedName($node);
+//
+//        if (null !== $resolvedName && $this->shouldBeAliased($node, $resolvedName)) {
+//            $this->symbolsRegistry->recordFunction(
+//                $resolvedName,
+//                FullyQualifiedFactory::concat($this->prefix, $resolvedName),
+//            );
+//        }
 
         return $node;
     }
@@ -127,6 +147,13 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         }
 
         return $name instanceof FullyQualified ? $name : null;
+    }
+
+    private static function isForFuncCall(Name $name): bool
+    {
+        $parent = ParentNodeAppender::getParent($name);
+
+        return $parent instanceof FuncCall;
     }
 
     private function retrieveResolvedNameForString(String_ $string): ?FullyQualified

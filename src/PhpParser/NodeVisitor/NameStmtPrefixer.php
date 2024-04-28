@@ -213,11 +213,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             // Continue
         }
 
-        return FullyQualifiedFactory::concat(
-            $this->prefix,
-            $resolvedName->toString(),
-            $resolvedName->getAttributes(),
-        );
+        return FullyQualifiedFactory::concat($this->prefix, $resolvedName);
     }
 
     private static function isParentNodeSupported(Node $parentNode): bool
@@ -429,11 +425,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         if ($resolvedName->isFullyQualified()) {
             return $this->enrichedReflector->isFunctionExcluded($resolvedNameString)
                 ? $resolvedName
-                : FullyQualifiedFactory::concat(
-                    $this->prefix,
-                    $resolvedName->toString(),
-                    $resolvedName->getAttributes(),
-                );
+                : FullyQualifiedFactory::concat($this->prefix, $resolvedName);
         }
 
         return $originalName;

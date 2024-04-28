@@ -100,7 +100,7 @@ final readonly class SpecScenario
             $specMessage,
         );
 
-        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedFunctions();
+        $actualRecordedExposedFunctions = $symbolsRegistry->getRecordedAmbiguousFunctions();
 
         self::assertSameRecordedSymbols(
             $assert,
