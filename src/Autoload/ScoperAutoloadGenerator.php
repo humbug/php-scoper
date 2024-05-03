@@ -103,7 +103,7 @@ final class ScoperAutoloadGenerator
                 namespace {
                     \$loader = (static function () {
                         // Backup the autoloaded Composer files
-                        \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'] ?? [];
+                        \$existingComposerAutoloadFiles = isset(\$GLOBALS['__composer_autoload_files']) ? \$GLOBALS['__composer_autoload_files'] : [];
 
                         \$loader = require_once __DIR__.'/autoload.php';
                         // Ensure InstalledVersions is available
@@ -135,7 +135,7 @@ final class ScoperAutoloadGenerator
 
                 \$loader = (static function () {
                     // Backup the autoloaded Composer files
-                    \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'] ?? [];
+                    \$existingComposerAutoloadFiles = isset(\$GLOBALS['__composer_autoload_files']) ? \$GLOBALS['__composer_autoload_files'] : [];
 
                     \$loader = require_once __DIR__.'/autoload.php';
                     // Ensure InstalledVersions is available
