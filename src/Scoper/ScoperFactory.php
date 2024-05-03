@@ -22,7 +22,6 @@ use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Lexer;
 use PhpParser\Parser;
 
 /**
@@ -34,7 +33,6 @@ class ScoperFactory
         private readonly Parser $parser,
         private readonly EnrichedReflectorFactory $enrichedReflectorFactory,
         private readonly Printer $printer,
-        private readonly Lexer $lexer,
     ) {
     }
 
@@ -72,7 +70,6 @@ class ScoperFactory
                     $symbolsRegistry,
                 ),
                 $this->printer,
-                $this->lexer,
             ),
             $prefix,
             $configuration->getPatcher(),

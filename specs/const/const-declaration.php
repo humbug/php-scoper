@@ -51,19 +51,19 @@ return [
             const X = 'x';
             const Y = '';
         }
-        if (!\defined('Humbug\\BAR_CONST')) {
-            \define('Humbug\\BAR_CONST', foo());
+        if (!\defined('Humbug\BAR_CONST')) {
+            \define('Humbug\BAR_CONST', foo());
         }
-        if (!\defined('Humbug\\Acme\\BAR_CONST')) {
-            \define('Humbug\\Acme\\BAR_CONST', foo());
+        if (!\defined('Humbug\Acme\BAR_CONST')) {
+            \define('Humbug\Acme\BAR_CONST', foo());
         }
-        if (!\defined('Humbug\\FOO_CONST')) {
+        if (!\defined('Humbug\FOO_CONST')) {
             \define(\Humbug\FOO_CONST, foo());
         }
-        if (!\defined('Humbug\\FOO_CONST')) {
+        if (!\defined('Humbug\FOO_CONST')) {
             \define(\Humbug\FOO_CONST, foo());
         }
-        if (!\defined('Humbug\\Acme\\BAR_CONST')) {
+        if (!\defined('Humbug\Acme\BAR_CONST')) {
             \define(\Humbug\Acme\BAR_CONST, foo());
         }
         \define('PHP_VERSION', 81400);
@@ -104,8 +104,8 @@ return [
                 if (!\defined('BAR_CONST')) {
                     \define('BAR_CONST', \foo());
                 }
-                if (!\defined('Acme\\BAR_CONST')) {
-                    \define('Acme\\BAR_CONST', \foo());
+                if (!\defined('Acme\BAR_CONST')) {
+                    \define('Acme\BAR_CONST', \foo());
                 }
                 if (!\defined('FOO_CONST')) {
                     \define(\FOO_CONST, \foo());
@@ -113,7 +113,7 @@ return [
                 if (!\defined('FOO_CONST')) {
                     \define(\FOO_CONST, \foo());
                 }
-                if (!\defined('Acme\\BAR_CONST')) {
+                if (!\defined('Acme\BAR_CONST')) {
                     \define(\Acme\BAR_CONST, \foo());
                 }
             }
@@ -169,8 +169,8 @@ return [
             if (!\defined('BAR_CONST')) {
                 \define('BAR_CONST', foo());
             }
-            if (!\defined('Acme\\BAR_CONST')) {
-                \define('Acme\\BAR_CONST', foo());
+            if (!\defined('Acme\BAR_CONST')) {
+                \define('Acme\BAR_CONST', foo());
             }
             if (!\defined('FOO_CONST')) {
                 \define(\FOO_CONST, foo());
@@ -178,14 +178,14 @@ return [
             if (!\defined('FOO_CONST')) {
                 \define(\FOO_CONST, foo());
             }
-            if (!\defined('Acme\\BAR_CONST')) {
+            if (!\defined('Acme\BAR_CONST')) {
                 \define(\Acme\BAR_CONST, foo());
             }
             if (!\defined('BAZ')) {
                 \define('BAZ', 'baz');
             }
-            if (!\defined('Emca\\BAZ')) {
-                \define('Emca\\BAZ', 'baz');
+            if (!\defined('Emca\BAZ')) {
+                \define('Emca\BAZ', 'baz');
             }
 
             PHP,
@@ -243,19 +243,19 @@ return [
             const X = 'x';
             const Y = '';
         }
-        if (!defined('Humbug\\BAR_CONST')) {
-            define('Humbug\\BAR_CONST', foo());
+        if (!defined('Humbug\BAR_CONST')) {
+            define('Humbug\BAR_CONST', foo());
         }
-        if (!defined('Humbug\\Acme\\BAR_CONST')) {
-            define('Humbug\\Acme\\BAR_CONST', foo());
+        if (!defined('Humbug\Acme\BAR_CONST')) {
+            define('Humbug\Acme\BAR_CONST', foo());
         }
-        if (!defined('Humbug\\Acme\\FOO_CONST')) {
+        if (!defined('Humbug\Acme\FOO_CONST')) {
             define(FOO_CONST, foo());
         }
-        if (!defined('Humbug\\FOO_CONST')) {
+        if (!defined('Humbug\FOO_CONST')) {
             define(\Humbug\FOO_CONST, foo());
         }
-        if (!defined('Humbug\\Acme\\BAR_CONST')) {
+        if (!defined('Humbug\Acme\BAR_CONST')) {
             define(\Humbug\Acme\BAR_CONST, foo());
         }
 
@@ -296,19 +296,19 @@ return [
                 const X = 'x';
                 const Y = '';
             }
-            if (!defined('Humbug\\BAR_CONST')) {
-                define('Humbug\\BAR_CONST', foo());
+            if (!defined('Humbug\BAR_CONST')) {
+                define('Humbug\BAR_CONST', foo());
             }
-            if (!defined('Acme\\BAR_CONST')) {
-                define('Acme\\BAR_CONST', foo());
+            if (!defined('Acme\BAR_CONST')) {
+                define('Acme\BAR_CONST', foo());
             }
-            if (!defined('Acme\\FOO_CONST')) {
+            if (!defined('Acme\FOO_CONST')) {
                 define(FOO_CONST, foo());
             }
-            if (!defined('Humbug\\FOO_CONST')) {
+            if (!defined('Humbug\FOO_CONST')) {
                 define(\Humbug\FOO_CONST, foo());
             }
-            if (!defined('Acme\\BAR_CONST')) {
+            if (!defined('Acme\BAR_CONST')) {
                 define(\Acme\BAR_CONST, foo());
             }
 
@@ -350,19 +350,19 @@ return [
                 const X = 'x';
                 const Y = '';
             }
-            if (!defined('Humbug\\BAR_CONST')) {
-                define('Humbug\\BAR_CONST', foo());
+            if (!defined('Humbug\BAR_CONST')) {
+                define('Humbug\BAR_CONST', foo());
             }
-            if (!defined('Acme\\BAR_CONST')) {
-                define('Acme\\BAR_CONST', foo());
+            if (!defined('Acme\BAR_CONST')) {
+                define('Acme\BAR_CONST', foo());
             }
-            if (!defined('Humbug\\Acme\\FOO_CONST')) {
+            if (!defined('Humbug\Acme\FOO_CONST')) {
                 define(FOO_CONST, foo());
             }
-            if (!defined('Humbug\\FOO_CONST')) {
+            if (!defined('Humbug\FOO_CONST')) {
                 define(\Humbug\FOO_CONST, foo());
             }
-            if (!defined('Acme\\BAR_CONST')) {
+            if (!defined('Acme\BAR_CONST')) {
                 define(\Acme\BAR_CONST, foo());
             }
 
@@ -423,11 +423,11 @@ return [
 
             class Lexer
             {
-                function isNewToken(int $token) : bool
+                function isNewToken(int $token): bool
                 {
                     return \NEW_TOKEN === $token;
                 }
-                function isAnotherNewToken(int $token) : bool
+                function isAnotherNewToken(int $token): bool
                 {
                     if (!defined('ANOTHER_NEW_TOKEN')) {
                         define('ANOTHER_NEW_TOKEN', 502);
@@ -439,11 +439,11 @@ return [
 
             class Lexer
             {
-                function isNewToken(int $token) : bool
+                function isNewToken(int $token): bool
                 {
                     return \NEW_TOKEN === $token;
                 }
-                function isAnotherNewToken(int $token) : bool
+                function isAnotherNewToken(int $token): bool
                 {
                     if (!defined('ANOTHER_NEW_TOKEN')) {
                         define('ANOTHER_NEW_TOKEN', 502);
@@ -469,11 +469,11 @@ return [
 
         namespace Humbug;
 
-        if (!\defined('Humbug\\Bar::TEST')) {
+        if (!\defined('Humbug\Bar::TEST')) {
         }
-        if (!\defined('Humbug\\Bar::TEST')) {
+        if (!\defined('Humbug\Bar::TEST')) {
         }
-        if (!\defined('Humbug\\Bar::TEST')) {
+        if (!\defined('Humbug\Bar::TEST')) {
         }
 
         PHP,
@@ -492,11 +492,11 @@ return [
 
         namespace Humbug;
 
-        if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+        if (!\defined('Humbug\Acme\Bar::TEST')) {
         }
-        if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+        if (!\defined('Humbug\Acme\Bar::TEST')) {
         }
-        if (!\defined('Humbug\\Acme\\Bar::TEST')) {
+        if (!\defined('Humbug\Acme\Bar::TEST')) {
         }
 
         PHP,

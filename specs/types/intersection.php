@@ -24,7 +24,7 @@ return [
 
         class X
         {
-            public function method1(Y&Z $a, Y $b) : Y&Z
+            public function method1(Y&Z $a, Y $b): Y&Z
             {
             }
         }
@@ -36,7 +36,7 @@ return [
 
         class X
         {
-            public function method1(Y&Z $a, Y $b) : Y&Z
+            public function method1(Y&Z $a, Y $b): Y&Z
             {
             }
         }
@@ -46,7 +46,7 @@ return [
     'Function casts' => <<<'PHP'
         <?php
 
-        function fun1(Y&Z $a) : Y&Z
+        function fun1(Y&Z $a): Y&Z
         {
         }
 
@@ -55,7 +55,7 @@ return [
 
         namespace Humbug;
 
-        function fun1(Y&Z $a) : Y&Z
+        function fun1(Y&Z $a): Y&Z
         {
         }
 
@@ -87,7 +87,7 @@ return [
         trait X
         {
             private Y&Z $x;
-            public function method1(Y&Z $a) : Y&Z
+            public function method1(Y&Z $a): Y&Z
             {
             }
         }
@@ -100,7 +100,7 @@ return [
         trait X
         {
             private Y&Z $x;
-            public function method1(Y&Z $a) : Y&Z
+            public function method1(Y&Z $a): Y&Z
             {
             }
         }
@@ -112,7 +112,7 @@ return [
 
         interface X
         {
-            public function method1(Y&Z $a) : Y&Z;
+            public function method1(Y&Z $a): Y&Z;
         }
 
         ----
@@ -122,7 +122,7 @@ return [
 
         interface X
         {
-            public function method1(Y&Z $a) : Y&Z;
+            public function method1(Y&Z $a): Y&Z;
         }
 
         PHP,

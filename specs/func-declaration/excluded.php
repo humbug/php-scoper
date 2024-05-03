@@ -34,7 +34,7 @@ return [
 
         namespace Humbug;
 
-        if (!\function_exists('new_php20_function') && !\function_exists('Humbug\\new_php20_function')) {
+        if (!\function_exists('new_php20_function') && !\function_exists('Humbug\new_php20_function')) {
             function new_php20_function()
             {
             }
@@ -53,7 +53,7 @@ return [
 
         namespace Humbug;
 
-        if (\false == \function_exists('new_php20_function') && !\function_exists('Humbug\\new_php20_function')) {
+        if (\false == \function_exists('new_php20_function') && !\function_exists('Humbug\new_php20_function')) {
             function new_php20_function()
             {
             }
@@ -72,7 +72,7 @@ return [
 
         namespace Humbug;
 
-        if (\function_exists('new_php20_function') == \false && !\function_exists('Humbug\\new_php20_function')) {
+        if (\function_exists('new_php20_function') == \false && !\function_exists('Humbug\new_php20_function')) {
             function new_php20_function()
             {
             }
@@ -91,7 +91,7 @@ return [
 
         namespace Humbug;
 
-        if (\false === \function_exists('new_php20_function') && !\function_exists('Humbug\\new_php20_function')) {
+        if (\false === \function_exists('new_php20_function') && !\function_exists('Humbug\new_php20_function')) {
             function new_php20_function()
             {
             }
@@ -110,7 +110,7 @@ return [
 
         namespace Humbug;
 
-        if (\function_exists('new_php20_function') === \false && !\function_exists('Humbug\\new_php20_function')) {
+        if (\function_exists('new_php20_function') === \false && !\function_exists('Humbug\new_php20_function')) {
             function new_php20_function()
             {
             }
@@ -129,7 +129,7 @@ return [
 
         namespace Humbug;
 
-        if (!\function_exists('new_php20_function') && !\function_exists('Humbug\\new_php20_function') && !\function_exists('Humbug\\new_php20_function')) {
+        if (!\function_exists('new_php20_function') && !\function_exists('Humbug\new_php20_function') && !\function_exists('Humbug\new_php20_function')) {
             function new_php20_function()
             {
             }
@@ -167,7 +167,7 @@ return [
 
         namespace Humbug;
 
-        if (!\function_exists('new_php20_function') && !\function_exists('Humbug\\new_php20_function') && \PHP_VERSION_ID <= 80000) {
+        if (!\function_exists('new_php20_function') && !\function_exists('Humbug\new_php20_function') && \PHP_VERSION_ID <= 80000) {
             function new_php20_function()
             {
             }
@@ -186,7 +186,7 @@ return [
 
         namespace Humbug;
 
-        if (\PHP_VERSION_ID <= 80000 && (!\function_exists('new_php20_function') && !\function_exists('Humbug\\new_php20_function'))) {
+        if (\PHP_VERSION_ID <= 80000 && (!\function_exists('new_php20_function') && !\function_exists('Humbug\new_php20_function'))) {
             function new_php20_function()
             {
             }
@@ -205,7 +205,7 @@ return [
 
         namespace Humbug;
 
-        if (!\function_exists('new_php20_function') && !\function_exists('Humbug\\new_php20_function') || \PHP_VERSION_ID <= 80000) {
+        if (!\function_exists('new_php20_function') && !\function_exists('Humbug\new_php20_function') || \PHP_VERSION_ID <= 80000) {
             function new_php20_function()
             {
             }

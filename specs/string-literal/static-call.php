@@ -29,7 +29,7 @@ return [
 
         namespace Humbug;
 
-        $fooFactory::create('Humbug\\Acme\\Foo');
+        $fooFactory::create('Humbug\Acme\Foo');
 
         PHP,
 
@@ -57,7 +57,7 @@ return [
 
         namespace Humbug;
 
-        \DateTime::create('Humbug\\Acme\\Foo');
+        \DateTime::create('Humbug\Acme\Foo');
 
         PHP,
 

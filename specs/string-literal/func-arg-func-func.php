@@ -43,18 +43,18 @@ return [
 
         namespace Humbug;
 
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\Acme\\foo');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
-        \function_exists('Humbug\\dump');
+        \function_exists('Humbug\Acme\foo');
+        \function_exists('Humbug\Acme\foo');
+        \function_exists('Humbug\Acme\foo');
+        \function_exists('Humbug\Acme\foo');
+        \function_exists('Humbug\dump');
+        \function_exists('Humbug\dump');
+        \function_exists('Humbug\dump');
+        \function_exists('Humbug\dump');
         \function_exists('var_dump');
-        \function_exists('\\var_dump');
-        \function_exists('Humbug\\var_dump');
-        \function_exists('Humbug\\var_dump');
+        \function_exists('\var_dump');
+        \function_exists('Humbug\var_dump');
+        \function_exists('Humbug\var_dump');
 
         PHP,
 
@@ -87,18 +87,18 @@ return [
 
             namespace Humbug;
 
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\dump');
-            \function_exists('Humbug\\dump');
-            \function_exists('Humbug\\dump');
-            \function_exists('Humbug\\dump');
+            \function_exists('Humbug\Acme\foo');
+            \function_exists('Humbug\Acme\foo');
+            \function_exists('Humbug\Acme\foo');
+            \function_exists('Humbug\Acme\foo');
+            \function_exists('Humbug\dump');
+            \function_exists('Humbug\dump');
+            \function_exists('Humbug\dump');
+            \function_exists('Humbug\dump');
             \function_exists('var_dump');
-            \function_exists('\\var_dump');
-            \function_exists('Humbug\\var_dump');
-            \function_exists('Humbug\\var_dump');
+            \function_exists('\var_dump');
+            \function_exists('Humbug\var_dump');
+            \function_exists('Humbug\var_dump');
 
             PHP,
     ),
@@ -130,18 +130,18 @@ return [
             <?php
 
             namespace {
-                \function_exists('Acme\\foo');
-                \function_exists('\\Acme\\foo');
-                \function_exists('Humbug\\Acme\\foo');
-                \function_exists('\\Humbug\\Acme\\foo');
+                \function_exists('Acme\foo');
+                \function_exists('\Acme\foo');
+                \function_exists('Humbug\Acme\foo');
+                \function_exists('\Humbug\Acme\foo');
                 \function_exists('dump');
-                \function_exists('\\dump');
-                \function_exists('Humbug\\dump');
-                \function_exists('Humbug\\dump');
+                \function_exists('\dump');
+                \function_exists('Humbug\dump');
+                \function_exists('Humbug\dump');
                 \function_exists('var_dump');
-                \function_exists('\\var_dump');
-                \function_exists('Humbug\\var_dump');
-                \function_exists('Humbug\\var_dump');
+                \function_exists('\var_dump');
+                \function_exists('Humbug\var_dump');
+                \function_exists('Humbug\var_dump');
             }
 
             PHP,
@@ -175,18 +175,18 @@ return [
 
             namespace Humbug;
 
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\Acme\\foo');
-            \function_exists('Humbug\\dump');
-            \function_exists('Humbug\\dump');
-            \function_exists('Humbug\\dump');
-            \function_exists('Humbug\\dump');
+            \function_exists('Humbug\Acme\foo');
+            \function_exists('Humbug\Acme\foo');
+            \function_exists('Humbug\Acme\foo');
+            \function_exists('Humbug\Acme\foo');
+            \function_exists('Humbug\dump');
+            \function_exists('Humbug\dump');
+            \function_exists('Humbug\dump');
+            \function_exists('Humbug\dump');
             \function_exists('var_dump');
-            \function_exists('\\var_dump');
-            \function_exists('Humbug\\var_dump');
-            \function_exists('Humbug\\var_dump');
+            \function_exists('\var_dump');
+            \function_exists('Humbug\var_dump');
+            \function_exists('Humbug\var_dump');
 
             PHP,
     ),
@@ -214,18 +214,18 @@ return [
 
         namespace Humbug;
 
-        \function_exists('Acme\\foo' . '');
-        \function_exists('\\Acme\\foo' . '');
-        \function_exists('Humbug\\Acme\\foo' . '');
-        \function_exists('\\Humbug\\Acme\\foo' . '');
+        \function_exists('Acme\foo' . '');
+        \function_exists('\Acme\foo' . '');
+        \function_exists('Humbug\Acme\foo' . '');
+        \function_exists('\Humbug\Acme\foo' . '');
         \function_exists('dump' . '');
-        \function_exists('\\dump' . '');
-        \function_exists('Humbug\\dump' . '');
-        \function_exists('\\Humbug\\dump' . '');
+        \function_exists('\dump' . '');
+        \function_exists('Humbug\dump' . '');
+        \function_exists('\Humbug\dump' . '');
         \function_exists('var_dump' . '');
-        \function_exists('\\var_dump' . '');
-        \function_exists('Humbug\\var_dump' . '');
-        \function_exists('\\Humbug\\var_dump' . '');
+        \function_exists('\var_dump' . '');
+        \function_exists('Humbug\var_dump' . '');
+        \function_exists('\Humbug\var_dump' . '');
 
         PHP,
 ];

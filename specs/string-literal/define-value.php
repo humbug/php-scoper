@@ -32,10 +32,10 @@ return [
 
         namespace Humbug;
 
-        \define('Humbug\\X', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-        \define('Humbug\\X', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-        \define('Humbug\\X', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1');
-        \define('Humbug\\X', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1');
+        \define('Humbug\X', 'Humbug\Symfony\Component\Yaml\Ya_1');
+        \define('Humbug\X', 'Humbug\Symfony\Component\Yaml\Ya_1');
+        \define('Humbug\X', 'Humbug\Symfony\Component\Yaml\Ya_1');
+        \define('Humbug\X', 'Humbug\Symfony\Component\Yaml\Ya_1');
 
         PHP,
 ];

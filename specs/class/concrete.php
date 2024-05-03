@@ -62,7 +62,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
 
             PHP,
     ),
@@ -92,7 +92,7 @@ return [
                     {
                     }
                 }
-                \class_alias('Humbug\\A', 'A', \false);
+                \class_alias('Humbug\A', 'A', \false);
             }
 
             PHP,
@@ -114,7 +114,7 @@ return [
             class Normalizer
             {
             }
-            \class_alias('Humbug\\Normalizer', 'Normalizer', \false);
+            \class_alias('Humbug\Normalizer', 'Normalizer', \false);
 
             PHP,
     ),
@@ -190,7 +190,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            \class_alias('Humbug\Foo\A', 'Foo\A', \false);
 
             PHP,
     ),
@@ -221,7 +221,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            \class_alias('Humbug\Foo\A', 'Foo\A', \false);
 
             PHP,
     ),
@@ -346,7 +346,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            \class_alias('Humbug\Foo\A', 'Foo\A', \false);
             class B
             {
                 public function b()
@@ -373,7 +373,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\Bar\\B', 'Bar\\B', \false);
+            \class_alias('Humbug\Bar\B', 'Bar\B', \false);
             class C
             {
                 public function c()

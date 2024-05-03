@@ -91,7 +91,7 @@ return [
             class Bar
             {
             }
-            \class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
+            \class_alias('Humbug\X\Foo\Bar', 'X\Foo\Bar', \false);
             namespace Humbug\X;
 
             Foo\Bar::main();

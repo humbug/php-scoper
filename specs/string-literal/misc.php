@@ -50,8 +50,7 @@ return [
                 return \%2$s(func_get_args());
             }
         }
-        _PHP
-        , 'foo', 'bar');
+        _PHP, 'foo', 'bar');
 
         PHP,
 ];

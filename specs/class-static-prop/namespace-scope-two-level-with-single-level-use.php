@@ -162,7 +162,7 @@ return [
             class Bar
             {
             }
-            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            \class_alias('Humbug\Foo\Bar', 'Foo\Bar', \false);
             namespace Humbug\X;
 
             use Humbug\Foo;
@@ -205,7 +205,7 @@ return [
             class Bar
             {
             }
-            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            \class_alias('Humbug\Foo\Bar', 'Foo\Bar', \false);
             namespace Humbug\X;
 
             use Humbug\Foo;

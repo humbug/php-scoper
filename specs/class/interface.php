@@ -64,7 +64,7 @@ return [
             interface NewPhp20Interface
             {
             }
-            \class_alias('Humbug\\NewPhp20Interface', 'NewPhp20Interface', \false);
+            \class_alias('Humbug\NewPhp20Interface', 'NewPhp20Interface', \false);
 
             PHP,
     ),
@@ -89,7 +89,7 @@ return [
                 interface NewPhp20Interface
                 {
                 }
-                \class_alias('Humbug\\NewPhp20Interface', 'NewPhp20Interface', \false);
+                \class_alias('Humbug\NewPhp20Interface', 'NewPhp20Interface', \false);
             }
 
             PHP,
@@ -119,16 +119,16 @@ return [
             class C
             {
             }
-            \class_alias('Humbug\\C', 'C', \false);
+            \class_alias('Humbug\C', 'C', \false);
             class D
             {
             }
-            \class_alias('Humbug\\D', 'D', \false);
+            \class_alias('Humbug\D', 'D', \false);
             interface A extends C, D, \Iterator
             {
                 public function a();
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
 
             PHP,
     ),
@@ -237,7 +237,7 @@ return [
             {
                 public function a();
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            \class_alias('Humbug\Foo\A', 'Foo\A', \false);
 
             PHP,
     ),

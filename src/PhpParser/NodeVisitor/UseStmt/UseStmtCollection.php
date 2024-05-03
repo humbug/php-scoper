@@ -200,7 +200,7 @@ final class UseStmtCollection implements IteratorAggregate
         // use Foo
         // echo Foo\main();
         // ```
-        return 1 === count($name->parts);
+        return 1 === count($name->getParts());
     }
 
     private static function isConstantName(Name $name, ?Node $parentNode): bool
@@ -220,6 +220,6 @@ final class UseStmtCollection implements IteratorAggregate
         // use Foo
         // echo Foo\DUMMY_CONST;
         // ```
-        return 1 === count($name->parts);
+        return 1 === count($name->getParts());
     }
 }

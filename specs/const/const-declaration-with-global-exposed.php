@@ -37,7 +37,7 @@ return [
 
         \define('FOO_CONST', foo());
         \define('BAR_CONST', foo());
-        \define('Humbug\\Acme\\BAR_CONST', foo());
+        \define('Humbug\Acme\BAR_CONST', foo());
         \define(\FOO_CONST, foo());
         \define(\FOO_CONST, foo());
         \define(\Humbug\Acme\BAR_CONST, foo());
@@ -61,7 +61,7 @@ return [
             namespace {
                 const FOO_CONST = \foo();
                 \define('BAR_CONST', \foo());
-                \define('Acme\\BAR_CONST', \foo());
+                \define('Acme\BAR_CONST', \foo());
                 \define(\FOO_CONST, \foo());
                 \define(\FOO_CONST, \foo());
                 \define(\Acme\BAR_CONST, \foo());
@@ -92,7 +92,7 @@ return [
 
             \define('FOO_CONST', foo());
             \define('BAR_CONST', foo());
-            \define('Acme\\BAR_CONST', foo());
+            \define('Acme\BAR_CONST', foo());
             \define(\FOO_CONST, foo());
             \define(\FOO_CONST, foo());
             \define(\Acme\BAR_CONST, foo());
@@ -122,7 +122,7 @@ return [
 
             \define('FOO_CONST', foo());
             \define('BAR_CONST', foo());
-            \define('Acme\\BAR_CONST', foo());
+            \define('Acme\BAR_CONST', foo());
             \define(\FOO_CONST, foo());
             \define(\FOO_CONST, foo());
             \define(\Acme\BAR_CONST, foo());
@@ -148,7 +148,7 @@ return [
 
         const FOO_CONST = foo();
         define('BAR_CONST', foo());
-        define('Humbug\\Acme\\BAR_CONST', foo());
+        define('Humbug\Acme\BAR_CONST', foo());
         define(FOO_CONST, foo());
         define(\FOO_CONST, foo());
         define(\Humbug\Acme\FOO_CONST, foo());
@@ -175,7 +175,7 @@ return [
 
             const FOO_CONST = foo();
             define('BAR_CONST', foo());
-            define('Acme\\BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
             define(FOO_CONST, foo());
             define(\FOO_CONST, foo());
             define(\Acme\BAR_CONST, foo());
@@ -203,7 +203,7 @@ return [
 
             const FOO_CONST = foo();
             define('BAR_CONST', foo());
-            define('Acme\\BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
             define(FOO_CONST, foo());
             define(\FOO_CONST, foo());
             define(\Acme\BAR_CONST, foo());
@@ -229,9 +229,9 @@ return [
 
             namespace Humbug\Acme;
 
-            \define('Acme\\FOO_CONST', foo());
+            \define('Acme\FOO_CONST', foo());
             define('BAR_CONST', foo());
-            define('Acme\\BAR_CONST', foo());
+            define('Acme\BAR_CONST', foo());
             define(FOO_CONST, foo());
             define(\FOO_CONST, foo());
             define(\Acme\BAR_CONST, foo());

@@ -30,8 +30,8 @@ final readonly class UseStmtName
     public function contains(Name $resolvedName): bool
     {
         return self::arrayStartsWith(
-            $resolvedName->parts,
-            $this->name->parts,
+            $resolvedName->getParts(),
+            $this->name->getParts(),
         );
     }
 

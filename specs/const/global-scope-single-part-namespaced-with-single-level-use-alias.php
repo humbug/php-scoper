@@ -116,7 +116,7 @@ return [
             }
             namespace Humbug\Foo;
 
-            \define('Foo\\DUMMY_CONST', '');
+            \define('Foo\DUMMY_CONST', '');
             namespace Humbug;
 
             use Humbug\Foo as A;

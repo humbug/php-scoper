@@ -122,7 +122,7 @@ return [
                     E::f as private;
                 }
             }
-            \class_alias('Humbug\\B', 'B', \false);
+            \class_alias('Humbug\B', 'B', \false);
 
             PHP,
     ),

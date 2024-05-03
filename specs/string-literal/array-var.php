@@ -49,8 +49,8 @@ return [
 
         namespace Humbug;
 
-        $x = ['Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Closure', 'usedAttributes', 'FOO', 'PHP_EOL'];
-        (new X())->foo()(['Symfony\\Component\\Yaml\\Ya_1' => 'Symfony\\Component\\Yaml\\Ya_1', '\\Symfony\\Component\\Yaml\\Ya_1' => '\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1' => '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Closure', 'usedAttributes', 'FOO', 'PHP_EOL']);
+        $x = ['Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1', 'Closure', 'usedAttributes', 'FOO', 'PHP_EOL'];
+        (new X())->foo()(['Symfony\Component\Yaml\Ya_1' => 'Symfony\Component\Yaml\Ya_1', '\Symfony\Component\Yaml\Ya_1' => '\Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1', '\Humbug\Symfony\Component\Yaml\Ya_1' => '\Humbug\Symfony\Component\Yaml\Ya_1', 'Closure', 'usedAttributes', 'FOO', 'PHP_EOL']);
 
         PHP,
 
@@ -81,8 +81,8 @@ return [
 
         namespace Humbug;
 
-        $array = ['Humbug\\Acme\\locality' => 'Humbug\\Acme\\Foo', 'Humbug\\Acme\\postal_code' => 'Humbug\\Acme\\Bar'];
-        list('Acme\\postal_code' => $zipCode, 'Acme\\locality' => $locality) = $array;
+        $array = ['Humbug\Acme\locality' => 'Humbug\Acme\Foo', 'Humbug\Acme\postal_code' => 'Humbug\Acme\Bar'];
+        list('Acme\postal_code' => $zipCode, 'Acme\locality' => $locality) = $array;
 
         PHP,
 ];

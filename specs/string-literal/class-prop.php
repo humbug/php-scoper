@@ -36,10 +36,10 @@ return [
 
         class Foo
         {
-            private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            private $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            private $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            private $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            private $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            private $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
         }
 
         PHP,

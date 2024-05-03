@@ -124,11 +124,11 @@ return [
             interface B
             {
             }
-            \class_alias('Humbug\\B', 'B', \false);
+            \class_alias('Humbug\B', 'B', \false);
             interface C
             {
             }
-            \class_alias('Humbug\\C', 'C', \false);
+            \class_alias('Humbug\C', 'C', \false);
             new class
             {
                 public function test()
@@ -156,7 +156,7 @@ return [
                     };
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
 
             PHP,
     ),
@@ -199,11 +199,11 @@ return [
                 interface B
                 {
                 }
-                \class_alias('Humbug\\B', 'B', \false);
+                \class_alias('Humbug\B', 'B', \false);
                 interface C
                 {
                 }
-                \class_alias('Humbug\\C', 'C', \false);
+                \class_alias('Humbug\C', 'C', \false);
                 new class
                 {
                     public function test()
@@ -231,7 +231,7 @@ return [
                         };
                     }
                 }
-                \class_alias('Humbug\\A', 'A', \false);
+                \class_alias('Humbug\A', 'A', \false);
             }
 
             PHP,
@@ -278,7 +278,7 @@ return [
             interface C
             {
             }
-            \class_alias('Humbug\\C', 'C', \false);
+            \class_alias('Humbug\C', 'C', \false);
             new class
             {
                 public function test()
@@ -306,7 +306,7 @@ return [
                     };
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
 
             PHP,
     ),

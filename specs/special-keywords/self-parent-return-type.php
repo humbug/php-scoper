@@ -28,13 +28,13 @@ return [
             {
                 $this->name = $name;
             }
-            public function normalize() : self
+            public function normalize(): self
             {
                 $instance = clone $this;
                 $instance->name = \strtolower($this->name);
                 return $instance;
             }
-            public function getName() : string
+            public function getName(): string
             {
                 return $this->name;
             }
@@ -42,7 +42,7 @@ return [
 
         class B extends A {
 
-            public function normalize() : parent
+            public function normalize(): parent
             {
                 $instance = clone $this;
                 $instance->name = \strtoupper($this->name);
@@ -64,20 +64,20 @@ return [
             {
                 $this->name = $name;
             }
-            public function normalize() : self
+            public function normalize(): self
             {
                 $instance = clone $this;
                 $instance->name = \strtolower($this->name);
                 return $instance;
             }
-            public function getName() : string
+            public function getName(): string
             {
                 return $this->name;
             }
         }
         class B extends A
         {
-            public function normalize() : parent
+            public function normalize(): parent
             {
                 $instance = clone $this;
                 $instance->name = \strtoupper($this->name);
@@ -98,20 +98,20 @@ return [
                 {
                     $this->name = $name;
                 }
-                public function normalize() : self
+                public function normalize(): self
                 {
                     $instance = clone $this;
                     $instance->name = \strtolower($this->name);
                     return $instance;
                 }
-                public function getName() : string
+                public function getName(): string
                 {
                     return $this->name;
                 }
             }
 
             class B extends A {
-                public function normalize() : parent
+                public function normalize(): parent
                 {
                     $instance = clone $this;
                     $instance->name = strtoupper($this->name);
@@ -138,20 +138,20 @@ return [
             {
                 $this->name = $name;
             }
-            public function normalize() : self
+            public function normalize(): self
             {
                 $instance = clone $this;
                 $instance->name = \strtolower($this->name);
                 return $instance;
             }
-            public function getName() : string
+            public function getName(): string
             {
                 return $this->name;
             }
         }
         class B extends A
         {
-            public function normalize() : parent
+            public function normalize(): parent
             {
                 $instance = clone $this;
                 $instance->name = strtoupper($this->name);
