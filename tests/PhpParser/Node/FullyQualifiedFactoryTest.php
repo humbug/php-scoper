@@ -15,14 +15,16 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\Node;
 
 use PhpParser\Node\Name;
+use PhpParser\Node\Name\FullyQualified;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function str_replace;
 
 /**
- * @covers \Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory
  * @internal
  */
+#[CoversClass(FullyQualifiedFactory::class)]
 final class FullyQualifiedFactoryTest extends TestCase
 {
     #[DataProvider('fullyQualifiedNameProvider')]
@@ -64,9 +66,9 @@ final class FullyQualifiedFactoryTest extends TestCase
         }
     }
 
-    private static function toFullyQualified(Name $name): Name\FullyQualified
+    private static function toFullyQualified(Name $name): FullyQualified
     {
-        return new Name\FullyQualified(
+        return new FullyQualified(
             $name->toString(),
             $name->getAttributes(),
         );

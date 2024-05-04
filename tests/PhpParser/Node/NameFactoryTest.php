@@ -15,13 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\Node;
 
 use PhpParser\Node\Name;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\PhpParser\Node\NameFactory
  * @internal
  */
+#[CoversClass(NameFactory::class)]
 final class NameFactoryTest extends TestCase
 {
     #[DataProvider('nameProvider')]
