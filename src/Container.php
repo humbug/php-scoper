@@ -23,6 +23,7 @@ use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
 use PhpParser\Lexer;
+use PhpParser\Lexer\Emulative;
 use PhpParser\Parser;
 use PhpParser\Parser\Php7;
 use PhpParser\Parser\Php8;
@@ -88,7 +89,7 @@ final class Container
     private function createParser(): Parser
     {
         $version = PhpVersion::getNewestSupported();
-        $lexer = $version->isHostVersion() ? new Lexer() : new Lexer\Emulative($version);
+        $lexer = $version->isHostVersion() ? new Lexer() : new Emulative($version);
 
         return $version->id >= 80000
             ? new Php8($lexer, $version)
