@@ -22,7 +22,6 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use PhpParser\Node\UseItem;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor;
@@ -32,8 +31,6 @@ use function array_splice;
 use function array_values;
 use function count;
 use function current;
-use function PHPStan\dumpType;
-use function var_dump;
 
 /**
  * @private
@@ -184,47 +181,29 @@ final readonly class NodeTraverser implements NodeTraverserInterface
         );
     }
 
-    private static function createUseNode(UseItem $use, GroupUse $node): UseItem
+    private static function createUseNode(UseItem $use, GroupUse $groupUse): Use_
     {
-        $prefixedName = NameFactory::concat(
-            $node->prefix,
-            $use->name,
-            $use->name->getAttributes(),
-        );
+        $newUseItem = self::prefixName($use, $groupUse);
 
-        $newUse = new UseUse(
-            $prefixedName,
-            $use->alias,
-            $use->type,
-            $use->getAttributes(),
-        );
-
-        return new UseItem(
-            [$newUse],
-            $node->type,
-            $node->getAttributes(),
+        return new Use_(
+            [$newUseItem],
+            $groupUse->type,
+            $groupUse->getAttributes(),
         );
     }
 
-    private static function prefixName(UseItem $use, GroupUse $node): UseItem
+    private static function prefixName(UseItem $use, GroupUse $groupUse): UseItem
     {
         $prefixedName = NameFactory::concat(
-            $node->prefix,
+            $groupUse->prefix,
             $use->name,
-
         );
 
-        $newUse = new UseUse(
+        return new UseItem(
             $prefixedName,
             $use->alias,
             $use->type,
             $use->getAttributes(),
-        );
-
-        return new UseItem(
-            [$newUse],
-            $node->type,
-            $node->getAttributes(),
         );
     }
 }
