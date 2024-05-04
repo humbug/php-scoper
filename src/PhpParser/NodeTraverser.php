@@ -181,7 +181,6 @@ final readonly class NodeTraverser implements NodeTraverserInterface
                     NameFactory::concat(
                         $node->prefix,
                         $use->name,
-                        $use->name->getAttributes(),
                     ),
                     $use->alias,
                     $use->type,
