@@ -20,7 +20,6 @@ use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Lexer;
 use PhpParser\Parser;
 
 final class DummyScoperFactory extends ScoperFactory
@@ -35,7 +34,6 @@ final class DummyScoperFactory extends ScoperFactory
             $parser,
             $enrichedReflectorFactory,
             $printer,
-            new Lexer(),
         );
     }
 

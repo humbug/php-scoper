@@ -70,7 +70,7 @@ return [
             case DRAFT;
             case PUBLISHED;
             case ARCHIVED;
-            public function color() : string
+            public function color(): string
             {
                 return match ($this) {
                     Status::DRAFT => 'grey',

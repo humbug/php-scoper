@@ -53,7 +53,9 @@ class ContainerTest extends TestCase
     public static function provideServiceGetter(): iterable
     {
         foreach ((new ReflectionClass(Container::class))->getMethods() as $methodReflection) {
-            yield [$methodReflection->getName()];
+            if ($methodReflection->isPublic()) {
+                yield [$methodReflection->getName()];
+            }
         }
     }
 }

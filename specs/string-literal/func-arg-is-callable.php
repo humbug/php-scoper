@@ -38,15 +38,15 @@ return [
 
         namespace Humbug;
 
-        \is_callable('Humbug\\sodiumCompatAutoloader');
-        \is_callable('Humbug\\Sodium\\compatAutoloader');
-        \is_callable(['Humbug\\Swift', 'autoload']);
-        \is_callable(['Humbug\\Swift', 'autoload']);
-        \is_callable(['Humbug\\Swift', 'autoload']);
-        \is_callable(['Humbug\\Swift', 'autoload']);
-        \is_callable(['Humbug\\Swift', 'autoload']);
+        \is_callable('Humbug\sodiumCompatAutoloader');
+        \is_callable('Humbug\Sodium\compatAutoloader');
+        \is_callable(['Humbug\Swift', 'autoload']);
+        \is_callable(['Humbug\Swift', 'autoload']);
+        \is_callable(['Humbug\Swift', 'autoload']);
+        \is_callable(['Humbug\Swift', 'autoload']);
+        \is_callable(['Humbug\Swift', 'autoload']);
         \is_callable(['DateTime', 'autoload']);
-        \is_callable(['\\DateTime', 'autoload']);
+        \is_callable(['\DateTime', 'autoload']);
 
         PHP,
 
@@ -65,9 +65,9 @@ return [
 
             namespace Humbug;
 
-            \is_callable(['Humbug\\Swift', 'autoload']);
-            \is_callable(['Humbug\\Swift', 'autoload']);
-            \is_callable(['Humbug\\Swift', 'autoload']);
+            \is_callable(['Humbug\Swift', 'autoload']);
+            \is_callable(['Humbug\Swift', 'autoload']);
+            \is_callable(['Humbug\Swift', 'autoload']);
             \is_callable(['DateTime', 'autoload']);
 
             PHP,
@@ -85,7 +85,7 @@ return [
 
             namespace Humbug;
 
-            \is_callable('Humbug\\sodiumCompatAutoloader');
+            \is_callable('Humbug\sodiumCompatAutoloader');
 
             PHP,
     ),
@@ -108,8 +108,8 @@ return [
 
             namespace {
                 \is_callable(['Swift', 'autoload']);
-                \is_callable(['Humbug\\Swift', 'autoload']);
-                \is_callable(['Humbug\\Swift', 'autoload']);
+                \is_callable(['Humbug\Swift', 'autoload']);
+                \is_callable(['Humbug\Swift', 'autoload']);
                 \is_callable(['DateTime', 'autoload']);
             }
 
@@ -130,7 +130,7 @@ return [
             <?php
 
             namespace {
-                \is_callable('Sodium\\CompatAutoloader');
+                \is_callable('Sodium\CompatAutoloader');
             }
 
             PHP,
@@ -151,9 +151,9 @@ return [
 
             namespace Humbug;
 
-            \is_callable(['Humbug\\Swift', 'autoload']);
-            \is_callable(['Humbug\\Swift', 'autoload']);
-            \is_callable(['Humbug\\Swift', 'autoload']);
+            \is_callable(['Humbug\Swift', 'autoload']);
+            \is_callable(['Humbug\Swift', 'autoload']);
+            \is_callable(['Humbug\Swift', 'autoload']);
             \is_callable(['DateTime', 'autoload']);
 
             PHP,
@@ -227,7 +227,7 @@ return [
             class Ya_1
             {
             }
-            \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
+            \class_alias('Humbug\Symfony\Component\Yaml\Ya_1', 'Symfony\Component\Yaml\Ya_1', \false);
             namespace Humbug;
 
             \is_callable([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);

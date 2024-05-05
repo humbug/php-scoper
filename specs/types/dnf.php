@@ -52,10 +52,10 @@ return [
 
         namespace Humbug;
 
-        function test((A&B)|(X&Y) $a) : (A&B)|(X&Y)
+        function test((A&B)|(X&Y) $a): (A&B)|(X&Y)
         {
         }
-        function test((\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y) $a) : (\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y)
+        function test((\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y) $a): (\Humbug\U\A&\Humbug\U\B)|(\Humbug\U\X&\Humbug\U\Y)
         {
         }
 

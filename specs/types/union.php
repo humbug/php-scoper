@@ -24,13 +24,13 @@ return [
 
         class X
         {
-            public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+            public function method1(Y|Z $a, null|Y $b): null|Y|Z
             {
             }
-            public function method2(?Y $b) : ?Z
+            public function method2(?Y $b): ?Z
             {
             }
-            public function method3(self|null $b) : static|null
+            public function method3(self|null $b): static|null
             {
             }
         }
@@ -42,13 +42,13 @@ return [
 
         class X
         {
-            public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+            public function method1(Y|Z $a, null|Y $b): null|Y|Z
             {
             }
-            public function method2(?Y $b) : ?Z
+            public function method2(?Y $b): ?Z
             {
             }
-            public function method3(self|null $b) : static|null
+            public function method3(self|null $b): static|null
             {
             }
         }
@@ -58,10 +58,10 @@ return [
     'Function casts' => <<<'PHP'
         <?php
 
-        function fun1(Y|Z $a, null|Y $b) : null|Y|Z
+        function fun1(Y|Z $a, null|Y $b): null|Y|Z
         {
         }
-        function fun2(?Y $b) : ?Z
+        function fun2(?Y $b): ?Z
         {
         }
 
@@ -70,10 +70,10 @@ return [
 
         namespace Humbug;
 
-        function fun1(Y|Z $a, null|Y $b) : null|Y|Z
+        function fun1(Y|Z $a, null|Y $b): null|Y|Z
         {
         }
-        function fun2(?Y $b) : ?Z
+        function fun2(?Y $b): ?Z
         {
         }
 
@@ -111,13 +111,13 @@ return [
             private null|Y|Z $x;
             private ?X $y;
             private null|self $z;
-            public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+            public function method1(Y|Z $a, null|Y $b): null|Y|Z
             {
             }
-            public function method2(?Y $b) : ?Z
+            public function method2(?Y $b): ?Z
             {
             }
-            public function method3(self|null $b) : static|null
+            public function method3(self|null $b): static|null
             {
             }
         }
@@ -132,13 +132,13 @@ return [
             private null|Y|Z $x;
             private ?X $y;
             private null|self $z;
-            public function method1(Y|Z $a, null|Y $b) : null|Y|Z
+            public function method1(Y|Z $a, null|Y $b): null|Y|Z
             {
             }
-            public function method2(?Y $b) : ?Z
+            public function method2(?Y $b): ?Z
             {
             }
-            public function method3(self|null $b) : static|null
+            public function method3(self|null $b): static|null
             {
             }
         }
@@ -150,9 +150,9 @@ return [
 
         interface X
         {
-            public function method1(Y|Z $a, null|Y $b) : null|Y|Z;
-            public function method2(?Y $b) : ?Z;
-            public function method3(self|null $b) : static|null;
+            public function method1(Y|Z $a, null|Y $b): null|Y|Z;
+            public function method2(?Y $b): ?Z;
+            public function method3(self|null $b): static|null;
         }
 
         ----
@@ -162,9 +162,9 @@ return [
 
         interface X
         {
-            public function method1(Y|Z $a, null|Y $b) : null|Y|Z;
-            public function method2(?Y $b) : ?Z;
-            public function method3(self|null $b) : static|null;
+            public function method1(Y|Z $a, null|Y $b): null|Y|Z;
+            public function method2(?Y $b): ?Z;
+            public function method3(self|null $b): static|null;
         }
 
         PHP,
@@ -174,7 +174,7 @@ return [
 
         interface X
         {
-            public function method1(string|int $b) : string|int;
+            public function method1(string|int $b): string|int;
         }
 
         ----
@@ -184,7 +184,7 @@ return [
 
         interface X
         {
-            public function method1(string|int $b) : string|int;
+            public function method1(string|int $b): string|int;
         }
 
         PHP,

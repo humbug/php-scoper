@@ -37,7 +37,7 @@ return [
         $x = '
         <?php
 
-        use Acme\\Foo;
+        use Acme\Foo;
 
         ';
 
@@ -88,8 +88,7 @@ return [
 
         use Humbug\Acme\Foo;
 
-        PHP_NOWDOC
-        ;
+        PHP_NOWDOC;
 
         PHP,
 
@@ -107,8 +106,7 @@ return [
 
         $x = <<<'PHP_NOWDOC'
         Not.php
-        PHP_NOWDOC
-        ;
+        PHP_NOWDOC;
 
         PHP,
 
@@ -130,8 +128,7 @@ return [
         <?php
 
         static foo() {}
-        PHP_NOWDOC
-        ;
+        PHP_NOWDOC;
 
         PHP,
 
@@ -147,8 +144,7 @@ return [
         namespace Humbug;
 
         $x = <<<'PHP_NOWDOC'
-        PHP_NOWDOC
-        ;
+        PHP_NOWDOC;
 
         PHP,
 
@@ -172,8 +168,7 @@ return [
 
         use Acme\\Foo;
 
-        PHP_HEREDOC
-        ;
+        PHP_HEREDOC;
 
         PHP,
 ];

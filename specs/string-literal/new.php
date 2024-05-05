@@ -38,13 +38,13 @@ return [
         namespace Humbug;
 
         new X('Yaml', ['Yaml']);
-        new X('\\Yaml', ['\\Yaml']);
+        new X('\Yaml', ['\Yaml']);
         new X('Closure', ['Closure']);
-        new X('\\Closure', ['\\Closure']);
-        new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
-        new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
-        new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
-        new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+        new X('\Closure', ['\Closure']);
+        new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
+        new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
+        new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
+        new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
 
         PHP,
 
@@ -64,11 +64,11 @@ return [
 
             namespace Humbug;
 
-            new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1l', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1l']);
-            new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
-            new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
-            new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
-            new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+            new X('Humbug\Symfony\Component\Yaml\Ya_1l', ['Humbug\Symfony\Component\Yaml\Ya_1l']);
+            new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
+            new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
+            new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
+            new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
 
             PHP,
     ),
@@ -89,11 +89,11 @@ return [
 
             namespace Humbug;
 
-            new X('Humbug\\Symfony\\Yaml', ['Humbug\\Symfony\\Yaml']);
-            new X('Symfony\\Component\\Yaml\\Ya_1', ['Symfony\\Component\\Yaml\\Ya_1']);
-            new X('\\Symfony\\Component\\Yaml\\Ya_1', ['\\Symfony\\Component\\Yaml\\Ya_1']);
-            new X('Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
-            new X('\\Humbug\\Symfony\\Component\\Yaml\\Ya_1', ['\\Humbug\\Symfony\\Component\\Yaml\\Ya_1']);
+            new X('Humbug\Symfony\Yaml', ['Humbug\Symfony\Yaml']);
+            new X('Symfony\Component\Yaml\Ya_1', ['Symfony\Component\Yaml\Ya_1']);
+            new X('\Symfony\Component\Yaml\Ya_1', ['\Symfony\Component\Yaml\Ya_1']);
+            new X('Humbug\Symfony\Component\Yaml\Ya_1', ['Humbug\Symfony\Component\Yaml\Ya_1']);
+            new X('\Humbug\Symfony\Component\Yaml\Ya_1', ['\Humbug\Symfony\Component\Yaml\Ya_1']);
 
             PHP,
     ),
@@ -109,8 +109,8 @@ return [
 
         namespace Humbug;
 
-        new X('Symfony\\Component' . '\\Yaml\\Ya_1', ['Symfony\\Component' . '\\Yaml\\Ya_1']);
-        new X('\\Symfony\\Component' . '\\Yaml\\Ya_1', ['\\Symfony\\Component' . '\\Yaml\\Ya_1']);
+        new X('Symfony\Component' . '\Yaml\Ya_1', ['Symfony\Component' . '\Yaml\Ya_1']);
+        new X('\Symfony\Component' . '\Yaml\Ya_1', ['\Symfony\Component' . '\Yaml\Ya_1']);
 
         PHP,
 
@@ -170,7 +170,7 @@ return [
             class Ya_1
             {
             }
-            \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
+            \class_alias('Humbug\Symfony\Component\Yaml\Ya_1', 'Symfony\Component\Yaml\Ya_1', \false);
             namespace Humbug;
 
             new X(\Humbug\Symfony\Component\Yaml\Ya_1::class, [\Humbug\Symfony\Component\Yaml\Ya_1::class]);

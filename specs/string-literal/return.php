@@ -60,16 +60,16 @@ return [
         namespace Humbug;
 
         function () {
-            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            return 'Humbug\Symfony\Component\Yaml\Ya_1';
         };
         function () {
-            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            return 'Humbug\Symfony\Component\Yaml\Ya_1';
         };
         function () {
-            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            return 'Humbug\Symfony\Component\Yaml\Ya_1';
         };
         function () {
-            return 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            return 'Humbug\Symfony\Component\Yaml\Ya_1';
         };
         function () {
             return 'Closure';

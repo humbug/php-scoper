@@ -72,13 +72,13 @@ return [
 
         namespace Humbug;
 
-        (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+        (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
         })();
-        (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+        (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
         })();
-        (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+        (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
         })();
-        (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+        (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
         })();
         (function ($x = 'DateTime') {
         })();
@@ -88,13 +88,13 @@ return [
         })();
         (function ($x = ['Swift', 'autoload']) {
         })();
-        (static function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+        (static function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
         })();
-        (static function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+        (static function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
         })();
-        (static function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+        (static function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
         })();
-        (static function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+        (static function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
         })();
         (static function ($x = 'DateTime') {
         })();
@@ -104,25 +104,25 @@ return [
         })();
         (static function ($x = ['Swift', 'autoload']) {
         })();
-        (fn($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') => null)();
-        (fn($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') => null)();
-        (fn($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') => null)();
-        (fn($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') => null)();
+        (fn($x = 'Humbug\Symfony\Component\Yaml\Ya_1') => null)();
+        (fn($x = 'Humbug\Symfony\Component\Yaml\Ya_1') => null)();
+        (fn($x = 'Humbug\Symfony\Component\Yaml\Ya_1') => null)();
+        (fn($x = 'Humbug\Symfony\Component\Yaml\Ya_1') => null)();
         (fn($x = 'DateTime') => null)();
         (fn($x = 'Swift') => null)();
         (fn($x = ['DateTime', 'autoload']) => null)();
         (fn($x = ['Swift', 'autoload']) => null)();
-        (static fn($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') => null)();
-        (static fn($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') => null)();
-        (static fn($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') => null)();
-        (static fn($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') => null)();
+        (static fn($x = 'Humbug\Symfony\Component\Yaml\Ya_1') => null)();
+        (static fn($x = 'Humbug\Symfony\Component\Yaml\Ya_1') => null)();
+        (static fn($x = 'Humbug\Symfony\Component\Yaml\Ya_1') => null)();
+        (static fn($x = 'Humbug\Symfony\Component\Yaml\Ya_1') => null)();
         (static fn($x = 'DateTime') => null)();
         (static fn($x = 'Swift') => null)();
         (static fn($x = ['DateTime', 'autoload']) => null)();
         (static fn($x = ['Swift', 'autoload']) => null)();
         ($this->colorize)('fg-green', '✔');
         ($this->colorize)(['Soft', 'autoload']);
-        ($this->colorize)(['\\Soft', 'autoload']);
+        ($this->colorize)(['\Soft', 'autoload']);
 
         PHP,
 
@@ -146,13 +146,13 @@ return [
 
             namespace Humbug;
 
-            (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+            (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
             })();
-            (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+            (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
             })();
-            (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+            (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
             })();
-            (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+            (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
             })();
             (function ($x = 'DateTime') {
             })();
@@ -215,13 +215,13 @@ return [
             <?php
 
             namespace {
-                (function ($x = 'Symfony\\Component\\Yaml\\Ya_1') {
+                (function ($x = 'Symfony\Component\Yaml\Ya_1') {
                 })();
-                (function ($x = '\\Symfony\\Component\\Yaml\\Ya_1') {
+                (function ($x = '\Symfony\Component\Yaml\Ya_1') {
                 })();
-                (function ($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+                (function ($x = 'Humbug\Symfony\Component\Yaml\Ya_1') {
                 })();
-                (function ($x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1') {
+                (function ($x = '\Humbug\Symfony\Component\Yaml\Ya_1') {
                 })();
                 (function ($x = 'DateTime') {
                 })();
@@ -309,7 +309,7 @@ return [
             class Ya_1
             {
             }
-            \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
+            \class_alias('Humbug\Symfony\Component\Yaml\Ya_1', 'Symfony\Component\Yaml\Ya_1', \false);
             namespace Humbug;
 
             (function ($x = \Humbug\Symfony\Component\Yaml\Ya_1::class) {

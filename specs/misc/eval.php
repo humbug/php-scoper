@@ -39,7 +39,7 @@ return [
         <?php
         namespace Humbug;
 
-        use Humbug\\Acme\\Foo;
+        use Humbug\Acme\Foo;
         ');
 
         PHP,
@@ -102,16 +102,14 @@ return [
 
         use Humbug\Acme\Foo;
 
-        PHP_NOWDOC
-        );
+        PHP_NOWDOC);
         eval(<<<'PHP_NOWDOC'
         <?php
 
         namespace Humbug;
 
         use Humbug\Acme\Foo;
-        PHP_NOWDOC
-        );
+        PHP_NOWDOC);
 
         PHP,
 
@@ -130,8 +128,7 @@ return [
 
         eval(<<<'PHP_NOWDOC'
         Not.php
-        PHP_NOWDOC
-        );
+        PHP_NOWDOC);
 
         PHP,
 
@@ -158,8 +155,7 @@ return [
 
         use Humbug\\Acme\\Foo;
 
-        PHP_HEREDOC
-        );
+        PHP_HEREDOC);
 
         PHP,
 
@@ -186,7 +182,7 @@ return [
 
             eval('<?php
 
-            namespace Humbug\\Acme;
+            namespace Humbug\Acme;
 
             function foo()
             {

@@ -38,13 +38,13 @@ return [
         namespace Humbug;
 
         const X = 'Yaml';
-        const X = '\\Yaml';
+        const X = '\Yaml';
         const X = 'Closure';
-        const X = '\\Closure';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        const X = '\Closure';
+        const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+        const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+        const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+        const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
 
         PHP,
 
@@ -64,11 +64,11 @@ return [
 
             namespace Humbug;
 
-            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1l';
-            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1l';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
 
             PHP,
     ),
@@ -89,11 +89,11 @@ return [
 
             namespace Humbug;
 
-            const X = 'Humbug\\Symfony\\Yaml';
-            const X = 'Symfony\\Component\\Yaml\\Ya_1';
-            const X = '\\Symfony\\Component\\Yaml\\Ya_1';
-            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = 'Humbug\Symfony\Yaml';
+            const X = 'Symfony\Component\Yaml\Ya_1';
+            const X = '\Symfony\Component\Yaml\Ya_1';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            const X = '\Humbug\Symfony\Component\Yaml\Ya_1';
 
             PHP,
     ),
@@ -109,8 +109,8 @@ return [
 
         namespace Humbug;
 
-        const X = 'Symfony\\Component' . '\\Yaml\\Ya_1';
-        const X = '\\Symfony\\Component' . '\\Yaml\\Ya_1';
+        const X = 'Symfony\Component' . '\Yaml\Ya_1';
+        const X = '\Symfony\Component' . '\Yaml\Ya_1';
 
         PHP,
 
@@ -170,7 +170,7 @@ return [
             class Ya_1
             {
             }
-            \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
+            \class_alias('Humbug\Symfony\Component\Yaml\Ya_1', 'Symfony\Component\Yaml\Ya_1', \false);
             namespace Humbug;
 
             const X = \Humbug\Symfony\Component\Yaml\Ya_1::class;

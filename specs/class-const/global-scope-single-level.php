@@ -56,7 +56,7 @@ return [
                 class Command
                 {
                 }
-                \class_alias('Humbug\\Command', 'Command', \false);
+                \class_alias('Humbug\Command', 'Command', \false);
                 \Command::MAIN_CONST;
             }
 

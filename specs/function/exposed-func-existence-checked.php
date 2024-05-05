@@ -29,7 +29,7 @@ return [
 
         namespace Humbug;
 
-        \function_exists('Humbug\\main');
+        \function_exists('Humbug\main');
 
         PHP,
 
@@ -47,7 +47,7 @@ return [
 
             namespace Humbug;
 
-            \function_exists('Humbug\\main');
+            \function_exists('Humbug\main');
 
             PHP,
     ),
@@ -66,7 +66,7 @@ return [
 
             namespace Humbug;
 
-            \function_exists('Humbug\\main');
+            \function_exists('Humbug\main');
 
             PHP,
     ),
@@ -80,7 +80,7 @@ return [
 
         namespace Humbug;
 
-        \function_exists('Humbug\\main');
+        \function_exists('Humbug\main');
 
         PHP,
 
@@ -100,7 +100,7 @@ return [
 
             namespace Humbug\Acme;
 
-            function_exists('Humbug\\Acme\\main');
+            function_exists('Humbug\Acme\main');
 
             PHP,
     ),
@@ -118,7 +118,7 @@ return [
 
             namespace Acme;
 
-            function_exists('Acme\\main');
+            function_exists('Acme\main');
 
             PHP,
     ),

@@ -38,7 +38,7 @@ return [
 
         class Foo
         {
-            const X = ['Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Humbug\\Symfony\\Component\\Yaml\\Ya_1' => 'Humbug\\Symfony\\Component\\Yaml\\Ya_1'];
+            const X = ['Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1', 'Humbug\Symfony\Component\Yaml\Ya_1' => 'Humbug\Symfony\Component\Yaml\Ya_1'];
         }
 
         PHP,

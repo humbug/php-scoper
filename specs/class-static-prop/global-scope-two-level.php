@@ -91,7 +91,7 @@ return [
             class Command
             {
             }
-            \class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
+            \class_alias('Humbug\PHPUnit\Command', 'PHPUnit\Command', \false);
             namespace Humbug;
 
             \Humbug\PHPUnit\Command::$mainStaticProp;
@@ -122,7 +122,7 @@ return [
             class Command
             {
             }
-            \class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
+            \class_alias('Humbug\PHPUnit\Command', 'PHPUnit\Command', \false);
             namespace Humbug;
 
             \Humbug\PHPUnit\Command::$mainStaticProp;

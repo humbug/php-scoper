@@ -107,7 +107,7 @@ return [
             class B extends A
             {
             }
-            \class_alias('Humbug\\Foo\\B', 'Foo\\B', \false);
+            \class_alias('Humbug\Foo\B', 'Foo\B', \false);
 
             PHP,
     ),

@@ -75,13 +75,13 @@ return [
             class Bar
             {
             }
-            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            \class_alias('Humbug\Foo\Bar', 'Foo\Bar', \false);
             namespace Humbug\Foo\Bar;
 
             class Poz
             {
             }
-            \class_alias('Humbug\\Foo\\Bar\\Poz', 'Foo\\Bar\\Poz', \false);
+            \class_alias('Humbug\Foo\Bar\Poz', 'Foo\Bar\Poz', \false);
             namespace Humbug;
 
             use Humbug\Foo as X;
@@ -271,47 +271,47 @@ return [
             class Bar
             {
             }
-            \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
+            \class_alias('Humbug\Foo\Bar', 'Foo\Bar', \false);
             namespace Humbug\Foo\Bar;
 
             class Poz
             {
             }
-            \class_alias('Humbug\\Foo\\Bar\\Poz', 'Foo\\Bar\\Poz', \false);
+            \class_alias('Humbug\Foo\Bar\Poz', 'Foo\Bar\Poz', \false);
             namespace Humbug\A;
 
             class Aoo
             {
             }
-            \class_alias('Humbug\\A\\Aoo', 'A\\Aoo', \false);
+            \class_alias('Humbug\A\Aoo', 'A\Aoo', \false);
             class Foo
             {
             }
-            \class_alias('Humbug\\A\\Foo', 'A\\Foo', \false);
+            \class_alias('Humbug\A\Foo', 'A\Foo', \false);
             namespace Humbug\A\Foo;
 
             class Bar
             {
             }
-            \class_alias('Humbug\\A\\Foo\\Bar', 'A\\Foo\\Bar', \false);
+            \class_alias('Humbug\A\Foo\Bar', 'A\Foo\Bar', \false);
             namespace Humbug\A\Foo\Bar;
 
             class Poz
             {
             }
-            \class_alias('Humbug\\A\\Foo\\Bar\\Poz', 'A\\Foo\\Bar\\Poz', \false);
+            \class_alias('Humbug\A\Foo\Bar\Poz', 'A\Foo\Bar\Poz', \false);
             namespace Humbug\A\Aoo;
 
             class Aoz
             {
             }
-            \class_alias('Humbug\\A\\Aoo\\Aoz', 'A\\Aoo\\Aoz', \false);
+            \class_alias('Humbug\A\Aoo\Aoz', 'A\Aoo\Aoz', \false);
             namespace Humbug\A\Aoo\Aoz;
 
             class Poz
             {
             }
-            \class_alias('Humbug\\A\\Aoo\\Aoz\\Poz', 'A\\Aoo\\Aoz\\Poz', \false);
+            \class_alias('Humbug\A\Aoo\Aoz\Poz', 'A\Aoo\Aoz\Poz', \false);
             namespace Humbug\A;
 
             use Humbug\Foo as X;
