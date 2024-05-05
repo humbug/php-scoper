@@ -249,19 +249,20 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $isConstantNode = self::isConstantNode($string);
 
-        if (!$isConstantNode) {
-            if ('define' === $functionName
-                && $this->belongsToTheGlobalNamespace($string)
-            ) {
-                return $string;
-            }
-
-            return $this->enrichedReflector->isClassExcluded($normalizedValue)
+        if ($isConstantNode) {
+            return $this->enrichedReflector->isExposedConstant($normalizedValue)
                 ? $string
                 : $this->createPrefixedString($string);
         }
 
-        return $this->enrichedReflector->isExposedConstant($normalizedValue)
+        if ('define' === $functionName
+            && $this->belongsToTheGlobalNamespace($string)
+        ) {
+            return $string;
+        }
+
+        return $this->enrichedReflector->isClassExcluded($normalizedValue)
+            || $this->enrichedReflector->isFunctionExcluded($normalizedValue)
             ? $string
             : $this->createPrefixedString($string);
     }

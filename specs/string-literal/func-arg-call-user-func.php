@@ -23,6 +23,7 @@ return [
     'FQCN string argument' => <<<'PHP'
         <?php
 
+        call_user_func_array('sprintf', []);
         call_user_func_array('sodiumCompatAutoloader', []);
         call_user_func_array('Sodium\compatAutoloader', []);
         call_user_func_array(['Swift', 'autoload'], []);
@@ -38,6 +39,7 @@ return [
 
         namespace Humbug;
 
+        \call_user_func_array('sprintf', []);
         \call_user_func_array('Humbug\sodiumCompatAutoloader', []);
         \call_user_func_array('Humbug\Sodium\compatAutoloader', []);
         \call_user_func_array(['Humbug\Swift', 'autoload'], []);
