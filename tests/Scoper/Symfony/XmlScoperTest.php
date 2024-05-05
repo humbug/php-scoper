@@ -387,6 +387,45 @@ class XmlScoperTest extends TestCase
             [],
         ];
 
+        yield 'class-like pattern' => [
+            <<<'XML'
+                <!-- config/services.xml -->
+                <?xml version="1.0" encoding="UTF-8" ?>
+                <container xmlns="http://symfony.com/schema/dic/services"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/services
+                        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+                    <services>
+                        <service id="App\Mail\PhpMailer" />
+                        <service id="1\2" />
+
+                        <service id="s1" class="App\Mail\PhpMailer" alias="App\Mail\PhpMailer" />
+                        <service id="s2" class="1\2" alias="1\2" />
+                    </services>
+                </container>
+                XML,
+            SymbolsConfiguration::create(),
+            <<<'XML'
+                <!-- config/services.xml -->
+                <?xml version="1.0" encoding="UTF-8" ?>
+                <container xmlns="http://symfony.com/schema/dic/services"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/services
+                        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+                    <services>
+                        <service id="Humbug\App\Mail\PhpMailer" />
+                        <service id="1\2" />
+
+                        <service id="s1" class="Humbug\App\Mail\PhpMailer" alias="Humbug\App\Mail\PhpMailer" />
+                        <service id="s2" class="1\2" alias="1\2" />
+                    </services>
+                </container>
+                XML,
+            [],
+        ];
+
         yield 'service with argument' => [
             <<<'XML'
                 <!-- app/config/services.xml -->

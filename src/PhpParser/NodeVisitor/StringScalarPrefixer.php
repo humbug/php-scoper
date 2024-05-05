@@ -102,7 +102,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         /^
             (\\)?               # leading backslash
             (
-                [\p{L}_\d]+     # class-like name
+                [\p{L}_]        # class-like name first character
+                [\p{L}_\d]*     # class-like name
                 \\              # separator
             )*
             [\p{L}_\d]+         # class-like name

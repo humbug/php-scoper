@@ -152,6 +152,11 @@ class YamlScoperTest extends TestCase
                     Symfony\Component\Console\Input\InputInterface:
                         alias: 'Symfony\Component\Console\Input\ArgvInput'
                     Symfony\Component\Console\Output\OutputInterface: '@Symfony\Component\Console\Output\ConsoleOutput'
+                    1\2: ~
+                    Service2:
+                        class: 1\2
+                    Service3:
+                        alias: 1\2
                 YAML,
             SymbolsConfiguration::create(),
             <<<'YAML'
@@ -160,6 +165,11 @@ class YamlScoperTest extends TestCase
                     Humbug\Symfony\Component\Console\Input\InputInterface:
                         alias: 'Humbug\Symfony\Component\Console\Input\ArgvInput'
                     Humbug\Symfony\Component\Console\Output\OutputInterface: '@Humbug\Symfony\Component\Console\Output\ConsoleOutput'
+                    1\2: ~
+                    Service2:
+                        class: 1\2
+                    Service3:
+                        alias: 1\2
                 YAML,
             [],
         ];

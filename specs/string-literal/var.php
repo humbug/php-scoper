@@ -31,6 +31,7 @@ return [
         $x = '\\Symfony\\Component\\Yaml\\Ya_1';
         $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
         $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        $x = '1\2';
 
         ----
         <?php
@@ -45,6 +46,7 @@ return [
         $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
         $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
         $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+        $x = '1\2';
 
         PHP,
 

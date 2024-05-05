@@ -35,7 +35,7 @@ final readonly class XmlScoper implements Scoper
 {
     private const XML_EXTENSION_REGEX = '/\.xml$/i';
     private const NAMESPACE_PATTERN = '/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/';
-    private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_\d]+(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_\d]+(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
+    private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_][\p{L}_\d]*(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_][\p{L}_\d]*(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
     public function __construct(
         private Scoper $decoratedScoper,
