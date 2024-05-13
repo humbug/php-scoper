@@ -5,7 +5,9 @@ declare(strict_types=1);
 use PhpParser\NodeDumper;
 use PhpParser\ParserFactory;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require file_exists(__DIR__.'/vendor/scoper-autoload.php')
+    ? __DIR__.'/vendor/scoper-autoload.php'
+    : __DIR__.'/vendor/autoload.php';
 
 $code = <<<'CODE'
 <?php
