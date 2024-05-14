@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper\Configuration;
 use Fidry\FileSystem\FS;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
@@ -60,7 +59,6 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         self::assertSame([], $configuration->getFilesWithContents());
         self::assertEquals(
             new PatcherChain([
-                new ComposerPatcher(),
                 new SymfonyParentTraitPatcher(),
                 new SymfonyPatcher(),
             ]),
@@ -141,7 +139,6 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         );
         self::assertEquals(
             new PatcherChain([
-                new ComposerPatcher(),
                 new SymfonyParentTraitPatcher(),
                 new SymfonyPatcher(),
             ]),

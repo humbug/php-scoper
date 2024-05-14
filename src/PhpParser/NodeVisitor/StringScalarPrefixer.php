@@ -21,6 +21,7 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Const_;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
@@ -174,6 +175,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             $parentNode instanceof Assign
                 || $parentNode instanceof Param
                 || $parentNode instanceof Const_
+                || $parentNode instanceof Expr
                 || $parentNode instanceof PropertyProperty
                 || $parentNode instanceof Return_
         )) {
