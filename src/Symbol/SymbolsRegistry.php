@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Symbol;
 
 use Countable;
 use PhpParser\Node\Name\FullyQualified;
+use function array_map;
 use function array_values;
 use function count;
 use function serialize;
@@ -35,7 +36,7 @@ final class SymbolsRegistry implements Countable
 
     /**
      * @param array<array{string|FullyQualified, string|FullyQualified}> $functions
-     * @param array<array{string|FullyQualified, string|FullyQualified}> $classes
+     * @param array<array{string|FullyQualified, string|FullyQualified, array<string|FullyQualified>}> $classes
      */
     public static function create(
         array $functions = [],
@@ -50,10 +51,14 @@ final class SymbolsRegistry implements Countable
             );
         }
 
-        foreach ($classes as [$original, $alias]) {
+        foreach ($classes as [$original, $alias, $dependencies]) {
             $registry->recordClass(
                 $original instanceof FullyQualified ? $original : new FullyQualified($original),
                 $alias instanceof FullyQualified ? $alias : new FullyQualified($alias),
+                array_map(
+                    static fn (string|FullyQualified $name) => $name instanceof FullyQualified ? $name : new FullyQualified($name),
+                    $dependencies ?? [],
+                ),
             );
         }
 
@@ -93,8 +98,8 @@ final class SymbolsRegistry implements Countable
             $this->recordedFunctions[$original] = [$original, $alias];
         }
 
-        foreach ($symbolsRegistry->getRecordedClasses() as [$original, $alias]) {
-            $this->recordedClasses[$original] = [$original, $alias];
+        foreach ($symbolsRegistry->getRecordedClasses() as [$original, $alias, $dependencies]) {
+            $this->recordedClasses[$original] = [$original, $alias, $dependencies];
         }
     }
 
@@ -111,9 +116,16 @@ final class SymbolsRegistry implements Countable
         return array_values($this->recordedFunctions);
     }
 
-    public function recordClass(FullyQualified $original, FullyQualified $alias): void
+    /**
+     * @param FullyQualified[] $dependencies
+     */
+    public function recordClass(
+        FullyQualified $original,
+        FullyQualified $alias,
+        array $dependencies = [],
+    ): void
     {
-        $this->recordedClasses[(string) $original] = [(string) $original, (string) $alias];
+        $this->recordedClasses[(string) $original] = [(string) $original, (string) $alias, $dependencies];
     }
 
     /**

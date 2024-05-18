@@ -341,7 +341,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
         yield 'classes recorded' => [
             SymbolsRegistry::create(
                 classes: [
-                    ['A\Foo', 'Humbug\A\Foo'],
+                    ['A\Foo', 'Humbug\A\Foo', []],
                 ],
             ),
             [],
@@ -387,8 +387,8 @@ class ScoperAutoloadGeneratorTest extends TestCase
         yield 'global classes recorded' => [
             SymbolsRegistry::create(
                 classes: [
-                    ['Foo', 'Humbug\Foo'],
-                    ['Bar', 'Humbug\Bar'],
+                    ['Foo', 'Humbug\Foo', []],
+                    ['Bar', 'Humbug\Bar', []],
                 ],
             ),
             [],
@@ -442,7 +442,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                     ['Emca\baz', 'Humbug\Emca\baz'],
                 ],
                 [
-                    ['A\Foo', 'Humbug\A\Foo'],
+                    ['A\Foo', 'Humbug\A\Foo', []],
                 ],
             ),
             [],
