@@ -64,10 +64,7 @@ final class Container
         return $this->configFactory;
     }
 
-    /**
-     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
-     */
-    public function getScoperFactory(?string $phpVersion = null): ScoperFactory
+    public function getScoperFactory(?PhpVersion $phpVersion = null): ScoperFactory
     {
         if (!isset($this->scoperFactory)) {
             $this->scoperFactory = new ScoperFactory(
@@ -80,10 +77,7 @@ final class Container
         return $this->scoperFactory;
     }
 
-    /**
-     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
-     */
-    public function getParser(?string $phpVersion = null): Parser
+    public function getParser(?PhpVersion $phpVersion = null): Parser
     {
         if (!isset($this->parser)) {
             // TODO: add assert
@@ -93,14 +87,11 @@ final class Container
         return $this->parser;
     }
 
-    /**
-     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
-     */
-    private function createParser(?string $phpVersion): Parser
+    private function createParser(?PhpVersion $phpVersion): Parser
     {
-        $version = null === $phpVersion ?
-            PhpVersion::getHostVersion() :
-            PhpVersion::fromString($phpVersion);
+        $version = null === $phpVersion
+            ? PhpVersion::getHostVersion()
+            : $phpVersion;
         $lexer = $version->isHostVersion() ? new Lexer() : new Emulative($version);
 
         return $version->id >= 80_000
