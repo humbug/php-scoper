@@ -58,3 +58,5 @@ parameters:
           path: 'src/Symbol/SymbolsRegistry.php'
         - message: '#Stmt\:\:\$stmts#'
           path: 'src/PhpParser/NodeVisitor/ClassAliasStmtAppender.php'
+        - message: '#PhpVersion::fromComponents#'
+          path: 'tests/SpecFramework/SpecScenario.php'

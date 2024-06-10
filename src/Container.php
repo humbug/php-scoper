@@ -102,9 +102,7 @@ final class Container
 
     private function createParser(?PhpVersion $phpVersion): Parser
     {
-        $version = null === $phpVersion
-            ? PhpVersion::getHostVersion()
-            : $phpVersion;
+        $version = $phpVersion ?? PhpVersion::getHostVersion();
         $lexer = $version->isHostVersion() ? new Lexer() : new Emulative($version);
 
         return $version->id >= 80_000

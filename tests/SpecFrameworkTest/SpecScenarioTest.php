@@ -17,13 +17,14 @@ namespace Humbug\PhpScoper\SpecFrameworkTest;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\SpecFramework\SpecScenario;
 use PhpParser\PhpVersion;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\SpecFramework\SpecScenario
  * @internal
  */
+#[CoversClass(SpecScenario::class)]
 final class SpecScenarioTest extends TestCase
 {
     #[DataProvider('phpVersionProvider')]
