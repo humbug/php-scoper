@@ -37,7 +37,8 @@ final class Container
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
-    private ?PhpVersion $phpVersion = null;
+    private ?PhpVersion $parserPhpVersion = null;
+    private ?PhpVersion $printerPhpVersion = null;
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
@@ -82,20 +83,11 @@ final class Container
     public function getParser(?PhpVersion $phpVersion = null): Parser
     {
         if (!isset($this->parser)) {
-            $this->phpVersion = $phpVersion;
+            $this->parserPhpVersion = $phpVersion;
             $this->parser = $this->createParser($phpVersion);
         }
 
-        $parserVersion = $this->phpVersion;
-
-        $parserMessage = 'Cannot use the existing parser: its PHP version is different than the one requested.';
-
-        if (null === $parserVersion) {
-            Assert::null($phpVersion, $parserMessage);
-        } else {
-            Assert::notNull($phpVersion, $parserMessage);
-            Assert::true($parserVersion->equals($phpVersion), $parserMessage);
-        }
+        self::checkSamePhpVersion($this->parserPhpVersion, $phpVersion);
 
         return $this->parser;
     }
@@ -130,14 +122,33 @@ final class Container
         return $this->enrichedReflectorFactory;
     }
 
-    public function getPrinter(): Printer
+    public function getPrinter(?PhpVersion $phpVersion = null): Printer
     {
         if (!isset($this->printer)) {
+            $this->printerPhpVersion = $phpVersion;
             $this->printer = new StandardPrinter(
-                new Standard(),
+                new Standard([
+                    'phpVersion' => $phpVersion,
+                ]),
             );
         }
 
+        self::checkSamePhpVersion($this->printerPhpVersion, $phpVersion);
+
         return $this->printer;
+    }
+
+    private static function checkSamePhpVersion(
+        ?PhpVersion $versionUsed,
+        ?PhpVersion $versionRequest,
+    ): void {
+        $parserMessage = 'Cannot use the existing parser: its PHP version is different than the one requested.';
+
+        if (null === $versionUsed) {
+            Assert::null($versionRequest, $parserMessage);
+        } else {
+            Assert::notNull($versionRequest, $parserMessage);
+            Assert::true($versionUsed->equals($versionRequest), $parserMessage);
+        }
     }
 }

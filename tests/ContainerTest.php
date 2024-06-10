@@ -74,6 +74,19 @@ class ContainerTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    #[DataProvider('samePhpVersionProvider')]
+    public function test_it_can_get_the_printer_if_the_version_does_not_change(
+        ?PhpVersion $version1,
+        ?PhpVersion $version2,
+    ): void {
+        $container = new Container();
+
+        $container->getPrinter($version1);
+        $container->getPrinter($version2);
+
+        $this->addToAssertionCount(1);
+    }
+
     public static function samePhpVersionProvider(): iterable
     {
         yield 'no PHP version configured' => [
@@ -106,6 +119,20 @@ class ContainerTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $container->getParser($version2);
+    }
+
+    #[DataProvider('differentPhpVersionProvider')]
+    public function test_it_cannot_create_two_different_versions_of_the_printer(
+        ?PhpVersion $version1,
+        ?PhpVersion $version2,
+    ): void {
+        $container = new Container();
+
+        $container->getPrinter($version1);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $container->getPrinter($version2);
     }
 
     public static function differentPhpVersionProvider(): iterable
