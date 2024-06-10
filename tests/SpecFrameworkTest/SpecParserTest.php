@@ -106,8 +106,8 @@ final class SpecParserTest extends TestCase
             self::FIXTURE_DIR.'/complete-spec-file.php',
             [
                 'Fixtures/complete-spec-file.php: Spec with default meta values' => new SpecScenario(
-                    72_000,
-                    83_000,
+                    70_200,
+                    80_300,
                     'Fixtures/complete-spec-file.php:39',
                     '[Example of simple spec file] Spec with default meta values',
                     $specCode,
@@ -130,8 +130,8 @@ final class SpecParserTest extends TestCase
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                 ),
                 'Fixtures/complete-spec-file.php: Spec with the more verbose form' => new SpecScenario(
-                    72_000,
-                    83_000,
+                    70_200,
+                    80_300,
                     'Fixtures/complete-spec-file.php:49',
                     '[Example of simple spec file] Spec with the more verbose form',
                     $specCode,
@@ -154,8 +154,8 @@ final class SpecParserTest extends TestCase
                     ['Acme\recorded_function', 'Humbug\Acme\recorded_function'],
                 ),
                 'Fixtures/complete-spec-file.php: Spec with overridden meta values' => new SpecScenario(
-                    73_000,
-                    82_000,
+                    70_300,
+                    80_200,
                     'Fixtures/complete-spec-file.php:61',
                     '[Example of simple spec file] Spec with overridden meta values',
                     $specCode,
