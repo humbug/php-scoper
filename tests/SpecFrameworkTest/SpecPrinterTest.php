@@ -71,6 +71,7 @@ final class SpecPrinterTest extends TestCase
             new SpecScenario(
                 null,
                 null,
+                null,
                 'Fixtures/complete-spec-file.php',
                 '[Example of simple spec file] Spec with the more verbose form',
                 $specCode,
@@ -139,6 +140,7 @@ final class SpecPrinterTest extends TestCase
             new SpecScenario(
                 70_200,
                 80_300,
+                70_400,
                 'Fixtures/complete-spec-file.php',
                 '[Example of simple spec file] Spec with the more verbose form',
                 $specCode,
@@ -219,6 +221,7 @@ final class SpecPrinterTest extends TestCase
             new SpecScenario(
                 70_200,
                 80_300,
+                70_400,
                 'Fixtures/complete-spec-file.php',
                 '[Example of simple spec file] Spec with the more verbose form',
                 $specCode,
@@ -333,6 +336,7 @@ final class SpecPrinterTest extends TestCase
 
         yield 'simple scenario with recorded symbols' => [
             new SpecScenario(
+                null,
                 null,
                 null,
                 'Fixtures/complete-spec-file.php',

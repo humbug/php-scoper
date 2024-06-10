@@ -70,6 +70,7 @@ final class SpecParserTest extends TestCase
                 'Fixtures/simple-spec-file.php: 0' => new SpecScenario(
                     null,
                     null,
+                    null,
                     'Fixtures/simple-spec-file.php',
                     '[Example of simple spec file] spec #0',
                     $specCode,
@@ -84,6 +85,7 @@ final class SpecParserTest extends TestCase
                     [],
                 ),
                 'Fixtures/simple-spec-file.php: A spec with a title' => new SpecScenario(
+                    null,
                     null,
                     null,
                     'Fixtures/simple-spec-file.php:33',
@@ -108,7 +110,8 @@ final class SpecParserTest extends TestCase
                 'Fixtures/complete-spec-file.php: Spec with default meta values' => new SpecScenario(
                     70_200,
                     80_300,
-                    'Fixtures/complete-spec-file.php:39',
+                    70_400,
+                    'Fixtures/complete-spec-file.php:40',
                     '[Example of simple spec file] Spec with default meta values',
                     $specCode,
                     'Humbug',
@@ -132,7 +135,8 @@ final class SpecParserTest extends TestCase
                 'Fixtures/complete-spec-file.php: Spec with the more verbose form' => new SpecScenario(
                     70_200,
                     80_300,
-                    'Fixtures/complete-spec-file.php:49',
+                    70_400,
+                    'Fixtures/complete-spec-file.php:50',
                     '[Example of simple spec file] Spec with the more verbose form',
                     $specCode,
                     'Humbug',
@@ -156,7 +160,8 @@ final class SpecParserTest extends TestCase
                 'Fixtures/complete-spec-file.php: Spec with overridden meta values' => new SpecScenario(
                     70_300,
                     80_200,
-                    'Fixtures/complete-spec-file.php:61',
+                    80_300,
+                    'Fixtures/complete-spec-file.php:62',
                     '[Example of simple spec file] Spec with overridden meta values',
                     $specCode,
                     'AnotherPrefix',

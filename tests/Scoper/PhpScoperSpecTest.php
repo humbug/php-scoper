@@ -26,6 +26,7 @@ use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
+use PhpParser\PhpVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -59,7 +60,7 @@ class PhpScoperSpecTest extends TestCase
     #[DataProvider('provideValidFiles')]
     public function test_can_scope_valid_files(SpecScenario $scenario): void
     {
-        $scenario->checkPHPVersionRequirements();
+        $scenario->checkPHPVersionRequirements($scenario->phpVersionUsed);
 
         $filePath = 'file.php';
         $symbolsRegistry = new SymbolsRegistry();
@@ -68,6 +69,7 @@ class PhpScoperSpecTest extends TestCase
             $scenario->prefix,
             $scenario->symbolsConfiguration,
             $symbolsRegistry,
+            $scenario->getPhpParserVersion(),
         );
 
         try {
@@ -109,7 +111,8 @@ class PhpScoperSpecTest extends TestCase
     private static function createScoper(
         string $prefix,
         SymbolsConfiguration $symbolsConfiguration,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
+        ?PhpVersion $phpVersionUsed,
     ): Scoper {
         $container = new Container();
 
@@ -126,7 +129,7 @@ class PhpScoperSpecTest extends TestCase
         );
 
         return new PhpScoper(
-            $container->getParser(),
+            $container->getParser($phpVersionUsed),
             new FakeScoper(),
             new TraverserFactory(
                 $enrichedReflector,

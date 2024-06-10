@@ -30,12 +30,14 @@ use PhpParser\Parser\Php8;
 use PhpParser\PhpVersion;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\Assert\Assert;
 
 final class Container
 {
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
+    private ?PhpVersion $phpVersion = null;
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
@@ -64,11 +66,11 @@ final class Container
         return $this->configFactory;
     }
 
-    public function getScoperFactory(): ScoperFactory
+    public function getScoperFactory(?PhpVersion $phpVersion = null): ScoperFactory
     {
         if (!isset($this->scoperFactory)) {
             $this->scoperFactory = new ScoperFactory(
-                $this->getParser(),
+                $this->getParser($phpVersion),
                 $this->getEnrichedReflectorFactory(),
                 $this->getPrinter(),
             );
@@ -77,21 +79,33 @@ final class Container
         return $this->scoperFactory;
     }
 
-    public function getParser(): Parser
+    public function getParser(?PhpVersion $phpVersion = null): Parser
     {
         if (!isset($this->parser)) {
-            $this->parser = $this->createParser();
+            $this->phpVersion = $phpVersion;
+            $this->parser = $this->createParser($phpVersion);
+        }
+
+        $parserVersion = $this->phpVersion;
+
+        $parserMessage = 'Cannot use the existing parser: its PHP version is different than the one requested.';
+
+        if (null === $parserVersion) {
+            Assert::null($phpVersion, $parserMessage);
+        } else {
+            Assert::notNull($phpVersion, $parserMessage);
+            Assert::true($parserVersion->equals($phpVersion), $parserMessage);
         }
 
         return $this->parser;
     }
 
-    private function createParser(): Parser
+    private function createParser(?PhpVersion $phpVersion): Parser
     {
-        $version = PhpVersion::getNewestSupported();
+        $version = $phpVersion ?? PhpVersion::getHostVersion();
         $lexer = $version->isHostVersion() ? new Lexer() : new Emulative($version);
 
-        return $version->id >= 80000
+        return $version->id >= 80_000
             ? new Php8($lexer, $version)
             : new Php7($lexer, $version);
     }

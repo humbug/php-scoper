@@ -23,6 +23,7 @@ final readonly class Meta implements DeclaresSymbolsConfiguration
         public string $prefix = 'Humbug',
         public ?int $minPhpVersion = null,
         public ?int $maxPhpVersion = null,
+        public ?int $phpVersionUsed = null,
         public bool $exposeGlobalConstants = false,
         public bool $exposeGlobalClasses = false,
         public bool $exposeGlobalFunctions = false,
