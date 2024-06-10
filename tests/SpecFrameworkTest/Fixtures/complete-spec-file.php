@@ -19,8 +19,8 @@ return [
     'meta' => new Meta(
         title: 'Example of simple spec file',
         prefix: 'Humbug',
-        minPhpVersion: 72_000,
-        maxPhpVersion: 83_000,
+        minPhpVersion: 70_200,
+        maxPhpVersion: 80_300,
         exposeGlobalConstants: true,
         exposeGlobalClasses: true,
         exposeGlobalFunctions: true,
@@ -60,8 +60,8 @@ return [
 
     'Spec with overridden meta values' => SpecWithConfig::create(
         prefix: 'AnotherPrefix',
-        minPhpVersion: 73_000,
-        maxPhpVersion: 82_000,
+        minPhpVersion: 70_300,
+        maxPhpVersion: 80_200,
         exposeGlobalConstants: false,
         exposeGlobalClasses: false,
         exposeGlobalFunctions: false,
