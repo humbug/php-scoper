@@ -120,6 +120,7 @@ class SpecParser extends TestCase
         return new SpecScenario(
             $specWithConfig->minPhpVersion ?? $meta->minPhpVersion ?? null,
             $specWithConfig->maxPhpVersion ?? $meta->maxPhpVersion ?? null,
+            $specWithConfig->phpVersionUsed,
             $file,
             $completeTitle,
             $specWithConfig->inputCode,

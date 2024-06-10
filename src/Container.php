@@ -64,11 +64,14 @@ final class Container
         return $this->configFactory;
     }
 
-    public function getScoperFactory(): ScoperFactory
+    /**
+     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
+     */
+    public function getScoperFactory(?string $phpVersion = null): ScoperFactory
     {
         if (!isset($this->scoperFactory)) {
             $this->scoperFactory = new ScoperFactory(
-                $this->getParser(),
+                $this->getParser($phpVersion),
                 $this->getEnrichedReflectorFactory(),
                 $this->getPrinter(),
             );
@@ -77,21 +80,30 @@ final class Container
         return $this->scoperFactory;
     }
 
-    public function getParser(): Parser
+    /**
+     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
+     */
+    public function getParser(?string $phpVersion = null): Parser
     {
         if (!isset($this->parser)) {
-            $this->parser = $this->createParser();
+            // TODO: add assert
+            $this->parser = $this->createParser($phpVersion);
         }
 
         return $this->parser;
     }
 
-    private function createParser(): Parser
+    /**
+     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
+     */
+    private function createParser(?string $phpVersion): Parser
     {
-        $version = PhpVersion::getNewestSupported();
+        $version = null === $phpVersion ?
+            PhpVersion::getHostVersion() :
+            PhpVersion::fromString($phpVersion);
         $lexer = $version->isHostVersion() ? new Lexer() : new Emulative($version);
 
-        return $version->id >= 80000
+        return $version->id >= 80_000
             ? new Php8($lexer, $version)
             : new Php7($lexer, $version);
     }

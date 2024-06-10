@@ -14,16 +14,18 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\Printer;
 
-use PhpParser\PrettyPrinterAbstract;
+use PhpParser\PrettyPrinter;
 
 final readonly class StandardPrinter implements Printer
 {
-    public function __construct(private PrettyPrinterAbstract $decoratedPrinter)
+    public function __construct(private PrettyPrinter $decoratedPrinter)
     {
     }
 
     public function print(array $newStmts, array $oldStmts, array $oldTokens): string
     {
-        return $this->decoratedPrinter->prettyPrintFile($newStmts)."\n";
+        $printed = $this->decoratedPrinter->prettyPrint($newStmts);
+
+        return $printed ."\n";
     }
 }
