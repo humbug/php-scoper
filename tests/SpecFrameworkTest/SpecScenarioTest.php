@@ -39,37 +39,30 @@ final class SpecScenarioTest extends TestCase
     public static function phpVersionProvider(): iterable
     {
         yield 'no PHP version' => [
-            new SpecScenario(
-                minPhpVersion: null,
-                maxPhpVersion: null,
-                phpVersionUsed: null,
-                file: '',
-                title: '',
-                inputCode: '',
-                prefix: '',
-                symbolsConfiguration: SymbolsConfiguration::create(),
-                expectedCode: '',
-                expectedRegisteredClasses: [],
-                expectedRegisteredFunctions: [],
-            ),
+            self::createScenario(null),
             null,
         ];
 
         yield 'specific PHP version' => [
-            new SpecScenario(
-                minPhpVersion: null,
-                maxPhpVersion: null,
-                phpVersionUsed: 80_200,
-                file: '',
-                title: '',
-                inputCode: '',
-                prefix: '',
-                symbolsConfiguration: SymbolsConfiguration::create(),
-                expectedCode: '',
-                expectedRegisteredClasses: [],
-                expectedRegisteredFunctions: [],
-            ),
+            self::createScenario(80_200),
             PhpVersion::fromString('8.2'),
         ];
+    }
+
+    private static function createScenario(?int $phpVersionUsed): SpecScenario
+    {
+        return new SpecScenario(
+            minPhpVersion: null,
+            maxPhpVersion: null,
+            phpVersionUsed: $phpVersionUsed,
+            file: '',
+            title: '',
+            inputCode: '',
+            prefix: '',
+            symbolsConfiguration: SymbolsConfiguration::create(),
+            expectedCode: '',
+            expectedRegisteredClasses: [],
+            expectedRegisteredFunctions: [],
+        );
     }
 }
