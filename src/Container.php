@@ -37,7 +37,7 @@ final class Container
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
-    private ?PhpVersion $phpVersion;
+    private ?PhpVersion $phpVersion = null;
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
