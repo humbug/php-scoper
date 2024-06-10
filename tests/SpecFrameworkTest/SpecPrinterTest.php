@@ -71,6 +71,7 @@ final class SpecPrinterTest extends TestCase
             new SpecScenario(
                 null,
                 null,
+                null,
                 'Fixtures/complete-spec-file.php',
                 '[Example of simple spec file] Spec with the more verbose form',
                 $specCode,
