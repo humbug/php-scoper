@@ -26,6 +26,7 @@ use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
+use PhpParser\PhpVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -68,7 +69,7 @@ class PhpScoperSpecTest extends TestCase
             $scenario->prefix,
             $scenario->symbolsConfiguration,
             $symbolsRegistry,
-            $scenario->phpVersionUsed,
+            $scenario->getPhpParserVersion(),
         );
 
         try {
@@ -111,7 +112,7 @@ class PhpScoperSpecTest extends TestCase
         string $prefix,
         SymbolsConfiguration $symbolsConfiguration,
         SymbolsRegistry $symbolsRegistry,
-        ?int $phpVersionUsed,
+        ?PhpVersion $phpVersionUsed,
     ): Scoper {
         $container = new Container();
 
@@ -128,7 +129,7 @@ class PhpScoperSpecTest extends TestCase
         );
 
         return new PhpScoper(
-            $container->getParser(),
+            $container->getParser($phpVersionUsed),
             new FakeScoper(),
             new TraverserFactory(
                 $enrichedReflector,

@@ -30,12 +30,14 @@ use PhpParser\Parser\Php8;
 use PhpParser\PhpVersion;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\Assert\Assert;
 
 final class Container
 {
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
+    private ?PhpVersion $phpVersion = null;
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
@@ -64,10 +66,7 @@ final class Container
         return $this->configFactory;
     }
 
-    /**
-     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
-     */
-    public function getScoperFactory(?string $phpVersion = null): ScoperFactory
+    public function getScoperFactory(?PhpVersion $phpVersion = null): ScoperFactory
     {
         if (!isset($this->scoperFactory)) {
             $this->scoperFactory = new ScoperFactory(
@@ -80,27 +79,30 @@ final class Container
         return $this->scoperFactory;
     }
 
-    /**
-     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
-     */
-    public function getParser(?string $phpVersion = null): Parser
+    public function getParser(?PhpVersion $phpVersion = null): Parser
     {
         if (!isset($this->parser)) {
-            // TODO: add assert
+            $this->phpVersion = $phpVersion;
             $this->parser = $this->createParser($phpVersion);
+        }
+
+        $parserVersion = $this->phpVersion;
+
+        $parserMessage = 'Cannot use the existing parser: its PHP version is different than the one requested.';
+
+        if (null === $parserVersion) {
+            Assert::null($phpVersion, $parserMessage);
+        } else {
+            Assert::notNull($phpVersion, $parserMessage);
+            Assert::true($parserVersion->equals($phpVersion), $parserMessage);
         }
 
         return $this->parser;
     }
 
-    /**
-     * @param string|null $phpVersion PHP version to parse as, e.g. '7.2'. Fallbacks to host version.
-     */
-    private function createParser(?string $phpVersion): Parser
+    private function createParser(?PhpVersion $phpVersion): Parser
     {
-        $version = null === $phpVersion ?
-            PhpVersion::getHostVersion() :
-            PhpVersion::fromString($phpVersion);
+        $version = $phpVersion ?? PhpVersion::getHostVersion();
         $lexer = $version->isHostVersion() ? new Lexer() : new Emulative($version);
 
         return $version->id >= 80_000

@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\SpecFramework;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\PhpVersion;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\SkippedWithMessageException;
 use PHPUnit\Framework\TestCase;
@@ -38,6 +39,21 @@ final readonly class SpecScenario
         public array $expectedRegisteredClasses,
         public array $expectedRegisteredFunctions,
     ) {
+    }
+
+    public function getPhpParserVersion(): ?PhpVersion
+    {
+        $phpVersionId = $this->phpVersionUsed;
+
+        if (null === $phpVersionId) {
+            return null;
+        }
+
+        $minorRemainder = $phpVersionId % 1000;
+        $minor = $minorRemainder / 100;
+        $major = ($phpVersionId - $minorRemainder) / 10_000;
+
+        return PhpVersion::fromComponents($major, $minor);
     }
 
     public function checkPHPVersionRequirements(?int $phpVersionIdUsed): void
