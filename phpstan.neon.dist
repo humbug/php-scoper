@@ -60,3 +60,6 @@ parameters:
           path: 'src/PhpParser/NodeVisitor/ClassAliasStmtAppender.php'
         - message: '#PhpVersion::fromComponents#'
           path: 'tests/SpecFramework/SpecScenario.php'
+        # Fixed in https://github.com/nikic/PHP-Parser/pull/1003
+        - message: '#Standard constructor expects array#'
+          path: 'src/Container.php'
