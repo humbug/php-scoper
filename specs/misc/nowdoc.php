@@ -175,7 +175,7 @@ return [
 
     // As per the RFC: https://wiki.php.net/rfc/flexible_heredoc_nowdoc_syntaxes
     'Nowdoc and Heredoc indentation' => SpecWithConfig::create(
-        phpVersionUsed: 72_000,
+        phpVersionUsed: 70_200,
         spec: <<<'PHP'
             <?php
 
@@ -206,11 +206,12 @@ return [
             END;
             // 4 spaces of indentation
             echo <<<END
-                  a
-                 b
-                c
-                END;
-    
+              a
+             b
+            c
+            END
+            ;
+
             PHP,
     ),
 ];

@@ -136,7 +136,7 @@ class PhpScoperSpecTest extends TestCase
                 $prefix,
                 $symbolsRegistry,
             ),
-            $container->getPrinter(),
+            $container->getPrinter($phpVersionUsed),
         );
     }
 
