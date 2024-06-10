@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
+use InvalidArgumentException;
+use PhpParser\PhpVersion;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -57,5 +59,73 @@ class ContainerTest extends TestCase
                 yield [$methodReflection->getName()];
             }
         }
+    }
+
+    #[DataProvider('samePhpVersionProvider')]
+    public function test_it_can_get_the_parser_if_the_version_does_not_change(
+        ?PhpVersion $version1,
+        ?PhpVersion $version2,
+    ): void {
+        $container = new Container();
+
+        $container->getParser($version1);
+        $container->getParser($version2);
+
+        $this->addToAssertionCount(1);
+    }
+
+    public static function samePhpVersionProvider(): iterable
+    {
+        yield 'no PHP version configured' => [
+            null,
+            null,
+        ];
+
+        $phpVersion = PhpVersion::fromString('7.2');
+
+        yield 'same PHP version instance' => [
+            $phpVersion,
+            $phpVersion,
+        ];
+
+        yield 'same PHP version, different instances' => [
+            PhpVersion::fromString('7.3'),
+            PhpVersion::fromString('7.3'),
+        ];
+    }
+
+    #[DataProvider('differentPhpVersionProvider')]
+    public function test_it_cannot_create_two_different_versions_of_the_parser(
+        ?PhpVersion $version1,
+        ?PhpVersion $version2,
+    ): void {
+        $container = new Container();
+
+        $container->getParser($version1);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $container->getParser($version2);
+    }
+
+    public static function differentPhpVersionProvider(): iterable
+    {
+        $phpVersion = PhpVersion::fromString('7.2');
+        $anotherPhpVersion = PhpVersion::fromString('7.3');
+
+        yield 'no PHP version configured' => [
+            null,
+            $phpVersion,
+        ];
+
+        yield 'no PHP version requested' => [
+            $phpVersion,
+            null,
+        ];
+
+        yield 'different PHP versions' => [
+            $phpVersion,
+            $anotherPhpVersion,
+        ];
     }
 }

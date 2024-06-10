@@ -30,12 +30,14 @@ use PhpParser\Parser\Php8;
 use PhpParser\PhpVersion;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Filesystem\Filesystem;
+use Webmozart\Assert\Assert;
 
 final class Container
 {
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
     private Parser $parser;
+    private ?PhpVersion $phpVersion;
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
@@ -80,8 +82,19 @@ final class Container
     public function getParser(?PhpVersion $phpVersion = null): Parser
     {
         if (!isset($this->parser)) {
-            // TODO: add assert
+            $this->phpVersion = $phpVersion;
             $this->parser = $this->createParser($phpVersion);
+        }
+
+        $parserVersion = $this->phpVersion;
+
+        $parserMessage = 'Cannot use the existing parser: its PHP version is different than the one requested.';
+
+        if (null === $parserVersion) {
+            Assert::null($phpVersion, $parserMessage);
+        } else {
+            Assert::notNull($phpVersion, $parserMessage);
+            Assert::true($parserVersion->equals($phpVersion), $parserMessage);
         }
 
         return $this->parser;
