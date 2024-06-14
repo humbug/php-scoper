@@ -269,6 +269,7 @@ final readonly class ConsoleScoper
 
     private static function getCommonDirectoryPath(Configuration $config): string
     {
+        $configPath = $config->getPath();
         $filesWithContent = $config->getFilesWithContents();
         $excludedFilesWithContents = $config->getExcludedFilesWithContents();
 
@@ -282,6 +283,10 @@ final readonly class ConsoleScoper
                 array_keys($excludedFilesWithContents),
             ),
         ];
+
+        if (null !== $configPath) {
+            $directoryPaths[] = $configPath;
+        }
 
         $commonPath = Path::getLongestCommonBasePath(...array_unique($directoryPaths));
         Assert::notNull($commonPath, 'Expected to find a common path.');
