@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Patcher\Patcher;
 use InvalidArgumentException;
+use PhpParser\PhpVersion;
 use function Safe\preg_match;
 use function sprintf;
 
@@ -43,6 +44,7 @@ final class Configuration
         private ?string $path,
         private ?string $outputDir,
         string $prefix,
+        private ?PhpVersion $phpVersion,
         private array $filesWithContents,
         private array $excludedFilesWithContents,
         private Patcher $patcher,
@@ -78,6 +80,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $prefix,
+            $this->phpVersion,
             $this->filesWithContents,
             $this->excludedFilesWithContents,
             $this->patcher,
@@ -102,6 +105,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $this->prefix,
+            $this->phpVersion,
             $filesWithContents,
             $this->excludedFilesWithContents,
             $this->patcher,
@@ -131,6 +135,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $this->prefix,
+            $this->phpVersion,
             $this->filesWithContents,
             $this->excludedFilesWithContents,
             $patcher,
@@ -146,6 +151,11 @@ final class Configuration
     public function getSymbolsConfiguration(): SymbolsConfiguration
     {
         return $this->symbolsConfiguration;
+    }
+
+    public function getPhpVersion(): ?PhpVersion
+    {
+        return $this->phpVersion;
     }
 
     private static function validatePrefix(string $prefix): void

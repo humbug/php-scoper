@@ -23,6 +23,7 @@ use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Parser;
+use PhpParser\PhpVersion;
 
 /**
  * @final

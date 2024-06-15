@@ -20,6 +20,7 @@ use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use InvalidArgumentException;
+use PhpParser\PhpVersion;
 use RuntimeException;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
@@ -189,6 +190,7 @@ final readonly class ConfigurationFactory
         );
     }
 
+    // TODO: move to ConfigKeys
     private static function validateConfigKey(string $key): void
     {
         if (in_array($key, ConfigurationKeys::KEYWORDS, true)) {
@@ -211,6 +213,28 @@ final readonly class ConfigurationFactory
         $prefix = trim((string) ($config[ConfigurationKeys::PREFIX_KEYWORD] ?? ''));
 
         return '' === $prefix ? self::generateRandomPrefix() : $prefix;
+    }
+
+    /**
+     * @return non-empty-string|null
+     */
+    private static function retrievePhpVersion(array $config): ?PhpVersion
+    {
+        $phpVersion = $config[ConfigurationKeys::PHP_VERSION_KEYWORD] ?? null;
+
+        if (null === $phpVersion) {
+            return null;
+        }
+
+        // TODO: throw a dedicated exception
+        throw new InvalidArgumentException(
+            sprintf(
+                'Expected patchers to be an array of callables, found "%s" instead.',
+                gettype($patchers),
+            ),
+        );
+
+        return '' === $phpVersion ? null : $phpVersion;
     }
 
     /**

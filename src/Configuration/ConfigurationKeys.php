@@ -21,6 +21,7 @@ final class ConfigurationKeys
     use NotInstantiable;
 
     public const PREFIX_KEYWORD = 'prefix';
+    public const PHP_VERSION_KEYWORD = 'php-version';
     public const OUTPUT_DIR_KEYWORD = 'output-dir';
     public const EXCLUDED_FILES_KEYWORD = 'exclude-files';
     public const FINDER_KEYWORD = 'finders';
@@ -42,6 +43,7 @@ final class ConfigurationKeys
 
     public const KEYWORDS = [
         self::PREFIX_KEYWORD,
+        self::PHP_VERSION_KEYWORD,
         self::OUTPUT_DIR_KEYWORD,
         self::EXCLUDED_FILES_KEYWORD,
         self::FINDER_KEYWORD,
