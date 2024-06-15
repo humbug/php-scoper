@@ -107,12 +107,12 @@ final class ConfigurationTest extends TestCase
     {
         yield [
             ';',
-            'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got ";"',
+            'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got ";".',
         ];
 
         yield [
             'App\\\\Foo',
-            'Invalid namespace separator sequence. Got "App\\\\Foo"',
+            'Invalid namespace separator sequence. Got "App\\\\Foo".',
         ];
     }
 

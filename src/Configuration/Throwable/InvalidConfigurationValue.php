@@ -104,4 +104,24 @@ final class InvalidConfigurationValue extends UnexpectedValueException implement
             ),
         );
     }
+
+    public static function forInvalidPrefixPattern(string $prefix): self
+    {
+        return new self(
+            sprintf(
+                'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got "%s".',
+                $prefix,
+            ),
+        );
+    }
+
+    public static function forInvalidNamespaceSeparator(string $prefix): self
+    {
+        return new self(
+            sprintf(
+                'Invalid namespace separator sequence. Got "%s".',
+                $prefix,
+            ),
+        );
+    }
 }

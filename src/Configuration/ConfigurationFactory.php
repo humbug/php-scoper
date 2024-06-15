@@ -14,9 +14,9 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfiguration;
 use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationFile;
 use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
-use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
@@ -63,8 +63,7 @@ final readonly class ConfigurationFactory
      * @param non-empty-string|null  $path  Absolute canonical path to the configuration file.
      * @param list<non-empty-string> $paths List of absolute canonical paths to append besides the one configured
      *
-     * @throws InvalidConfigurationValue
-     * @throws UnknownConfigurationKey
+     * @throws InvalidConfiguration
      */
     public function create(?string $path = null, array $paths = []): Configuration
     {
