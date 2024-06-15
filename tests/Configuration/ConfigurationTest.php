@@ -14,10 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\FakePatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -36,7 +36,7 @@ final class ConfigurationTest extends TestCase
         string $prefix,
         string $expectedExceptionMessage
     ): void {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(InvalidConfigurationValue::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
         new Configuration(
