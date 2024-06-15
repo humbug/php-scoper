@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Configuration;
 
 use Fidry\FileSystem\FS;
+use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
@@ -23,7 +24,6 @@ use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
-use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use function array_keys;
@@ -80,7 +80,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 PHP,
         );
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(UnknownConfigurationKey::class);
         $this->expectExceptionMessage('Invalid configuration key value "unknown key" found.');
 
         $this->createConfigFromStandardFile();

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Humbug\PhpScoper\NotInstantiable;
 
 final class ConfigurationKeys
@@ -58,4 +59,19 @@ final class ConfigurationKeys
         self::FUNCTIONS_INTERNAL_SYMBOLS_KEYWORD,
         self::CONSTANTS_INTERNAL_SYMBOLS_KEYWORD,
     ];
+
+    /**
+     * @throws UnknownConfigurationKey
+     */
+    public static function assertIsValidKey(string $key): void
+    {
+        if (!self::isValidateKey($key)) {
+            throw UnknownConfigurationKey::forKey($key);
+        }
+    }
+
+    public static function isValidateKey(string $key): bool
+    {
+        return in_array($key, self::KEYWORDS, true);
+    }
 }

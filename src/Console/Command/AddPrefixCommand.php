@@ -23,6 +23,8 @@ use Fidry\Console\ExitCode;
 use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
+use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Scoper\ScoperFactory;
@@ -252,6 +254,9 @@ final class AddPrefixCommand implements Command, CommandAware
 
     /**
      * @param list<non-empty-string> $paths
+     *
+     * @throws InvalidConfigurationValue
+     * @throws UnknownConfigurationKey
      */
     private function retrieveConfig(IO $io, array $paths, string $cwd): Configuration
     {
