@@ -19,6 +19,7 @@ use Fidry\Console\IO;
 use Humbug\PhpScoper\Autoload\ComposerFileHasher;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
@@ -50,7 +51,7 @@ final readonly class ConsoleScoper
     public function __construct(
         private Filesystem $fileSystem,
         private Application $application,
-        private Container $container,
+        private ScoperFactory $scoperFactory,
     ) {
     }
 
@@ -189,11 +190,11 @@ final readonly class ConsoleScoper
 
         $resolvedPhpVersion = $phpVersion ?? $config->getPhpVersion();
 
-        $scoper = $this->container
-            ->getScoperFactory($resolvedPhpVersion)
+        $scoper = $this->scoperFactory
             ->createScoper(
                 $config,
                 $symbolsRegistry,
+                $resolvedPhpVersion,
             );
 
         foreach ($files as $file) {

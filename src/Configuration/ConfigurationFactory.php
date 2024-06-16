@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Exception;
 use Humbug\PhpScoper\Configuration\Throwable\InvalidConfiguration;
 use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationFile;
 use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
@@ -22,7 +23,6 @@ use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
-use InvalidArgumentException;
 use PhpParser\PhpVersion;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
@@ -99,6 +99,7 @@ final readonly class ConfigurationFactory
             $path,
             $outputDir,
             $prefix,
+            self::retrievePhpVersion($config),
             $filesWithContents,
             self::retrieveFilesWithContents($excludedFiles),
             new PatcherChain($patchers),
@@ -181,25 +182,25 @@ final readonly class ConfigurationFactory
     }
 
     /**
-     * @return non-empty-string|null
+     * @throws InvalidConfigurationValue
      */
     private static function retrievePhpVersion(array $config): ?PhpVersion
     {
-        $phpVersion = $config[ConfigurationKeys::PHP_VERSION_KEYWORD] ?? null;
+        $stringVersion = $config[ConfigurationKeys::PHP_VERSION_KEYWORD] ?? null;
 
-        if (null === $phpVersion) {
+        if (null === $stringVersion || '' === $stringVersion) {
             return null;
         }
 
-        // TODO: throw a dedicated exception
-        throw new InvalidArgumentException(
-            sprintf(
-                'Expected patchers to be an array of callables, found "%s" instead.',
-                gettype($patchers),
-            ),
-        );
+        if (!is_string($stringVersion)) {
+            throw InvalidConfigurationValue::forInvalidPhpVersionType($stringVersion);
+        }
 
-        return '' === $phpVersion ? null : $phpVersion;
+        try {
+            return PhpVersion::fromString($stringVersion);
+        } catch (Exception $exception) {
+            throw InvalidConfigurationValue::forInvalidPhpVersion($stringVersion, $exception);
+        }
     }
 
     /**

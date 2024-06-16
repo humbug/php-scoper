@@ -27,7 +27,7 @@ use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
-use Humbug\PhpScoper\Container;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use InvalidArgumentException;
 use PhpParser\PhpVersion;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -57,7 +57,7 @@ final class AddPrefixCommand implements Command, CommandAware
     private const CONTINUE_ON_FAILURE_OPT = 'continue-on-failure';
     private const CONFIG_FILE_OPT = 'config';
     private const NO_CONFIG_OPT = 'no-config';
-    private const PHP_VERSION_OPT = 'no-config';
+    private const PHP_VERSION_OPT = 'php-version';
 
     private const DEFAULT_OUTPUT_DIR = 'build';
 
@@ -65,9 +65,9 @@ final class AddPrefixCommand implements Command, CommandAware
 
     public function __construct(
         private readonly Filesystem $fileSystem,
+        private readonly ScoperFactory $scoperFactory,
         private readonly Application $application,
         private readonly ConfigurationFactory $configFactory,
-        private readonly Container $container,
     ) {
     }
 
@@ -137,7 +137,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     self::PHP_VERSION_OPT,
                     null,
                     InputOption::VALUE_REQUIRED,
-                    'PHP version in which the PHP parser and printer will be configured.',
+                    'PHP version in which the PHP parser and printer will be configured, e.g. "7.2".',
                 ),
             ],
         );

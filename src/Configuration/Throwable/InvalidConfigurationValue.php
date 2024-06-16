@@ -14,9 +14,11 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration\Throwable;
 
+use Exception;
 use Symfony\Component\Finder\Finder;
 use UnexpectedValueException;
 use function gettype;
+use function sprintf;
 
 final class InvalidConfigurationValue extends UnexpectedValueException implements InvalidConfiguration
 {
@@ -112,6 +114,27 @@ final class InvalidConfigurationValue extends UnexpectedValueException implement
                 'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got "%s".',
                 $prefix,
             ),
+        );
+    }
+
+    public static function forInvalidPhpVersionType(mixed $phpVersion): self
+    {
+        return new self(
+            sprintf(
+                'Expected the PHP version to be a string, got "%s" instead.',
+                gettype($phpVersion),
+            ),
+        );
+    }
+
+    public static function forInvalidPhpVersion(string $stringVersion, Exception $previous): self
+    {
+        return new self(
+            sprintf(
+                'Expected the PHP version to of the format "<major>.<minor>", e.g. "7.2", got "%s".',
+                $stringVersion,
+            ),
+            previous: $previous,
         );
     }
 

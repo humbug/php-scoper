@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\Patcher;
 use PhpParser\PhpVersion;
-use function Safe\preg_match;
 
 final class Configuration
 {
