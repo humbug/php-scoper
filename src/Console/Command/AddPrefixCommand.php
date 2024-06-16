@@ -27,7 +27,7 @@ use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;

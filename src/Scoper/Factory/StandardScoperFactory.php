@@ -12,39 +12,44 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper\Scoper;
+namespace Humbug\PhpScoper\Scoper\Factory;
 
 use Humbug\PhpScoper\Configuration\Configuration;
-use Humbug\PhpScoper\PhpParser\Printer\Printer;
+use Humbug\PhpScoper\PhpParser\Parser\ParserFactory;
+use Humbug\PhpScoper\PhpParser\Printer\PrinterFactory;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer;
 use Humbug\PhpScoper\Scoper\Composer\InstalledPackagesScoper;
 use Humbug\PhpScoper\Scoper\Composer\JsonFileScoper;
+use Humbug\PhpScoper\Scoper\NullScoper;
+use Humbug\PhpScoper\Scoper\PatchScoper;
+use Humbug\PhpScoper\Scoper\PhpScoper;
+use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Scoper\SymfonyScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Parser;
+use PhpParser\PhpVersion;
 
-/**
- * @final
- *
- * @deprecated Deprecated in favour of \Humbug\PhpScoper\Scoper\Factory\ScoperFactory
- */
-class ScoperFactory
+final readonly class StandardScoperFactory implements ScoperFactory
 {
     public function __construct(
-        private readonly Parser $parser,
-        private readonly EnrichedReflectorFactory $enrichedReflectorFactory,
-        private readonly Printer $printer,
+        private EnrichedReflectorFactory $enrichedReflectorFactory,
+        private ParserFactory $parserFactory,
+        private PrinterFactory $printerFactory,
     ) {
     }
 
     public function createScoper(
         Configuration $configuration,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
+        ?PhpVersion $phpVersion = null,
     ): Scoper {
         $prefix = $configuration->getPrefix();
         $symbolsConfiguration = $configuration->getSymbolsConfiguration();
         $enrichedReflector = $this->enrichedReflectorFactory->create($symbolsConfiguration);
+
+        $parser = $this->parserFactory->createParser($phpVersion);
+        $printer = $this->printerFactory->createPrinter($phpVersion);
 
         $autoloadPrefixer = new AutoloadPrefixer(
             $prefix,
@@ -53,7 +58,7 @@ class ScoperFactory
 
         return new PatchScoper(
             new PhpScoper(
-                $this->parser,
+                $parser,
                 new JsonFileScoper(
                     new InstalledPackagesScoper(
                         new SymfonyScoper(
@@ -71,7 +76,7 @@ class ScoperFactory
                     $prefix,
                     $symbolsRegistry,
                 ),
-                $this->printer,
+                $printer,
             ),
             $prefix,
             $configuration->getPatcher(),

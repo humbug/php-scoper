@@ -12,15 +12,18 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Scoper\Factory;
 
-use PhpParser\Parser;
+use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\PhpVersion;
 
-/**
- * @private
- */
-function create_parser(?PhpVersion $phpVersion = null): Parser
+interface ScoperFactory
 {
-    return (new Container())->getParserFactory()->createParser($phpVersion);
+    public function createScoper(
+        Configuration $configuration,
+        SymbolsRegistry $symbolsRegistry,
+        ?PhpVersion $phpVersion = null,
+    ): Scoper;
 }
