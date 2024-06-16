@@ -61,5 +61,3 @@ parameters:
         # Fixed in https://github.com/nikic/PHP-Parser/pull/1003
         - message: '#Standard constructor expects array#'
           path: 'src/Container.php'
-        - message: '#Standard constructor expects array#'
-          path: 'src/PhpParser/Printer/StandardPrinterFactory.php'

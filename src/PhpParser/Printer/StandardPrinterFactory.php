@@ -23,7 +23,7 @@ final class StandardPrinterFactory implements PrinterFactory
     {
         return new StandardPrinter(
             new Standard([
-                'phpVersion' => $phpVersion,
+                'phpVersion' => $phpVersion ?? PhpVersion::fromComponents(7, 2),
             ]),
         );
     }
