@@ -70,7 +70,7 @@ PHP 8.2.
 The printer version affects the code style. For example nowdocs and heredocs will be indented if the printer's PHP
 version is higher than 7.4 but will be formated without indent otherwise.
 
-If `null` or `''` (empty string) is given, then the host version will be used for the parser and 5.3 will be used for
+If `null` or `''` (empty string) is given, then the host version will be used for the parser and 7.2 will be used for
 the printer. This allows PHP-Scoper to a PHP 7.2 compatible codebase without breaking its compatibility although the
 host version is a newer version.
 
