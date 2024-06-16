@@ -12,10 +12,10 @@
         "with this source code in the file LICENSE."
     ],
 
-    "files": [
-        "src/scoper.inc.php.tpl"
+    "files-bing": [
+        "res/scoper.inc.php.tpl",
+        "vendor-hotfix/.gitkeep",
     ],
-    "files-bin": ["vendor-hotfix/.gitkeep"],
 
     "git": "git_version_placeholder",
     "datetime": "release-date",
