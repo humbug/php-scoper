@@ -1,6 +1,7 @@
 ## Configuration
 
 - [Prefix](#prefix)
+- [PHP-Version](#php-version)
 - [Output directory](#output-directory)
 - [Finders and paths](#finders-and-paths)
 - [Patchers](#patchers)
@@ -28,6 +29,7 @@ use Isolated\Symfony\Component\Finder\Finder;
 
 return [
     'prefix' => null,           // string|null
+    'php-version' => null,      // string|null
     'output-dir' => null,       // string|null
     'finders' => [],            // list<Finder>
     'patchers' => [],           // list<callable(string $filePath, string $prefix, string $contents): string>
@@ -54,6 +56,15 @@ return [
 
 The prefix to be used to isolate the code. If `null` or `''` (empty string) is given,
 then a random prefix will be automatically generated.
+
+
+### PHP Version
+
+The PHP version provided is used to configure the underlying [PHP-Parser] Parser and Printer. This will not affect
+the PHP internal symbols used by PHP-Scoper but may affect what code can be parsed and how the code will be printed.
+
+If `null` or `''` (empty string) is given, then the host version will be used, i.e. executing it with PHP 8.4 will
+result in PHP 8.4 being used as the PHP version. 
 
 
 ### Output directory
@@ -476,5 +487,6 @@ namespace Humbug\Acme;
 
 [box]: https://github.com/box-project/box
 [php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
+[PHP-Parser]: https://github.com/nikic/PHP-Parser
 [phpstorm-stubs]: https://github.com/JetBrains/phpstorm-stubs
 [symfony_finder]: https://symfony.com/doc/current/components/finder.html
