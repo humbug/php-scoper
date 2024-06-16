@@ -12,15 +12,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\PhpParser\Printer;
 
-use PhpParser\Parser;
 use PhpParser\PhpVersion;
 
-/**
- * @private
- */
-function create_parser(?PhpVersion $phpVersion = null): Parser
+interface PrinterFactory
 {
-    return (new Container())->getParserFactory()->createParser($phpVersion);
+    public function createPrinter(?PhpVersion $phpVersion = null): Printer;
 }

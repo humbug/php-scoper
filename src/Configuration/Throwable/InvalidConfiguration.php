@@ -12,15 +12,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\Configuration\Throwable;
 
-use PhpParser\Parser;
-use PhpParser\PhpVersion;
+use Throwable;
 
-/**
- * @private
- */
-function create_parser(?PhpVersion $phpVersion = null): Parser
+interface InvalidConfiguration extends Throwable
 {
-    return (new Container())->getParserFactory()->createParser($phpVersion);
 }

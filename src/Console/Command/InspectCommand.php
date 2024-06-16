@@ -23,7 +23,7 @@ use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputArgument;

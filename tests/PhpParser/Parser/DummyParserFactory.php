@@ -12,15 +12,20 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Humbug\PhpScoper;
+namespace Humbug\PhpScoper\PhpParser\Parser;
 
 use PhpParser\Parser;
 use PhpParser\PhpVersion;
 
-/**
- * @private
- */
-function create_parser(?PhpVersion $phpVersion = null): Parser
+final readonly class DummyParserFactory implements ParserFactory
 {
-    return (new Container())->getParserFactory()->createParser($phpVersion);
+    public function __construct(
+        private Parser $parser,
+    ) {
+    }
+
+    public function createParser(?PhpVersion $phpVersion = null): Parser
+    {
+        return $this->parser;
+    }
 }

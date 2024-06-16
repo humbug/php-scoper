@@ -24,11 +24,8 @@ use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Humbug\PhpScoper\PhpParser\FakeParser;
-use Humbug\PhpScoper\PhpParser\FakePrinter;
+use Humbug\PhpScoper\Scoper\Factory\DummyScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
-use Humbug\PhpScoper\Symbol\Reflector;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\Group;
 use Prophecy\Argument;
@@ -158,12 +155,7 @@ class AppIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
             new SymfonyCommand(
                 new AddPrefixCommand(
                     $fileSystem,
-                    new DummyScoperFactory(
-                        new FakeParser(),
-                        new EnrichedReflectorFactory(Reflector::createEmpty()),
-                        new FakePrinter(),
-                        $scoper,
-                    ),
+                    new DummyScoperFactory($scoper),
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,

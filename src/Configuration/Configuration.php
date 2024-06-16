@@ -14,11 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\Patcher;
-use InvalidArgumentException;
 use PhpParser\PhpVersion;
 use function Safe\preg_match;
-use function sprintf;
 
 final class Configuration
 {
@@ -39,6 +38,8 @@ final class Configuration
      * @param array<string, array{string, string}> $excludedFilesWithContents Array of tuple
      *                                                                        with the first argument being the file path and
      *                                                                        the second its contents
+     *
+     * @throws InvalidConfigurationValue
      */
     public function __construct(
         private ?string $path,
@@ -73,6 +74,8 @@ final class Configuration
 
     /**
      * @param non-empty-string $prefix
+     *
+     * @throws InvalidConfigurationValue
      */
     public function withPrefix(string $prefix): self
     {
@@ -161,21 +164,11 @@ final class Configuration
     private static function validatePrefix(string $prefix): void
     {
         if (1 !== preg_match(self::PREFIX_PATTERN, $prefix)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got "%s"',
-                    $prefix,
-                ),
-            );
+            throw InvalidConfigurationValue::forInvalidPrefixPattern($prefix);
         }
 
         if (preg_match('/\\\{2,}/', $prefix)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid namespace separator sequence. Got "%s"',
-                    $prefix,
-                ),
-            );
+            throw InvalidConfigurationValue::forInvalidNamespaceSeparator($prefix);
         }
     }
 }
