@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
@@ -95,7 +96,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     ];
 
     public function __construct(
-        private readonly string $prefix,
+        private readonly Prefix $prefix,
         private readonly NamespaceStmtCollection $namespaceStatements,
         private readonly UseStmtCollection $useStatements,
         private readonly EnrichedReflector $enrichedReflector,
@@ -233,7 +234,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             return false;
         }
 
-        $isAlreadyPrefixed = $this->prefix === $resolvedName->getFirst();
+        $isAlreadyPrefixed = $this->prefix->toString() === $resolvedName->getFirst();
 
         return (
             $isAlreadyPrefixed

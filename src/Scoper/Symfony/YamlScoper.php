@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
+use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -36,12 +37,17 @@ final readonly class YamlScoper implements Scoper
     private const YAML_EXTENSION_REGEX = '/\.ya?ml$/i';
     private const CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_][\p{L}_\d]*(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_][\p{L}_\d]*(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
+    private Prefix $prefix;
+
     public function __construct(
         private Scoper $decoratedScoper,
-        private string $prefix,
+        string|Prefix $prefix,
         private EnrichedReflector $enrichedReflector,
         private SymbolsRegistry $symbolsRegistry,
     ) {
+        $this->prefix = $prefix instanceof Prefix
+            ? $prefix
+            : new Prefix($prefix);
     }
 
     public function scope(string $filePath, string $contents): string
@@ -80,7 +86,7 @@ final readonly class YamlScoper implements Scoper
     private static function replaceClasses(
         array $classes,
         array $separators,
-        string $prefix,
+        Prefix $prefix,
         string $contents,
         EnrichedReflector $enrichedReflector,
         SymbolsRegistry $symbolsRegistry

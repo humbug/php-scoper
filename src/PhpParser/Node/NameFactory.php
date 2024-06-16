@@ -17,6 +17,7 @@ namespace Humbug\PhpScoper\PhpParser\Node;
 use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
 use PhpParser\Node\Name;
+use Stringable;
 
 final class NameFactory
 {
@@ -41,12 +42,12 @@ final class NameFactory
     }
 
     /**
-     * @param string|string[]|Name|null $name1
-     * @param string|string[]|Name|null $name2
+     * @param string|Stringable|string[]|Name|null $name1
+     * @param string|Stringable|string[]|Name|null $name2
      */
     public static function getConcatenatedNamesAttributes(
-        string|array|Name|null $name1,
-        string|array|Name|null $name2,
+        string|Stringable|array|Name|null $name1,
+        string|Stringable|array|Name|null $name2,
         ?array $attributes = null,
     ): array {
         return match (true) {

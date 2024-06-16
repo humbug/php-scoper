@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use PhpParser\Node\Arg;
@@ -57,7 +58,7 @@ use PhpParser\NodeVisitorAbstract;
 final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
 {
     public function __construct(
-        private readonly string $prefix,
+        private readonly Prefix $prefix,
         private readonly ExcludedFunctionExistsStringNodeStack $excludedFunctionExistsStringNodeStack,
     ) {
     }
@@ -76,7 +77,7 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
         return $nodes;
     }
 
-    private static function addScopedFunctionExistsCondition(string $prefix, String_ $string): void
+    private static function addScopedFunctionExistsCondition(Prefix $prefix, String_ $string): void
     {
         $parentNodes = self::findFlattenedParentIfStmt($string);
 
@@ -154,7 +155,7 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
     }
 
     private static function replaceCondition(
-        string $prefix,
+        Prefix $prefix,
         If_ $ifStmt,
         BooleanAnd|BooleanOr|null $ifCondition,
         BooleanNot|Equal|Identical $boolExpr,
@@ -217,11 +218,11 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
         return $newArg;
     }
 
-    private static function prefixString(string $prefix, String_ $previous): String_
+    private static function prefixString(Prefix $prefix, String_ $previous): String_
     {
         return new String_(
             (string) FullyQualified::concat(
-                $prefix,
+                $prefix->toString(),
                 $previous->value,
             ),
             $previous->getAttributes(),

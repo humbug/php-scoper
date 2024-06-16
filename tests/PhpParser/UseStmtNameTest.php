@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
@@ -189,7 +190,7 @@ final class UseStmtNameTest extends TestCase
         $traverser->addVisitor(new NodeVisitor\AttributeAppender\ParentNodeAppender());
         $traverser->addVisitor(
             new NodeVisitor\NamespaceStmt\NamespaceStmtPrefixer(
-                'Humbug',
+                new Prefix('Humbug'),
                 new EnrichedReflector(
                     Reflector::createWithPhpStormStubs(),
                     SymbolsConfiguration::create(),

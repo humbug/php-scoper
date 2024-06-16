@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
+use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\PhpParser\Node\FullyQualifiedFactory;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
@@ -35,7 +36,7 @@ use PhpParser\NodeVisitorAbstract;
 final class ClassIdentifierRecorder extends NodeVisitorAbstract
 {
     public function __construct(
-        private readonly string $prefix,
+        private readonly Prefix $prefix,
         private readonly IdentifierResolver $identifierResolver,
         private readonly SymbolsRegistry $symbolsRegistry,
         private readonly EnrichedReflector $enrichedReflector,

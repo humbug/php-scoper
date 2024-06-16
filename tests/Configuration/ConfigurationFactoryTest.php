@@ -56,7 +56,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             $configuration->getSymbolsConfiguration(),
         );
         self::assertNull($configuration->getPath());
-        self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
+        self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', (string) $configuration->getPrefix());
         self::assertSame([], $configuration->getFilesWithContents());
         self::assertEquals(
             new PatcherChain([
@@ -127,7 +127,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
         $configuration = $this->createConfigFromStandardFile();
 
         self::assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
-        self::assertSame('MyPrefix', $configuration->getPrefix());
+        self::assertEquals(new Prefix('MyPrefix'), $configuration->getPrefix());
         self::assertSame('dist', $configuration->getOutputDir());
         self::assertSame([], $configuration->getFilesWithContents());
         self::assertSame(

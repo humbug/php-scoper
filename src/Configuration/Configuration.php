@@ -16,16 +16,10 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\Patcher;
-use function Safe\preg_match;
 
 final class Configuration
 {
-    private const PREFIX_PATTERN = '/^[\p{L}\d_\\\\]+$/u';
-
-    /**
-     * @var non-empty-string
-     */
-    private readonly string $prefix;
+    private readonly Prefix $prefix;
 
     /**
      * @param non-empty-string|null                $path                      Absolute canonical path to the configuration file loaded.
@@ -43,15 +37,15 @@ final class Configuration
     public function __construct(
         private ?string $path,
         private ?string $outputDir,
-        string $prefix,
+        string|Prefix $prefix,
         private array $filesWithContents,
         private array $excludedFilesWithContents,
         private Patcher $patcher,
         private SymbolsConfiguration $symbolsConfiguration
     ) {
-        self::validatePrefix($prefix);
-
-        $this->prefix = $prefix;
+        $this->prefix = $prefix instanceof Prefix
+            ? $prefix
+            : new Prefix($prefix);
     }
 
     /**
@@ -89,9 +83,9 @@ final class Configuration
     }
 
     /**
-     * @return non-empty-string
+     * @return non-empty-string|Prefix
      */
-    public function getPrefix(): string
+    public function getPrefix(): string|Prefix
     {
         return $this->prefix;
     }
@@ -149,16 +143,5 @@ final class Configuration
     public function getSymbolsConfiguration(): SymbolsConfiguration
     {
         return $this->symbolsConfiguration;
-    }
-
-    private static function validatePrefix(string $prefix): void
-    {
-        if (1 !== preg_match(self::PREFIX_PATTERN, $prefix)) {
-            throw InvalidConfigurationValue::forInvalidPrefixPattern($prefix);
-        }
-
-        if (preg_match('/\\\{2,}/', $prefix)) {
-            throw InvalidConfigurationValue::forInvalidNamespaceSeparator($prefix);
-        }
     }
 }
