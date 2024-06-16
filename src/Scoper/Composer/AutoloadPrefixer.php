@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Composer;
 
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use stdClass;
 use function array_map;
@@ -32,15 +31,10 @@ use function str_replace;
  */
 final readonly class AutoloadPrefixer
 {
-    private Prefix $prefix;
-
     public function __construct(
-        string|Prefix $prefix,
+        private string $prefix,
         private EnrichedReflector $enrichedReflector,
     ) {
-        $this->prefix = $prefix instanceof Prefix
-            ? $prefix
-            : new Prefix($prefix);
     }
 
     /**
@@ -79,7 +73,7 @@ final readonly class AutoloadPrefixer
 
     private static function prefixAutoloadStatements(
         stdClass $autoload,
-        Prefix $prefix,
+        string $prefix,
         EnrichedReflector $enrichedReflector
     ): stdClass {
         if (!isset($autoload->{'psr-4'}) && !isset($autoload->{'psr-0'})) {
@@ -120,7 +114,7 @@ final readonly class AutoloadPrefixer
 
     private static function prefixAutoload(
         array $autoload,
-        Prefix $prefix,
+        string $prefix,
         EnrichedReflector $enrichedReflector
     ): array {
         $loader = [];
@@ -245,7 +239,7 @@ final readonly class AutoloadPrefixer
 
     private static function prefixLaravelProviders(
         array $providers,
-        Prefix $prefix,
+        string $prefix,
         EnrichedReflector $enrichedReflector
     ): array {
         return array_map(

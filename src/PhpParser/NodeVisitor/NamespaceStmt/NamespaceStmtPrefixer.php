@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt;
 
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Name;
@@ -39,7 +38,7 @@ use PhpParser\NodeVisitorAbstract;
 final class NamespaceStmtPrefixer extends NodeVisitorAbstract
 {
     public function __construct(
-        private readonly Prefix $prefix,
+        private readonly string $prefix,
         private readonly EnrichedReflector $enrichedReflector,
         private readonly NamespaceStmtCollection $namespaceStatements,
     ) {
@@ -76,11 +75,11 @@ final class NamespaceStmtPrefixer extends NodeVisitorAbstract
         return $this->prefix !== $nameFirstPart;
     }
 
-    private static function prefixStmt(Namespace_ $namespace, Prefix $prefix): void
+    private static function prefixStmt(Namespace_ $namespace, string $prefix): void
     {
         $originalName = $namespace->name;
 
-        $namespace->name = Name::concat($prefix->toString(), $originalName);
+        $namespace->name = Name::concat($prefix, $originalName);
 
         NamespaceManipulator::setOriginalName($namespace, $originalName);
     }

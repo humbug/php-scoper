@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\Scoper\Symfony\XmlScoper as SymfonyXmlScoper;
 use Humbug\PhpScoper\Scoper\Symfony\YamlScoper as SymfonyYamlScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
@@ -31,7 +30,7 @@ final class SymfonyScoper implements Scoper
 
     public function __construct(
         Scoper $decoratedScoper,
-        string|Prefix $prefix,
+        string $prefix,
         EnrichedReflector $enrichedReflector,
         SymbolsRegistry $symbolsRegistry
     ) {

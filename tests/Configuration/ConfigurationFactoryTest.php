@@ -56,7 +56,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
             $configuration->getSymbolsConfiguration(),
         );
         self::assertNull($configuration->getPath());
-        self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', (string) $configuration->getPrefix());
+        self::assertMatchesRegularExpression('/_PhpScoper[a-z\d]{12}/', $configuration->getPrefix());
         self::assertSame([], $configuration->getFilesWithContents());
         self::assertEquals(
             new PatcherChain([

@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Application\Application as FidryApplication;
 use Fidry\Console\IO;
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -50,7 +49,7 @@ class ScoperLogger
     /**
      * @param string[] $paths
      */
-    public function outputScopingStart(Prefix|string|null $prefix, array $paths): void
+    public function outputScopingStart(?string $prefix, array $paths): void
     {
         $this->io->writeln($this->application->getHelp());
 

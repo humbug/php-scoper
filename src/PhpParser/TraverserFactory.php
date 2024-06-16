@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ExcludedFunctionExistsEnricher;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\ExcludedFunctionExistsStringNodeStack;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
@@ -33,16 +32,11 @@ use PhpParser\NodeVisitor\NameResolver;
  */
 class TraverserFactory
 {
-    private readonly Prefix $prefix;
-
     public function __construct(
         private readonly EnrichedReflector $reflector,
-        string|Prefix $prefix,
+        private readonly string $prefix,
         private readonly SymbolsRegistry $symbolsRegistry,
     ) {
-        $this->prefix = $prefix instanceof Prefix
-            ? $prefix
-            : new Prefix($prefix);
     }
 
     public function create(PhpScoper $scoper): NodeTraverserInterface
@@ -77,7 +71,7 @@ class TraverserFactory
      * @return PhpParserNodeVisitor[]
      */
     private static function createNodeVisitors(
-        Prefix $prefix,
+        string $prefix,
         EnrichedReflector $reflector,
         PhpScoper $scoper,
         SymbolsRegistry $symbolsRegistry

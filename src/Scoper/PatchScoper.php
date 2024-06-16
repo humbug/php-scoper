@@ -14,29 +14,23 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper;
 
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\Patcher\Patcher;
 use function func_get_args;
 
 final readonly class PatchScoper implements Scoper
 {
-    private Prefix $prefix;
-
     public function __construct(
         private Scoper $decoratedScoper,
-        string|Prefix $prefix,
+        private string $prefix,
         private Patcher $patcher,
     ) {
-        $this->prefix = $prefix instanceof Prefix
-            ? $prefix
-            : new Prefix($prefix);
     }
 
     public function scope(string $filePath, string $contents): string
     {
         return ($this->patcher)(
             $filePath,
-            $this->prefix->toString(),
+            $this->prefix,
             $this->decoratedScoper->scope(...func_get_args()),
         );
     }

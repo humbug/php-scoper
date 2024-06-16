@@ -18,19 +18,18 @@ use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
-use Stringable;
 
 final class FullyQualifiedFactory
 {
     use NotInstantiable;
 
     /**
-     * @param string|Name|string[]|Stringable|null $name1
-     * @param string|Name|string[]|Stringable|null $name2
+     * @param string|Name|string[]|null $name1
+     * @param string|Name|string[]|null $name2
      */
     public static function concat(
-        array|Name|string|Stringable|null $name1,
-        array|Name|string|Stringable|null $name2,
+        array|Name|string|null $name1,
+        array|Name|string|null $name2,
         ?array $attributes = null,
     ): FullyQualified {
         if (null === $name1 && null === $name2) {
@@ -38,9 +37,6 @@ final class FullyQualifiedFactory
         }
 
         $newAttributes = NameFactory::getConcatenatedNamesAttributes($name1, $name2, $attributes);
-
-        $name1 = $name1 instanceof Stringable ? (string) $name1 : $name1;
-        $name2 = $name2 instanceof Stringable ? (string) $name2 : $name2;
 
         return FullyQualified::concat($name1, $name2, $newAttributes);
     }

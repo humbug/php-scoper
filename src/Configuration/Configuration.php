@@ -83,11 +83,11 @@ final class Configuration
     }
 
     /**
-     * @return non-empty-string|Prefix
+     * @return non-empty-string
      */
-    public function getPrefix(): string|Prefix
+    public function getPrefix(): string
     {
-        return $this->prefix;
+        return $this->prefix->toString();
     }
 
     /**

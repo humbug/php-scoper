@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
@@ -124,7 +123,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         REGEX;
 
     public function __construct(
-        private readonly Prefix $prefix,
+        private readonly string $prefix,
         private readonly EnrichedReflector $enrichedReflector,
         private readonly ExcludedFunctionExistsStringNodeStack $excludedFunctionExistsStringNodeStack,
     ) {
@@ -385,7 +384,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             ),
         );
 
-        $previousValueAlreadyPrefixed = $this->prefix->toString() === $previousValueParts[0];
+        $previousValueAlreadyPrefixed = $this->prefix === $previousValueParts[0];
 
         if ($previousValueAlreadyPrefixed) {
             // Remove the prefix and proceed as usual: this ensures that even
@@ -397,7 +396,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         $previousValue = implode('\\', $previousValueParts);
 
         $string = new String_(
-            (string) FullyQualified::concat($this->prefix->toString(), $previousValue),
+            (string) FullyQualified::concat($this->prefix, $previousValue),
             $previous->getAttributes(),
         );
 

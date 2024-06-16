@@ -128,7 +128,7 @@ final class ConfigurationTest extends TestCase
     ): void {
         self::assertSame($expectedPath, $configuration->getPath());
         self::assertSame($expectedOutputDir, $configuration->getOutputDir());
-        self::assertEquals($expectedPrefix, $configuration->getPrefix());
+        self::assertSame($expectedPrefix, $configuration->getPrefix());
         self::assertEqualsCanonicalizing(
             $expectedFilesWithContents,
             $configuration->getFilesWithContents(),

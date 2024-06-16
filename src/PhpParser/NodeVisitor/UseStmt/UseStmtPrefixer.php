@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt;
 
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
@@ -32,7 +31,7 @@ use PhpParser\NodeVisitorAbstract;
 final class UseStmtPrefixer extends NodeVisitorAbstract
 {
     public function __construct(
-        private readonly Prefix $prefix,
+        private readonly string $prefix,
         private readonly EnrichedReflector $enrichedReflector,
     ) {
     }
@@ -51,7 +50,7 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
         $useType = self::findUseType($use);
         $nameString = $use->name->toString();
 
-        $alreadyPrefixed = $this->prefix->toString() === $use->name->getFirst();
+        $alreadyPrefixed = $this->prefix === $use->name->getFirst();
 
         if ($alreadyPrefixed) {
             return false;
@@ -73,12 +72,12 @@ final class UseStmtPrefixer extends NodeVisitorAbstract
             || !$this->enrichedReflector->isClassInternal($nameString);
     }
 
-    private static function prefixStmt(UseUse $use, Prefix $prefix): void
+    private static function prefixStmt(UseUse $use, string $prefix): void
     {
         $previousName = $use->name;
 
         $prefixedName = Name::concat(
-            $prefix->toString(),
+            $prefix,
             $use->name,
             $use->name->getAttributes(),
         );

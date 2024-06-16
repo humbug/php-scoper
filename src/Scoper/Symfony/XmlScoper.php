@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Scoper\Symfony;
 
-use Humbug\PhpScoper\Configuration\Prefix;
 use Humbug\PhpScoper\Scoper\Scoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
@@ -38,17 +37,12 @@ final readonly class XmlScoper implements Scoper
     private const NAMESPACE_PATTERN = '/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/';
     private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_][\p{L}_\d]*(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_][\p{L}_\d]*(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
 
-    private Prefix $prefix;
-
     public function __construct(
         private Scoper $decoratedScoper,
-        string|Prefix $prefix,
+        private string $prefix,
         private EnrichedReflector $enrichedReflector,
         private SymbolsRegistry $symbolsRegistry,
     ) {
-        $this->prefix = $prefix instanceof Prefix
-            ? $prefix
-            : new Prefix($prefix);
     }
 
     public function scope(string $filePath, string $contents): string
@@ -74,7 +68,7 @@ final readonly class XmlScoper implements Scoper
 
     private static function scopeClasses(
         string $contents,
-        Prefix $prefix,
+        string $prefix,
         EnrichedReflector $enrichedReflector,
         SymbolsRegistry $symbolsRegistry
     ): string {
@@ -103,7 +97,7 @@ final readonly class XmlScoper implements Scoper
 
     private static function scopeNamespaces(
         string $contents,
-        Prefix $prefix,
+        string $prefix,
         EnrichedReflector $enrichedReflector,
         SymbolsRegistry $symbolsRegistry
     ): string {
@@ -128,7 +122,7 @@ final readonly class XmlScoper implements Scoper
     private static function replaceClasses(
         array $classes,
         array $separators,
-        Prefix $prefix,
+        string $prefix,
         string $contents,
         EnrichedReflector $enrichedReflector,
         SymbolsRegistry $symbolsRegistry
