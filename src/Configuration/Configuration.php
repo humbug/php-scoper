@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\Configuration;
 
 use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\Patcher;
+use PhpParser\PhpVersion;
 
 final class Configuration
 {
@@ -38,6 +39,7 @@ final class Configuration
         private ?string $path,
         private ?string $outputDir,
         string|Prefix $prefix,
+        private ?PhpVersion $phpVersion,
         private array $filesWithContents,
         private array $excludedFilesWithContents,
         private Patcher $patcher,
@@ -75,6 +77,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $prefix,
+            $this->phpVersion,
             $this->filesWithContents,
             $this->excludedFilesWithContents,
             $this->patcher,
@@ -99,6 +102,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $this->prefix,
+            $this->phpVersion,
             $filesWithContents,
             $this->excludedFilesWithContents,
             $this->patcher,
@@ -128,6 +132,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $this->prefix,
+            $this->phpVersion,
             $this->filesWithContents,
             $this->excludedFilesWithContents,
             $patcher,
@@ -143,5 +148,10 @@ final class Configuration
     public function getSymbolsConfiguration(): SymbolsConfiguration
     {
         return $this->symbolsConfiguration;
+    }
+
+    public function getPhpVersion(): ?PhpVersion
+    {
+        return $this->phpVersion;
     }
 }

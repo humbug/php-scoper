@@ -29,6 +29,7 @@ use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use InvalidArgumentException;
+use PhpParser\PhpVersion;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -56,6 +57,7 @@ final class AddPrefixCommand implements Command, CommandAware
     private const CONTINUE_ON_FAILURE_OPT = 'continue-on-failure';
     private const CONFIG_FILE_OPT = 'config';
     private const NO_CONFIG_OPT = 'no-config';
+    private const PHP_VERSION_OPT = 'php-version';
 
     private const DEFAULT_OUTPUT_DIR = 'build';
 
@@ -96,7 +98,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     'o',
                     InputOption::VALUE_REQUIRED,
                     'The output directory in which the prefixed code will be dumped.',
-                    ''
+                    '',
                 ),
                 new InputOption(
                     self::FORCE_OPT,
@@ -131,6 +133,12 @@ final class AddPrefixCommand implements Command, CommandAware
                     InputOption::VALUE_NONE,
                     'Do not look for a configuration file.',
                 ),
+                new InputOption(
+                    self::PHP_VERSION_OPT,
+                    null,
+                    InputOption::VALUE_REQUIRED,
+                    'PHP version in which the PHP parser and printer will be configured, e.g. "7.2".',
+                ),
             ],
         );
     }
@@ -147,6 +155,7 @@ final class AddPrefixCommand implements Command, CommandAware
 
         $paths = $this->getPathArguments($io, $cwd);
         $config = $this->retrieveConfig($io, $paths, $cwd);
+        $phpVersion = self::getPhpVersion($io);
 
         $outputDir = $this->canonicalizePath(
             $this->getOutputDir($io, $config),
@@ -157,12 +166,24 @@ final class AddPrefixCommand implements Command, CommandAware
         $this->getScoper()->scope(
             $io,
             $config,
+            $phpVersion,
             $paths,
             $outputDir,
             self::getStopOnFailure($io),
         );
 
         return ExitCode::SUCCESS;
+    }
+
+    private static function getPhpVersion(IO $io): ?PhpVersion
+    {
+        $version = $io
+            ->getTypedOption(self::PHP_VERSION_OPT)
+            ->asNullableString();
+
+        return null === $version
+            ? $version
+            : PhpVersion::fromString($version);
     }
 
     private static function getStopOnFailure(IO $io): bool

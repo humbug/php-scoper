@@ -18,6 +18,7 @@ use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\FakePatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
+use PhpParser\PhpVersion;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -43,6 +44,7 @@ final class ConfigurationTest extends TestCase
             null,
             null,
             $prefix,
+            null,
             [],
             [],
             new PatcherChain([]),
@@ -56,6 +58,7 @@ final class ConfigurationTest extends TestCase
             '/path/to/config',
             '/path/to/outputDir',
             'initialPrefix',
+            null,
             ['/path/to/fileA' => ['/path/to/fileA', 'fileAContent']],
             ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
             new FakePatcher(),
@@ -82,6 +85,7 @@ final class ConfigurationTest extends TestCase
             '/path/to/config',
             '/path/to/outputDir',
             'initialPrefix',
+            null,
             ['/path/to/fileA' => ['/path/to/fileA', 'fileAContent']],
             ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
             new FakePatcher(),
@@ -97,7 +101,7 @@ final class ConfigurationTest extends TestCase
         $newConfig = $config->withPatcher($newPatcher);
 
         $expectedNewConfigValues = $values;
-        $expectedNewConfigValues[5] = $newPatcher;
+        $expectedNewConfigValues[6] = $newPatcher;
 
         self::assertStateIs($config, ...$values);
         self::assertStateIs($newConfig, ...$expectedNewConfigValues);
@@ -116,11 +120,12 @@ final class ConfigurationTest extends TestCase
         ];
     }
 
-    private static function assertStateIs(
+    public static function assertStateIs(
         Configuration $configuration,
         ?string $expectedPath,
         ?string $expectedOutputDir,
         string $expectedPrefix,
+        ?PhpVersion $expectedPhpVersion,
         array $expectedFilesWithContents,
         array $expectedExcludedFilesWithContents,
         Patcher $expectedPatcher,
@@ -129,6 +134,7 @@ final class ConfigurationTest extends TestCase
         self::assertSame($expectedPath, $configuration->getPath());
         self::assertSame($expectedOutputDir, $configuration->getOutputDir());
         self::assertSame($expectedPrefix, $configuration->getPrefix());
+        self::assertEquals($expectedPhpVersion, $configuration->getPhpVersion());
         self::assertEqualsCanonicalizing(
             $expectedFilesWithContents,
             $configuration->getFilesWithContents(),

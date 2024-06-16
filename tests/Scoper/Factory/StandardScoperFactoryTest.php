@@ -48,6 +48,7 @@ final class StandardScoperFactoryTest extends TestCase
                 null,
                 null,
                 '_Humbug',
+                null,
                 [],
                 [],
                 new FakePatcher(),
