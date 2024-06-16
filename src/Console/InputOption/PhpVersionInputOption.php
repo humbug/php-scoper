@@ -34,7 +34,7 @@ final class PhpVersionInputOption
             self::PHP_VERSION_OPT,
             null,
             InputOption::VALUE_REQUIRED,
-            'PHP version in which the PHP parser and printer will be configured, e.g. "7.2".',
+            'PHP version in which the PHP parser and printer will be configured, e.g. "7.2", or "host" for the current PHP version.',
         );
     }
 
@@ -43,6 +43,10 @@ final class PhpVersionInputOption
         $version = $io
             ->getTypedOption(self::PHP_VERSION_OPT)
             ->asNullableString();
+
+        if ('host' === $version) {
+            return PhpVersion::getHostVersion();
+        }
 
         return null === $version
             ? $version
