@@ -36,8 +36,7 @@ return [
 
         namespace Humbug\IvoPetkov;
 
-        class HTML5DOMDocument
-        {
+        class HTML5DOMDocument {
             use \Humbug\IvoPetkov\Internal\QuerySelector;
         }
 
@@ -60,6 +59,7 @@ return [
         namespace Humbug\IvoPetkov;
 
         use Humbug\IvoPetkov\Internal\QuerySelector;
+
         class HTML5DOMDocument
         {
             use QuerySelector;
