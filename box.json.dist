@@ -12,7 +12,7 @@
         "with this source code in the file LICENSE."
     ],
 
-    "files-bing": [
+    "files-bin": [
         "res/scoper.inc.php.tpl",
         "vendor-hotfix/.gitkeep",
     ],
