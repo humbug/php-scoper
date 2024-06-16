@@ -28,11 +28,8 @@ use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Humbug\PhpScoper\PhpParser\FakeParser;
-use Humbug\PhpScoper\PhpParser\FakePrinter;
+use Humbug\PhpScoper\Scoper\Factory\DummyScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
-use Humbug\PhpScoper\Symbol\Reflector;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Prophecy\Argument;
@@ -680,14 +677,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             new SymfonyCommand(
                 new AddPrefixCommand(
                     $fileSystem,
-                    new DummyScoperFactory(
-                        new FakeParser(),
-                        new EnrichedReflectorFactory(
-                            Reflector::createEmpty(),
-                        ),
-                        new FakePrinter(),
-                        $scoper,
-                    ),
+                    new DummyScoperFactory($scoper),
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,

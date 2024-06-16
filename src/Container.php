@@ -17,16 +17,17 @@ namespace Humbug\PhpScoper;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\PhpParser\Parser\ParserFactory;
+use Humbug\PhpScoper\PhpParser\Parser\StandardParserFactory;
 use Humbug\PhpScoper\PhpParser\Printer\Printer;
+use Humbug\PhpScoper\PhpParser\Printer\PrinterFactory;
 use Humbug\PhpScoper\PhpParser\Printer\StandardPrinter;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\PhpParser\Printer\StandardPrinterFactory;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
+use Humbug\PhpScoper\Scoper\Factory\StandardScoperFactory;
 use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
 use Humbug\PhpScoper\Symbol\Reflector;
-use PhpParser\Lexer;
-use PhpParser\Lexer\Emulative;
 use PhpParser\Parser;
-use PhpParser\Parser\Php7;
-use PhpParser\Parser\Php8;
 use PhpParser\PhpVersion;
 use PhpParser\PrettyPrinter\Standard;
 use Symfony\Component\Filesystem\Filesystem;
@@ -36,12 +37,14 @@ final class Container
 {
     private Filesystem $filesystem;
     private ConfigurationFactory $configFactory;
+    private ParserFactory $parserFactory;
     private Parser $parser;
     private ?PhpVersion $parserPhpVersion = null;
     private ?PhpVersion $printerPhpVersion = null;
     private Reflector $reflector;
     private ScoperFactory $scoperFactory;
     private EnrichedReflectorFactory $enrichedReflectorFactory;
+    private PrinterFactory $printerFactory;
     private Printer $printer;
 
     public function getFileSystem(): Filesystem
@@ -67,24 +70,27 @@ final class Container
         return $this->configFactory;
     }
 
-    public function getScoperFactory(?PhpVersion $phpVersion = null): ScoperFactory
+    public function getScoperFactory(): ScoperFactory
     {
         if (!isset($this->scoperFactory)) {
-            $this->scoperFactory = new ScoperFactory(
-                $this->getParser($phpVersion),
+            $this->scoperFactory = new StandardScoperFactory(
                 $this->getEnrichedReflectorFactory(),
-                $this->getPrinter(),
+                $this->getParserFactory(),
+                $this->getPrinterFactory(),
             );
         }
 
         return $this->scoperFactory;
     }
 
+    /**
+     * @deprecated Use ::getParserFactory() instead.
+     */
     public function getParser(?PhpVersion $phpVersion = null): Parser
     {
         if (!isset($this->parser)) {
             $this->parserPhpVersion = $phpVersion;
-            $this->parser = $this->createParser($phpVersion);
+            $this->parser = $this->getParserFactory()->createParser($phpVersion);
         }
 
         self::checkSamePhpVersion($this->parserPhpVersion, $phpVersion);
@@ -92,14 +98,13 @@ final class Container
         return $this->parser;
     }
 
-    private function createParser(?PhpVersion $phpVersion): Parser
+    public function getParserFactory(): ParserFactory
     {
-        $version = $phpVersion ?? PhpVersion::getHostVersion();
-        $lexer = $version->isHostVersion() ? new Lexer() : new Emulative($version);
+        if (!isset($this->parserFactory)) {
+            $this->parserFactory = new StandardParserFactory();
+        }
 
-        return $version->id >= 80_000
-            ? new Php8($lexer, $version)
-            : new Php7($lexer, $version);
+        return $this->parserFactory;
     }
 
     public function getReflector(): Reflector
@@ -122,6 +127,9 @@ final class Container
         return $this->enrichedReflectorFactory;
     }
 
+    /**
+     * @deprecated use ::getPrinterFactory() instead.
+     */
     public function getPrinter(?PhpVersion $phpVersion = null): Printer
     {
         if (!isset($this->printer)) {
@@ -136,6 +144,15 @@ final class Container
         self::checkSamePhpVersion($this->printerPhpVersion, $phpVersion);
 
         return $this->printer;
+    }
+
+    public function getPrinterFactory(): PrinterFactory
+    {
+        if (!isset($this->printerFactory)) {
+            $this->printerFactory = new StandardPrinterFactory();
+        }
+
+        return $this->printerFactory;
     }
 
     private static function checkSamePhpVersion(

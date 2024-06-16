@@ -22,8 +22,6 @@ parameters:
           path: 'src/PhpParser/NodeVisitor/Resolver/OriginalNameResolver.php'
         - message: '#NamespaceManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/NamespaceStmt/NamespaceManipulator.php'
-        - message: '#DummyScoperFactory extends @final#'
-          path: 'tests/Console/Command/DummyScoperFactory.php'
         - message: '#Anonymous function should return string but returns array#'
           path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
         - message: '#AddPrefixCommandIntegrationTest\:\:getNormalizeDisplay\(\) should return string but returns array#'
@@ -63,3 +61,5 @@ parameters:
         # Fixed in https://github.com/nikic/PHP-Parser/pull/1003
         - message: '#Standard constructor expects array#'
           path: 'src/Container.php'
+        - message: '#Standard constructor expects array#'
+          path: 'src/PhpParser/Printer/StandardPrinterFactory.php'
