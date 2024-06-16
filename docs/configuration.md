@@ -63,8 +63,11 @@ then a random prefix will be automatically generated.
 The PHP version provided is used to configure the underlying [PHP-Parser] Parser and Printer. This will not affect
 the PHP internal symbols used by PHP-Scoper but may affect what code can be parsed and how the code will be printed.
 
-If `null` or `''` (empty string) is given, then the host version will be used, i.e. executing it with PHP 8.4 will
-result in PHP 8.4 being used as the PHP version. 
+If `null` or `''` (empty string) is given, then the host version will be used for the parser and 5.3 will be used for
+the printer. This allows PHP-Scoper to parse code with the current host version without breaking older code. As a
+result, one can parse a PHP 7.2 compatible code in PHP 8.3 without breaking the PHP 7.2 compatibility. Indeed, if the
+printer version is forced to a higher version, e.g. the host version 8.3, then the code may be reformated in a way that
+it will no longer be compatible with PHP 7.2 (e.g. nowdocs and heredocs).
 
 
 ### Output directory
