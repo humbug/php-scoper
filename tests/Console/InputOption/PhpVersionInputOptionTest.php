@@ -47,6 +47,11 @@ final class PhpVersionInputOptionTest extends TestCase
             self::createIO('8.2'),
             PhpVersion::fromComponents(8, 2),
         ];
+
+        yield [
+            self::createIO('host'),
+            PhpVersion::fromComponents(PHP_MAJOR_VERSION, PHP_MINOR_VERSION),
+        ];
     }
 
     private static function createIO(?string $value): IO
