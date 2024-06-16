@@ -60,14 +60,19 @@ then a random prefix will be automatically generated.
 
 ### PHP Version
 
-The PHP version provided is used to configure the underlying [PHP-Parser] Parser and Printer. This will not affect
-the PHP internal symbols used by PHP-Scoper but may affect what code can be parsed and how the code will be printed.
+The PHP version provided is used to configure the underlying [PHP-Parser] Parser and Printer. 
+
+The version used by the Parser will affect what code it can understand, e.g. if it is configured in PHP 8.2 it will not
+understand a PHP 8.3 construct (e.g. typed class constants). However, what symbols are interpreted as internal will
+remain unchanged. The function `json_validate()` will be considered as internal even if the parser is configured with
+PHP 8.2.
+
+The printer version affects the code style. For example nowdocs and heredocs will be indented if the printer's PHP
+version is higher than 7.4 but will be formated without indent otherwise.
 
 If `null` or `''` (empty string) is given, then the host version will be used for the parser and 5.3 will be used for
-the printer. This allows PHP-Scoper to parse code with the current host version without breaking older code. As a
-result, one can parse a PHP 7.2 compatible code in PHP 8.3 without breaking the PHP 7.2 compatibility. Indeed, if the
-printer version is forced to a higher version, e.g. the host version 8.3, then the code may be reformated in a way that
-it will no longer be compatible with PHP 7.2 (e.g. nowdocs and heredocs).
+the printer. This allows PHP-Scoper to a PHP 7.2 compatible codebase without breaking its compatibility although the
+host version is a newer version.
 
 
 ### Output directory
