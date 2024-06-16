@@ -18,16 +18,29 @@ use Stringable;
 
 final readonly class Prefix implements Stringable
 {
-    public function __construct(private string $prefix)
+    /**
+     * @var non-empty-string
+     */
+    private string $value;
+
+    public function __construct(string $prefix)
     {
-        PrefixValidator::validate($this->prefix);
+        PrefixValidator::validate($prefix);
+
+        $this->value = $prefix;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function __toString(): string
     {
-        return $this->prefix;
+        return $this->value;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function toString(): string
     {
         return (string) $this;
