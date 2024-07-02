@@ -120,8 +120,6 @@ class PhpScoperTest extends TestCase
             PHP;
 
         $expected = <<<'PHP'
-            <?php
-
             namespace Humbug;
 
             echo "Humbug!";
@@ -174,8 +172,6 @@ class PhpScoperTest extends TestCase
             PHP;
 
         $expected = <<<'PHP'
-            <?php
-
             namespace Humbug;
 
             echo "Humbug!";
@@ -199,6 +195,7 @@ class PhpScoperTest extends TestCase
             PHP;
 
         $expected = <<<'PHP'
+            ?>
             #!/usr/bin/env php
             <?php
             namespace Humbug;
