@@ -306,7 +306,7 @@ final class ScoperAutoloadGenerator
             $originalFQ = new FullyQualified($exposed);
 
             $namespace = $originalFQ->slice(0, -1);
-            $functionName = null === $namespace ? $exposed : (string) $originalFQ->slice(1);
+            $functionName = null === $namespace ? $exposed : (string) $originalFQ->slice(-1, 1);
 
             $groupedFunctions[(string) $namespace][] = [$exposed, $functionName, $prefix];
         }
