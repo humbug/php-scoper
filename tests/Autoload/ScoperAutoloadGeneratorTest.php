@@ -222,7 +222,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 namespace Acme\Emca {
                     if (!function_exists('Acme\Emca\foo')) { function foo() { return \Humbug\Acme\Emca\foo(...func_get_args()); } }
                 }
-                
+
                 namespace Acme {
                     if (!function_exists('Acme\bar')) { function bar() { return \Humbug\Acme\bar(...func_get_args()); } }
                     if (!function_exists('Acme\foo')) { function foo() { return \Humbug\Acme\foo(...func_get_args()); } }
