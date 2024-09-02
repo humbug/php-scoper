@@ -182,6 +182,12 @@ final readonly class Reflector
         'ldap_connect_wallet',
         'posix_pathconf',
         'posix_fpathconf',
+
+        // Removed in https://github.com/JetBrains/phpstorm-stubs/pull/1627
+        'ares_gethostbyname',
+        'uv_ares_init_options',
+        'uv_handle_type',
+        'uv_read2_start',
     ];
 
     /**
