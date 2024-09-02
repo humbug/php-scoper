@@ -93,7 +93,7 @@ class MakefileE2ETest extends BaseMakefileTestCase
         $e2eRule = current($e2eRules);
         self::assertNotFalse($e2eRule, 'Expected to find the e2e rule in the Makefile.');
 
-        return $e2eRule->getPrerequisites();
+        return array_values($e2eRule->getPrerequisites());
     }
 
     /**
