@@ -34,7 +34,7 @@
         "fidry/makefile": "^1.0",
         "humbug/box": "^4.6.2",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpunit/phpunit": "^10.0",
+        "phpunit/phpunit": "^10.0 || ^11.0",
         "symfony/yaml": "^6.4 || ^7.0"
     },
     "minimum-stability": "dev",
