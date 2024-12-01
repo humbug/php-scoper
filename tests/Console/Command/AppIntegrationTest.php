@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
+use Composer\InstalledVersions;
 use Fidry\Console\Bridge\Application\SymfonyApplication;
 use Fidry\Console\Bridge\Command\SymfonyCommand;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
@@ -33,6 +34,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
+use function version_compare;
 
 /**
  * @internal
@@ -72,7 +74,41 @@ class AppIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 
         $this->appTester->run($input);
 
-        $expected = <<<'EOF'
+        $expected = self::isSymfony72OrHigher()
+            ? <<<'EOF'
+
+                ____  __  ______     _____
+               / __ \/ / / / __ \   / ___/_________  ____  ___  _____
+              / /_/ / /_/ / /_/ /   \__ \/ ___/ __ \/ __ \/ _ \/ ___/
+             / ____/ __  / ____/   ___/ / /__/ /_/ / /_/ /  __/ /
+            /_/   /_/ /_/_/       /____/\___/\____/ .___/\___/_/
+                                                 /_/
+
+            PhpScoper version TestVersion 28/01/2020
+
+            Usage:
+              command [options] [arguments]
+
+            Options:
+              -h, --help            Display help for the given command. When no command is given display help for the list command
+                  --silent          Do not output any message
+              -q, --quiet           Only errors are displayed. All other output is suppressed
+              -V, --version         Display this application version
+                  --ansi|--no-ansi  Force (or disable --no-ansi) ANSI output
+              -n, --no-interaction  Do not ask any interactive question
+              -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+            Available commands:
+              add-prefix      Goes through all the PHP files found in the given paths to apply the given prefix to namespaces & FQNs.
+              completion      Dump the shell completion script
+              help            Display help for a command
+              init            Generates a configuration file.
+              inspect         Outputs the processed file content based on the configuration.
+              inspect-symbol  Checks the given symbol for a given configuration. Helpful to have an insight on how PHP-Scoper will interpret this symbol
+              list            List commands
+
+            EOF
+            : <<<'EOF'
 
                 ____  __  ______     _____
                / __ \/ / / / __ \   / ___/_________  ____  ___  _____
@@ -168,5 +204,14 @@ class AppIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
         );
 
         return new ApplicationTester($application);
+    }
+
+    private static function isSymfony72OrHigher(): bool
+    {
+        return version_compare(
+            (string) InstalledVersions::getPrettyVersion('symfony/console'),
+            'v7.2',
+            '>=',
+        );
     }
 }
