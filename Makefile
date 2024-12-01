@@ -76,7 +76,7 @@ php_cs_fixer: $(PHP_CS_FIXER_BIN)
 
 .PHONY: php_cs_fixer_lint
 php_cs_fixer_lint: $(PHP_CS_FIXER_BIN)
-	$(PHP_CS_FIXER) --dry-run
+	$(PHP_CS_FIXER) --dry-run --diff
 
 .PHONY: composer_normalize
 composer_normalize: composer.json vendor
