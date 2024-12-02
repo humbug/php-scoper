@@ -61,4 +61,46 @@ return [
         }
 
         PHP,
+
+    'native Deprecated attribute' => <<<'PHP'
+        <?php
+
+        namespace PhpScoper\Command;
+
+        class PhpVersion
+        {
+            #[\Deprecated(
+                message: "use PhpVersion::getVersion() instead",
+                since: "8.4",
+            )]
+            public function getPhpVersion(): string
+            {
+                return $this->getVersion();
+            }
+        
+            public function getVersion(): string
+            {
+                return '8.4';
+            }
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\PhpScoper\Command;
+
+        class PhpVersion
+        {
+            #[\Deprecated(message: "use PhpVersion::getVersion() instead", since: "8.4")]
+            public function getPhpVersion(): string
+            {
+                return $this->getVersion();
+            }
+            public function getVersion(): string
+            {
+                return '8.4';
+            }
+        }
+
+        PHP,
 ];

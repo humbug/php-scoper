@@ -26,6 +26,8 @@ use function array_merge;
 final readonly class Reflector
 {
     private const MISSING_CLASSES = [
+        'Deprecated',
+
         // https://youtrack.jetbrains.com/issue/WI-29503
         'MongoInsertBatch',
         'MongoDeleteBatch',
@@ -215,6 +217,10 @@ final readonly class Reflector
         'ps_LINEJOIN_MITER',
         'ps_LINEJOIN_ROUND',
         'ps_LINEJOIN_BEVEL',
+
+        // PHP 8.4
+        'SOCK_CLOEXEC',
+        'SOCK_CLOEXEC',
     ];
 
     public static function createWithPhpStormStubs(): self
