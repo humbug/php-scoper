@@ -180,14 +180,15 @@ function getWpExcludedSymbols(string $fileName): array
     );
 }
 
-$wp_classes   = getWpExcludedSymbols('exclude-wordpress-classes.json');
-$wp_functions = getWpExcludedSymbols('exclude-wordpress-functions.json');
-$wp_constants = getWpExcludedSymbols('exclude-wordpress-constants.json');
+$wpConstants = getWpExcludedSymbols('exclude-wordpress-constants.json');
+$wpClasses = getWpExcludedSymbols('exclude-wordpress-classes.json');
+$wpFunctions = getWpExcludedSymbols('exclude-wordpress-functions.json');
+
 
 return [
-  'exclude-classes' => $wp_classes,
-  'exclude-constants' => $wp_functions,
-  'exclude-functions' => $wp_constants,
+  'exclude-constants' => $wpConstants,
+  'exclude-classes' => $wpClasses,
+  'exclude-functions' => $wpFunctions,
   // ...
 ];
 ```
