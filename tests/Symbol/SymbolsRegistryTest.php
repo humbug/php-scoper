@@ -28,7 +28,7 @@ final class SymbolsRegistryTest extends TestCase
 {
     /**
      * @param array<array{FullyQualified, FullyQualified}> $functions
-     * @param array<array{FullyQualified, FullyQualified}> $classes
+     * @param array<array{FullyQualified, FullyQualified, FullyQualified[]}> $classes
      * @param list<array{FullyQualified, FullyQualified}>  $expectedRecordedFunctions
      * @param list<array{FullyQualified, FullyQualified}>  $expectedRecordedClasses
      */
@@ -52,7 +52,7 @@ final class SymbolsRegistryTest extends TestCase
 
     /**
      * @param array<array{FullyQualified, FullyQualified}> $functions
-     * @param array<array{FullyQualified, FullyQualified}> $classes
+     * @param array<array{FullyQualified, FullyQualified, FullyQualified[]}> $classes
      */
     #[DataProvider('provideRecords')]
     public function test_it_can_be_serialized_and_unserialized(
@@ -179,7 +179,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$main, $scopedMain],
                 ],
                 [
-                    [$testCase, $scopedTestCase],
+                    [$testCase, $scopedTestCase, []],
                 ],
             ),
             new SymbolsRegistry(),
@@ -199,7 +199,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$main, $scopedMain],
                 ],
                 [
-                    [$testCase, $scopedTestCase],
+                    [$testCase, $scopedTestCase, []],
                 ],
             ),
             [
@@ -217,7 +217,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$main, $scopedMain],
                 ],
                 [
-                    [$testCase, $scopedTestCase],
+                    [$testCase, $scopedTestCase, []],
                 ],
             ),
             SymbolsRegistry::create(
@@ -225,7 +225,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$dump, $scopedDump],
                 ],
                 [
-                    [$finder, $scopedFinder],
+                    [$finder, $scopedFinder, []],
                 ],
             ),
             [
@@ -245,7 +245,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$main, $scopedMain],
                 ],
                 [
-                    [$testCase, $scopedTestCase],
+                    [$testCase, $scopedTestCase, []],
                 ],
             ),
             SymbolsRegistry::create(
@@ -254,8 +254,8 @@ final class SymbolsRegistryTest extends TestCase
                     [$dump, $scopedDump],
                 ],
                 [
-                    [$testCase, $scopedTestCase],
-                    [$finder, $scopedFinder],
+                    [$testCase, $scopedTestCase, []],
+                    [$finder, $scopedFinder, []],
                 ],
             ),
             [
@@ -276,8 +276,8 @@ final class SymbolsRegistryTest extends TestCase
                     [$dump, $scopedDump],
                 ],
                 [
-                    [$testCase, $scopedTestCase],
-                    [$finder, $scopedFinder],
+                    [$testCase, $scopedTestCase, []],
+                    [$finder, $scopedFinder, []],
                 ],
             ),
             SymbolsRegistry::create(
@@ -285,7 +285,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$dump, $scopedDump],
                 ],
                 [
-                    [$finder, $scopedFinder],
+                    [$finder, $scopedFinder, []],
                 ],
             ),
             [
