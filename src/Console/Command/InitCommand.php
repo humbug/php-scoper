@@ -33,7 +33,7 @@ use const DIRECTORY_SEPARATOR;
 final readonly class InitCommand implements Command
 {
     private const CONFIG_FILE_OPT = 'config';
-    private const CONFIG_FILE_TEMPLATE = __DIR__.'/../../scoper.inc.php.tpl';
+    private const CONFIG_FILE_TEMPLATE = __DIR__.'/../../../res/scoper.inc.php.tpl';
     private const CONFIG_FILE_DEFAULT = 'scoper.inc.php';
 
     public function __construct(
