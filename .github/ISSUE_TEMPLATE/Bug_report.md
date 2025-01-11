@@ -29,14 +29,15 @@ For general support, please use the #humbug Slack channel: https://symfony.com/s
 
 <details>
  <summary>scoper.inc.php</summary>
- 
+
  ```php
  <?php
- 
+
  declare(strict_types=1);
- 
- use Isolated\Symfony\Component\Finder\Finder;
- 
+
+ /** @var Symfony\Component\Finder\Finder $finder */
+ $finder = Isolated\Symfony\Component\Finder\Finder::class;
+
  return [
  ];
 
@@ -45,7 +46,7 @@ For general support, please use the #humbug Slack channel: https://symfony.com/s
 
 <details>
  <summary>Output</summary>
- 
+
  ```bash
  $ command
  > output
