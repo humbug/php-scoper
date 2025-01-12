@@ -31,6 +31,13 @@ final readonly class Reflector
         // https://youtrack.jetbrains.com/issue/WI-29503
         'MongoInsertBatch',
         'MongoDeleteBatch',
+
+        // PHP 8.4
+        // TODO: to report
+        'Pdo\DbLib',
+        'Pdo\Firebird',
+        'Pdo\Odbc',
+        'Pdo\Pgsql',
     ];
 
     private const MISSING_FUNCTIONS = [
@@ -190,6 +197,13 @@ final readonly class Reflector
         'uv_ares_init_options',
         'uv_handle_type',
         'uv_read2_start',
+
+        // PHP 8.4
+        // TODO: To report
+        'pcntl_getqos_class',
+        'pcntl_setns',
+        'sodium_crypto_aead_aegis128l_',
+        'sodium_crypto_aead_aegis256l_',
     ];
 
     /**
@@ -219,8 +233,27 @@ final readonly class Reflector
         'ps_LINEJOIN_BEVEL',
 
         // PHP 8.4
-        'SOCK_CLOEXEC',
-        'SOCK_CLOEXEC',
+        // TODO: to report
+        'CURL_TCP_KEEPCNT',
+        'IP_PORTRANGE_DEFAULT',
+        'IP_PORTRANGE_HIGH',
+        'IP_PORTRANGE_LOW',
+        'PATTERN',
+        'P_UID',
+        'P_GID',
+        'P_SID',
+        'P_JAILID',
+        'PROPERTY_ID_COMPAT_MATH_CONTINUE',
+        'PROPERTY_ID_COMPAT_MATH_START',
+        'PROPERTY_IDS_UNARY_OPERATOR',
+        'SIGCKPT',
+        'SIGCKPTEXIT',
+        'SOCK_CONN_DGRAM',
+        'SO_EXCLBIND',
+        'SO_EXCLUSIVEADDRUSE',
+        'SO_NOSIGPIPE',
+        'SO_LINGER_SEC',
+        'IP_PORTRANGE',
     ];
 
     public static function createWithPhpStormStubs(): self
