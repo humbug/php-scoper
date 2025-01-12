@@ -22,7 +22,7 @@ return [
 
     'Declaration in the global namespace' => <<<'PHP'
         <?php
-        
+
         // https://stitcher.io/blog/new-in-php-84#property-hooks-rfc
 
         class BookViewModel
@@ -30,22 +30,22 @@ return [
             public function __construct(
                 private array $authors,
             ) {}
-        
+
             public string $credits {
                 get {
                     return implode(', ', array_map(
-                        fn (Author $author) => $author->name, 
+                        fn (Author $author) => $author->name,
                         $this->authors,
                     ));
                 }
             }
-            
+
             public Author $mainAuthor {
                 set (Author $mainAuthor) {
                     $this->authors[] = $mainAuthor;
                     $this->mainAuthor = $mainAuthor;
                 }
-                
+
                 get => $this->mainAuthor;
             }
         }
@@ -89,22 +89,22 @@ return [
                 public function __construct(
                     private array $authors,
                 ) {}
-            
+
                 public string $credits {
                     get {
                         return implode(', ', array_map(
-                            fn (Author $author) => $author->name, 
+                            fn (Author $author) => $author->name,
                             $this->authors,
                         ));
                     }
                 }
-                
+
                 public Author $mainAuthor {
                     set (Author $mainAuthor) {
                         $this->authors[] = $mainAuthor;
                         $this->mainAuthor = $mainAuthor;
                     }
-                    
+
                     get => $this->mainAuthor;
                 }
             }
@@ -146,22 +146,22 @@ return [
             public function __construct(
                 private array $authors,
             ) {}
-        
+
             public string $credits {
                 get {
                     return implode(', ', array_map(
-                        fn (Author $author) => $author->name, 
+                        fn (Author $author) => $author->name,
                         $this->authors,
                     ));
                 }
             }
-            
+
             public Author $mainAuthor {
                 set (Author $mainAuthor) {
                     $this->authors[] = $mainAuthor;
                     $this->mainAuthor = $mainAuthor;
                 }
-                
+
                 get => $this->mainAuthor;
             }
         }
@@ -203,22 +203,22 @@ return [
                 public function __construct(
                     private array $authors,
                 ) {}
-            
+
                 public string $credits {
                     get {
                         return implode(', ', array_map(
-                            fn (Author $author) => $author->name, 
+                            fn (Author $author) => $author->name,
                             $this->authors,
                         ));
                     }
                 }
-                
+
                 public Author $mainAuthor {
                     set (Author $mainAuthor) {
                         $this->authors[] = $mainAuthor;
                         $this->mainAuthor = $mainAuthor;
                     }
-                    
+
                     get => $this->mainAuthor;
                 }
             }
@@ -267,22 +267,22 @@ return [
                 public function __construct(
                     private array $authors,
                 ) {}
-            
+
                 public string $credits {
                     get {
                         return implode(', ', array_map(
-                            fn (Author $author) => $author->name, 
+                            fn (Author $author) => $author->name,
                             $this->authors,
                         ));
                     }
                 }
-                
+
                 public Author $mainAuthor {
                     set (Author $mainAuthor) {
                         $this->authors[] = $mainAuthor;
                         $this->mainAuthor = $mainAuthor;
                     }
-                    
+
                     get => $this->mainAuthor;
                 }
             }
@@ -327,34 +327,34 @@ return [
             public function __construct(
                 private array $authors,
             ) {}
-        
+
             public string $credits {
                 get {
                     return implode(', ', array_map(
-                        fn (Author $author) => $author->name, 
+                        fn (Author $author) => $author->name,
                         $this->authors,
                     ));
                 }
             }
-            
+
             public Author $mainAuthor {
                 set (Author $mainAuthor) {
                     $this->authors[] = $mainAuthor;
                     $this->mainAuthor = $mainAuthor;
                 }
-                
+
                 get => $this->mainAuthor;
             }
-            
+
             public \Baz\Author $mainAuthor {
                 set (\Baz\Author $mainAuthor) {
                     $this->authors[] = $mainAuthor;
                     $this->mainAuthor = $mainAuthor;
                 }
-                
+
                 get => $this->mainAuthor;
             }
-            
+
             public C $mainAuthor {
                 set(C $mainAuthor) {
                     $this->authors[] = $mainAuthor;
