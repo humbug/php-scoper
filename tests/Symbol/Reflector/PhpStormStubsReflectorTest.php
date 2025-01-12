@@ -100,7 +100,7 @@ class PhpStormStubsReflectorTest extends TestCase
         );
 
         yield from self::createDataSetForInternalSymbols(
-            'HP 8.4 new class-like (added or modified)',
+            'PHP 8.4 new class-like (added or modified)',
             'RoundingMode',
             'DOMNode',
             'DOMElement',
