@@ -77,7 +77,7 @@ return [
             {
                 return $this->getVersion();
             }
-        
+
             public function getVersion(): string
             {
                 return '8.4';
