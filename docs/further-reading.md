@@ -6,7 +6,7 @@
   - [Function aliases](#function-aliases)
 - [Laravel support](#laravel-support)
 - [Symfony support](#symfony-support)
-- [Wordpress support](#wordpress-support)
+- [WordPress support](#wordpress-support)
 
 
 ### How to deal with unknown third-party symbols
@@ -156,9 +156,9 @@ return [
 Note that the path is the "regular path(s)" that can be passed to patchers.
 
 
-### Wordpress Support
+### WordPress Support
 
-When writing a Wordpress plugin, you need to [exclude Wordpress' symbols](#excluded-symbols). To facilitate
+When writing a WordPress plugin, you need to [exclude WordPress' symbols](#excluded-symbols). To facilitate
 this task, [Snicco] created a third-party CLI tool [php-scoper-excludes] that can be used to generate
 PHP-Scoper compatible symbol lists for any PHP codebase you point it.
 
@@ -181,14 +181,15 @@ function getWpExcludedSymbols(string $fileName): array
     );
 }
 
-$wp_classes   = getWpExcludedSymbols('exclude-wordpress-classes.json');
-$wp_functions = getWpExcludedSymbols('exclude-wordpress-functions.json');
-$wp_constants = getWpExcludedSymbols('exclude-wordpress-constants.json');
+$wpConstants = getWpExcludedSymbols('exclude-wordpress-constants.json');
+$wpClasses = getWpExcludedSymbols('exclude-wordpress-classes.json');
+$wpFunctions = getWpExcludedSymbols('exclude-wordpress-functions.json');
+
 
 return [
-  'exclude-classes' => $wp_classes,
-  'exclude-constants' => $wp_functions,
-  'exclude-functions' => $wp_constants,
+  'exclude-constants' => $wpConstants,
+  'exclude-classes' => $wpClasses,
+  'exclude-functions' => $wpFunctions,
   // ...
 ];
 ```
