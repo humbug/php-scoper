@@ -25,7 +25,8 @@ Complete configuration reference (details about each entry is available):
 
 // scoper.inc.php
 
-use Isolated\Symfony\Component\Finder\Finder;
+/** @var Symfony\Component\Finder\Finder $finder */
+$finder = Isolated\Symfony\Component\Finder\Finder::class;
 
 return [
     'prefix' => null,           // string|null
@@ -39,11 +40,11 @@ return [
     'exclude-constants' => [],  // list<string|regex>
     'exclude-classes' => [],    // list<string|regex>
     'exclude-functions' => [],  // list<string|regex>
-  
+
     'expose-global-constants' => true,   // bool
     'expose-global-classes' => true,     // bool
     'expose-global-functions' => true,   // bool
-    
+
     'expose-namespaces' => [], // list<string|regex>
     'expose-constants' => [],  // list<string|regex>
     'expose-classes' => [],    // list<string|regex>
@@ -60,7 +61,7 @@ then a random prefix will be automatically generated.
 
 ### PHP Version
 
-The PHP version provided is used to configure the underlying [PHP-Parser] Parser and Printer. 
+The PHP version provided is used to configure the underlying [PHP-Parser] Parser and Printer.
 
 The version used by the Parser will affect what code it can understand, e.g. if it is configured in PHP 8.2 it will not
 understand a PHP 8.3 construct (e.g. typed class constants). However, what symbols are interpreted as internal will
@@ -95,12 +96,13 @@ files should be scoped by using [Finders][symfony_finder] in the configuration:
 
 // scoper.inc.php
 
-use Isolated\Symfony\Component\Finder\Finder;
+/** @var Symfony\Component\Finder\Finder $finder */
+$finder = Isolated\Symfony\Component\Finder\Finder::class;
 
 return [
     'finders' => [
-        Finder::create()->files()->in('src'),
-        Finder::create()
+        $finder::create()->files()->in('src'),
+        $finder::create()
             ->files()
             ->ignoreVCS(true)
             ->notName('/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/')
@@ -113,7 +115,7 @@ return [
                 'vendor-bin',
             ])
             ->in('vendor'),
-        Finder::create()->append([
+        $finder::create()->append([
             'bin/php-scoper',
             'composer.json',
         ])
@@ -129,7 +131,7 @@ php-scoper add-prefix file1.php bin/file2.php
 
 Paths added manually are appended to the paths found by the finders.
 
-If you are using [Box][box], all the (non-binary) files included are used 
+If you are using [Box][box], all the (non-binary) files included are used
 instead of the `finders` setting.
 
 
@@ -232,7 +234,7 @@ return [
 ```
 
 This enriches the list of Symbols PHP-Scoper's Reflector considers as "internal",
-i.e. PHP engine or extension symbols. Such symbols will be left completely 
+i.e. PHP engine or extension symbols. Such symbols will be left completely
 untouched.*
 
 *: There is _one_ exception, which is declarations of functions. If you have the function
@@ -337,7 +339,7 @@ Notes:
 - An excluded symbol will not be exposed. If for example you expose the class
   `Acme\Foo` but the `Acme` namespace is excluded, then `Acme\Foo` will NOT
   be exposed.
-- Exposing a namespace also exposes its sub-namespaces (with the aforementioned 
+- Exposing a namespace also exposes its sub-namespaces (with the aforementioned
   note applying)
 - Exposing symbols will most likely require PHP-Scoper to adjust the Composer
   autoloader. To do so with minimal conflicts, PHP-Scoper dumps everything
@@ -358,7 +360,7 @@ The namespace configuration is identical to [excluding namespaces](#excluding-na
 
 How the symbols are exposed is done as described in the next sections. Note
 however that some symbols cannot be exposed (see [exposing/excluding traits](limitations.md#exposingexcluding-traits)
- and [exposing/excluding enums](limitations.md#exposingexcluding-enums)) 
+ and [exposing/excluding enums](limitations.md#exposingexcluding-enums))
 
 
 ### Exposing classes

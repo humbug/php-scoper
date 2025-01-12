@@ -77,12 +77,13 @@ supported and that is the views. However, this can be fixed by hand without too 
 // scoper.inc.php
 <?php declare(strict_types=1);
 
-use Isolated\Symfony\Component\Finder\Finder;
+/** @var Symfony\Component\Finder\Finder $finder */
+$finder = Isolated\Symfony\Component\Finder\Finder::class;
 
 $consoleViewFiles = array_map(
     static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
     iterator_to_array(
-        Finder::create()
+        $finder::create()
             ->in('vendor/laravel/framework/src/Illuminate/Console/resources/views')
             ->files(),
         false,
