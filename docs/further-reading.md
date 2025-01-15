@@ -27,7 +27,7 @@ foreach (wp_list_users() as $user) {
 
 It would be scoped as follows:
 
-```
+```php
 <?php
 
 namespace ScopingPrefix\Acme;
