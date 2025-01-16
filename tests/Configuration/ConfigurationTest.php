@@ -14,35 +14,37 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\FakePatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
-use InvalidArgumentException;
+use PhpParser\PhpVersion;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\Configuration
- *
  * @internal
  */
+#[CoversClass(Configuration::class)]
 final class ConfigurationTest extends TestCase
 {
     /**
-     * @dataProvider prefixProvider
-     *
      * @param non-empty-string $prefix
      */
+    #[DataProvider('prefixProvider')]
     public function test_it_validates_the_prefix(
         string $prefix,
         string $expectedExceptionMessage
     ): void {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(InvalidConfigurationValue::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
         new Configuration(
             null,
             null,
             $prefix,
+            null,
             [],
             [],
             new PatcherChain([]),
@@ -56,6 +58,7 @@ final class ConfigurationTest extends TestCase
             '/path/to/config',
             '/path/to/outputDir',
             'initialPrefix',
+            null,
             ['/path/to/fileA' => ['/path/to/fileA', 'fileAContent']],
             ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
             new FakePatcher(),
@@ -82,6 +85,7 @@ final class ConfigurationTest extends TestCase
             '/path/to/config',
             '/path/to/outputDir',
             'initialPrefix',
+            null,
             ['/path/to/fileA' => ['/path/to/fileA', 'fileAContent']],
             ['/path/to/fileB' => ['/path/to/fileB', 'fileBContent']],
             new FakePatcher(),
@@ -97,7 +101,7 @@ final class ConfigurationTest extends TestCase
         $newConfig = $config->withPatcher($newPatcher);
 
         $expectedNewConfigValues = $values;
-        $expectedNewConfigValues[5] = $newPatcher;
+        $expectedNewConfigValues[6] = $newPatcher;
 
         self::assertStateIs($config, ...$values);
         self::assertStateIs($newConfig, ...$expectedNewConfigValues);
@@ -107,20 +111,21 @@ final class ConfigurationTest extends TestCase
     {
         yield [
             ';',
-            'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got ";"',
+            'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got ";".',
         ];
 
         yield [
             'App\\\\Foo',
-            'Invalid namespace separator sequence. Got "App\\\\Foo"',
+            'Invalid namespace separator sequence. Got "App\\\\Foo".',
         ];
     }
 
-    private static function assertStateIs(
+    public static function assertStateIs(
         Configuration $configuration,
         ?string $expectedPath,
         ?string $expectedOutputDir,
         string $expectedPrefix,
+        ?PhpVersion $expectedPhpVersion,
         array $expectedFilesWithContents,
         array $expectedExcludedFilesWithContents,
         Patcher $expectedPatcher,
@@ -129,6 +134,7 @@ final class ConfigurationTest extends TestCase
         self::assertSame($expectedPath, $configuration->getPath());
         self::assertSame($expectedOutputDir, $configuration->getOutputDir());
         self::assertSame($expectedPrefix, $configuration->getPrefix());
+        self::assertEquals($expectedPhpVersion, $configuration->getPhpVersion());
         self::assertEqualsCanonicalizing(
             $expectedFilesWithContents,
             $configuration->getFilesWithContents(),

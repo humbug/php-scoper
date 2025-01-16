@@ -19,16 +19,16 @@ use Fidry\Console\Test\AppTester;
 use Fidry\Console\Test\OutputAssertions;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use function Safe\preg_replace;
 
 /**
- * @coversNothing
- *
- * @group integration
- *
  * @internal
  */
+#[Group('integration')]
+#[CoversNothing]
 class AddInspectCommandIntegrationTest extends TestCase
 {
     private const FIXTURE_PATH = __DIR__.'/../../../fixtures/set002/original';
@@ -50,7 +50,7 @@ class AddInspectCommandIntegrationTest extends TestCase
         $this->appTester = AppTester::fromConsoleApp($application);
     }
 
-    public function test_it_shows_the_scopped_content_of_the_file_given(): void
+    public function test_it_shows_the_scoped_content_of_the_file_given(): void
     {
         $input = [
             'inspect',
@@ -65,7 +65,7 @@ class AddInspectCommandIntegrationTest extends TestCase
         OutputAssertions::assertSameOutput(
             <<<'PHP'
 
-                Scopped contents:
+                Scoped contents:
 
                 """
                 <?php
@@ -93,7 +93,7 @@ class AddInspectCommandIntegrationTest extends TestCase
         );
     }
 
-    public function test_it_shows_the_raw_scopped_content_of_the_file_given_in_quiet_mode(): void
+    public function test_it_shows_the_raw_scoped_content_of_the_file_given_in_quiet_mode(): void
     {
         $input = [
             'inspect',

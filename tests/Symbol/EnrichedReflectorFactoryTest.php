@@ -15,13 +15,13 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Symbol\EnrichedReflectorFactory
- *
  * @internal
  */
+#[CoversClass(EnrichedReflectorFactory::class)]
 final class EnrichedReflectorFactoryTest extends TestCase
 {
     public function test_it_can_create_an_enriched_reflector(): void

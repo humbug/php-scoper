@@ -12,75 +12,60 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Native constant calls',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Native constant calls',
+        exposeGlobalFunctions: true,
+    ),
 
     'Internal function in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    $x = DIRECTORY_SEPARATOR;
-    
-    if (!defined('PATH_SEPARATOR')) {
-        define('PATH_SEPARATOR', "\n");
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    $x = \DIRECTORY_SEPARATOR;
-    if (!\defined('PATH_SEPARATOR')) {
-        \define('PATH_SEPARATOR', "\n");
-    }
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        $x = DIRECTORY_SEPARATOR;
+
+        if (!defined('PATH_SEPARATOR')) {
+            define('PATH_SEPARATOR', "\n");
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        $x = \DIRECTORY_SEPARATOR;
+        if (!defined('PATH_SEPARATOR')) {
+            define('PATH_SEPARATOR', "\n");
+        }
+
+        PHP,
 
     'Namespaced function having the same name as an internal function' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    use const Acme\DIRECTORY_SEPARATOR;
-    
-    $x = DIRECTORY_SEPARATOR;
-    
-    if (!defined('PATH_SEPARATOR')) {
-        define('PATH_SEPARATOR', "\n");
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use const Humbug\Acme\DIRECTORY_SEPARATOR;
-    $x = DIRECTORY_SEPARATOR;
-    if (!\defined('PATH_SEPARATOR')) {
-        \define('PATH_SEPARATOR', "\n");
-    }
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        use const Acme\DIRECTORY_SEPARATOR;
+
+        $x = DIRECTORY_SEPARATOR;
+
+        if (!defined('PATH_SEPARATOR')) {
+            define('PATH_SEPARATOR', "\n");
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use const Humbug\Acme\DIRECTORY_SEPARATOR;
+        $x = DIRECTORY_SEPARATOR;
+        if (!defined('PATH_SEPARATOR')) {
+            define('PATH_SEPARATOR', "\n");
+        }
+
+        PHP,
 ];

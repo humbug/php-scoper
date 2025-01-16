@@ -12,37 +12,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-$jetBrainStubs = (static function (): array {
-    $files = [];
-
-    foreach (new DirectoryIterator(__DIR__.'/vendor/jetbrains/phpstorm-stubs') as $directoryInfo) {
-        if ($directoryInfo->isDot()) {
-            continue;
-        }
-
-        if (false === $directoryInfo->isDir()) {
-            continue;
-        }
-
-        if (in_array($directoryInfo->getBasename(), ['tests', 'meta'], true)) {
-            continue;
-        }
-
-        foreach (new DirectoryIterator($directoryInfo->getPathName()) as $fileInfo) {
-            if ($fileInfo->isDot()) {
-                continue;
-            }
-
-            if (1 !== preg_match('/\.php$/', $fileInfo->getBasename())) {
-                continue;
-            }
-
-            $files[] = $fileInfo->getPathName();
-        }
-    }
-
-    return $files;
-})();
+$jetBrainStubs = (require __DIR__.'/res/get-scoper-phpstorm-stubs.php')();
+$jetBrainStubsPatcher = (require __DIR__.'/res/create-scoper-phpstorm-stubs-map-patcher.php')();
 
 return [
     'expose-global-functions' => true,
@@ -50,37 +21,16 @@ return [
     'exclude-classes' => [
         'Isolated\Symfony\Component\Finder\Finder',
     ],
+    'exclude-functions' => [
+        'trigger_deprecation',
+    ],
     'exclude-constants' => [
         // Symfony global constants
         '/^SYMFONY\_[\p{L}_]+$/',
     ],
     'exclude-files' => $jetBrainStubs,
     'patchers' => [
-        //
-        // PHPStorm stub map: leave it unchanged
-        //
-        static function (string $filePath, string $prefix, string $contents): string {
-            if ('vendor/jetbrains/phpstorm-stubs/PhpStormStubsMap.php' !== $filePath) {
-                return $contents;
-            }
-
-            return str_replace(
-                [
-                    $prefix.'\\\\',
-                    $prefix.'\\',
-                    'namespace JetBrains\PHPStormStub;',
-                ],
-                [
-                    '',
-                    '',
-                    sprintf(
-                        'namespace %s\JetBrains\PHPStormStub;',
-                        $prefix,
-                    ),
-                ],
-                $contents,
-            );
-        },
+        $jetBrainStubsPatcher,
         //
         // Reflector: leave the registered internal symbols unchanged
         //

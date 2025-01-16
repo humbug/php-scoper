@@ -24,15 +24,20 @@ final class FullyQualifiedFactory
     use NotInstantiable;
 
     /**
-     * @param string|string[]|Name|null $name1
-     * @param string|string[]|Name|null $name2
+     * @param string|Name|string[]|null $name1
+     * @param string|Name|string[]|null $name2
      */
-    public static function concat($name1, $name2, array $attributes = []): FullyQualified
-    {
+    public static function concat(
+        array|Name|string|null $name1,
+        array|Name|string|null $name2,
+        ?array $attributes = null,
+    ): FullyQualified {
         if (null === $name1 && null === $name2) {
             throw new InvalidArgumentException('Expected one of the names to not be null');
         }
 
-        return FullyQualified::concat($name1, $name2, $attributes);
+        $newAttributes = NameFactory::getConcatenatedNamesAttributes($name1, $name2, $attributes);
+
+        return FullyQualified::concat($name1, $name2, $newAttributes);
     }
 }

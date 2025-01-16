@@ -12,111 +12,95 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Date related functions/calls',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Date related functions/calls',
+    ),
 
     'date values' => <<<'PHP'
-    <?php
-    
-    const ISO8601_BASIC = 'Ymd\THis\Z';
-    
-    new Foo('d\H\Z');
-    new DateTime('d\H\Z');
-    new DateTimeImmutable('d\H\Z');
-    date_create('d\H\Z');
-    date('d\H\Z');
-    gmdate('d\H\Z');
-    
-    DateTime::createFromFormat('d\H\Z', '15\Feb\2009');
-    DateTimeImmutable::createFromFormat('d\H\Z', '15\Feb\2009');
-    date_create_from_format('d\H\Z', '15\Feb\2009');
-    
-    (new DateTime('now'))->format('d\H\Z');
-    date_format(new DateTime('now'), 'd\H\Z');
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    const ISO8601_BASIC = 'Humbug\\Ymd\\THis\\Z';
-    new Foo('Humbug\\d\\H\\Z');
-    new \DateTime('d\\H\\Z');
-    new \DateTimeImmutable('d\\H\\Z');
-    \date_create('d\\H\\Z');
-    \date('d\\H\\Z');
-    \gmdate('d\\H\\Z');
-    \DateTime::createFromFormat('d\\H\\Z', '15\\Feb\\2009');
-    \DateTimeImmutable::createFromFormat('d\\H\\Z', '15\\Feb\\2009');
-    \date_create_from_format('d\\H\\Z', '15\\Feb\\2009');
-    (new \DateTime('now'))->format('Humbug\\d\\H\\Z');
-    \date_format(new \DateTime('now'), 'Humbug\\d\\H\\Z');
-    
-    PHP,
+        <?php
+
+        const ISO8601_BASIC = 'Ymd\THis\Z';
+
+        new Foo('d\H\Z');
+        new DateTime('d\H\Z');
+        new DateTimeImmutable('d\H\Z');
+        date_create('d\H\Z');
+        date('d\H\Z');
+        gmdate('d\H\Z');
+
+        DateTime::createFromFormat('d\H\Z', '15\Feb\2009');
+        DateTimeImmutable::createFromFormat('d\H\Z', '15\Feb\2009');
+        date_create_from_format('d\H\Z', '15\Feb\2009');
+
+        (new DateTime('now'))->format('d\H\Z');
+        date_format(new DateTime('now'), 'd\H\Z');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        const ISO8601_BASIC = 'Humbug\Ymd\THis\Z';
+        new Foo('Humbug\d\H\Z');
+        new \DateTime('d\H\Z');
+        new \DateTimeImmutable('d\H\Z');
+        \date_create('d\H\Z');
+        \date('d\H\Z');
+        \gmdate('d\H\Z');
+        \DateTime::createFromFormat('d\H\Z', '15\Feb\2009');
+        \DateTimeImmutable::createFromFormat('d\H\Z', '15\Feb\2009');
+        \date_create_from_format('d\H\Z', '15\Feb\2009');
+        (new \DateTime('now'))->format('Humbug\d\H\Z');
+        \date_format(new \DateTime('now'), 'Humbug\d\H\Z');
+
+        PHP,
 
     'date values in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    use DateTime;
-    use DateTimeImmutable;
-    
-    const ISO8601_BASIC = 'Ymd\THis\Z';
-    
-    new Foo('d\H\Z');
-    new DateTime('d\H\Z');
-    new DateTimeImmutable('d\H\Z');
-    date_create('d\H\Z');
-    date('d\H\Z');
-    gmdate('d\H\Z');
-    
-    DateTime::createFromFormat('d\H\Z', '15\Feb\2009');
-    DateTimeImmutable::createFromFormat('d\H\Z', '15\Feb\2009');
-    date_create_from_format('d\H\Z', '15\Feb\2009');
-    
-    (new DateTime('now'))->format('d\H\Z');
-    date_format(new DateTime('now'), 'd\H\Z');
-    
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use DateTime;
-    use DateTimeImmutable;
-    const ISO8601_BASIC = 'Humbug\\Ymd\\THis\\Z';
-    new Foo('Humbug\\d\\H\\Z');
-    new DateTime('d\\H\\Z');
-    new DateTimeImmutable('d\\H\\Z');
-    \date_create('d\\H\\Z');
-    \date('d\\H\\Z');
-    \gmdate('d\\H\\Z');
-    DateTime::createFromFormat('d\\H\\Z', '15\\Feb\\2009');
-    DateTimeImmutable::createFromFormat('d\\H\\Z', '15\\Feb\\2009');
-    \date_create_from_format('d\\H\\Z', '15\\Feb\\2009');
-    (new DateTime('now'))->format('Humbug\\d\\H\\Z');
-    \date_format(new DateTime('now'), 'Humbug\\d\\H\\Z');
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        use DateTime;
+        use DateTimeImmutable;
+
+        const ISO8601_BASIC = 'Ymd\THis\Z';
+
+        new Foo('d\H\Z');
+        new DateTime('d\H\Z');
+        new DateTimeImmutable('d\H\Z');
+        date_create('d\H\Z');
+        date('d\H\Z');
+        gmdate('d\H\Z');
+
+        DateTime::createFromFormat('d\H\Z', '15\Feb\2009');
+        DateTimeImmutable::createFromFormat('d\H\Z', '15\Feb\2009');
+        date_create_from_format('d\H\Z', '15\Feb\2009');
+
+        (new DateTime('now'))->format('d\H\Z');
+        date_format(new DateTime('now'), 'd\H\Z');
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use DateTime;
+        use DateTimeImmutable;
+        const ISO8601_BASIC = 'Humbug\Ymd\THis\Z';
+        new Foo('Humbug\d\H\Z');
+        new DateTime('d\H\Z');
+        new DateTimeImmutable('d\H\Z');
+        date_create('d\H\Z');
+        date('d\H\Z');
+        gmdate('d\H\Z');
+        DateTime::createFromFormat('d\H\Z', '15\Feb\2009');
+        DateTimeImmutable::createFromFormat('d\H\Z', '15\Feb\2009');
+        date_create_from_format('d\H\Z', '15\Feb\2009');
+        (new DateTime('now'))->format('Humbug\d\H\Z');
+        date_format(new DateTime('now'), 'Humbug\d\H\Z');
+
+        PHP,
 ];

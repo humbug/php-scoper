@@ -9,9 +9,9 @@
 - [Composer Autoloader](#composer-autoloader)
 - [Composer Plugins](#composer-plugins)
 - [PSR-0 Partial support](#psr-0-partial-support)
-- [Files autoloading](#files-autoloading)
 - [Exposing/Excluding traits](#exposingexcluding-traits)
 - [Exposing/Excluding enums](#exposingexcluding-enums)
+- [Declaring a custom namespaced function `function_exists()`](#declaring-a-custom-namespaced-function-function_exists)
 
 
 ### Dynamic symbols
@@ -237,19 +237,6 @@ transforming it to PSR-4, i.e. in the case above:
 If this works for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
 
 
-### Files autoloading
-
-Currently, scoping autoloaded files, i.e. files registered to Composer via the
-[`autoload.files`][autoload-files] setting only half work. Indeed, the scoping
-itself works, but if your scoped code happen to try to load another Composer
-based project with the same file, it will not. The problem identified is that
-the Composer autoloader uses hash to know if a file has been loaded or not already.
-Unfortunately, this hash is defined by the package and file name, which means
-the scoped file and non-scoped file will have the same hash resulting in errors.
-
-This is a limitation that should be fixable, check [#298] for the progress.
-
-
 ### Exposing/Excluding traits
 
 There is currently no way to expose or exclude a trait. Since there is no
@@ -261,6 +248,27 @@ that extends the scoped trait, but this is currently not implemented.
 
 There is currently no way to expose or exclude an enum. The problem being there
 is no way to alias one.
+
+
+### Declaring a custom namespaced function `function_exists()`
+
+When PHP-Scoper encounters a call such as this one:
+
+```php
+namespace App;
+
+function_exists('NewApp\main');
+```
+
+That the string contained by `function_exists` is a fully-qualified class name.
+This is true however if `function_exists()` is the native PHP one. However,
+technically, if the function `App\function_exists()` does exist, then the call
+above would call `App\function_exists()` and not `function_exists()`.
+
+This is a very unlikely scenario which is why PHP-Scoper will assume it is the
+PHP native one.
+
+If, by any chance, this is a problem, you will have to fix it with [patchers].
 
 
 <br />

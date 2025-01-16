@@ -19,9 +19,9 @@ use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\New_;
@@ -72,6 +72,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     // Function for which we know the argument IS a FQCN
     private const SPECIAL_FUNCTION_NAMES = [
+        'call_user_func_array',
         'class_alias',
         'class_exists',
         'define',
@@ -79,8 +80,17 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'function_exists',
         'interface_exists',
         'is_a',
+        'is_callable',
         'is_subclass_of',
+        'spl_autoload_register',
         'trait_exists',
+    ];
+
+    // Function for which we know the FIRST argument IS a FQCN
+    private const SPECIAL_ARRAY_FUNCTION_NAMES = [
+        'call_user_func_array',
+        'is_callable',
+        'spl_autoload_register',
     ];
 
     private const DATETIME_CLASSES = [
@@ -92,7 +102,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         /^
             (\\)?               # leading backslash
             (
-                [\p{L}_\d]+     # class-like name
+                [\p{L}_]        # class-like name first character
+                [\p{L}_\d]*     # class-like name
                 \\              # separator
             )*
             [\p{L}_\d]+         # class-like name
@@ -114,6 +125,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     public function __construct(
         private readonly string $prefix,
         private readonly EnrichedReflector $enrichedReflector,
+        private readonly ExcludedFunctionExistsStringNodeStack $excludedFunctionExistsStringNodeStack,
     ) {
     }
 
@@ -226,26 +238,31 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         if ('function_exists' === $functionName) {
-            return $this->enrichedReflector->isFunctionExcluded($normalizedValue)
-                ? $string
-                : $this->createPrefixedString($string);
+            if ($this->enrichedReflector->isFunctionExcluded($normalizedValue)) {
+                $this->excludedFunctionExistsStringNodeStack->push($string);
+
+                return $string;
+            }
+
+            return $this->createPrefixedString($string);
         }
 
         $isConstantNode = self::isConstantNode($string);
 
-        if (!$isConstantNode) {
-            if ('define' === $functionName
-                && $this->belongsToTheGlobalNamespace($string)
-            ) {
-                return $string;
-            }
-
-            return $this->enrichedReflector->isClassExcluded($normalizedValue)
+        if ($isConstantNode) {
+            return $this->enrichedReflector->isExposedConstant($normalizedValue)
                 ? $string
                 : $this->createPrefixedString($string);
         }
 
-        return $this->enrichedReflector->isExposedConstant($normalizedValue)
+        if ('define' === $functionName
+            && $this->belongsToTheGlobalNamespace($string)
+        ) {
+            return $string;
+        }
+
+        return $this->enrichedReflector->isClassExcluded($normalizedValue)
+            || $this->enrichedReflector->isFunctionExcluded($normalizedValue)
             ? $string
             : $this->createPrefixedString($string);
     }
@@ -314,7 +331,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $functionName = (string) $functionNode->name;
 
-        return ('spl_autoload_register' === $functionName
+        return (in_array($functionName, self::SPECIAL_ARRAY_FUNCTION_NAMES, true)
                 && array_key_exists(0, $arrayNode->items)
                 && $arrayItemNode === $arrayNode->items[0]
                 && !$this->enrichedReflector->isClassExcluded($normalizedValue)

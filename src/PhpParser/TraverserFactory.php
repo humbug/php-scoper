@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\PhpParser;
 
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ExcludedFunctionExistsEnricher;
+use Humbug\PhpScoper\PhpParser\NodeVisitor\ExcludedFunctionExistsStringNodeStack;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\NamespaceStmt\NamespaceStmtCollection;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\Resolver\IdentifierResolver;
 use Humbug\PhpScoper\PhpParser\NodeVisitor\UseStmt\UseStmtCollection;
@@ -84,6 +86,8 @@ class TraverserFactory
         $identifierResolver = new IdentifierResolver($nameResolver);
         $stringNodePrefixer = new StringNodePrefixer($scoper);
 
+        $excludedFunctionExistsStringNodeStack = new ExcludedFunctionExistsStringNodeStack();
+
         return [
             $nameResolver,
             new NodeVisitor\AttributeAppender\ParentNodeAppender(),
@@ -125,6 +129,7 @@ class TraverserFactory
             new NodeVisitor\StringScalarPrefixer(
                 $prefix,
                 $reflector,
+                $excludedFunctionExistsStringNodeStack,
             ),
             new NodeVisitor\NewdocPrefixer($stringNodePrefixer),
             new NodeVisitor\EvalPrefixer($stringNodePrefixer),
@@ -132,6 +137,10 @@ class TraverserFactory
             new NodeVisitor\ClassAliasStmtAppender(
                 $identifierResolver,
                 $symbolsRegistry,
+            ),
+            new ExcludedFunctionExistsEnricher(
+                $prefix,
+                $excludedFunctionExistsStringNodeStack,
             ),
             new NodeVisitor\MultiConstStmtReplacer(),
             new NodeVisitor\ConstStmtReplacer(

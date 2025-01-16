@@ -14,13 +14,14 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\RegexChecker
- *
  * @internal
  */
+#[CoversClass(RegexChecker::class)]
 final class RegexCheckerTest extends TestCase
 {
     private RegexChecker $regexChecker;
@@ -30,9 +31,7 @@ final class RegexCheckerTest extends TestCase
         $this->regexChecker = new RegexChecker();
     }
 
-    /**
-     * @dataProvider regexLikeProvider
-     */
+    #[DataProvider('regexLikeProvider')]
     public function test_it_can_tell_if_a_string_looks_like_a_regex(
         string $value,
         bool $expected
@@ -123,9 +122,7 @@ final class RegexCheckerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider regexProvider
-     */
+    #[DataProvider('regexProvider')]
     public function test_it_can_validate_that_a_string_is_a_valid_regex_or_not(
         string $regex,
         ?string $expected

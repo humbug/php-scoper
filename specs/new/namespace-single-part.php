@@ -12,74 +12,61 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'New statement call in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'New statement call in a namespace',
+        exposeGlobalConstants: true,
+        exposeGlobalFunctions: true,
+    ),
 
-        'expose-global-constants' => true,
-        'expose-global-classes' => false,
-        'expose-global-functions' => true,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+    'New statement call of a class' => SpecWithConfig::create(
+        spec: <<<'PHP'
+            <?php
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+            namespace A;
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+            class Foo {}
 
-    'New statement call of a class' => [
-        'payload' => <<<'PHP'
-<?php
+            new Foo();
+            ----
+            <?php
 
-namespace A;
+            namespace Humbug\A;
 
-class Foo {}
+            class Foo
+            {
+            }
+            new Foo();
 
-new Foo();
-----
-<?php
+            PHP,
+    ),
 
-namespace Humbug\A;
+    'FQ new statement call of a class belonging to the global namespace' => SpecWithConfig::create(
+        spec: <<<'PHP'
+            <?php
 
-class Foo
-{
-}
-new Foo();
+            namespace {
+                class Foo {}
+            }
 
-PHP
-    ],
+            namespace A {
+                new \Foo();
+            }
+            ----
+            <?php
 
-    'FQ new statement call of a class belonging to the global namespace' => [
-        'payload' => <<<'PHP'
-<?php
+            namespace Humbug;
 
-namespace {
-    class Foo {}
-}
+            class Foo
+            {
+            }
+            namespace Humbug\A;
 
-namespace A {
-    new \Foo();
-}
-----
-<?php
+            new \Humbug\Foo();
 
-namespace Humbug;
-
-class Foo
-{
-}
-namespace Humbug\A;
-
-new \Humbug\Foo();
-
-PHP
-    ],
+            PHP,
+    ),
 ];

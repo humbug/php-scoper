@@ -12,49 +12,33 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Mixed use statements with group statements',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Mixed use statements with group statements',
+    ),
 
     <<<'PHP'
-    <?php
-    
-    use A\B\{C\D, function b\c, const D};
-    
-    D::class;
-    c();
-    D;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use Humbug\A\B\C\D;
-    use function Humbug\A\B\b\c;
-    use const Humbug\A\B\D;
-    D::class;
-    c();
-    D;
-    
-    PHP,
+        <?php
+
+        use A\B\{C\D, function b\c, const D};
+
+        D::class;
+        c();
+        D;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use Humbug\A\B\C\D;
+        use function Humbug\A\B\b\c;
+        use const Humbug\A\B\D;
+        D::class;
+        c();
+        D;
+
+        PHP,
 ];

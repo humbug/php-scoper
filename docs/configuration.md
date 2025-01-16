@@ -1,6 +1,7 @@
 ## Configuration
 
 - [Prefix](#prefix)
+- [PHP-Version](#php-version)
 - [Output directory](#output-directory)
 - [Finders and paths](#finders-and-paths)
 - [Patchers](#patchers)
@@ -24,10 +25,12 @@ Complete configuration reference (details about each entry is available):
 
 // scoper.inc.php
 
-use Isolated\Symfony\Component\Finder\Finder;
+/** @var Symfony\Component\Finder\Finder $finder */
+$finder = Isolated\Symfony\Component\Finder\Finder::class;
 
 return [
     'prefix' => null,           // string|null
+    'php-version' => null,      // string|null
     'output-dir' => null,       // string|null
     'finders' => [],            // list<Finder>
     'patchers' => [],           // list<callable(string $filePath, string $prefix, string $contents): string>
@@ -37,11 +40,11 @@ return [
     'exclude-constants' => [],  // list<string|regex>
     'exclude-classes' => [],    // list<string|regex>
     'exclude-functions' => [],  // list<string|regex>
-  
+
     'expose-global-constants' => true,   // bool
     'expose-global-classes' => true,     // bool
     'expose-global-functions' => true,   // bool
-    
+
     'expose-namespaces' => [], // list<string|regex>
     'expose-constants' => [],  // list<string|regex>
     'expose-classes' => [],    // list<string|regex>
@@ -54,6 +57,23 @@ return [
 
 The prefix to be used to isolate the code. If `null` or `''` (empty string) is given,
 then a random prefix will be automatically generated.
+
+
+### PHP Version
+
+The PHP version provided is used to configure the underlying [PHP-Parser] Parser and Printer.
+
+The version used by the Parser will affect what code it can understand, e.g. if it is configured in PHP 8.2 it will not
+understand a PHP 8.3 construct (e.g. typed class constants). However, what symbols are interpreted as internal will
+remain unchanged. The function `json_validate()` will be considered as internal even if the parser is configured with
+PHP 8.2.
+
+The printer version affects the code style. For example nowdocs and heredocs will be indented if the printer's PHP
+version is higher than 7.4 but will be formated without indent otherwise.
+
+If `null` or `''` (empty string) is given, then the host version will be used for the parser and 7.2 will be used for
+the printer. This allows PHP-Scoper to a PHP 7.2 compatible codebase without breaking its compatibility although the
+host version is a newer version.
 
 
 ### Output directory
@@ -76,12 +96,13 @@ files should be scoped by using [Finders][symfony_finder] in the configuration:
 
 // scoper.inc.php
 
-use Isolated\Symfony\Component\Finder\Finder;
+/** @var Symfony\Component\Finder\Finder $finder */
+$finder = Isolated\Symfony\Component\Finder\Finder::class;
 
 return [
     'finders' => [
-        Finder::create()->files()->in('src'),
-        Finder::create()
+        $finder::create()->files()->in('src'),
+        $finder::create()
             ->files()
             ->ignoreVCS(true)
             ->notName('/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/')
@@ -94,7 +115,7 @@ return [
                 'vendor-bin',
             ])
             ->in('vendor'),
-        Finder::create()->append([
+        $finder::create()->append([
             'bin/php-scoper',
             'composer.json',
         ])
@@ -110,7 +131,7 @@ php-scoper add-prefix file1.php bin/file2.php
 
 Paths added manually are appended to the paths found by the finders.
 
-If you are using [Box][box], all the (non-binary) files included are used 
+If you are using [Box][box], all the (non-binary) files included are used
 instead of the `finders` setting.
 
 
@@ -181,6 +202,13 @@ return [
 ];
 ```
 
+If you want to check if your patcher works as expected on a specific file, you can always check the scoping
+result for a single file with the `inspect` command:
+
+```shell
+php-scoper inspect /path/to/offending/file
+```
+
 
 ### Excluded files
 
@@ -206,10 +234,45 @@ return [
 ```
 
 This enriches the list of Symbols PHP-Scoper's Reflector considers as "internal",
-i.e. PHP engine or extension symbols. Such symbols will be left completely 
-untouched.
+i.e. PHP engine or extension symbols. Such symbols will be left completely
+untouched.*
 
-This feature should be use very carefully as it can easily break the Composer
+*: There is _one_ exception, which is declarations of functions. If you have the function
+`trigger_deprecation` excluded, then any usage of it in the code will be left alone:
+
+```php
+use function trigger_deprecation; // Will not be turned into Prefix\trigger_deprecation
+```
+
+However, PHP-Scoper may come across its declaration:
+
+```php
+// global namespace!
+
+if (!function_exists('trigger_deprecation')) {
+    function trigger_deprecation() {}
+}
+```
+
+Then it will be scoped into:
+
+```php
+namespace Prefix;
+
+if (!function_exists('Prefix\trigger_deprecation')) {
+    function trigger_deprecation() {}
+}
+```
+
+Indeed, the namespace _needs_ to be added in order to not break autoloading, in which
+case wrapping the function declaration into a non-namespace could work, but is tricky
+(so not implemented so far, PoC for supporting it are welcomed) hence was not attempted.
+
+So if left alone, this will break any piece of code that relied on `\trigger_deprecation`,
+which is why PHP-Scoper will still add an alias for it, as if it was an exposed function.
+Another benefit of this, is that it allows to scope any polyfill without any issues.
+
+**WARNING**: This exclusion feature should be use very carefully as it can easily break the Composer
 auto-loading. Indeed, if you have the following package:
 
 ```json
@@ -276,7 +339,7 @@ Notes:
 - An excluded symbol will not be exposed. If for example you expose the class
   `Acme\Foo` but the `Acme` namespace is excluded, then `Acme\Foo` will NOT
   be exposed.
-- Exposing a namespace also exposes its sub-namespaces (with the aforementioned 
+- Exposing a namespace also exposes its sub-namespaces (with the aforementioned
   note applying)
 - Exposing symbols will most likely require PHP-Scoper to adjust the Composer
   autoloader. To do so with minimal conflicts, PHP-Scoper dumps everything
@@ -297,7 +360,7 @@ The namespace configuration is identical to [excluding namespaces](#excluding-na
 
 How the symbols are exposed is done as described in the next sections. Note
 however that some symbols cannot be exposed (see [exposing/excluding traits](limitations.md#exposingexcluding-traits)
- and [exposing/excluding enums](limitations.md#exposingexcluding-enums)) 
+ and [exposing/excluding enums](limitations.md#exposingexcluding-enums))
 
 
 ### Exposing classes
@@ -433,6 +496,7 @@ namespace Humbug\Acme;
 
 
 [box]: https://github.com/box-project/box
-[symfony_finder]: https://symfony.com/doc/current/components/finder.html
 [php-scoper-integration]: https://github.com/humbug/box#isolating-the-phar
+[PHP-Parser]: https://github.com/nikic/PHP-Parser
 [phpstorm-stubs]: https://github.com/JetBrains/phpstorm-stubs
+[symfony_finder]: https://symfony.com/doc/current/components/finder.html

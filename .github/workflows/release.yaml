@@ -15,6 +15,10 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
     cancel-in-progress: true
 
+env:
+    DOCKERFILE: Dockerfile
+    DOCKERHUB_USERNAME: humbugphp
+
 jobs:
     build-phar:
         runs-on: ubuntu-latest
@@ -28,19 +32,13 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '8.2'
                     ini-values: phar.readonly=0
                     tools: composer
                     coverage: none
 
-            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
-            -   name: Configure composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
             -   name: Install Composer dependencies
-                uses: ramsey/composer-install@v2
+                uses: ./.github/actions/install-vendor
 
             -   name: Configure the PHP platform
                 run: composer config platform.php $(php -r 'echo phpversion();') && composer update --lock
@@ -71,8 +69,7 @@ jobs:
                        bin/php-scoper.phar
 
             -   name: Upload the PHAR artifact
-                if: github.event_name == 'release'
-                uses: actions/upload-artifact@v3
+                uses: actions/upload-artifact@v4
                 with:
                     name: php-scoper-phar
                     path: |
@@ -85,16 +82,107 @@ jobs:
         needs:
             - 'build-phar'
         if: github.event_name == 'release'
+        permissions:
+            contents: write
         steps:
-            -   uses: actions/download-artifact@v3
+            -   uses: actions/download-artifact@v4
                 with:
                     name: php-scoper-phar
                     path: .
 
             -   name: Upload php-scoper.phar
-                uses: softprops/action-gh-release@v1
+                uses: softprops/action-gh-release@v2
                 with:
-                    token: ${{ secrets.PHP_SCOPER_GITHUB_TOKEN }}
+                    token: ${{ secrets.GITHUB_TOKEN }}
                     files: |
                         php-scoper.phar
                         php-scoper.phar.asc
+
+    publish-docker-image:
+        runs-on: ubuntu-latest
+        name: Publish the Docker image
+        needs:
+            - build-phar
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.2'
+
+            -   uses: actions/download-artifact@v4
+                with:
+                    name: php-scoper-phar
+                    path: .
+
+            # See https://github.com/actions/download-artifact#limitations
+            # the permissions are not guaranteed to be preserved
+            -   name: Ensure PHAR is executable
+                run: |
+                    chmod 755 php-scoper.phar
+                    mv -vf php-scoper.phar bin/php-scoper.phar
+                    ./bin/php-scoper.phar --ansi --version
+
+            -   name: Set up QEMU
+                uses: docker/setup-qemu-action@v3
+
+            -   name: Set up Docker Buildx
+                uses: docker/setup-buildx-action@v3
+
+            -   name: Login to Docker Container Registry
+                if: github.event_name == 'release'
+                uses: docker/login-action@v3
+                with:
+                    username: ${{ env.DOCKERHUB_USERNAME }}
+                    password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+            -   name: Setup the Docker (release) tag(s)
+                if: github.event_name == 'release'
+                # Selects a random value for $EOF as a delimiter, and sets the DOCKER_TAGS environment variable
+                # as a multi-line environment variable.
+                run: |
+                    EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+
+                    echo "DOCKER_TAGS<<$EOF" >> $GITHUB_ENV
+                    echo "${{ env.DOCKERHUB_USERNAME }}/php-scoper:${{ github.ref_name }}" >> $GITHUB_ENV
+                    echo "${{ env.DOCKERHUB_USERNAME }}/php-scoper:latest" >> $GITHUB_ENV
+                    echo "$EOF" >> $GITHUB_ENV
+                    echo "DOCKER_TEST_TAG=${{ env.DOCKERHUB_USERNAME }}/php-scoper:latest" >> $GITHUB_ENV
+
+            -   name: Login to GitHub Container Registry
+                if: github.event_name != 'release'
+                uses: docker/login-action@v3
+                with:
+                    registry: ghcr.io
+                    username: ${{ github.actor }}
+                    password: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Setup the Docker tag(s)
+                if: github.event_name != 'release'
+                run: |
+                    echo "DOCKER_TAGS=ghcr.io/humbugphp/php-scoper" >> $GITHUB_ENV
+                    echo "DOCKER_TEST_TAG=ghcr.io/humbugphp/php-scoper" >> $GITHUB_ENV
+
+            -   name: Build and export to Docker
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.DOCKERFILE }}
+                    platforms: linux/amd64
+                    tags: ${{ env.DOCKER_TAGS }}
+                    load: true
+
+            -   name: Test the (release) image
+                run: docker run --rm ${{ env.DOCKER_TEST_TAG }} --version
+
+            -   name: Build and push
+                if: github.event_name == 'release'
+                uses: docker/build-push-action@v6
+                with:
+                    context: .
+                    file: ${{ env.DOCKERFILE }}
+                    platforms: linux/amd64
+                    tags: ${{ env.DOCKER_TAGS }}
+                    push: true

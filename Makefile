@@ -24,8 +24,8 @@ PHPUNIT = $(PHPUNIT_BIN)
 PHPUNIT_COVERAGE_INFECTION = XDEBUG_MODE=coverage $(PHPUNIT) --coverage-xml=$(COVERAGE_XML) --log-junit=$(COVERAGE_DIR)/phpunit.junit.xml
 PHPUNIT_COVERAGE_HTML = XDEBUG_MODE=coverage $(PHPUNIT) --coverage-html=$(COVERAGE_HTML)
 
-COVERS_VALIDATOR_BIN = vendor-bin/covers-validator/bin/covers-validator
-COVERS_VALIDATOR = $(COVERS_VALIDATOR_BIN)
+RECTOR_BIN = vendor-bin/rector/vendor/bin/rector
+RECTOR = $(RECTOR_BIN)
 
 PHP_CS_FIXER_BIN = vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer
 PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix
@@ -38,7 +38,7 @@ BLACKFIRE = blackfire
 
 .PHONY: help
 help:
-	@echo "\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n"
+	@printf "\033[33mUsage:\033[0m\n  make TARGET\n\n\033[32m#\n# Commands\n#---------------------------------------------------------------------------\033[0m\n\n"
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//' | awk 'BEGIN {FS = ":"}; {printf "\033[33m%s:\033[0m%s\n", $$1, $$2}'
 
 
@@ -76,7 +76,7 @@ php_cs_fixer: $(PHP_CS_FIXER_BIN)
 
 .PHONY: php_cs_fixer_lint
 php_cs_fixer_lint: $(PHP_CS_FIXER_BIN)
-	$(PHP_CS_FIXER) --dry-run
+	$(PHP_CS_FIXER) --dry-run --diff
 
 .PHONY: composer_normalize
 composer_normalize: composer.json vendor
@@ -96,7 +96,7 @@ phpstan: $(PHPSTAN_BIN)
 
 .PHONY: autoreview
 autoreview: ## Runs the AutoReview checks
-autoreview: cs_lint phpstan covers_validator
+autoreview: cs_lint phpstan rector_lint
 
 .PHONY: test
 test: ## Runs all the tests
@@ -121,10 +121,6 @@ composer_root_version_update: ## Updates the COMPOSER_ROOT_VERSION
 composer_root_version_update:
 	rm .composer-root-version || true
 	$(MAKE) .composer-root-version
-
-.PHONY: covers_validator
-covers_validator: $(COVERS_VALIDATOR_BIN)
-	$(COVERS_VALIDATOR)
 
 .PHONY: phpunit
 phpunit: $(PHPUNIT_BIN) vendor
@@ -170,7 +166,10 @@ e2e: e2e_004 \
 		e2e_034 \
 		e2e_035 \
 		e2e_036 \
-		e2e_037
+		e2e_037 \
+		e2e_038 \
+		e2e_039 \
+		e2e_040
 
 .PHONY: blackfire
 blackfire: ## Runs Blackfire profiling
@@ -183,6 +182,14 @@ blackfire: vendor
 clean: ## Cleans all created artifacts
 clean:
 	git clean --exclude=.idea/ -ffdx
+
+.PHONY: rector
+rector: $(RECTOR_BIN) vendor
+	$(RECTOR)
+
+.PHONY: rector_lint
+rector_lint: $(RECTOR_BIN) vendor
+	$(RECTOR) --dry-run
 
 
 #
@@ -229,14 +236,6 @@ $(BOX_BIN): composer.lock .composer-root-version
 	$(MAKE) --always-make vendor_install
 	touch -c $@
 
-$(COVERS_VALIDATOR_BIN): vendor-bin/covers-validator/vendor
-vendor-bin/covers-validator/vendor: vendor-bin/covers-validator/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
-	composer bin covers-validator install
-	touch -c $@
-vendor-bin/covers-validator/composer.lock: vendor-bin/covers-validator/composer.json
-	@echo "$(@) is not up to date. You may want to run the following command:"
-	@echo "$$ composer bin covers-validator update --lock && touch -c $(@)"
-
 .PHONY: php_cs_fixer_install
 php_cs_fixer_install: $(PHP_CS_FIXER_BIN)
 
@@ -260,6 +259,18 @@ vendor-bin/phpstan/vendor: vendor-bin/phpstan/composer.lock $(COMPOSER_BIN_PLUGI
 vendor-bin/phpstan/composer.lock: vendor-bin/phpstan/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer bin phpstan update --lock && touch -c $(@)"
+
+.PHONY: rector_install
+rector_install: $(RECTOR_BIN)
+
+$(RECTOR_BIN): vendor-bin/rector/vendor
+	touch -c $@
+vendor-bin/rector/vendor: vendor-bin/rector/composer.lock $(COMPOSER_BIN_PLUGIN_VENDOR)
+	composer bin rector install
+	touch -c $@
+vendor-bin/rector/composer.lock: vendor-bin/rector/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer bin rector update --lock && touch -c $(@)"
 
 $(PHP_SCOPER_PHAR_BIN): $(BOX) bin/php-scoper $(SRC_FILES) vendor scoper.inc.php box.json.dist
 	$(BOX) compile --no-parallel

@@ -15,9 +15,11 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Command\CommandRegistry;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
+use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -33,12 +35,12 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @private
  */
-final class ConfigLoader
+final readonly class ConfigLoader
 {
     public function __construct(
-        private readonly CommandRegistry $commandRegistry,
-        private readonly Filesystem $fileSystem,
-        private readonly ConfigurationFactory $configFactory,
+        private CommandRegistry $commandRegistry,
+        private Filesystem $fileSystem,
+        private ConfigurationFactory $configFactory,
     ) {
     }
 
@@ -46,6 +48,9 @@ final class ConfigLoader
      * @param non-empty-string|null  $configFilePath        Canonical absolute path
      * @param non-empty-string       $defaultConfigFilePath
      * @param list<non-empty-string> $paths                 List of canonical absolute paths
+     *
+     * @throws InvalidConfigurationValue
+     * @throws UnknownConfigurationKey
      */
     public function loadConfig(
         IO $io,
@@ -96,6 +101,9 @@ final class ConfigLoader
 
     /**
      * @param list<non-empty-string> $paths
+     *
+     * @throws InvalidConfigurationValue
+     * @throws UnknownConfigurationKey
      */
     private function loadConfigWithoutConfigFile(
         IO $io,
@@ -179,6 +187,9 @@ final class ConfigLoader
     /**
      * @param non-empty-string|null  $configFilePath
      * @param list<non-empty-string> $paths
+     *
+     * @throws InvalidConfigurationValue
+     * @throws UnknownConfigurationKey
      */
     private function loadConfiguration(
         ?string $configFilePath,

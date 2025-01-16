@@ -21,6 +21,8 @@ use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -28,10 +30,9 @@ use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\Symfony\YamlScoper
- *
  * @internal
  */
+#[CoversClass(YamlScoper::class)]
 class YamlScoperTest extends TestCase
 {
     use ProphecyTrait;
@@ -54,9 +55,7 @@ class YamlScoperTest extends TestCase
         self::assertTrue(is_a(YamlScoper::class, Scoper::class, true));
     }
 
-    /**
-     * @dataProvider provideYamlFilesExtensions
-     */
+    #[DataProvider('provideYamlFilesExtensions')]
     public function test_it_can_scope_yaml_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
@@ -92,9 +91,7 @@ class YamlScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes($scopedCount);
     }
 
-    /**
-     * @dataProvider provideYamlFiles
-     */
+    #[DataProvider('provideYamlFiles')]
     public function test_it_scopes_yaml_files(
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,
@@ -155,6 +152,11 @@ class YamlScoperTest extends TestCase
                     Symfony\Component\Console\Input\InputInterface:
                         alias: 'Symfony\Component\Console\Input\ArgvInput'
                     Symfony\Component\Console\Output\OutputInterface: '@Symfony\Component\Console\Output\ConsoleOutput'
+                    1\2: ~
+                    Service2:
+                        class: 1\2
+                    Service3:
+                        alias: 1\2
                 YAML,
             SymbolsConfiguration::create(),
             <<<'YAML'
@@ -163,6 +165,11 @@ class YamlScoperTest extends TestCase
                     Humbug\Symfony\Component\Console\Input\InputInterface:
                         alias: 'Humbug\Symfony\Component\Console\Input\ArgvInput'
                     Humbug\Symfony\Component\Console\Output\OutputInterface: '@Humbug\Symfony\Component\Console\Output\ConsoleOutput'
+                    1\2: ~
+                    Service2:
+                        class: 1\2
+                    Service3:
+                        alias: 1\2
                 YAML,
             [],
         ];
@@ -463,7 +470,7 @@ class YamlScoperTest extends TestCase
 
                     Closure: ~
                 YAML,
-            [], // Whitelisting global classes in the service definitions is not supported at the moment. Provide a PR
+            [], // Excluded global classes in the service definitions is not supported at the moment. Provide a PR
             // if you are willing to add support for it.
         ];
 

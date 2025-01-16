@@ -26,7 +26,6 @@ use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use LogicException;
 use PhpParser\Error as PhpParserError;
-use PhpParser\Lexer;
 use PhpParser\Node\Name;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\Parser;
@@ -75,8 +74,6 @@ class PhpScoperTest extends TestCase
 
     private Printer $printer;
 
-    private Lexer $lexer;
-
     protected function setUp(): void
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
@@ -86,15 +83,11 @@ class PhpScoperTest extends TestCase
         $this->traverserFactory = $this->traverserFactoryProphecy->reveal();
 
         $this->parserProphecy = $this->prophesize(Parser::class);
+        $this->parserProphecy->getTokens()->willReturn([]);
         $this->parser = $this->parserProphecy->reveal();
 
         $this->symbolsRegistry = new SymbolsRegistry();
         $this->printer = new StandardPrinter(new Standard());
-
-        $lexerProphecy = $this->prophesize(Lexer::class);
-        $lexerProphecy->getTokens()->willReturn([]);
-
-        $this->lexer = $lexerProphecy->reveal();
 
         $this->scoper = new PhpScoper(
             create_parser(),
@@ -108,7 +101,6 @@ class PhpScoperTest extends TestCase
                 $this->symbolsRegistry,
             ),
             $this->printer,
-            $this->lexer,
         );
     }
 
@@ -159,7 +151,6 @@ class PhpScoperTest extends TestCase
             $this->decoratedScoper,
             $this->traverserFactory,
             new FakePrinter(),
-            $this->lexer,
         );
 
         $actual = $scoper->scope($filePath, $fileContents);
@@ -246,7 +237,6 @@ class PhpScoperTest extends TestCase
             $this->decoratedScoper,
             $this->traverserFactory,
             new FakePrinter(),
-            $this->lexer,
         );
 
         $actual = $scoper->scope($filePath, $contents);
@@ -341,7 +331,6 @@ class PhpScoperTest extends TestCase
             new FakeScoper(),
             $this->traverserFactory,
             $this->printer,
-            $this->lexer,
         );
 
         foreach ($files as $file => $contents) {

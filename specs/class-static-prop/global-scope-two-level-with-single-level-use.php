@@ -12,220 +12,205 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Class static property call of a namespaced class imported with a use statement in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Class static property call of a namespaced class imported with a use statement in the global scope',
+    ),
 
     'Constant call on a namespaced class partially imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo;
-        
-        Foo\Bar::$mainStaticProp;
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo;
-    Foo\Bar::$mainStaticProp;
-    
-    PHP,
-
-    'Constant call on a namespaced class imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace Foo\Bar {
-        class X {}
-    }
-    
-    namespace {
-        use Foo\Bar;
-        
-        Bar\X::$mainStaticProp;
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug\Foo\Bar;
-    
-    class X
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo\Bar;
-    Bar\X::$mainStaticProp;
-    
-    PHP,
-
-    'FQ constant call on a namespaced class imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace {
-        use Foo;
-        
-        \Foo\Bar::$mainStaticProp;
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug;
-    
-    use Humbug\Foo;
-    \Humbug\Foo\Bar::$mainStaticProp;
-    
-    PHP,
-
-    'FQ Constant call on an exposed namespaced class partially imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
-            ['Foo\Bar', 'Humbug\Foo\Bar'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace {
             class Foo {}
         }
-        
+
         namespace Foo {
             class Bar {}
         }
-        
+
         namespace {
             use Foo;
-            
+
             Foo\Bar::$mainStaticProp;
         }
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         class Foo
         {
         }
         namespace Humbug\Foo;
-        
+
         class Bar
         {
         }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
         namespace Humbug;
-        
+
         use Humbug\Foo;
         Foo\Bar::$mainStaticProp;
-        
-        PHP,
-    ],
 
-    'FQ constant call on an exposed namespaced class imported with a use statement' => [
-        'expose-classes' => ['Foo\Bar'],
-        'expected-recorded-classes' => [
-            ['Foo\Bar', 'Humbug\Foo\Bar'],
-        ],
-        'payload' => <<<'PHP'
+        PHP,
+
+    'Constant call on a namespaced class imported with a use statement' => <<<'PHP'
         <?php
-        
-        namespace {
-            class Foo {}
-        }
-        
+
         namespace Foo {
             class Bar {}
         }
-        
+
+        namespace Foo\Bar {
+            class X {}
+        }
+
+        namespace {
+            use Foo\Bar;
+
+            Bar\X::$mainStaticProp;
+        }
+        ----
+        <?php
+
+        namespace Humbug\Foo;
+
+        class Bar
+        {
+        }
+        namespace Humbug\Foo\Bar;
+
+        class X
+        {
+        }
+        namespace Humbug;
+
+        use Humbug\Foo\Bar;
+        Bar\X::$mainStaticProp;
+
+        PHP,
+
+    'FQ constant call on a namespaced class imported with a use statement' => <<<'PHP'
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace Foo {
+            class Bar {}
+        }
+
         namespace {
             use Foo;
-            
+
             \Foo\Bar::$mainStaticProp;
         }
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
         class Foo
         {
         }
         namespace Humbug\Foo;
-        
+
         class Bar
         {
         }
-        \class_alias('Humbug\\Foo\\Bar', 'Foo\\Bar', \false);
         namespace Humbug;
-        
+
         use Humbug\Foo;
         \Humbug\Foo\Bar::$mainStaticProp;
-        
+
         PHP,
-    ],
+
+    'FQ Constant call on an exposed namespaced class partially imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo;
+
+                Foo\Bar::$mainStaticProp;
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\Foo\Bar', 'Foo\Bar', \false);
+            namespace Humbug;
+
+            use Humbug\Foo;
+            Foo\Bar::$mainStaticProp;
+
+            PHP,
+    ),
+
+    'FQ constant call on an exposed namespaced class imported with a use statement' => SpecWithConfig::create(
+        exposeClasses: ['Foo\Bar'],
+        expectedRecordedClasses: [
+            ['Foo\Bar', 'Humbug\Foo\Bar'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace {
+                use Foo;
+
+                \Foo\Bar::$mainStaticProp;
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\Foo\Bar', 'Foo\Bar', \false);
+            namespace Humbug;
+
+            use Humbug\Foo;
+            \Humbug\Foo\Bar::$mainStaticProp;
+
+            PHP,
+    ),
 ];

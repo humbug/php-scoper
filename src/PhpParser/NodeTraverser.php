@@ -22,7 +22,7 @@ use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\InlineHTML;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
+use PhpParser\Node\UseItem;
 use PhpParser\NodeTraverserInterface;
 use PhpParser\NodeVisitor;
 use function array_map;
@@ -35,9 +35,9 @@ use function current;
 /**
  * @private
  */
-final class NodeTraverser implements NodeTraverserInterface
+final readonly class NodeTraverser implements NodeTraverserInterface
 {
-    public function __construct(private readonly NodeTraverserInterface $decoratedTraverser)
+    public function __construct(private NodeTraverserInterface $decoratedTraverser)
     {
     }
 
@@ -176,25 +176,34 @@ final class NodeTraverser implements NodeTraverserInterface
     private function createUses_(GroupUse $node): array
     {
         return array_map(
-            static function (UseUse $use) use ($node): Use_ {
-                $newUse = new UseUse(
-                    NameFactory::concat(
-                        $node->prefix,
-                        $use->name,
-                        $use->name->getAttributes(),
-                    ),
-                    $use->alias,
-                    $use->type,
-                    $use->getAttributes(),
-                );
-
-                return new Use_(
-                    [$newUse],
-                    $node->type,
-                    $node->getAttributes(),
-                );
-            },
+            static fn (UseItem $use): Use_ => self::createUseNode($use, $node),
             $node->uses,
+        );
+    }
+
+    private static function createUseNode(UseItem $use, GroupUse $groupUse): Use_
+    {
+        $newUseItem = self::prefixName($use, $groupUse);
+
+        return new Use_(
+            [$newUseItem],
+            $groupUse->type,
+            $groupUse->getAttributes(),
+        );
+    }
+
+    private static function prefixName(UseItem $use, GroupUse $groupUse): UseItem
+    {
+        $prefixedName = NameFactory::concat(
+            $groupUse->prefix,
+            $use->name,
+        );
+
+        return new UseItem(
+            $prefixedName,
+            $use->alias,
+            $use->type,
+            $use->getAttributes(),
         );
     }
 }

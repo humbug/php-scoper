@@ -19,13 +19,15 @@ use Fidry\Console\Command\CommandAware;
 use Fidry\Console\Command\CommandAwareness;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\ExitCode;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Console\InputOption\PhpVersionInputOption;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use InvalidArgumentException;
+use PhpParser\PhpVersion;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -94,6 +96,7 @@ final class InspectCommand implements Command, CommandAware
                     InputOption::VALUE_NONE,
                     'Do not look for a configuration file.',
                 ),
+                PhpVersionInputOption::createInputOption(),
             ],
         );
     }
@@ -108,6 +111,7 @@ final class InspectCommand implements Command, CommandAware
         // working directory
         $cwd = getcwd();
 
+        $phpversion = PhpVersionInputOption::getPhpVersion($io);
         $filePath = $this->getFilePath($io, $cwd);
         $config = $this->retrieveConfig($io, [$filePath], $cwd);
 
@@ -120,9 +124,15 @@ final class InspectCommand implements Command, CommandAware
         $symbolsRegistry = new SymbolsRegistry();
         $fileContents = $config->getFilesWithContents()[$filePath][1];
 
-        $scoppedContents = $this->scopeFile($config, $symbolsRegistry, $filePath, $fileContents);
+        $scopedContents = $this->scopeFile(
+            $config,
+            $symbolsRegistry,
+            $phpversion,
+            $filePath,
+            $fileContents,
+        );
 
-        $this->printScoppedContents($io, $scoppedContents, $symbolsRegistry);
+        $this->printScopedContents($io, $scopedContents, $symbolsRegistry);
 
         return ExitCode::SUCCESS;
     }
@@ -140,11 +150,11 @@ final class InspectCommand implements Command, CommandAware
 
         return $configLoader->loadConfig(
             $io,
-            $io->getOption(self::PREFIX_OPT)->asString(),
-            $io->getOption(self::NO_CONFIG_OPT)->asBoolean(),
+            $io->getTypedOption(self::PREFIX_OPT)->asString(),
+            $io->getTypedOption(self::NO_CONFIG_OPT)->asBoolean(),
             $this->getConfigFilePath($io, $cwd),
             ConfigurationFactory::DEFAULT_FILE_NAME,
-            true,
+            false,
             $paths,
             $cwd,
         );
@@ -155,7 +165,7 @@ final class InspectCommand implements Command, CommandAware
      */
     private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $configFilePath = (string) $io->getOption(self::CONFIG_FILE_OPT)->asNullableString();
+        $configFilePath = (string) $io->getTypedOption(self::CONFIG_FILE_OPT)->asNullableString();
 
         return '' === $configFilePath ? null : $this->canonicalizePath($configFilePath, $cwd);
     }
@@ -166,7 +176,7 @@ final class InspectCommand implements Command, CommandAware
     private function getFilePath(IO $io, string $cwd): string
     {
         return $this->canonicalizePath(
-            $io->getArgument(self::FILE_PATH_ARG)->asNonEmptyString(),
+            $io->getTypedArgument(self::FILE_PATH_ARG)->asNonEmptyString(),
             $cwd,
         );
     }
@@ -192,12 +202,14 @@ final class InspectCommand implements Command, CommandAware
     private function scopeFile(
         Configuration $config,
         SymbolsRegistry $symbolsRegistry,
+        ?PhpVersion $phpversion,
         string $filePath,
         string $fileContents,
     ): string {
         $scoper = $this->scoperFactory->createScoper(
             $config,
             $symbolsRegistry,
+            $phpversion,
         );
 
         return $scoper->scope(
@@ -206,19 +218,19 @@ final class InspectCommand implements Command, CommandAware
         );
     }
 
-    private function printScoppedContents(
+    private function printScopedContents(
         IO $io,
-        string $scoppedContents,
+        string $scopedContents,
         SymbolsRegistry $symbolsRegistry,
     ): void {
         if ($io->isQuiet()) {
-            $io->writeln($scoppedContents, OutputInterface::VERBOSITY_QUIET);
+            $io->writeln($scopedContents, OutputInterface::VERBOSITY_QUIET);
         } else {
             $io->writeln([
-                'Scopped contents:',
+                'Scoped contents:',
                 '',
                 '<comment>"""</comment>',
-                $scoppedContents,
+                $scopedContents,
                 '<comment>"""</comment>',
             ]);
 

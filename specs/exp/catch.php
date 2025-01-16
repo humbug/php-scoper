@@ -12,268 +12,253 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Catch expressions',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Catch expressions',
+    ),
 
     'Catch an internal class' => <<<'PHP'
-    <?php
-    
-    try {
-        echo "foo";
-    } catch (Throwable $t) {
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    try {
-        echo "foo";
-    } catch (\Throwable $t) {
-    }
-    
-    PHP,
+        <?php
+
+        try {
+            echo "foo";
+        } catch (Throwable $t) {
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        try {
+            echo "foo";
+        } catch (\Throwable $t) {
+        }
+
+        PHP,
 
     'Catch an internal class in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    try {
-        echo "foo";
-    } catch (\Throwable $t) {
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    try {
-        echo "foo";
-    } catch (\Throwable $t) {
-    }
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        try {
+            echo "foo";
+        } catch (\Throwable $t) {
+        }
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        try {
+            echo "foo";
+        } catch (\Throwable $t) {
+        }
+
+        PHP,
 
     'Catch a custom exception class' => <<<'PHP'
-    <?php
-    
-    try {
-        echo "foo";
-    } catch (FooException $t) {
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    try {
-        echo "foo";
-    } catch (FooException $t) {
-    }
-    
-    PHP,
-
-    'Catch an exposed custom exception class' => [
-        'expose-classes' => ['FooException'],
-        'payload' => <<<'PHP'
         <?php
-        
+
         try {
             echo "foo";
         } catch (FooException $t) {
         }
         ----
         <?php
-        
+
         namespace Humbug;
-        
-        try {
-            echo "foo";
-        } catch (\Humbug\FooException $t) {
-        }
-        
-        PHP,
-    ],
 
-    'Catch a custom exception class which belongs to the excluded root namespace' => [
-        'exclude-namespaces' => ['/^$/'],
-        'payload' => <<<'PHP'
-        <?php
-        
         try {
             echo "foo";
         } catch (FooException $t) {
         }
-        ----
-        <?php
-        
-        namespace {
+
+        PHP,
+
+    'Catch an exposed custom exception class' => SpecWithConfig::create(
+        exposeClasses: ['FooException'],
+        spec: <<<'PHP'
+            <?php
+
             try {
                 echo "foo";
-            } catch (\FooException $t) {
+            } catch (FooException $t) {
             }
-        }
-        
-        PHP,
-    ],
+            ----
+            <?php
+
+            namespace Humbug;
+
+            try {
+                echo "foo";
+            } catch (\Humbug\FooException $t) {
+            }
+
+            PHP,
+    ),
+
+    'Catch a custom exception class which belongs to the excluded root namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['/^$/'],
+        spec: <<<'PHP'
+            <?php
+
+            try {
+                echo "foo";
+            } catch (FooException $t) {
+            }
+            ----
+            <?php
+
+            namespace {
+                try {
+                    echo "foo";
+                } catch (\FooException $t) {
+                }
+            }
+
+            PHP,
+    ),
 
     'Catch a custom exception class in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    try {
-        echo "foo";
-    } catch (FooException $t) {
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    try {
-        echo "foo";
-    } catch (FooException $t) {
-    }
-    
-    PHP,
-
-    'Catch an exposed custom exception class in a namespace' => [
-        'expose-classes' => ['Acme\FooException'],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace Acme;
-        
+
         try {
             echo "foo";
         } catch (FooException $t) {
         }
         ----
         <?php
-        
+
         namespace Humbug\Acme;
-        
+
         try {
             echo "foo";
         } catch (FooException $t) {
         }
-        
+
         PHP,
-    ],
+
+    'Catch an exposed custom exception class in a namespace' => SpecWithConfig::create(
+        exposeClasses: ['Acme\FooException'],
+        spec: <<<'PHP'
+            <?php
+
+            namespace Acme;
+
+            try {
+                echo "foo";
+            } catch (FooException $t) {
+            }
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            try {
+                echo "foo";
+            } catch (FooException $t) {
+            }
+
+            PHP,
+    ),
 
     // TODO: should not be made into FQ here
-    'Catch a custom exception class in an excluded namespace' => [
-        'exclude-namespaces' => ['Acme'],
-        'payload' => <<<'PHP'
+    'Catch a custom exception class in an excluded namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        spec: <<<'PHP'
+            <?php
+
+            namespace Acme;
+
+            try {
+                echo "foo";
+            } catch (FooException $t) {
+            }
+            ----
+            <?php
+
+            namespace Acme;
+
+            try {
+                echo "foo";
+            } catch (\Acme\FooException $t) {
+            }
+
+            PHP,
+    ),
+
+    'Catch an custom exception class in a namespace imported with a use statement' => <<<'PHP'
         <?php
-        
+
         namespace Acme;
-        
+
+        use X\FooException;
+
         try {
             echo "foo";
         } catch (FooException $t) {
         }
         ----
         <?php
-        
-        namespace Acme;
-        
+
+        namespace Humbug\Acme;
+
+        use Humbug\X\FooException;
         try {
             echo "foo";
-        } catch (\Acme\FooException $t) {
+        } catch (FooException $t) {
         }
-        
-        PHP,
-    ],
 
-    'Catch an custom exception class in a namespace imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    use X\FooException;
-    
-    try {
-        echo "foo";
-    } catch (FooException $t) {
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use Humbug\X\FooException;
-    try {
-        echo "foo";
-    } catch (FooException $t) {
-    }
-    
-    PHP,
+        PHP,
 
     'Multiple catch statement' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    use X\FooException;
-    
-    try {
-        echo "foo";
-    } catch (FooException | \Throwable $t) {
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use Humbug\X\FooException;
-    try {
-        echo "foo";
-    } catch (FooException|\Throwable $t) {
-    }
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        use X\FooException;
+
+        try {
+            echo "foo";
+        } catch (FooException | \Throwable $t) {
+        }
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use Humbug\X\FooException;
+        try {
+            echo "foo";
+        } catch (FooException|\Throwable $t) {
+        }
+
+        PHP,
 
     'catch with special keywords' => <<<'PHP'
-    <?php
-    
-    namespace Acme;
-    
-    try {
-        echo "foo";
-    } catch (self | parent $t) {
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    try {
-        echo "foo";
-    } catch (self|parent $t) {
-    }
-    
-    PHP,
+        <?php
+
+        namespace Acme;
+
+        try {
+            echo "foo";
+        } catch (self | parent $t) {
+        }
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        try {
+            echo "foo";
+        } catch (self|parent $t) {
+        }
+
+        PHP,
 ];

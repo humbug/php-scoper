@@ -20,15 +20,16 @@ use Humbug\PhpScoper\Scoper\ScoperStub;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\Composer\AutoloadPrefixer
- * @covers \Humbug\PhpScoper\Scoper\Composer\JsonFileScoper
- *
  * @internal
  */
+#[CoversClass(AutoloadPrefixer::class)]
+#[CoversClass(JsonFileScoper::class)]
 class JsonFileScoperTest extends TestCase
 {
     private const PREFIX = 'Foo';
@@ -76,9 +77,7 @@ class JsonFileScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    /**
-     * @dataProvider provideComposerFiles
-     */
+    #[DataProvider('provideComposerFiles')]
     public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
     {
         $actual = $this->scoper->scope(
@@ -97,9 +96,7 @@ class JsonFileScoperTest extends TestCase
         $this->scoper->scope('composer.json', '[]');
     }
 
-    /**
-     * @dataProvider providePSR0ComposerFiles
-     */
+    #[DataProvider('providePSR0ComposerFiles')]
     public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
     {
         $actual = $this->scoper->scope(

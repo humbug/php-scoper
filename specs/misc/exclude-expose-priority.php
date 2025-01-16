@@ -12,92 +12,73 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Excluding a symbol/namespace should have precedence over exposing a symbol/namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Excluding a symbol/namespace should have precedence over exposing a symbol/namespace',
+    ),
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
+    'namespace' => SpecWithConfig::create(
+        excludeNamespaces: ['Acme'],
+        exposeNamespaces: ['Acme'],
+        spec: <<<'PHP'
+            <?php
 
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
+            namespace Acme {
+                class X {}
+            }
 
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+            namespace {
+                new \Acme\X();
+            }
 
-    'namespace' => [
-        'exclude-namespaces' => [
-            'Acme',
-        ],
-        'expose-namespaces' => [
-            'Acme',
-        ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme {
-            class X {}
-        }
-        
-        namespace {
+            ----
+            <?php
+
+            namespace Acme;
+
+            class X
+            {
+            }
+            namespace Humbug;
+
             new \Acme\X();
-        }
-        
-        ----
-        <?php
 
-        namespace Acme;
-        
-        class X
-        {
-        }
-        namespace Humbug;
-        
-        new \Acme\X();
+            PHP,
+    ),
 
-        PHP,
-    ],
-
-    'symbol' => [
-        'exclude-classes' => [
+    'symbol' => SpecWithConfig::create(
+        excludeClasses: [
             'Acme\X',
         ],
-        'expose-classes' => [
+        exposeClasses: [
             'Acme\X',
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace Acme {
-            class X {}
-        }
-        
-        namespace {
+        spec: <<<'PHP'
+            <?php
+
+            namespace Acme {
+                class X {}
+            }
+
+            namespace {
+                new \Acme\X();
+            }
+
+            ----
+            <?php
+
+            namespace Humbug\Acme;
+
+            class X
+            {
+            }
+            namespace Humbug;
+
             new \Acme\X();
-        }
-        
-        ----
-        <?php
 
-        namespace Humbug\Acme;
-        
-        class X
-        {
-        }
-        namespace Humbug;
-        
-        new \Acme\X();
-
-        PHP,
-    ],
+            PHP,
+    ),
 ];

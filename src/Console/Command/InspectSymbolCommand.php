@@ -18,7 +18,7 @@ use Fidry\Console\Command\Command;
 use Fidry\Console\Command\CommandRegistry;
 use Fidry\Console\Command\Configuration as CommandConfiguration;
 use Fidry\Console\ExitCode;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
@@ -41,7 +41,7 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @private
  */
-final class InspectSymbolCommand implements Command
+final readonly class InspectSymbolCommand implements Command
 {
     private const SYMBOL_ARG = 'symbol';
     private const SYMBOL_TYPE_ARG = 'type';
@@ -49,9 +49,9 @@ final class InspectSymbolCommand implements Command
     private const NO_CONFIG_OPT = 'no-config';
 
     public function __construct(
-        private readonly Filesystem $fileSystem,
-        private readonly ConfigurationFactory $configFactory,
-        private readonly EnrichedReflectorFactory $enrichedReflectorFactory,
+        private Filesystem $fileSystem,
+        private ConfigurationFactory $configFactory,
+        private EnrichedReflectorFactory $enrichedReflectorFactory,
     ) {
     }
 
@@ -108,7 +108,7 @@ final class InspectSymbolCommand implements Command
         // working directory
         $cwd = getcwd();
 
-        $symbol = $io->getArgument(self::SYMBOL_ARG)->asString();
+        $symbol = $io->getTypedArgument(self::SYMBOL_ARG)->asString();
         $symbolType = self::getSymbolType($io);
         $config = $this->retrieveConfig($io, $cwd);
 
@@ -130,7 +130,7 @@ final class InspectSymbolCommand implements Command
     // TODO: https://github.com/theofidry/console/issues/99
     private static function getSymbolType(IO $io): SymbolType
     {
-        $symbolType = $io->getArgument(self::SYMBOL_TYPE_ARG)->asString();
+        $symbolType = $io->getTypedArgument(self::SYMBOL_TYPE_ARG)->asString();
 
         return SymbolType::from($symbolType);
     }
@@ -144,7 +144,7 @@ final class InspectSymbolCommand implements Command
         );
 
         $configFilePath = $this->getConfigFilePath($io, $cwd);
-        $noConfig = $io->getOption(self::NO_CONFIG_OPT)->asBoolean();
+        $noConfig = $io->getTypedOption(self::NO_CONFIG_OPT)->asBoolean();
 
         if (null === $configFilePath) {
             // Unlike when scoping, we do not want a config file to be created
@@ -175,7 +175,7 @@ final class InspectSymbolCommand implements Command
      */
     private function getConfigFilePath(IO $io, string $cwd): ?string
     {
-        $configPath = (string) $io->getOption(self::CONFIG_FILE_OPT)->asNullableString();
+        $configPath = (string) $io->getTypedOption(self::CONFIG_FILE_OPT)->asNullableString();
 
         if ('' === $configPath) {
             $configPath = ConfigurationFactory::DEFAULT_FILE_NAME;

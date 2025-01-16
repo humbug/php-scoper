@@ -32,9 +32,9 @@ use function ltrim;
  *
  * @private
  */
-final class IdentifierResolver
+final readonly class IdentifierResolver
 {
-    public function __construct(private readonly NameResolver $nameResolver)
+    public function __construct(private NameResolver $nameResolver)
     {
     }
 

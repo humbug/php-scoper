@@ -154,7 +154,8 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
         $name = $node->name;
 
         return $name instanceof Name
-            && $name->isFullyQualified()
+            // PHP-Scoper assumes that it is the PHP native function.
+            // See limitations.md#declaring-a-custom-namespaced-function-function_exists
             && $name->toString() === 'function_exists';
     }
 

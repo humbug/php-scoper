@@ -24,32 +24,24 @@ jobs:
             -   name: Setup PHP
                 uses: shivammathur/setup-php@v2
                 with:
-                    php-version: '8.1'
+                    php-version: '8.2'
                     tools: composer
                     coverage: none
 
-            # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
-            -   name: Configure composer root version
-                run: |
-                    source .composer-root-version
-                    echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
-
-            -   name: Install the Composer (root) dependencies
-                uses: ramsey/composer-install@v2
+            -   name: Install Composer dependencies
+                uses: ./.github/actions/install-vendor
 
             -   name: Ensure that the root dependencies are updated correctly
                 run: make vendor_install
 
             -   name: Install PHP-CS-Fixer
-                uses: ramsey/composer-install@v2
+                uses: ./.github/actions/install-tool
                 with:
-                    working-directory: 'vendor-bin/php-cs-fixer'
-
-            -   name: Ensure that PHP-CS-Fixer dependencies are updated correctly
-                run: make php_cs_fixer_install
+                    vendor-bin-tool: php-cs-fixer
+                    makefile-command: php_cs_fixer_install
 
             -   name: Install the Composer dependencies
-                uses: ramsey/composer-install@v2
+                uses: ramsey/composer-install@v3
                 with:
                     working-directory: 'composer-root-version-checker'
 
@@ -62,7 +54,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php: [ '8.1', '8.2' ]
+                php: [ '8.3' ]
 
         steps:
             -   name: Checkout
@@ -75,7 +67,7 @@ jobs:
                     tools: composer
 
             -   name: Install the Composer dependencies
-                uses: ramsey/composer-install@v2
+                uses: ramsey/composer-install@v3
                 with:
                     working-directory: 'composer-root-version-checker'
 
@@ -100,3 +92,51 @@ jobs:
             - name: Failing run
               if: ${{ contains(needs.*.result, 'failure') }}
               run: exit 1
+
+    update-composer-root-version:
+        name: Update the Composer root version
+        if: ${{ github.repository == 'humbug/php-scoper' && github.ref_name == 'main' }}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+                with:
+                    ref: ${{ github.head_ref }}
+                    fetch-depth: '0'  # Ensures the tags are fetched
+                    token: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: '8.3'
+                    tools: composer
+                    coverage: none
+
+            -   name: Install the Composer dependencies
+                uses: ramsey/composer-install@v3
+                with:
+                    working-directory: 'composer-root-version-checker'
+
+            -   name: Dump the Composer too version
+                working-directory: composer-root-version-checker
+                run: make dump_root_version
+
+            -   name: Check for changes
+                run: |
+                    if git diff --exit-code; then
+                        echo "🟢 No change detected."
+                        echo "composer_root_version_changed=false" >> $GITHUB_ENV
+                    else
+                        echo "composer_root_version_changed=true" >> $GITHUB_ENV
+                    fi
+
+            -   name: Create Pull Request
+                if: env.composer_root_version_changed == 'true'
+                uses: peter-evans/create-pull-request@v7
+                with:
+                    token: ${{ secrets.GITHUB_TOKEN }}
+                    branch-suffix: random
+                    delete-branch: true
+                    title: "build: Update the Composer root version"
+                    committer: "php-scoper-bot <humbug-php-scoper-bot@example.com>"
+                    commit-message: "Update the Composer root version"

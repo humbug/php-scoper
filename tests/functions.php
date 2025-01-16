@@ -15,11 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use PhpParser\Parser;
+use PhpParser\PhpVersion;
 
 /**
  * @private
  */
-function create_parser(): Parser
+function create_parser(?PhpVersion $phpVersion = null): Parser
 {
-    return (new Container())->getParser();
+    return (new Container())->getParserFactory()->createParser($phpVersion);
 }

@@ -14,24 +14,24 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Application\SymfonyApplication;
-use Fidry\Console\Command\SymfonyCommand;
+use Fidry\Console\Bridge\Application\SymfonyApplication;
+use Fidry\Console\Bridge\Command\SymfonyCommand;
 use Fidry\FileSystem\FS;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
+use Humbug\PhpScoper\Console\ConfigLoader;
+use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Humbug\PhpScoper\PhpParser\FakeParser;
-use Humbug\PhpScoper\PhpParser\FakePrinter;
+use Humbug\PhpScoper\Scoper\Factory\DummyScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
-use Humbug\PhpScoper\Symbol\Reflector;
-use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -46,12 +46,11 @@ use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
- * @covers \Humbug\PhpScoper\Console\ConfigLoader
- * @covers \Humbug\PhpScoper\Console\ConsoleScoper
- *
  * @internal
  */
+#[CoversClass(AddPrefixCommand::class)]
+#[CoversClass(ConfigLoader::class)]
+#[CoversClass(ConsoleScoper::class)]
 class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCase
 {
     use AppTesterAbilities;
@@ -538,9 +537,9 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             $this->appTester->run($input);
 
             self::fail('Expected exception to be thrown.');
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidConfigurationValue $exception) {
             self::assertSame(
-                'Expected patchers to be an array of callables, the "0" element is not.',
+                'Expected patchers to be an array of callables, the "0" element is not (found "string" instead).',
                 $exception->getMessage(),
             );
         }
@@ -678,14 +677,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             new SymfonyCommand(
                 new AddPrefixCommand(
                     $fileSystem,
-                    new DummyScoperFactory(
-                        new FakeParser(),
-                        new EnrichedReflectorFactory(
-                            Reflector::createEmpty(),
-                        ),
-                        new FakePrinter(),
-                        $scoper,
-                    ),
+                    new DummyScoperFactory($scoper),
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,

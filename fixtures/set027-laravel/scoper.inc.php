@@ -25,8 +25,8 @@ return [
             }
 
             return str_replace(
-                '$component = \'\\\\Illuminate\\\\Console\\\\View\\\\Components\\\\\' . \ucfirst($method);',
-                '$component = \'\\\\'.$prefix.'\\\\Illuminate\\\\Console\\\\View\\\\Components\\\\\' . \ucfirst($method);',
+                '$component = \'\\Illuminate\\Console\\View\\Components\\\\\' . ucfirst($method);',
+                '$component = \'\\\\'.$prefix.'\\\\Illuminate\\\\Console\\\\View\\\\Components\\\\\' . ucfirst($method);',
                 $contents,
             );
         },

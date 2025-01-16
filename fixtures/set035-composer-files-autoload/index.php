@@ -12,6 +12,16 @@ use const PHP_EOL;
 echo 'Autoload Scoped code.' . PHP_EOL;
 require __DIR__ . '/scoped-guzzle5-include/index.php';
 
+// Autoload a scoped app. This is to mimic autoloading a scoped app which contains
+// an already scoped dependency.
+// It is not a real-life scenario in this peculiar case, but it should mimic
+// the issue of PHPStan being scoped and executed with:
+// - This original intent of this test which is checking colliding hash files.
+// - The case of PHPStan which needs to access the Composer global variables.
+// It would probably be clearer to have a separate test for this but it was easier to
+// fit it here with a confusing explanation instead.
+require __DIR__.'/scoped-composer-variable-access/index.php';
+
 // Autoload the project autoload. This will trigger the autoloading of the files.
 // Due to Composer creating a hash based on the package name & file path, the
 // Guzzle file `functions.php` which contains the _non scoped_ facts but in fact

@@ -20,15 +20,14 @@ use Humbug\PhpScoper\Scoper\PhpScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Lexer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 /**
- * @covers \Humbug\PhpScoper\PhpParser\TraverserFactory
- *
  * @internal
  */
+#[CoversClass(TraverserFactory::class)]
 class TraverserFactoryTest extends TestCase
 {
     public function test_creates_a_new_traverser_at_each_call(): void
@@ -39,7 +38,6 @@ class TraverserFactoryTest extends TestCase
             new FakeScoper(),
             (new ReflectionClass(TraverserFactory::class))->newInstanceWithoutConstructor(),
             new FakePrinter(),
-            new Lexer(),
         );
         $symbolsRegistry = new SymbolsRegistry();
 
