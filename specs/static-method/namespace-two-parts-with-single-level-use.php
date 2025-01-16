@@ -12,122 +12,107 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Static method call statement of a class imported with a use statement in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Static method call statement of a class imported with a use statement in a namespace',
+    ),
 
     'Static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        use Foo;
-        
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            use Foo;
+
+            Foo::main();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\Foo;
         Foo::main();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\Foo;
-    Foo::main();
-    
-    PHP,
+
+        PHP,
 
     'FQ static method call statement of a class belonging to the global namespace imported via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        use Foo;
-        
-        \Foo::main();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\Foo;
-    \Humbug\Foo::main();
-    
-    PHP,
-
-    'Static method call statement of a class belonging to the global namespace which has been exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
         <?php
-        
-        namespace A;
-        
-        use Closure;
-        
-        Closure::bind();
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            use Foo;
+
+            \Foo::main();
+        }
         ----
         <?php
-        
-        namespace Humbug\A;
-        
-        use Closure;
-        Closure::bind();
-        
-        PHP,
-    ],
 
-    'FQ static method call statement of a class belonging to the global namespace which has been exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace A;
-        
-        use Closure;
-        
-        \Closure::bind();
-        ----
-        <?php
-        
+        namespace Humbug;
+
+        class Foo
+        {
+        }
         namespace Humbug\A;
-        
-        use Closure;
-        \Closure::bind();
-        
+
+        use Humbug\Foo;
+        \Humbug\Foo::main();
+
         PHP,
-    ],
+
+    'Static method call statement of a class belonging to the global namespace which has been exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
+            <?php
+
+            namespace A;
+
+            use Closure;
+
+            Closure::bind();
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            use Closure;
+            Closure::bind();
+
+            PHP,
+    ),
+
+    'FQ static method call statement of a class belonging to the global namespace which has been exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
+            <?php
+
+            namespace A;
+
+            use Closure;
+
+            \Closure::bind();
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            use Closure;
+            \Closure::bind();
+
+            PHP,
+    ),
 ];

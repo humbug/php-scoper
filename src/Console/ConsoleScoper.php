@@ -15,25 +15,27 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Application\Application;
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
+use Humbug\PhpScoper\Autoload\ComposerFileHasher;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
+use PhpParser\PhpVersion;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 use Webmozart\Assert\Assert;
-use function array_column;
 use function array_keys;
 use function array_map;
+use function array_unique;
+use function array_values;
 use function count;
+use function dirname;
 use function preg_match as native_preg_match;
-use function Safe\file_get_contents;
 use function Safe\fileperms;
-use function sprintf;
 use function str_replace;
 use function strlen;
 use function usort;
@@ -42,14 +44,14 @@ use const DIRECTORY_SEPARATOR;
 /**
  * @private
  */
-final class ConsoleScoper
+final readonly class ConsoleScoper
 {
     private const VENDOR_DIR_PATTERN = '~((?:.*)\\'.DIRECTORY_SEPARATOR.'vendor)\\'.DIRECTORY_SEPARATOR.'.*~';
 
     public function __construct(
-        private readonly Filesystem $fileSystem,
-        private readonly Application $application,
-        private readonly ScoperFactory $scoperFactory,
+        private Filesystem $fileSystem,
+        private Application $application,
+        private ScoperFactory $scoperFactory,
     ) {
     }
 
@@ -60,6 +62,7 @@ final class ConsoleScoper
     public function scope(
         IO $io,
         Configuration $config,
+        ?PhpVersion $phpVersion,
         array $paths,
         string $outputDir,
         bool $stopOnFailure
@@ -75,8 +78,9 @@ final class ConsoleScoper
         );
 
         try {
-            $this->scopeFiles(
+            $this->doScope(
                 $config,
+                $phpVersion,
                 $outputDir,
                 $stopOnFailure,
                 $logger,
@@ -92,8 +96,9 @@ final class ConsoleScoper
         $logger->outputScopingEnd();
     }
 
-    private function scopeFiles(
+    private function doScope(
         Configuration $config,
+        ?PhpVersion $phpVersion,
         string $outputDir,
         bool $stopOnFailure,
         ScoperLogger $logger
@@ -103,55 +108,112 @@ final class ConsoleScoper
 
         [$files, $excludedFilesWithContents] = self::getFiles($config, $outputDir);
 
-        $logger->outputFileCount(count($files));
-
         $symbolsRegistry = new SymbolsRegistry();
 
-        $scoper = $this->scoperFactory->createScoper(
+        $this->scopeFiles(
             $config,
+            $phpVersion,
+            $files,
+            $stopOnFailure,
+            $logger,
             $symbolsRegistry,
         );
 
-        foreach ($files as [$inputFilePath, $inputContents, $outputFilePath]) {
+        foreach ($excludedFilesWithContents as $excludedFileWithContent) {
+            $this->dumpFileWithPermissions($excludedFileWithContent);
+        }
+
+        $this->dumpScoperAutoloader(
+            $files,
+            $excludedFilesWithContents,
+            $symbolsRegistry,
+        );
+    }
+
+    /**
+     * @param File[] $files
+     * @param File[] $excludedFilesWithContents
+     */
+    private function dumpScoperAutoloader(
+        array $files,
+        array $excludedFilesWithContents,
+        SymbolsRegistry $symbolsRegistry,
+    ): void {
+        $excludeFileInputPaths = self::mapFilesToInputPath($excludedFilesWithContents);
+
+        $scopedFilesVendorDir = self::findVendorDir(
+            [
+                ...self::mapFilesToOutputPath($files),
+                ...self::mapFilesToOutputPath($excludedFilesWithContents),
+            ],
+        );
+        $sourceVendorDir = self::findVendorDir(
+            [
+                ...self::mapFilesToInputPath($files),
+                ...$excludeFileInputPaths,
+            ],
+        );
+
+        if (null === $scopedFilesVendorDir || null === $sourceVendorDir) {
+            return;
+        }
+
+        $sourceRootDir = dirname($sourceVendorDir);
+
+        $fileHashGenerator = ComposerFileHasher::create(
+            $sourceVendorDir,
+            $sourceRootDir,
+            $excludeFileInputPaths,
+        );
+        $fileHashes = $fileHashGenerator->generateHashes();
+
+        $autoload = (new ScoperAutoloadGenerator($symbolsRegistry, $fileHashes))->dump();
+
+        $this->fileSystem->dumpFile(
+            $scopedFilesVendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
+            $autoload,
+        );
+    }
+
+    /**
+     * @param File[] $files
+     */
+    private function scopeFiles(
+        Configuration $config,
+        ?PhpVersion $phpVersion,
+        array $files,
+        bool $stopOnFailure,
+        ScoperLogger $logger,
+        SymbolsRegistry $symbolsRegistry,
+    ): void {
+        $logger->outputFileCount(count($files));
+
+        $resolvedPhpVersion = $phpVersion ?? $config->getPhpVersion();
+
+        $scoper = $this->scoperFactory
+            ->createScoper(
+                $config,
+                $symbolsRegistry,
+                $resolvedPhpVersion,
+            );
+
+        foreach ($files as $file) {
             $this->scopeFile(
                 $scoper,
-                $inputFilePath,
-                $inputContents,
-                $outputFilePath,
+                $file,
                 $stopOnFailure,
                 $logger,
             );
         }
-
-        foreach ($excludedFilesWithContents as $excludedFileWithContent) {
-            $this->dumpFileWithPermissions(...$excludedFileWithContent);
-        }
-
-        $vendorDir = self::findVendorDir(
-            [
-                ...array_column($files, 2),
-                ...array_column($excludedFilesWithContents, 2),
-            ],
-        );
-
-        if (null !== $vendorDir) {
-            $autoload = (new ScoperAutoloadGenerator($symbolsRegistry))->dump();
-
-            $this->fileSystem->dumpFile(
-                $vendorDir.DIRECTORY_SEPARATOR.'scoper-autoload.php',
-                $autoload,
-            );
-        }
     }
 
-    private function dumpFileWithPermissions(
-        string $inputFilePath,
-        string $inputContents,
-        string $outputFilePath
-    ): void {
-        $this->fileSystem->dumpFile($outputFilePath, $inputContents);
+    private function dumpFileWithPermissions(File $file): void
+    {
+        $outputFilePath = $file->outputFilePath;
 
-        $originalFilePermissions = fileperms($inputFilePath) & 0o777;
+        $this->fileSystem->dumpFile($outputFilePath, $file->inputContents);
+
+        $originalFilePermissions = fileperms($file->inputFilePath) & 0o777;
 
         if ($originalFilePermissions !== 420) {
             // Only change the permissions if necessary
@@ -160,41 +222,81 @@ final class ConsoleScoper
     }
 
     /**
-     * @return array{array<array{string, string, string}>, array<array{string, string, string}>}
+     * @param  File[]   $files
+     * @return string[]
+     */
+    private static function mapFilesToInputPath(array $files): array
+    {
+        return array_map(
+            static fn (File $file) => $file->inputFilePath,
+            $files,
+        );
+    }
+
+    /**
+     * @param  File[]   $files
+     * @return string[]
+     */
+    private static function mapFilesToOutputPath(array $files): array
+    {
+        return array_map(
+            static fn (File $file) => $file->outputFilePath,
+            $files,
+        );
+    }
+
+    /**
+     * @return array{list<File>, list<File>}
      */
     private static function getFiles(Configuration $config, string $outputDir): array
     {
         $filesWithContent = $config->getFilesWithContents();
         $excludedFilesWithContents = $config->getExcludedFilesWithContents();
 
-        $commonDirectoryPath = Path::getLongestCommonBasePath(
-            ...array_map(
-                static fn (string $path) => Path::getDirectory($path),
-                array_keys($filesWithContent),
-            ),
-            ...array_map(
-                static fn (string $path) => Path::getDirectory($path),
-                array_keys($excludedFilesWithContents),
-            ),
-        );
-        Assert::notNull($commonDirectoryPath);
+        $commonDirectoryPath = self::getCommonDirectoryPath($config);
 
-        $mapFiles = static fn (array $inputFileTuple) => [
+        $mapFiles = static fn (array $inputFileTuple) => new File(
             Path::normalize($inputFileTuple[0]),
             $inputFileTuple[1],
             $outputDir.str_replace($commonDirectoryPath, '', Path::normalize($inputFileTuple[0])),
-        ];
+        );
 
         return [
-            array_map(
-                $mapFiles,
-                $filesWithContent,
+            array_values(
+                array_map(
+                    $mapFiles,
+                    $filesWithContent,
+                ),
             ),
-            array_map(
-                $mapFiles,
-                $excludedFilesWithContents,
+            array_values(
+                array_map(
+                    $mapFiles,
+                    $excludedFilesWithContents,
+                ),
             ),
         ];
+    }
+
+    private static function getCommonDirectoryPath(Configuration $config): string
+    {
+        $filesWithContent = $config->getFilesWithContents();
+        $excludedFilesWithContents = $config->getExcludedFilesWithContents();
+
+        $directoryPaths = [
+            ...array_map(
+                Path::getDirectory(...),
+                array_keys($filesWithContent),
+            ),
+            ...array_map(
+                Path::getDirectory(...),
+                array_keys($excludedFilesWithContents),
+            ),
+        ];
+
+        $commonPath = Path::getLongestCommonBasePath(...array_unique($directoryPaths));
+        Assert::notNull($commonPath, 'Expected to find a common path.');
+
+        return $commonPath;
     }
 
     private static function findVendorDir(array $outputFilePaths): ?string
@@ -219,24 +321,28 @@ final class ConsoleScoper
 
     private function scopeFile(
         Scoper $scoper,
-        string $inputFilePath,
-        string $inputContents,
-        string $outputFilePath,
+        File $file,
         bool $stopOnFailure,
         ScoperLogger $logger
     ): void {
+        $successfullyScoped = false;
+        $inputFilePath = $file->inputFilePath;
+
         try {
-            $scoppedContent = $scoper->scope(
+            $scopedContent = $scoper->scope(
                 $inputFilePath,
-                $inputContents,
+                $file->inputContents,
             );
+
+            $successfullyScoped = true;
+        } catch (ParsingException $parsingException) {
+            $logger->outputWarnOfFailure($inputFilePath, $parsingException);
+
+            // Fallback on unchanged content
+            $scopedContent = $file->inputContents;
         } catch (Throwable $throwable) {
-            $exception = new ParsingException(
-                sprintf(
-                    'Could not parse the file "%s".',
-                    $inputFilePath,
-                ),
-                0,
+            $exception = ParsingException::forFile(
+                $inputFilePath,
                 $throwable,
             );
 
@@ -247,16 +353,14 @@ final class ConsoleScoper
             $logger->outputWarnOfFailure($inputFilePath, $exception);
 
             // Fallback on unchanged content
-            $scoppedContent = file_get_contents($inputFilePath);
+            $scopedContent = $file->inputContents;
         }
 
         $this->dumpFileWithPermissions(
-            $inputFilePath,
-            $scoppedContent,
-            $outputFilePath,
+            $file->withScopedContent($scopedContent),
         );
 
-        if (!isset($exception)) {
+        if ($successfullyScoped) {
             $logger->outputSuccess($inputFilePath);
         }
     }

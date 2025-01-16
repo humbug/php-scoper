@@ -12,116 +12,101 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Aliased use statements for constants',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Aliased use statements for constants',
+    ),
 
     'Constant use statement for a constant belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    use const FOO as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\FOO as A;
-    
-    PHP,
-
-    'Constant use statement for a constant belonging to the global namespace with global constant exposed' => [
-        'expose-global-constants' => true,
-        'payload' => <<<'PHP'
         <?php
-        
+
         use const FOO as A;
-        
+
         ----
         <?php
-        
+
         namespace Humbug;
-        
-        use const FOO as A;
-        
+
+        use const Humbug\FOO as A;
+
         PHP,
-    ],
+
+    'Constant use statement for a constant belonging to the global namespace with global constant exposed' => SpecWithConfig::create(
+        exposeGlobalConstants: true,
+        spec: <<<'PHP'
+            <?php
+
+            use const FOO as A;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use const FOO as A;
+
+            PHP,
+    ),
 
     'Constant use statement for a constant belonging to the global namespace and which has already been prefixed' => <<<'PHP'
-    <?php
-    
-    use const Humbug\FOO as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\FOO as A;
-    
-    PHP,
-
-    'Constant use statement for a namespaced constant' => <<<'PHP'
-    <?php
-    
-    use const Foo\BAR as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\Foo\BAR as A;
-    
-    PHP,
-
-    'Constant use statement for a namespaced constant which has already been prefixed' => <<<'PHP'
-    <?php
-    
-    use const Humbug\Foo\BAR as A;
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use const Humbug\Foo\BAR as A;
-    
-    PHP,
-
-    'Constant use statement for a namespaced constant which has been exposed' => [
-        'expose-constants' => ['Foo\BAR'],
-        'payload' => <<<'PHP'
         <?php
-        
-        use const Foo\BAR as A;
-        
+
+        use const Humbug\FOO as A;
+
         ----
         <?php
-        
+
         namespace Humbug;
-        
-        use const Foo\BAR as A;
-        
+
+        use const Humbug\FOO as A;
+
         PHP,
-    ],
+
+    'Constant use statement for a namespaced constant' => <<<'PHP'
+        <?php
+
+        use const Foo\BAR as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use const Humbug\Foo\BAR as A;
+
+        PHP,
+
+    'Constant use statement for a namespaced constant which has already been prefixed' => <<<'PHP'
+        <?php
+
+        use const Humbug\Foo\BAR as A;
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use const Humbug\Foo\BAR as A;
+
+        PHP,
+
+    'Constant use statement for a namespaced constant which has been exposed' => SpecWithConfig::create(
+        exposeConstants: ['Foo\BAR'],
+        spec: <<<'PHP'
+            <?php
+
+            use const Foo\BAR as A;
+
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use const Foo\BAR as A;
+
+            PHP,
+    ),
 ];

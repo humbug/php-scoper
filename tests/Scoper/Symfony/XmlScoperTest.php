@@ -21,6 +21,8 @@ use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -28,10 +30,9 @@ use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\Symfony\XmlScoper
- *
  * @internal
  */
+#[CoversClass(XmlScoper::class)]
 class XmlScoperTest extends TestCase
 {
     use ProphecyTrait;
@@ -54,9 +55,7 @@ class XmlScoperTest extends TestCase
         self::assertTrue(is_a(XmlScoper::class, Scoper::class, true));
     }
 
-    /**
-     * @dataProvider provideXmlFilesExtensions
-     */
+    #[DataProvider('provideXmlFilesExtensions')]
     public function test_it_can_scope_xml_files(string $file, bool $scoped): void
     {
         $prefix = 'Humbug';
@@ -91,9 +90,7 @@ class XmlScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes($scopedCount);
     }
 
-    /**
-     * @dataProvider provideXmlFiles
-     */
+    #[DataProvider('provideXmlFiles')]
     public function test_it_scopes__xm_l_files(
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,
@@ -390,6 +387,45 @@ class XmlScoperTest extends TestCase
             [],
         ];
 
+        yield 'class-like pattern' => [
+            <<<'XML'
+                <!-- config/services.xml -->
+                <?xml version="1.0" encoding="UTF-8" ?>
+                <container xmlns="http://symfony.com/schema/dic/services"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/services
+                        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+                    <services>
+                        <service id="App\Mail\PhpMailer" />
+                        <service id="1\2" />
+
+                        <service id="s1" class="App\Mail\PhpMailer" alias="App\Mail\PhpMailer" />
+                        <service id="s2" class="1\2" alias="1\2" />
+                    </services>
+                </container>
+                XML,
+            SymbolsConfiguration::create(),
+            <<<'XML'
+                <!-- config/services.xml -->
+                <?xml version="1.0" encoding="UTF-8" ?>
+                <container xmlns="http://symfony.com/schema/dic/services"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://symfony.com/schema/dic/services
+                        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+                    <services>
+                        <service id="Humbug\App\Mail\PhpMailer" />
+                        <service id="1\2" />
+
+                        <service id="s1" class="Humbug\App\Mail\PhpMailer" alias="Humbug\App\Mail\PhpMailer" />
+                        <service id="s2" class="1\2" alias="1\2" />
+                    </services>
+                </container>
+                XML,
+            [],
+        ];
+
         yield 'service with argument' => [
             <<<'XML'
                 <!-- app/config/services.xml -->
@@ -540,7 +576,7 @@ class XmlScoperTest extends TestCase
                     </services>
                 </container>
                 XML,
-            [], // Whitelisting global classes in the service definitions is not supported at the moment. Provide a PR
+            [], // Excluded global classes in the service definitions is not supported at the moment. Provide a PR
             // if you are willing to add support for it.
         ];
 

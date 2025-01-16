@@ -16,15 +16,15 @@ namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\PhpParser\Printer\Printer;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error as PhpParserError;
-use PhpParser\Lexer;
 use PhpParser\Parser;
 use function basename;
 use function func_get_args;
 use function ltrim;
 use function preg_match as native_preg_match;
 
-final class PhpScoper implements Scoper
+final readonly class PhpScoper implements Scoper
 {
     private const FILE_PATH_PATTERN = '/\.php$/';
     private const NOT_FILE_BINARY = '/\..+?$/';
@@ -32,18 +32,15 @@ final class PhpScoper implements Scoper
     private const PHP_BINARY = '/^#!.+?php.*\n{1,}<\?php/';
 
     public function __construct(
-        private readonly Parser $parser,
-        private readonly Scoper $decoratedScoper,
-        private readonly TraverserFactory $traverserFactory,
-        private readonly Printer $printer,
-        private readonly Lexer $lexer,
+        private Parser $parser,
+        private Scoper $decoratedScoper,
+        private TraverserFactory $traverserFactory,
+        private Printer $printer,
     ) {
     }
 
     /**
      * Scopes PHP files.
-     *
-     * @throws PhpParserError
      */
     public function scope(string $filePath, string $contents): string
     {
@@ -51,13 +48,17 @@ final class PhpScoper implements Scoper
             return $this->decoratedScoper->scope(...func_get_args());
         }
 
-        return $this->scopePhp($contents);
+        try {
+            return $this->scopePhp($contents);
+        } catch (PhpParserError $parsingException) {
+            throw ParsingException::forFile($filePath, $parsingException);
+        }
     }
 
     public function scopePhp(string $php): string
     {
         $statements = $this->parser->parse($php);
-        $oldTokens = $this->lexer->getTokens();
+        $oldTokens = $this->parser->getTokens();
 
         $scopedStatements = $this->traverserFactory
             ->create($this)

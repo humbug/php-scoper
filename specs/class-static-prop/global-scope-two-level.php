@@ -12,89 +12,21 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Class static property call of a namespaced class in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Class static property call of a namespaced class in the global scope',
+    ),
 
     'Constant call on a namespaced class' => <<<'PHP'
-    <?php
-    
-    namespace PHPUnit {
-        class Command {}
-    }
-    
-    namespace {
-        PHPUnit\Command::$mainStaticProp;
-    }
-    ----
-    <?php
-
-    namespace Humbug\PHPUnit;
-
-    class Command
-    {
-    }
-    namespace Humbug;
-
-    PHPUnit\Command::$mainStaticProp;
-
-    PHP,
-
-    'FQ constant call on a namespaced class' => <<<'PHP'
-    <?php
-    
-    namespace PHPUnit {
-        class Command {}
-    }
-    
-    namespace {
-        \PHPUnit\Command::$mainStaticProp;
-    }
-    ----
-    <?php
-    
-    namespace Humbug\PHPUnit;
-    
-    class Command
-    {
-    }
-    namespace Humbug;
-    
-    \Humbug\PHPUnit\Command::$mainStaticProp;
-    
-    PHP,
-
-    'Constant call on an exposed namespaced class' => [
-        'expose-classes' => ['PHPUnit\Command'],
-        'expected-recorded-classes' => [
-            ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace PHPUnit {
             class Command {}
         }
-        
+
         namespace {
             PHPUnit\Command::$mainStaticProp;
         }
@@ -106,42 +38,95 @@ return [
         class Command
         {
         }
-        \class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
         namespace Humbug;
 
-        \Humbug\PHPUnit\Command::$mainStaticProp;
+        PHPUnit\Command::$mainStaticProp;
 
         PHP,
-    ],
 
-    'FQ constant call on an exposed namespaced class' => [
-        'expose-classes' => ['PHPUnit\Command'],
-        'expected-recorded-classes' => [
-            ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
-        ],
-        'payload' => <<<'PHP'
+    'FQ constant call on a namespaced class' => <<<'PHP'
         <?php
-        
+
         namespace PHPUnit {
             class Command {}
         }
-        
+
         namespace {
             \PHPUnit\Command::$mainStaticProp;
         }
         ----
         <?php
-        
+
         namespace Humbug\PHPUnit;
-        
+
         class Command
         {
         }
-        \class_alias('Humbug\\PHPUnit\\Command', 'PHPUnit\\Command', \false);
         namespace Humbug;
-        
+
         \Humbug\PHPUnit\Command::$mainStaticProp;
-        
+
         PHP,
-    ],
+
+    'Constant call on an exposed namespaced class' => SpecWithConfig::create(
+        exposeClasses: ['PHPUnit\Command'],
+        expectedRecordedClasses: [
+            ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            namespace PHPUnit {
+                class Command {}
+            }
+
+            namespace {
+                PHPUnit\Command::$mainStaticProp;
+            }
+            ----
+            <?php
+
+            namespace Humbug\PHPUnit;
+
+            class Command
+            {
+            }
+            \class_alias('Humbug\PHPUnit\Command', 'PHPUnit\Command', \false);
+            namespace Humbug;
+
+            \Humbug\PHPUnit\Command::$mainStaticProp;
+
+            PHP,
+    ),
+
+    'FQ constant call on an exposed namespaced class' => SpecWithConfig::create(
+        exposeClasses: ['PHPUnit\Command'],
+        expectedRecordedClasses: [
+            ['PHPUnit\Command', 'Humbug\PHPUnit\Command'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            namespace PHPUnit {
+                class Command {}
+            }
+
+            namespace {
+                \PHPUnit\Command::$mainStaticProp;
+            }
+            ----
+            <?php
+
+            namespace Humbug\PHPUnit;
+
+            class Command
+            {
+            }
+            \class_alias('Humbug\PHPUnit\Command', 'PHPUnit\Command', \false);
+            namespace Humbug;
+
+            \Humbug\PHPUnit\Command::$mainStaticProp;
+
+            PHP,
+    ),
 ];

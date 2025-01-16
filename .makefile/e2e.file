@@ -1,3 +1,7 @@
+E2E_PHPUNIT_DIR = 'build/set038/phpunit'
+E2E_PHPUNIT_PHPUNIT_PHP_SCOPER = '$(E2E_PHPUNIT_DIR)/tools/php-scoper'
+E2E_PHPUNIT_SCOPED_PHPUNIT = 'build/artifacts/phpunit-snapshot.phar'
+
 .PHONY: e2e_004
 e2e_004: # Runs end-to-end tests for the fixture set 004 — Minimalistic codebase
 e2e_004: $(PHP_SCOPER_PHAR_BIN)
@@ -191,7 +195,7 @@ e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
 		--stop-on-failure
 	composer --working-dir=build/set027-laravel dump-autoload --no-dev
 
-	php build/set027-laravel/artisan -V > build/set027-laravel/output
+	NO_COLOR=1 php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
 
 .PHONY: e2e_028
@@ -309,8 +313,11 @@ e2e_034: $(PHP_SCOPER_PHAR_BIN) fixtures/set034-installed-versions/vendor
 	diff fixtures/set034-installed-versions/expected-output build/set034-installed-versions/output
 
 .PHONY: e2e_035
-e2e_035: # Runs end-to-end tests for the fixture set 035 — Tests tha composer autoloaded files are working fine
-e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor fixtures/set035-composer-files-autoload/guzzle5-include/vendor
+e2e_035: # Runs end-to-end tests for the fixture set 035 — Tests that composer autoloaded files are working fine
+e2e_035: $(PHP_SCOPER_PHAR_BIN) \
+		fixtures/set035-composer-files-autoload/vendor \
+		fixtures/set035-composer-files-autoload/guzzle5-include/vendor \
+		fixtures/set035-composer-files-autoload/composer-variable-access/vendor
 	rm -rf build/set035-composer-files-autoload || true
 	cp -R fixtures/set035-composer-files-autoload build/set035-composer-files-autoload
 
@@ -324,7 +331,17 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) fixtures/set035-composer-files-autoload/vendor f
 	composer --working-dir=build/set035-composer-files-autoload/scoped-guzzle5-include dump-autoload
 	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
 
-	php build/set035-composer-files-autoload/index.php &> build/set035-composer-files-autoload/output || true
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set035-composer-files-autoload/composer-variable-access \
+		--output-dir=../../../build/set035-composer-files-autoload/scoped-composer-variable-access \
+		--force \
+		--config=scoper.inc.php \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set035-composer-files-autoload/scoped-composer-variable-access dump-autoload
+	rm -rf build/set035-composer-files-autoload/composer-variable-access || true
+
+	php build/set035-composer-files-autoload/index.php 2>&1 > build/set035-composer-files-autoload/output
 	php build/set035-composer-files-autoload/test.php
 
 .PHONY: e2e_036
@@ -368,6 +385,69 @@ e2e_037: $(PHP_SCOPER_PHAR_BIN) build/set011/bin/greet.phar
 
 	php build/set037/bin/greet.php > build/set037/output
 	diff fixtures/set037-double-scoping/expected-output build/set037/output
+
+
+.PHONY: e2e_038
+e2e_038: # Runs end-to-end tests for the PHPUnit integration
+e2e_038: $(PHP_SCOPER_PHAR_BIN)
+	rm -rf $(E2E_PHPUNIT_DIR) || true
+	$(MAKE) $(E2E_PHPUNIT_DIR)
+
+	rm -rf $(E2E_PHPUNIT_PHPUNIT_PHP_SCOPER) || true
+	cp $(PHP_SCOPER_PHAR_BIN) $(E2E_PHPUNIT_PHPUNIT_PHP_SCOPER)
+
+	cd $(E2E_PHPUNIT_DIR); ant phar-snapshot
+	$(MAKE) _e2e_038
+
+.PHONY: _e2e_038
+_e2e_038:
+	@# To keep in sync with .github/workflows/e2e-tests.yaml#test-phpunit-scoping
+	cd $(E2E_PHPUNIT_DIR); XDEBUG_MODE=coverage ant run-phar-specific-tests
+
+.PHONY: e2e_039
+e2e_039: # Runs end-to-end tests for the fixture set e2e_037 — Codebase using scoped code
+e2e_039: $(PHP_SCOPER_PHAR_BIN)
+	rm -rf fixtures/set039-min-php-version/vendor || true
+	docker pull php:7.2-cli-alpine
+
+	composer --working-dir=fixtures/set039-min-php-version install
+
+	$(PHP_SCOPER_PHAR) add-prefix . \
+		--working-dir=fixtures/set039-min-php-version \
+		--output-dir=../../build/set039 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set039 dump-autoload
+
+	docker run \
+		--interactive \
+		--platform=linux/amd64 \
+		--rm \
+		--workdir=/opt/php-scoper \
+		--volume="$$PWD":/opt/php-scoper \
+		php:7.2-cli-alpine \
+        php build/set039/index.php \
+		> build/set039/output || true
+	diff fixtures/set039-min-php-version/expected-output build/set039/output
+
+.PHONY: e2e_040
+e2e_040: # Runs end-to-end tests for the fixture set e2e_040 — Codebase using a polyfill
+e2e_040: $(PHP_SCOPER_PHAR_BIN)
+	rm -rf fixtures/set040-polyfills/vendor || true
+	composer --working-dir=fixtures/set040-polyfills dump-autoload
+
+	$(PHP_SCOPER_PHAR) add-prefix . \
+		--working-dir=fixtures/set040-polyfills \
+		--output-dir=../../build/set040 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set040 dump-autoload
+
+	php build/set040/index.php > build/set040/output || true
+
+	diff fixtures/set040-polyfills/expected-output build/set040/output
 
 
 #
@@ -507,3 +587,15 @@ fixtures/set035-composer-files-autoload/guzzle5-include/vendor: fixtures/set035-
 fixtures/set035-composer-files-autoload/guzzle5-include/composer.lock: fixtures/set035-composer-files-autoload/guzzle5-include/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload/guzzle5-include update --lock && touch -c $(@)"
+
+fixtures/set035-composer-files-autoload/composer-variable-access/vendor: fixtures/set035-composer-files-autoload/composer-variable-access/composer.lock
+	composer --working-dir=fixtures/set035-composer-files-autoload/composer-variable-access install --no-dev --no-scripts
+	touch -c $@
+fixtures/set035-composer-files-autoload/composer-variable-access/composer.lock: fixtures/set035-composer-files-autoload/composer-variable-access/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set035-composer-files-autoload/composer-variable-access update --lock && touch -c $(@)"
+
+build/set038/phpunit:
+	rm -rf $(E2E_PHPUNIT_DIR) || true
+	git clone --depth=1 --single-branch git@github.com:sebastianbergmann/phpunit.git $@
+	touch -c $@

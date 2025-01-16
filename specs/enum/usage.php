@@ -12,94 +12,78 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Enum declaration',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Enum declaration',
+    ),
 
     'typehint and create an enum' => <<<'PHP'
-    <?php
+        <?php
 
-    namespace Acme;
-    
-    use Status;
+        namespace Acme;
 
-    class BlogPost
-    {
-        public function __construct(
-            public Status $status, 
-        ) {}
-    }
-    $post = new BlogPost(Status::DRAFT);
+        use Status;
 
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use Humbug\Status;
-    class BlogPost
-    {
-        public function __construct(public Status $status)
+        class BlogPost
         {
+            public function __construct(
+                public Status $status,
+            ) {}
         }
-    }
-    $post = new BlogPost(Status::DRAFT);
-    
-    PHP,
+        $post = new BlogPost(Status::DRAFT);
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use Humbug\Status;
+        class BlogPost
+        {
+            public function __construct(public Status $status)
+            {
+            }
+        }
+        $post = new BlogPost(Status::DRAFT);
+
+        PHP,
 
     'use an enum method' => <<<'PHP'
-    <?php
+        <?php
 
-    namespace Acme;
-    
-    use Status;
+        namespace Acme;
 
-    $status = Status::ARCHIVED;
-    $status->color();
+        use Status;
 
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
-    
-    use Humbug\Status;
-    $status = Status::ARCHIVED;
-    $status->color();
-    
-    PHP,
+        $status = Status::ARCHIVED;
+        $status->color();
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use Humbug\Status;
+        $status = Status::ARCHIVED;
+        $status->color();
+
+        PHP,
 
     'use instance of enum' => <<<'PHP'
-    <?php
+        <?php
 
-    namespace Acme;
-    
-    $statusC instanceof \Post\Status;
+        namespace Acme;
 
-    ----
-    <?php
-    
-    namespace Humbug\Acme;
+        $statusC instanceof \Post\Status;
 
-    $statusC instanceof \Humbug\Post\Status;
+        ----
+        <?php
 
-    PHP,
+        namespace Humbug\Acme;
+
+        $statusC instanceof \Humbug\Post\Status;
+
+        PHP,
 ];

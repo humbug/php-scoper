@@ -14,9 +14,10 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Input\IO;
+use Fidry\Console\IO;
 use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use function chdir as native_chdir;
@@ -26,8 +27,8 @@ use function sprintf;
 
 /**
  * @private
- * @codeCoverageIgnore
  */
+#[CodeCoverageIgnore]
 final class ChangeableDirectory
 {
     use NotInstantiable;
@@ -47,7 +48,7 @@ final class ChangeableDirectory
 
     public static function changeWorkingDirectory(IO $io): void
     {
-        $workingDir = $io->getOption(self::WORKING_DIR_OPT)->asNullableString();
+        $workingDir = $io->getTypedOption(self::WORKING_DIR_OPT)->asNullableString();
 
         if (null === $workingDir) {
             return;

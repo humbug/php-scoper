@@ -12,152 +12,137 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Class constant call of a class imported with an aliased use statement in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Class constant call of a class imported with an aliased use statement in the global scope',
+    ),
 
     'Constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    
-    use Foo as X;
-    
-    X::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    use Humbug\Foo as X;
-    X::MAIN_CONST;
-    
-    PHP,
-
-    'FQ constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Foo {}
-    class X {}
-    
-    use Foo as X;
-    
-    \X::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    class X
-    {
-    }
-    use Humbug\Foo as X;
-    \Humbug\X::MAIN_CONST;
-    
-    PHP,
-
-    'Constant call on an internal class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    use Reflector as X;
-    
-    X::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use Reflector as X;
-    X::MAIN_CONST;
-    
-    PHP,
-
-    'FQ constant call on an internal class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
-    <?php
-    
-    class X {}
-    
-    use Reflector as X;
-    
-    \X::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class X
-    {
-    }
-    use Reflector as X;
-    \Humbug\X::MAIN_CONST;
-    
-    PHP,
-
-    'Constant call on an exposed class which is imported via an aliased use statement and which belongs to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
         <?php
-        
+
+        class Foo {}
+
         use Foo as X;
-        
+
         X::MAIN_CONST;
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
+        class Foo
+        {
+        }
         use Humbug\Foo as X;
         X::MAIN_CONST;
-        
-        PHP,
-    ],
 
-    'FQ constant call on an excluded class which is imported via an aliased use statement and which belongs to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
+        PHP,
+
+    'FQ constant call on a aliased class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
         <?php
-        
+
+        class Foo {}
         class X {}
-        
+
         use Foo as X;
-        
+
         \X::MAIN_CONST;
         ----
         <?php
-        
+
         namespace Humbug;
-        
+
+        class Foo
+        {
+        }
         class X
         {
         }
         use Humbug\Foo as X;
         \Humbug\X::MAIN_CONST;
-        
+
         PHP,
-    ],
+
+    'Constant call on an internal class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
+        <?php
+
+        use Reflector as X;
+
+        X::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use Reflector as X;
+        X::MAIN_CONST;
+
+        PHP,
+
+    'FQ constant call on an internal class which is imported via an aliased use statement and which belongs to the global namespace' => <<<'PHP'
+        <?php
+
+        class X {}
+
+        use Reflector as X;
+
+        \X::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class X
+        {
+        }
+        use Reflector as X;
+        \Humbug\X::MAIN_CONST;
+
+        PHP,
+
+    'Constant call on an exposed class which is imported via an aliased use statement and which belongs to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
+            <?php
+
+            use Foo as X;
+
+            X::MAIN_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            use Humbug\Foo as X;
+            X::MAIN_CONST;
+
+            PHP,
+    ),
+
+    'FQ constant call on an excluded class which is imported via an aliased use statement and which belongs to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
+            <?php
+
+            class X {}
+
+            use Foo as X;
+
+            \X::MAIN_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class X
+            {
+            }
+            use Humbug\Foo as X;
+            \Humbug\X::MAIN_CONST;
+
+            PHP,
+    ),
 ];

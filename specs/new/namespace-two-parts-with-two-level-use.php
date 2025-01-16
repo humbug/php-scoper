@@ -12,180 +12,165 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'New statement call of a namespaced class imported with a use statement in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'New statement call of a namespaced class imported with a use statement in a namespace',
+    ),
 
     'New statement call of a class via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        class Foo {}
-    }
-    
-    namespace X\Foo {
-        class Bar {}
-    }
-    
-    namespace A {
-        use X\Foo;
-        
-        new Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\X\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\X\Foo;
-    new Foo\Bar();
-    
-    PHP,
-
-    'FQ new statement call of a class via a use statement' => <<<'PHP'
-    <?php
-    
-    namespace X {
-        class Foo {}
-    }
-    
-    namespace Foo {
-        class Bar {}
-    }
-    
-    namespace A {
-        use X\Foo;
-        
-        new \Foo\Bar();
-    }
-    ----
-    <?php
-    
-    namespace Humbug\X;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\Foo;
-    
-    class Bar
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\X\Foo;
-    new \Humbug\Foo\Bar();
-    
-    PHP,
-
-    'New statement call of an exposed class via a use statement' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'expected-recorded-classes' => [
-            ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace X {
             class Foo {}
         }
-        
+
         namespace X\Foo {
             class Bar {}
         }
-        
+
         namespace A {
             use X\Foo;
-            
+
             new Foo\Bar();
         }
         ----
         <?php
-        
+
         namespace Humbug\X;
-        
+
         class Foo
         {
         }
         namespace Humbug\X\Foo;
-        
+
         class Bar
         {
         }
-        \class_alias('Humbug\\X\\Foo\\Bar', 'X\\Foo\\Bar', \false);
         namespace Humbug\A;
-        
+
         use Humbug\X\Foo;
         new Foo\Bar();
-        
-        PHP,
-    ],
 
-    'FQ new statement call of a non-exposed class via a use statement' => [
-        'expose-classes' => ['X\Foo\Bar'],
-        'payload' => <<<'PHP'
+        PHP,
+
+    'FQ new statement call of a class via a use statement' => <<<'PHP'
         <?php
-        
+
         namespace X {
             class Foo {}
         }
-        
+
         namespace Foo {
             class Bar {}
         }
-        
+
         namespace A {
             use X\Foo;
-            
+
             new \Foo\Bar();
         }
         ----
         <?php
-        
+
         namespace Humbug\X;
-        
+
         class Foo
         {
         }
         namespace Humbug\Foo;
-        
+
         class Bar
         {
         }
         namespace Humbug\A;
-        
+
         use Humbug\X\Foo;
         new \Humbug\Foo\Bar();
-        
+
         PHP,
-    ],
+
+    'New statement call of an exposed class via a use statement' => SpecWithConfig::create(
+        exposeClasses: ['X\Foo\Bar'],
+        expectedRecordedClasses: [
+            ['X\Foo\Bar', 'Humbug\X\Foo\Bar'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            namespace X {
+                class Foo {}
+            }
+
+            namespace X\Foo {
+                class Bar {}
+            }
+
+            namespace A {
+                use X\Foo;
+
+                new Foo\Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug\X;
+
+            class Foo
+            {
+            }
+            namespace Humbug\X\Foo;
+
+            class Bar
+            {
+            }
+            \class_alias('Humbug\X\Foo\Bar', 'X\Foo\Bar', \false);
+            namespace Humbug\A;
+
+            use Humbug\X\Foo;
+            new Foo\Bar();
+
+            PHP,
+    ),
+
+    'FQ new statement call of a non-exposed class via a use statement' => SpecWithConfig::create(
+        exposeClasses: ['X\Foo\Bar'],
+        spec: <<<'PHP'
+            <?php
+
+            namespace X {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace A {
+                use X\Foo;
+
+                new \Foo\Bar();
+            }
+            ----
+            <?php
+
+            namespace Humbug\X;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            namespace Humbug\A;
+
+            use Humbug\X\Foo;
+            new \Humbug\Foo\Bar();
+
+            PHP,
+    ),
 ];

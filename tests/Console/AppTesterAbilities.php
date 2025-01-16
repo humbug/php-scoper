@@ -15,11 +15,12 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Console;
 
 use Fidry\Console\Test\OutputAssertions;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
- * @psalm-require-implements \Humbug\PhpScoper\Console\AppTesterTestCase
- * @psalm-require-extends PHPUnit\Framework\TestCase
+ * @psalm-require-implements AppTesterTestCase
+ * @psalm-require-extends TestCase
  */
 trait AppTesterAbilities
 {

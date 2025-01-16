@@ -18,6 +18,8 @@ use Countable;
 use PhpParser\Node\Name\FullyQualified;
 use function array_values;
 use function count;
+use function serialize;
+use function unserialize;
 
 final class SymbolsRegistry implements Countable
 {
@@ -31,6 +33,36 @@ final class SymbolsRegistry implements Countable
      */
     private array $recordedClasses = [];
 
+    /**
+     * @param array<array{string|FullyQualified, string|FullyQualified}> $functions
+     * @param array<array{string|FullyQualified, string|FullyQualified}> $classes
+     */
+    public static function create(
+        array $functions = [],
+        array $classes = [],
+    ): self {
+        $registry = new self();
+
+        foreach ($functions as [$original, $alias]) {
+            $registry->recordFunction(
+                $original instanceof FullyQualified ? $original : new FullyQualified($original),
+                $alias instanceof FullyQualified ? $alias : new FullyQualified($alias),
+            );
+        }
+
+        foreach ($classes as [$original, $alias]) {
+            $registry->recordClass(
+                $original instanceof FullyQualified ? $original : new FullyQualified($original),
+                $alias instanceof FullyQualified ? $alias : new FullyQualified($alias),
+            );
+        }
+
+        return $registry;
+    }
+
+    /**
+     * @param self[] $symbolsRegistries
+     */
     public static function createFromRegistries(array $symbolsRegistries): self
     {
         $symbolsRegistry = new self();
@@ -40,6 +72,19 @@ final class SymbolsRegistry implements Countable
         }
 
         return $symbolsRegistry;
+    }
+
+    public static function unserialize(string $serialized): self
+    {
+        return unserialize(
+            $serialized,
+            ['allowed_classes' => [self::class]],
+        );
+    }
+
+    public function serialize(): string
+    {
+        return serialize($this);
     }
 
     public function merge(self $symbolsRegistry): void

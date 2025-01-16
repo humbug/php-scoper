@@ -14,13 +14,16 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Exception;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfiguration;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationFile;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
 use Humbug\PhpScoper\Patcher\Patcher;
 use Humbug\PhpScoper\Patcher\PatcherChain;
 use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
-use InvalidArgumentException;
-use RuntimeException;
+use PhpParser\PhpVersion;
 use SplFileInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -33,9 +36,7 @@ use function array_unshift;
 use function bin2hex;
 use function dirname;
 use function file_exists;
-use function gettype;
 use function Humbug\PhpScoper\chain;
-use function in_array;
 use function is_array;
 use function is_callable;
 use function is_dir;
@@ -47,31 +48,28 @@ use function random_bytes;
 use function readlink as native_readlink;
 use function realpath;
 use function Safe\file_get_contents;
-use function sprintf;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 
-final class ConfigurationFactory
+final readonly class ConfigurationFactory
 {
     public const DEFAULT_FILE_NAME = 'scoper.inc.php';
 
     public function __construct(
-        private readonly Filesystem $fileSystem,
-        private readonly SymbolsConfigurationFactory $configurationWhitelistFactory,
+        private Filesystem $fileSystem,
+        private SymbolsConfigurationFactory $symbolsConfigurationFactory,
     ) {
     }
 
     /**
      * @param non-empty-string|null  $path  Absolute canonical path to the configuration file.
      * @param list<non-empty-string> $paths List of absolute canonical paths to append besides the one configured
+     *
+     * @throws InvalidConfiguration
      */
     public function create(?string $path = null, array $paths = []): Configuration
     {
-        if (null === $path) {
-            $config = [];
-        } else {
-            $config = $this->loadConfigFile($path);
-        }
+        $config = null === $path ? [] : $this->loadConfigFile($path);
 
         self::validateConfigKeys($config);
 
@@ -91,7 +89,7 @@ final class ConfigurationFactory
         array_unshift($patchers, new SymfonyParentTraitPatcher());
         array_unshift($patchers, new ComposerPatcher());
 
-        $symbolsConfiguration = $this->configurationWhitelistFactory->createSymbolsConfiguration($config);
+        $symbolsConfiguration = $this->symbolsConfigurationFactory->createSymbolsConfiguration($config);
 
         $finders = self::retrieveFinders($config);
         $filesFromPaths = self::retrieveFilesFromPaths($paths);
@@ -101,6 +99,7 @@ final class ConfigurationFactory
             $path,
             $outputDir,
             $prefix,
+            self::retrievePhpVersion($config),
             $filesWithContents,
             self::retrieveFilesWithContents($excludedFiles),
             new PatcherChain($patchers),
@@ -134,24 +133,17 @@ final class ConfigurationFactory
         return $config->withPrefix($prefix);
     }
 
+    /**
+     * @throws InvalidConfigurationValue
+     */
     private function loadConfigFile(string $path): array
     {
         if (!$this->fileSystem->isAbsolutePath($path)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected the path of the configuration file to load to be an absolute path, got "%s" instead',
-                    $path,
-                ),
-            );
+            throw InvalidConfigurationFile::forNonAbsolutePath($path);
         }
 
         if (!file_exists($path)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected the path of the configuration file to exists but the file "%s" could not be found',
-                    $path,
-                ),
-            );
+            throw InvalidConfigurationFile::forFileNotFound($path);
         }
 
         $isADirectoryLink = is_link($path)
@@ -159,23 +151,13 @@ final class ConfigurationFactory
             && is_file(native_readlink($path));
 
         if (!$isADirectoryLink && !is_file($path)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected the path of the configuration file to be a file but "%s" appears to be a directory.',
-                    $path,
-                ),
-            );
+            throw InvalidConfigurationFile::forNotAFile($path);
         }
 
         $config = include $path;
 
         if (!is_array($config)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected configuration to be an array, found "%s" instead.',
-                    gettype($config),
-                ),
-            );
+            throw InvalidConfigurationFile::forInvalidValue($path);
         }
 
         return $config;
@@ -184,22 +166,8 @@ final class ConfigurationFactory
     private static function validateConfigKeys(array $config): void
     {
         array_map(
-            static fn (string $key) => self::validateConfigKey($key),
+            ConfigurationKeys::assertIsValidKey(...),
             array_keys($config),
-        );
-    }
-
-    private static function validateConfigKey(string $key): void
-    {
-        if (in_array($key, ConfigurationKeys::KEYWORDS, true)) {
-            return;
-        }
-
-        throw new InvalidArgumentException(
-            sprintf(
-                'Invalid configuration key value "%s" found.',
-                $key,
-            ),
         );
     }
 
@@ -214,6 +182,28 @@ final class ConfigurationFactory
     }
 
     /**
+     * @throws InvalidConfigurationValue
+     */
+    private static function retrievePhpVersion(array $config): ?PhpVersion
+    {
+        $stringVersion = $config[ConfigurationKeys::PHP_VERSION_KEYWORD] ?? null;
+
+        if (null === $stringVersion || '' === $stringVersion) {
+            return null;
+        }
+
+        if (!is_string($stringVersion)) {
+            throw InvalidConfigurationValue::forInvalidPhpVersionType($stringVersion);
+        }
+
+        try {
+            return PhpVersion::fromString($stringVersion);
+        } catch (Exception $exception) {
+            throw InvalidConfigurationValue::forInvalidPhpVersion($stringVersion, $exception);
+        }
+    }
+
+    /**
      * @return non-empty-string|null
      */
     private static function retrieveOutputDir(array $config): ?string
@@ -224,6 +214,8 @@ final class ConfigurationFactory
     }
 
     /**
+     * @throws InvalidConfigurationValue
+     *
      * @return array<(callable(string,string,string): string)|Patcher>
      */
     private static function retrievePatchers(array $config): array
@@ -235,31 +227,21 @@ final class ConfigurationFactory
         $patchers = $config[ConfigurationKeys::PATCHERS_KEYWORD];
 
         if (!is_array($patchers)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected patchers to be an array of callables, found "%s" instead.',
-                    gettype($patchers),
-                ),
-            );
+            throw InvalidConfigurationValue::forInvalidPatchersType($patchers);
         }
 
         foreach ($patchers as $index => $patcher) {
-            if (is_callable($patcher)) {
-                continue;
+            if (!is_callable($patcher)) {
+                throw InvalidConfigurationValue::forInvalidPatcherType($index, $patcher);
             }
-
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected patchers to be an array of callables, the "%d" element is not.',
-                    $index,
-                ),
-            );
         }
 
         return $patchers;
     }
 
     /**
+     * @throws InvalidConfigurationValue
+     *
      * @return string[] Absolute paths
      */
     private function retrieveExcludedFiles(string $dirPath, array $config): array
@@ -271,22 +253,12 @@ final class ConfigurationFactory
         $excludedFiles = $config[ConfigurationKeys::EXCLUDED_FILES_KEYWORD];
 
         if (!is_array($excludedFiles)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected excluded files to be an array of strings, found "%s" instead.',
-                    gettype($excludedFiles),
-                ),
-            );
+            throw InvalidConfigurationValue::forInvalidExcludedFilesTypes($excludedFiles);
         }
 
         foreach ($excludedFiles as $index => $file) {
             if (!is_string($file)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Expected excluded files to be an array of string, the "%d" element is not.',
-                        $index,
-                    ),
-                );
+                throw InvalidConfigurationValue::forInvalidExcludedFilePath($index, $excludedFiles);
             }
 
             if (!$this->fileSystem->isAbsolutePath($file)) {
@@ -296,10 +268,14 @@ final class ConfigurationFactory
             $excludedFiles[$index] = realpath($file);
         }
 
+        // We ignore files not found excluded file as we do not want to bail out just because a file we do not want to
+        // include does not exist.
         return array_filter($excludedFiles);
     }
 
     /**
+     * @throws InvalidConfigurationValue
+     *
      * @return Finder[]
      */
     private static function retrieveFinders(array $config): array
@@ -311,13 +287,7 @@ final class ConfigurationFactory
         $finders = $config[ConfigurationKeys::FINDER_KEYWORD];
 
         if (!is_array($finders)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected finders to be an array of "%s", found "%s" instead.',
-                    Finder::class,
-                    gettype($finders),
-                ),
-            );
+            throw InvalidConfigurationValue::forInvalidFinderTypes($finders);
         }
 
         foreach ($finders as $index => $finder) {
@@ -325,13 +295,7 @@ final class ConfigurationFactory
                 continue;
             }
 
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Expected finders to be an array of "%s", the "%d" element is not.',
-                    Finder::class,
-                    $index,
-                ),
-            );
+            throw InvalidConfigurationValue::forInvalidFinderType($index, $finder);
         }
 
         return $finders;
@@ -339,6 +303,8 @@ final class ConfigurationFactory
 
     /**
      * @param string[] $paths
+     *
+     * @throws InvalidConfigurationValue
      *
      * @return iterable<SplFileInfo>
      */
@@ -353,12 +319,7 @@ final class ConfigurationFactory
 
         foreach ($paths as $path) {
             if (!file_exists($path)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Could not find the file "%s".',
-                        $path,
-                    ),
-                );
+                throw InvalidConfigurationValue::forFileNotFound($path);
             }
 
             if (is_dir($path)) {
@@ -374,7 +335,7 @@ final class ConfigurationFactory
             ->in($pathsToSearch)
             ->append($filesToAppend)
             ->filter(
-                static fn (SplFileInfo $fileInfo) => $fileInfo->isLink() ? false : null,
+                static fn (SplFileInfo $fileInfo) => !$fileInfo->isLink(),
             )
             ->sortByName();
 
@@ -383,6 +344,8 @@ final class ConfigurationFactory
 
     /**
      * @param iterable<SplFileInfo|string> $files
+     *
+     * @throws InvalidConfigurationValue
      *
      * @return array<string, array{string, string}> Array of tuple with the first argument being the file path and the second its contents
      */
@@ -396,21 +359,11 @@ final class ConfigurationFactory
                 : realpath($filePathOrFileInfo);
 
             if (!$filePath) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Could not find the file "%s".',
-                        (string) $filePathOrFileInfo,
-                    ),
-                );
+                throw InvalidConfigurationValue::forFileNotFound((string) $filePathOrFileInfo);
             }
 
             if (!is_readable($filePath)) {
-                throw new RuntimeException(
-                    sprintf(
-                        'Could not read the file "%s".',
-                        $filePath,
-                    ),
-                );
+                throw InvalidConfigurationValue::forUnreadableFile($filePath);
             }
 
             $filesWithContents[$filePath] = [$filePath, file_get_contents($filePath)];

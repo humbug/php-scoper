@@ -12,145 +12,130 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Class constant call in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Class constant call in the global scope',
+    ),
 
     'Constant call on a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    Command::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    Command::MAIN_CONST;
-    
-    PHP,
-
-    'Constant call on a class belonging to the global namespace which is excluded' => [
-        'exclude-namespaces' => ['/^$/'],
-        'expected-recorded-classes' => [
-            ['Command', 'Humbug\Command'],
-        ],
-        'payload' => <<<'PHP'
         <?php
-        
+
         class Command {}
-        
+
         Command::MAIN_CONST;
         ----
         <?php
-        
-        namespace {
-            class Command
-            {
-            }
-            \class_alias('Humbug\\Command', 'Command', \false);
-            \Command::MAIN_CONST;
+
+        namespace Humbug;
+
+        class Command
+        {
         }
-        
+        Command::MAIN_CONST;
+
         PHP,
-    ],
+
+    'Constant call on a class belonging to the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: ['/^$/'],
+        expectedRecordedClasses: [
+            ['Command', 'Humbug\Command'],
+        ],
+        spec: <<<'PHP'
+            <?php
+
+            class Command {}
+
+            Command::MAIN_CONST;
+            ----
+            <?php
+
+            namespace {
+                class Command
+                {
+                }
+                \class_alias('Humbug\Command', 'Command', \false);
+                \Command::MAIN_CONST;
+            }
+
+            PHP,
+    ),
 
     'FQ constant call on a class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    class Command {}
-    
-    \Command::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Command
-    {
-    }
-    \Humbug\Command::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        class Command {}
+
+        \Command::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Command
+        {
+        }
+        \Humbug\Command::MAIN_CONST;
+
+        PHP,
 
     'Constant call on an internal class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    Reflector::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Reflector::MAIN_CONST;
-    
-    PHP,
+        <?php
+
+        Reflector::MAIN_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Reflector::MAIN_CONST;
+
+        PHP,
 
     'FQ constant call on an internal class belonging to the global namespace' => <<<'PHP'
-    <?php
-    
-    \Reflector::MAIN_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Reflector::MAIN_CONST;
-    
-    PHP,
-
-    'Constant call on an exposed class belonging to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
         <?php
-        
-        Foo::MAIN_CONST;
+
+        \Reflector::MAIN_CONST;
         ----
         <?php
-        
-        namespace Humbug;
-        
-        \Humbug\Foo::MAIN_CONST;
-        
-        PHP,
-    ],
 
-    'FQ constant call on an exposed class belonging to the global namespace' => [
-        'expose-classes' => ['Foo'],
-        'payload' => <<<'PHP'
-        <?php
-        
-        \Foo::MAIN_CONST;
-        ----
-        <?php
-        
         namespace Humbug;
-        
-        \Humbug\Foo::MAIN_CONST;
-        
+
+        \Reflector::MAIN_CONST;
+
         PHP,
-    ],
+
+    'Constant call on an exposed class belonging to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
+            <?php
+
+            Foo::MAIN_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\Foo::MAIN_CONST;
+
+            PHP,
+    ),
+
+    'FQ constant call on an exposed class belonging to the global namespace' => SpecWithConfig::create(
+        exposeClasses: ['Foo'],
+        spec: <<<'PHP'
+            <?php
+
+            \Foo::MAIN_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \Humbug\Foo::MAIN_CONST;
+
+            PHP,
+    ),
 ];

@@ -14,20 +14,20 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Application\SymfonyApplication;
+use Fidry\Console\Bridge\Application\SymfonyApplication;
 use Fidry\Console\DisplayNormalizer;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
- * @covers \Humbug\PhpScoper\Console\Command\InspectSymbolCommand
- *
- * @group integration
- *
  * @internal
  */
+#[CoversClass(InspectSymbolCommand::class)]
+#[Group('integration')]
 class InspectSymbolCommandIntegrationTest extends FileSystemTestCase
 {
     private const STATIC_CONTENT = <<<'EOL'

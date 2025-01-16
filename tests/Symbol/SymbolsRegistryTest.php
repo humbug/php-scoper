@@ -16,23 +16,23 @@ namespace Humbug\PhpScoper\Symbol;
 
 use Humbug\PhpScoper\PhpScoperAssertions;
 use PhpParser\Node\Name\FullyQualified;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Humbug\PhpScoper\Symbol\SymbolsRegistry
- *
  * @internal
  */
+#[CoversClass(SymbolsRegistry::class)]
 final class SymbolsRegistryTest extends TestCase
 {
     /**
-     * @dataProvider provideRecords
-     *
      * @param array<array{FullyQualified, FullyQualified}> $functions
      * @param array<array{FullyQualified, FullyQualified}> $classes
      * @param list<array{FullyQualified, FullyQualified}>  $expectedRecordedFunctions
      * @param list<array{FullyQualified, FullyQualified}>  $expectedRecordedClasses
      */
+    #[DataProvider('provideRecords')]
     public function test_it_records_functions_and_classes(
         array $functions,
         array $classes,
@@ -40,7 +40,7 @@ final class SymbolsRegistryTest extends TestCase
         array $expectedRecordedClasses,
         int $expectedCount
     ): void {
-        $registry = self::createRegistry($functions, $classes);
+        $registry = SymbolsRegistry::create($functions, $classes);
 
         self::assertStateIs(
             $registry,
@@ -48,6 +48,24 @@ final class SymbolsRegistryTest extends TestCase
             $expectedRecordedClasses,
             $expectedCount,
         );
+    }
+
+    /**
+     * @param array<array{FullyQualified, FullyQualified}> $functions
+     * @param array<array{FullyQualified, FullyQualified}> $classes
+     */
+    #[DataProvider('provideRecords')]
+    public function test_it_can_be_serialized_and_unserialized(
+        array $functions,
+        array $classes,
+    ): void {
+        $registry = SymbolsRegistry::create($functions, $classes);
+
+        $unserializedRegistry = SymbolsRegistry::unserialize(
+            $registry->serialize(),
+        );
+
+        self::assertEquals($unserializedRegistry, $registry);
     }
 
     public static function provideRecords(): iterable
@@ -111,9 +129,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider provideRegistryToMerge
-     */
+    #[DataProvider('provideRegistryToMerge')]
     public function test_it_can_merge_two_registries_together(
         SymbolsRegistry $source,
         SymbolsRegistry $target,
@@ -158,7 +174,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
 
         yield 'elements in the source' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                 ],
@@ -178,7 +194,7 @@ final class SymbolsRegistryTest extends TestCase
 
         yield 'elements in the target' => [
             new SymbolsRegistry(),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                 ],
@@ -196,7 +212,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
 
         yield 'elements on both sides' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                 ],
@@ -204,7 +220,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$testCase, $scopedTestCase],
                 ],
             ),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$dump, $scopedDump],
                 ],
@@ -224,7 +240,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
 
         yield 'elements on both sides with duplicates entries from the target' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                 ],
@@ -232,7 +248,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$testCase, $scopedTestCase],
                 ],
             ),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                     [$dump, $scopedDump],
@@ -254,7 +270,7 @@ final class SymbolsRegistryTest extends TestCase
         ];
 
         yield 'elements on both sides with duplicates entries from the source' => [
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$main, $scopedMain],
                     [$dump, $scopedDump],
@@ -264,7 +280,7 @@ final class SymbolsRegistryTest extends TestCase
                     [$finder, $scopedFinder],
                 ],
             ),
-            self::createRegistry(
+            SymbolsRegistry::create(
                 [
                     [$dump, $scopedDump],
                 ],
@@ -285,10 +301,9 @@ final class SymbolsRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider provideRegistriesToMerge
-     *
      * @param SymbolsRegistry[] $sources
      */
+    #[DataProvider('provideRegistriesToMerge')]
     public function test_it_can_merge_registries_together(
         array $sources,
         array $expectedRecordedFunctions,
@@ -334,15 +349,15 @@ final class SymbolsRegistryTest extends TestCase
 
         yield 'nominal' => [
             [
-                self::createRegistry(
+                SymbolsRegistry::create(
                     [[$main, $scopedMain]],
                     [[$testCase, $scopedTestCase]],
                 ),
-                self::createRegistry(
+                SymbolsRegistry::create(
                     [[$dump, $scopedDump]],
                     [[$finder, $scopedFinder]],
                 ),
-                self::createRegistry(
+                SymbolsRegistry::create(
                     [[$dd, $scopedDd]],
                     [[$fileSystem, $scopedFileSystem]],
                 ),
@@ -363,7 +378,7 @@ final class SymbolsRegistryTest extends TestCase
 
     public function test_it_exposes_recorded_classes(): void
     {
-        $registry = self::createRegistry(
+        $registry = SymbolsRegistry::create(
             [[new FullyQualified('foo'), new FullyQualified('Humbug\foo')]],
             [[new FullyQualified('Bar'), new FullyQualified('Humbug\Bar')]],
         );
@@ -392,20 +407,5 @@ final class SymbolsRegistryTest extends TestCase
             $symbolsRegistry->getRecordedClasses(),
         );
         self::assertCount($expectedCount, $symbolsRegistry);
-    }
-
-    private static function createRegistry(array $functions, array $classes): SymbolsRegistry
-    {
-        $registry = new SymbolsRegistry();
-
-        foreach ($functions as [$original, $alias]) {
-            $registry->recordFunction($original, $alias);
-        }
-
-        foreach ($classes as [$original, $alias]) {
-            $registry->recordClass($original, $alias);
-        }
-
-        return $registry;
     }
 }

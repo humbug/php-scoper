@@ -12,50 +12,34 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+
 return [
-    'meta' => [
-        'title' => 'Miscellaneous',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Miscellaneous',
+    ),
 
     'Cast variable' => <<<'PHP'
-    <?php
-    
-    $x = new stdClass();
-    
-    (bool) $x;
-    (int) $x;
-    (float) $x;
-    (array) $x;
-    (object) $x;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    $x = new \stdClass();
-    (bool) $x;
-    (int) $x;
-    (float) $x;
-    (array) $x;
-    (object) $x;
-    
-    PHP,
+        <?php
+
+        $x = new stdClass();
+
+        (bool) $x;
+        (int) $x;
+        (float) $x;
+        (array) $x;
+        (object) $x;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $x = new \stdClass();
+        (bool) $x;
+        (int) $x;
+        (float) $x;
+        (array) $x;
+        (object) $x;
+
+        PHP,
 ];

@@ -17,8 +17,10 @@ namespace Humbug\PhpScoper\Console;
 use Fidry\Console\Application\Application as FidryApplication;
 use Humbug\PhpScoper\Console\Command\AddPrefixCommand;
 use Humbug\PhpScoper\Console\Command\InitCommand;
+use Humbug\PhpScoper\Console\Command\InspectCommand;
 use Humbug\PhpScoper\Console\Command\InspectSymbolCommand;
 use Humbug\PhpScoper\Container;
+use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\Console\Helper\FormatterHelper;
 use function Humbug\PhpScoper\get_php_scoper_version;
 use function sprintf;
@@ -27,9 +29,9 @@ use function trim;
 
 /**
  * @private
- * @codeCoverageIgnore
  */
-final class Application implements FidryApplication
+#[CodeCoverageIgnore]
+final readonly class Application implements FidryApplication
 {
     private const LOGO = <<<'ASCII'
 
@@ -59,11 +61,11 @@ final class Application implements FidryApplication
     }
 
     public function __construct(
-        private readonly Container $container,
-        private readonly string $version,
-        private readonly string $releaseDate,
-        private readonly bool $isAutoExitEnabled,
-        private readonly bool $areExceptionsCaught,
+        private Container $container,
+        private string $version,
+        private string $releaseDate,
+        private bool $isAutoExitEnabled,
+        private bool $areExceptionsCaught,
     ) {
     }
 
@@ -101,6 +103,11 @@ final class Application implements FidryApplication
                 $this->container->getFileSystem(),
                 $this->container->getScoperFactory(),
                 $this,
+                $this->container->getConfigurationFactory(),
+            ),
+            new InspectCommand(
+                $this->container->getFileSystem(),
+                $this->container->getScoperFactory(),
                 $this->container->getConfigurationFactory(),
             ),
             new InspectSymbolCommand(

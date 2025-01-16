@@ -12,83 +12,68 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Global constant imported with a use statement used in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Global constant imported with a use statement used in a namespace',
+    ),
 
     'Constant call imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    use const DUMMY_CONST;
-    
-    DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    use const Humbug\DUMMY_CONST;
-    DUMMY_CONST;
-    
-    PHP,
+        <?php
+
+        namespace A;
+
+        use const DUMMY_CONST;
+
+        DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug\A;
+
+        use const Humbug\DUMMY_CONST;
+        DUMMY_CONST;
+
+        PHP,
 
     'FQ constant call imported with a use statement' => <<<'PHP'
-    <?php
-    
-    namespace A;
-    
-    use const DUMMY_CONST;
-    
-    \DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug\A;
-    
-    use const Humbug\DUMMY_CONST;
-    \Humbug\DUMMY_CONST;
-    
-    PHP,
-
-    'Exposed FQ constant call imported with a use statement' => [
-        'expose-constants' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
         <?php
-        
+
         namespace A;
-        
+
         use const DUMMY_CONST;
-        
+
         \DUMMY_CONST;
         ----
         <?php
-        
+
         namespace Humbug\A;
-        
-        use const DUMMY_CONST;
-        \DUMMY_CONST;
-        
+
+        use const Humbug\DUMMY_CONST;
+        \Humbug\DUMMY_CONST;
+
         PHP,
-    ],
+
+    'Exposed FQ constant call imported with a use statement' => SpecWithConfig::create(
+        exposeConstants: ['DUMMY_CONST'],
+        spec: <<<'PHP'
+            <?php
+
+            namespace A;
+
+            use const DUMMY_CONST;
+
+            \DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug\A;
+
+            use const DUMMY_CONST;
+            \DUMMY_CONST;
+
+            PHP,
+    ),
 ];

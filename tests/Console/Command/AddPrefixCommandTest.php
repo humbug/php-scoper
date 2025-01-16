@@ -14,27 +14,27 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Console\Command;
 
-use Fidry\Console\Application\SymfonyApplication;
-use Fidry\Console\Command\SymfonyCommand;
+use Fidry\Console\Bridge\Application\SymfonyApplication;
+use Fidry\Console\Bridge\Command\SymfonyCommand;
 use Fidry\FileSystem\FS;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
+use Humbug\PhpScoper\Console\ConfigLoader;
+use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Humbug\PhpScoper\PhpParser\FakeParser;
-use Humbug\PhpScoper\PhpParser\FakePrinter;
+use Humbug\PhpScoper\Scoper\Factory\DummyScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
-use Humbug\PhpScoper\Symbol\Reflector;
-use InvalidArgumentException;
+use PhpParser\Error as PhpParserError;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use RuntimeException as RootRuntimeException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
@@ -46,12 +46,11 @@ use function sprintf;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @covers \Humbug\PhpScoper\Console\Command\AddPrefixCommand
- * @covers \Humbug\PhpScoper\Console\ConfigLoader
- * @covers \Humbug\PhpScoper\Console\ConsoleScoper
- *
  * @internal
  */
+#[CoversClass(AddPrefixCommand::class)]
+#[CoversClass(ConfigLoader::class)]
+#[CoversClass(ConsoleScoper::class)]
 class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCase
 {
     use AppTesterAbilities;
@@ -104,7 +103,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
         $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
 
         $expectedFiles = [
-            'composer/installed.json' => 'f1',
+            'composer/installed.json' => '{"packages": []}}',
             'executable-file.php' => 'f5',
             'file.php' => 'f2',
             'invalid-file.php' => 'f3',
@@ -145,7 +144,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldHaveBeenCalledTimes(count($expectedFiles));
     }
 
-    public function test_let_the_file_unchanged_when_cannot_scope_a_file(): void
+    public function test_let_the_file_unchanged_when_cannot_scope_a_file_but_is_marked_as_continue_on_failure(): void
     {
         $input = [
             'add-prefix',
@@ -156,6 +155,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             '--output-dir' => $this->tmp,
             '--no-interaction',
             '--no-config' => null,
+            '--continue-on-failure' => null,
         ];
 
         $this->fileSystemProphecy->isAbsolutePath($root)->willReturn(true);
@@ -197,7 +197,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             } else {
                 $this->scoperProphecy
                     ->scope($inputPath, $inputContents)
-                    ->willThrow(new RootRuntimeException('Scoping of the file failed'));
+                    ->willThrow(new RuntimeException('Scoping of the file failed'));
 
                 $this->fileSystemProphecy->dumpFile($outputPath, $inputContents)->shouldBeCalled();
             }
@@ -537,9 +537,9 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             $this->appTester->run($input);
 
             self::fail('Expected exception to be thrown.');
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidConfigurationValue $exception) {
             self::assertSame(
-                'Expected patchers to be an array of callables, the "0" element is not.',
+                'Expected patchers to be an array of callables, the "0" element is not (found "string" instead).',
                 $exception->getMessage(),
             );
         }
@@ -582,7 +582,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
             $this->scoperProphecy
                 ->scope($inputPath, $fileContents)
-                ->willThrow(new RuntimeException('Could not scope file'));
+                ->willThrow(new PhpParserError('Could not scope file'));
 
             $this->fileSystemProphecy->dumpFile($outputPath, $fileContents)->shouldBeCalled();
         }
@@ -677,14 +677,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             new SymfonyCommand(
                 new AddPrefixCommand(
                     $fileSystem,
-                    new DummyScoperFactory(
-                        new FakeParser(),
-                        new EnrichedReflectorFactory(
-                            Reflector::createEmpty(),
-                        ),
-                        new FakePrinter(),
-                        $scoper,
-                    ),
+                    new DummyScoperFactory($scoper),
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,

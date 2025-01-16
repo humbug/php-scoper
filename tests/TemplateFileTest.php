@@ -15,15 +15,15 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper;
 
 use Humbug\PhpScoper\Configuration\ConfigurationKeys;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 use function Safe\file_get_contents;
 use function Safe\preg_match_all;
 
 /**
- * @coversNothing
- *
  * @internal
  */
+#[CoversNothing]
 final class TemplateFileTest extends TestCase
 {
     private const TEMPLATE_PATH = __DIR__.'/../src/scoper.inc.php.tpl';

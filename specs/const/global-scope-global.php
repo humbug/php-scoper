@@ -12,113 +12,98 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Global constant usage in the global scope',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Global constant usage in the global scope',
+    ),
 
     'Constant call in the global namespace' => <<<'PHP'
-    <?php
-    
-    DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Humbug\DUMMY_CONST;
-    
-    PHP,
-
-    'Exposed constant call in the global namespace' => [
-        'expose-constants' => ['DUMMY_CONST'],
-        'payload' => <<<'PHP'
         <?php
-        
+
         DUMMY_CONST;
         ----
         <?php
-        
+
         namespace Humbug;
-        
-        \DUMMY_CONST;
-        
-        PHP,
-    ],
 
-    'Constant call in the global namespace which is excluded' => [
-        'exclude-namespaces' => [''],
-        'payload' => <<<'PHP'
-        <?php
-        
-        DUMMY_CONST;
-        ----
-        <?php
-        
-        namespace {
-            \DUMMY_CONST;
-        }
-        
+        \Humbug\DUMMY_CONST;
+
         PHP,
-    ],
+
+    'Exposed constant call in the global namespace' => SpecWithConfig::create(
+        exposeConstants: ['DUMMY_CONST'],
+        spec: <<<'PHP'
+            <?php
+
+            DUMMY_CONST;
+            ----
+            <?php
+
+            namespace Humbug;
+
+            \DUMMY_CONST;
+
+            PHP,
+    ),
+
+    'Constant call in the global namespace which is excluded' => SpecWithConfig::create(
+        excludeNamespaces: [''],
+        spec: <<<'PHP'
+            <?php
+
+            DUMMY_CONST;
+            ----
+            <?php
+
+            namespace {
+                \DUMMY_CONST;
+            }
+
+            PHP,
+    ),
 
     'Internal constant call in the global namespace' => <<<'PHP'
-    <?php
-    
-    DIRECTORY_SEPARATOR;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \DIRECTORY_SEPARATOR;
-    
-    PHP,
+        <?php
+
+        DIRECTORY_SEPARATOR;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \DIRECTORY_SEPARATOR;
+
+        PHP,
 
     'FQ constant call in the global namespace' => <<<'PHP'
-    <?php
-    
-    DUMMY_CONST;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    \Humbug\DUMMY_CONST;
-    
-    PHP,
+        <?php
+
+        DUMMY_CONST;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        \Humbug\DUMMY_CONST;
+
+        PHP,
 
     'Global constant call in the global scope of a constant which has a use statement for a class importing a class with the same name' => <<<'PHP'
-    <?php
-    
-    use Acme\Inf;
-    
-    INF;
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    use Humbug\Acme\Inf;
-    \INF;
-    
-    PHP,
+        <?php
+
+        use Acme\Inf;
+
+        INF;
+        ----
+        <?php
+
+        namespace Humbug;
+
+        use Humbug\Acme\Inf;
+        \INF;
+
+        PHP,
 ];

@@ -12,62 +12,45 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+
 return [
-    'meta' => [
-        'title' => 'String literal assigned to a variable',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'String literal assigned to a variable',
+    ),
 
     'PHP heredoc as argument' => <<<'PHP'
-    <?php
-    
-    declare(strict_types=1);
-    
-    namespace Acme;
-    
-    sprintf( <<<'_PHP'
-    if (!function_exists('%1$s')) {
-        function %1$s() {
-            return \%2$s(func_get_args());
+        <?php
+
+        declare(strict_types=1);
+
+        namespace Acme;
+
+        sprintf( <<<'_PHP'
+        if (!function_exists('%1$s')) {
+            function %1$s() {
+                return \%2$s(func_get_args());
+            }
         }
-    }
-    _PHP
-            ,
-            'foo',
-            'bar'
-    );
-    
-    ----
-    <?php
-    
-    declare (strict_types=1);
-    namespace Humbug\Acme;
-    
-    \sprintf(<<<'_PHP'
-    if (!function_exists('%1$s')) {
-        function %1$s() {
-            return \%2$s(func_get_args());
+        _PHP
+                ,
+                'foo',
+                'bar'
+        );
+
+        ----
+        <?php
+
+        declare (strict_types=1);
+        namespace Humbug\Acme;
+
+        sprintf(<<<'_PHP'
+        if (!function_exists('%1$s')) {
+            function %1$s() {
+                return \%2$s(func_get_args());
+            }
         }
-    }
-    _PHP
-    , 'foo', 'bar');
-    
-    PHP,
+        _PHP, 'foo', 'bar');
+
+        PHP,
 ];

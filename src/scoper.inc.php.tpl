@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use Isolated\Symfony\Component\Finder\Finder;
+/** @var Symfony\Component\Finder\Finder $finder */
+$finder = Isolated\Symfony\Component\Finder\Finder::class;
 
 // You can do your own things here, e.g. collecting symbols to expose dynamically
 // or files to exclude.
@@ -13,13 +14,14 @@ use Isolated\Symfony\Component\Finder\Finder;
 
 // Example of collecting files to include in the scoped build but to not scope
 // leveraging the isolated finder.
-$excludedFiles = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathName(),
-    iterator_to_array(
-        Finder::create()->files()->in(__DIR__),
-        false,
-    ),
-);
+// $excludedFiles = array_map(
+//     static fn (SplFileInfo $fileInfo) => $fileInfo->getPathName(),
+//     iterator_to_array(
+//         $finder::create()->files()->in(__DIR__),
+//         false,
+//     ),
+// );
+$excludedFiles = [];
 
 return [
     // The prefix configuration. If a non-null value is used, a random prefix
@@ -41,8 +43,8 @@ return [
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#finders-and-paths
     'finders' => [
         /*
-        Finder::create()->files()->in('src'),
-        Finder::create()
+        $finder::create()->files()->in('src'),
+        $finder::create()
             ->files()
             ->ignoreVCS(true)
             ->notName('/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/')
@@ -55,7 +57,7 @@ return [
                 'vendor-bin',
             ])
             ->in('vendor'),
-        Finder::create()->append([
+        $finder::create()->append([
             'composer.json',
         ]),
         */
@@ -69,6 +71,11 @@ return [
         // 'src/an-excluded-file.php',
         ...$excludedFiles,
     ],
+
+    // PHP version (e.g. `'7.2'`) in which the PHP parser and printer will be configured into. This will affect what
+    // level of code it will understand and how the code will be printed.
+    // If none (or `null`) is configured, then the host version will be used.
+    'php-version' => null,
 
     // When scoping PHP files, there will be scenarios where some of the code being scoped indirectly references the
     // original namespace. These will include, for example, strings or string manipulations. PHP-Scoper has limited

@@ -17,14 +17,15 @@ namespace Humbug\PhpScoper\Configuration;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory
- *
  * @internal
  */
+#[CoversClass(SymbolsConfigurationFactory::class)]
 final class SymbolsConfigurationFactoryTest extends TestCase
 {
     private SymbolsConfigurationFactory $factory;
@@ -36,9 +37,7 @@ final class SymbolsConfigurationFactoryTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider configProvider
-     */
+    #[DataProvider('configProvider')]
     public function test_it_can_create_a_symbols_config_object_from_the_config(
         array $config,
         SymbolsConfiguration $expected
@@ -189,10 +188,9 @@ final class SymbolsConfigurationFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidConfigProvider
-     *
      * @param class-string<Throwable> $expectedExceptionClassName
      */
+    #[DataProvider('invalidConfigProvider')]
     public function test_it_cannot_create_a_symbols_config_from_an_invalid_config(
         array $config,
         string $expectedExceptionClassName,

@@ -14,18 +14,27 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\AutoReview;
 
+use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
+use function array_diff;
+use function sort;
 
 /**
- * @coversNothing
- *
  * @internal
  */
+#[CoversNothing]
 class GAE2ETest extends TestCase
 {
+    private const IGNORED_E2E_TESTS = [
+        'e2e_038',
+        'e2e_039',
+    ];
+
     public function test_github_actions_executes_all_the_e2e_tests(): void
     {
-        $expected = E2ECollector::getE2ENames();
+        $expected = array_diff(E2ECollector::getE2ENames(), self::IGNORED_E2E_TESTS);
+        sort($expected);
+
         $actual = GAE2ECollector::getExecutedE2ETests();
 
         self::assertEqualsCanonicalizing($expected, $actual);

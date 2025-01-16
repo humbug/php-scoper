@@ -5,7 +5,9 @@ declare(strict_types=1);
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require file_exists(__DIR__.'/vendor/scoper-autoload.php')
+    ? __DIR__.'/vendor/scoper-autoload.php'
+    : __DIR__.'/vendor/autoload.php';
 
 interface Salute
 {

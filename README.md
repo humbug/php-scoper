@@ -30,11 +30,13 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 
 - [Installation](docs/installation.md#installation)
     - [Phive](docs/installation.md#phive)
-    - [PHAR](docs/installation.md#phar)
     - [Composer](docs/installation.md#composer)
+    - [Docker](docs/installation.md#docker)
+    - [GitHub](docs/installation.md#github)
 - [Usage](#usage)
 - [Configuration](docs/configuration.md#configuration)
     - [Prefix](docs/configuration.md#prefix)
+    - [PHP Version](docs/configuration.md#php-version)
     - [Output directory](docs/configuration.md#output-directory)
     - [Finders and paths](docs/configuration.md#finders-and-paths)
     - [Patchers](docs/configuration.md#patchers)
@@ -52,12 +54,15 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
         - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
         - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
 - [Recommendations](#recommendations)
+- [Debugging](#debugging)
 - [Further Reading](docs/further-reading.md#further-reading)
-    - [Polyfills](docs/further-reading.md#polyfills)
     - [How to deal with unknown third-party symbols](docs/further-reading.md#how-to-deal-with-unknown-third-party-symbols)
     - [Autoload aliases](docs/further-reading.md#autoload-aliases)
         - [Class aliases](docs/further-reading.md#class-aliases)
         - [Function aliases](docs/further-reading.md#function-aliases)
+    - [Laravel support](docs/further-reading.md#laravel-support)
+    - [Symfony support](docs/further-reading.md#symfony-support)
+    - [Wordpress support](docs/further-reading.md#wordpress-support)
 - [Limitations](docs/limitations.md#limitations)
     - [Dynamic symbols](docs/limitations.md#dynamic-symbols)
     - [Date symbols](docs/limitations.md#date-symbols)
@@ -190,10 +195,17 @@ To check if the isolated code is working correctly, you have a number of solutio
 - When using a PHAR (created by [Box][box] or any other PHAR building tool), 
   you can use the [`Phar::extractTo()`][phar-extract-to] method.
 
-Also take into consideration that bundling code in a PHAR is not guaranteed to work
-out of the box either. Indeed there is a number of things such as 
 
-For this reason, you should also h
+## Debugging
+
+Having a good breakdown like described in [Recommendations](#recommendations) will help
+to know where the issue is coming from. However, if you have a doubt or you are fiddling
+with patchers and want to check the result for a specific file without doing the whole
+scoping process, you can always check the result for that single individual file:
+
+```shell
+php-scoper inspect path/to/my-file.php
+```
 
 
 ## Contributing

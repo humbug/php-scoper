@@ -12,314 +12,299 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Method declarations',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
+    'meta' => new Meta(
+        title: 'Method declarations',
+    ),
 
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
-
-    'Method declarations' => [
-        'expose-classes' => ['X\Y', 'BAR_CONST'],
-        'expected-recorded-classes' => [
+    'Method declarations' => SpecWithConfig::create(
+        exposeClasses: ['X\Y', 'BAR_CONST'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace {
-            class Foo {}
-        }
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace X {
-            class Y {}
-        }
-        
-        namespace {
-            class Main {
+        spec: <<<'PHP'
+            <?php
+
+            namespace {
+                class Foo {}
+            }
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace X {
+                class Y {}
+            }
+
+            namespace {
+                class Main {
+                    const FOO_CONST = 'foo';
+                    const BAR_CONST = 'bar';
+
+                    function foo(
+                        Foo $arg0,
+                        \Foo $arg1,
+                        Foo\Bar $arg2,
+                        \Foo\Bar $arg3,
+                        ArrayIterator $arg4,
+                        \ArrayIterator $arg5,
+                        X\Y $arg6,
+                        \X\Y $arg7,
+                        string $foo = self::FOO_CONST,
+                        string $bar = self::BAR_CONST
+                    ) {}
+
+                    static function foo(
+                        Foo $arg0,
+                        \Foo $arg1,
+                        Foo\Bar $arg2,
+                        \Foo\Bar $arg3,
+                        ArrayIterator $arg4,
+                        \ArrayIterator $arg5,
+                        X\Y $arg6,
+                        \X\Y $arg7,
+                        string $foo = self::FOO_CONST,
+                        string $bar = self::BAR_CONST
+                    ) {}
+                }
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
+            {
+            }
+            namespace Humbug\Foo;
+
+            class Bar
+            {
+            }
+            namespace Humbug\X;
+
+            class Y
+            {
+            }
+            \class_alias('Humbug\X\Y', 'X\Y', \false);
+            namespace Humbug;
+
+            class Main
+            {
                 const FOO_CONST = 'foo';
                 const BAR_CONST = 'bar';
-            
-                function foo(
-                    Foo $arg0,
-                    \Foo $arg1,
-                    Foo\Bar $arg2,
-                    \Foo\Bar $arg3,
-                    ArrayIterator $arg4,
-                    \ArrayIterator $arg5,
-                    X\Y $arg6,
-                    \X\Y $arg7,
-                    string $foo = self::FOO_CONST,
-                    string $bar = self::BAR_CONST
-                ) {}
-        
-                static function foo(
-                    Foo $arg0,
-                    \Foo $arg1,
-                    Foo\Bar $arg2,
-                    \Foo\Bar $arg3,
-                    ArrayIterator $arg4,
-                    \ArrayIterator $arg5,
-                    X\Y $arg6,
-                    \X\Y $arg7,
-                    string $foo = self::FOO_CONST,
-                    string $bar = self::BAR_CONST
-                ) {}
+                function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = self::FOO_CONST, string $bar = self::BAR_CONST)
+                {
+                }
+                static function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = self::FOO_CONST, string $bar = self::BAR_CONST)
+                {
+                }
             }
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        namespace Humbug\X;
-        
-        class Y
-        {
-        }
-        \class_alias('Humbug\\X\\Y', 'X\\Y', \false);
-        namespace Humbug;
-        
-        class Main
-        {
-            const FOO_CONST = 'foo';
-            const BAR_CONST = 'bar';
-            function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = self::FOO_CONST, string $bar = self::BAR_CONST)
-            {
-            }
-            static function foo(Foo $arg0, \Humbug\Foo $arg1, Foo\Bar $arg2, \Humbug\Foo\Bar $arg3, \ArrayIterator $arg4, \ArrayIterator $arg5, \Humbug\X\Y $arg6, \Humbug\X\Y $arg7, string $foo = self::FOO_CONST, string $bar = self::BAR_CONST)
-            {
-            }
-        }
-        
-        PHP,
-    ],
 
-    'Method declarations with return types' => [
-        'expose-classes' => ['X\Y'],
-        'expected-recorded-classes' => [
+            PHP,
+    ),
+
+    'Method declarations with return types' => SpecWithConfig::create(
+        exposeClasses: ['X\Y'],
+        expectedRecordedClasses: [
             ['X\Y', 'Humbug\X\Y'],
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        namespace {
-            class Foo {}
-        }
-        
-        namespace Foo {
-            class Bar {}
-        }
-        
-        namespace X {
-            class Y {}
-        }
-        
-        namespace {
-            use Foo;
-            use ArrayIterator;
-            
-            class Main {
-                function foo(): self {}
-                function foo(): void {}
-                function foo(): static {}
-                function foo(): never {}
+        spec: <<<'PHP'
+            <?php
 
-                function foo(): false {}
-                function foo(): true {}
-                function foo(): null {}
-                
-                function foo(): bool {}
-                function foo(): ?bool {}
-                
-                function foo(): int {}
-                function foo(): ?int {}
-                
-                function foo(): float {}
-                function foo(): ?float {}
-                
-                function foo(): string {}
-                function foo(): ?string {}
-                
-                function foo(): array {}
-                function foo(): ?array {}
-                
-                function foo(): iterable {}
-                function foo(): ?iterable {}
-                
-                function foo(): callable {}
-                function foo(): ?callable {}
-            
-                function foo(): Foo {}
-                function foo(): \Foo {}
-                function foo(): ?Foo {}
-                function foo(): ?\Foo {}
-            
-                function foo(): ArrayIterator {}
-                function foo(): \ArrayIterator {}
-                function foo(): ?ArrayIterator {}
-                function foo(): ?\ArrayIterator {}
-                
-                function foo(): X\Y {}
-                function foo(): \X\Y {}
-                function foo(): ?X\Y {}
-                function foo(): ?\X\Y {}
+            namespace {
+                class Foo {}
             }
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class Foo
-        {
-        }
-        namespace Humbug\Foo;
-        
-        class Bar
-        {
-        }
-        namespace Humbug\X;
-        
-        class Y
-        {
-        }
-        \class_alias('Humbug\\X\\Y', 'X\\Y', \false);
-        namespace Humbug;
-        
-        use Humbug\Foo;
-        use ArrayIterator;
-        class Main
-        {
-            function foo() : self
+
+            namespace Foo {
+                class Bar {}
+            }
+
+            namespace X {
+                class Y {}
+            }
+
+            namespace {
+                use Foo;
+                use ArrayIterator;
+
+                class Main {
+                    function foo(): self {}
+                    function foo(): void {}
+                    function foo(): static {}
+                    function foo(): never {}
+
+                    function foo(): false {}
+                    function foo(): true {}
+                    function foo(): null {}
+
+                    function foo(): bool {}
+                    function foo(): ?bool {}
+
+                    function foo(): int {}
+                    function foo(): ?int {}
+
+                    function foo(): float {}
+                    function foo(): ?float {}
+
+                    function foo(): string {}
+                    function foo(): ?string {}
+
+                    function foo(): array {}
+                    function foo(): ?array {}
+
+                    function foo(): iterable {}
+                    function foo(): ?iterable {}
+
+                    function foo(): callable {}
+                    function foo(): ?callable {}
+
+                    function foo(): Foo {}
+                    function foo(): \Foo {}
+                    function foo(): ?Foo {}
+                    function foo(): ?\Foo {}
+
+                    function foo(): ArrayIterator {}
+                    function foo(): \ArrayIterator {}
+                    function foo(): ?ArrayIterator {}
+                    function foo(): ?\ArrayIterator {}
+
+                    function foo(): X\Y {}
+                    function foo(): \X\Y {}
+                    function foo(): ?X\Y {}
+                    function foo(): ?\X\Y {}
+                }
+            }
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class Foo
             {
             }
-            function foo() : void
+            namespace Humbug\Foo;
+
+            class Bar
             {
             }
-            function foo() : static
+            namespace Humbug\X;
+
+            class Y
             {
             }
-            function foo() : never
+            \class_alias('Humbug\X\Y', 'X\Y', \false);
+            namespace Humbug;
+
+            use Humbug\Foo;
+            use ArrayIterator;
+            class Main
             {
+                function foo(): self
+                {
+                }
+                function foo(): void
+                {
+                }
+                function foo(): static
+                {
+                }
+                function foo(): never
+                {
+                }
+                function foo(): false
+                {
+                }
+                function foo(): true
+                {
+                }
+                function foo(): null
+                {
+                }
+                function foo(): bool
+                {
+                }
+                function foo(): ?bool
+                {
+                }
+                function foo(): int
+                {
+                }
+                function foo(): ?int
+                {
+                }
+                function foo(): float
+                {
+                }
+                function foo(): ?float
+                {
+                }
+                function foo(): string
+                {
+                }
+                function foo(): ?string
+                {
+                }
+                function foo(): array
+                {
+                }
+                function foo(): ?array
+                {
+                }
+                function foo(): iterable
+                {
+                }
+                function foo(): ?iterable
+                {
+                }
+                function foo(): callable
+                {
+                }
+                function foo(): ?callable
+                {
+                }
+                function foo(): Foo
+                {
+                }
+                function foo(): \Humbug\Foo
+                {
+                }
+                function foo(): ?Foo
+                {
+                }
+                function foo(): ?\Humbug\Foo
+                {
+                }
+                function foo(): ArrayIterator
+                {
+                }
+                function foo(): \ArrayIterator
+                {
+                }
+                function foo(): ?ArrayIterator
+                {
+                }
+                function foo(): ?\ArrayIterator
+                {
+                }
+                function foo(): \Humbug\X\Y
+                {
+                }
+                function foo(): \Humbug\X\Y
+                {
+                }
+                function foo(): ?\Humbug\X\Y
+                {
+                }
+                function foo(): ?\Humbug\X\Y
+                {
+                }
             }
-            function foo() : false
-            {
-            }
-            function foo() : true
-            {
-            }
-            function foo() : null
-            {
-            }
-            function foo() : bool
-            {
-            }
-            function foo() : ?bool
-            {
-            }
-            function foo() : int
-            {
-            }
-            function foo() : ?int
-            {
-            }
-            function foo() : float
-            {
-            }
-            function foo() : ?float
-            {
-            }
-            function foo() : string
-            {
-            }
-            function foo() : ?string
-            {
-            }
-            function foo() : array
-            {
-            }
-            function foo() : ?array
-            {
-            }
-            function foo() : iterable
-            {
-            }
-            function foo() : ?iterable
-            {
-            }
-            function foo() : callable
-            {
-            }
-            function foo() : ?callable
-            {
-            }
-            function foo() : Foo
-            {
-            }
-            function foo() : \Humbug\Foo
-            {
-            }
-            function foo() : ?Foo
-            {
-            }
-            function foo() : ?\Humbug\Foo
-            {
-            }
-            function foo() : ArrayIterator
-            {
-            }
-            function foo() : \ArrayIterator
-            {
-            }
-            function foo() : ?ArrayIterator
-            {
-            }
-            function foo() : ?\ArrayIterator
-            {
-            }
-            function foo() : \Humbug\X\Y
-            {
-            }
-            function foo() : \Humbug\X\Y
-            {
-            }
-            function foo() : ?\Humbug\X\Y
-            {
-            }
-            function foo() : ?\Humbug\X\Y
-            {
-            }
-        }
-        
-        PHP,
-    ],
+
+            PHP,
+    ),
 ];

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Configuration;
 
 use Fidry\FileSystem\FS;
+use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Patcher\ComposerPatcher;
@@ -23,18 +24,18 @@ use Humbug\PhpScoper\Patcher\SymfonyParentTraitPatcher;
 use Humbug\PhpScoper\Patcher\SymfonyPatcher;
 use Humbug\PhpScoper\Symbol\NamespaceRegistry;
 use Humbug\PhpScoper\Symbol\SymbolRegistry;
-use InvalidArgumentException;
+use PhpParser\PhpVersion;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use function array_keys;
 use function Safe\touch;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @covers \Humbug\PhpScoper\Configuration\ConfigurationFactory
- *
- * @group integration
- *
  * @internal
  */
+#[CoversClass(ConfigurationFactory::class)]
+#[Group('integration')]
 class ConfigurationFactoryTest extends FileSystemTestCase
 {
     private ConfigurationFactory $configFactory;
@@ -80,7 +81,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 PHP,
         );
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(UnknownConfigurationKey::class);
         $this->expectExceptionMessage('Invalid configuration key value "unknown key" found.');
 
         $this->createConfigFromStandardFile();
@@ -94,6 +95,7 @@ class ConfigurationFactoryTest extends FileSystemTestCase
 
                 return [
                     'prefix' => 'MyPrefix',
+                    'php-version' => '7.2',
                     'output-dir' => 'dist',
                     'exclude-files' => ['file1', 'file2'],
                     'patchers' => [],
@@ -126,29 +128,25 @@ class ConfigurationFactoryTest extends FileSystemTestCase
 
         $configuration = $this->createConfigFromStandardFile();
 
-        self::assertSame($this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php', $configuration->getPath());
-        self::assertSame('MyPrefix', $configuration->getPrefix());
-        self::assertSame('dist', $configuration->getOutputDir());
-        self::assertSame([], $configuration->getFilesWithContents());
-        self::assertSame(
-            [
+        ConfigurationTest::assertStateIs(
+            configuration: $configuration,
+            expectedPath: $this->tmp.DIRECTORY_SEPARATOR.'scoper.inc.php',
+            expectedOutputDir: 'dist',
+            expectedPrefix: 'MyPrefix',
+            expectedPhpVersion: PhpVersion::fromComponents(7, 2),
+            expectedFilesWithContents: [],
+            expectedExcludedFilesWithContents: [
                 $this->tmp.DIRECTORY_SEPARATOR.'file1' => [
                     $this->tmp.DIRECTORY_SEPARATOR.'file1',
                     '',
                 ],
             ],
-            $configuration->getExcludedFilesWithContents(),
-        );
-        self::assertEquals(
-            new PatcherChain([
+            expectedPatcher: new PatcherChain([
                 new ComposerPatcher(),
                 new SymfonyParentTraitPatcher(),
                 new SymfonyPatcher(),
             ]),
-            $configuration->getPatcher(),
-        );
-        self::assertEquals(
-            SymbolsConfiguration::create(
+            expectedSymbolsConfiguration: SymbolsConfiguration::create(
                 false,
                 false,
                 false,
@@ -162,7 +160,6 @@ class ConfigurationFactoryTest extends FileSystemTestCase
                 SymbolRegistry::create(),
                 SymbolRegistry::createForConstants(),
             ),
-            $configuration->getSymbolsConfiguration(),
         );
     }
 

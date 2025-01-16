@@ -12,229 +12,214 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+use Humbug\PhpScoper\SpecFramework\Config\SpecWithConfig;
+
 return [
-    'meta' => [
-        'title' => 'Class declaration with typed properties',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'Class declaration with typed properties',
+    ),
 
     'Declaration in the global namespace' => <<<'PHP'
-    <?php
-    
-    class A {
-        public string $name;
-        
-        public ?self $instance = null;
-        
-        public static ?self $staticInstance = null;
-        
-        public ?B $foo;
-    
-        public function a() {}
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class A
-    {
-        public string $name;
-        public ?self $instance = null;
-        public static ?self $staticInstance = null;
-        public ?B $foo;
-        public function a()
-        {
-        }
-    }
-    
-    PHP,
+        <?php
 
-    'Declaration in the global namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'expected-recorded-classes' => [
+        class A {
+            public string $name;
+
+            public ?self $instance = null;
+
+            public static ?self $staticInstance = null;
+
+            public ?B $foo;
+
+            public function a() {}
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class A
+        {
+            public string $name;
+            public ?self $instance = null;
+            public static ?self $staticInstance = null;
+            public ?B $foo;
+            public function a()
+            {
+            }
+        }
+
+        PHP,
+
+    'Declaration in the global namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        expectedRecordedClasses: [
             ['A', 'Humbug\A'],
         ],
-        'payload' => <<<'PHP'
-        <?php
-        
-        class A {
-            public string $name;
-            
-            public ?B $foo;
-        
-            public function a() {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug;
-        
-        class A
-        {
-            public string $name;
-            public ?B $foo;
-            public function a()
-            {
+        spec: <<<'PHP'
+            <?php
+
+            class A {
+                public string $name;
+
+                public ?B $foo;
+
+                public function a() {}
             }
-        }
-        \class_alias('Humbug\\A', 'A', \false);
-        
-        PHP,
-    ],
+            ----
+            <?php
+
+            namespace Humbug;
+
+            class A
+            {
+                public string $name;
+                public ?B $foo;
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\A', 'A', \false);
+
+            PHP,
+    ),
 
     'Declaration in a namespace' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    class A
-    {
-        public string $name;
-        public ?self $instance = null;
-        public static ?self $staticInstance = null;
-        public ?B $foo;
-        public function a()
-        {
-        }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    class A
-    {
-        public string $name;
-        public ?self $instance = null;
-        public static ?self $staticInstance = null;
-        public ?B $foo;
-        public function a()
-        {
-        }
-    }
-    
-    PHP,
+        <?php
 
-    'Declaration in a namespace with global classes exposed' => [
-        'expose-global-classes' => true,
-        'payload' => <<<'PHP'
-        <?php
-        
         namespace Foo;
-        
-        class A {
-            public string $name;
-            public ?B $foo;
-            public function a() {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
+
         class A
         {
             public string $name;
+            public ?self $instance = null;
+            public static ?self $staticInstance = null;
             public ?B $foo;
             public function a()
             {
             }
         }
-        
-        PHP,
-    ],
+        ----
+        <?php
 
-    'Declaration of a namespaced exposed class' => [
-        'expose-classes' => [
+        namespace Humbug\Foo;
+
+        class A
+        {
+            public string $name;
+            public ?self $instance = null;
+            public static ?self $staticInstance = null;
+            public ?B $foo;
+            public function a()
+            {
+            }
+        }
+
+        PHP,
+
+    'Declaration in a namespace with global classes exposed' => SpecWithConfig::create(
+        exposeGlobalClasses: true,
+        spec: <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            class A {
+                public string $name;
+                public ?B $foo;
+                public function a() {}
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
+            {
+                public string $name;
+                public ?B $foo;
+                public function a()
+                {
+                }
+            }
+
+            PHP,
+    ),
+
+    'Declaration of a namespaced exposed class' => SpecWithConfig::create(
+        exposeClasses: [
             'Foo\A',
             'Foo\B',
         ],
-        'expected-recorded-classes' => [
+        expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],
-        'payload' => <<<'PHP'
+        spec: <<<'PHP'
+            <?php
+
+            namespace Foo;
+
+            class A {
+                public string $name;
+                public ?B $foo;
+                public function a() {}
+            }
+            ----
+            <?php
+
+            namespace Humbug\Foo;
+
+            class A
+            {
+                public string $name;
+                public ?B $foo;
+                public function a()
+                {
+                }
+            }
+            \class_alias('Humbug\Foo\A', 'Foo\A', \false);
+
+            PHP,
+    ),
+
+    'Declaration in a namespace with use statements' => <<<'PHP'
         <?php
-        
+
         namespace Foo;
-        
-        class A {
-            public string $name;
-            public ?B $foo;
-            public function a() {}
-        }
-        ----
-        <?php
-        
-        namespace Humbug\Foo;
-        
+
+        use Bar\C;
+        use DateTimeImmutable;
+
         class A
         {
             public string $name;
             public ?B $foo;
+            public ?C $foo;
+            public ?DateTimeImmutable $bar;
+            public ?Closure $baz;
             public function a()
             {
             }
         }
-        \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
-        
-        PHP,
-    ],
+        ----
+        <?php
 
-    'Declaration in a namespace with use statements' => <<<'PHP'
-    <?php
-    
-    namespace Foo;
-    
-    use Bar\C;
-    use DateTimeImmutable;
-    
-    class A
-    {
-        public string $name;
-        public ?B $foo;
-        public ?C $foo;
-        public ?DateTimeImmutable $bar;
-        public ?Closure $baz;
-        public function a()
+        namespace Humbug\Foo;
+
+        use Humbug\Bar\C;
+        use DateTimeImmutable;
+        class A
         {
+            public string $name;
+            public ?B $foo;
+            public ?C $foo;
+            public ?DateTimeImmutable $bar;
+            public ?Closure $baz;
+            public function a()
+            {
+            }
         }
-    }
-    ----
-    <?php
-    
-    namespace Humbug\Foo;
-    
-    use Humbug\Bar\C;
-    use DateTimeImmutable;
-    class A
-    {
-        public string $name;
-        public ?B $foo;
-        public ?C $foo;
-        public ?DateTimeImmutable $bar;
-        public ?Closure $baz;
-        public function a()
-        {
-        }
-    }
-    
-    PHP,
+
+        PHP,
 ];

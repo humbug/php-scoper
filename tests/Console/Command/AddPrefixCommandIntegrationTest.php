@@ -20,6 +20,8 @@ use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
+use PHPUnit\Framework\Attributes\CoversNothing;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use function array_reduce;
@@ -34,12 +36,10 @@ use function str_replace;
 use const DIRECTORY_SEPARATOR;
 
 /**
- * @coversNothing
- *
- * @group integration
- *
  * @internal
  */
+#[Group('integration')]
+#[CoversNothing]
 class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppTesterTestCase
 {
     use AppTesterAbilities;
@@ -145,24 +145,11 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
             EOF;
 
-        $extraNormalization = static fn (string $display) => str_replace(
-            [
-                '
- 1/4 [▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░]  25%',
-                '
- 2/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░]  50%',
-                '
- 3/4 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░]  75%',
-            ],
-            ['', '', ''],
-            $display,
-        );
-
         $this->assertExpectedOutput(
             $expected,
             0,
             $this->createDisplayNormalizer(),
-            $extraNormalization,
+            self::replaceIntermediateProgressBarSteps(...),
         );
     }
 
@@ -195,7 +182,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
             PhpScoper version TestVersion 28/01/2020
 
-             * [NO] /path/to/composer/installed.json
+             * [OK] /path/to/composer/installed.json
              * [OK] /path/to/executable-file.php
              * [OK] /path/to/file.php
              * [NO] /path/to/invalid-file.php
@@ -245,19 +232,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
 
             PhpScoper version TestVersion 28/01/2020
 
-             * [NO] /path/to/composer/installed.json
-            	Could not parse the file "/path/to/composer/installed.json".: InvalidArgumentException
-            Stack trace:
-            #0
-            #1
-            #2
-            #3
-            #4
-            #5
-            #6
-            #7
-            #8
-            #9
+             * [OK] /path/to/composer/installed.json
              * [OK] /path/to/executable-file.php
              * [OK] /path/to/file.php
              * [NO] /path/to/invalid-file.php
@@ -359,6 +334,32 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
                 return $collectedFiles;
             },
             [],
+        );
+    }
+
+    private static function replaceIntermediateProgressBarSteps(string $output): string
+    {
+        return str_replace(
+            [
+                <<<'EOF'
+
+                     1/5 [▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░]  20%
+                    EOF,
+                <<<'EOF'
+
+                     2/5 [▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░]  40%
+                    EOF,
+                <<<'EOF'
+
+                     3/5 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░]  60%
+                    EOF,
+                <<<'EOF'
+
+                     4/5 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░]  80%
+                    EOF,
+            ],
+            ['', '', ''],
+            $output,
         );
     }
 }

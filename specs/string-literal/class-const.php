@@ -12,54 +12,38 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+
 return [
-    'meta' => [
-        'title' => 'String literal assigned as a class constant',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'String literal assigned as a class constant',
+    ),
 
     'FQCN string argument' => <<<'PHP'
-    <?php
-    
-    class Foo {
-        const X = 'Symfony\\Component\\Yaml\\Ya_1';
-        const X = '\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        
-        const X = 'HelloWorld';
-    }
-    
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        const X = 'HelloWorld';
-    }
-    
-    PHP,
+        <?php
+
+        class Foo {
+            const X = 'Symfony\\Component\\Yaml\\Ya_1';
+            const X = '\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            const X = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+
+            const X = 'HelloWorld';
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            const X = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            const X = 'HelloWorld';
+        }
+
+        PHP,
 ];

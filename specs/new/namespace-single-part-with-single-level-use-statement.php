@@ -12,80 +12,64 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+use Humbug\PhpScoper\SpecFramework\Config\Meta;
+
 return [
-    'meta' => [
-        'title' => 'New statement call of a class belonging to the global namespace which has been imported with a use statement in a namespace',
-        // Default values. If not specified will be the one used
-        'prefix' => 'Humbug',
-
-        'expose-global-constants' => false,
-        'expose-global-classes' => false,
-        'expose-global-functions' => false,
-        'expose-namespaces' => [],
-        'expose-constants' => [],
-        'expose-classes' => [],
-        'expose-functions' => [],
-
-        'exclude-namespaces' => [],
-        'exclude-constants' => [],
-        'exclude-classes' => [],
-        'exclude-functions' => [],
-
-        'expected-recorded-classes' => [],
-        'expected-recorded-functions' => [],
-    ],
+    'meta' => new Meta(
+        title: 'New statement call of a class belonging to the global namespace which has been imported with a use statement in a namespace',
+    ),
 
     'New statement call of a class' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        use Foo;
-        
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            use Foo;
+
+            new Foo();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\Foo;
         new Foo();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\Foo;
-    new Foo();
-    
-    PHP,
+
+        PHP,
 
     'FQ new statement call of a class' => <<<'PHP'
-    <?php
-    
-    namespace {
-        class Foo {}
-    }
-    
-    namespace A {
-        use Foo;
-        
-        new \Foo();
-    }
-    ----
-    <?php
-    
-    namespace Humbug;
-    
-    class Foo
-    {
-    }
-    namespace Humbug\A;
-    
-    use Humbug\Foo;
-    new \Humbug\Foo();
-    
-    PHP,
+        <?php
+
+        namespace {
+            class Foo {}
+        }
+
+        namespace A {
+            use Foo;
+
+            new \Foo();
+        }
+        ----
+        <?php
+
+        namespace Humbug;
+
+        class Foo
+        {
+        }
+        namespace Humbug\A;
+
+        use Humbug\Foo;
+        new \Humbug\Foo();
+
+        PHP,
 ];

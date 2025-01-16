@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\Scoper;
 
 use Humbug\PhpScoper\Patcher\DummyPatcher;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -22,10 +23,9 @@ use Prophecy\Prophecy\ObjectProphecy;
 use function is_a;
 
 /**
- * @covers \Humbug\PhpScoper\Scoper\PatchScoper
- *
  * @internal
  */
+#[CoversClass(PatchScoper::class)]
 class PatchScoperTest extends TestCase
 {
     use ProphecyTrait;
