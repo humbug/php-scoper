@@ -262,7 +262,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         }
 
         if ('method_exists' === $functionName) {
-            $isFirstArgument = $functionNode->args[0]->value === $string;
+            $firstArgument = $functionNode->args[0];
+            $isFirstArgument = $firstArgument instanceof Arg
+                && $firstArgument->value === $string;
 
             if ($isFirstArgument) {
                 return $this->enrichedReflector->isClassExcluded($normalizedValue)
