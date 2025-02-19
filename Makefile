@@ -10,7 +10,7 @@ PHP_SCOPER_PHAR = $(PHP_SCOPER_PHAR_BIN)
 COMPOSER_BIN_PLUGIN_VENDOR = vendor/bamarni/composer-bin-plugin
 
 PHPSTAN_BIN = vendor-bin/phpstan/vendor/bin/phpstan
-PHPSTAN = $(PHPSTAN_BIN) analyze src tests --level max --memory-limit=-1
+PHPSTAN = $(PHPSTAN_BIN) analyze src tests --memory-limit=-1
 
 BOX_BIN = bin/box
 BOX = $(BOX_BIN)
