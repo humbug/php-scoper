@@ -212,11 +212,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $newNode->class;
 
-        if (!($class instanceof Name)) {
-            throw UnexpectedParsingScenario::create();
-        }
-
-        if (in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
+        if ($class instanceof Name
+            && in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)
+        ) {
+            // Value cannot be a class name, hence we should not try to prefix it.
             return $string;
         }
 
