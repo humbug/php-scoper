@@ -268,9 +268,9 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
                 return $this->enrichedReflector->isClassExcluded($normalizedValue)
                     ? $string
                     : $this->createPrefixedString($string);
-            } else {
-                return $string;
             }
+
+            return $string;
         }
 
         return $this->enrichedReflector->isClassExcluded($normalizedValue)

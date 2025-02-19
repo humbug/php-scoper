@@ -502,7 +502,7 @@ return [
             class_alias(\Swift::class, \Mailer::class);
             class_alias(\Humbug\Swift::class, \Mailer::class);
             class_alias(\DateTime::class, \DateTimeInterface::class);
-            
+
             method_exists($swift, $swift);
             method_exists(\Swift::class, 'Acme\ClassLike');
             method_exists(\Humbug\Swift::class, 'Acme\ClassLike');
@@ -554,7 +554,7 @@ return [
         <?php
 
         namespace Grpc;
-        
+
         class BaseStub
         {
             function __construct()
@@ -565,14 +565,14 @@ return [
                         dirname(__FILE__).'/../../etc/roots.pem'
                     );
                     ChannelCredentials::setDefaultRootsPem($ssl_roots);
-                }            
+                }
             }
         }
         ----
         <?php
 
         namespace Humbug\Grpc;
-        
+
         class BaseStub
         {
             function __construct()
