@@ -14,7 +14,7 @@
 
     "files-bin": [
         "res/scoper.inc.php.tpl",
-        "vendor-hotfix/.gitkeep",
+        "vendor-hotfix/.gitkeep"
     ],
 
     "git": "git_version_placeholder",
