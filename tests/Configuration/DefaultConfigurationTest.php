@@ -30,6 +30,8 @@ use function class_exists;
 #[CoversNothing]
 final class DefaultConfigurationTest extends TestCase
 {
+    private const TEMPLATE_PATH = __DIR__.'/../../res/scoper.inc.php.tpl';
+
     private ConfigurationFactory $configurationFactory;
 
     protected function setUp(): void
@@ -43,9 +45,7 @@ final class DefaultConfigurationTest extends TestCase
 
     public function test_the_template_file_is_in_sync_with_the_default_configuration(): void
     {
-        $templateConfiguration = $this->configurationFactory->create(
-            __DIR__.'/../../src/scoper.inc.php.tpl',
-        );
+        $templateConfiguration = $this->configurationFactory->create(self::TEMPLATE_PATH);
 
         $defaultConfiguration = $this->configurationFactory->create();
 

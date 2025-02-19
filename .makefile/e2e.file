@@ -41,7 +41,7 @@ e2e_013: $(PHP_SCOPER_PHAR_BIN)
 
 	$(PHP_SCOPER_PHAR_BIN) init --working-dir=build/set013 --no-interaction
 
-	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
+	diff res/scoper.inc.php.tpl build/set013/scoper.inc.php
 
 .PHONY: e2e_014
 e2e_014: # Runs end-to-end tests for the fixture set 014 — Codebase with PSR-0 autoloading
