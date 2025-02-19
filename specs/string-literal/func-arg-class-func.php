@@ -44,6 +44,7 @@ return [
         is_subclass_of('Mailer', 'DateTime');
         is_subclass_of('\\Mailer', '\\DateTime');
 
+        interface_exists($swift);
         interface_exists('Swift');
         interface_exists('\\Swift');
         interface_exists('Humbug\\Swift');
@@ -51,6 +52,7 @@ return [
         interface_exists('DateTime');
         interface_exists('\\DateTime');
 
+        class_exists($swift);
         class_exists('Swift');
         class_exists('\\Swift');
         class_exists('Humbug\\Swift');
@@ -58,6 +60,7 @@ return [
         class_exists('DateTime');
         class_exists('\\DateTime');
 
+        trait_exists($swift);
         trait_exists('Swift');
         trait_exists('\\Swift');
         trait_exists('Humbug\\Swift');
@@ -65,12 +68,21 @@ return [
         trait_exists('DateTime');
         trait_exists('\\DateTime');
 
+        class_alias($swift, $swift);
         class_alias('Swift', 'Mailer');
         class_alias('\\Swift', '\\Mailer');
         class_alias('Humbug\Swift', 'Mailer');
         class_alias('\\Humbug\\Swift', '\\Mailer');
         class_alias('DateTime', 'DateTimeInterface');
         class_alias('\\DateTime', '\\DateTimeInterface');
+
+        method_exists($swift, $swift);
+        method_exists('Swift', 'Acme\ClassLike');
+        method_exists('\\Swift', 'Acme\ClassLike');
+        method_exists('Humbug\Swift', 'Acme\ClassLike');
+        method_exists('\\Humbug\\Swift', 'Acme\ClassLike');
+        method_exists('DateTime', 'Acme\ClassLike');
+        method_exists('\\DateTime', 'Acme\ClassLike');
 
         ----
         <?php
@@ -96,30 +108,41 @@ return [
         \is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
         \is_subclass_of('Humbug\Mailer', 'DateTime');
         \is_subclass_of('Humbug\Mailer', '\DateTime');
+        \interface_exists($swift);
         \interface_exists('Humbug\Swift');
         \interface_exists('Humbug\Swift');
         \interface_exists('Humbug\Swift');
         \interface_exists('Humbug\Swift');
         \interface_exists('DateTime');
         \interface_exists('\DateTime');
+        \class_exists($swift);
         \class_exists('Humbug\Swift');
         \class_exists('Humbug\Swift');
         \class_exists('Humbug\Swift');
         \class_exists('Humbug\Swift');
         \class_exists('DateTime');
         \class_exists('\DateTime');
+        \trait_exists($swift);
         \trait_exists('Humbug\Swift');
         \trait_exists('Humbug\Swift');
         \trait_exists('Humbug\Swift');
         \trait_exists('Humbug\Swift');
         \trait_exists('DateTime');
         \trait_exists('\DateTime');
+        \class_alias($swift, $swift);
         \class_alias('Humbug\Swift', 'Humbug\Mailer');
         \class_alias('Humbug\Swift', 'Humbug\Mailer');
         \class_alias('Humbug\Swift', 'Humbug\Mailer');
         \class_alias('Humbug\Swift', 'Humbug\Mailer');
         \class_alias('DateTime', 'DateTimeInterface');
         \class_alias('\DateTime', '\DateTimeInterface');
+        \method_exists($swift, $swift);
+        \method_exists('Humbug\Swift', 'Acme\ClassLike');
+        \method_exists('Humbug\Swift', 'Acme\ClassLike');
+        \method_exists('Humbug\Swift', 'Acme\ClassLike');
+        \method_exists('Humbug\Swift', 'Acme\ClassLike');
+        \method_exists('DateTime', 'Acme\ClassLike');
+        \method_exists('\DateTime', 'Acme\ClassLike');
 
         PHP,
 
@@ -142,25 +165,35 @@ return [
             is_subclass_of('\Humbug\Mailer', '\Humbug\Swift');
             is_subclass_of('Mailer', 'DateTime');
 
+            interface_exists($swift);
             interface_exists('Swift');
             interface_exists('Humbug\Swift');
             interface_exists('\Humbug\Swift');
             interface_exists('DateTime');
 
+            class_exists($swift);
             class_exists('Swift');
             class_exists('Humbug\Swift');
             class_exists('\Humbug\Swift');
             class_exists('DateTime');
 
+            trait_exists($swift);
             trait_exists('Swift');
             trait_exists('Humbug\Swift');
             trait_exists('\Humbug\Swift');
             trait_exists('DateTime');
 
+            class_alias($swift, $swift);
             class_alias('Swift', 'Mailer');
             class_alias('Humbug\Swift', 'Mailer');
             class_alias('\Humbug\Swift', 'Mailer');
             class_alias('DateTime', 'DateTimeInterface');
+
+            method_exists($swift, $swift);
+            method_exists('Swift', 'Acme\ClassLike');
+            method_exists('Humbug\Swift', 'Acme\ClassLike');
+            method_exists('\Humbug\Swift', 'Acme\ClassLike');
+            method_exists('DateTime', 'Acme\ClassLike');
 
             ----
             <?php
@@ -179,22 +212,31 @@ return [
             \is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
             \is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
             \is_subclass_of('Humbug\Mailer', 'DateTime');
+            \interface_exists($swift);
             \interface_exists('Humbug\Swift');
             \interface_exists('Humbug\Swift');
             \interface_exists('Humbug\Swift');
             \interface_exists('DateTime');
+            \class_exists($swift);
             \class_exists('Humbug\Swift');
             \class_exists('Humbug\Swift');
             \class_exists('Humbug\Swift');
             \class_exists('DateTime');
+            \trait_exists($swift);
             \trait_exists('Humbug\Swift');
             \trait_exists('Humbug\Swift');
             \trait_exists('Humbug\Swift');
             \trait_exists('DateTime');
+            \class_alias($swift, $swift);
             \class_alias('Humbug\Swift', 'Humbug\Mailer');
             \class_alias('Humbug\Swift', 'Humbug\Mailer');
             \class_alias('Humbug\Swift', 'Humbug\Mailer');
             \class_alias('DateTime', 'DateTimeInterface');
+            \method_exists($swift, $swift);
+            \method_exists('Humbug\Swift', 'Acme\ClassLike');
+            \method_exists('Humbug\Swift', 'Acme\ClassLike');
+            \method_exists('Humbug\Swift', 'Acme\ClassLike');
+            \method_exists('DateTime', 'Acme\ClassLike');
 
             PHP,
     ),
@@ -212,7 +254,7 @@ return [
             is_a($swift, '\\Humbug\\Swift');
             is_a($swift, 'DateTime');
 
-            is_subclass_of($swift, 'Swift');
+            is_subclass_of($swift, $swift);
             is_subclass_of($swift, 'Humbug\Swift');
             is_subclass_of($swift, '\Humbug\Swift');
             is_subclass_of($swift, 'DateTime');
@@ -221,25 +263,35 @@ return [
             is_subclass_of('\Humbug\Mailer', '\Humbug\Swift');
             is_subclass_of('Mailer', 'DateTime');
 
+            interface_exists($swift);
             interface_exists('Swift');
             interface_exists('Humbug\Swift');
             interface_exists('\Humbug\Swift');
             interface_exists('DateTime');
 
+            class_exists($swift);
             class_exists('Swift');
             class_exists('Humbug\Swift');
             class_exists('\Humbug\Swift');
             class_exists('DateTime');
 
+            trait_exists($swift);
             trait_exists('Swift');
             trait_exists('Humbug\Swift');
             trait_exists('\Humbug\Swift');
             trait_exists('DateTime');
 
+            class_alias($swift, $swift);
             class_alias('Swift', 'Mailer');
             class_alias('Humbug\Swift', 'Mailer');
             class_alias('\Humbug\Swift', 'Mailer');
             class_alias('DateTime', 'DateTimeInterface');
+
+            method_exists($swift, $swift);
+            method_exists('Swift', 'Acme\ClassLike');
+            method_exists('Humbug\Swift', 'Acme\ClassLike');
+            method_exists('\Humbug\Swift', 'Acme\ClassLike');
+            method_exists('DateTime', 'Acme\ClassLike');
 
             ----
             <?php
@@ -249,7 +301,7 @@ return [
                 \is_a($swift, 'Humbug\Swift');
                 \is_a($swift, 'Humbug\Swift');
                 \is_a($swift, 'DateTime');
-                \is_subclass_of($swift, 'Swift');
+                \is_subclass_of($swift, $swift);
                 \is_subclass_of($swift, 'Humbug\Swift');
                 \is_subclass_of($swift, 'Humbug\Swift');
                 \is_subclass_of($swift, 'DateTime');
@@ -257,22 +309,31 @@ return [
                 \is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
                 \is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
                 \is_subclass_of('Mailer', 'DateTime');
+                \interface_exists($swift);
                 \interface_exists('Swift');
                 \interface_exists('Humbug\Swift');
                 \interface_exists('Humbug\Swift');
                 \interface_exists('DateTime');
+                \class_exists($swift);
                 \class_exists('Swift');
                 \class_exists('Humbug\Swift');
                 \class_exists('Humbug\Swift');
                 \class_exists('DateTime');
+                \trait_exists($swift);
                 \trait_exists('Swift');
                 \trait_exists('Humbug\Swift');
                 \trait_exists('Humbug\Swift');
                 \trait_exists('DateTime');
+                \class_alias($swift, $swift);
                 \class_alias('Swift', 'Mailer');
                 \class_alias('Humbug\Swift', 'Mailer');
                 \class_alias('Humbug\Swift', 'Mailer');
                 \class_alias('DateTime', 'DateTimeInterface');
+                \method_exists($swift, $swift);
+                \method_exists('Swift', 'Acme\ClassLike');
+                \method_exists('Humbug\Swift', 'Acme\ClassLike');
+                \method_exists('Humbug\Swift', 'Acme\ClassLike');
+                \method_exists('DateTime', 'Acme\ClassLike');
             }
 
             PHP,
@@ -288,6 +349,7 @@ return [
             is_a($swift, '\\Humbug\\Swift');
             is_a($swift, 'DateTime');
 
+            is_subclass_of($swift, $swift);
             is_subclass_of($swift, 'Swift');
             is_subclass_of($swift, 'Humbug\Swift');
             is_subclass_of($swift, '\Humbug\Swift');
@@ -297,25 +359,35 @@ return [
             is_subclass_of('\Humbug\Mailer', '\Humbug\Swift');
             is_subclass_of('Mailer', 'DateTime');
 
+            interface_exists($swift);
             interface_exists('Swift');
             interface_exists('Humbug\Swift');
             interface_exists('\Humbug\Swift');
             interface_exists('DateTime');
 
+            class_exists($swift);
             class_exists('Swift');
             class_exists('Humbug\Swift');
             class_exists('\Humbug\Swift');
             class_exists('DateTime');
 
+            trait_exists($swift);
             trait_exists('Swift');
             trait_exists('Humbug\Swift');
             trait_exists('\Humbug\Swift');
             trait_exists('DateTime');
 
+            class_alias($swift, $swift);
             class_alias('Swift', 'Mailer');
             class_alias('Humbug\Swift', 'Mailer');
             class_alias('\Humbug\Swift', 'Mailer');
             class_alias('DateTime', 'DateTimeInterface');
+
+            method_exists($swift, $swift);
+            method_exists('Swift', 'Acme\ClassLike');
+            method_exists('Humbug\Swift', 'Acme\ClassLike');
+            method_exists('\Humbug\Swift', 'Acme\ClassLike');
+            method_exists('DateTime', 'Acme\ClassLike');
 
             ----
             <?php
@@ -326,6 +398,7 @@ return [
             \is_a($swift, 'Humbug\Swift');
             \is_a($swift, 'Humbug\Swift');
             \is_a($swift, 'DateTime');
+            \is_subclass_of($swift, $swift);
             \is_subclass_of($swift, 'Humbug\Swift');
             \is_subclass_of($swift, 'Humbug\Swift');
             \is_subclass_of($swift, 'Humbug\Swift');
@@ -334,22 +407,31 @@ return [
             \is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
             \is_subclass_of('Humbug\Mailer', 'Humbug\Swift');
             \is_subclass_of('Humbug\Mailer', 'DateTime');
+            \interface_exists($swift);
             \interface_exists('Humbug\Swift');
             \interface_exists('Humbug\Swift');
             \interface_exists('Humbug\Swift');
             \interface_exists('DateTime');
+            \class_exists($swift);
             \class_exists('Humbug\Swift');
             \class_exists('Humbug\Swift');
             \class_exists('Humbug\Swift');
             \class_exists('DateTime');
+            \trait_exists($swift);
             \trait_exists('Humbug\Swift');
             \trait_exists('Humbug\Swift');
             \trait_exists('Humbug\Swift');
             \trait_exists('DateTime');
+            \class_alias($swift, $swift);
             \class_alias('Humbug\Swift', 'Humbug\Mailer');
             \class_alias('Humbug\Swift', 'Humbug\Mailer');
             \class_alias('Humbug\Swift', 'Humbug\Mailer');
             \class_alias('DateTime', 'DateTimeInterface');
+            \method_exists($swift, $swift);
+            \method_exists('Humbug\Swift', 'Acme\ClassLike');
+            \method_exists('Humbug\Swift', 'Acme\ClassLike');
+            \method_exists('Humbug\Swift', 'Acme\ClassLike');
+            \method_exists('DateTime', 'Acme\ClassLike');
 
             PHP,
     ),
@@ -364,6 +446,7 @@ return [
         class_exists('Swift'.'');
         trait_exists('Swift'.'');
         class_alias('Swift'.'', 'Mailer'.'');
+        method_exists('Swift'.'', 'Mailer'.'');
 
         ----
         <?php
@@ -377,6 +460,7 @@ return [
         \class_exists('Swift' . '');
         \trait_exists('Swift' . '');
         \class_alias('Swift' . '', 'Mailer' . '');
+        \method_exists('Swift' . '', 'Mailer' . '');
 
         PHP,
 
@@ -399,21 +483,30 @@ return [
             is_subclass_of(\Humbug\Mailer::class, \Humbug\Swift::class);
             is_subclass_of(\Mailer::class, \DateTime::class);
 
+            interface_exists($swift);
             interface_exists(\Swift::class);
             interface_exists(\Humbug\Swift::class);
             interface_exists(\DateTime::class);
 
+            class_exists($swift);
             class_exists(\Swift::class);
             class_exists(\Humbug\Swift::class);
             class_exists(\DateTime::class);
 
+            trait_exists($swift);
             trait_exists(\Swift::class);
             trait_exists(\Humbug\Swift::class);
             trait_exists(\DateTime::class);
 
+            class_alias($swift, $swift);
             class_alias(\Swift::class, \Mailer::class);
             class_alias(\Humbug\Swift::class, \Mailer::class);
             class_alias(\DateTime::class, \DateTimeInterface::class);
+            
+            method_exists($swift, $swift);
+            method_exists(\Swift::class, 'Acme\ClassLike');
+            method_exists(\Humbug\Swift::class, 'Acme\ClassLike');
+            method_exists(\DateTime::class, 'Acme\ClassLike');
         }
         ----
         <?php
@@ -434,18 +527,62 @@ return [
         \is_subclass_of(\Humbug\Mailer::class, \Humbug\Swift::class);
         \is_subclass_of(\Humbug\Mailer::class, \Humbug\Swift::class);
         \is_subclass_of(\Humbug\Mailer::class, \DateTime::class);
+        \interface_exists($swift);
         \interface_exists(\Humbug\Swift::class);
         \interface_exists(\Humbug\Swift::class);
         \interface_exists(\DateTime::class);
+        \class_exists($swift);
         \class_exists(\Humbug\Swift::class);
         \class_exists(\Humbug\Swift::class);
         \class_exists(\DateTime::class);
+        \trait_exists($swift);
         \trait_exists(\Humbug\Swift::class);
         \trait_exists(\Humbug\Swift::class);
         \trait_exists(\DateTime::class);
+        \class_alias($swift, $swift);
         \class_alias(\Humbug\Swift::class, \Humbug\Mailer::class);
         \class_alias(\Humbug\Swift::class, \Humbug\Mailer::class);
         \class_alias(\DateTime::class, \DateTimeInterface::class);
+        \method_exists($swift, $swift);
+        \method_exists(\Humbug\Swift::class, 'Acme\ClassLike');
+        \method_exists(\Humbug\Swift::class, 'Acme\ClassLike');
+        \method_exists(\DateTime::class, 'Acme\ClassLike');
+
+        PHP,
+
+    'Regression test' => <<<'PHP'
+        <?php
+
+        namespace Grpc;
+        
+        class BaseStub
+        {
+            function __construct()
+            {
+                if (!method_exists('Grpc\ChannelCredentials', 'isDefaultRootsPemSet') ||
+                    !ChannelCredentials::isDefaultRootsPemSet()) {
+                    $ssl_roots = file_get_contents(
+                        dirname(__FILE__).'/../../etc/roots.pem'
+                    );
+                    ChannelCredentials::setDefaultRootsPem($ssl_roots);
+                }            
+            }
+        }
+        ----
+        <?php
+
+        namespace Humbug\Grpc;
+        
+        class BaseStub
+        {
+            function __construct()
+            {
+                if (!method_exists('Grpc\ChannelCredentials', 'isDefaultRootsPemSet') || !ChannelCredentials::isDefaultRootsPemSet()) {
+                    $ssl_roots = file_get_contents(dirname(__FILE__) . '/../../etc/roots.pem');
+                    ChannelCredentials::setDefaultRootsPem($ssl_roots);
+                }
+            }
+        }
 
         PHP,
 ];

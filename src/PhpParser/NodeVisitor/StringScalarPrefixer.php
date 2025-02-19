@@ -82,6 +82,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'is_a',
         'is_callable',
         'is_subclass_of',
+        'method_exists',
         'spl_autoload_register',
         'trait_exists',
     ];
@@ -258,6 +259,18 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
             && $this->belongsToTheGlobalNamespace($string)
         ) {
             return $string;
+        }
+
+        if ('method_exists' === $functionName) {
+            $isFirstArgument = $functionNode->args[0]->value === $string;
+
+            if ($isFirstArgument) {
+                return $this->enrichedReflector->isClassExcluded($normalizedValue)
+                    ? $string
+                    : $this->createPrefixedString($string);
+            } else {
+                return $string;
+            }
         }
 
         return $this->enrichedReflector->isClassExcluded($normalizedValue)
