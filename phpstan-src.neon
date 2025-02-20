@@ -1,12 +1,11 @@
 parameters:
-    level: 5
+    level: 7
 
-    excludePaths:
-        - tests/Autoload/AutoloadDumperTest.php
+    reportUnmatchedIgnoredErrors: false
 
     ignoreErrors:
         - identifier: missingType.iterableValue
-        - identifier: missingType.generics
+          path: 'src/Scoper/Composer/AutoloadPrefixer.php'
         - message: '#Cannot cast array\<string\>\|string to string\.#'
           path: 'src/Patcher/SymfonyPatcher.php'
         - message: '#Parameter \#1 \$nodes of method PhpParser\\NodeTraverserInterface::traverse\(\) expects array\<PhpParser\\Node\>, array\<PhpParser\\Node\\Stmt\>\|null given\.#'
@@ -23,12 +22,6 @@ parameters:
           path: 'src/PhpParser/NodeVisitor/Resolver/OriginalNameResolver.php'
         - message: '#NamespaceManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/NamespaceStmt/NamespaceManipulator.php'
-        - message: '#Anonymous function should return string but returns array#'
-          path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
-        - message: '#AddPrefixCommandIntegrationTest\:\:getNormalizeDisplay\(\) should return string but returns array#'
-          path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
-        - message: '#ConfigurationKeysTest\:\:retrieveConfigurationKeys\(\) should return array#'
-          path: 'tests/Configuration/ConfigurationKeysTest.php'
         - message: '#Property .* does not accept#'
           path: 'src/PhpParser/NodeVisitor/UseStmt/UseStmtCollection.php'
         - message: '#::concat\(\) should return .+Name but returns .+\|null#'
@@ -47,18 +40,10 @@ parameters:
           path: 'src/Scoper/Symfony/YamlScoper.php'
         - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
           path: 'src/Scoper/SymfonyScoper.php'
-        - message: '#Class Isolated\\Symfony\\Component\\Finder\\Finder not found\.#'
-          path: 'tests/Configuration/DefaultConfigurationTest.php'
-        - message: '#Cannot access offset#'
-          path: 'tests/AutoReview/GAE2ECollector.php'
-        - message: '#normalizeSymbolsRegistryReference#'
-          path: 'tests/Console/Command/AddInspectCommandIntegrationTest.php'
         - message: '#unserialize#'
           path: 'src/Symbol/SymbolsRegistry.php'
         - message: '#Stmt\:\:\$stmts#'
           path: 'src/PhpParser/NodeVisitor/ClassAliasStmtAppender.php'
-        - message: '#PhpVersion::fromComponents#'
-          path: 'tests/SpecFramework/SpecScenario.php'
         # Fixed in https://github.com/nikic/PHP-Parser/pull/1003
         - message: '#Standard constructor expects array#'
           path: 'src/Container.php'
