@@ -69,6 +69,9 @@ final class SymfonyParentTraitPatcher implements Patcher
         return $this->replacement[$prefix];
     }
 
+    /**
+     * @return array{string, string, string, string}
+     */
     private static function generateReplacement(string $prefix): array
     {
         $prefixLength = strlen($prefix);

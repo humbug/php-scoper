@@ -125,6 +125,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             return $this->appendClassAliasStmtIfNecessary($stmts, $stmt);
         }
 
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         if (self::isNodeAStatementWithStatements($stmt)) {
             $this->updateStatements($stmt);
         }

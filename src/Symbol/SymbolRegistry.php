@@ -21,6 +21,7 @@ use function array_keys;
 use function array_map;
 use function array_pop;
 use function array_unique;
+use function array_values;
 use function explode;
 use function implode;
 use function ltrim;
@@ -44,8 +45,8 @@ final class SymbolRegistry
         array $regexes = []
     ): self {
         return new self(
-            self::normalizeNames($names),
-            array_unique($regexes),
+            array_values(self::normalizeNames($names)),
+            array_values(array_unique($regexes)),
             false,
         );
     }
@@ -62,8 +63,8 @@ final class SymbolRegistry
         array $regexes = []
     ): self {
         return new self(
-            self::normalizeConstantNames($names),
-            array_unique($regexes),
+            array_values(self::normalizeConstantNames($names)),
+            array_values(array_unique($regexes)),
             true,
         );
     }
@@ -143,13 +144,18 @@ final class SymbolRegistry
     /**
      * @internal
      *
-     * @erturn list<string>
+     * @return list<string>
      */
     public function getRegexes(): array
     {
         return $this->regexes;
     }
 
+    /**
+     * @param string[] $names
+     *
+     * @return string[]
+     */
     private static function normalizeNames(array $names): array
     {
         return array_map(
@@ -160,6 +166,11 @@ final class SymbolRegistry
         );
     }
 
+    /**
+     * @param string[] $names
+     *
+     * @return string[]
+     */
     private static function normalizeConstantNames(array $names): array
     {
         return array_map(

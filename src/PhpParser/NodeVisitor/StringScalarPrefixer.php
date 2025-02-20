@@ -139,7 +139,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function prefixStringScalar(String_ $string): String_
     {
-        if (!(ParentNodeAppender::hasParent($string) && is_string($string->value))
+        if (!(ParentNodeAppender::hasParent($string))
             || (
                 1 !== native_preg_match(self::CLASS_LIKE_PATTERN, $string->value)
                 && 1 !== native_preg_match(self::CONSTANT_FETCH_PATTERN, $string->value)

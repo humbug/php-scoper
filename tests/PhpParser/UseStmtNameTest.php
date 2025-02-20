@@ -25,6 +25,7 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeTraverser as PhpParserNodeTraverser;
 use PHPUnit\Framework\TestCase;
 use function Humbug\PhpScoper\create_parser;
+use function PHPStan\dumpType;
 use function sprintf;
 
 /**
@@ -211,7 +212,6 @@ final class UseStmtNameTest extends TestCase
         $traverser->traverse($statements);
 
         foreach ($useStatements as $useStmts) {
-            /** @var Use_[] $useStmts */
             foreach ($useStmts as $useStmt) {
                 foreach ($useStmt->uses as $useUse) {
                     return $useUse->name;

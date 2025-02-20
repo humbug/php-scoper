@@ -34,6 +34,12 @@ function get_php_scoper_version(): string
     return $prettyVersion.'@'.$shortCommitHash;
 }
 
+/**
+ * @template T
+ *
+ * @param iterable<T> ...$iterables
+ * @return Iterator<T>
+ */
 function chain(iterable ...$iterables): Iterator
 {
     foreach ($iterables as $iterable) {
