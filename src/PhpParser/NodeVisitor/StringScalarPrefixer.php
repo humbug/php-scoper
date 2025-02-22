@@ -41,7 +41,6 @@ use function array_values;
 use function explode;
 use function implode;
 use function in_array;
-use function is_string;
 use function ltrim;
 use function preg_match as native_preg_match;
 use function strtolower;

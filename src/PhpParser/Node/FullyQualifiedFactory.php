@@ -29,7 +29,7 @@ final class FullyQualifiedFactory
     /**
      * @param string|Name|string[]|null $name1
      * @param string|Name|string[]|null $name2
-     * @param Attributes|null $attributes
+     * @param Attributes|null           $attributes
      */
     public static function concat(
         array|Name|string|null $name1,

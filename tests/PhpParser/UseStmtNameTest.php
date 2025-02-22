@@ -25,7 +25,6 @@ use PhpParser\Node\Stmt\Use_;
 use PhpParser\NodeTraverser as PhpParserNodeTraverser;
 use PHPUnit\Framework\TestCase;
 use function Humbug\PhpScoper\create_parser;
-use function PHPStan\dumpType;
 use function sprintf;
 
 /**

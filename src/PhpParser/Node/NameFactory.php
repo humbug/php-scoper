@@ -28,7 +28,7 @@ final class NameFactory
     /**
      * @param string|Name|string[]|null $name1
      * @param string|Name|string[]|null $name2
-     * @param Attributes|null $attributes
+     * @param Attributes|null           $attributes
      */
     public static function concat(
         array|Name|string|null $name1,
@@ -47,7 +47,7 @@ final class NameFactory
     /**
      * @param string|string[]|Name|null $name1
      * @param string|string[]|Name|null $name2
-     * @param Attributes|null $attributes
+     * @param Attributes|null           $attributes
      *
      * @return Attributes
      */

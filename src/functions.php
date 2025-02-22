@@ -37,7 +37,7 @@ function get_php_scoper_version(): string
 /**
  * @template T
  *
- * @param iterable<T> ...$iterables
+ * @param  iterable<T> ...$iterables
  * @return Iterator<T>
  */
 function chain(iterable ...$iterables): Iterator

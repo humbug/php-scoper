@@ -24,7 +24,6 @@ use function gettype;
 use function is_array;
 use function is_bool;
 use function is_string;
-use function PHPStan\dumpType;
 use function sprintf;
 use function str_contains;
 use function strrpos;
@@ -161,7 +160,7 @@ final readonly class SymbolsConfigurationFactory
     }
 
     /**
-     * @param array<array-key, mixed> $config
+     * @param  array<array-key, mixed>           $config
      * @return array{list<string>, list<string>}
      */
     private function retrieveElements(array $config, string $key): array
