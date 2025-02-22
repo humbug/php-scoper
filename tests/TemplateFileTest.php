@@ -46,6 +46,7 @@ final class TemplateFileTest extends TestCase
         $template = file_get_contents(self::TEMPLATE_PATH);
 
         return preg_match_all('/\'(.*?)\' => .*/', $template, $matches)
+            /** @phpstan-ignore offsetAccess.notFound */
             ? $matches[1]
             : [];
     }

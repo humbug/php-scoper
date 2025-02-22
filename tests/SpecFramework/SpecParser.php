@@ -150,6 +150,7 @@ class SpecParser extends TestCase
             return null;
         }
 
+        /** @phpstan-ignore offsetAccess.notFound */
         $titlePosition = (int) $matches[0][1];
         $lineReturnCount = substr_count(
             substr($fileContents, 0, $titlePosition),
