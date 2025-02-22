@@ -141,10 +141,6 @@ final class UseStmtCollection implements IteratorAggregate
     {
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
-                if (!($useStatement instanceof UseUse)) {
-                    continue;
-                }
-
                 $type = Use_::TYPE_UNKNOWN !== $use_->type ? $use_->type : $useStatement->type;
 
                 if ($name !== $useStatement->getAlias()->toLowerString()) {

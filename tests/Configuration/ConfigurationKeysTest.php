@@ -72,9 +72,14 @@ final class ConfigurationKeysTest extends TestCase
             );
         }
 
+        self::assertIsList($constants);
+
         return $constants;
     }
 
+    /**
+     * @phpstan-assert non-empty-string $value
+     */
     private static function assertNonEmptyStringConstantValue(
         mixed $value,
         string $name

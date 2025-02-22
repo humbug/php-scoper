@@ -35,6 +35,9 @@ final readonly class SymbolsConfigurationFactory
     {
     }
 
+    /**
+     * @param array<array-key, mixed> $config
+     */
     public function createSymbolsConfiguration(array $config): SymbolsConfiguration
     {
         [
@@ -132,6 +135,9 @@ final readonly class SymbolsConfigurationFactory
         );
     }
 
+    /**
+     * @param array<array-key, mixed> $config
+     */
     private static function retrieveExposeGlobalSymbol(array $config, string $key): bool
     {
         if (!array_key_exists($key, $config)) {
@@ -154,6 +160,7 @@ final readonly class SymbolsConfigurationFactory
     }
 
     /**
+     * @param array<array-key, mixed> $config
      * @return array{list<string>, list<string>}
      */
     private function retrieveElements(array $config, string $key): array

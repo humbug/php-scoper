@@ -6,6 +6,9 @@ parameters:
     ignoreErrors:
         - identifier: missingType.iterableValue
           path: 'src/Scoper/Composer/AutoloadPrefixer.php'
+        - identifier: missingType.iterableValue
+          message: '#\$config#'
+          path: 'src/Configuration/ConfigurationFactory.php'
         - message: '#Cannot cast array\<string\>\|string to string\.#'
           path: 'src/Patcher/SymfonyPatcher.php'
         - message: '#Parameter \#1 \$nodes of method PhpParser\\NodeTraverserInterface::traverse\(\) expects array\<PhpParser\\Node\>, array\<PhpParser\\Node\\Stmt\>\|null given\.#'

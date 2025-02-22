@@ -135,6 +135,8 @@ final readonly class ConfigurationFactory
 
     /**
      * @throws InvalidConfigurationValue
+     *
+     * @phpstan-ignore missingType.iterableValue
      */
     private function loadConfigFile(string $path): array
     {
