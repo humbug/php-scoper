@@ -18,6 +18,7 @@ use function array_filter;
 use function array_map;
 use function array_pop;
 use function array_unique;
+use function array_values;
 use function count;
 use function explode;
 use function implode;
@@ -41,14 +42,18 @@ final readonly class NamespaceRegistry
         array $namespaceRegexes = []
     ): self {
         return new self(
-            array_unique(
-                array_map(
-                    static fn (string $namespaceName) => strtolower(trim($namespaceName, '\\')),
-                    $namespaceNames,
+            array_values(
+                array_unique(
+                    array_map(
+                        static fn (string $namespaceName) => strtolower(trim($namespaceName, '\\')),
+                        $namespaceNames,
+                    ),
+                    SORT_STRING,
                 ),
-                SORT_STRING,
             ),
-            array_unique($namespaceRegexes, SORT_STRING),
+            array_values(
+                array_unique($namespaceRegexes, SORT_STRING),
+            ),
         );
     }
 

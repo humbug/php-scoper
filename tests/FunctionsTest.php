@@ -44,6 +44,7 @@ class FunctionsTest extends TestCase
     #[DataProvider('provideGenerators')]
     public function test_it_can_chain_iterators(array $iterators, array $expected): void
     {
+        /** @phpstan-ignore argument.templateType */
         $actual = iterator_to_array(chain(...$iterators), true);
 
         self::assertSame($expected, $actual);

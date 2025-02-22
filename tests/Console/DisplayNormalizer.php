@@ -32,6 +32,7 @@ final class DisplayNormalizer
     public static function normalizeDirectorySeparators(string $display): string
     {
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\/path\/to(.*\\\\)+/', $display, $match)) {
+            /** @phpstan-ignore offsetAccess.notFound */
             $paths = $match[0];
             usort($paths, static fn ($a, $b) => strlen($b) - strlen($a));
             foreach ($paths as $path) {
@@ -46,6 +47,7 @@ final class DisplayNormalizer
     public static function normalizeProgressBar(string $display): string
     {
         if ('\\' === DIRECTORY_SEPARATOR && preg_match_all('/\\[=*>?\\-*\\]/', $display, $match)) {
+            /** @phpstan-ignore offsetAccess.notFound */
             $bars = $match[0];
             foreach ($bars as $bar) {
                 $fixedBar = str_replace(['>', '-', '='], ['░', '░', '▓'], $bar);

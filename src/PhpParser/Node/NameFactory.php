@@ -18,6 +18,9 @@ use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
 use PhpParser\Node\Name;
 
+/**
+ * @phpstan-type Attributes array<string, mixed>
+ */
 final class NameFactory
 {
     use NotInstantiable;
@@ -25,6 +28,7 @@ final class NameFactory
     /**
      * @param string|Name|string[]|null $name1
      * @param string|Name|string[]|null $name2
+     * @param Attributes|null           $attributes
      */
     public static function concat(
         array|Name|string|null $name1,
@@ -43,6 +47,9 @@ final class NameFactory
     /**
      * @param string|string[]|Name|null $name1
      * @param string|string[]|Name|null $name2
+     * @param Attributes|null           $attributes
+     *
+     * @return Attributes
      */
     public static function getConcatenatedNamesAttributes(
         string|array|Name|null $name1,

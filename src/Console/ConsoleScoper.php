@@ -299,6 +299,9 @@ final readonly class ConsoleScoper
         return $commonPath;
     }
 
+    /**
+     * @param string[] $outputFilePaths
+     */
     private static function findVendorDir(array $outputFilePaths): ?string
     {
         $vendorDirsAsKeys = [];

@@ -150,8 +150,13 @@ class PhpScoperSpecTest extends TestCase
 
         $lines = array_values(array_filter(explode("\n", $scenario->inputCode)));
 
-        $startLine = $error->getAttributes()['startLine'] - 1;
-        $endLine = $error->getAttributes()['endLine'] + 1;
+        $startLineAttribute = $error->getAttributes()['startLine'];
+        self::assertIsInt($startLineAttribute);
+        $endLineAttribute = $error->getAttributes()['endLine'];
+        self::assertIsInt($endLineAttribute);
+
+        $startLine = $startLineAttribute - 1;
+        $endLine = $endLineAttribute + 1;
 
         self::fail(
             sprintf(

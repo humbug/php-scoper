@@ -19,6 +19,9 @@ use InvalidArgumentException;
 use PhpParser\Node\Name;
 use PhpParser\Node\Name\FullyQualified;
 
+/**
+ * @phpstan-import-type Attributes from NameFactory
+ */
 final class FullyQualifiedFactory
 {
     use NotInstantiable;
@@ -26,6 +29,7 @@ final class FullyQualifiedFactory
     /**
      * @param string|Name|string[]|null $name1
      * @param string|Name|string[]|null $name2
+     * @param Attributes|null           $attributes
      */
     public static function concat(
         array|Name|string|null $name1,

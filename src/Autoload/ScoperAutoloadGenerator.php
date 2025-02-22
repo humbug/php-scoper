@@ -54,6 +54,9 @@ final class ScoperAutoloadGenerator
     /** @var non-empty-string */
     private static string $eol;
 
+    /**
+     * @param string[] $excludedComposerAutoloadFileHashes
+     */
     public function __construct(
         private readonly SymbolsRegistry $registry,
         private readonly array $excludedComposerAutoloadFileHashes,
