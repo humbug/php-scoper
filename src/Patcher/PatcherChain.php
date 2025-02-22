@@ -16,10 +16,13 @@ namespace Humbug\PhpScoper\Patcher;
 
 use function array_reduce;
 
+/**
+ * @phpstan-import-type PatcherCallable from Patcher
+ */
 final readonly class PatcherChain implements Patcher
 {
     /**
-     * @param array<(callable(string, string, string): string)|Patcher> $patchers
+     * @param array<PatcherCallable|Patcher> $patchers
      */
     public function __construct(private array $patchers = [])
     {
@@ -35,7 +38,7 @@ final readonly class PatcherChain implements Patcher
     }
 
     /**
-     * @return array<(callable(string, string, string): string)|Patcher>
+     * @return array<PatcherCallable|Patcher>
      */
     public function getPatchers(): array
     {

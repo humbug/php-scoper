@@ -51,6 +51,7 @@ final class ConfigurationKeysTest extends TestCase
             );
         }
 
+        /** @phpstan-ignore return.type */
         return array_values($publicConstants);
     }
 
@@ -74,6 +75,7 @@ final class ConfigurationKeysTest extends TestCase
 
         self::assertIsList($constants);
 
+        /** @phpstan-ignore return.type */
         return $constants;
     }
 

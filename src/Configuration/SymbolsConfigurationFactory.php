@@ -24,6 +24,7 @@ use function gettype;
 use function is_array;
 use function is_bool;
 use function is_string;
+use function PHPStan\dumpType;
 use function sprintf;
 use function str_contains;
 use function strrpos;
@@ -171,7 +172,7 @@ final readonly class SymbolsConfigurationFactory
 
         $symbolNamesAndRegexes = $config[$key];
 
-        self::assertIsArrayOfStrings($config[$key], $key);
+        self::assertIsArrayOfStrings($symbolNamesAndRegexes, $key);
 
         // Store the strings in the keys for avoiding a unique check later on
         $names = [];
@@ -239,7 +240,7 @@ final readonly class SymbolsConfigurationFactory
     }
 
     /**
-     * @psalm-assert string[] $value
+     * @phpstan-assert string[] $value
      */
     private static function assertIsArrayOfStrings(mixed $value, string $key): void
     {
