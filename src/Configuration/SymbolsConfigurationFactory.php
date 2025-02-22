@@ -35,6 +35,9 @@ final readonly class SymbolsConfigurationFactory
     {
     }
 
+    /**
+     * @param array<array-key, mixed> $config
+     */
     public function createSymbolsConfiguration(array $config): SymbolsConfiguration
     {
         [
@@ -132,6 +135,9 @@ final readonly class SymbolsConfigurationFactory
         );
     }
 
+    /**
+     * @param array<array-key, mixed> $config
+     */
     private static function retrieveExposeGlobalSymbol(array $config, string $key): bool
     {
         if (!array_key_exists($key, $config)) {
@@ -154,6 +160,7 @@ final readonly class SymbolsConfigurationFactory
     }
 
     /**
+     * @param  array<array-key, mixed>           $config
      * @return array{list<string>, list<string>}
      */
     private function retrieveElements(array $config, string $key): array
@@ -164,7 +171,7 @@ final readonly class SymbolsConfigurationFactory
 
         $symbolNamesAndRegexes = $config[$key];
 
-        self::assertIsArrayOfStrings($config[$key], $key);
+        self::assertIsArrayOfStrings($symbolNamesAndRegexes, $key);
 
         // Store the strings in the keys for avoiding a unique check later on
         $names = [];
@@ -232,7 +239,7 @@ final readonly class SymbolsConfigurationFactory
     }
 
     /**
-     * @psalm-assert string[] $value
+     * @phpstan-assert string[] $value
      */
     private static function assertIsArrayOfStrings(mixed $value, string $key): void
     {

@@ -65,6 +65,11 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     ) {
     }
 
+    /**
+     * @param Node[] $nodes
+     *
+     * @return Node[]
+     */
     public function afterTraverse(array $nodes): array
     {
         $this->traverseNodes($nodes);
@@ -125,6 +130,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
             return $this->appendClassAliasStmtIfNecessary($stmts, $stmt);
         }
 
+        /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         if (self::isNodeAStatementWithStatements($stmt)) {
             $this->updateStatements($stmt);
         }

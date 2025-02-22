@@ -25,6 +25,9 @@ final readonly class ComposerFileHasher
     private const ROOT_PACKAGE_NAME = '__root__';
     private const PACKAGE_PATH_REGEX = '~^%s/(?<vendor>[^/]+?/[^/]+?)/(?<path>.+?)$~';
 
+    /**
+     * @param string[] $filePaths
+     */
     public static function create(
         string $vendorDir,
         string $rootDir,
@@ -44,6 +47,9 @@ final readonly class ComposerFileHasher
         );
     }
 
+    /**
+     * @param string[] $filePaths
+     */
     public function __construct(
         private string $rootDir,
         private array $filePaths,

@@ -51,6 +51,9 @@ use function Safe\file_get_contents;
 use function trim;
 use const DIRECTORY_SEPARATOR;
 
+/**
+ * @phpstan-import-type PatcherCallable from Patcher
+ */
 final readonly class ConfigurationFactory
 {
     public const DEFAULT_FILE_NAME = 'scoper.inc.php';
@@ -135,6 +138,8 @@ final readonly class ConfigurationFactory
 
     /**
      * @throws InvalidConfigurationValue
+     *
+     * @phpstan-ignore missingType.iterableValue
      */
     private function loadConfigFile(string $path): array
     {
@@ -216,7 +221,7 @@ final readonly class ConfigurationFactory
     /**
      * @throws InvalidConfigurationValue
      *
-     * @return array<(callable(string,string,string): string)|Patcher>
+     * @return array<PatcherCallable|Patcher>
      */
     private static function retrievePatchers(array $config): array
     {
@@ -231,12 +236,24 @@ final readonly class ConfigurationFactory
         }
 
         foreach ($patchers as $index => $patcher) {
-            if (!is_callable($patcher)) {
-                throw InvalidConfigurationValue::forInvalidPatcherType($index, $patcher);
-            }
+            self::assertIsPatcher($patcher, $index);
         }
 
+        /** @phpstan-ignore return.type */
         return $patchers;
+    }
+
+    /**
+     * @phpstan-assert PatcherCallable|Patcher $patcher
+     *
+     * @throws InvalidConfigurationValue
+     */
+    private static function assertIsPatcher(mixed $patcher, int|string $index): void
+    {
+        /** @phpstan-ignore instanceof.alwaysFalse */
+        if (!is_callable($patcher) && !($patcher instanceof Patcher)) {
+            throw InvalidConfigurationValue::forInvalidPatcherType($index, $patcher);
+        }
     }
 
     /**
@@ -298,6 +315,7 @@ final readonly class ConfigurationFactory
             throw InvalidConfigurationValue::forInvalidFinderType($index, $finder);
         }
 
+        /** @phpstan-ignore return.type */
         return $finders;
     }
 

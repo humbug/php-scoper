@@ -150,9 +150,14 @@ class SpecParser extends TestCase
             return null;
         }
 
-        $titlePosition = $matches[0][1];
+        /** @phpstan-ignore offsetAccess.notFound */
+        $titlePosition = (int) $matches[0][1];
+        $lineReturnCount = substr_count(
+            substr($fileContents, 0, $titlePosition),
+            "\n",
+        );
 
-        return substr_count(substr($fileContents, 0, $titlePosition), "\n") + 1;
+        return $lineReturnCount + 1;
     }
 
     private static function createSymbolsConfiguration(
