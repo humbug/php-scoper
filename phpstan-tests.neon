@@ -1,14 +1,11 @@
 parameters:
     level: 9
 
-    reportUnmatchedIgnoredErrors: false
-
     excludePaths:
         - tests/Autoload/AutoloadDumperTest.php
 
     ignoreErrors:
         - identifier: missingType.iterableValue
-        - identifier: missingType.generics
         - identifier: assign.propertyType
         - message: '#Cannot cast array\<string\>\|string to string\.#'
           path: 'src/Patcher/SymfonyPatcher.php'
@@ -30,8 +27,6 @@ parameters:
           path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
         - message: '#AddPrefixCommandIntegrationTest\:\:getNormalizeDisplay\(\) should return string but returns array#'
           path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
-        - message: '#ConfigurationKeysTest\:\:retrieveConfigurationKeys\(\) should return array#'
-          path: 'tests/Configuration/ConfigurationKeysTest.php'
         - message: '#Property .* does not accept#'
           path: 'src/PhpParser/NodeVisitor/UseStmt/UseStmtCollection.php'
         - message: '#::concat\(\) should return .+Name but returns .+\|null#'

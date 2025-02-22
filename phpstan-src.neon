@@ -1,8 +1,6 @@
 parameters:
     level: 9
 
-    reportUnmatchedIgnoredErrors: false
-
     ignoreErrors:
         - identifier: missingType.iterableValue
           path: 'src/Scoper/Composer/AutoloadPrefixer.php'
@@ -25,14 +23,10 @@ parameters:
           path: 'src/PhpParser/NodeVisitor/Resolver/OriginalNameResolver.php'
         - message: '#NamespaceManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/NamespaceStmt/NamespaceManipulator.php'
-        - message: '#Property .* does not accept#'
-          path: 'src/PhpParser/NodeVisitor/UseStmt/UseStmtCollection.php'
         - message: '#::concat\(\) should return .+Name but returns .+\|null#'
           path: 'src/PhpParser/Node/NameFactory.php'
         - message: '#concat\(\) should return .+FullyQualified but returns .+\|null#'
           path: 'src/PhpParser/Node/FullyQualifiedFactory.php'
-        - message: '#retrieveElements\(\) should return#'
-          path: 'src/Configuration/SymbolsConfigurationFactory.php'
         - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
           path: 'src/Scoper/PatchScoper.php'
         - message: '#Scoper::scope\(\) expects string\, mixed given\.#'
