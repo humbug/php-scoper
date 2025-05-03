@@ -112,8 +112,8 @@ final readonly class SpecScenario
 
         $actualRecordedExposedClasses = $symbolsRegistry->getRecordedClasses();
 
-        self::assertSameRecordedSymbols(
-            $assert,
+        // The order matters for classes
+        $assert->assertSame(
             $this->expectedRegisteredClasses,
             $actualRecordedExposedClasses,
             $specMessage,
