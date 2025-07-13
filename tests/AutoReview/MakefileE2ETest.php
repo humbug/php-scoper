@@ -70,7 +70,7 @@ class MakefileE2ETest extends BaseMakefileTestCase
         $mainE2ERule = self::retrieveE2ERule();
         $e2eSubRules = self::retrieveSubE2ERules();
 
-        self::assertSame($e2eSubRules, $mainE2ERule);
+        self::assertEqualsCanonicalizing($e2eSubRules, $mainE2ERule);
     }
 
     public function test_it_lists_all_e2e_tests(): void

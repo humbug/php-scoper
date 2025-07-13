@@ -191,22 +191,39 @@ e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
 	NO_COLOR=1 php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
 
-.PHONY: e2e_028
-e2e_028: # Runs end-to-end tests for the fixture set 028 — Scoping of a Symfony project
-e2e_028: $(PHP_SCOPER_PHAR_BIN) fixtures/set028-symfony/vendor
+.PHONY: e2e_041
+e2e_041: # Runs end-to-end tests for the fixture set 041 — Scoping of a Symfony project
+e2e_041: $(PHP_SCOPER_PHAR_BIN) fixtures/set041-symfony64/vendor
 	$(PHP_SCOPER_PHAR) add-prefix \
-		--working-dir=fixtures/set028-symfony \
-		--output-dir=../../build/set028-symfony \
+		--working-dir=fixtures/set041-symfony64 \
+		--output-dir=../../build/set041-symfony64 \
 		--force \
 		--no-interaction
 
-	APP_ENV=dev composer --working-dir=fixtures/set028-symfony dump-autoload --no-dev
-	APP_ENV=dev php fixtures/set028-symfony/bin/console -V > fixtures/set028-symfony/expected-output
+	APP_ENV=dev composer --working-dir=fixtures/set041-symfony64 dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set041-symfony64/bin/console -V > fixtures/set041-symfony64/expected-output
 
-	APP_ENV=dev composer --working-dir=build/set028-symfony dump-autoload --no-dev
-	APP_ENV=dev php build/set028-symfony/bin/console -V > build/set028-symfony/output
+	APP_ENV=dev composer --working-dir=build/set041-symfony64 dump-autoload --no-dev
+	APP_ENV=dev php build/set041-symfony64/bin/console -V > build/set041-symfony64/output
 
-	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
+	diff fixtures/set041-symfony64/expected-output build/set041-symfony64/output
+
+.PHONY: e2e_042
+e2e_042: # Runs end-to-end tests for the fixture set 042 — Scoping of a Symfony project
+e2e_042: $(PHP_SCOPER_PHAR_BIN) fixtures/set042-symfony7/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set042-symfony7 \
+		--output-dir=../../build/set042-symfony7 \
+		--force \
+		--no-interaction
+
+	APP_ENV=dev composer --working-dir=fixtures/set042-symfony7 dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set042-symfony7/bin/console -V > fixtures/set042-symfony7/expected-output
+
+	APP_ENV=dev composer --working-dir=build/set042-symfony7 dump-autoload --no-dev
+	APP_ENV=dev php build/set042-symfony7/bin/console -V > build/set042-symfony7/output
+
+	diff fixtures/set042-symfony7/expected-output build/set042-symfony7/output
 
 .PHONY: e2e_029
 e2e_029: # Runs end-to-end tests for the fixture set 029 — Scoping of the EasyRdf project
@@ -522,12 +539,19 @@ fixtures/set027-laravel/composer.lock: fixtures/set027-laravel/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set027-laravel update --lock && touch -c $(@)"
 
-fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
-	composer --working-dir=fixtures/set028-symfony install --no-dev --no-scripts
+fixtures/set041-symfony64/vendor: fixtures/set041-symfony64/composer.lock
+	composer --working-dir=fixtures/set041-symfony64 install --no-dev --no-scripts
 	touch -c $@
-fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
+fixtures/set041-symfony64/composer.lock: fixtures/set041-symfony64/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
-	@echo "$$ composer --working-dir=fixtures/set028-symfony update --lock && touch -c $(@)"
+	@echo "$$ composer --working-dir=fixtures/set041-symfony64 update --lock && touch -c $(@)"
+
+fixtures/set042-symfony7/vendor: fixtures/set042-symfony7/composer.lock
+	composer --working-dir=fixtures/set042-symfony7 install --no-dev --no-scripts
+	touch -c $@
+fixtures/set042-symfony7/composer.lock: fixtures/set042-symfony7/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set042-symfony7 update --lock && touch -c $(@)"
 
 fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
 	composer --working-dir=fixtures/set029-easy-rdf install --no-dev
