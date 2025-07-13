@@ -54,6 +54,9 @@ final class ScoperAutoloadGenerator
     /** @var non-empty-string */
     private static string $eol;
 
+    /**
+     * @param string[] $excludedComposerAutoloadFileHashes
+     */
     public function __construct(
         private readonly SymbolsRegistry $registry,
         private readonly array $excludedComposerAutoloadFileHashes,
@@ -103,7 +106,7 @@ final class ScoperAutoloadGenerator
                 namespace {
                     \$loader = (static function () {
                         // Backup the autoloaded Composer files
-                        \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'] ?? [];
+                        \$existingComposerAutoloadFiles = isset(\$GLOBALS['__composer_autoload_files']) ? \$GLOBALS['__composer_autoload_files'] : [];
 
                         \$loader = require_once __DIR__.'/autoload.php';
                         // Ensure InstalledVersions is available
@@ -135,7 +138,7 @@ final class ScoperAutoloadGenerator
 
                 \$loader = (static function () {
                     // Backup the autoloaded Composer files
-                    \$existingComposerAutoloadFiles = \$GLOBALS['__composer_autoload_files'] ?? [];
+                    \$existingComposerAutoloadFiles = isset(\$GLOBALS['__composer_autoload_files']) ? \$GLOBALS['__composer_autoload_files'] : [];
 
                     \$loader = require_once __DIR__.'/autoload.php';
                     // Ensure InstalledVersions is available
@@ -306,7 +309,7 @@ final class ScoperAutoloadGenerator
             $originalFQ = new FullyQualified($exposed);
 
             $namespace = $originalFQ->slice(0, -1);
-            $functionName = null === $namespace ? $exposed : (string) $originalFQ->slice(1);
+            $functionName = null === $namespace ? $exposed : (string) $originalFQ->slice(-1, 1);
 
             $groupedFunctions[(string) $namespace][] = [$exposed, $functionName, $prefix];
         }

@@ -19,8 +19,8 @@ use Humbug\PhpScoper\PhpScoperAssertions;
 final class SymbolRegistryAssertions
 {
     /**
-     * @param list<string> $expectedNames
-     * @param list<string> $expectedRegexes
+     * @param string[] $expectedNames
+     * @param string[] $expectedRegexes
      */
     public static function assertStateIs(
         SymbolRegistry $symbolRegistry,

@@ -56,7 +56,12 @@ final class ParentNodeAppender extends NodeVisitorAbstract
             : null;
     }
 
-    public function beforeTraverse(array $nodes): ?array
+    /**
+     * @param Node[] $nodes
+     *
+     * @return Node[]
+     */
+    public function beforeTraverse(array $nodes): array
     {
         $this->stack = [];
 

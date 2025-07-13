@@ -23,9 +23,12 @@ use Fidry\Console\ExitCode;
 use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
+use Humbug\PhpScoper\Configuration\Throwable\UnknownConfigurationKey;
 use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Console\InputOption\PhpVersionInputOption;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
@@ -94,7 +97,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     'o',
                     InputOption::VALUE_REQUIRED,
                     'The output directory in which the prefixed code will be dumped.',
-                    ''
+                    '',
                 ),
                 new InputOption(
                     self::FORCE_OPT,
@@ -129,6 +132,7 @@ final class AddPrefixCommand implements Command, CommandAware
                     InputOption::VALUE_NONE,
                     'Do not look for a configuration file.',
                 ),
+                PhpVersionInputOption::createInputOption(),
             ],
         );
     }
@@ -145,6 +149,7 @@ final class AddPrefixCommand implements Command, CommandAware
 
         $paths = $this->getPathArguments($io, $cwd);
         $config = $this->retrieveConfig($io, $paths, $cwd);
+        $phpVersion = PhpVersionInputOption::getPhpVersion($io);
 
         $outputDir = $this->canonicalizePath(
             $this->getOutputDir($io, $config),
@@ -155,6 +160,7 @@ final class AddPrefixCommand implements Command, CommandAware
         $this->getScoper()->scope(
             $io,
             $config,
+            $phpVersion,
             $paths,
             $outputDir,
             self::getStopOnFailure($io),
@@ -252,6 +258,9 @@ final class AddPrefixCommand implements Command, CommandAware
 
     /**
      * @param list<non-empty-string> $paths
+     *
+     * @throws InvalidConfigurationValue
+     * @throws UnknownConfigurationKey
      */
     private function retrieveConfig(IO $io, array $paths, string $cwd): Configuration
     {

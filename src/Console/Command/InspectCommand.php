@@ -23,9 +23,11 @@ use Fidry\Console\IO;
 use Humbug\PhpScoper\Configuration\Configuration;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Console\ConfigLoader;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
+use Humbug\PhpScoper\Console\InputOption\PhpVersionInputOption;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use InvalidArgumentException;
+use PhpParser\PhpVersion;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -94,6 +96,7 @@ final class InspectCommand implements Command, CommandAware
                     InputOption::VALUE_NONE,
                     'Do not look for a configuration file.',
                 ),
+                PhpVersionInputOption::createInputOption(),
             ],
         );
     }
@@ -108,6 +111,7 @@ final class InspectCommand implements Command, CommandAware
         // working directory
         $cwd = getcwd();
 
+        $phpversion = PhpVersionInputOption::getPhpVersion($io);
         $filePath = $this->getFilePath($io, $cwd);
         $config = $this->retrieveConfig($io, [$filePath], $cwd);
 
@@ -120,7 +124,13 @@ final class InspectCommand implements Command, CommandAware
         $symbolsRegistry = new SymbolsRegistry();
         $fileContents = $config->getFilesWithContents()[$filePath][1];
 
-        $scopedContents = $this->scopeFile($config, $symbolsRegistry, $filePath, $fileContents);
+        $scopedContents = $this->scopeFile(
+            $config,
+            $symbolsRegistry,
+            $phpversion,
+            $filePath,
+            $fileContents,
+        );
 
         $this->printScopedContents($io, $scopedContents, $symbolsRegistry);
 
@@ -192,12 +202,14 @@ final class InspectCommand implements Command, CommandAware
     private function scopeFile(
         Configuration $config,
         SymbolsRegistry $symbolsRegistry,
+        ?PhpVersion $phpversion,
         string $filePath,
         string $fileContents,
     ): string {
         $scoper = $this->scoperFactory->createScoper(
             $config,
             $symbolsRegistry,
+            $phpversion,
         );
 
         return $scoper->scope(

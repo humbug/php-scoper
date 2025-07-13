@@ -26,6 +26,7 @@ use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\Reflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use PhpParser\Error as PhpParserError;
+use PhpParser\PhpVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -59,7 +60,7 @@ class PhpScoperSpecTest extends TestCase
     #[DataProvider('provideValidFiles')]
     public function test_can_scope_valid_files(SpecScenario $scenario): void
     {
-        $scenario->checkPHPVersionRequirements();
+        $scenario->checkPHPVersionRequirements($scenario->phpVersionUsed);
 
         $filePath = 'file.php';
         $symbolsRegistry = new SymbolsRegistry();
@@ -68,6 +69,7 @@ class PhpScoperSpecTest extends TestCase
             $scenario->prefix,
             $scenario->symbolsConfiguration,
             $symbolsRegistry,
+            $scenario->getPhpParserVersion(),
         );
 
         try {
@@ -109,7 +111,8 @@ class PhpScoperSpecTest extends TestCase
     private static function createScoper(
         string $prefix,
         SymbolsConfiguration $symbolsConfiguration,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
+        ?PhpVersion $phpVersionUsed,
     ): Scoper {
         $container = new Container();
 
@@ -126,15 +129,14 @@ class PhpScoperSpecTest extends TestCase
         );
 
         return new PhpScoper(
-            $container->getParser(),
+            $container->getParser($phpVersionUsed),
             new FakeScoper(),
             new TraverserFactory(
                 $enrichedReflector,
                 $prefix,
                 $symbolsRegistry,
             ),
-            $container->getPrinter(),
-            $container->getLexer(),
+            $container->getPrinter($phpVersionUsed),
         );
     }
 
@@ -148,8 +150,13 @@ class PhpScoperSpecTest extends TestCase
 
         $lines = array_values(array_filter(explode("\n", $scenario->inputCode)));
 
-        $startLine = $error->getAttributes()['startLine'] - 1;
-        $endLine = $error->getAttributes()['endLine'] + 1;
+        $startLineAttribute = $error->getAttributes()['startLine'];
+        self::assertIsInt($startLineAttribute);
+        $endLineAttribute = $error->getAttributes()['endLine'];
+        self::assertIsInt($endLineAttribute);
+
+        $startLine = $startLineAttribute - 1;
+        $endLine = $endLineAttribute + 1;
 
         self::fail(
             sprintf(

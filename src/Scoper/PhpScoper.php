@@ -18,7 +18,6 @@ use Humbug\PhpScoper\PhpParser\Printer\Printer;
 use Humbug\PhpScoper\PhpParser\TraverserFactory;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error as PhpParserError;
-use PhpParser\Lexer;
 use PhpParser\Parser;
 use function basename;
 use function func_get_args;
@@ -37,7 +36,6 @@ final readonly class PhpScoper implements Scoper
         private Scoper $decoratedScoper,
         private TraverserFactory $traverserFactory,
         private Printer $printer,
-        private Lexer $lexer,
     ) {
     }
 
@@ -60,7 +58,7 @@ final readonly class PhpScoper implements Scoper
     public function scopePhp(string $php): string
     {
         $statements = $this->parser->parse($php);
-        $oldTokens = $this->lexer->getTokens();
+        $oldTokens = $this->parser->getTokens();
 
         $scopedStatements = $this->traverserFactory
             ->create($this)

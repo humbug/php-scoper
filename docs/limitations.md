@@ -9,7 +9,6 @@
 - [Composer Autoloader](#composer-autoloader)
 - [Composer Plugins](#composer-plugins)
 - [PSR-0 Partial support](#psr-0-partial-support)
-- [Files autoloading](#files-autoloading)
 - [Exposing/Excluding traits](#exposingexcluding-traits)
 - [Exposing/Excluding enums](#exposingexcluding-enums)
 - [Declaring a custom namespaced function `function_exists()`](#declaring-a-custom-namespaced-function-function_exists)
@@ -236,19 +235,6 @@ transforming it to PSR-4, i.e. in the case above:
 ```
 
 If this works for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
-
-
-### Files autoloading
-
-Currently, scoping autoloaded files, i.e. files registered to Composer via the
-[`autoload.files`][autoload-files] setting only half work. Indeed, the scoping
-itself works, but if your scoped code happen to try to load another Composer
-based project with the same file, it will not. The problem identified is that
-the Composer autoloader uses hash to know if a file has been loaded or not already.
-Unfortunately, this hash is defined by the package and file name, which means
-the scoped file and non-scoped file will have the same hash resulting in errors.
-
-This is a limitation that should be fixable, check [#298] for the progress.
 
 
 ### Exposing/Excluding traits

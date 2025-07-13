@@ -90,7 +90,7 @@ return [
             class Y
             {
             }
-            \class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+            \class_alias('Humbug\X\Y', 'X\Y', \false);
             namespace Humbug;
 
             class Main
@@ -197,110 +197,110 @@ return [
             class Y
             {
             }
-            \class_alias('Humbug\\X\\Y', 'X\\Y', \false);
+            \class_alias('Humbug\X\Y', 'X\Y', \false);
             namespace Humbug;
 
             use Humbug\Foo;
             use ArrayIterator;
             class Main
             {
-                function foo() : self
+                function foo(): self
                 {
                 }
-                function foo() : void
+                function foo(): void
                 {
                 }
-                function foo() : static
+                function foo(): static
                 {
                 }
-                function foo() : never
+                function foo(): never
                 {
                 }
-                function foo() : false
+                function foo(): false
                 {
                 }
-                function foo() : true
+                function foo(): true
                 {
                 }
-                function foo() : null
+                function foo(): null
                 {
                 }
-                function foo() : bool
+                function foo(): bool
                 {
                 }
-                function foo() : ?bool
+                function foo(): ?bool
                 {
                 }
-                function foo() : int
+                function foo(): int
                 {
                 }
-                function foo() : ?int
+                function foo(): ?int
                 {
                 }
-                function foo() : float
+                function foo(): float
                 {
                 }
-                function foo() : ?float
+                function foo(): ?float
                 {
                 }
-                function foo() : string
+                function foo(): string
                 {
                 }
-                function foo() : ?string
+                function foo(): ?string
                 {
                 }
-                function foo() : array
+                function foo(): array
                 {
                 }
-                function foo() : ?array
+                function foo(): ?array
                 {
                 }
-                function foo() : iterable
+                function foo(): iterable
                 {
                 }
-                function foo() : ?iterable
+                function foo(): ?iterable
                 {
                 }
-                function foo() : callable
+                function foo(): callable
                 {
                 }
-                function foo() : ?callable
+                function foo(): ?callable
                 {
                 }
-                function foo() : Foo
+                function foo(): Foo
                 {
                 }
-                function foo() : \Humbug\Foo
+                function foo(): \Humbug\Foo
                 {
                 }
-                function foo() : ?Foo
+                function foo(): ?Foo
                 {
                 }
-                function foo() : ?\Humbug\Foo
+                function foo(): ?\Humbug\Foo
                 {
                 }
-                function foo() : ArrayIterator
+                function foo(): ArrayIterator
                 {
                 }
-                function foo() : \ArrayIterator
+                function foo(): \ArrayIterator
                 {
                 }
-                function foo() : ?ArrayIterator
+                function foo(): ?ArrayIterator
                 {
                 }
-                function foo() : ?\ArrayIterator
+                function foo(): ?\ArrayIterator
                 {
                 }
-                function foo() : \Humbug\X\Y
+                function foo(): \Humbug\X\Y
                 {
                 }
-                function foo() : \Humbug\X\Y
+                function foo(): \Humbug\X\Y
                 {
                 }
-                function foo() : ?\Humbug\X\Y
+                function foo(): ?\Humbug\X\Y
                 {
                 }
-                function foo() : ?\Humbug\X\Y
+                function foo(): ?\Humbug\X\Y
                 {
                 }
             }

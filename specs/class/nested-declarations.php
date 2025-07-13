@@ -43,7 +43,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
         }
 
         PHP,
@@ -66,7 +66,7 @@ return [
             {
                 public function a();
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
         }
 
         PHP,
@@ -94,7 +94,7 @@ return [
                     {
                     }
                 }
-                \class_alias('Humbug\\A', 'A', \false);
+                \class_alias('Humbug\A', 'A', \false);
             }
         }
 
@@ -122,7 +122,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
         }
 
         PHP,
@@ -149,7 +149,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
         }
 
         PHP,
@@ -183,7 +183,7 @@ return [
                     {
                     }
                 }
-                \class_alias('Humbug\\A', 'A', \false);
+                \class_alias('Humbug\A', 'A', \false);
                 break;
             case $case2Condition:
                 class A
@@ -192,7 +192,7 @@ return [
                     {
                     }
                 }
-                \class_alias('Humbug\\A', 'A', \false);
+                \class_alias('Humbug\A', 'A', \false);
                 break;
         }
 
@@ -219,7 +219,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
         } catch (\Error) {
         }
 
@@ -247,7 +247,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
         }
 
         PHP,
@@ -274,7 +274,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
         }
 
         PHP,

@@ -16,6 +16,7 @@ namespace Humbug\PhpScoper\PhpParser\NodeVisitor;
 
 use Humbug\PhpScoper\PhpParser\NodeVisitor\AttributeAppender\ParentNodeAppender;
 use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
+use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
@@ -62,6 +63,11 @@ final class ExcludedFunctionExistsEnricher extends NodeVisitorAbstract
     ) {
     }
 
+    /**
+     * @param Node[] $nodes
+     *
+     * @return Node[]
+     */
     public function afterTraverse(array $nodes): array
     {
         $strings = $this->excludedFunctionExistsStringNodeStack->fetch();

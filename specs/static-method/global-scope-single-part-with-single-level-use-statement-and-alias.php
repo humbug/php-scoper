@@ -106,7 +106,7 @@ return [
             class X
             {
             }
-            \class_alias('Humbug\\X', 'X', \false);
+            \class_alias('Humbug\X', 'X', \false);
             use Closure as X;
             \Humbug\X::bind();
 

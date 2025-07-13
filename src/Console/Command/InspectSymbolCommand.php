@@ -291,6 +291,9 @@ final readonly class InspectSymbolCommand implements Command
         ]);
     }
 
+    /**
+     * @return array{bool, bool}
+     */
     private static function determineSymbolStatus(
         string $symbol,
         SymbolType $type,

@@ -15,13 +15,14 @@ declare(strict_types=1);
 namespace Humbug\PhpScoper\PhpParser\Printer;
 
 use PhpParser\Node;
+use PhpParser\Token;
 
 interface Printer
 {
     /**
-     * @param Node[]       $newStmts
-     * @param Node[]       $oldStmts
-     * @param array<mixed> $oldTokens
+     * @param Node[]  $newStmts
+     * @param Node[]  $oldStmts
+     * @param Token[] $oldTokens
      */
     public function print(array $newStmts, array $oldStmts, array $oldTokens): string;
 }

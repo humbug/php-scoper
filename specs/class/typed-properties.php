@@ -80,7 +80,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
 
             PHP,
     ),
@@ -178,7 +178,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            \class_alias('Humbug\Foo\A', 'Foo\A', \false);
 
             PHP,
     ),

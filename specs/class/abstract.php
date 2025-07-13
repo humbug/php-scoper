@@ -37,7 +37,7 @@ return [
             public function a()
             {
             }
-            public abstract function b();
+            abstract public function b();
         }
 
         PHP,
@@ -64,9 +64,9 @@ return [
                 public function a()
                 {
                 }
-                public abstract function b();
+                abstract public function b();
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
 
             PHP,
     ),
@@ -92,9 +92,9 @@ return [
                     public function a()
                     {
                     }
-                    public abstract function b();
+                    abstract public function b();
                 }
-                \class_alias('Humbug\\A', 'A', \false);
+                \class_alias('Humbug\A', 'A', \false);
             }
 
             PHP,
@@ -122,9 +122,9 @@ return [
                 public function a()
                 {
                 }
-                public abstract function b();
+                abstract public function b();
             }
-            \class_alias('Humbug\\A', 'A', \false);
+            \class_alias('Humbug\A', 'A', \false);
 
             PHP,
     ),
@@ -151,9 +151,9 @@ return [
                     public function a()
                     {
                     }
-                    public abstract function b();
+                    abstract public function b();
                 }
-                \class_alias('Humbug\\A', 'A', \false);
+                \class_alias('Humbug\A', 'A', \false);
             }
 
             PHP,
@@ -178,7 +178,7 @@ return [
             public function a()
             {
             }
-            public abstract function b();
+            abstract public function b();
         }
 
         PHP,
@@ -204,7 +204,7 @@ return [
                 public function a()
                 {
                 }
-                public abstract function b();
+                abstract public function b();
             }
 
             PHP,
@@ -231,7 +231,7 @@ return [
                 public function a()
                 {
                 }
-                public abstract function b();
+                abstract public function b();
             }
 
             PHP,
@@ -261,9 +261,9 @@ return [
                 public function a()
                 {
                 }
-                public abstract function b();
+                abstract public function b();
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            \class_alias('Humbug\Foo\A', 'Foo\A', \false);
 
             PHP,
     ),
@@ -292,9 +292,9 @@ return [
                 public function a()
                 {
                 }
-                public abstract function b();
+                abstract public function b();
             }
-            \class_alias('Humbug\\Foo\\A', 'Foo\\A', \false);
+            \class_alias('Humbug\Foo\A', 'Foo\A', \false);
 
             PHP,
     ),
@@ -365,7 +365,7 @@ return [
                 public function a()
                 {
                 }
-                public abstract function b();
+                abstract public function b();
             }
 
             PHP,
@@ -430,7 +430,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\Foo\\WA', 'Foo\\WA', \false);
+            \class_alias('Humbug\Foo\WA', 'Foo\WA', \false);
             namespace Humbug\Bar;
 
             abstract class B
@@ -445,7 +445,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\Bar\\WB', 'Bar\\WB', \false);
+            \class_alias('Humbug\Bar\WB', 'Bar\WB', \false);
             namespace Humbug;
 
             abstract class C
@@ -460,7 +460,7 @@ return [
                 {
                 }
             }
-            \class_alias('Humbug\\WC', 'WC', \false);
+            \class_alias('Humbug\WC', 'WC', \false);
 
             PHP,
     ),

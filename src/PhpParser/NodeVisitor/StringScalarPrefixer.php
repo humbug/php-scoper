@@ -19,9 +19,9 @@ use Humbug\PhpScoper\PhpParser\UnexpectedParsingScenario;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Const_;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\New_;
@@ -41,7 +41,6 @@ use function array_values;
 use function explode;
 use function implode;
 use function in_array;
-use function is_string;
 use function ltrim;
 use function preg_match as native_preg_match;
 use function strtolower;
@@ -82,6 +81,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'is_a',
         'is_callable',
         'is_subclass_of',
+        'method_exists',
         'spl_autoload_register',
         'trait_exists',
     ];
@@ -102,7 +102,8 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         /^
             (\\)?               # leading backslash
             (
-                [\p{L}_\d]+     # class-like name
+                [\p{L}_]        # class-like name first character
+                [\p{L}_\d]*     # class-like name
                 \\              # separator
             )*
             [\p{L}_\d]+         # class-like name
@@ -137,7 +138,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function prefixStringScalar(String_ $string): String_
     {
-        if (!(ParentNodeAppender::hasParent($string) && is_string($string->value))
+        if (!(ParentNodeAppender::hasParent($string))
             || (
                 1 !== native_preg_match(self::CLASS_LIKE_PATTERN, $string->value)
                 && 1 !== native_preg_match(self::CONSTANT_FETCH_PATTERN, $string->value)
@@ -211,11 +212,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $newNode->class;
 
-        if (!($class instanceof Name)) {
-            throw UnexpectedParsingScenario::create();
-        }
-
-        if (in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
+        if ($class instanceof Name
+            && in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)
+        ) {
+            // Value cannot be a class name, hence we should not try to prefix it.
             return $string;
         }
 
@@ -248,19 +248,34 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         $isConstantNode = self::isConstantNode($string);
 
-        if (!$isConstantNode) {
-            if ('define' === $functionName
-                && $this->belongsToTheGlobalNamespace($string)
-            ) {
-                return $string;
-            }
-
-            return $this->enrichedReflector->isClassExcluded($normalizedValue)
+        if ($isConstantNode) {
+            return $this->enrichedReflector->isExposedConstant($normalizedValue)
                 ? $string
                 : $this->createPrefixedString($string);
         }
 
-        return $this->enrichedReflector->isExposedConstant($normalizedValue)
+        if ('define' === $functionName
+            && $this->belongsToTheGlobalNamespace($string)
+        ) {
+            return $string;
+        }
+
+        if ('method_exists' === $functionName) {
+            $firstArgument = $functionNode->args[0];
+            $isFirstArgument = $firstArgument instanceof Arg
+                && $firstArgument->value === $string;
+
+            if ($isFirstArgument) {
+                return $this->enrichedReflector->isClassExcluded($normalizedValue)
+                    ? $string
+                    : $this->createPrefixedString($string);
+            }
+
+            return $string;
+        }
+
+        return $this->enrichedReflector->isClassExcluded($normalizedValue)
+            || $this->enrichedReflector->isFunctionExcluded($normalizedValue)
             ? $string
             : $this->createPrefixedString($string);
     }

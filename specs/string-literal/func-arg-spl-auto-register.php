@@ -38,15 +38,15 @@ return [
 
         namespace Humbug;
 
-        \spl_autoload_register('Humbug\\sodiumCompatAutoloader');
-        \spl_autoload_register('Humbug\\Sodium\\compatAutoloader');
-        \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-        \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-        \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-        \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-        \spl_autoload_register(['Humbug\\Swift', 'autoload']);
+        \spl_autoload_register('Humbug\sodiumCompatAutoloader');
+        \spl_autoload_register('Humbug\Sodium\compatAutoloader');
+        \spl_autoload_register(['Humbug\Swift', 'autoload']);
+        \spl_autoload_register(['Humbug\Swift', 'autoload']);
+        \spl_autoload_register(['Humbug\Swift', 'autoload']);
+        \spl_autoload_register(['Humbug\Swift', 'autoload']);
+        \spl_autoload_register(['Humbug\Swift', 'autoload']);
         \spl_autoload_register(['DateTime', 'autoload']);
-        \spl_autoload_register(['\\DateTime', 'autoload']);
+        \spl_autoload_register(['\DateTime', 'autoload']);
 
         PHP,
 
@@ -65,9 +65,9 @@ return [
 
             namespace Humbug;
 
-            \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-            \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-            \spl_autoload_register(['Humbug\\Swift', 'autoload']);
+            \spl_autoload_register(['Humbug\Swift', 'autoload']);
+            \spl_autoload_register(['Humbug\Swift', 'autoload']);
+            \spl_autoload_register(['Humbug\Swift', 'autoload']);
             \spl_autoload_register(['DateTime', 'autoload']);
 
             PHP,
@@ -85,7 +85,7 @@ return [
 
             namespace Humbug;
 
-            \spl_autoload_register('Humbug\\sodiumCompatAutoloader');
+            \spl_autoload_register('Humbug\sodiumCompatAutoloader');
 
             PHP,
     ),
@@ -108,8 +108,8 @@ return [
 
             namespace {
                 \spl_autoload_register(['Swift', 'autoload']);
-                \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-                \spl_autoload_register(['Humbug\\Swift', 'autoload']);
+                \spl_autoload_register(['Humbug\Swift', 'autoload']);
+                \spl_autoload_register(['Humbug\Swift', 'autoload']);
                 \spl_autoload_register(['DateTime', 'autoload']);
             }
 
@@ -130,7 +130,7 @@ return [
             <?php
 
             namespace {
-                \spl_autoload_register('Sodium\\CompatAutoloader');
+                \spl_autoload_register('Sodium\CompatAutoloader');
             }
 
             PHP,
@@ -151,9 +151,9 @@ return [
 
             namespace Humbug;
 
-            \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-            \spl_autoload_register(['Humbug\\Swift', 'autoload']);
-            \spl_autoload_register(['Humbug\\Swift', 'autoload']);
+            \spl_autoload_register(['Humbug\Swift', 'autoload']);
+            \spl_autoload_register(['Humbug\Swift', 'autoload']);
+            \spl_autoload_register(['Humbug\Swift', 'autoload']);
             \spl_autoload_register(['DateTime', 'autoload']);
 
             PHP,
@@ -227,7 +227,7 @@ return [
             class Ya_1
             {
             }
-            \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
+            \class_alias('Humbug\Symfony\Component\Yaml\Ya_1', 'Symfony\Component\Yaml\Ya_1', \false);
             namespace Humbug;
 
             \spl_autoload_register([\Humbug\Symfony\Component\Yaml\Ya_1::class, 'autoload']);

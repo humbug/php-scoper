@@ -47,13 +47,13 @@ return [
         function (int $x) {
             return $x;
         };
-        function (int $x) : int {
+        function (int $x): int {
             return $x;
         };
-        function (Foo $x) : Bar {
+        function (Foo $x): Bar {
             return $x;
         };
-        function (DateTimeImmutable $x) : Closure {
+        function (DateTimeImmutable $x): Closure {
             return $x;
         };
         static function ($x) {
@@ -62,13 +62,13 @@ return [
         static function (int $x) {
             return $x;
         };
-        static function (int $x) : int {
+        static function (int $x): int {
             return $x;
         };
-        static function (Foo $x) : Bar {
+        static function (Foo $x): Bar {
             return $x;
         };
-        static function (DateTimeImmutable $x) : Closure {
+        static function (DateTimeImmutable $x): Closure {
             return $x;
         };
 
@@ -104,13 +104,13 @@ return [
             function (int $x) {
                 return $x;
             };
-            function (int $x) : int {
+            function (int $x): int {
                 return $x;
             };
-            function (Foo $x) : Bar {
+            function (Foo $x): Bar {
                 return $x;
             };
-            function (DateTimeImmutable $x) : Closure {
+            function (DateTimeImmutable $x): Closure {
                 return $x;
             };
             static function ($x) {
@@ -119,13 +119,13 @@ return [
             static function (int $x) {
                 return $x;
             };
-            static function (int $x) : int {
+            static function (int $x): int {
                 return $x;
             };
-            static function (Foo $x) : Bar {
+            static function (Foo $x): Bar {
                 return $x;
             };
-            static function (DateTimeImmutable $x) : Closure {
+            static function (DateTimeImmutable $x): Closure {
                 return $x;
             };
 
@@ -166,13 +166,13 @@ return [
             function (int $x) {
                 return $x;
             };
-            function (int $x) : int {
+            function (int $x): int {
                 return $x;
             };
-            function (Foo $x) : Bar {
+            function (Foo $x): Bar {
                 return $x;
             };
-            function (DateTimeImmutable $x) : Closure {
+            function (DateTimeImmutable $x): Closure {
                 return $x;
             };
             static function ($x) {
@@ -181,13 +181,13 @@ return [
             static function (int $x) {
                 return $x;
             };
-            static function (int $x) : int {
+            static function (int $x): int {
                 return $x;
             };
-            static function (Foo $x) : Bar {
+            static function (Foo $x): Bar {
                 return $x;
             };
-            static function (DateTimeImmutable $x) : Closure {
+            static function (DateTimeImmutable $x): Closure {
                 return $x;
             };
 

@@ -29,7 +29,11 @@ use Throwable;
 use function array_merge;
 use function is_int;
 use function is_string;
+use function Safe\preg_match;
 use function sprintf;
+use function substr;
+use function substr_count;
+use const PREG_OFFSET_CAPTURE;
 
 /**
  * @internal
@@ -60,6 +64,7 @@ class SpecParser extends TestCase
                 $relativePath = basename($sourceDir).'/'.$file->getRelativePathname();
 
                 yield $relativePath.': '.$title => self::parseSpec(
+                    $file->getContents(),
                     $relativePath,
                     $meta,
                     $title,
@@ -91,6 +96,7 @@ class SpecParser extends TestCase
     }
 
     private static function parseSpec(
+        string $fileContents,
         string $file,
         Meta $meta,
         int|string $title,
@@ -102,6 +108,11 @@ class SpecParser extends TestCase
             is_int($title) ? 'spec #'.$title : $title,
         );
 
+        $lineNumber = self::findLineNumber($fileContents, $title);
+        if (null !== $lineNumber) {
+            $file .= ':'.$lineNumber;
+        }
+
         $specWithConfig = is_string($specWithConfigOrSimpleSpec)
             ? SpecWithConfig::fromSimpleSpec($specWithConfigOrSimpleSpec)
             : $specWithConfigOrSimpleSpec;
@@ -109,6 +120,7 @@ class SpecParser extends TestCase
         return new SpecScenario(
             $specWithConfig->minPhpVersion ?? $meta->minPhpVersion ?? null,
             $specWithConfig->maxPhpVersion ?? $meta->maxPhpVersion ?? null,
+            $specWithConfig->phpVersionUsed ?? $meta->phpVersionUsed ?? null,
             $file,
             $completeTitle,
             $specWithConfig->inputCode,
@@ -118,6 +130,34 @@ class SpecParser extends TestCase
             $specWithConfigOrSimpleSpec->expectedRecordedClasses ?? $meta->expectedRecordedClasses,
             $specWithConfigOrSimpleSpec->expectedRecordedFunctions ?? $meta->expectedRecordedFunctions,
         );
+    }
+
+    /**
+     * @return positive-int|0
+     */
+    private static function findLineNumber(string $fileContents, int|string $title): ?int
+    {
+        if (is_int($title)) {
+            return null;
+        }
+
+        $titleRegex = sprintf(
+            '/ *\'%s\' => (?:SpecWithConfig|<<<\'PHP\')/',
+            $title,
+        );
+
+        if (1 !== preg_match($titleRegex, $fileContents, $matches, PREG_OFFSET_CAPTURE)) {
+            return null;
+        }
+
+        /** @phpstan-ignore offsetAccess.notFound */
+        $titlePosition = (int) $matches[0][1];
+        $lineReturnCount = substr_count(
+            substr($fileContents, 0, $titlePosition),
+            "\n",
+        );
+
+        return $lineReturnCount + 1;
     }
 
     private static function createSymbolsConfiguration(

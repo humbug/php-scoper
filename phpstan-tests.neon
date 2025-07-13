@@ -1,17 +1,16 @@
 parameters:
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
+    level: 9
 
     excludePaths:
         - tests/Autoload/AutoloadDumperTest.php
 
     ignoreErrors:
+        - identifier: missingType.iterableValue
+        - identifier: assign.propertyType
         - message: '#Cannot cast array\<string\>\|string to string\.#'
           path: 'src/Patcher/SymfonyPatcher.php'
         - message: '#Parameter \#1 \$nodes of method PhpParser\\NodeTraverserInterface::traverse\(\) expects array\<PhpParser\\Node\>, array\<PhpParser\\Node\\Stmt\>\|null given\.#'
           path: 'src/Scoper/PhpScoper.php'
-        - message: '#UseStmtName::getUseStmtAliasAndType\(\) should return#'
-          path: 'src/PhpParser/UseStmtName.php'
         - message: '#UseStmtManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/UseStmt/UseStmtManipulator.php'
         - message: '#IdentifierResolver::resolveIdentifier\(\) should return#'
@@ -24,14 +23,10 @@ parameters:
           path: 'src/PhpParser/NodeVisitor/Resolver/OriginalNameResolver.php'
         - message: '#NamespaceManipulator::getOriginalName\(\) should return#'
           path: 'src/PhpParser/NodeVisitor/NamespaceStmt/NamespaceManipulator.php'
-        - message: '#DummyScoperFactory extends @final#'
-          path: 'tests/Console/Command/DummyScoperFactory.php'
         - message: '#Anonymous function should return string but returns array#'
           path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
         - message: '#AddPrefixCommandIntegrationTest\:\:getNormalizeDisplay\(\) should return string but returns array#'
           path: 'tests/Console/Command/AddPrefixCommandIntegrationTest.php'
-        - message: '#ConfigurationKeysTest\:\:retrieveConfigurationKeys\(\) should return array#'
-          path: 'tests/Configuration/ConfigurationKeysTest.php'
         - message: '#Property .* does not accept#'
           path: 'src/PhpParser/NodeVisitor/UseStmt/UseStmtCollection.php'
         - message: '#::concat\(\) should return .+Name but returns .+\|null#'
@@ -60,3 +55,8 @@ parameters:
           path: 'src/Symbol/SymbolsRegistry.php'
         - message: '#Stmt\:\:\$stmts#'
           path: 'src/PhpParser/NodeVisitor/ClassAliasStmtAppender.php'
+        - message: '#PhpVersion::fromComponents#'
+          path: 'tests/SpecFramework/SpecScenario.php'
+        # Fixed in https://github.com/nikic/PHP-Parser/pull/1003
+        - message: '#Standard constructor expects array#'
+          path: 'src/Container.php'

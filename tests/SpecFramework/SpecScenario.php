@@ -16,17 +16,20 @@ namespace Humbug\PhpScoper\SpecFramework;
 
 use Humbug\PhpScoper\Configuration\SymbolsConfiguration;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
+use PhpParser\PhpVersion;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\SkippedWithMessageException;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 use function usort;
+use const PHP_VERSION_ID;
 
 final readonly class SpecScenario
 {
     public function __construct(
         public ?int $minPhpVersion,
         public ?int $maxPhpVersion,
+        public ?int $phpVersionUsed,
         public string $file,
         public string $title,
         public string $inputCode,
@@ -38,12 +41,28 @@ final readonly class SpecScenario
     ) {
     }
 
-    public function checkPHPVersionRequirements(): void
+    public function getPhpParserVersion(): ?PhpVersion
     {
+        $phpVersionId = $this->phpVersionUsed;
+
+        if (null === $phpVersionId) {
+            return null;
+        }
+
+        $minorRemainder = $phpVersionId % 1000;
+        $minor = $minorRemainder / 100;
+        $major = ($phpVersionId - $minorRemainder) / 10_000;
+
+        return PhpVersion::fromComponents($major, $minor);
+    }
+
+    public function checkPHPVersionRequirements(?int $phpVersionIdUsed): void
+    {
+        $phpVersionIdUsed ??= PHP_VERSION_ID;
         $minPhpVersion = $this->minPhpVersion;
         $maxPhpVersion = $this->maxPhpVersion;
 
-        if (null !== $minPhpVersion && $minPhpVersion > PHP_VERSION_ID) {
+        if (null !== $minPhpVersion && $minPhpVersion > $phpVersionIdUsed) {
             throw new SkippedWithMessageException(
                 sprintf(
                     'Min PHP version not matched for spec "%s".',
@@ -52,7 +71,7 @@ final readonly class SpecScenario
             );
         }
 
-        if (null !== $maxPhpVersion && $maxPhpVersion <= PHP_VERSION_ID) {
+        if (null !== $maxPhpVersion && $maxPhpVersion <= $phpVersionIdUsed) {
             throw new SkippedWithMessageException(
                 sprintf(
                     'Max PHP version not matched for spec "%s".',

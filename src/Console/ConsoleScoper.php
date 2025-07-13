@@ -19,10 +19,11 @@ use Fidry\Console\IO;
 use Humbug\PhpScoper\Autoload\ComposerFileHasher;
 use Humbug\PhpScoper\Autoload\ScoperAutoloadGenerator;
 use Humbug\PhpScoper\Configuration\Configuration;
+use Humbug\PhpScoper\Scoper\Factory\ScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Scoper\ScoperFactory;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
+use PhpParser\PhpVersion;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
@@ -61,6 +62,7 @@ final readonly class ConsoleScoper
     public function scope(
         IO $io,
         Configuration $config,
+        ?PhpVersion $phpVersion,
         array $paths,
         string $outputDir,
         bool $stopOnFailure
@@ -78,6 +80,7 @@ final readonly class ConsoleScoper
         try {
             $this->doScope(
                 $config,
+                $phpVersion,
                 $outputDir,
                 $stopOnFailure,
                 $logger,
@@ -95,6 +98,7 @@ final readonly class ConsoleScoper
 
     private function doScope(
         Configuration $config,
+        ?PhpVersion $phpVersion,
         string $outputDir,
         bool $stopOnFailure,
         ScoperLogger $logger
@@ -108,6 +112,7 @@ final readonly class ConsoleScoper
 
         $this->scopeFiles(
             $config,
+            $phpVersion,
             $files,
             $stopOnFailure,
             $logger,
@@ -118,7 +123,7 @@ final readonly class ConsoleScoper
             $this->dumpFileWithPermissions($excludedFileWithContent);
         }
 
-        self::dumpScoperAutoloader(
+        $this->dumpScoperAutoloader(
             $files,
             $excludedFilesWithContents,
             $symbolsRegistry,
@@ -175,6 +180,7 @@ final readonly class ConsoleScoper
      */
     private function scopeFiles(
         Configuration $config,
+        ?PhpVersion $phpVersion,
         array $files,
         bool $stopOnFailure,
         ScoperLogger $logger,
@@ -182,10 +188,14 @@ final readonly class ConsoleScoper
     ): void {
         $logger->outputFileCount(count($files));
 
-        $scoper = $this->scoperFactory->createScoper(
-            $config,
-            $symbolsRegistry,
-        );
+        $resolvedPhpVersion = $phpVersion ?? $config->getPhpVersion();
+
+        $scoper = $this->scoperFactory
+            ->createScoper(
+                $config,
+                $symbolsRegistry,
+                $resolvedPhpVersion,
+            );
 
         foreach ($files as $file) {
             $this->scopeFile(
@@ -294,6 +304,9 @@ final readonly class ConsoleScoper
         return $commonPath;
     }
 
+    /**
+     * @param string[] $outputFilePaths
+     */
     private static function findVendorDir(array $outputFilePaths): ?string
     {
         $vendorDirsAsKeys = [];

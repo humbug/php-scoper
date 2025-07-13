@@ -20,6 +20,7 @@ use Fidry\FileSystem\FS;
 use Humbug\PhpScoper\Configuration\ConfigurationFactory;
 use Humbug\PhpScoper\Configuration\RegexChecker;
 use Humbug\PhpScoper\Configuration\SymbolsConfigurationFactory;
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Console\Application;
 use Humbug\PhpScoper\Console\AppTesterAbilities;
 use Humbug\PhpScoper\Console\AppTesterTestCase;
@@ -27,12 +28,8 @@ use Humbug\PhpScoper\Console\ConfigLoader;
 use Humbug\PhpScoper\Console\ConsoleScoper;
 use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
-use Humbug\PhpScoper\PhpParser\FakeParser;
-use Humbug\PhpScoper\PhpParser\FakePrinter;
+use Humbug\PhpScoper\Scoper\Factory\DummyScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
-use Humbug\PhpScoper\Symbol\EnrichedReflectorFactory;
-use Humbug\PhpScoper\Symbol\Reflector;
-use InvalidArgumentException;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Prophecy\Argument;
@@ -540,9 +537,9 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             $this->appTester->run($input);
 
             self::fail('Expected exception to be thrown.');
-        } catch (InvalidArgumentException $exception) {
+        } catch (InvalidConfigurationValue $exception) {
             self::assertSame(
-                'Expected patchers to be an array of callables, the "0" element is not.',
+                'Expected patchers to be an array of callables, the "0" element is not (found "string" instead).',
                 $exception->getMessage(),
             );
         }
@@ -680,14 +677,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             new SymfonyCommand(
                 new AddPrefixCommand(
                     $fileSystem,
-                    new DummyScoperFactory(
-                        new FakeParser(),
-                        new EnrichedReflectorFactory(
-                            Reflector::createEmpty(),
-                        ),
-                        new FakePrinter(),
-                        $scoper,
-                    ),
+                    new DummyScoperFactory($scoper),
                     $innerApp,
                     new ConfigurationFactory(
                         $fileSystem,

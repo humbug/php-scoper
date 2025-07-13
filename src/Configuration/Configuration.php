@@ -14,19 +14,13 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper\Configuration;
 
+use Humbug\PhpScoper\Configuration\Throwable\InvalidConfigurationValue;
 use Humbug\PhpScoper\Patcher\Patcher;
-use InvalidArgumentException;
-use function Safe\preg_match;
-use function sprintf;
+use PhpParser\PhpVersion;
 
 final class Configuration
 {
-    private const PREFIX_PATTERN = '/^[\p{L}\d_\\\\]+$/u';
-
-    /**
-     * @var non-empty-string
-     */
-    private readonly string $prefix;
+    private readonly Prefix $prefix;
 
     /**
      * @param non-empty-string|null                $path                      Absolute canonical path to the configuration file loaded.
@@ -38,19 +32,22 @@ final class Configuration
      * @param array<string, array{string, string}> $excludedFilesWithContents Array of tuple
      *                                                                        with the first argument being the file path and
      *                                                                        the second its contents
+     *
+     * @throws InvalidConfigurationValue
      */
     public function __construct(
         private ?string $path,
         private ?string $outputDir,
-        string $prefix,
+        string|Prefix $prefix,
+        private ?PhpVersion $phpVersion,
         private array $filesWithContents,
         private array $excludedFilesWithContents,
         private Patcher $patcher,
         private SymbolsConfiguration $symbolsConfiguration
     ) {
-        self::validatePrefix($prefix);
-
-        $this->prefix = $prefix;
+        $this->prefix = $prefix instanceof Prefix
+            ? $prefix
+            : new Prefix($prefix);
     }
 
     /**
@@ -71,6 +68,8 @@ final class Configuration
 
     /**
      * @param non-empty-string $prefix
+     *
+     * @throws InvalidConfigurationValue
      */
     public function withPrefix(string $prefix): self
     {
@@ -78,6 +77,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $prefix,
+            $this->phpVersion,
             $this->filesWithContents,
             $this->excludedFilesWithContents,
             $this->patcher,
@@ -90,7 +90,7 @@ final class Configuration
      */
     public function getPrefix(): string
     {
-        return $this->prefix;
+        return $this->prefix->toString();
     }
 
     /**
@@ -102,6 +102,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $this->prefix,
+            $this->phpVersion,
             $filesWithContents,
             $this->excludedFilesWithContents,
             $this->patcher,
@@ -131,6 +132,7 @@ final class Configuration
             $this->path,
             $this->outputDir,
             $this->prefix,
+            $this->phpVersion,
             $this->filesWithContents,
             $this->excludedFilesWithContents,
             $patcher,
@@ -148,24 +150,8 @@ final class Configuration
         return $this->symbolsConfiguration;
     }
 
-    private static function validatePrefix(string $prefix): void
+    public function getPhpVersion(): ?PhpVersion
     {
-        if (1 !== preg_match(self::PREFIX_PATTERN, $prefix)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got "%s"',
-                    $prefix,
-                ),
-            );
-        }
-
-        if (preg_match('/\\\{2,}/', $prefix)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Invalid namespace separator sequence. Got "%s"',
-                    $prefix,
-                ),
-            );
-        }
+        return $this->phpVersion;
     }
 }

@@ -31,6 +31,7 @@ return [
         $x = '\\Symfony\\Component\\Yaml\\Ya_1';
         $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
         $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        $x = '1\2';
 
         ----
         <?php
@@ -38,13 +39,14 @@ return [
         namespace Humbug;
 
         $x = 'Yaml';
-        $x = '\\Yaml';
+        $x = '\Yaml';
         $x = 'Closure';
-        $x = '\\Closure';
-        $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-        $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+        $x = '\Closure';
+        $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+        $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+        $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+        $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+        $x = '1\2';
 
         PHP,
 
@@ -59,8 +61,8 @@ return [
 
         namespace Humbug;
 
-        $regex = '%if \\(defined\\(\\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
-        $shortcuts = \preg_split('{(\\|)-?}', \ltrim($shortcut, '-'));
+        $regex = '%if \(defined\(\$name = \'PhpParser\\\\\\\\Parser\\\\\\\\Tokens%';
+        $shortcuts = \preg_split('{(\|)-?}', \ltrim($shortcut, '-'));
 
         PHP,
 
@@ -80,11 +82,11 @@ return [
 
             namespace Humbug;
 
-            $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1l';
-            $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            $x = 'Humbug\Symfony\Component\Yaml\Ya_1l';
+            $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
 
             PHP,
     ),
@@ -105,11 +107,11 @@ return [
 
             namespace Humbug;
 
-            $x = 'Humbug\\Symfony\\Yaml';
-            $x = 'Symfony\\Component\\Yaml\\Ya_1';
-            $x = '\\Symfony\\Component\\Yaml\\Ya_1';
-            $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            $x = '\\Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            $x = 'Humbug\Symfony\Yaml';
+            $x = 'Symfony\Component\Yaml\Ya_1';
+            $x = '\Symfony\Component\Yaml\Ya_1';
+            $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            $x = '\Humbug\Symfony\Component\Yaml\Ya_1';
 
             PHP,
     ),
@@ -125,8 +127,8 @@ return [
 
         namespace Humbug;
 
-        $x = 'Symfony\\Component' . '\\Yaml\\Ya_1';
-        $x = '\\Symfony\\Component' . '\\Yaml\\Ya_1';
+        $x = 'Symfony\Component' . '\Yaml\Ya_1';
+        $x = '\Symfony\Component' . '\Yaml\Ya_1';
 
         PHP,
 
@@ -186,7 +188,7 @@ return [
             class Ya_1
             {
             }
-            \class_alias('Humbug\\Symfony\\Component\\Yaml\\Ya_1', 'Symfony\\Component\\Yaml\\Ya_1', \false);
+            \class_alias('Humbug\Symfony\Component\Yaml\Ya_1', 'Symfony\Component\Yaml\Ya_1', \false);
             namespace Humbug;
 
             $x = \Humbug\Symfony\Component\Yaml\Ya_1::class;

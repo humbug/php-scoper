@@ -73,7 +73,7 @@ return [
                 self::FOO;
                 static::FOO;
             }
-            public function getName() : string
+            public function getName(): string
             {
                 return $this->name;
             }
@@ -152,7 +152,7 @@ return [
                 self::FOO;
                 static::FOO;
             }
-            public function getName() : string
+            public function getName(): string
             {
                 return $this->name;
             }

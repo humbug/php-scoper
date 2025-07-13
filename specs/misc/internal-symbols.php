@@ -389,10 +389,10 @@ return [
 
         class Template
         {
-            public function setVar(array $values, bool $merge = \true) : void
+            public function setVar(array $values, bool $merge = \true): void
             {
             }
-            public function setVarAlias(array $values, bool $merge = \TRUE) : void
+            public function setVarAlias(array $values, bool $merge = \TRUE): void
             {
             }
         }

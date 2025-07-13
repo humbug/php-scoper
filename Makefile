@@ -10,7 +10,7 @@ PHP_SCOPER_PHAR = $(PHP_SCOPER_PHAR_BIN)
 COMPOSER_BIN_PLUGIN_VENDOR = vendor/bamarni/composer-bin-plugin
 
 PHPSTAN_BIN = vendor-bin/phpstan/vendor/bin/phpstan
-PHPSTAN = $(PHPSTAN_BIN) analyze src tests --level max --memory-limit=-1
+PHPSTAN = $(PHPSTAN_BIN)
 
 BOX_BIN = bin/box
 BOX = $(BOX_BIN)
@@ -76,7 +76,7 @@ php_cs_fixer: $(PHP_CS_FIXER_BIN)
 
 .PHONY: php_cs_fixer_lint
 php_cs_fixer_lint: $(PHP_CS_FIXER_BIN)
-	$(PHP_CS_FIXER) --dry-run
+	$(PHP_CS_FIXER) --dry-run --diff
 
 .PHONY: composer_normalize
 composer_normalize: composer.json vendor
@@ -92,7 +92,18 @@ gitignore_sort:
 
 .PHONY: phpstan
 phpstan: $(PHPSTAN_BIN)
-	$(PHPSTAN)
+	$(MAKE) _phpstan
+
+.PHONY: _phpstan
+_phpstan: _phpstan_src _phpstan_tests
+
+.PHONY: _phpstan_src
+_phpstan_src:
+	$(PHPSTAN) analyze src --memory-limit=-1 --configuration=phpstan-src.neon
+
+.PHONY: _phpstan_tests
+_phpstan_tests:
+	$(PHPSTAN) analyze tests --memory-limit=-1 --configuration=phpstan-tests.neon
 
 .PHONY: autoreview
 autoreview: ## Runs the AutoReview checks

@@ -20,7 +20,12 @@ use PhpParser\Parser;
 
 final class FakeParser implements Parser
 {
-    public function parse(string $code, ?ErrorHandler $errorHandler = null): mixed
+    public function parse(string $code, ?ErrorHandler $errorHandler = null): ?array
+    {
+        throw new LogicException();
+    }
+
+    public function getTokens(): array
     {
         throw new LogicException();
     }

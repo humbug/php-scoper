@@ -39,13 +39,13 @@ return [
 
         class Foo
         {
-            function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo')
+            function foo($x = 'Humbug\Symfony\Component\Yaml\Ya_1', $y = 'Foo')
             {
             }
         }
-        (new X())->foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+        (new X())->foo('Humbug\Symfony\Component\Yaml\Ya_1', $y = 'Foo');
         $x = new X();
-        $x->foo()('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+        $x->foo()('Humbug\Symfony\Component\Yaml\Ya_1', $y = 'Foo');
 
         PHP,
 
@@ -65,11 +65,11 @@ return [
 
         class Foo
         {
-            static function foo($x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo')
+            static function foo($x = 'Humbug\Symfony\Component\Yaml\Ya_1', $y = 'Foo')
             {
             }
         }
-        X::foo('Humbug\\Symfony\\Component\\Yaml\\Ya_1', $y = 'Foo');
+        X::foo('Humbug\Symfony\Component\Yaml\Ya_1', $y = 'Foo');
 
         PHP,
 ];

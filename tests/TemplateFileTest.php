@@ -26,7 +26,7 @@ use function Safe\preg_match_all;
 #[CoversNothing]
 final class TemplateFileTest extends TestCase
 {
-    private const TEMPLATE_PATH = __DIR__.'/../src/scoper.inc.php.tpl';
+    private const TEMPLATE_PATH = __DIR__.'/../res/scoper.inc.php.tpl';
 
     public function test_the_template_file_contains_an_entry_for_each_configuration_key(): void
     {
@@ -46,6 +46,7 @@ final class TemplateFileTest extends TestCase
         $template = file_get_contents(self::TEMPLATE_PATH);
 
         return preg_match_all('/\'(.*?)\' => .*/', $template, $matches)
+            /** @phpstan-ignore offsetAccess.notFound */
             ? $matches[1]
             : [];
     }

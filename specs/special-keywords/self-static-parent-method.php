@@ -87,17 +87,17 @@ return [
                 self::who();
                 static::who();
             }
-            public function getName() : string
+            public function getName(): string
             {
                 return $this->name;
             }
-            public function create() : self
+            public function create(): self
             {
                 return new static();
                 return new self();
                 return parent::create();
             }
-            public function with(self $arg) : self
+            public function with(self $arg): self
             {
                 return $arg;
             }
@@ -192,17 +192,17 @@ return [
                 self::who();
                 static::who();
             }
-            public function getName() : string
+            public function getName(): string
             {
                 return $this->name;
             }
-            public function create() : self
+            public function create(): self
             {
                 return new static();
                 return new self();
                 return parent::create();
             }
-            public function with(self $arg) : self
+            public function with(self $arg): self
             {
                 return $arg;
             }

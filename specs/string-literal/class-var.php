@@ -36,10 +36,10 @@ return [
 
         class Foo
         {
-            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
-            var $x = 'Humbug\\Symfony\\Component\\Yaml\\Ya_1';
+            var $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            var $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            var $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
+            var $x = 'Humbug\Symfony\Component\Yaml\Ya_1';
         }
 
         PHP,

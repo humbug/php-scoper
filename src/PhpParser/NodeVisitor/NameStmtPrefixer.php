@@ -213,11 +213,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
             // Continue
         }
 
-        return FullyQualifiedFactory::concat(
-            $this->prefix,
-            $resolvedName->toString(),
-            $resolvedName->getAttributes(),
-        );
+        return FullyQualifiedFactory::concat($this->prefix, $resolvedName);
     }
 
     private static function isParentNodeSupported(Node $parentNode): bool
@@ -261,11 +257,11 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         }
 
         $originalNameFQParts = [
-            ...$namespaceName->parts,
-            ...$originalName->parts,
+            ...$namespaceName->getParts(),
+            ...$originalName->getParts(),
         ];
 
-        return $originalNameFQParts === $resolvedName->parts;
+        return $originalNameFQParts === $resolvedName->getParts();
     }
 
     private function doesNameBelongToGlobalNamespace(

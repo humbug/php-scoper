@@ -52,6 +52,7 @@ final readonly class InstalledPackagesScoper implements Scoper
             throw new InvalidArgumentException('Expected the decoded JSON to contain the list of installed packages');
         }
 
+        /** @phpstan-ignore argument.type */
         $decodedJson->packages = $this->prefixLockPackages($decodedJson->packages);
 
         return json_encode(
