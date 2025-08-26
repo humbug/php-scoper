@@ -27,7 +27,7 @@ jobs:
                     - '8.3'
         steps:
             -   name: Checkout
-                uses: actions/checkout@v4
+                uses: actions/checkout@v5
                 with:
                     fetch-depth: 0
 
@@ -102,7 +102,7 @@ jobs:
 
         steps:
             -   name: Checkout
-                uses: actions/checkout@v4
+                uses: actions/checkout@v5
                 with:
                     fetch-depth: 0
 
@@ -121,7 +121,7 @@ jobs:
                 uses: ./.github/actions/install-vendor
 
             -   name: Retrieve built PHAR
-                uses: actions/download-artifact@v4
+                uses: actions/download-artifact@v5
                 with:
                     name: php-scoper-phar-${{ matrix.php }}
                     path: bin
@@ -165,7 +165,7 @@ jobs:
 
         steps:
             -   name: Checkout PHPUnit code
-                uses: actions/checkout@v4
+                uses: actions/checkout@v5
                 with:
                     repository: 'sebastianbergmann/phpunit'
 
@@ -180,13 +180,13 @@ jobs:
                     tools: none
 
             -   name: Install java
-                uses: actions/setup-java@v4
+                uses: actions/setup-java@v5
                 with:
                     distribution: zulu
                     java-version: 11
 
             -   name: Retrieve built PHP-Scoper PHAR
-                uses: actions/download-artifact@v4
+                uses: actions/download-artifact@v5
                 with:
                     name: php-scoper-phar-${{ matrix.php-version }}
                     path: bin
