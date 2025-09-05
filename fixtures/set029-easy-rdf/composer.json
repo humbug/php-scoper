@@ -7,5 +7,10 @@
             "type": "vcs",
             "url": "https://github.com/zozlak/easyrdf.git"
         }
-    ]
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "@php patchRdfXml.php"
+        ]
+    }
 }
