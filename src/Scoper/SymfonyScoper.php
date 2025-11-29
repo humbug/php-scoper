@@ -18,7 +18,6 @@ use Humbug\PhpScoper\Scoper\Symfony\XmlScoper as SymfonyXmlScoper;
 use Humbug\PhpScoper\Scoper\Symfony\YamlScoper as SymfonyYamlScoper;
 use Humbug\PhpScoper\Symbol\EnrichedReflector;
 use Humbug\PhpScoper\Symbol\SymbolsRegistry;
-use PhpParser\Error as PhpParserError;
 use function func_get_args;
 
 /**
@@ -47,11 +46,6 @@ final class SymfonyScoper implements Scoper
         );
     }
 
-    /**
-     * Scopes PHP files.
-     *
-     * @throws PhpParserError
-     */
     public function scope(string $filePath, string $contents): string
     {
         return $this->decoratedScoper->scope(...func_get_args());

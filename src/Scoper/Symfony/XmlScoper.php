@@ -106,8 +106,8 @@ final readonly class XmlScoper implements Scoper
         }
 
         return self::replaceClasses(
-            array_filter($matches['namespace']),
-            array_filter($matches['separator']),
+            $matches['namespace'],
+            $matches['separator'],
             $prefix,
             $contents,
             $enrichedReflector,

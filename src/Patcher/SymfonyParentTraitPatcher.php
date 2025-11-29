@@ -60,6 +60,9 @@ final class SymfonyParentTraitPatcher implements Patcher
         return false;
     }
 
+    /**
+     * @return list<string>
+     */
     private function getReplacement(string $prefix): array
     {
         if (!array_key_exists($prefix, $this->replacement)) {
@@ -69,6 +72,9 @@ final class SymfonyParentTraitPatcher implements Patcher
         return $this->replacement[$prefix];
     }
 
+    /**
+     * @return list<string>
+     */
     private static function generateReplacement(string $prefix): array
     {
         $prefixLength = strlen($prefix);

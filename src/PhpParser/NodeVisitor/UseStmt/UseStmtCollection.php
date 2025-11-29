@@ -28,7 +28,6 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\Stmt\UseUse;
 use Traversable;
 use function array_key_exists;
 use function count;
@@ -40,13 +39,18 @@ use function strtolower;
  * may use.
  *
  * @private
+ *
+ * @implements IteratorAggregate<string, list<Use_>>
  */
 final class UseStmtCollection implements IteratorAggregate
 {
+    /**
+     * @var array<string, Name|null>
+     */
     private array $hashes = [];
 
     /**
-     * @var array<string, list<Use_[]>>
+     * @var array<string, list<Use_>>
      */
     private array $nodes = [
         null => [],
@@ -110,7 +114,7 @@ final class UseStmtCollection implements IteratorAggregate
     }
 
     /**
-     * @return Traversable<string, list<Use_[]>>
+     * @return Traversable<string, list<Use_>>
      */
     public function getIterator(): Traversable
     {
@@ -129,14 +133,13 @@ final class UseStmtCollection implements IteratorAggregate
         return strtolower($node->getFirst());
     }
 
+    /**
+     * @param list<Use_> $useStatements
+     */
     private function find(array $useStatements, bool $isFunctionName, bool $isConstantName, string $name): ?Name
     {
         foreach ($useStatements as $use_) {
             foreach ($use_->uses as $useStatement) {
-                if (!($useStatement instanceof UseUse)) {
-                    continue;
-                }
-
                 $type = Use_::TYPE_UNKNOWN !== $use_->type ? $use_->type : $useStatement->type;
 
                 if ($name !== $useStatement->getAlias()->toLowerString()) {

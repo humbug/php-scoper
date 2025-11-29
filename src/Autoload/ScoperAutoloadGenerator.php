@@ -54,6 +54,9 @@ final class ScoperAutoloadGenerator
     /** @var non-empty-string */
     private static string $eol;
 
+    /**
+     * @param string[] $excludedComposerAutoloadFileHashes
+     */
     public function __construct(
         private readonly SymbolsRegistry $registry,
         private readonly array $excludedComposerAutoloadFileHashes,
@@ -306,7 +309,7 @@ final class ScoperAutoloadGenerator
             $originalFQ = new FullyQualified($exposed);
 
             $namespace = $originalFQ->slice(0, -1);
-            $functionName = null === $namespace ? $exposed : (string) $originalFQ->slice(1);
+            $functionName = null === $namespace ? $exposed : (string) $originalFQ->slice(-1, 1);
 
             $groupedFunctions[(string) $namespace][] = [$exposed, $functionName, $prefix];
         }

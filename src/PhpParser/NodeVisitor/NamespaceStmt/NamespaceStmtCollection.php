@@ -31,6 +31,8 @@ use function end;
  * belongs a node.
  *
  * @private
+ *
+ * @implements IteratorAggregate<Namespace_>
  */
 final class NamespaceStmtCollection implements IteratorAggregate, Countable
 {
@@ -96,6 +98,9 @@ final class NamespaceStmtCollection implements IteratorAggregate, Countable
         return $this->getNodeNamespaceName($parentNode);
     }
 
+    /**
+     * @return Traversable<Namespace_>
+     */
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->nodes);

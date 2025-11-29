@@ -41,7 +41,6 @@ use function array_values;
 use function explode;
 use function implode;
 use function in_array;
-use function is_string;
 use function ltrim;
 use function preg_match as native_preg_match;
 use function strtolower;
@@ -82,6 +81,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         'is_a',
         'is_callable',
         'is_subclass_of',
+        'method_exists',
         'spl_autoload_register',
         'trait_exists',
     ];
@@ -138,7 +138,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
     private function prefixStringScalar(String_ $string): String_
     {
-        if (!(ParentNodeAppender::hasParent($string) && is_string($string->value))
+        if (!(ParentNodeAppender::hasParent($string))
             || (
                 1 !== native_preg_match(self::CLASS_LIKE_PATTERN, $string->value)
                 && 1 !== native_preg_match(self::CONSTANT_FETCH_PATTERN, $string->value)
@@ -212,11 +212,10 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     {
         $class = $newNode->class;
 
-        if (!($class instanceof Name)) {
-            throw UnexpectedParsingScenario::create();
-        }
-
-        if (in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)) {
+        if ($class instanceof Name
+            && in_array(strtolower($class->toString()), self::DATETIME_CLASSES, true)
+        ) {
+            // Value cannot be a class name, hence we should not try to prefix it.
             return $string;
         }
 
@@ -258,6 +257,20 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
         if ('define' === $functionName
             && $this->belongsToTheGlobalNamespace($string)
         ) {
+            return $string;
+        }
+
+        if ('method_exists' === $functionName) {
+            $firstArgument = $functionNode->args[0];
+            $isFirstArgument = $firstArgument instanceof Arg
+                && $firstArgument->value === $string;
+
+            if ($isFirstArgument) {
+                return $this->enrichedReflector->isClassExcluded($normalizedValue)
+                    ? $string
+                    : $this->createPrefixedString($string);
+            }
+
             return $string;
         }
 

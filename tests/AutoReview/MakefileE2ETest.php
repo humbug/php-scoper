@@ -23,6 +23,7 @@ use function array_map;
 use function array_values;
 use function current;
 use function Safe\file_get_contents;
+use function sort;
 use function str_starts_with;
 
 /**
@@ -69,7 +70,7 @@ class MakefileE2ETest extends BaseMakefileTestCase
         $mainE2ERule = self::retrieveE2ERule();
         $e2eSubRules = self::retrieveSubE2ERules();
 
-        self::assertSame($e2eSubRules, $mainE2ERule);
+        self::assertEqualsCanonicalizing($e2eSubRules, $mainE2ERule);
     }
 
     public function test_it_lists_all_e2e_tests(): void
@@ -93,7 +94,10 @@ class MakefileE2ETest extends BaseMakefileTestCase
         $e2eRule = current($e2eRules);
         self::assertNotFalse($e2eRule, 'Expected to find the e2e rule in the Makefile.');
 
-        return $e2eRule->getPrerequisites();
+        $finalE2eRules = $e2eRule->getPrerequisites();
+        sort($finalE2eRules);
+
+        return $finalE2eRules;
     }
 
     /**

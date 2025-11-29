@@ -211,7 +211,6 @@ final class UseStmtNameTest extends TestCase
         $traverser->traverse($statements);
 
         foreach ($useStatements as $useStmts) {
-            /** @var Use_[] $useStmts */
             foreach ($useStmts as $useStmt) {
                 foreach ($useStmt->uses as $useUse) {
                     return $useUse->name;

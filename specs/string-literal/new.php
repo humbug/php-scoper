@@ -180,4 +180,90 @@ return [
 
             PHP,
     ),
+
+    'new parent is a class name' => <<<'PHP'
+        <?php
+        namespace Acme;
+
+        class BplaaYai {}
+
+        new BplaaYai('abc');
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        class BplaaYai
+        {
+        }
+        new BplaaYai('abc');
+
+        PHP,
+
+    'new parent is a variable' => <<<'PHP'
+        <?php
+        namespace Acme;
+
+        class BplaaYai {}
+
+        $class = '\Acme\BplaaYai';
+        new $class('abc');
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        class BplaaYai
+        {
+        }
+        $class = 'Humbug\Acme\BplaaYai';
+        new $class('abc');
+
+        PHP,
+
+    'new parent is an expression (variable)' => <<<'PHP'
+        <?php
+        namespace Acme;
+
+        class BplaaYai {}
+
+        $class = '\Acme\BplaaYai';
+        new $class('abc');
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        class BplaaYai
+        {
+        }
+        $class = 'Humbug\Acme\BplaaYai';
+        new $class('abc');
+
+        PHP,
+
+    'new parent is an anonymous class' => <<<'PHP'
+        <?php
+        namespace Acme;
+
+        class BplaaYai {}
+
+        new class('abc') {};
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        class BplaaYai
+        {
+        }
+        new class('abc')
+        {
+        };
+
+        PHP,
 ];

@@ -46,7 +46,6 @@ final class FullyQualifiedFactoryTest extends TestCase
     public static function fullyQualifiedNameProvider(): iterable
     {
         foreach (NameFactoryTest::nameProvider() as $label => [$name1, $name2, $attributes, $expected]) {
-            /** @var Name $expected */
             $expected = self::toFullyQualified($expected);
 
             yield $label => [$name1, $name2, $attributes, $expected];

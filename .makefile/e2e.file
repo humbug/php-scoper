@@ -41,7 +41,7 @@ e2e_013: $(PHP_SCOPER_PHAR_BIN)
 
 	$(PHP_SCOPER_PHAR_BIN) init --working-dir=build/set013 --no-interaction
 
-	diff src/scoper.inc.php.tpl build/set013/scoper.inc.php
+	diff res/scoper.inc.php.tpl build/set013/scoper.inc.php
 
 .PHONY: e2e_014
 e2e_014: # Runs end-to-end tests for the fixture set 014 — Codebase with PSR-0 autoloading
@@ -73,8 +73,7 @@ e2e_016: $(PHP_SCOPER_PHAR_BIN) fixtures/set016-symfony-finder/vendor
 		--output-dir=../../build/set016-symfony-finder \
 		--force \
 		--no-config \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set016-symfony-finder dump-autoload
 
 	php build/set016-symfony-finder/main.php > build/set016-symfony-finder/output
@@ -88,8 +87,7 @@ e2e_017: $(PHP_SCOPER_PHAR_BIN) fixtures/set017-symfony-di/vendor
 		--output-dir=../../build/set017-symfony-di \
 		--force \
 		--no-config \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set017-symfony-di dump-autoload
 
 	php build/set017-symfony-di/main.php > build/set017-symfony-di/output
@@ -103,8 +101,7 @@ e2e_018: $(PHP_SCOPER_PHAR_BIN) fixtures/set018-nikic-parser/vendor
 		--prefix=_Prefixed \
 		--output-dir=../../build/set018-nikic-parser \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set018-nikic-parser dump-autoload
 
 	php build/set018-nikic-parser/main.php > build/set018-nikic-parser/output
@@ -118,8 +115,7 @@ e2e_019: $(PHP_SCOPER_PHAR_BIN) fixtures/set019-symfony-console/vendor
 		--output-dir=../../build/set019-symfony-console \
 		--force \
 		--no-config \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set019-symfony-console dump-autoload
 
 	php build/set019-symfony-console/main.php > build/set019-symfony-console/output
@@ -163,8 +159,7 @@ e2e_024: $(PHP_SCOPER_PHAR_BIN) fixtures/set024/vendor
 		--working-dir=fixtures/set024 \
 		--output-dir=../../build/set024 \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set024 dump-autoload
 
 	php build/set024/main.php > build/set024/output
@@ -177,8 +172,7 @@ e2e_025: $(PHP_SCOPER_PHAR_BIN) fixtures/set025/vendor
 		--working-dir=fixtures/set025 \
 		--output-dir=../../build/set025 \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set025 dump-autoload
 
 	php build/set025/main.php > build/set025/output
@@ -191,30 +185,45 @@ e2e_027: $(PHP_SCOPER_PHAR_BIN) fixtures/set027-laravel/vendor
 		--working-dir=fixtures/set027-laravel \
 		--output-dir=../../build/set027-laravel \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set027-laravel dump-autoload --no-dev
 
 	NO_COLOR=1 php build/set027-laravel/artisan -V > build/set027-laravel/output
 	diff fixtures/set027-laravel/expected-output build/set027-laravel/output
 
-.PHONY: e2e_028
-e2e_028: # Runs end-to-end tests for the fixture set 028 — Scoping of a Symfony project
-e2e_028: $(PHP_SCOPER_PHAR_BIN) fixtures/set028-symfony/vendor
+.PHONY: e2e_041
+e2e_041: # Runs end-to-end tests for the fixture set 041 — Scoping of a Symfony project
+e2e_041: $(PHP_SCOPER_PHAR_BIN) fixtures/set041-symfony64/vendor
 	$(PHP_SCOPER_PHAR) add-prefix \
-		--working-dir=fixtures/set028-symfony \
-		--output-dir=../../build/set028-symfony \
+		--working-dir=fixtures/set041-symfony64 \
+		--output-dir=../../build/set041-symfony64 \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 
-	APP_ENV=dev composer --working-dir=fixtures/set028-symfony dump-autoload --no-dev
-	APP_ENV=dev php fixtures/set028-symfony/bin/console -V > fixtures/set028-symfony/expected-output
+	APP_ENV=dev composer --working-dir=fixtures/set041-symfony64 dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set041-symfony64/bin/console -V > fixtures/set041-symfony64/expected-output
 
-	APP_ENV=dev composer --working-dir=build/set028-symfony dump-autoload --no-dev
-	APP_ENV=dev php build/set028-symfony/bin/console -V > build/set028-symfony/output
+	APP_ENV=dev composer --working-dir=build/set041-symfony64 dump-autoload --no-dev
+	APP_ENV=dev php build/set041-symfony64/bin/console -V > build/set041-symfony64/output
 
-	diff fixtures/set028-symfony/expected-output build/set028-symfony/output
+	diff fixtures/set041-symfony64/expected-output build/set041-symfony64/output
+
+.PHONY: e2e_042
+e2e_042: # Runs end-to-end tests for the fixture set 042 — Scoping of a Symfony project
+e2e_042: $(PHP_SCOPER_PHAR_BIN) fixtures/set042-symfony7/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set042-symfony7 \
+		--output-dir=../../build/set042-symfony7 \
+		--force \
+		--no-interaction
+
+	APP_ENV=dev composer --working-dir=fixtures/set042-symfony7 dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set042-symfony7/bin/console -V > fixtures/set042-symfony7/expected-output
+
+	APP_ENV=dev composer --working-dir=build/set042-symfony7 dump-autoload --no-dev
+	APP_ENV=dev php build/set042-symfony7/bin/console -V > build/set042-symfony7/output
+
+	diff fixtures/set042-symfony7/expected-output build/set042-symfony7/output
 
 .PHONY: e2e_029
 e2e_029: # Runs end-to-end tests for the fixture set 029 — Scoping of the EasyRdf project
@@ -224,8 +233,7 @@ e2e_029: $(PHP_SCOPER_PHAR_BIN) fixtures/set029-easy-rdf/vendor
 		--output-dir=../../build/set029-easy-rdf \
 		--no-config \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 
 	php fixtures/set029-easy-rdf/main.php > fixtures/set029-easy-rdf/expected-output
 
@@ -242,8 +250,7 @@ e2e_030: $(PHP_SCOPER_PHAR_BIN) fixtures/set030/vendor
 		--output-dir=../../build/set030 \
 		--no-config \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 
 	php fixtures/set030/main.php > fixtures/set030/expected-output
 
@@ -259,8 +266,7 @@ e2e_031: $(PHP_SCOPER_PHAR_BIN)
 		--working-dir=fixtures/set031-extension-symbol \
 		--output-dir=../../build/set031-extension-symbol \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 
 	diff fixtures/set031-extension-symbol/expected-main.php build/set031-extension-symbol/main.php
 
@@ -271,8 +277,7 @@ e2e_032: $(PHP_SCOPER_PHAR_BIN)
 		--working-dir=fixtures/set032-isolated-finder \
 		--output-dir=../../build/set032-isolated-finder \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 
 	tree build/set032-isolated-finder > build/set032-isolated-finder/actual-tree
 
@@ -285,8 +290,7 @@ e2e_033: $(PHP_SCOPER_PHAR_BIN) fixtures/set033-user-global-function/vendor
 		--working-dir=fixtures/set033-user-global-function \
 		--output-dir=../../build/set033-user-global-function \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 
 	php fixtures/set033-user-global-function/index.php > fixtures/set033-user-global-function/expected-output
 
@@ -302,8 +306,7 @@ e2e_034: $(PHP_SCOPER_PHAR_BIN) fixtures/set034-installed-versions/vendor
 		--working-dir=fixtures/set034-installed-versions \
 		--output-dir=../../build/set034-installed-versions \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 
 	php fixtures/set034-installed-versions/index.php > fixtures/set034-installed-versions/expected-output
 
@@ -326,8 +329,7 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) \
 		--output-dir=../../../build/set035-composer-files-autoload/scoped-guzzle5-include \
 		--force \
 		--no-config \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set035-composer-files-autoload/scoped-guzzle5-include dump-autoload
 	rm -rf build/set035-composer-files-autoload/guzzle5-include || true
 
@@ -336,8 +338,7 @@ e2e_035: $(PHP_SCOPER_PHAR_BIN) \
 		--output-dir=../../../build/set035-composer-files-autoload/scoped-composer-variable-access \
 		--force \
 		--config=scoper.inc.php \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set035-composer-files-autoload/scoped-composer-variable-access dump-autoload
 	rm -rf build/set035-composer-files-autoload/composer-variable-access || true
 
@@ -358,8 +359,7 @@ e2e_036: $(PHP_SCOPER_PHAR_BIN)
 		--output-dir=../../build/set036 \
 		--force \
 		--no-config \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set036 dump-autoload
 
 	php build/set036/bin/greet.php > build/set036/output
@@ -378,8 +378,7 @@ e2e_037: $(PHP_SCOPER_PHAR_BIN) build/set011/bin/greet.phar
 		--working-dir=fixtures/set037-double-scoping \
 		--output-dir=../../build/set037 \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	cp -R fixtures/set037-double-scoping/tests/ build/set037/tests/
 	composer --working-dir=build/set037 dump-autoload
 
@@ -416,8 +415,7 @@ e2e_039: $(PHP_SCOPER_PHAR_BIN)
 		--working-dir=fixtures/set039-min-php-version \
 		--output-dir=../../build/set039 \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set039 dump-autoload
 
 	docker run \
@@ -441,8 +439,7 @@ e2e_040: $(PHP_SCOPER_PHAR_BIN)
 		--working-dir=fixtures/set040-polyfills \
 		--output-dir=../../build/set040 \
 		--force \
-		--no-interaction \
-		--stop-on-failure
+		--no-interaction
 	composer --working-dir=build/set040 dump-autoload
 
 	php build/set040/index.php > build/set040/output || true
@@ -542,12 +539,19 @@ fixtures/set027-laravel/composer.lock: fixtures/set027-laravel/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set027-laravel update --lock && touch -c $(@)"
 
-fixtures/set028-symfony/vendor: fixtures/set028-symfony/composer.lock
-	composer --working-dir=fixtures/set028-symfony install --no-dev --no-scripts
+fixtures/set041-symfony64/vendor: fixtures/set041-symfony64/composer.lock
+	composer --working-dir=fixtures/set041-symfony64 install --no-dev --no-scripts
 	touch -c $@
-fixtures/set028-symfony/composer.lock: fixtures/set028-symfony/composer.json
+fixtures/set041-symfony64/composer.lock: fixtures/set041-symfony64/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
-	@echo "$$ composer --working-dir=fixtures/set028-symfony update --lock && touch -c $(@)"
+	@echo "$$ composer --working-dir=fixtures/set041-symfony64 update --lock && touch -c $(@)"
+
+fixtures/set042-symfony7/vendor: fixtures/set042-symfony7/composer.lock
+	composer --working-dir=fixtures/set042-symfony7 install --no-dev --no-scripts
+	touch -c $@
+fixtures/set042-symfony7/composer.lock: fixtures/set042-symfony7/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set042-symfony7 update --lock && touch -c $(@)"
 
 fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
 	composer --working-dir=fixtures/set029-easy-rdf install --no-dev

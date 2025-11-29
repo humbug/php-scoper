@@ -96,7 +96,7 @@ return [
 
         $file = new \stdClass();
 
-        ($file instanceof \SplFileInfo) ? $file : new \SplFileInfo($file);
+        $file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
 
         ----
         <?php
@@ -104,7 +104,7 @@ return [
         namespace Humbug\Acme;
 
         $file = new \stdClass();
-        ($file instanceof \SplFileInfo) ? $file : new \SplFileInfo($file);
+        $file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
 
         PHP,
 

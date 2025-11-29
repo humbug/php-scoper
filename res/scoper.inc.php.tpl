@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use Isolated\Symfony\Component\Finder\Finder;
+/** @var Symfony\Component\Finder\Finder $finder */
+$finder = Isolated\Symfony\Component\Finder\Finder::class;
 
 // You can do your own things here, e.g. collecting symbols to expose dynamically
 // or files to exclude.
@@ -16,7 +17,7 @@ use Isolated\Symfony\Component\Finder\Finder;
 // $excludedFiles = array_map(
 //     static fn (SplFileInfo $fileInfo) => $fileInfo->getPathName(),
 //     iterator_to_array(
-//         Finder::create()->files()->in(__DIR__),
+//         $finder::create()->files()->in(__DIR__),
 //         false,
 //     ),
 // );
@@ -42,8 +43,8 @@ return [
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#finders-and-paths
     'finders' => [
         /*
-        Finder::create()->files()->in('src'),
-        Finder::create()
+        $finder::create()->files()->in('src'),
+        $finder::create()
             ->files()
             ->ignoreVCS(true)
             ->notName('/LICENSE|.*\\.md|.*\\.dist|Makefile|composer\\.json|composer\\.lock/')
@@ -56,7 +57,7 @@ return [
                 'vendor-bin',
             ])
             ->in('vendor'),
-        Finder::create()->append([
+        $finder::create()->append([
             'composer.json',
         ]),
         */
