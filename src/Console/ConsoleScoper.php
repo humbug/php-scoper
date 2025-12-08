@@ -255,10 +255,10 @@ final readonly class ConsoleScoper
 
         $commonDirectoryPath = self::getCommonDirectoryPath($config);
 
-        $mapFiles = static fn (array $inputFileTuple) => new File(
+        $mapFiles = static fn (array $inputFileTuple, string $fileKey ) => new File(
             Path::normalize($inputFileTuple[0]),
             $inputFileTuple[1],
-            $outputDir.str_replace($commonDirectoryPath, '', Path::normalize($inputFileTuple[0])),
+            $outputDir.str_replace($commonDirectoryPath, '', Path::normalize($fileKey)),
         );
 
         return [
@@ -266,13 +266,15 @@ final readonly class ConsoleScoper
                 array_map(
                     $mapFiles,
                     $filesWithContent,
-                ),
+                    array_keys( $filesWithContent )
+                )
             ),
             array_values(
                 array_map(
                     $mapFiles,
                     $excludedFilesWithContents,
-                ),
+                    array_keys( $excludedFilesWithContents )
+                )
             ),
         ];
     }
