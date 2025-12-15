@@ -49,7 +49,7 @@ jobs:
             -   name: Ensure the PHAR works
                 run: bin/php-scoper.phar --version
 
-            -   uses: actions/upload-artifact@v5
+            -   uses: actions/upload-artifact@v6
                 name: Upload the PHAR artifact
                 with:
                     name: php-scoper-phar-${{ matrix.php }}
@@ -121,7 +121,7 @@ jobs:
                 uses: ./.github/actions/install-vendor
 
             -   name: Retrieve built PHAR
-                uses: actions/download-artifact@v6
+                uses: actions/download-artifact@v7
                 with:
                     name: php-scoper-phar-${{ matrix.php }}
                     path: bin
@@ -186,7 +186,7 @@ jobs:
                     java-version: 11
 
             -   name: Retrieve built PHP-Scoper PHAR
-                uses: actions/download-artifact@v6
+                uses: actions/download-artifact@v7
                 with:
                     name: php-scoper-phar-${{ matrix.php-version }}
                     path: bin
