@@ -47,7 +47,7 @@ $overriddenRules = [
     ],
     'mb_str_functions' => false,
     'no_unneeded_control_parentheses' => false,
-    'yoda_style' => false,
+    //'yoda_style' => false,
 ];
 
 $config = new FidryConfig('', 82_000);
