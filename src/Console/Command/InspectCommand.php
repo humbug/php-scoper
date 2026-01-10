@@ -122,7 +122,8 @@ final class InspectCommand implements Command, CommandAware
         }
 
         $symbolsRegistry = new SymbolsRegistry();
-        $fileContents = $config->getFilesWithContents()[$filePath][1];
+        $filesWithContents = $config->getFilesWithContents();
+        $fileContents = ($filesWithContents[$filePath] ?? $filesWithContents[realpath($filePath)])[1];
 
         $scopedContents = $this->scopeFile(
             $config,
