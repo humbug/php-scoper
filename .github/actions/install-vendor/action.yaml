@@ -20,6 +20,6 @@ runs:
             shell: sh
 
         -   name: Install Composer dependencies
-            uses: ramsey/composer-install@v2
+            uses: ramsey/composer-install@1919f6c305aea6ab10e6181a8ddf72317ad77e0e # 2.3.1
             with:
                 dependency-versions: ${{ inputs.dependency-versions }}
