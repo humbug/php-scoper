@@ -39,7 +39,7 @@ updates:
                     - "*"
 
     -   package-ecosystem: "github-actions"
-        directory: ".github/workflows"
+        directory: ".github"
         schedule:
             interval: "weekly"
         groups:
