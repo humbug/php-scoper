@@ -6,7 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/console": "*",
-        "symfony/flex": "^1.10",
+        "symfony/flex": "^2.10",
         "symfony/framework-bundle": "*",
         "symfony/yaml": "*"
     },
