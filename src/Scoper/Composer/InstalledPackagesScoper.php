@@ -85,7 +85,7 @@ final readonly class InstalledPackagesScoper implements Scoper
     private function prefixLockPackages(array $packages): array
     {
         return array_map(
-            fn (stdClass $package) => $this->autoloadPrefixer->prefixPackageAutoloadStatements($package),
+            $this->autoloadPrefixer->prefixPackageAutoloadStatements(...),
             $packages,
         );
     }
