@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "25bdd87fb7e83c27e60dd5da07a4babc",
+    "content-hash": "eca92871bcc9e13056c62f886283be4e",
     "packages": [
         {
             "name": "psr/log",
@@ -663,26 +663,26 @@
         },
         {
             "name": "fidry/makefile",
-            "version": "1.1.1",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/makefile.git",
-                "reference": "ffa1616e74a0398e52ef14560a902319c949a065"
+                "reference": "3d0350840eeeda8127e014f0f7f86917c7f7b4f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/makefile/zipball/ffa1616e74a0398e52ef14560a902319c949a065",
-                "reference": "ffa1616e74a0398e52ef14560a902319c949a065",
+                "url": "https://api.github.com/repos/theofidry/makefile/zipball/3d0350840eeeda8127e014f0f7f86917c7f7b4f1",
+                "reference": "3d0350840eeeda8127e014f0f7f86917c7f7b4f1",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.3"
+                "php": "^8.1"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.4",
                 "ergebnis/composer-normalize": "^2.28",
                 "infection/infection": "^0.29",
-                "phpunit/phpunit": "^12.0"
+                "phpunit/phpunit": "^10.3"
             },
             "type": "library",
             "extra": {
@@ -715,7 +715,7 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/makefile/issues",
-                "source": "https://github.com/theofidry/makefile/tree/1.1.1"
+                "source": "https://github.com/theofidry/makefile/tree/1.0.3"
             },
             "funding": [
                 {
@@ -723,7 +723,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-08T11:36:51+00:00"
+            "time": "2025-02-13T22:15:57+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2706,5 +2706,8 @@
         "php": "^8.2"
     },
     "platform-dev": {},
+    "platform-overrides": {
+        "php": "8.2"
+    },
     "plugin-api-version": "2.9.0"
 }
