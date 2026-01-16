@@ -1,8 +1,1 @@
-
-Fatal error: Uncaught RuntimeException: Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.4.0". You are running 8.3.19. in /Users/tfidry/Project/Humbug/php-scoper/fixtures/set043-symfony8/vendor/composer/platform_check.php:22
-Stack trace:
-#0 /Users/tfidry/Project/Humbug/php-scoper/fixtures/set043-symfony8/vendor/composer/autoload_real.php(25): require()
-#1 /Users/tfidry/Project/Humbug/php-scoper/fixtures/set043-symfony8/vendor/autoload.php(22): ComposerAutoloaderInitfdf1c46a674b6f2d66dd33094d5c201c::getLoader()
-#2 /Users/tfidry/Project/Humbug/php-scoper/fixtures/set043-symfony8/bin/console(14): require('/Users/tfidry/P...')
-#3 {main}
-  thrown in /Users/tfidry/Project/Humbug/php-scoper/fixtures/set043-symfony8/vendor/composer/platform_check.php on line 22
+Symfony 8.0.3 (env: dev, debug: true)
