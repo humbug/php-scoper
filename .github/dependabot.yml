@@ -5,20 +5,19 @@ updates:
         schedule:
             interval: "weekly"
         groups:
-            dependencies:
-                patterns:
-                    - "*"
-
-    -   package-ecosystem: "composer"
-        directory: "."
-        schedule:
-            interval: "weekly"
-        groups:
             jetbrains-phpstorm-stubs:
                 patterns:
                     - "jetbrains/phpstorm-stubs"
                 update-types:
                     - "major"
+            nikic/php-parser:
+                patterns:
+                    - "nikic/php-parser"
+                update-types:
+                    - "major"
+            dependencies:
+                patterns:
+                    - "*"
 
     -   package-ecosystem: "composer"
         directory: "vendor-bin/php-cs-fixer/"
