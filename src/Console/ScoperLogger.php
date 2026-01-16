@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper\Console;
 use Fidry\Console\Application\Application as FidryApplication;
 use Fidry\Console\IO;
 use Humbug\PhpScoper\Throwable\Exception\ParsingException;
-use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,8 +30,8 @@ use function sprintf;
 /**
  * @private
  * @final
+ * @codeCoverageIgnore
  */
-#[CodeCoverageIgnore]
 class ScoperLogger
 {
     private readonly float $startTime;
