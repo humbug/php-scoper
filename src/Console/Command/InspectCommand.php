@@ -37,6 +37,7 @@ use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\CliDumper;
 use function array_key_exists;
 use function Safe\getcwd;
+use function Safe\realpath;
 use function sprintf;
 use const DIRECTORY_SEPARATOR;
 

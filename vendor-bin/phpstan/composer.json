@@ -9,9 +9,9 @@
         }
     },
     "require": {
-        "phpstan/phpstan": "^2.0",
-        "phpstan/extension-installer": "*",
-        "phpstan/phpstan-phpunit": "*",
-        "jangregor/phpstan-prophecy": "*"
+        "phpstan/phpstan": "^2.1.33",
+        "phpstan/extension-installer": ">=1.4.3",
+        "phpstan/phpstan-phpunit": ">=2.0.11",
+        "jangregor/phpstan-prophecy": ">=2.2"
     }
 }

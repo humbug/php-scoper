@@ -151,9 +151,10 @@ final readonly class ConfigurationFactory
             throw InvalidConfigurationFile::forFileNotFound($path);
         }
 
+        $pathTarget = native_readlink($path);
         $isADirectoryLink = is_link($path)
-            && false !== native_readlink($path)
-            && is_file(native_readlink($path));
+            && false !== $pathTarget
+            && is_file($pathTarget);
 
         if (!$isADirectoryLink && !is_file($path)) {
             throw InvalidConfigurationFile::forNotAFile($path);
