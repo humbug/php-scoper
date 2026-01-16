@@ -23,7 +23,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use function is_a;
 
 /**
  * @internal
@@ -54,11 +53,6 @@ class JsonFileScoperTest extends TestCase
             $this->decoratedScoper,
             $autoloadPrefixer,
         );
-    }
-
-    public function test_it_is_a_scoper(): void
-    {
-        self::assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
     }
 
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_composer_file(): void

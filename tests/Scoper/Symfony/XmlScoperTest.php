@@ -27,7 +27,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use function is_a;
 
 /**
  * @internal
@@ -48,11 +47,6 @@ class XmlScoperTest extends TestCase
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
-    }
-
-    public function test_it_is_a_scoper(): void
-    {
-        self::assertTrue(is_a(XmlScoper::class, Scoper::class, true));
     }
 
     #[DataProvider('provideXmlFilesExtensions')]
