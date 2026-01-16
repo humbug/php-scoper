@@ -1,4 +1,5 @@
 {
+    "type": "project",
     "name": "humbug/php-scoper-composer-root-checker",
     "description": "Small utility to manipulate the Composer root version.",
     "license": "proprietary",
