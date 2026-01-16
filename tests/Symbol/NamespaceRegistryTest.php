@@ -41,7 +41,7 @@ class NamespaceRegistryTest extends TestCase
         array $namespaceNames,
         array $namespaceRegexes,
         string $symbol,
-        bool $expected
+        bool $expected,
     ): void {
         // Sanity check
         $this->validateRegexes($namespaceRegexes);
@@ -54,51 +54,6 @@ class NamespaceRegistryTest extends TestCase
         $actual = $registeredNamespaces->belongsToRegisteredNamespace($symbol);
 
         self::assertSame($expected, $actual);
-    }
-
-    #[DataProvider('provideNamespaceSymbol')]
-    public function test_it_can_tell_if_a_namespace_is_a_registered_namespace(
-        array $namespaceNames,
-        array $namespaceRegexes,
-        string $namespaceName,
-        bool $expected
-    ): void {
-        // Sanity check
-        $this->validateRegexes($namespaceRegexes);
-
-        $registeredNamespaces = NamespaceRegistry::create(
-            $namespaceNames,
-            $namespaceRegexes,
-        );
-
-        $actual = $registeredNamespaces->isRegisteredNamespace($namespaceName);
-
-        self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @param string[]     $regexes
-     * @param string[]     $names
-     * @param list<string> $regexes
-     * @param list<string> $names
-     */
-    #[DataProvider('provideNamesAndRegexes')]
-    public function test_it_optimizes_the_registered_names_and_regexes(
-        array $names,
-        array $regexes,
-        array $expectedNames,
-        array $expectedRegexes
-    ): void {
-        $registry = NamespaceRegistry::create(
-            $names,
-            $regexes,
-        );
-
-        NamespaceRegistryAssertions::assertStateIs(
-            $registry,
-            $expectedNames,
-            $expectedRegexes,
-        );
     }
 
     public static function provideSymbol(): iterable
@@ -138,6 +93,97 @@ class NamespaceRegistryTest extends TestCase
         foreach (self::provideNamespaceNameAndRegex() as $title => $set) {
             yield '[name & regex] '.$title => $set;
         }
+    }
+
+    #[DataProvider('provideNamespaceSymbol')]
+    public function test_it_can_tell_if_a_namespace_is_a_registered_namespace(
+        array $namespaceNames,
+        array $namespaceRegexes,
+        string $namespaceName,
+        bool $expected,
+    ): void {
+        // Sanity check
+        $this->validateRegexes($namespaceRegexes);
+
+        $registeredNamespaces = NamespaceRegistry::create(
+            $namespaceNames,
+            $namespaceRegexes,
+        );
+
+        $actual = $registeredNamespaces->isRegisteredNamespace($namespaceName);
+
+        self::assertSame($expected, $actual);
+    }
+
+    public static function provideNamespaceSymbol(): iterable
+    {
+        yield 'namespace matches regex' => [
+            [],
+            ['/^Acme/'],
+            'Acme',
+            true,
+        ];
+
+        yield '(unormalized) namespace matches regex' => [
+            [],
+            ['/^Acme/'],
+            '\Acme',
+            true,
+        ];
+
+        // We are not interested in much more tests here as the targeted code is
+        // mostly ::covered by test_it_can_tell_if_a_symbol_belongs_to_a_registered_namespace()
+    }
+
+    /**
+     * @param string[]     $regexes
+     * @param string[]     $names
+     * @param list<string> $regexes
+     * @param list<string> $names
+     */
+    #[DataProvider('provideNamesAndRegexes')]
+    public function test_it_optimizes_the_registered_names_and_regexes(
+        array $names,
+        array $regexes,
+        array $expectedNames,
+        array $expectedRegexes,
+    ): void {
+        $registry = NamespaceRegistry::create(
+            $names,
+            $regexes,
+        );
+
+        NamespaceRegistryAssertions::assertStateIs(
+            $registry,
+            $expectedNames,
+            $expectedRegexes,
+        );
+    }
+
+    public static function provideNamesAndRegexes(): iterable
+    {
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+            ['acme\bar', 'acme\foo'],
+            ['/^Acme$/', '/^Ecma/'],
+        ];
+
+        yield 'duplicates' => [
+            [
+                'Acme\Foo',
+                'Acme\Foo',
+                'ACME\FOO',
+                '\Acme\Foo',
+                'Acme\Foo\\',
+            ],
+            [
+                '/^Acme$/',
+                '/^Acme$/',
+            ],
+            ['acme\foo'],
+            ['/^Acme$/'],
+        ];
     }
 
     private static function provideNamespaceNames(): iterable
@@ -321,7 +367,7 @@ class NamespaceRegistryTest extends TestCase
         ];
 
         yield 'one level namespace name allowing sub-namespaces; symbol belonging to a sub-namespace' => [
-            ['/^Acme\\\\.*$/'],
+            ['/^Acme\\\.*$/'],
             'Acme\Foo\Bar',
             true,
         ];
@@ -355,52 +401,6 @@ class NamespaceRegistryTest extends TestCase
             ['/^Acme$/i'],
             'Acme\Foo',
             true,
-        ];
-    }
-
-    public static function provideNamespaceSymbol(): iterable
-    {
-        yield 'namespace matches regex' => [
-            [],
-            ['/^Acme/'],
-            'Acme',
-            true,
-        ];
-
-        yield '(unormalized) namespace matches regex' => [
-            [],
-            ['/^Acme/'],
-            '\Acme',
-            true,
-        ];
-
-        // We are not interested in much more tests here as the targeted code is
-        // mostly ::covered by test_it_can_tell_if_a_symbol_belongs_to_a_registered_namespace()
-    }
-
-    public static function provideNamesAndRegexes(): iterable
-    {
-        yield 'nominal' => [
-            ['Acme\Foo', 'Acme\Bar'],
-            ['/^Acme$/', '/^Ecma/'],
-            ['acme\bar', 'acme\foo'],
-            ['/^Acme$/', '/^Ecma/'],
-        ];
-
-        yield 'duplicates' => [
-            [
-                'Acme\Foo',
-                'Acme\Foo',
-                'ACME\FOO',
-                '\Acme\Foo',
-                'Acme\Foo\\',
-            ],
-            [
-                '/^Acme$/',
-                '/^Acme$/',
-            ],
-            ['acme\foo'],
-            ['/^Acme$/'],
         ];
     }
 

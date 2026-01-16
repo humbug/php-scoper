@@ -28,7 +28,7 @@ final class RootVersionProviderTest extends TestCase
     #[DataProvider('contentProvider')]
     public function test_it_can_parse_the_composer_root_version(
         string $content,
-        string $expected
+        string $expected,
     ): void {
         $actual = RootVersionProvider::parseVersion($content);
 

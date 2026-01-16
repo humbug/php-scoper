@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use function is_a;
 
 /**
  * @internal
@@ -41,11 +40,6 @@ class PatchScoperTest extends TestCase
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
-    }
-
-    public function test_is_a_scoper(): void
-    {
-        self::assertTrue(is_a(PatchScoper::class, Scoper::class, true));
     }
 
     public function test_applies_the_list_of_patches_to_the_scoped_file(): void

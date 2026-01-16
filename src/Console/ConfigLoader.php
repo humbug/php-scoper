@@ -60,7 +60,7 @@ final readonly class ConfigLoader
         string $defaultConfigFilePath,
         bool $isInitCommandExecuted,
         array $paths,
-        string $cwd
+        string $cwd,
     ): Configuration {
         $prefix = trim($prefix);
         $defaultConfigFilePath = $this->canonicalizePath($defaultConfigFilePath, $cwd);
@@ -109,7 +109,7 @@ final readonly class ConfigLoader
         IO $io,
         string $prefix,
         array $paths,
-        string $cwd
+        string $cwd,
     ): Configuration {
         $io->writeln(
             'Loading without configuration file.',
@@ -195,7 +195,7 @@ final readonly class ConfigLoader
         ?string $configFilePath,
         string $prefix,
         array $paths,
-        string $cwd
+        string $cwd,
     ): Configuration {
         return $this->configurePaths(
             $this->configurePrefix(
@@ -218,7 +218,7 @@ final readonly class ConfigLoader
 
     private function configurePaths(
         Configuration $config,
-        string $cwd
+        string $cwd,
     ): Configuration {
         // Use the current working directory as the path if no file has been
         // found

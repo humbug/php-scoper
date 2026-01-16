@@ -41,7 +41,7 @@ class ConstantSymbolRegistryTest extends TestCase
         array $names,
         array $regexes,
         string $symbol,
-        bool $expected
+        bool $expected,
     ): void {
         // Sanity check
         $this->validateRegexes($regexes);
@@ -54,64 +54,6 @@ class ConstantSymbolRegistryTest extends TestCase
         $actual = $registry->matches($symbol);
 
         self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @param string[]     $regexes
-     * @param string[]     $names
-     * @param list<string> $regexes
-     * @param list<string> $names
-     */
-    #[DataProvider('provideNamesAndRegexes')]
-    public function test_it_optimizes_the_registered_names_and_regexes(
-        array $names,
-        array $regexes,
-        array $expectedNames,
-        array $expectedRegexes
-    ): void {
-        $registry = SymbolRegistry::createForConstants(
-            $names,
-            $regexes,
-        );
-
-        SymbolRegistryAssertions::assertStateIs(
-            $registry,
-            $expectedNames,
-            $expectedRegexes,
-        );
-    }
-
-    public function test_it_can_create_an_augmented_instance(): void
-    {
-        $registry = SymbolRegistry::createForConstants(
-            ['Acme\Foo'],
-            ['/^Acme\\\\Foo$/'],
-        );
-
-        $augmentedRegistry = $registry->merge(
-            SymbolRegistry::createForConstants(
-                ['Acme\Bar'],
-                ['/^Acme\\\\Bar/'],
-            ),
-        );
-
-        SymbolRegistryAssertions::assertStateIs(
-            $registry,
-            ['acme\Foo'],
-            ['/^Acme\\\\Foo$/'],
-        );
-
-        SymbolRegistryAssertions::assertStateIs(
-            $augmentedRegistry,
-            [
-                'acme\Foo',
-                'acme\Bar',
-            ],
-            [
-                '/^Acme\\\\Foo$/',
-                '/^Acme\\\\Bar/',
-            ],
-        );
     }
 
     public static function provideSymbols(): iterable
@@ -151,6 +93,91 @@ class ConstantSymbolRegistryTest extends TestCase
         foreach (self::provideNameAndRegex() as $title => $set) {
             yield '[name & regex] '.$title => $set;
         }
+    }
+
+    /**
+     * @param string[]     $regexes
+     * @param string[]     $names
+     * @param list<string> $regexes
+     * @param list<string> $names
+     */
+    #[DataProvider('provideNamesAndRegexes')]
+    public function test_it_optimizes_the_registered_names_and_regexes(
+        array $names,
+        array $regexes,
+        array $expectedNames,
+        array $expectedRegexes,
+    ): void {
+        $registry = SymbolRegistry::createForConstants(
+            $names,
+            $regexes,
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $registry,
+            $expectedNames,
+            $expectedRegexes,
+        );
+    }
+
+    public static function provideNamesAndRegexes(): iterable
+    {
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+            ['acme\Foo', 'acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+        ];
+
+        yield 'duplicates' => [
+            [
+                'Acme\Foo',
+                'Acme\Foo',
+                'ACME\FOO',
+                'ACME\FOO',
+                '\Acme\Foo',
+                'Acme\Foo\\',
+            ],
+            [
+                '/^Acme$/',
+                '/^Acme$/',
+            ],
+            ['acme\Foo', 'acme\FOO'],
+            ['/^Acme$/'],
+        ];
+    }
+
+    public function test_it_can_create_an_augmented_instance(): void
+    {
+        $registry = SymbolRegistry::createForConstants(
+            ['Acme\Foo'],
+            ['/^Acme\\\Foo$/'],
+        );
+
+        $augmentedRegistry = $registry->merge(
+            SymbolRegistry::createForConstants(
+                ['Acme\Bar'],
+                ['/^Acme\\\Bar/'],
+            ),
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $registry,
+            ['acme\Foo'],
+            ['/^Acme\\\Foo$/'],
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $augmentedRegistry,
+            [
+                'acme\Foo',
+                'acme\Bar',
+            ],
+            [
+                '/^Acme\\\Foo$/',
+                '/^Acme\\\Bar/',
+            ],
+        );
     }
 
     private static function provideNames(): iterable
@@ -255,7 +282,7 @@ class ConstantSymbolRegistryTest extends TestCase
         ];
 
         yield 'namespaced name; matching' => [
-            ['/^Acme\\\\Foo$/'],
+            ['/^Acme\\\Foo$/'],
             'Acme\Foo',
             true,
         ];
@@ -289,33 +316,6 @@ class ConstantSymbolRegistryTest extends TestCase
             ['/^Acme$/i'],
             'Acme',
             true,
-        ];
-    }
-
-    public static function provideNamesAndRegexes(): iterable
-    {
-        yield 'nominal' => [
-            ['Acme\Foo', 'Acme\Bar'],
-            ['/^Acme$/', '/^Ecma/'],
-            ['acme\Foo', 'acme\Bar'],
-            ['/^Acme$/', '/^Ecma/'],
-        ];
-
-        yield 'duplicates' => [
-            [
-                'Acme\Foo',
-                'Acme\Foo',
-                'ACME\FOO',
-                'ACME\FOO',
-                '\Acme\Foo',
-                'Acme\Foo\\',
-            ],
-            [
-                '/^Acme$/',
-                '/^Acme$/',
-            ],
-            ['acme\Foo', 'acme\FOO'],
-            ['/^Acme$/'],
         ];
     }
 

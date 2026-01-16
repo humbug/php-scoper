@@ -40,22 +40,6 @@ class PhpStormStubsReflectorTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    #[DataProvider('provideFunctions')]
-    public function test_it_can_identify_internal_functions(string $class, bool $expected): void
-    {
-        $actual = $this->reflector->isFunctionInternal($class);
-
-        self::assertSame($expected, $actual);
-    }
-
-    #[DataProvider('provideConstants')]
-    public function test_it_can_identify_internal_constants(string $class, bool $expected): void
-    {
-        $actual = $this->reflector->isConstantInternal($class);
-
-        self::assertSame($expected, $actual);
-    }
-
     public static function provideClasses(): iterable
     {
         yield 'PHP internal class' => [
@@ -112,6 +96,14 @@ class PhpStormStubsReflectorTest extends TestCase
             'Pdo\Pgsql',
             'Pdo\Sqlite',
         );
+    }
+
+    #[DataProvider('provideFunctions')]
+    public function test_it_can_identify_internal_functions(string $class, bool $expected): void
+    {
+        $actual = $this->reflector->isFunctionInternal($class);
+
+        self::assertSame($expected, $actual);
     }
 
     public static function provideFunctions(): iterable
@@ -561,6 +553,14 @@ class PhpStormStubsReflectorTest extends TestCase
             'exit',
             'die',
         );
+    }
+
+    #[DataProvider('provideConstants')]
+    public function test_it_can_identify_internal_constants(string $class, bool $expected): void
+    {
+        $actual = $this->reflector->isConstantInternal($class);
+
+        self::assertSame($expected, $actual);
     }
 
     public static function provideConstants(): iterable

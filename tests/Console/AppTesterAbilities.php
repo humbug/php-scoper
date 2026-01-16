@@ -37,7 +37,7 @@ trait AppTesterAbilities
     private function assertExpectedOutput(
         string $expectedOutput,
         int $expectedStatusCode,
-        callable ...$extraNormalizers
+        callable ...$extraNormalizers,
     ): void {
         OutputAssertions::assertSameOutput(
             $expectedOutput,

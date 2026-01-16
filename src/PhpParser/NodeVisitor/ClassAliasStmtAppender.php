@@ -179,7 +179,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
     private static function createAliasStmt(
         string $originalName,
         string $prefixedName,
-        Node $stmt
+        Node $stmt,
     ): Expression {
         $call = new ClassAliasFuncCall(
             new FullyQualified($prefixedName),

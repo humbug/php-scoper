@@ -25,7 +25,7 @@ final class SymbolRegistryAssertions
     public static function assertStateIs(
         SymbolRegistry $symbolRegistry,
         array $expectedNames,
-        array $expectedRegexes
+        array $expectedRegexes,
     ): void {
         PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedNames,

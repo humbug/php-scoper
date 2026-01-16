@@ -42,7 +42,7 @@ final class SymbolRegistry
      */
     public static function create(
         array $names = [],
-        array $regexes = []
+        array $regexes = [],
     ): self {
         return new self(
             array_values(self::normalizeNames($names)),
@@ -60,7 +60,7 @@ final class SymbolRegistry
      */
     public static function createForConstants(
         array $names = [],
-        array $regexes = []
+        array $regexes = [],
     ): self {
         return new self(
             array_values(self::normalizeConstantNames($names)),
@@ -76,7 +76,7 @@ final class SymbolRegistry
     private function __construct(
         array $names,
         private readonly array $regexes,
-        private readonly bool $constants
+        private readonly bool $constants,
     ) {
         $this->names = array_flip($names);
 
@@ -183,7 +183,7 @@ final class SymbolRegistry
 
     private static function normalizeName(string $name): string
     {
-        return trim($name, '\\ ');
+        return trim($name, '\ ');
     }
 
     /**

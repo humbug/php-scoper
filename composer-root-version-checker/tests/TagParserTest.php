@@ -30,7 +30,7 @@ final class TagParserTest extends TestCase
     #[DataProvider('githubResponseContentProvider')]
     public function test_it_can_parse_the_tag_from_the_github_response_content(
         string $responseContent,
-        string $expected
+        string $expected,
     ): void {
         $actual = TagParser::parse($responseContent);
 
@@ -146,7 +146,7 @@ final class TagParserTest extends TestCase
     #[DataProvider('invalidGithubResponseContentProvider')]
     public function test_it_cannot_parse_the_tag_from_an_invalid_github_response_content(
         string $responseContent,
-        Exception $exception
+        Exception $exception,
     ): void {
         $this->expectException($exception::class);
         $this->expectExceptionMessage($exception->getMessage());
@@ -203,7 +203,7 @@ final class TagParserTest extends TestCase
                         },
                         "node_id": "MDM6UmVmNDQzODQ0NDc6cmVmcy90YWdzLzAuMTguMC1yYy4w"
                     }".
-                    EOF
+                    EOF,
             ),
         ];
 

@@ -28,7 +28,7 @@ RECTOR_BIN = vendor-bin/rector/vendor/bin/rector
 RECTOR = $(RECTOR_BIN)
 
 PHP_CS_FIXER_BIN = vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/php-cs-fixer
-PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix
+PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix --verbose
 
 BLACKFIRE = blackfire
 

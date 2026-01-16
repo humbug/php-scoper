@@ -74,7 +74,7 @@ class TraverserFactory
         string $prefix,
         EnrichedReflector $reflector,
         PhpScoper $scoper,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
     ): array {
         $namespaceStatements = new NamespaceStmtCollection();
         $useStatements = new UseStmtCollection();

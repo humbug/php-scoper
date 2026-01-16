@@ -40,7 +40,7 @@ final class SymbolsConfigurationFactoryTest extends TestCase
     #[DataProvider('configProvider')]
     public function test_it_can_create_a_symbols_config_object_from_the_config(
         array $config,
-        SymbolsConfiguration $expected
+        SymbolsConfiguration $expected,
     ): void {
         $actual = $this->factory->createSymbolsConfiguration($config);
 
@@ -104,13 +104,13 @@ final class SymbolsConfigurationFactoryTest extends TestCase
         yield 'exclude namespace regex' => [
             [
                 ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
-                    '~^PHPUnit\\Runner(\\.*)?$~',
+                    '~^PHPUnit\Runner(\.*)?$~',
                 ],
             ],
             SymbolsConfiguration::create(
                 excludedNamespaces: NamespaceRegistry::create(
                     [],
-                    ['~^PHPUnit\\Runner(\\.*)?$~i'],
+                    ['~^PHPUnit\Runner(\.*)?$~i'],
                 ),
             ),
         ];
@@ -118,13 +118,13 @@ final class SymbolsConfigurationFactoryTest extends TestCase
         yield 'exclude namespace regex with flags' => [
             [
                 ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
-                    '~^PHPUnit\\Runner(\\.*)?$~u',
+                    '~^PHPUnit\Runner(\.*)?$~u',
                 ],
             ],
             SymbolsConfiguration::create(
                 excludedNamespaces: NamespaceRegistry::create(
                     [],
-                    ['~^PHPUnit\\Runner(\\.*)?$~ui'],
+                    ['~^PHPUnit\Runner(\.*)?$~ui'],
                 ),
             ),
         ];
@@ -132,13 +132,13 @@ final class SymbolsConfigurationFactoryTest extends TestCase
         yield 'exclude namespace regex with case insensitive flag' => [
             [
                 ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
-                    '~^PHPUnit\\Runner(\\.*)?$~i',
+                    '~^PHPUnit\Runner(\.*)?$~i',
                 ],
             ],
             SymbolsConfiguration::create(
                 excludedNamespaces: NamespaceRegistry::create(
                     [],
-                    ['~^PHPUnit\\Runner(\\.*)?$~i'],
+                    ['~^PHPUnit\Runner(\.*)?$~i'],
                 ),
             ),
         ];
@@ -146,13 +146,13 @@ final class SymbolsConfigurationFactoryTest extends TestCase
         yield 'exclude namespace regex with several flags flag' => [
             [
                 ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
-                    '~^PHPUnit\\Runner(\\.*)?$~uiA',
+                    '~^PHPUnit\Runner(\.*)?$~uiA',
                 ],
             ],
             SymbolsConfiguration::create(
                 excludedNamespaces: NamespaceRegistry::create(
                     [],
-                    ['~^PHPUnit\\Runner(\\.*)?$~uiA'],
+                    ['~^PHPUnit\Runner(\.*)?$~uiA'],
                 ),
             ),
         ];
@@ -164,7 +164,7 @@ final class SymbolsConfigurationFactoryTest extends TestCase
                 ConfigurationKeys::EXPOSE_GLOBAL_FUNCTIONS_KEYWORD => false,
                 ConfigurationKeys::EXCLUDE_NAMESPACES_KEYWORD => [
                     'PHPUnit\Internal',
-                    '~^PHPUnit\\Runner(\\.*)?$~',
+                    '~^PHPUnit\Runner(\.*)?$~',
                 ],
             ],
             SymbolsConfiguration::create(
@@ -176,7 +176,7 @@ final class SymbolsConfigurationFactoryTest extends TestCase
                         'PHPUnit\Internal',
                     ],
                     [
-                        '~^PHPUnit\\Runner(\\.*)?$~i',
+                        '~^PHPUnit\Runner(\.*)?$~i',
                     ],
                 ),
                 null,
@@ -194,7 +194,7 @@ final class SymbolsConfigurationFactoryTest extends TestCase
     public function test_it_cannot_create_a_symbols_config_from_an_invalid_config(
         array $config,
         string $expectedExceptionClassName,
-        string $expectedExceptionMessage
+        string $expectedExceptionMessage,
     ): void {
         $this->expectException($expectedExceptionClassName);
         $this->expectExceptionMessage($expectedExceptionMessage);
