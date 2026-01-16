@@ -21,7 +21,25 @@ updates:
                     - "major"
 
     -   package-ecosystem: "composer"
-        directory: "vendor-bin/*/"
+        directory: "vendor-bin/php-cs-fixer/"
+        schedule:
+            interval: "weekly"
+        groups:
+            dependencies:
+                patterns:
+                    - "*"
+
+    -   package-ecosystem: "composer"
+        directory: "vendor-bin/phpstan/"
+        schedule:
+            interval: "weekly"
+        groups:
+            dependencies:
+                patterns:
+                    - "*"
+
+    -   package-ecosystem: "composer"
+        directory: "vendor-bin/rector/"
         schedule:
             interval: "weekly"
         groups:
