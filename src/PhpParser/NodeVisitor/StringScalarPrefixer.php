@@ -304,7 +304,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function prefixArrayItemString(
         String_ $string,
         ArrayItem $parentNode,
-        string $normalizedValue
+        string $normalizedValue,
     ): String_ {
         // ArrayItem can lead to two results: either the string is used for
         // `spl_autoload_register()`, e.g. `spl_autoload_register(['Swift', 'autoload'])`

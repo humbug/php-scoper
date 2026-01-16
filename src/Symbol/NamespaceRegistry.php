@@ -39,7 +39,7 @@ final readonly class NamespaceRegistry
      */
     public static function create(
         array $namespaceNames = [],
-        array $namespaceRegexes = []
+        array $namespaceRegexes = [],
     ): self {
         return new self(
             array_values(
@@ -63,7 +63,7 @@ final readonly class NamespaceRegistry
      */
     private function __construct(
         private array $names,
-        private array $regexes
+        private array $regexes,
     ) {
         $this->containsGlobalNamespace = count(
             array_filter(

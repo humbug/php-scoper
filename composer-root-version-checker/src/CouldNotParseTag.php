@@ -21,7 +21,7 @@ use const PHP_EOL;
 final class CouldNotParseTag extends RuntimeException
 {
     public static function noTagFound(
-        string $content
+        string $content,
     ): self {
         return new self(
             sprintf(
@@ -32,7 +32,7 @@ final class CouldNotParseTag extends RuntimeException
     }
 
     public static function noNameTagFound(
-        string $content
+        string $content,
     ): self {
         return new self(
             sprintf(
@@ -45,7 +45,7 @@ final class CouldNotParseTag extends RuntimeException
 
     public static function withReason(
         bool|float|int|string|null $tag,
-        string $reason
+        string $reason,
     ): self {
         return new self(
             sprintf(

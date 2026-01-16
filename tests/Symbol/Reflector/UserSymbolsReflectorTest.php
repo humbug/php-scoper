@@ -30,7 +30,7 @@ class UserSymbolsReflectorTest extends TestCase
     public function test_it_can_be_enriched_with_arbitrary_symbols(
         SymbolRegistry $classes,
         SymbolRegistry $functions,
-        SymbolRegistry $constants
+        SymbolRegistry $constants,
     ): void {
         $reflector = Reflector::createEmpty()->withAdditionalSymbols(
             $classes,
@@ -49,42 +49,6 @@ class UserSymbolsReflectorTest extends TestCase
         foreach ($constants->getNames() as $constantName) {
             self::assertTrue($reflector->isConstantInternal($constantName));
         }
-    }
-
-    public function test_it_can_be_enriched_multiple_times(): void
-    {
-        $classA = 'Acme\A';
-        $classB = 'Acme\B';
-
-        $emptyReflector = Reflector::createEmpty();
-
-        // Sanity check
-        self::assertFalse($emptyReflector->isClassInternal($classA));
-        self::assertFalse($emptyReflector->isClassInternal($classB));
-
-        $reflectorWithA = $emptyReflector->withAdditionalSymbols(
-            SymbolRegistry::create([$classA]),
-            SymbolRegistry::create(),
-            SymbolRegistry::createForConstants(),
-        );
-
-        self::assertFalse($emptyReflector->isClassInternal($classA));
-        self::assertFalse($emptyReflector->isClassInternal($classB));
-        self::assertTrue($reflectorWithA->isClassInternal($classA));
-        self::assertFalse($reflectorWithA->isClassInternal($classB));
-
-        $reflectorWithAandB = $reflectorWithA->withAdditionalSymbols(
-            SymbolRegistry::create([$classB]),
-            SymbolRegistry::create(),
-            SymbolRegistry::createForConstants(),
-        );
-
-        self::assertFalse($emptyReflector->isClassInternal($classA));
-        self::assertFalse($emptyReflector->isClassInternal($classB));
-        self::assertTrue($reflectorWithA->isClassInternal($classA));
-        self::assertFalse($reflectorWithA->isClassInternal($classB));
-        self::assertTrue($reflectorWithAandB->isClassInternal($classA));
-        self::assertTrue($reflectorWithAandB->isClassInternal($classB));
     }
 
     public static function symbolsProvider(): iterable
@@ -125,5 +89,41 @@ class UserSymbolsReflectorTest extends TestCase
             $functionNames,
             $constantNames,
         ];
+    }
+
+    public function test_it_can_be_enriched_multiple_times(): void
+    {
+        $classA = 'Acme\A';
+        $classB = 'Acme\B';
+
+        $emptyReflector = Reflector::createEmpty();
+
+        // Sanity check
+        self::assertFalse($emptyReflector->isClassInternal($classA));
+        self::assertFalse($emptyReflector->isClassInternal($classB));
+
+        $reflectorWithA = $emptyReflector->withAdditionalSymbols(
+            SymbolRegistry::create([$classA]),
+            SymbolRegistry::create(),
+            SymbolRegistry::createForConstants(),
+        );
+
+        self::assertFalse($emptyReflector->isClassInternal($classA));
+        self::assertFalse($emptyReflector->isClassInternal($classB));
+        self::assertTrue($reflectorWithA->isClassInternal($classA));
+        self::assertFalse($reflectorWithA->isClassInternal($classB));
+
+        $reflectorWithAandB = $reflectorWithA->withAdditionalSymbols(
+            SymbolRegistry::create([$classB]),
+            SymbolRegistry::create(),
+            SymbolRegistry::createForConstants(),
+        );
+
+        self::assertFalse($emptyReflector->isClassInternal($classA));
+        self::assertFalse($emptyReflector->isClassInternal($classB));
+        self::assertTrue($reflectorWithA->isClassInternal($classA));
+        self::assertFalse($reflectorWithA->isClassInternal($classB));
+        self::assertTrue($reflectorWithAandB->isClassInternal($classA));
+        self::assertTrue($reflectorWithAandB->isClassInternal($classB));
     }
 }

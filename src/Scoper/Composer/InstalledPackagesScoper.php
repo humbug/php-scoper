@@ -29,7 +29,7 @@ use const JSON_THROW_ON_ERROR;
 
 final readonly class InstalledPackagesScoper implements Scoper
 {
-    private const COMPOSER_INSTALLED_FILE_PATTERN = '/composer(\/|\\\\)installed\.json$/';
+    private const COMPOSER_INSTALLED_FILE_PATTERN = '/composer(\/|\\\)installed\.json$/';
 
     public function __construct(
         private Scoper $decoratedScoper,

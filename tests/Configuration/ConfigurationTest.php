@@ -35,7 +35,7 @@ final class ConfigurationTest extends TestCase
     #[DataProvider('prefixProvider')]
     public function test_it_validates_the_prefix(
         string $prefix,
-        string $expectedExceptionMessage
+        string $expectedExceptionMessage,
     ): void {
         $this->expectException(InvalidConfigurationValue::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
@@ -50,6 +50,19 @@ final class ConfigurationTest extends TestCase
             new PatcherChain([]),
             SymbolsConfiguration::create(),
         );
+    }
+
+    public static function prefixProvider(): iterable
+    {
+        yield [
+            ';',
+            'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got ";".',
+        ];
+
+        yield [
+            'App\\\Foo',
+            'Invalid namespace separator sequence. Got "App\\\Foo".',
+        ];
     }
 
     public function test_it_can_create_a_new_instance_with_a_different_prefix(): void
@@ -107,19 +120,6 @@ final class ConfigurationTest extends TestCase
         self::assertStateIs($newConfig, ...$expectedNewConfigValues);
     }
 
-    public static function prefixProvider(): iterable
-    {
-        yield [
-            ';',
-            'The prefix needs to be composed solely of letters, digits and backslashes (as namespace separators). Got ";".',
-        ];
-
-        yield [
-            'App\\\\Foo',
-            'Invalid namespace separator sequence. Got "App\\\\Foo".',
-        ];
-    }
-
     public static function assertStateIs(
         Configuration $configuration,
         ?string $expectedPath,
@@ -129,7 +129,7 @@ final class ConfigurationTest extends TestCase
         array $expectedFilesWithContents,
         array $expectedExcludedFilesWithContents,
         Patcher $expectedPatcher,
-        SymbolsConfiguration $expectedSymbolsConfiguration
+        SymbolsConfiguration $expectedSymbolsConfiguration,
     ): void {
         self::assertSame($expectedPath, $configuration->getPath());
         self::assertSame($expectedOutputDir, $configuration->getOutputDir());

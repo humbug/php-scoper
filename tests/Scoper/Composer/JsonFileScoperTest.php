@@ -88,25 +88,6 @@ class JsonFileScoperTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    public function test_it_requires_valid_composer2_files(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected the decoded JSON to be an stdClass instance, got "array" instead');
-
-        $this->scoper->scope('composer.json', '[]');
-    }
-
-    #[DataProvider('providePSR0ComposerFiles')]
-    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
-    {
-        $actual = $this->scoper->scope(
-            'composer.json',
-            $fileContents,
-        );
-
-        self::assertSame($expected, $actual);
-    }
-
     public static function provideComposerFiles(): iterable
     {
         yield [
@@ -160,6 +141,25 @@ class JsonFileScoperTest extends TestCase
                 }
                 JSON,
         ];
+    }
+
+    public function test_it_requires_valid_composer2_files(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected the decoded JSON to be an stdClass instance, got "array" instead');
+
+        $this->scoper->scope('composer.json', '[]');
+    }
+
+    #[DataProvider('providePSR0ComposerFiles')]
+    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
+    {
+        $actual = $this->scoper->scope(
+            'composer.json',
+            $fileContents,
+        );
+
+        self::assertSame($expected, $actual);
     }
 
     public static function providePSR0ComposerFiles(): iterable

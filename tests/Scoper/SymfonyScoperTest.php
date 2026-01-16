@@ -48,18 +48,11 @@ final class SymfonyScoperTest extends TestCase
     public function test_it_can_scope_symfony_config_files(
         string $filePath,
         string $contents,
-        string $expected
+        string $expected,
     ): void {
         $actual = $this->scoper->scope($filePath, $contents);
 
         self::assertSame($expected, $actual);
-    }
-
-    public function test_it_cannot_scope_non_symfony_config_files(): void
-    {
-        $this->expectException(LogicException::class);
-
-        $this->scoper->scope('services.php', '');
     }
 
     public static function provideScopableFiles(): iterable
@@ -97,5 +90,12 @@ final class SymfonyScoperTest extends TestCase
                 </container>
                 XML,
         ];
+    }
+
+    public function test_it_cannot_scope_non_symfony_config_files(): void
+    {
+        $this->expectException(LogicException::class);
+
+        $this->scoper->scope('services.php', '');
     }
 }
