@@ -91,6 +91,7 @@ jobs:
                     - 'e2e_040'
                     - 'e2e_041'
                     - 'e2e_042'
+                    - 'e2e_043'
                 php:
                     - '8.2'
                     - '8.3'
@@ -103,6 +104,11 @@ jobs:
                     - e2e: 'e2e_039'
                       php: '8.2'
                       composer: 'composer:2.2'
+                exclude:
+                    - e2e: 'e2e_043'
+                      php: '8.2'
+                    - e2e: 'e2e_043'
+                      php: '8.3'
 
         steps:
             -   name: Checkout

@@ -181,7 +181,8 @@ e2e: e2e_004 \
 		e2e_039 \
 		e2e_040 \
 		e2e_041 \
-		e2e_042
+		e2e_042 \
+		e2e_043
 
 .PHONY: blackfire
 blackfire: ## Runs Blackfire profiling
