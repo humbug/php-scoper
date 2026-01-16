@@ -82,6 +82,15 @@ updates:
                 patterns:
                     - "*"
 
+    -   package-ecosystem: "composer"
+        directory: "/Users/tfidry/Project/Humbug/php-scoper/fixtures/set042-symfony8"
+        schedule:
+            interval: "weekly"
+        groups:
+            dependencies:
+                patterns:
+                    - "*"
+
     -   package-ecosystem: "github-actions"
         directory: ".github"
         schedule:
