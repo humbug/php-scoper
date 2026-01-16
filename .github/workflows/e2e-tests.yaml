@@ -26,6 +26,7 @@ jobs:
                     - '8.2'
                     - '8.3'
                     - '8.4'
+                    - '8.5'
         steps:
             -   name: Checkout
                 uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -78,9 +79,6 @@ jobs:
                     - 'e2e_024'
                     - 'e2e_025'
                     - 'e2e_027'
-                    - 'e2e_041'
-                    - 'e2e_042'
-                    - 'e2e_043'
                     - 'e2e_029'
                     - 'e2e_030'
                     - 'e2e_031'
@@ -91,10 +89,14 @@ jobs:
                     - 'e2e_036'
                     - 'e2e_037'
                     - 'e2e_040'
+                    - 'e2e_041'
+                    - 'e2e_042'
+                    - 'e2e_043'
                 php:
                     - '8.2'
                     - '8.3'
                     - '8.4'
+                    - '8.5'
                 composer:
                     - 'composer:2.2'
                     - 'composer'
@@ -167,7 +169,7 @@ jobs:
             fail-fast: false
             matrix:
                 php-version:
-                    - '8.4'
+                    - '8.5'
                 coverage:
                     - xdebug
 
