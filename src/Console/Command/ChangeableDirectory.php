@@ -17,7 +17,6 @@ namespace Humbug\PhpScoper\Console\Command;
 use Fidry\Console\IO;
 use Humbug\PhpScoper\NotInstantiable;
 use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\CodeCoverageIgnore;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputOption;
 use function chdir as native_chdir;
@@ -27,8 +26,8 @@ use function sprintf;
 
 /**
  * @private
+ * @codeCoverageIgnore
  */
-#[CodeCoverageIgnore]
 final class ChangeableDirectory
 {
     use NotInstantiable;
