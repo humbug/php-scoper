@@ -84,7 +84,7 @@ class InstalledPackagesScoperTest extends TestCase
     public function test_it_prefixes_the_composer_autoloaders(
         EnrichedReflector $enrichedReflector,
         string $fileContents,
-        string $expected
+        string $expected,
     ): void {
         $scoper = new InstalledPackagesScoper(
             $this->decoratedScoper,
@@ -100,17 +100,6 @@ class InstalledPackagesScoperTest extends TestCase
         );
 
         self::assertSame($expected, $actual);
-    }
-
-    #[DataProvider('provideInvalidComposerFiles')]
-    public function test_it_requires_valid_composer2_files(
-        string $contents,
-        string $expectedExceptionMessage
-    ): void {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage($expectedExceptionMessage);
-
-        $this->scoper->scope('composer/installed.json', $contents);
     }
 
     public static function provideInstalledPackagesFiles(): iterable
@@ -507,6 +496,17 @@ class InstalledPackagesScoperTest extends TestCase
                 }
                 JSON,
         ];
+    }
+
+    #[DataProvider('provideInvalidComposerFiles')]
+    public function test_it_requires_valid_composer2_files(
+        string $contents,
+        string $expectedExceptionMessage,
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+
+        $this->scoper->scope('composer/installed.json', $contents);
     }
 
     public static function provideInvalidComposerFiles(): iterable

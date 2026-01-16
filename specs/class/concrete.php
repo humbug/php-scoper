@@ -198,7 +198,7 @@ return [
     // This is a pure anti-regression test – no need to excessively test this
     // in the other spec files
     'Declaration of an exposed class exposed via a pattern' => SpecWithConfig::create(
-        exposeClasses: ['/^Foo\\\\A$/'],
+        exposeClasses: ['/^Foo\\\A$/'],
         expectedRecordedClasses: [
             ['Foo\A', 'Humbug\Foo\A'],
         ],

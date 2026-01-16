@@ -191,7 +191,7 @@ final readonly class InspectSymbolCommand implements Command
         string $symbol,
         SymbolType $type,
         ?string $configPath,
-        EnrichedReflector $reflector
+        EnrichedReflector $reflector,
     ): void {
         self::printDocBlock($io);
         self::printConfigLoaded($io, $configPath);
@@ -237,7 +237,7 @@ final readonly class InspectSymbolCommand implements Command
     private static function printInspectionHeadline(
         IO $io,
         string $symbol,
-        SymbolType $type
+        SymbolType $type,
     ): void {
         $io->writeln(
             sprintf(
@@ -253,7 +253,7 @@ final readonly class InspectSymbolCommand implements Command
     private static function printAnyTypeSymbol(
         IO $io,
         string $symbol,
-        EnrichedReflector $reflector
+        EnrichedReflector $reflector,
     ): void {
         foreach (SymbolType::getAllSpecificTypes() as $specificType) {
             $io->writeln(
@@ -271,7 +271,7 @@ final readonly class InspectSymbolCommand implements Command
         IO $io,
         string $symbol,
         SymbolType $type,
-        EnrichedReflector $reflector
+        EnrichedReflector $reflector,
     ): void {
         [$internal, $exposed] = self::determineSymbolStatus(
             $symbol,
@@ -297,7 +297,7 @@ final readonly class InspectSymbolCommand implements Command
     private static function determineSymbolStatus(
         string $symbol,
         SymbolType $type,
-        EnrichedReflector $reflector
+        EnrichedReflector $reflector,
     ): array {
         return match ($type) {
             SymbolType::CLASS_TYPE => [

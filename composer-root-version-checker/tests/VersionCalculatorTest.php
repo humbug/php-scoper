@@ -28,7 +28,7 @@ final class VersionCalculatorTest extends TestCase
     #[DataProvider('tagProvider')]
     public function test_it_can_calculate_the_desired_composer_root_version_from_the_tag(
         string $tag,
-        string $expected
+        string $expected,
     ): void {
         $actual = VersionCalculator::calculateDesiredVersion($tag);
 

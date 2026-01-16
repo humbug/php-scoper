@@ -40,7 +40,7 @@ final class UseStmtNameTest extends TestCase
     public function test_it_can_tell_whether_it_contains_a_name(
         Name $useStmt,
         Name $name,
-        bool $expected
+        bool $expected,
     ): void {
         $useStmtName = new UseStmtName($useStmt);
 
@@ -82,7 +82,7 @@ final class UseStmtNameTest extends TestCase
     public function test_it_can_retrieve_its_use_stmt_alias_and_type(
         Name $name,
         ?string $expectedAlias,
-        int $expectedType
+        int $expectedType,
     ): void {
         $useStmtName = new UseStmtName($name);
 

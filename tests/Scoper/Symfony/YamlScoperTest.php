@@ -91,12 +91,23 @@ class YamlScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes($scopedCount);
     }
 
+    public static function provideYamlFilesExtensions(): iterable
+    {
+        yield ['file.yaml', true];
+        yield ['file.yml', true];
+        yield ['file.YAML', true];
+        yield ['file.YML', true];
+        yield ['file.yam', false];
+        yield ['file.aml', false];
+        yield ['file', false];
+    }
+
     #[DataProvider('provideYamlFiles')]
     public function test_it_scopes_yaml_files(
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,
         string $expected,
-        array $expectedClasses
+        array $expectedClasses,
     ): void {
         $prefix = 'Humbug';
         $file = 'file.yaml';
@@ -123,17 +134,6 @@ class YamlScoperTest extends TestCase
         $this->decoratedScoperProphecy
             ->scope(Argument::cetera())
             ->shouldHaveBeenCalledTimes(0);
-    }
-
-    public static function provideYamlFilesExtensions(): iterable
-    {
-        yield ['file.yaml', true];
-        yield ['file.yml', true];
-        yield ['file.YAML', true];
-        yield ['file.YML', true];
-        yield ['file.yam', false];
-        yield ['file.aml', false];
-        yield ['file', false];
     }
 
     public static function provideYamlFiles(): iterable

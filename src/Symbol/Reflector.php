@@ -293,7 +293,7 @@ final readonly class Reflector
     public function withAdditionalSymbols(
         SymbolRegistry $classNames,
         SymbolRegistry $functionNames,
-        SymbolRegistry $constantNames
+        SymbolRegistry $constantNames,
     ): self {
         return new self(
             $this->classes->merge($classNames),

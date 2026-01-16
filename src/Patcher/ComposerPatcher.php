@@ -32,22 +32,22 @@ final class ComposerPatcher implements Patcher
 
         return str_replace(
             [
-                '\'Composer\\Package\\RootPackage\'',
-                '\'Composer\\\\Package\\\\RootPackage\'',
-                ' Composer\\Package\\RootPackage ',
+                '\'Composer\Package\RootPackage\'',
+                '\'Composer\\\Package\\\RootPackage\'',
+                ' Composer\Package\RootPackage ',
 
-                '\'Composer\\Package\\CompletePackage\'',
-                '\'Composer\\\\Package\\\\CompletePackage\'',
-                ' Composer\\Package\\CompletePackage ',
+                '\'Composer\Package\CompletePackage\'',
+                '\'Composer\\\Package\\\CompletePackage\'',
+                ' Composer\Package\CompletePackage ',
             ],
             [
-                '\''.$prefix.'\\Composer\\Package\\RootPackage\'',
-                '\''.$prefix.'\\\\Composer\\\\Package\\\\RootPackage\'',
-                ' '.$prefix.'\\Composer\\Package\\RootPackage ',
+                '\''.$prefix.'\Composer\Package\RootPackage\'',
+                '\''.$prefix.'\\\Composer\\\Package\\\RootPackage\'',
+                ' '.$prefix.'\Composer\Package\RootPackage ',
 
-                '\''.$prefix.'\\Composer\\Package\\CompletePackage\'',
-                '\''.$prefix.'\\\\Composer\\\\Package\\\\CompletePackage\'',
-                ' '.$prefix.'\\Composer\\Package\\CompletePackage ',
+                '\''.$prefix.'\Composer\Package\CompletePackage\'',
+                '\''.$prefix.'\\\Composer\\\Package\\\CompletePackage\'',
+                ' '.$prefix.'\Composer\Package\CompletePackage ',
             ],
             $contents,
         );

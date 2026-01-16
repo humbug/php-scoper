@@ -38,7 +38,7 @@ final class SymbolsRegistryTest extends TestCase
         array $classes,
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
-        int $expectedCount
+        int $expectedCount,
     ): void {
         $registry = SymbolsRegistry::create($functions, $classes);
 
@@ -135,7 +135,7 @@ final class SymbolsRegistryTest extends TestCase
         SymbolsRegistry $target,
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
-        int $expectedCount
+        int $expectedCount,
     ): void {
         $originalSource = clone $source;
 
@@ -308,7 +308,7 @@ final class SymbolsRegistryTest extends TestCase
         array $sources,
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
-        int $expectedCount
+        int $expectedCount,
     ): void {
         $symbolRegistry = SymbolsRegistry::createFromRegistries($sources);
 
@@ -396,7 +396,7 @@ final class SymbolsRegistryTest extends TestCase
         SymbolsRegistry $symbolsRegistry,
         array $expectedRecordedFunctions,
         array $expectedRecordedClasses,
-        int $expectedCount
+        int $expectedCount,
     ): void {
         PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedRecordedFunctions,

@@ -32,7 +32,7 @@ final class SymfonyPatcher implements Patcher
         }
 
         return (string) preg_replace(
-            '/use (Symfony(\\\\(?:\\\\)?)Component\\\\.+?;)/',
+            '/use (Symfony(\\\(?:\\\)?)Component\\\.+?;)/',
             sprintf(
                 'use %s$2$1',
                 $prefix,

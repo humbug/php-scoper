@@ -31,7 +31,7 @@ final class SymfonyScoper implements Scoper
         Scoper $decoratedScoper,
         string $prefix,
         EnrichedReflector $enrichedReflector,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
     ) {
         $this->decoratedScoper = new SymfonyXmlScoper(
             new SymfonyYamlScoper(
