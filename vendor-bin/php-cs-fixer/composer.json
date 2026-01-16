@@ -1,4 +1,5 @@
 {
+    "type": "project",
     "platform": {
         "php": "8.2"
     },
