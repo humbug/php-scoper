@@ -2,6 +2,7 @@
     "name": "humbug/php-scoper-composer-root-checker",
     "description": "Small utility to manipulate the Composer root version.",
     "license": "proprietary",
+    "type": "project",
     "require": {
         "php": "^8.2",
         "psr/log": "^3.0",
