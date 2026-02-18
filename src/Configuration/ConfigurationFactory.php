@@ -282,7 +282,10 @@ final readonly class ConfigurationFactory
                 $file = $dirPath.DIRECTORY_SEPARATOR.$file;
             }
 
-            $excludedFiles[$index] = realpath($file);
+            unset( $excludedFiles[$index] );
+            $fileKey = str_replace( $dirPath.DIRECTORY_SEPARATOR, '', $file );
+            $file = realpath($file);
+            $excludedFiles[$fileKey] = $file;
         }
 
         // We ignore files not found excluded file as we do not want to bail out just because a file we do not want to
@@ -371,7 +374,7 @@ final readonly class ConfigurationFactory
     {
         $filesWithContents = [];
 
-        foreach ($files as $filePathOrFileInfo) {
+        foreach ($files as $fileKey => $filePathOrFileInfo) {
             $filePath = $filePathOrFileInfo instanceof SplFileInfo
                 ? $filePathOrFileInfo->getRealPath()
                 : realpath($filePathOrFileInfo);
@@ -384,7 +387,7 @@ final readonly class ConfigurationFactory
                 throw InvalidConfigurationValue::forUnreadableFile($filePath);
             }
 
-            $filesWithContents[$filePath] = [$filePath, file_get_contents($filePath)];
+            $filesWithContents[$fileKey] = [$filePath, file_get_contents($filePath)];
         }
 
         return $filesWithContents;
