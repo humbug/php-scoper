@@ -6,7 +6,7 @@
     "require": {
         "php": "^8.2",
         "psr/log": "^3.0",
-        "thecodingmachine/safe": "^2.4"
+        "thecodingmachine/safe": "^3.3"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.29",
@@ -26,6 +26,9 @@
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true
+        },
+        "platform": {
+            "php": "8.2"
         }
     },
     "scripts": {
