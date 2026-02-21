@@ -279,7 +279,7 @@ class AddPrefixCommandIntegrationTest extends FileSystemTestCase implements AppT
      */
     private function createDisplayNormalizer(): callable
     {
-        return fn ($display) => $this->getNormalizeDisplay($display);
+        return $this->getNormalizeDisplay(...);
     }
 
     private function getNormalizeDisplay(string $display): string

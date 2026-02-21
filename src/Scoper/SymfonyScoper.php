@@ -23,9 +23,9 @@ use function func_get_args;
 /**
  * Scopes the Symfony configuration related files.
  */
-final class SymfonyScoper implements Scoper
+final readonly class SymfonyScoper implements Scoper
 {
-    private readonly SymfonyXmlScoper $decoratedScoper;
+    private SymfonyXmlScoper $decoratedScoper;
 
     public function __construct(
         Scoper $decoratedScoper,
