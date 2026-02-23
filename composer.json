@@ -22,9 +22,11 @@
         "fidry/filesystem": "^1.1",
         "jetbrains/phpstorm-stubs": "dev-master",
         "nikic/php-parser": "^5.0",
-        "symfony/console": "^6.4 || ^7.0",
-        "symfony/filesystem": "^6.4 || ^7.0",
-        "symfony/finder": "^6.4 || ^7.0",
+        "symfony/console": "^6.4 || ^7.4",
+        "symfony/filesystem": "^6.4 || ^7.4",
+        "symfony/finder": "^6.4 || ^7.4",
+        "symfony/polyfill-iconv": "^1.33",
+        "symfony/polyfill-mbstring": "^1.33",
         "symfony/var-dumper": "^7.1",
         "thecodingmachine/safe": "^3.0"
     },
@@ -35,7 +37,7 @@
         "humbug/box": "^4.6.2",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^10.0 || ^11.0",
-        "symfony/yaml": "^6.4 || ^7.0"
+        "symfony/yaml": "^6.4 || ^7.4"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
