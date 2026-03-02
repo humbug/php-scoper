@@ -75,7 +75,16 @@ class PhpStormStubsReflectorTest extends TestCase
         ];
 
         // No new classes in PHP 8.2
-        // No new classes in PHP 8.3
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.0 new class-like (added or modified)',
+            'Attribute',
+        );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.3 new class-like (added or modified)',
+            'Override',
+        );
 
         yield from self::createDataSetForInternalSymbols(
             'https://youtrack.jetbrains.com/issue/WI-29503',
@@ -85,16 +94,23 @@ class PhpStormStubsReflectorTest extends TestCase
 
         yield from self::createDataSetForInternalSymbols(
             'PHP 8.4 new class-like (added or modified)',
-            'RoundingMode',
+            'Deprecated',
             'DOMNode',
             'DOMElement',
             'ResourceBundle',
+            'RoundingMode',
             'Pdo\DbLib',
             'Pdo\Firebird',
             'Pdo\Mysql',
             'Pdo\Odbc',
             'Pdo\Pgsql',
             'Pdo\Sqlite',
+        );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.5 new class-like (added or modified)',
+            'NoDiscard',
+            'DelayedTargetValidation',
         );
     }
 
@@ -553,6 +569,18 @@ class PhpStormStubsReflectorTest extends TestCase
             'exit',
             'die',
         );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.5 functions (added or modified)',
+            'get_error_handler',
+            'get_exception_handler',
+            'clone',
+            'enchant_dict_remove_from_session',
+            'enchant_dict_remove',
+            'grapheme_levenshtein',
+            'array_first',
+            'array_last',
+        );
     }
 
     #[DataProvider('provideConstants')]
@@ -742,6 +770,12 @@ class PhpStormStubsReflectorTest extends TestCase
             'T_PROTECTED_SET',
             'T_PRIVATE_SET',
             'XML_OPTION_PARSE_HUGE',
+        );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.5 constants (added or modified)',
+            'PHP_BUILD_PROVIDER',
+            'PHP_BUILD_DATE',
         );
     }
 
