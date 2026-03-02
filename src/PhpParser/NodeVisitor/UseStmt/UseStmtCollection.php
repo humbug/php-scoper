@@ -53,7 +53,7 @@ final class UseStmtCollection implements IteratorAggregate
      * @var array<string, list<Use_>>
      */
     private array $nodes = [
-        null => [],
+        '' => [],
     ];
 
     public function add(?Name $namespaceName, Use_ $use): void
