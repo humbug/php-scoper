@@ -194,7 +194,7 @@ final class AddPrefixCommand implements Command, CommandAware
             );
         }
 
-        return $stopOnFailure;
+        return !$continueOnFailure;
     }
 
     /**

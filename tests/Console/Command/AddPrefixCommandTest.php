@@ -30,6 +30,7 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Scoper\Factory\DummyScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Prophecy\Argument;
@@ -549,7 +550,7 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->shouldNotHaveBeenCalled();
     }
 
-    public function test_can_scope_projects_with_invalid_files(): void
+    public function test_cannot_scope_projects_with_invalid_files(): void
     {
         chdir(FS::escapePath($root = self::FIXTURE_PATH.'/set010'));
 
@@ -565,35 +566,33 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
 
         $this->fileSystemProphecy->mkdir($this->tmp)->shouldBeCalled();
         $this->fileSystemProphecy->exists(Argument::cetera())->willReturn(false);
-        $this->fileSystemProphecy->remove(Argument::cetera())->shouldNotBeCalled();
+        $this->fileSystemProphecy->remove(Argument::cetera())->shouldBeCalled();
         $this->fileSystemProphecy->chmod(Argument::cetera())->shouldNotBeCalled();
-
-        $expectedFiles = [
-            'invalid-json.json' => 'f1',
-        ];
 
         $root = realpath($root);
 
-        foreach ($expectedFiles as $expectedFile => $prefixedContents) {
-            $inputPath = FS::escapePath($root.'/'.$expectedFile);
-            $outputPath = FS::escapePath($this->tmp.'/'.$expectedFile);
-
-            $fileContents = file_get_contents($inputPath);
-
-            $this->scoperProphecy
-                ->scope($inputPath, $fileContents)
-                ->willThrow(new PhpParserError('Could not scope file'));
-
-            $this->fileSystemProphecy->dumpFile($outputPath, $fileContents)->shouldBeCalled();
-        }
-
-        $this->appTester->run($input);
-
-        self::assertSame(0, $this->appTester->getStatusCode());
+        $validInputPath = FS::escapePath($root.'/a-file1');
+        $validOutputPath = FS::escapePath($this->tmp.'/a-file1');
 
         $this->scoperProphecy
-            ->scope(Argument::cetera())
-            ->shouldHaveBeenCalledTimes(count($expectedFiles));
+            ->scope(
+                $validInputPath,
+                file_get_contents($validInputPath),
+            )
+            ->willReturn('scoped-file-1');
+
+        $this->fileSystemProphecy->dumpFile($validOutputPath, 'scoped-file-1')->shouldBeCalled();
+
+        $invalidInputPath = FS::escapePath($root.'/invalid-json.json');
+        $invalidFileContents = file_get_contents($invalidInputPath);
+
+        $this->scoperProphecy
+            ->scope($invalidInputPath, $invalidFileContents)
+            ->willThrow(new PhpParserError('Could not scope file'));
+
+        $this->expectException(ParsingException::class);
+
+        $this->appTester->run($input);
     }
 
     public function test_it_outputs_in_the_build_directory_if_no_output_dir_is_given(): void
