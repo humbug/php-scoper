@@ -204,6 +204,11 @@ final readonly class Reflector
         'pcntl_setns',
         'sodium_crypto_aead_aegis128l_',
         'sodium_crypto_aead_aegis256l_',
+
+        // PHP 8.5
+        // TODO: To report
+        'enchant_dict_remove_from_session',
+        'enchant_dict_remove',
     ];
 
     /**
