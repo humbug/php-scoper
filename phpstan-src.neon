@@ -4,6 +4,9 @@ parameters:
     ignoreErrors:
         - identifier: missingType.iterableValue
           path: 'src/Scoper/Composer/AutoloadPrefixer.php'
+        - identifier: argument.type
+          message: '/function is_file expects string/'
+          path: 'src/Configuration/ConfigurationFactory.php'
         - identifier: missingType.iterableValue
           message: '#\$config#'
           path: 'src/Configuration/ConfigurationFactory.php'

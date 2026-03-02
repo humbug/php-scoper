@@ -40,22 +40,6 @@ class PhpStormStubsReflectorTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-    #[DataProvider('provideFunctions')]
-    public function test_it_can_identify_internal_functions(string $class, bool $expected): void
-    {
-        $actual = $this->reflector->isFunctionInternal($class);
-
-        self::assertSame($expected, $actual);
-    }
-
-    #[DataProvider('provideConstants')]
-    public function test_it_can_identify_internal_constants(string $class, bool $expected): void
-    {
-        $actual = $this->reflector->isConstantInternal($class);
-
-        self::assertSame($expected, $actual);
-    }
-
     public static function provideClasses(): iterable
     {
         yield 'PHP internal class' => [
@@ -91,7 +75,16 @@ class PhpStormStubsReflectorTest extends TestCase
         ];
 
         // No new classes in PHP 8.2
-        // No new classes in PHP 8.3
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.0 new class-like (added or modified)',
+            'Attribute',
+        );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.3 new class-like (added or modified)',
+            'Override',
+        );
 
         yield from self::createDataSetForInternalSymbols(
             'https://youtrack.jetbrains.com/issue/WI-29503',
@@ -101,10 +94,11 @@ class PhpStormStubsReflectorTest extends TestCase
 
         yield from self::createDataSetForInternalSymbols(
             'PHP 8.4 new class-like (added or modified)',
-            'RoundingMode',
+            'Deprecated',
             'DOMNode',
             'DOMElement',
             'ResourceBundle',
+            'RoundingMode',
             'Pdo\DbLib',
             'Pdo\Firebird',
             'Pdo\Mysql',
@@ -112,6 +106,20 @@ class PhpStormStubsReflectorTest extends TestCase
             'Pdo\Pgsql',
             'Pdo\Sqlite',
         );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.5 new class-like (added or modified)',
+            'NoDiscard',
+            'DelayedTargetValidation',
+        );
+    }
+
+    #[DataProvider('provideFunctions')]
+    public function test_it_can_identify_internal_functions(string $class, bool $expected): void
+    {
+        $actual = $this->reflector->isFunctionInternal($class);
+
+        self::assertSame($expected, $actual);
     }
 
     public static function provideFunctions(): iterable
@@ -561,6 +569,26 @@ class PhpStormStubsReflectorTest extends TestCase
             'exit',
             'die',
         );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.5 functions (added or modified)',
+            'get_error_handler',
+            'get_exception_handler',
+            'clone',
+            'enchant_dict_remove_from_session',
+            'enchant_dict_remove',
+            'grapheme_levenshtein',
+            'array_first',
+            'array_last',
+        );
+    }
+
+    #[DataProvider('provideConstants')]
+    public function test_it_can_identify_internal_constants(string $class, bool $expected): void
+    {
+        $actual = $this->reflector->isConstantInternal($class);
+
+        self::assertSame($expected, $actual);
     }
 
     public static function provideConstants(): iterable
@@ -742,6 +770,12 @@ class PhpStormStubsReflectorTest extends TestCase
             'T_PROTECTED_SET',
             'T_PRIVATE_SET',
             'XML_OPTION_PARSE_HUGE',
+        );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.5 constants (added or modified)',
+            'PHP_BUILD_PROVIDER',
+            'PHP_BUILD_DATE',
         );
     }
 

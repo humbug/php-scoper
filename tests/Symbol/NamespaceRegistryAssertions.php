@@ -25,7 +25,7 @@ final class NamespaceRegistryAssertions
     public static function assertStateIs(
         NamespaceRegistry $namespaceRegistry,
         array $expectedNames,
-        array $expectedRegexes
+        array $expectedRegexes,
     ): void {
         PhpScoperAssertions::assertListEqualsCanonicalizing(
             $expectedNames,

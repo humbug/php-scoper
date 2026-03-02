@@ -225,6 +225,23 @@ e2e_042: $(PHP_SCOPER_PHAR_BIN) fixtures/set042-symfony7/vendor
 
 	diff fixtures/set042-symfony7/expected-output build/set042-symfony7/output
 
+.PHONY: e2e_043
+e2e_043: # Runs end-to-end tests for the fixture set 043 — Scoping of a Symfony project
+e2e_043: $(PHP_SCOPER_PHAR_BIN) fixtures/set043-symfony8/vendor
+	$(PHP_SCOPER_PHAR) add-prefix \
+		--working-dir=fixtures/set043-symfony8 \
+		--output-dir=../../build/set043-symfony8 \
+		--force \
+		--no-interaction
+
+	APP_ENV=dev composer --working-dir=fixtures/set043-symfony8 dump-autoload --no-dev
+	APP_ENV=dev php fixtures/set043-symfony8/bin/console -V > fixtures/set043-symfony8/expected-output
+
+	APP_ENV=dev composer --working-dir=build/set043-symfony8 dump-autoload --no-dev
+	APP_ENV=dev php build/set043-symfony8/bin/console -V > build/set043-symfony8/output
+
+	diff fixtures/set043-symfony8/expected-output build/set043-symfony8/output
+
 .PHONY: e2e_029
 e2e_029: # Runs end-to-end tests for the fixture set 029 — Scoping of the EasyRdf project
 e2e_029: $(PHP_SCOPER_PHAR_BIN) fixtures/set029-easy-rdf/vendor
@@ -552,6 +569,13 @@ fixtures/set042-symfony7/vendor: fixtures/set042-symfony7/composer.lock
 fixtures/set042-symfony7/composer.lock: fixtures/set042-symfony7/composer.json
 	@echo "$(@) is not up to date. You may want to run the following command:"
 	@echo "$$ composer --working-dir=fixtures/set042-symfony7 update --lock && touch -c $(@)"
+
+fixtures/set043-symfony8/vendor: fixtures/set043-symfony8/composer.lock
+	composer --working-dir=fixtures/set043-symfony8 install --no-dev --no-scripts
+	touch -c $@
+fixtures/set043-symfony8/composer.lock: fixtures/set043-symfony8/composer.json
+	@echo "$(@) is not up to date. You may want to run the following command:"
+	@echo "$$ composer --working-dir=fixtures/set043-symfony8 update --lock && touch -c $(@)"
 
 fixtures/set029-easy-rdf/vendor: fixtures/set029-easy-rdf/composer.lock
 	composer --working-dir=fixtures/set029-easy-rdf install --no-dev

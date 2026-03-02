@@ -65,7 +65,7 @@ final readonly class ConsoleScoper
         ?PhpVersion $phpVersion,
         array $paths,
         string $outputDir,
-        bool $stopOnFailure
+        bool $stopOnFailure,
     ): void {
         $logger = new ScoperLogger(
             $this->application,
@@ -101,7 +101,7 @@ final readonly class ConsoleScoper
         ?PhpVersion $phpVersion,
         string $outputDir,
         bool $stopOnFailure,
-        ScoperLogger $logger
+        ScoperLogger $logger,
     ): void {
         // Creates output directory if does not already exist
         $this->fileSystem->mkdir($outputDir);
@@ -326,7 +326,7 @@ final readonly class ConsoleScoper
         Scoper $scoper,
         File $file,
         bool $stopOnFailure,
-        ScoperLogger $logger
+        ScoperLogger $logger,
     ): void {
         $successfullyScoped = false;
         $inputFilePath = $file->inputFilePath;

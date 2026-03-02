@@ -2,15 +2,16 @@
     "name": "humbug/php-scoper-composer-root-checker",
     "description": "Small utility to manipulate the Composer root version.",
     "license": "proprietary",
+    "type": "project",
     "require": {
         "php": "^8.2",
-        "psr/log": "^3.0",
-        "thecodingmachine/safe": "^2.4"
+        "psr/log": "^3.0.2",
+        "thecodingmachine/safe": "^3.4"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.29",
-        "fidry/makefile": "^1.0.1",
-        "phpunit/phpunit": "^11.0"
+        "ergebnis/composer-normalize": "^2.50",
+        "fidry/makefile": "^1.0.3",
+        "phpunit/phpunit": "^11.5.55"
     },
     "autoload": {
         "psr-4": {
@@ -25,6 +26,9 @@
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true
+        },
+        "platform": {
+            "php": "8.2"
         }
     },
     "scripts": {

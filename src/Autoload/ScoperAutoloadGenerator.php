@@ -186,7 +186,7 @@ final class ScoperAutoloadGenerator
      */
     private static function createClassAliasStatementsSection(
         array $exposedClasses,
-        bool $wrapInNamespace
+        bool $wrapInNamespace,
     ): array {
         $statements = self::createClassAliasStatements($exposedClasses);
 
@@ -220,7 +220,7 @@ final class ScoperAutoloadGenerator
 
     private static function createClassAliasStatement(
         string $exposed,
-        string $prefixed
+        string $prefixed,
     ): string {
         return sprintf(
             'humbug_phpscoper_expose_class(\'%s\', \'%s\');',
@@ -274,7 +274,7 @@ final class ScoperAutoloadGenerator
      */
     private static function createFunctionAliasStatements(
         array $exposedFunctions,
-        bool $wrapInNamespace
+        bool $wrapInNamespace,
     ): array {
         $functionsGroupedByNamespace = self::groupFunctionsByNamespace($exposedFunctions);
 
@@ -323,7 +323,7 @@ final class ScoperAutoloadGenerator
     private static function createNamespacedFunctionAliasStatement(
         bool $wrapInNamespace,
         string $namespace,
-        array $functions
+        array $functions,
     ): string {
         $statements = array_map(
             static fn (array $function) => self::createFunctionAliasStatement(...$function),
@@ -343,7 +343,7 @@ final class ScoperAutoloadGenerator
     private static function createFunctionAliasStatement(
         string $exposed,
         string $functionName,
-        string $prefixed
+        string $prefixed,
     ): string {
         return sprintf(
             <<<'PHP'

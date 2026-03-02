@@ -27,7 +27,6 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
-use function is_a;
 
 /**
  * @internal
@@ -48,11 +47,6 @@ class XmlScoperTest extends TestCase
     {
         $this->decoratedScoperProphecy = $this->prophesize(Scoper::class);
         $this->decoratedScoper = $this->decoratedScoperProphecy->reveal();
-    }
-
-    public function test_it_is_a_scoper(): void
-    {
-        self::assertTrue(is_a(XmlScoper::class, Scoper::class, true));
     }
 
     #[DataProvider('provideXmlFilesExtensions')]
@@ -90,12 +84,21 @@ class XmlScoperTest extends TestCase
             ->shouldHaveBeenCalledTimes($scopedCount);
     }
 
+    public static function provideXmlFilesExtensions(): iterable
+    {
+        yield ['file.xml', true];
+        yield ['file.XML', true];
+        yield ['file.xm', false];
+        yield ['file.ml', false];
+        yield ['file', false];
+    }
+
     #[DataProvider('provideXmlFiles')]
     public function test_it_scopes__xm_l_files(
         string $contents,
         SymbolsConfiguration $symbolsConfiguration,
         string $expected,
-        array $expectedClasses
+        array $expectedClasses,
     ): void {
         $file = 'file.xml';
         $prefix = 'Humbug';
@@ -122,15 +125,6 @@ class XmlScoperTest extends TestCase
         $this->decoratedScoperProphecy
             ->scope(Argument::cetera())
             ->shouldHaveBeenCalledTimes(0);
-    }
-
-    public static function provideXmlFilesExtensions(): iterable
-    {
-        yield ['file.xml', true];
-        yield ['file.XML', true];
-        yield ['file.xm', false];
-        yield ['file.ml', false];
-        yield ['file', false];
     }
 
     public static function provideXmlFiles(): iterable

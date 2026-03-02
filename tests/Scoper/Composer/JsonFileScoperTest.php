@@ -23,7 +23,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use function is_a;
 
 /**
  * @internal
@@ -56,11 +55,6 @@ class JsonFileScoperTest extends TestCase
         );
     }
 
-    public function test_it_is_a_scoper(): void
-    {
-        self::assertTrue(is_a(JsonFileScoper::class, Scoper::class, true));
-    }
-
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_composer_file(): void
     {
         $filePath = 'file.php';
@@ -79,25 +73,6 @@ class JsonFileScoperTest extends TestCase
 
     #[DataProvider('provideComposerFiles')]
     public function test_it_prefixes_the_composer_autoloaders(string $fileContents, string $expected): void
-    {
-        $actual = $this->scoper->scope(
-            'composer.json',
-            $fileContents,
-        );
-
-        self::assertSame($expected, $actual);
-    }
-
-    public function test_it_requires_valid_composer2_files(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected the decoded JSON to be an stdClass instance, got "array" instead');
-
-        $this->scoper->scope('composer.json', '[]');
-    }
-
-    #[DataProvider('providePSR0ComposerFiles')]
-    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
     {
         $actual = $this->scoper->scope(
             'composer.json',
@@ -160,6 +135,25 @@ class JsonFileScoperTest extends TestCase
                 }
                 JSON,
         ];
+    }
+
+    public function test_it_requires_valid_composer2_files(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected the decoded JSON to be an stdClass instance, got "array" instead');
+
+        $this->scoper->scope('composer.json', '[]');
+    }
+
+    #[DataProvider('providePSR0ComposerFiles')]
+    public function test_it_prefixes_psr0_autoloaders(string $fileContents, string $expected): void
+    {
+        $actual = $this->scoper->scope(
+            'composer.json',
+            $fileContents,
+        );
+
+        self::assertSame($expected, $actual);
     }
 
     public static function providePSR0ComposerFiles(): iterable

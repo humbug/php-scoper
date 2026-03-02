@@ -6,7 +6,6 @@ parameters:
 
     ignoreErrors:
         - identifier: missingType.iterableValue
-        - identifier: assign.propertyType
         - message: '#Cannot cast array\<string\>\|string to string\.#'
           path: 'src/Patcher/SymfonyPatcher.php'
         - message: '#Parameter \#1 \$nodes of method PhpParser\\NodeTraverserInterface::traverse\(\) expects array\<PhpParser\\Node\>, array\<PhpParser\\Node\\Stmt\>\|null given\.#'

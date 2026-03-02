@@ -34,7 +34,7 @@ use function substr;
 final readonly class YamlScoper implements Scoper
 {
     private const YAML_EXTENSION_REGEX = '/\.ya?ml$/i';
-    private const CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_][\p{L}_\d]*(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_][\p{L}_\d]*(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
+    private const CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_][\p{L}_\d]*(?<singleSeparator>\\\(?:\\\)?))):)|(?<class>(?:[\p{L}_][\p{L}_\d]*(?<separator>\\\(?:\\\)?)+)+[\p{L}_\d]+)/u';
 
     public function __construct(
         private Scoper $decoratedScoper,
@@ -83,7 +83,7 @@ final readonly class YamlScoper implements Scoper
         string $prefix,
         string $contents,
         EnrichedReflector $enrichedReflector,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
     ): string {
         if ([] === $classes) {
             return $contents;

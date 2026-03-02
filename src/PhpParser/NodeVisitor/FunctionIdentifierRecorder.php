@@ -67,7 +67,7 @@ final class FunctionIdentifierRecorder extends NodeVisitorAbstract
 
     private function shouldBeAliased(
         Node $node,
-        FullyQualified $resolvedName
+        FullyQualified $resolvedName,
     ): bool {
         if ($this->enrichedReflector->isExposedFunction($resolvedName->toString())) {
             return true;

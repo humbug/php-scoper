@@ -34,7 +34,7 @@ final class RegexCheckerTest extends TestCase
     #[DataProvider('regexLikeProvider')]
     public function test_it_can_tell_if_a_string_looks_like_a_regex(
         string $value,
-        bool $expected
+        bool $expected,
     ): void {
         $actual = $this->regexChecker->isRegexLike($value);
 
@@ -125,7 +125,7 @@ final class RegexCheckerTest extends TestCase
     #[DataProvider('regexProvider')]
     public function test_it_can_validate_that_a_string_is_a_valid_regex_or_not(
         string $regex,
-        ?string $expected
+        ?string $expected,
     ): void {
         $actual = $this->regexChecker->validateRegex($regex);
 

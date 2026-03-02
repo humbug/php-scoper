@@ -19,7 +19,7 @@ use function Safe\preg_match;
 
 final class PrefixValidator
 {
-    private const PREFIX_PATTERN = '/^[\p{L}\d_\\\\]+$/u';
+    private const PREFIX_PATTERN = '/^[\p{L}\d_\\\]+$/u';
 
     /**
      * @phpstan-assert non-empty-string $prefix

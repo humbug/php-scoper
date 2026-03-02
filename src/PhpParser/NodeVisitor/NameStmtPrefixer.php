@@ -244,7 +244,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
     private static function doesNameBelongToNamespace(
         Name $originalName,
         Name $resolvedName,
-        ?Name $namespaceName
+        ?Name $namespaceName,
     ): bool {
         if (
             $namespaceName === null
@@ -268,7 +268,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         Name $originalName,
         string $resolvedName,
         Node $parentNode,
-        ?Name $namespaceName
+        ?Name $namespaceName,
     ): bool {
         return null === $namespaceName
             && !$originalName->isFullyQualified()
@@ -297,7 +297,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         Name $originalName,
         Name $resolvedName,
         Node $parentNode,
-        ?Name $useStatementName
+        ?Name $useStatementName,
     ): bool {
         if (null === $useStatementName
             || !$resolvedName->isFullyQualified()
@@ -345,7 +345,7 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
 
     private function isPrefixableClassName(
         Name $resolvedName,
-        Node $parentNode
+        Node $parentNode,
     ): bool {
         $isClassNode = $parentNode instanceof ConstFetch || $parentNode instanceof FuncCall;
 

@@ -24,7 +24,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use function is_a;
 
 /**
  * @internal
@@ -59,11 +58,6 @@ class InstalledPackagesScoperTest extends TestCase
         );
     }
 
-    public function test_it_is_a_scoper(): void
-    {
-        self::assertTrue(is_a(InstalledPackagesScoper::class, Scoper::class, true));
-    }
-
     public function test_delegates_scoping_to_the_decorated_scoper_if_is_not_a_installed_file(): void
     {
         $filePath = 'file.php';
@@ -84,7 +78,7 @@ class InstalledPackagesScoperTest extends TestCase
     public function test_it_prefixes_the_composer_autoloaders(
         EnrichedReflector $enrichedReflector,
         string $fileContents,
-        string $expected
+        string $expected,
     ): void {
         $scoper = new InstalledPackagesScoper(
             $this->decoratedScoper,
@@ -100,17 +94,6 @@ class InstalledPackagesScoperTest extends TestCase
         );
 
         self::assertSame($expected, $actual);
-    }
-
-    #[DataProvider('provideInvalidComposerFiles')]
-    public function test_it_requires_valid_composer2_files(
-        string $contents,
-        string $expectedExceptionMessage
-    ): void {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage($expectedExceptionMessage);
-
-        $this->scoper->scope('composer/installed.json', $contents);
     }
 
     public static function provideInstalledPackagesFiles(): iterable
@@ -507,6 +490,17 @@ class InstalledPackagesScoperTest extends TestCase
                 }
                 JSON,
         ];
+    }
+
+    #[DataProvider('provideInvalidComposerFiles')]
+    public function test_it_requires_valid_composer2_files(
+        string $contents,
+        string $expectedExceptionMessage,
+    ): void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+
+        $this->scoper->scope('composer/installed.json', $contents);
     }
 
     public static function provideInvalidComposerFiles(): iterable

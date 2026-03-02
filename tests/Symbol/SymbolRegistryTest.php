@@ -42,7 +42,7 @@ class SymbolRegistryTest extends TestCase
         array $names,
         array $regexes,
         string $symbol,
-        bool $expected
+        bool $expected,
     ): void {
         // Sanity check
         $this->validateRegexes($regexes);
@@ -55,64 +55,6 @@ class SymbolRegistryTest extends TestCase
         $actual = $registry->matches($symbol);
 
         self::assertSame($expected, $actual);
-    }
-
-    /**
-     * @param string[]     $regexes
-     * @param string[]     $names
-     * @param list<string> $regexes
-     * @param list<string> $names
-     */
-    #[DataProvider('provideNamesAndRegexes')]
-    public function test_it_optimizes_the_registered_names_and_regexes(
-        array $names,
-        array $regexes,
-        array $expectedNames,
-        array $expectedRegexes
-    ): void {
-        $registry = SymbolRegistry::create(
-            $names,
-            $regexes,
-        );
-
-        SymbolRegistryAssertions::assertStateIs(
-            $registry,
-            $expectedNames,
-            $expectedRegexes,
-        );
-    }
-
-    public function test_it_can_create_an_augmented_instance(): void
-    {
-        $registry = SymbolRegistry::create(
-            ['Acme\Foo'],
-            ['/^Acme\\\\Foo$/'],
-        );
-
-        $augmentedRegistry = $registry->merge(
-            SymbolRegistry::create(
-                ['Acme\Bar'],
-                ['/^Acme\\\\Bar/'],
-            ),
-        );
-
-        SymbolRegistryAssertions::assertStateIs(
-            $registry,
-            ['acme\foo'],
-            ['/^Acme\\\\Foo$/'],
-        );
-
-        SymbolRegistryAssertions::assertStateIs(
-            $augmentedRegistry,
-            [
-                'acme\foo',
-                'acme\bar',
-            ],
-            [
-                '/^Acme\\\\Foo$/',
-                '/^Acme\\\\Bar/',
-            ],
-        );
     }
 
     public static function provideSymbols(): iterable
@@ -152,6 +94,90 @@ class SymbolRegistryTest extends TestCase
         foreach (self::provideNameAndRegex() as $title => $set) {
             yield '[name & regex] '.$title => $set;
         }
+    }
+
+    /**
+     * @param string[]     $regexes
+     * @param string[]     $names
+     * @param list<string> $regexes
+     * @param list<string> $names
+     */
+    #[DataProvider('provideNamesAndRegexes')]
+    public function test_it_optimizes_the_registered_names_and_regexes(
+        array $names,
+        array $regexes,
+        array $expectedNames,
+        array $expectedRegexes,
+    ): void {
+        $registry = SymbolRegistry::create(
+            $names,
+            $regexes,
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $registry,
+            $expectedNames,
+            $expectedRegexes,
+        );
+    }
+
+    public static function provideNamesAndRegexes(): iterable
+    {
+        yield 'nominal' => [
+            ['Acme\Foo', 'Acme\Bar'],
+            ['/^Acme$/', '/^Ecma/'],
+            ['acme\bar', 'acme\foo'],
+            ['/^Acme$/', '/^Ecma/'],
+        ];
+
+        yield 'duplicates' => [
+            [
+                'Acme\Foo',
+                'Acme\Foo',
+                'ACME\FOO',
+                '\Acme\Foo',
+                'Acme\Foo\\',
+            ],
+            [
+                '/^Acme$/',
+                '/^Acme$/',
+            ],
+            ['acme\foo'],
+            ['/^Acme$/'],
+        ];
+    }
+
+    public function test_it_can_create_an_augmented_instance(): void
+    {
+        $registry = SymbolRegistry::create(
+            ['Acme\Foo'],
+            ['/^Acme\\\Foo$/'],
+        );
+
+        $augmentedRegistry = $registry->merge(
+            SymbolRegistry::create(
+                ['Acme\Bar'],
+                ['/^Acme\\\Bar/'],
+            ),
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $registry,
+            ['acme\foo'],
+            ['/^Acme\\\Foo$/'],
+        );
+
+        SymbolRegistryAssertions::assertStateIs(
+            $augmentedRegistry,
+            [
+                'acme\foo',
+                'acme\bar',
+            ],
+            [
+                '/^Acme\\\Foo$/',
+                '/^Acme\\\Bar/',
+            ],
+        );
     }
 
     private static function provideNames(): iterable
@@ -235,7 +261,7 @@ class SymbolRegistryTest extends TestCase
         ];
 
         yield 'name with extra backslashes' => [
-            ['\\Pest\\'],
+            ['\Pest\\'],
             'Pest',
             true,
         ];
@@ -274,7 +300,7 @@ class SymbolRegistryTest extends TestCase
         ];
 
         yield 'namespaced name; matching' => [
-            ['/^Acme\\\\Foo$/'],
+            ['/^Acme\\\Foo$/'],
             'Acme\Foo',
             true,
         ];
@@ -308,32 +334,6 @@ class SymbolRegistryTest extends TestCase
             ['/^Acme$/i'],
             'Acme',
             true,
-        ];
-    }
-
-    public static function provideNamesAndRegexes(): iterable
-    {
-        yield 'nominal' => [
-            ['Acme\Foo', 'Acme\Bar'],
-            ['/^Acme$/', '/^Ecma/'],
-            ['acme\bar', 'acme\foo'],
-            ['/^Acme$/', '/^Ecma/'],
-        ];
-
-        yield 'duplicates' => [
-            [
-                'Acme\Foo',
-                'Acme\Foo',
-                'ACME\FOO',
-                '\Acme\Foo',
-                'Acme\Foo\\',
-            ],
-            [
-                '/^Acme$/',
-                '/^Acme$/',
-            ],
-            ['acme\foo'],
-            ['/^Acme$/'],
         ];
     }
 

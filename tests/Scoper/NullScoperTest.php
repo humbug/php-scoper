@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Scoper;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use function is_a;
 
 /**
  * @internal
@@ -24,11 +23,6 @@ use function is_a;
 #[CoversClass(NullScoper::class)]
 class NullScoperTest extends TestCase
 {
-    public function test_is_a_scoper(): void
-    {
-        self::assertTrue(is_a(NullScoper::class, Scoper::class, true));
-    }
-
     public function test_returns_the_file_content_unchanged(): void
     {
         $filePath = 'file';

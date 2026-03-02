@@ -34,8 +34,8 @@ use function substr;
 final readonly class XmlScoper implements Scoper
 {
     private const XML_EXTENSION_REGEX = '/\.xml$/i';
-    private const NAMESPACE_PATTERN = '/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\\]+(?<separator>\\\\(?:\\\\)?))))"/';
-    private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_][\p{L}_\d]*(?<singleSeparator>\\\\(?:\\\\)?))):)|(?<class>(?:[\p{L}_][\p{L}_\d]*(?<separator>\\\\(?:\\\\)?)+)+[\p{L}_\d]+)/u';
+    private const NAMESPACE_PATTERN = '/<prototype.*\snamespace="(?:(?<namespace>(?:[^\\\]+(?<separator>\\\(?:\\\)?))))"/';
+    private const SINGLE_CLASS_PATTERN = '/(?:(?<singleClass>(?:[\p{L}_][\p{L}_\d]*(?<singleSeparator>\\\(?:\\\)?))):)|(?<class>(?:[\p{L}_][\p{L}_\d]*(?<separator>\\\(?:\\\)?)+)+[\p{L}_\d]+)/u';
 
     public function __construct(
         private Scoper $decoratedScoper,
@@ -70,7 +70,7 @@ final readonly class XmlScoper implements Scoper
         string $contents,
         string $prefix,
         EnrichedReflector $enrichedReflector,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
     ): string {
         if (1 > native_preg_match_all(self::SINGLE_CLASS_PATTERN, $contents, $matches)) {
             return $contents;
@@ -99,7 +99,7 @@ final readonly class XmlScoper implements Scoper
         string $contents,
         string $prefix,
         EnrichedReflector $enrichedReflector,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
     ): string {
         if (1 > native_preg_match_all(self::NAMESPACE_PATTERN, $contents, $matches)) {
             return $contents;
@@ -125,7 +125,7 @@ final readonly class XmlScoper implements Scoper
         string $prefix,
         string $contents,
         EnrichedReflector $enrichedReflector,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
     ): string {
         if ([] === $classes) {
             return $contents;

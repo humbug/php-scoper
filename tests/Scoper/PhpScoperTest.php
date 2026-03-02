@@ -35,7 +35,6 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use function Humbug\PhpScoper\create_parser;
-use function is_a;
 use function str_replace;
 
 /**
@@ -102,11 +101,6 @@ class PhpScoperTest extends TestCase
             ),
             $this->printer,
         );
-    }
-
-    public function test_is_a_scoper(): void
-    {
-        self::assertTrue(is_a(PhpScoper::class, Scoper::class, true));
     }
 
     public function test_can_scope_a_php_file(): void

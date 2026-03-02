@@ -74,7 +74,7 @@ final readonly class AutoloadPrefixer
     private static function prefixAutoloadStatements(
         stdClass $autoload,
         string $prefix,
-        EnrichedReflector $enrichedReflector
+        EnrichedReflector $enrichedReflector,
     ): stdClass {
         if (!isset($autoload->{'psr-4'}) && !isset($autoload->{'psr-0'})) {
             return $autoload;
@@ -115,14 +115,14 @@ final readonly class AutoloadPrefixer
     private static function prefixAutoload(
         array $autoload,
         string $prefix,
-        EnrichedReflector $enrichedReflector
+        EnrichedReflector $enrichedReflector,
     ): array {
         $loader = [];
 
         foreach ($autoload as $namespace => $paths) {
             $newNamespace = $enrichedReflector->isExcludedNamespace($namespace)
                 ? $namespace
-                : sprintf('%s\\%s', $prefix, $namespace);
+                : sprintf('%s\%s', $prefix, $namespace);
 
             $loader[$newNamespace] = $paths;
         }
@@ -240,12 +240,12 @@ final readonly class AutoloadPrefixer
     private static function prefixLaravelProviders(
         array $providers,
         string $prefix,
-        EnrichedReflector $enrichedReflector
+        EnrichedReflector $enrichedReflector,
     ): array {
         return array_map(
             static fn (string $provider) => $enrichedReflector->isExcludedNamespace($provider)
                 ? $provider
-                : sprintf('%s\\%s', $prefix, $provider),
+                : sprintf('%s\%s', $prefix, $provider),
             $providers,
         );
     }

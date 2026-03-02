@@ -15,7 +15,6 @@ declare(strict_types=1);
 
 namespace Humbug\PhpScoper;
 
-use ErrorException;
 use Fidry\Console\Application\ApplicationRunner;
 use Humbug\PhpScoper\Console\Application;
 use Isolated\Symfony\Component\Finder\Finder as IsolatedFinder;
@@ -29,14 +28,6 @@ if (PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg') {
 
     exit(1);
 }
-
-set_error_handler(
-    static function (int $code, string $message, string $file = '', int $line = -1): void {
-        if (error_reporting() & $code) {
-            throw new ErrorException($message, 0, $code, $file, $line);
-        }
-    },
-);
 
 $findAutoload = static function () {
     if (file_exists($autoload = __DIR__.'/../../../autoload.php')) {

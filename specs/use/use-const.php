@@ -125,7 +125,7 @@ return [
     ),
 
     'Constant use statement for a namespaced constant which has NOT been exposed' => SpecWithConfig::create(
-        exposeConstants: ['/^Foo\\\\Baru.*$/'],
+        exposeConstants: ['/^Foo\\\Baru.*$/'],
         spec: <<<'PHP'
             <?php
 

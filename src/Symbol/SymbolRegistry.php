@@ -29,12 +29,12 @@ use function Safe\preg_match;
 use function strtolower;
 use function trim;
 
-final class SymbolRegistry
+final readonly class SymbolRegistry
 {
     /**
      * @var array<string, mixed>
      */
-    private readonly array $names;
+    private array $names;
 
     /**
      * @param string[] $names
@@ -42,7 +42,7 @@ final class SymbolRegistry
      */
     public static function create(
         array $names = [],
-        array $regexes = []
+        array $regexes = [],
     ): self {
         return new self(
             array_values(self::normalizeNames($names)),
@@ -60,7 +60,7 @@ final class SymbolRegistry
      */
     public static function createForConstants(
         array $names = [],
-        array $regexes = []
+        array $regexes = [],
     ): self {
         return new self(
             array_values(self::normalizeConstantNames($names)),
@@ -75,8 +75,8 @@ final class SymbolRegistry
      */
     private function __construct(
         array $names,
-        private readonly array $regexes,
-        private readonly bool $constants
+        private array $regexes,
+        private bool $constants,
     ) {
         $this->names = array_flip($names);
 
@@ -183,7 +183,7 @@ final class SymbolRegistry
 
     private static function normalizeName(string $name): string
     {
-        return trim($name, '\\ ');
+        return trim($name, '\ ');
     }
 
     /**
@@ -197,7 +197,7 @@ final class SymbolRegistry
 
         $lastPart = array_pop($parts);
 
-        $parts = array_map('strtolower', $parts);
+        $parts = array_map(strtolower(...), $parts);
 
         $parts[] = $lastPart;
 

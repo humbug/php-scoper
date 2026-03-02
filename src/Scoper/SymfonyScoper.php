@@ -23,15 +23,15 @@ use function func_get_args;
 /**
  * Scopes the Symfony configuration related files.
  */
-final class SymfonyScoper implements Scoper
+final readonly class SymfonyScoper implements Scoper
 {
-    private readonly SymfonyXmlScoper $decoratedScoper;
+    private SymfonyXmlScoper $decoratedScoper;
 
     public function __construct(
         Scoper $decoratedScoper,
         string $prefix,
         EnrichedReflector $enrichedReflector,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
     ) {
         $this->decoratedScoper = new SymfonyXmlScoper(
             new SymfonyYamlScoper(

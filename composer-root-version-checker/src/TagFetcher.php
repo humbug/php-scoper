@@ -52,7 +52,7 @@ final readonly class TagFetcher
             <<<EOF
                 cURL command:
                 $ {$command}
-                EOF
+                EOF,
         );
 
         try {

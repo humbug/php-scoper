@@ -26,7 +26,7 @@ final class PhpScoperAssertions
     public static function assertListEqualsCanonicalizing(
         array $expected,
         mixed $actual,
-        string $message = ''
+        string $message = '',
     ): void {
         Assert::assertIsArray($actual);
 

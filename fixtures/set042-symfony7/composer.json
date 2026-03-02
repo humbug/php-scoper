@@ -6,7 +6,7 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/console": "*",
-        "symfony/flex": "^1.10",
+        "symfony/flex": "^2.10",
         "symfony/framework-bundle": "*",
         "symfony/yaml": "*"
     },
@@ -61,7 +61,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "7.*.*"
+            "require": "7.4.*"
         }
     }
 }

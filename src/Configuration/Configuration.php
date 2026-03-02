@@ -43,7 +43,7 @@ final class Configuration
         private array $filesWithContents,
         private array $excludedFilesWithContents,
         private Patcher $patcher,
-        private SymbolsConfiguration $symbolsConfiguration
+        private SymbolsConfiguration $symbolsConfiguration,
     ) {
         $this->prefix = $prefix instanceof Prefix
             ? $prefix

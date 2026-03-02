@@ -26,8 +26,8 @@ return static function (array|string $fileOrFilesPath): Closure {
         }
 
         return preg_replace(
-            '/(.*->load\((?:\n\s+)?\')(.+?\\\\)(\',.*)/',
-            '$1'.$prefix.'\\\\$2$3',
+            '/(.*->load\((?:\n\s+)?\')(.+?\\\)(\',.*)/',
+            '$1'.$prefix.'\\\$2$3',
             $contents,
         );
     };

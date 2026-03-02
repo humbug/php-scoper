@@ -40,7 +40,7 @@ class ScoperFactory
 
     public function createScoper(
         Configuration $configuration,
-        SymbolsRegistry $symbolsRegistry
+        SymbolsRegistry $symbolsRegistry,
     ): Scoper {
         $prefix = $configuration->getPrefix();
         $symbolsConfiguration = $configuration->getSymbolsConfiguration();
