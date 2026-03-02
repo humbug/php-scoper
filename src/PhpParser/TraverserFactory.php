@@ -89,6 +89,7 @@ class TraverserFactory
         $excludedFunctionExistsStringNodeStack = new ExcludedFunctionExistsStringNodeStack();
 
         return [
+            new PhpParserNodeVisitor\CloningVisitor(),
             $nameResolver,
             new NodeVisitor\AttributeAppender\ParentNodeAppender(),
             new NodeVisitor\AttributeAppender\IdentifierNameAppender($identifierResolver),
