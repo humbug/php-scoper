@@ -30,6 +30,7 @@ use Humbug\PhpScoper\Container;
 use Humbug\PhpScoper\FileSystemTestCase;
 use Humbug\PhpScoper\Scoper\Factory\DummyScoperFactory;
 use Humbug\PhpScoper\Scoper\Scoper;
+use Humbug\PhpScoper\Throwable\Exception\ParsingException;
 use PhpParser\Error as PhpParserError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Prophecy\Argument;
@@ -38,7 +39,6 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use Symfony\Component\Filesystem\Filesystem;
-use Throwable;
 use function count;
 use function Safe\chdir;
 use function Safe\file_get_contents;
@@ -590,13 +590,9 @@ class AddPrefixCommandTest extends FileSystemTestCase implements AppTesterTestCa
             ->scope($invalidInputPath, $invalidFileContents)
             ->willThrow(new PhpParserError('Could not scope file'));
 
-        try {
-            $this->appTester->run($input);
+        $this->expectException(ParsingException::class);
 
-            self::fail('Expected exception to be thrown.');
-        } catch (Throwable $caughtException) {
-            // Continue
-        }
+        $this->appTester->run($input);
     }
 
     public function test_it_outputs_in_the_build_directory_if_no_output_dir_is_given(): void
