@@ -463,6 +463,24 @@ e2e_040: $(PHP_SCOPER_PHAR_BIN)
 
 	diff fixtures/set040-polyfills/expected-output build/set040/output
 
+.PHONY: e2e_041
+m: # Runs end-to-end tests for the fixture set e2e_041 — Codebase using a polyfill
+e2e_041: $(PHP_SCOPER_PHAR_BIN)
+	rm -rf fixtures/set041-exposed-symbols-hierarchy/vendor || true
+	composer --working-dir=fixtures/set041-exposed-symbols-hierarchy dump-autoload
+
+	$(PHP_SCOPER_PHAR) add-prefix . \
+		--working-dir=fixtures/set041-exposed-symbols-hierarchy \
+		--output-dir=../../build/set041 \
+		--force \
+		--no-interaction \
+		--stop-on-failure
+	composer --working-dir=build/set041 dump-autoload
+
+	php build/set041/index.php > build/set041/output || true
+
+	diff fixtures/set041-exposed-symbols-hierarchy/expected-output build/set041/output
+
 
 #
 # Rules from files
