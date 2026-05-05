@@ -70,6 +70,31 @@ return [
 
         PHP,
 
+    'String argument referencing a namespaced internal class' => <<<'PHP'
+        <?php
+
+        $subclasses['PDO\\Mysql'] = 'PDO\\Mysql';
+        $subclasses['Random\\Randomizer'] = 'Random\\Randomizer';
+        $subclasses['Filter\\FilterFailedException'] = 'Filter\\FilterFailedException';
+
+        $x = [
+            'Random\\Randomizer' => 'Random\\Randomizer',
+            'PDO\\Mysql' => 'PDO\\Mysql',
+            'Filter\\FilterFailedException' => 'Filter\\FilterFailedException',
+        ];
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $subclasses['PDO\Mysql'] = 'PDO\Mysql';
+        $subclasses['Random\Randomizer'] = 'Random\Randomizer';
+        $subclasses['Filter\FilterFailedException'] = 'Filter\FilterFailedException';
+        $x = ['Random\Randomizer' => 'Random\Randomizer', 'PDO\Mysql' => 'PDO\Mysql', 'Filter\FilterFailedException' => 'Filter\FilterFailedException'];
+
+        PHP,
+
     'Array item of a list with class-like symbols' => <<<'PHP'
         <?php
 

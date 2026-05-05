@@ -50,6 +50,28 @@ return [
 
         PHP,
 
+    'FQCN string argument referencing a namespaced internal class' => <<<'PHP'
+        <?php
+
+        $x = 'Random\\Randomizer';
+        $x = '\\Random\\Randomizer';
+        $x = 'PDO\\Mysql';
+        $x = '\\PDO\\Mysql';
+        $x = 'Filter\\FilterFailedException';
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        $x = 'Random\Randomizer';
+        $x = '\Random\Randomizer';
+        $x = 'PDO\Mysql';
+        $x = '\PDO\Mysql';
+        $x = 'Filter\FilterFailedException';
+
+        PHP,
+
     'Invalid FQCN strings' => <<<'PHP'
         <?php
 
