@@ -50,6 +50,10 @@ help:
 check: ## Runs all checks
 check: composer_root_version_lint cs autoreview test composer_root_version_check
 
+.PHONY: sbx_create
+sbx_create:
+	sbx run claude --kit=.sbx/otel --kit=.sbx/php
+
 .PHONY: build
 build: ## Builds the PHAR
 build:
