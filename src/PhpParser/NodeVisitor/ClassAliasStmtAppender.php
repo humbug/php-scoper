@@ -110,7 +110,7 @@ final class ClassAliasStmtAppender extends NodeVisitorAbstract
 
         $statement->stmts = array_reduce(
             $statement->stmts,
-            fn (array $stmts, Stmt $stmt) => $this->appendClassAliasStmtIfApplicable($stmts, $stmt),
+            $this->appendClassAliasStmtIfApplicable(...),
             [],
         );
     }
