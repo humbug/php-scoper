@@ -10,32 +10,18 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-use Rector\PHPUnit\AnnotationsToAttributes\Rector\Class_\CoversAnnotationWithValueToAttributeRector;
-
 use Rector\Config\RectorConfig;
-use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Set\ValueObject\LevelSetList;
 
-return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
+return RectorConfig::configure()
+    ->withPaths([
         __DIR__.'/bin',
         __DIR__.'/src',
         __DIR__.'/tests',
-    ]);
-
-    $rectorConfig->autoloadPaths([
+    ])
+    ->withAutoloadPaths([
         __DIR__.'/vendor/autoload.php',
         __DIR__.'/../vendor-bin/rector/vendor/autoload.php',
-    ]);
-
-    $rectorConfig->importNames();
-
-    $rectorConfig->sets([
-        LevelSetList::UP_TO_PHP_82,
-        PHPUnitSetList::PHPUNIT_100,
-    ]);
-
-    $rectorConfig->rules([
-        CoversAnnotationWithValueToAttributeRector::class,
-    ]);
-};
+    ])
+    ->withImportNames()
+    ->withPhpSets(php82: true)
+    ->withComposerBased(phpunit: true);
