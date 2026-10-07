@@ -2,5 +2,10 @@
     "bin": "index.php",
     "require": {
         "guzzlehttp/guzzle": "5.3.4"
+    },
+    "config": {
+        "audit": {
+            "block-insecure": false
+        }
     }
 }

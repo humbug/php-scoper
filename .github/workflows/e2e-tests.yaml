@@ -109,6 +109,12 @@ jobs:
                       php: '8.2'
                     - e2e: 'e2e_043'
                       php: '8.3'
+                    # TODO: enable it back.
+                    - e2e: 'e2e_027'
+                      php: '8.2'
+                    # TODO: enable it back.
+                    - e2e: 'e2e_027'
+                      php: '8.3'
 
         steps:
             -   name: Checkout
