@@ -199,9 +199,7 @@ final class SpecParserTest extends TestCase
     {
         static $factory;
 
-        if (!isset($factory)) {
-            $factory = new SymbolsConfigurationFactory(new RegexChecker());
-        }
+        $factory ??= new SymbolsConfigurationFactory(new RegexChecker());
 
         return $factory->createSymbolsConfiguration($config);
     }
