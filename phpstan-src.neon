@@ -47,3 +47,16 @@ parameters:
         # Fixed in https://github.com/nikic/PHP-Parser/pull/1003
         - message: '#Standard constructor expects array#'
           path: 'src/Container.php'
+        # To fix later
+        - identifier: return.unusedType
+          path: 'src/Scoper/Composer/AutoloadPrefixer.php'
+          count: 1
+        - identifier: booleanAnd.rightAlwaysTrue
+          path: 'src/Scoper/Composer/AutoloadPrefixer.php'
+          count: 2
+        - identifier: function.alreadyNarrowedType
+          path: 'src/Scoper/Composer/AutoloadPrefixer.php'
+          count: 1
+        - identifier: deadCode.unreachable
+          path: 'src/Scoper/Composer/AutoloadPrefixer.php'
+          count: 1

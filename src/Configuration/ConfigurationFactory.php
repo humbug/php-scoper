@@ -315,7 +315,6 @@ final readonly class ConfigurationFactory
             throw InvalidConfigurationValue::forInvalidFinderType($index, $finder);
         }
 
-        /** @phpstan-ignore return.type */
         return $finders;
     }
 

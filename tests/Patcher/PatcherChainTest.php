@@ -16,7 +16,6 @@ namespace Humbug\PhpScoper\Patcher;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use function func_get_args;
 use function implode;
 use function sprintf;
 use function str_replace;
@@ -82,7 +81,7 @@ class PatcherChainTest extends TestCase
         return static fn (string $filePath, string $prefix, string $contents) => sprintf(
             'patcher#%s{%s}',
             $id,
-            implode(',', func_get_args()),
+            implode(',', [$filePath, $prefix, $contents]),
         );
     }
 }
