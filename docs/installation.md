@@ -3,12 +3,30 @@
 1. [PHAR](#phar)
 1. [Phive](#phive)
 1. [Composer](#composer)
+1. [Docker](#docker)
 
 ## PHAR
 
 The preferred method of installation is to use the PHP-Scoper PHAR which can be
-downloaded from the most recent [Github Release][releases]. This method ensures
+downloaded from the most recent [GitHub Release][releases]. This method ensures
 you will not have any dependency conflict issue.
+
+When downloading the PHAR directly, it is recommended to check its signature:
+
+```shell
+# Do adjust the URL based on the latest release
+wget -O php-scoper.phar "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar"
+wget -O php-scoper.phar.asc "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar.asc"
+
+# Check that the signature matches
+gpg --verify php-scoper.phar.asc php-scoper.phar
+
+# Check the issuer (the ID can also be found from the previous command)
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 74A754C9778AA03AA451D1C1A000F927D67184EE
+
+rm php-scoper.phar.asc
+chmod +x php-scoper.phar
+```
 
 
 ## Phive
@@ -52,28 +70,6 @@ The official docker image for the project is [`humbugphp/php-scoper`][docker-ima
 
 ```shell
 docker pull humbugphp/php-scoper
-```
-
-
-## GitHub
-
-You may download the PHP-Scoper PHAR directly from the [GitHub release][releases].
-You should however beware that it is not as secure as downloading it from the other mediums.
-Hence, it is recommended to check the signature when doing so:
-
-```shell
-# Do adjust the URL based on the latest release
-wget -O php-scoper.phar "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar"
-wget -O php-scoper.phar.asc "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar.asc"
-
-# Check that the signature matches
-gpg --verify php-scoper.phar.asc php-scoper.phar
-
-# Check the issuer (the ID can also be found from the previous command)
-gpg --keyserver hkps://keys.openpgp.org --recv-keys 74A754C9778AA03AA451D1C1A000F927D67184EE
-
-rm php-scoper.phar.asc
-chmod +x php-scoper.phar
 ```
 
 
