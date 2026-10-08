@@ -18,7 +18,7 @@ If you need more granular configuration, you can create a `scoper.inc.php` by
 running the command `php-scoper init`. A different file/location can be passed
 with a `--config` option.
 
-Complete configuration reference (details about each entry is available):
+Complete configuration reference (details about each entry are available):
 
 ```php
 <?php declare(strict_types=1);
@@ -69,10 +69,10 @@ remain unchanged. The function `json_validate()` will be considered as internal 
 PHP 8.2.
 
 The printer version affects the code style. For example nowdocs and heredocs will be indented if the printer's PHP
-version is higher than 7.4 but will be formated without indent otherwise.
+version is higher than 7.4 but will be formatted without indent otherwise.
 
 If `null` or `''` (empty string) is given, then the host version will be used for the parser and 7.2 will be used for
-the printer. This allows PHP-Scoper to a PHP 7.2 compatible codebase without breaking its compatibility although the
+the printer. This allows PHP-Scoper to scope a PHP 7.2 compatible codebase without breaking its compatibility even though the
 host version is a newer version.
 
 
@@ -166,7 +166,7 @@ The patched code which would resolve this issue might be:
 
 ```php
 $type = 'Foo'; // determined at runtime
-$scopedPrefix = array_shift(explode('\\', __NAMESPACE__));
+$scopedPrefix = explode('\\', __NAMESPACE__)[0];
 $class = $scopedPrefix . '\\Humbug\\Format\\Type\\' . $type;
 ```
 
@@ -227,7 +227,7 @@ Symbols can be marked as excluded as follows:
 
 return [
     'exclude-namespaces' => [ 'WP', '/regex/' ],
-    'exclude-classes' => ['Stringeable', '/regex/'],
+    'exclude-classes' => ['Stringable', '/regex/'],
     'exclude-functions' => ['str_contains', '/regex/'],
     'exclude-constants' => ['PHP_EOL', '/regex/'],
 ];
@@ -272,7 +272,7 @@ So if left alone, this will break any piece of code that relied on `\trigger_dep
 which is why PHP-Scoper will still add an alias for it, as if it was an exposed function.
 Another benefit of this, is that it allows to scope any polyfill without any issues.
 
-**WARNING**: This exclusion feature should be use very carefully as it can easily break the Composer
+**WARNING**: This exclusion feature should be used very carefully as it can easily break the Composer
 auto-loading. Indeed, if you have the following package:
 
 ```json
@@ -348,9 +348,9 @@ Notes:
   use this file instead. Note that this is automatically done by [Box][box] if
   you are using it with the [`PhpScoper` compactor][php-scoper-integration].
 
-With this in mind, know that excluding a symbol may not be done the way you
+With this in mind, know that exposing a symbol may not be done the way you
 expect it to. More details about the internal work, which will be necessary
-if you need to delve into the scoped code, can be found bellow.
+if you need to delve into the scoped code, can be found below.
 
 **Note: If a symbol is excluded _and_ exposed, the exclusion will take precedence.**
 
@@ -391,7 +391,7 @@ class Foo {}
 \class_alias('Humbug\\Acme\\Foo', 'Acme\\Foo', \false);
 ```
 
-And in `vendor/scoper-autoload.php` a `class_exist` statement is registered
+And in `vendor/scoper-autoload.php` a `class_exists` statement is registered
 to trigger the `class_alias` statement added:
 
 ```php
@@ -412,7 +412,7 @@ return $loader;
 ### Exposing functions
 
 The mechanism is very similar to the one used for classes. However since a
-function similar to `class_alias` does not exists for functions, we declare
+function similar to `class_alias` does not exist for functions, we declare
 again the function with the right name.
 
 So if you have the following file scoped with the function `dd` exposed:
@@ -465,10 +465,10 @@ return $loader;
 The constant aliasing mechanism is done by transforming the constant
 declaration into a `define()` statement when this is not already the case.
 Note that there is a difference here since `define()` defines a constant at
-runtime whereas `const` defines it at compile time. You have a more details
+runtime whereas `const` defines it at compile time. You have a more detailed
 post regarding the differences [here](https://stackoverflow.com/a/3193704/3902761)
 
-Give the following file with the exposed constant `Acme\FOO`:
+Given the following file with the exposed constant `Acme\FOO`:
 
 ```php
 <?php
@@ -485,7 +485,7 @@ The scoped file will look like this:
 
 namespace Humbug\Acme;
 
-\define('FOO', 'X');
+\define('Acme\FOO', 'X');
 ```
 
 
