@@ -96,7 +96,60 @@ return [
 
         namespace Humbug;
 
-        enum Status implements \HasColor
+        enum Status implements HasColor
+        {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        PHP,
+
+    'enum implementing an interface imported via a use statement' => <<<'PHP'
+        <?php
+
+        namespace Acme;
+
+        use App\Contracts\HasColor;
+
+        enum Status: string implements HasColor {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        use Humbug\App\Contracts\HasColor;
+        enum Status : string implements HasColor
+        {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        PHP,
+
+    'enum implementing an interface referenced via a FQ name' => <<<'PHP'
+        <?php
+
+        namespace Acme;
+
+        enum Status: string implements \App\Contracts\HasColor {
+            case DRAFT = 'draft';
+            case PUBLISHED = 'published';
+            case ARCHIVED = 'archived';
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        enum Status : string implements \Humbug\App\Contracts\HasColor
         {
             case DRAFT = 'draft';
             case PUBLISHED = 'published';
