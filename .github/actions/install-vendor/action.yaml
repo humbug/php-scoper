@@ -11,7 +11,7 @@ inputs:
     ignore-cache:
         description: >
             Whether to ignore the Composer cache. Should be enabled when the
-            built artifacts are published (e.g. on release) to avoid cache poisoning.
+            built artefacts are published (e.g. on release) to avoid cache poisoning.
         required: false
         default: 'false'
 
