@@ -96,6 +96,22 @@ jobs:
 
             -   run: make rector_lint
 
+    zizmor:
+        runs-on: ubuntu-latest
+        name: zizmor
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+                with:
+                    persist-credentials: false
+
+            -   name: Run zizmor
+                uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+                with:
+                    # Report the findings as annotations and fail the job instead of
+                    # uploading them to the GitHub Security tab.
+                    advanced-security: false
+
     # This is a "trick", a meta task which does not change, and we can use in
     # the protected branch rules as opposed to the E2E tests one above which
     # may change regularly.
@@ -108,6 +124,7 @@ jobs:
             - cs
             - phpstan
             - rector
+            - zizmor
         if: always()
         steps:
             - name: Successful run
