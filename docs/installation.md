@@ -7,14 +7,14 @@
 
 ## PHAR
 
-The preferred method of installation is to use the PHP-Scoper PHAR which can be
-downloaded from the most recent [GitHub Release][releases]. This method ensures
-you will not have any dependency conflict issue.
+The preferred installation method is the PHP-Scoper PHAR, which can be
+downloaded from the latest [GitHub Release][releases]. This method avoids any
+dependency conflicts.
 
-When downloading the PHAR directly, it is recommended to check its signature:
+When downloading the PHAR directly, it is recommended to verify its signature:
 
 ```shell
-# Do adjust the URL based on the latest release
+# Adjust the URL to match the latest release
 wget -O php-scoper.phar "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar"
 wget -O php-scoper.phar.asc "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar.asc"
 
@@ -31,13 +31,13 @@ chmod +x php-scoper.phar
 
 ## Phive
 
-You can install PHP-Scoper with [Phive][phive]
+You can install PHP-Scoper with [Phive][phive]:
 
 ```bash
 $ phive install humbug/php-scoper --force-accept-unsigned
 ```
 
-To upgrade `humbug/php-scoper` use the following command:
+To upgrade `humbug/php-scoper`, use the following command:
 
 ```bash
 $ phive update humbug/php-scoper --force-accept-unsigned
@@ -52,9 +52,9 @@ You can install PHP-Scoper with [Composer][composer]:
 $ composer global require humbug/php-scoper
 ```
 
-If you cannot install it because of a dependency conflict or you prefer to
-install it for your project, it is recommended to take a look at 
-[bamarni/composer-bin-plugin][bamarni/composer-bin-plugin]. Example:
+If you cannot install it because of a dependency conflict, or prefer to install
+it per project, consider using
+[bamarni/composer-bin-plugin][bamarni/composer-bin-plugin]. For example:
 
 ```bash
 $ composer require --dev bamarni/composer-bin-plugin
@@ -66,7 +66,7 @@ $ vendor/bin/php-scoper
 
 ## Docker
 
-The official docker image for the project is [`humbugphp/php-scoper`][docker-image]:
+The official Docker image for the project is [`humbugphp/php-scoper`][docker-image]:
 
 ```shell
 docker pull humbugphp/php-scoper
