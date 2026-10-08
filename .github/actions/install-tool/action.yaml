@@ -21,5 +21,7 @@ runs:
                 working-directory: 'vendor-bin/${{ inputs.vendor-bin-tool }}'
 
         -   name: Ensure PHP-CS-Fixer Makefile target is up to date
-            run: make ${{ inputs.makefile-command }}
+            run: make "${MAKEFILE_COMMAND}"
             shell: sh
+            env:
+                MAKEFILE_COMMAND: ${{ inputs.makefile-command }}

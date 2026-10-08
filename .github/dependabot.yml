@@ -4,6 +4,8 @@ updates:
         directory: "."
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             jetbrains-phpstorm-stubs:
                 patterns:
@@ -23,6 +25,8 @@ updates:
         directory: "vendor-bin/php-cs-fixer/"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:
@@ -32,6 +36,8 @@ updates:
         directory: "vendor-bin/phpstan/"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:
@@ -41,6 +47,8 @@ updates:
         directory: "vendor-bin/rector/"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:
@@ -50,6 +58,8 @@ updates:
         directory: "composer-root-version-checker"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:
@@ -59,6 +69,8 @@ updates:
         directory: "/fixtures/set027-laravel"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:
@@ -68,6 +80,8 @@ updates:
         directory: "/fixtures/set041-symfony64"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:
@@ -77,6 +91,8 @@ updates:
         directory: "/fixtures/set042-symfony7"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:
@@ -86,6 +102,8 @@ updates:
         directory: "/fixtures/set043-symfony8"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:
@@ -95,6 +113,8 @@ updates:
         directory: ".github"
         schedule:
             interval: "weekly"
+        cooldown:
+            default-days: 7
         groups:
             dependencies:
                 patterns:

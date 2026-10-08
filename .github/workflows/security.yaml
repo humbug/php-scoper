@@ -15,6 +15,9 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
     cancel-in-progress: true
 
+permissions:
+    contents: read
+
 jobs:
     security:
         runs-on: ubuntu-latest
@@ -23,10 +26,12 @@ jobs:
             -   name: Checkout
                 uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
                 with:
+                    persist-credentials: false
                     fetch-depth: 0
 
+            # This workflow does not publish any artefact.
             -   name: Cache the vulnerability database
-                uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
+                uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1 # zizmor: ignore[cache-poisoning]
                 id: cache-db
                 with:
                     path: ~/.symfony/cache

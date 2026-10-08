@@ -13,6 +13,9 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
     cancel-in-progress: true
 
+permissions:
+    contents: read
+
 jobs:
     cs-lint:
         runs-on: ubuntu-latest
@@ -20,6 +23,8 @@ jobs:
         steps:
             -   name: Checkout
                 uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+                with:
+                    persist-credentials: false
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # 2.36.0
@@ -29,13 +34,13 @@ jobs:
                     coverage: none
 
             -   name: Install Composer dependencies
-                uses: ./.github/actions/install-vendor
+                uses: $/.github/actions/install-vendor
 
             -   name: Ensure that the root dependencies are updated correctly
                 run: make vendor_install
 
             -   name: Install PHP-CS-Fixer
-                uses: ./.github/actions/install-tool
+                uses: $/.github/actions/install-tool
                 with:
                     vendor-bin-tool: php-cs-fixer
                     makefile-command: php_cs_fixer_install
@@ -59,6 +64,8 @@ jobs:
         steps:
             -   name: Checkout
                 uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+                with:
+                    persist-credentials: false
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # 2.36.0
@@ -97,10 +104,14 @@ jobs:
         name: Update the Composer root version
         if: ${{ github.repository == 'humbug/php-scoper' && github.ref_name == 'main' }}
         runs-on: ubuntu-latest
+        permissions:
+            contents: write  # Required to push the branch.
+            pull-requests: write  # Required to create the pull request.
         steps:
             -   name: Checkout
                 uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
                 with:
+                    persist-credentials: false
                     ref: ${{ github.head_ref }}
                     fetch-depth: '0'  # Ensures the tags are fetched
                     token: ${{ secrets.GITHUB_TOKEN }}
