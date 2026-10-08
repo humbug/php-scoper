@@ -56,7 +56,7 @@ updates:
                     - "*"
 
     -   package-ecosystem: "composer"
-        directory: "/Users/tfidry/Project/Humbug/php-scoper/fixtures/set027-laravel"
+        directory: "/fixtures/set027-laravel"
         schedule:
             interval: "weekly"
         groups:
@@ -65,7 +65,7 @@ updates:
                     - "*"
 
     -   package-ecosystem: "composer"
-        directory: "/Users/tfidry/Project/Humbug/php-scoper/fixtures/set041-symfony64"
+        directory: "/fixtures/set041-symfony64"
         schedule:
             interval: "weekly"
         groups:
@@ -74,7 +74,7 @@ updates:
                     - "*"
 
     -   package-ecosystem: "composer"
-        directory: "/Users/tfidry/Project/Humbug/php-scoper/fixtures/set042-symfony7"
+        directory: "/fixtures/set042-symfony7"
         schedule:
             interval: "weekly"
         groups:
@@ -83,7 +83,7 @@ updates:
                     - "*"
 
     -   package-ecosystem: "composer"
-        directory: "/Users/tfidry/Project/Humbug/php-scoper/fixtures/set042-symfony8"
+        directory: "/fixtures/set043-symfony8"
         schedule:
             interval: "weekly"
         groups:
