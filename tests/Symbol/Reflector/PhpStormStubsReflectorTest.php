@@ -112,6 +112,21 @@ class PhpStormStubsReflectorTest extends TestCase
             'NoDiscard',
             'DelayedTargetValidation',
         );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.6 new class-like (added or modified)',
+            'Io\IoException',
+            'Io\Poll\Context',
+            'IntlNumberRangeFormatter',
+            'Openssl\Session',
+            'Snmp\Mib',
+            'SortDirection',
+            'StreamError',
+            'StreamPollHandle',
+            'Time\Duration',
+            'Uri\Rfc3986\UriBuilder',
+            'Uri\WhatWg\UrlBuilder',
+        );
     }
 
     #[DataProvider('provideFunctions')]
@@ -548,6 +563,7 @@ class PhpStormStubsReflectorTest extends TestCase
             'pcntl_getcpu',
             'pcntl_getcpuaffinity',
             'pcntl_getqos_class',
+            'pcntl_setqos_class',
             'pcntl_setns',
             'pcntl_waitid',
             'pg_change_password',
@@ -557,8 +573,10 @@ class PhpStormStubsReflectorTest extends TestCase
             'pg_result_memory_size',
             'pg_set_chunked_rows_size',
             'pg_socket_poll',
-            'sodium_crypto_aead_aegis128l_',
-            'sodium_crypto_aead_aegis256l_',
+            'sodium_crypto_aead_aegis128l_decrypt',
+            'sodium_crypto_aead_aegis256_encrypt',
+            'openssl_password_hash',
+            'openssl_password_verify',
             'http_get_last_response_headers',
             'http_clear_last_response_headers',
             'fpow',
@@ -580,6 +598,24 @@ class PhpStormStubsReflectorTest extends TestCase
             'grapheme_levenshtein',
             'array_first',
             'array_last',
+        );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.6 functions (added or modified)',
+            'clamp',
+            'gmp_powm_sec',
+            'gmp_prevprime',
+            'grapheme_strrev',
+            'locale_get_display_keyword',
+            'mysqli_quote_string',
+            'snmp_init_mib',
+            'sodium_bin2ip',
+            'sodium_crypto_ipcrypt_encrypt',
+            'sodium_crypto_kem_keypair',
+            'sodium_crypto_xof_shake128',
+            'stream_last_errors',
+            'stream_socket_get_crypto_status',
+            'Uri\WhatWg\url_percent_encode',
         );
     }
 
@@ -704,7 +740,7 @@ class PhpStormStubsReflectorTest extends TestCase
             'PHP_SBINDIR',
             'CURL_HTTP_VERSION_3',
             'CURL_HTTP_VERSION_3ONLY',
-            'CURL_TCP_KEEPCNT',
+            'CURLOPT_TCP_KEEPCNT',
             'CURLOPT_PREREQFUNCTION',
             'CURL_PREREQFUNC_OK',
             'CURL_PREREQFUNC_ABORT',
@@ -717,10 +753,6 @@ class PhpStormStubsReflectorTest extends TestCase
             'CURLINFO_SSL_DATA_OUT',
             'CURLINFO_SSL_DATA_IN',
             'CURLINFO_POSTTRANSFER_TIME_T',
-            'PATTERN',
-            'PROPERTY_IDS_UNARY_OPERATOR',
-            'PROPERTY_ID_COMPAT_MATH_START',
-            'PROPERTY_ID_COMPAT_MATH_CONTINUE',
             'LDAP_OPT_X_TLS_PROTOCOL_MAX',
             'LDAP_OPT_X_TLS_PROTOCOL_TLS1_3',
             'LIBXML_RECOVER',
@@ -770,12 +802,32 @@ class PhpStormStubsReflectorTest extends TestCase
             'T_PROTECTED_SET',
             'T_PRIVATE_SET',
             'XML_OPTION_PARSE_HUGE',
+            'ZEND_VERIFY_TYPE_INFERENCE',
         );
 
         yield from self::createDataSetForInternalSymbols(
             'PHP 8.5 constants (added or modified)',
             'PHP_BUILD_PROVIDER',
             'PHP_BUILD_DATE',
+            'IP_BINDANY',
+            'TCP_FUNCTION_BLK',
+            'TCP_REUSPORT_LB_NUMA',
+        );
+
+        yield from self::createDataSetForInternalSymbols(
+            'PHP 8.6 constants (added or modified)',
+            'AF_UNSPEC',
+            'ARRAY_FILTER_USE_VALUE',
+            'CURLOPT_SEEKFUNCTION',
+            'CURLINFO_SIZE_DELIVERED',
+            'EAI_NONAME',
+            'MYSQLI_OPT_COMPRESS',
+            'OPENSSL_RSA_PSS_SALTLEN_AUTO',
+            'SODIUM_CRYPTO_IPCRYPT_BYTES',
+            'SODIUM_CRYPTO_KEM_MLKEM768_SEEDBYTES',
+            'SODIUM_CRYPTO_XOF_SHAKE128_BLOCKBYTES',
+            'STREAM_CRYPTO_STATUS_NONE',
+            'TCP_USER_TIMEOUT',
         );
     }
 
