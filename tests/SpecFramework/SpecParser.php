@@ -166,9 +166,7 @@ class SpecParser extends TestCase
     ): SymbolsConfiguration {
         static $factory;
 
-        if (!isset($factory)) {
-            $factory = new SymbolsConfigurationFactory(new RegexChecker());
-        }
+        $factory ??= new SymbolsConfigurationFactory(new RegexChecker());
 
         $mergedConfig = array_merge(
             $meta->getSymbolsConfig(),

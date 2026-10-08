@@ -7,5 +7,10 @@
         "files": [
             "check-non-prefixed-files.php"
         ]
+    },
+    "config": {
+        "audit": {
+            "block-insecure": false
+        }
     }
 }

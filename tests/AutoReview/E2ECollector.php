@@ -55,9 +55,7 @@ final class E2ECollector
     {
         static $names;
 
-        if (!isset($names)) {
-            $names = self::findE2ENames();
-        }
+        $names ??= self::findE2ENames();
 
         return $names;
     }
