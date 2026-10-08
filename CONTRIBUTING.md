@@ -1,5 +1,8 @@
 ## Contributing
 
+For an overview of how PHP-Scoper works, refer to the
+[Architecture][architecture] documentation.
+
 The project provides a `Makefile` in which the most common commands have been
 registered such as fixing the coding style or running the test.
 
@@ -125,6 +128,7 @@ commands in the `Makefile` for more information.
 « [Back to Table of Contents](README.md#table-of-contents) »
 
 
+[architecture]: docs/architecture.md#architecture
 [node-visitors]: https://github.com/humbug/php-scoper/tree/master/src/PhpParser/NodeVisitor
 [php-parser]: https://github.com/nikic/PHP-Parser
 [PhpScoperTest]: tests/Scoper/PhpScoperTest.php

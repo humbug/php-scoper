@@ -73,6 +73,11 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Exposing/Excluding traits](docs/limitations.md#exposingexcluding-traits)
     - [Exposing/Excluding enums](docs/limitations.md#exposingexcluding-enums)
     - [Declaring a custom namespaced function `function_exists()`](docs/limitations.md#declaring-a-custom-namespaced-function-function_exists)
+- [Architecture](docs/architecture.md#architecture)
+    - [Scopers](docs/architecture.md#scopers)
+    - [Scoping PHP files](docs/architecture.md#scoping-php-files)
+    - [Reflector](docs/architecture.md#reflector)
+    - [Exposed symbols and the scoper autoload](docs/architecture.md#exposed-symbols-and-the-scoper-autoload)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
