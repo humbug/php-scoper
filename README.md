@@ -29,10 +29,10 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 ## Table of Contents
 
 - [Installation](docs/installation.md#installation)
+    - [PHAR](docs/installation.md#phar)
     - [Phive](docs/installation.md#phive)
     - [Composer](docs/installation.md#composer)
     - [Docker](docs/installation.md#docker)
-    - [GitHub](docs/installation.md#github)
 - [Usage](#usage)
 - [Configuration](docs/configuration.md#configuration)
     - [Prefix](docs/configuration.md#prefix)
