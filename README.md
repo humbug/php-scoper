@@ -4,23 +4,23 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/humbug/php-scoper/tests.yaml?branch=main&style=flat-square)](https://github.com/humbug/php-scoper/actions/workflows/tests.yaml)
 [![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](LICENSE)
 
-PHP-Scoper is a tool which essentially moves any body of code, including all
-dependencies such as vendor directories, to a new and distinct namespace.
+PHP-Scoper moves any body of code, including all its dependencies such as
+vendor directories, to a new and distinct namespace.
 
 
 ## Goal
 
-PHP-Scoper's goal is to make sure that all code for a project lies in a 
+PHP-Scoper's goal is to ensure that all the code of a project lies in a
 distinct PHP namespace. This is necessary, for example, when building PHARs that:
 
-- Bundle their own vendor dependencies; and 
-- Load/execute code from arbitrary PHP projects with similar dependencies
+- bundle their own vendor dependencies; and
+- load or execute code from arbitrary PHP projects with similar dependencies.
 
-When a package (of possibly different versions) exists, and is found in both a PHAR
-and the executed code, the one from the PHAR will be used. This means these
-PHARs run the risk of raising conflicts between their bundled vendors and the
-vendors of the project they are interacting with, leading to issues that are 
-potentially very difficult to debug due to dissimilar or unsupported package versions.
+When a package, possibly in different versions, is found both in a PHAR and in
+the executed code, the one from the PHAR is used. Such PHARs therefore risk
+conflicts between their bundled dependencies and those of the project they
+interact with. Due to mismatched or unsupported package versions, the
+resulting issues can be very difficult to debug.
 
 
 ## Table of Contents
@@ -78,7 +78,9 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Scoping PHP files](docs/architecture.md#scoping-php-files)
     - [Reflector](docs/architecture.md#reflector)
     - [Exposed symbols and the scoper autoload](docs/architecture.md#exposed-symbols-and-the-scoper-autoload)
-- [Contributing](#contributing)
+- [Contributing](CONTRIBUTING.md#contributing)
+    - [Commands](CONTRIBUTING.md#commands)
+    - [Tests](CONTRIBUTING.md#tests)
 - [Credits](#credits)
 
 
@@ -88,25 +90,25 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
 php-scoper add-prefix
 ```
 
-This will prefix all relevant namespaces in code found in the current working
-directory. The prefixed files will be accessible in a `build` folder. You can
-then use the prefixed code to build your PHAR.
+This prefixes all the relevant namespaces of the code found in the current
+working directory. The prefixed files are written to a `build` directory, and
+can then be used to build your PHAR.
 
-**Warning**: After prefixing the files, if you are relying on Composer
-for the auto-loading, dumping the autoloader again is required.
+**Warning**: if you rely on Composer for autoloading, you must dump the
+autoloader again after prefixing the files.
 
-For a more concrete example, you can take a look at PHP-Scoper's build
-step in [Makefile](Makefile), especially if you are using Composer as
-there are steps both before and after running PHP-Scoper to consider.
+For a more concrete example, refer to PHP-Scoper's build step in the
+[Makefile](Makefile). This is particularly relevant if you use Composer, as
+there are steps to consider both before and after running PHP-Scoper.
 
 ## Building a Scoped PHAR
 
 ### With Box
 
-If you are using [Box][box] to build your PHAR, you can use the existing
-[PHP-Scoper integration][php-scoper-integration]. Box will take care of
-most of the things for you so you should only have to adjust the PHP-Scoper
-configuration to your needs.
+If you use [Box][box] to build your PHAR, you can rely on its
+[PHP-Scoper integration][php-scoper-integration]. Box takes care of most of
+the process, so you should only need to adjust the PHP-Scoper configuration to
+your needs.
 
 
 ### Without Box
@@ -119,33 +121,32 @@ Assuming you do not need any development dependencies, run:
 composer install --no-dev --prefer-dist
 ```
 
-This will allow you to save time in the scoping process by not
-processing unnecessary files.
+This saves time during scoping, as unnecessary files are not processed.
 
 
 #### Step 2: Run PHP-Scoper
 
-PHP-Scoper copies code to a new location during prefixing, leaving your original
-code untouched. The default location is `./build`. You can change the default
-location using the `--output-dir` option. By default, it also generates a random
-prefix string. You can set a specific prefix string using the `--prefix` option.
-If automating builds, you can set the `--force` option to overwrite any code
-existing in the output directory without being asked to confirm.
+PHP-Scoper copies the code to a new location during prefixing, leaving your
+original code untouched. The default location is `./build`, which can be
+changed with the `--output-dir` option. By default, PHP-Scoper also generates a
+random prefix, which can be set explicitly with the `--prefix` option. When
+automating builds, use the `--force` option to overwrite any existing code in
+the output directory without a confirmation prompt.
 
-Onto the basic command assuming default options from your project's root
-directory:
+The basic command, with the default options, run from your project's root
+directory is:
 
 ```bash
 bin/php-scoper add-prefix
 ```
 
-As there are no path arguments, the current working directory will be scoped to
-`./build` in its entirety. Of course, actual prefixing is limited to PHP files,
-or PHP scripts. Other files are copied unchanged, though we also need to scope
-certain Composer related files.
+As no path argument is given, the entire current working directory is scoped
+to `./build`. Prefixing is limited to PHP files and scripts; other files are
+copied unchanged, with the exception of certain Composer-related files, which
+are also scoped.
 
-Speaking of scoping Composer related files... The next step is to dump the
-Composer autoloader if we depend on it, so everything works as expected:
+If you depend on the Composer autoloader, the next step is to dump it so that
+everything works as expected:
 
 ```bash
 composer dump-autoload --working-dir build --classmap-authoritative
@@ -154,52 +155,49 @@ composer dump-autoload --working-dir build --classmap-authoritative
 
 ## Recommendations
 
-There are 3 things to manage when dealing with isolated PHARs:
+There are three aspects to manage when dealing with isolated PHARs:
 
-- The PHAR format: there is some incompatibilities such as `realpath()` which
-  will no longer work for the files within the PHAR since the paths are
-  virtual.
-- Isolating the code: due to the dynamic nature of PHP, isolating your
-  dependencies will never be a trivial task and as a result you should have
-  some end-to-end test to ensure your isolated code is working properly. You
-  will also likely need to configure the excluded and exposed symbols or
-  [patchers][patchers].
-- The dependencies: which dependencies are you shipping? Fine controlled ones 
-  managed with a `composer.lock` or you always ship your application with
-  up-to-date dependencies? The latter, although more ideal, will by design
-  result in more brittleness as any new release from a dependency may break
-  something (although the changes may be SemVer compliant, we are dealing with
-  PHARs and isolated code)
+- The PHAR format: some functions are incompatible with it, such as
+  `realpath()`, which no longer works for files within the PHAR as their paths
+  are virtual.
+- Code isolation: due to the dynamic nature of PHP, isolating your dependencies
+  is never trivial. You should therefore have end-to-end tests to ensure your
+  isolated code works correctly. You will also likely need to configure the
+  excluded and exposed symbols, or [patchers][patchers].
+- The dependencies: which dependencies do you ship? Tightly controlled ones,
+  managed with a `composer.lock`, or always the latest versions? The latter,
+  although preferable, is by design more brittle, as any new release of a
+  dependency may break something. Even if the changes are SemVer compliant, the
+  code is isolated and shipped in a PHAR.
 
-As a result, you _should_ have end-to-end tests for (at the minimum) your
+Consequently, you _should_ have end-to-end tests for, at a minimum, your
 released PHAR.
 
-Since dealing with the 3 issues mentioned above at once can be tedious, it is
-highly recommended having several tests for each step.
+As addressing all three aspects at once can be tedious, it is highly
+recommended to have separate tests for each step.
 
-For example, you can have a test for both your non-isolated PHAR and your 
-isolated PHAR, this way you will know which step is causing an issue. If the 
-isolated PHAR is not working, you can try to test the isolated code directly 
-outside the PHAR to make sure the scoping process is not the issue.
+For example, you can test both your non-isolated PHAR and your isolated PHAR to
+identify which step causes an issue. If the isolated PHAR does not work, you can
+test the isolated code directly, outside the PHAR, to rule out the scoping
+process.
 
-To check if the isolated code is working correctly, you have a number of solutions:
+There are several ways to check whether the isolated code works correctly:
 
-- When using PHP-Scoper directly, by default PHP-Scoper dumps the files in a 
-  `build` directory. Do not forget that
-  [you need to dump the Composer autoloader for the isolated code to work!](#step-2-run-php-scoper).
-- When using [Box][box], you can use its `--debug` option from the `compile` 
-  command in order to have the code shipped in the PHAR dumped in the `.box` 
-  directory.
-- When using a PHAR (created by [Box][box] or any other PHAR building tool), 
-  you can use the [`Phar::extractTo()`][phar-extract-to] method.
+- When using PHP-Scoper directly, the files are dumped in a `build` directory
+  by default. Remember that
+  [the Composer autoloader must be dumped for the isolated code to work](#step-2-run-php-scoper).
+- When using [Box][box], the `--debug` option of the `compile` command dumps
+  the code shipped in the PHAR in the `.box` directory.
+- When using a PHAR, whether built with [Box][box] or another tool, you can use
+  the [`Phar::extractTo()`][phar-extract-to] method.
 
 
 ## Debugging
 
-Having a good breakdown like described in [Recommendations](#recommendations) will help
-to know where the issue is coming from. However, if you have a doubt or you are fiddling
-with patchers and want to check the result for a specific file without doing the whole
-scoping process, you can always check the result for that single individual file:
+A breakdown such as the one described in [Recommendations](#recommendations)
+helps identify where an issue originates. However, if you are unsure or are
+adjusting patchers, you can check the result for a single file without running
+the whole scoping process:
 
 ```shell
 php-scoper inspect path/to/my-file.php
@@ -213,9 +211,8 @@ php-scoper inspect path/to/my-file.php
 
 ## Credits
 
-Project originally created by: [Bernhard Schussek] ([@webmozart]) which has
-now been moved under the
-[Humbug umbrella][humbug].
+The project was originally created by [Bernhard Schussek] ([@webmozart]) and
+has since moved under the [Humbug umbrella][humbug].
 
 
 [@webmozart]: https://twitter.com/webmozart

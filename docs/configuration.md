@@ -14,11 +14,11 @@
     - [Exposing functions](#exposing-functions)
     - [Exposing constants](#exposing-constants)
 
-If you need more granular configuration, you can create a `scoper.inc.php` by
-running the command `php-scoper init`. A different file/location can be passed
-with a `--config` option.
+For more granular configuration, you can create a `scoper.inc.php` file by
+running `php-scoper init`. A different file or location can be passed with the
+`--config` option.
 
-Complete configuration reference (details about each entry are available):
+Complete configuration reference (each entry is detailed below):
 
 ```php
 <?php declare(strict_types=1);
@@ -55,41 +55,40 @@ return [
 
 ### Prefix
 
-The prefix to be used to isolate the code. If `null` or `''` (empty string) is given,
-then a random prefix will be automatically generated.
+The prefix used to isolate the code. If `null` or `''` (empty string) is given,
+a random prefix is generated automatically.
 
 
 ### PHP Version
 
-The PHP version provided is used to configure the underlying [PHP-Parser] Parser and Printer.
+The PHP version provided is used to configure the underlying [PHP-Parser] parser and printer.
 
-The version used by the Parser will affect what code it can understand, e.g. if it is configured in PHP 8.2 it will not
-understand a PHP 8.3 construct (e.g. typed class constants). However, what symbols are interpreted as internal will
-remain unchanged. The function `json_validate()` will be considered as internal even if the parser is configured with
-PHP 8.2.
+The parser version determines which code it can understand: for example, a parser configured for PHP 8.2 will not
+understand a PHP 8.3 construct such as typed class constants. However, which symbols are considered internal remains
+unchanged: the function `json_validate()` is considered internal even if the parser is configured for PHP 8.2.
 
-The printer version affects the code style. For example nowdocs and heredocs will be indented if the printer's PHP
-version is higher than 7.4 but will be formatted without indent otherwise.
+The printer version affects the code style. For example, nowdocs and heredocs are indented if the printer's PHP
+version is higher than 7.4, and are formatted without indentation otherwise.
 
-If `null` or `''` (empty string) is given, then the host version will be used for the parser and 7.2 will be used for
-the printer. This allows PHP-Scoper to scope a PHP 7.2 compatible codebase without breaking its compatibility even though the
-host version is a newer version.
+If `null` or `''` (empty string) is given, the host version is used for the parser and 7.2 for the printer. This
+allows PHP-Scoper to scope a PHP 7.2-compatible codebase without breaking its compatibility, even when the host runs a
+newer version.
 
 
 ### Output directory
 
-The base output directory where the prefixed files will be generated. If `null`
+The base output directory in which the prefixed files are generated. If `null`
 is given, `build` is used.
 
-This setting will be overridden by the command line option of the same name if
+This setting is overridden by the command-line option of the same name, if
 present.
 
 
 ### Finders and paths
 
-By default, when running `php-scoper add-prefix`, it will prefix all relevant
-code found in the current working directory. You can however define which
-files should be scoped by using [Finders][symfony_finder] in the configuration:
+By default, `php-scoper add-prefix` prefixes all relevant code found in the
+current working directory. You can, however, define which files should be
+scoped by using [Finders][symfony_finder] in the configuration:
 
 ```php
 <?php declare(strict_types=1);
@@ -123,46 +122,44 @@ return [
 ];
 ```
 
-Besides the finder, you can also add any path via the command:
+In addition to the finders, you can pass any path directly to the command:
 
 ```
 php-scoper add-prefix file1.php bin/file2.php
 ```
 
-Paths added manually are appended to the paths found by the finders.
+Paths added manually are appended to those found by the finders.
 
-If you are using [Box][box], all the (non-binary) files included are used
+If you are using [Box][box], all the (non-binary) files it includes are used
 instead of the `finders` setting.
 
 
 ### Patchers
 
-When scoping PHP files, there will be scenarios where some of the code being
-scoped indirectly references the original namespace. These will include, for
-example, strings or string manipulations. PHP-Scoper has limited support for
-prefixing such strings, so you may need to define `patchers`, one or more
-callables in a `scoper.inc.php` configuration file which can be used to replace
-some of the code being scoped.
+When scoping PHP files, some of the code being scoped may reference the
+original namespace indirectly, for example through strings or string
+manipulation. PHP-Scoper has limited support for prefixing such strings, so you
+may need to define `patchers`: one or more callables in the `scoper.inc.php`
+configuration file that can be used to replace parts of the code being scoped.
 
-Here's a simple example:
+Here is a simple example:
 
 * Class names in strings.
 
-You can imagine instantiating a class from a variable which is based on a
-known namespace, but also on a variable classname which is selected at
-runtime. Perhaps code similar to:
+Consider instantiating a class whose name is built from a known namespace and
+a class name selected at runtime, for example:
 
 ```php
 $type = 'Foo'; // determined at runtime
 $class = 'Humbug\\Format\\Type\\' . $type;
 ```
 
-If we scoped the `Humbug` namespace to `PhpScoperABC\Humbug`, then the above
-snippet would fail as PHP-Scoper cannot interpret the above as being a namespaced
-class. To complete the scoping successfully, a) the problem must
-be located and b) the offending line replaced.
+If the `Humbug` namespace were scoped to `PhpScoperABC\Humbug`, the snippet
+above would fail, as PHP-Scoper cannot interpret it as a namespaced class. To
+complete the scoping successfully, a) the problem must be located and b) the
+offending line replaced.
 
-The patched code which would resolve this issue might be:
+The patched code that resolves this issue could be:
 
 ```php
 $type = 'Foo'; // determined at runtime
@@ -170,11 +167,12 @@ $scopedPrefix = explode('\\', __NAMESPACE__)[0];
 $class = $scopedPrefix . '\\Humbug\\Format\\Type\\' . $type;
 ```
 
-This and similar issues *may* arise after scoping, and can be debugged by
-running the scoped code and checking for issues. For this purpose, having a
-couple of end-to-end tests to validate post-scoped code or PHARs is recommended.
+This and similar issues *may* arise after scoping and can be debugged by
+running the scoped code and checking for errors. For this purpose, it is
+recommended to have a few end-to-end tests that validate the scoped code or
+PHARs.
 
-Applying such a change can be achieved by defining a suitable patcher in
+Such a change can be applied by defining a suitable patcher in
 `scoper.inc.php`:
 
 ```php
@@ -202,8 +200,8 @@ return [
 ];
 ```
 
-If you want to check if your patcher works as expected on a specific file, you can always check the scoping
-result for a single file with the `inspect` command:
+To check whether your patcher works as expected on a specific file, you can inspect the scoping result for that
+file with the `inspect` command:
 
 ```shell
 php-scoper inspect /path/to/offending/file
@@ -212,8 +210,8 @@ php-scoper inspect /path/to/offending/file
 
 ### Excluded files
 
-For the files listed in `exclude-files`, their content will be left
-untouched during the scoping process.
+The contents of the files listed in `exclude-files` are left untouched during
+scoping.
 
 
 ### Excluded Symbols
@@ -233,18 +231,18 @@ return [
 ];
 ```
 
-This enriches the list of Symbols PHP-Scoper's Reflector considers as "internal",
-i.e. PHP engine or extension symbols. Such symbols will be left completely
+This extends the list of symbols that PHP-Scoper's Reflector considers "internal",
+i.e. PHP engine or extension symbols. Such symbols are left completely
 untouched.*
 
-*: There is _one_ exception, which is declarations of functions. If you have the function
-`trigger_deprecation` excluded, then any usage of it in the code will be left alone:
+*: There is _one_ exception: function declarations. If the function
+`trigger_deprecation` is excluded, any usage of it in the code is left untouched:
 
 ```php
 use function trigger_deprecation; // Will not be turned into Prefix\trigger_deprecation
 ```
 
-However, PHP-Scoper may come across its declaration:
+However, PHP-Scoper may encounter its declaration:
 
 ```php
 // global namespace!
@@ -254,7 +252,7 @@ if (!function_exists('trigger_deprecation')) {
 }
 ```
 
-Then it will be scoped into:
+It is then scoped into:
 
 ```php
 namespace Prefix;
@@ -264,16 +262,16 @@ if (!function_exists('Prefix\trigger_deprecation')) {
 }
 ```
 
-Indeed, the namespace _needs_ to be added in order to not break autoloading, in which
-case wrapping the function declaration into a non-namespace could work, but is tricky
-(so not implemented so far, PoC for supporting it are welcomed) hence was not attempted.
+The namespace _needs_ to be added so as not to break autoloading. Wrapping the function
+declaration in a non-namespaced block could work, but is tricky and has therefore not been
+implemented so far (proofs of concept supporting it are welcome).
 
-So if left alone, this will break any piece of code that relied on `\trigger_deprecation`,
-which is why PHP-Scoper will still add an alias for it, as if it was an exposed function.
-Another benefit of this, is that it allows to scope any polyfill without any issues.
+Left as is, this would break any code relying on `\trigger_deprecation`, which is why
+PHP-Scoper still adds an alias for it, as if it were an exposed function. A further benefit
+is that any polyfill can be scoped without issues.
 
-**WARNING**: This exclusion feature should be used very carefully as it can easily break the Composer
-auto-loading. Indeed, if you have the following package:
+**WARNING**: This exclusion feature should be used with great care, as it can easily break
+Composer autoloading. For example, given the following package:
 
 ```json
 {
@@ -285,34 +283,34 @@ auto-loading. Indeed, if you have the following package:
 }
 ```
 
-And exclude the namespace `PHPUnit\Framework`, then the auto-loading for this
-package will be faulty and will not work*. For this to work, the whole package
-`PHPUnit` would need to be excluded.
+If you exclude the namespace `PHPUnit\Framework`, autoloading for this package
+will be broken*. For it to work, the whole `PHPUnit` package would need to be
+excluded.
 
 *: With the regular Composer autoloader.
 
 It is recommended to use excluded symbols only to complement the
-[PhpStorm's stubs][phpstorm-stubs] shipped with PHP-Scoper.
+[PhpStorm stubs][phpstorm-stubs] shipped with PHP-Scoper.
 
 
 ### Excluding namespaces
 
 When excluding a namespace by name, for example `'PHPUnit\Framework'`, any
-symbol belonging to that namespace **or sub-namespace** will be excluded. For
-example the class `'PHPUnit\Framework\TestCase\CommandTestCase'` would be
-excluded as well.
+symbol belonging to that namespace **or its sub-namespaces** is excluded. For
+example, the class `'PHPUnit\Framework\TestCase\CommandTestCase'` would also be
+excluded.
 
-As a result, registering the namespace name `''` will end up excluding any symbol.
+As a result, registering the namespace name `''` excludes every symbol.
 
-To exclude symbols from the global namespace only, you should use a regex `/^$/`.
-Indeed, regexes only exclude the matching namespaces.
+To exclude symbols from the global namespace only, use the regex `/^$/`: regexes
+exclude only the namespaces they match.
 
 
 ### Exposed Symbols
 
-PHP-Scoper's goal is to make sure that all code for a project lies in a
+PHP-Scoper's goal is to ensure that all of a project's code lies in a
 distinct PHP namespace. However, you may want to share a common API between
-the bundled code of your PHAR and the consumer code. For example if you have
+the bundled code of your PHAR and the consumer code. For example, if you have
 a PHPUnit PHAR with isolated code, you still want the PHAR to be able to
 understand the `PHPUnit\Framework\TestCase` class.
 
@@ -336,40 +334,40 @@ return [
 ```
 
 Notes:
-- An excluded symbol will not be exposed. If for example you expose the class
-  `Acme\Foo` but the `Acme` namespace is excluded, then `Acme\Foo` will NOT
+- An excluded symbol is not exposed. For example, if you expose the class
+  `Acme\Foo` but the `Acme` namespace is excluded, `Acme\Foo` will _not_
   be exposed.
-- Exposing a namespace also exposes its sub-namespaces (with the aforementioned
-  note applying)
+- Exposing a namespace also exposes its sub-namespaces (the previous note still
+  applies).
 - Exposing symbols will most likely require PHP-Scoper to adjust the Composer
   autoloader. To do so with minimal conflicts, PHP-Scoper dumps everything
-  necessary in a `vendor/scoper-autoload.php` (which calls `vendor/autoload.php`).
-  So do not forget to adjust your require statements for the scoped code to
-  use this file instead. Note that this is automatically done by [Box][box] if
-  you are using it with the [`PhpScoper` compactor][php-scoper-integration].
+  necessary into `vendor/scoper-autoload.php` (which calls `vendor/autoload.php`).
+  Remember to update the require statements of your scoped code to use this
+  file instead. This is done automatically by [Box][box] if you use it with the
+  [`PhpScoper` compactor][php-scoper-integration].
 
-With this in mind, know that exposing a symbol may not be done the way you
-expect it to. More details about the internal work, which will be necessary
-if you need to delve into the scoped code, can be found below.
+Bear in mind that a symbol may not be exposed in the way you expect. More
+details about the internals, which you will need if you have to dig into the
+scoped code, are given below.
 
-**Note: If a symbol is excluded _and_ exposed, the exclusion will take precedence.**
+**Note: If a symbol is both excluded _and_ exposed, the exclusion takes precedence.**
 
 ### Exposing Namespaces
 
-The namespace configuration is identical to [excluding namespaces](#excluding-namespaces).
+Namespaces are configured in the same way as when [excluding namespaces](#excluding-namespaces).
 
-How the symbols are exposed is done as described in the next sections. Note
-however that some symbols cannot be exposed (see [exposing/excluding traits](limitations.md#exposingexcluding-traits)
- and [exposing/excluding enums](limitations.md#exposingexcluding-enums))
+Symbols are exposed as described in the following sections. Note, however, that
+some symbols cannot be exposed (see [exposing/excluding traits](limitations.md#exposingexcluding-traits)
+and [exposing/excluding enums](limitations.md#exposingexcluding-enums)).
 
 
 ### Exposing classes
 
-In order to avoid any auto-loading issues, exposed classes are prefixed as usual
-in the code-base but an alias pointing from the old symbol to the newly prefixed
-one is registered.
+To avoid autoloading issues, exposed classes are prefixed as usual in the
+codebase, but an alias from the original symbol to the newly prefixed one is
+registered.
 
-So if you have the following file scoped with the class `Acme\Foo` exposed:
+For example, if the following file is scoped with the class `Acme\Foo` exposed:
 
 ```php
 <?php
@@ -379,7 +377,7 @@ namespace Acme;
 class Foo {}
 ```
 
-The prefixed code will look like something like this:
+The prefixed code will look something like this:
 
 ```php
 <?php
@@ -391,8 +389,8 @@ class Foo {}
 \class_alias('Humbug\\Acme\\Foo', 'Acme\\Foo', \false);
 ```
 
-And in `vendor/scoper-autoload.php` a `class_exists` statement is registered
-to trigger the `class_alias` statement added:
+In `vendor/scoper-autoload.php`, a `class_exists` statement is registered to
+trigger the added `class_alias` statement:
 
 ```php
 <?php
@@ -411,11 +409,11 @@ return $loader;
 
 ### Exposing functions
 
-The mechanism is very similar to the one used for classes. However since a
-function similar to `class_alias` does not exist for functions, we declare
-again the function with the right name.
+The mechanism is very similar to the one used for classes. However, since
+there is no equivalent of `class_alias` for functions, the function is declared
+again under the correct name.
 
-So if you have the following file scoped with the function `dd` exposed:
+For example, if the following file is scoped with the function `dd` exposed:
 
 ```php
 <?php
@@ -427,7 +425,7 @@ if (!function_exists('dd')) {
 }
 ```
 
-The file will be scoped as usual:
+The file is scoped as usual:
 
 ```php
 <?php
@@ -439,9 +437,8 @@ if (!function_exists('PhpScoperPrefix\dd')) {
 }
 ```
 
-And the following function which will serve as an alias will be
-declared in the `scoper-autoload.php` file:
-
+The following function, which serves as an alias, is then declared in the
+`scoper-autoload.php` file:
 
 ```php
 <?php
@@ -462,11 +459,11 @@ return $loader;
 
 ### Exposing constants
 
-The constant aliasing mechanism is done by transforming the constant
-declaration into a `define()` statement when this is not already the case.
-Note that there is a difference here since `define()` defines a constant at
-runtime whereas `const` defines it at compile time. You have a more detailed
-post regarding the differences [here](https://stackoverflow.com/a/3193704/3902761)
+Constants are aliased by transforming the constant declaration into a
+`define()` statement, if it is not one already. Note that this introduces a
+difference, since `define()` defines a constant at runtime whereas `const`
+defines it at compile time. A more detailed explanation of the differences is
+available [here](https://stackoverflow.com/a/3193704/3902761).
 
 Given the following file with the exposed constant `Acme\FOO`:
 

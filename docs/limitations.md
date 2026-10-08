@@ -16,10 +16,10 @@
 
 ### Dynamic symbols
 
-PHP-Scoper tries to prefix strings as well whenever possible. There will however
-be cases in which it will not be possible such as:
+PHP-Scoper prefixes strings whenever possible. However, this is not possible in
+some cases, such as:
 
-- strings in regexps, e.g. `/^Acme\\\\Foo/`
+- strings in regular expressions, e.g. `/^Acme\\\\Foo/`
 - concatenated strings, e.g.:
     - `$class = 'Symfony\\Component\\'.$name;`
     - `const X = 'Symfony\\Component' . '\\Yaml\\Ya_1';`
@@ -27,22 +27,22 @@ be cases in which it will not be possible such as:
 
 ### Date symbols
 
-Your code may be using a convention for the date string formats which could be
-mistaken for classes, e.g.:
+Your code may use date format strings that could be mistaken for class names,
+e.g.:
 
 ```php
 const ISO8601_BASIC = 'Ymd\THis\Z';
 ``` 
 
-In this scenario, PHP-Scoper has no way to tell that string `'Ymd\THis\Z'` does
-not refer to a symbol but is a date format. In this case, you will have to rely
-on patchers. Note however that PHP-Scoper is able to
-handle some cases, see the [date-spec](../specs/misc/date.php).
+In this case, PHP-Scoper cannot tell that the string `'Ymd\THis\Z'` is a date
+format rather than a symbol, so you will need to rely on patchers. Note,
+however, that PHP-Scoper is able to handle some cases; see the
+[date-spec](../specs/misc/date.php).
 
 
 ### Heredoc values
 
-If you consider the following code:
+Consider the following code:
 
 ```php
 <?php
@@ -55,9 +55,9 @@ use Acme\Foo;
 PHP_HEREDOC;
 ```
 
-The content of `PHP_HEREDOC` will not be prefixed. Some partial support could be
-added in the future but is bound to be very limited due to the dynamic nature of
-heredocs. If you consider the following for example:
+The content of `PHP_HEREDOC` will not be prefixed. Partial support may be added
+in the future, but it is bound to be very limited due to the dynamic nature of
+heredocs. Consider, for example, the following:
 
 ```php
 <?php
@@ -89,30 +89,30 @@ return new \\Container{$hash}\\{$options['class']}(array(
 EOF;
 ```
 
-It would be very hard to properly scope the relevant classes.
+Correctly scoping the relevant classes here would be very difficult.
 
-To fix such cases, you will need to resort to [patchers].
+To handle such cases, you will need to use [patchers].
 
 
 ### Callables
 
-If you consider the two following values:
+Consider the following two values:
 
 ```php
 ['Acme\Foo', 'bar'];
 'Acme\Foo::bar';
 ```
 
-The classes used there will not be scoped. It should not be impossible to add
-support for it, but it is currently not supported. See
+The classes referenced here will not be scoped. Adding support for this should
+be possible, but it is not currently implemented. See
 [#286](https://github.com/humbug/php-scoper/issues/286).
 
-To fix such cases, you will need to resort to [patchers].
+To handle such cases, you will need to use [patchers].
 
 
 ### String values
 
-PHP-Scoper tries whenever possible to prefix strings as well:
+As mentioned above, PHP-Scoper prefixes strings whenever possible:
 
 ```php
 class_exists('Acme\Foo');
@@ -122,21 +122,22 @@ class_exists('Acme\Foo');
 \class_exists('Humbug\Acme\Foo');
 ```
 
-PHP-Scoper uses a regex to determine if the string is a class name that must be
-prefixed. But there are bound to be confusing cases. For example:
+PHP-Scoper uses a regex to determine whether a string is a class name that must
+be prefixed. Some cases, however, are inevitably ambiguous. For example:
 
-- If you have a plain string `'Acme\Foo'` which has nothing to do with a class,
-  PHP-Parser will not be able to tell and will prefix it
-- Classes belonging to the global scope: `'Foo'` or `'Acme_Foo'`, because there
-  is no way to know if it is a class name or a random string except for a
-  handful of methods such as `class_alias`, `function_exists`, etc.
+- A plain string such as `'Acme\Foo'` that has nothing to do with a class:
+  PHP-Parser cannot tell the difference and will prefix it.
+- Classes belonging to the global scope, such as `'Foo'` or `'Acme_Foo'`: there
+  is no way to know whether the string is a class name or an arbitrary string,
+  except for a handful of functions such as `class_alias`, `function_exists`,
+  etc.
 
-To fix such cases, you will need to resort to [patchers].
+To handle such cases, you will need to use [patchers].
 
 
 ### Native functions and constants shadowing
 
-In the following example:
+Consider the following example:
 
 ```php
 <?php
@@ -147,17 +148,17 @@ is_array([]);
 
 ```
 
-No use statement is used for the function `is_array`. This means that PHP will
-try to load the function `\Foo\is_array` and if it fails to do so will fallback
-on `\is_array` (note that PHP does so only for functions and constants, not
-classes).
+The function `is_array` is not imported with a use statement. This means PHP
+will try to load the function `\Foo\is_array` and, if it fails to do so, will
+fall back to `\is_array` (note that PHP does this only for functions and
+constants, not classes).
 
-In order to bring some performance optimisation, the call will nonetheless be
-prefixed in `\is_array`. This *will* break your code if you were relying on
-`\Foo\is_array` instead. This however should be _extremely_ rare, so if that
-happens you have two solutions: use a [patcher][patchers] or simply remove
-any ambiguity by making use of a use statement (which is unneeded outside of
-the context of prefixing your code):
+For performance reasons, the call will nonetheless be prefixed as `\is_array`.
+This *will* break your code if you were relying on `\Foo\is_array` instead.
+This should, however, be _extremely_ rare. If it does happen, you have two
+options: use a [patcher][patchers], or remove the ambiguity with a use
+statement (which is otherwise unnecessary outside the context of prefixing your
+code):
 
 ```php
 <?php
@@ -170,41 +171,41 @@ is_array([]);
 
 ```
 
-The situation is exactly the same for constants.
+The same applies to constants.
 
 
 ### Composer Autoloader
 
 PHP-Scoper does not support prefixing the dumped Composer autoloader and
-autoloading files. This is why you have to manually dump the autoloader again
+autoloading files. You therefore need to dump the autoloader again manually
 after prefixing an application.
 
-Note: when using [Box][box], Box is able to take care of that step for you.
+Note: if you use [Box][box], it can take care of this step for you.
 
-PHP-Scoper also can not handle Composer's static file autoloaders. This is due
-to Composer loading files based on a hash which is generated from package name
-and relative file path. For a workaround see
+PHP-Scoper also cannot handle Composer's static file autoloaders, because
+Composer loads files based on a hash generated from the package name and the
+relative file path. For a workaround, see
 [#298](https://github.com/humbug/php-scoper/issues/298#issuecomment-525700081).
 
-To fix such cases, you will need to resort to [patchers].
+To handle such cases, you will need to use [patchers].
 
 
 ### Composer Plugins
 
-Composer plugins are not supported. The issue is that for
-[Exposing symbols][exposed-symbols] PHP-Scoper relies on the fact that you
-should load the `vendor/scoper-autoload.php` file instead of
-`vendor/autoload.php` to trigger the loading of the right classes with their
-class aliases. However Composer does not do that and as a result interfaces such as
-`Composer\Plugin\Capability\Capable` are prefixed but the alias is not registered.
+Composer plugins are not supported. When
+[exposing symbols][exposed-symbols], PHP-Scoper relies on you loading the
+`vendor/scoper-autoload.php` file instead of `vendor/autoload.php`, so that the
+right classes are loaded along with their class aliases. Composer does not do
+this; as a result, interfaces such as `Composer\Plugin\Capability\Capable` are
+prefixed but their aliases are not registered.
 
-This cannot be changed easily so for now when you are using an isolated version
-of Composer, you will need to use the `--no-plugins` option.
+This cannot easily be changed, so for now, when using an isolated version of
+Composer, you will need to use the `--no-plugins` option.
 
 
 ### PSR-0 Partial support
 
-As of now, given the following directory structure:
+Given the following directory structure:
 
 ```
 src/
@@ -213,7 +214,7 @@ src/
     Exception.php
 ```
 
-with the following configuration:
+and the following configuration:
 
 ```json
 {
@@ -223,8 +224,8 @@ with the following configuration:
 }
 ```
 
-The autoloading will not work. Indeed, PHP-Scoper attempts to support PSR-0 by
-transforming it to PSR-4, i.e. in the case above:
+autoloading will currently not work. PHP-Scoper supports PSR-0 by converting
+it to PSR-4, which in the case above results in:
 
 ```json
 {
@@ -234,25 +235,26 @@ transforming it to PSR-4, i.e. in the case above:
 }
 ```
 
-While this works for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
+This works for the classes under `src/JsonMapper/`, but not for
+`JsonMapper.php`.
 
 
 ### Exposing/Excluding traits
 
-There is currently no way to expose or exclude a trait. Since there is no
-aliasing mechanism for traits, it could be still possible by declaring a trait
-that extends the scoped trait, but this is currently not implemented.
+It is currently not possible to expose or exclude a trait. Traits have no
+aliasing mechanism, but this could still be achieved by declaring a trait that
+extends the scoped trait. This is not currently implemented.
 
 
 ### Exposing/Excluding enums
 
-There is currently no way to expose or exclude an enum. The problem being there
-is no way to alias one.
+It is currently not possible to expose or exclude an enum, as there is no way
+to alias one.
 
 
 ### Declaring a custom namespaced function `function_exists()`
 
-When PHP-Scoper encounters a call such as this one:
+Consider the following call:
 
 ```php
 namespace App;
@@ -260,15 +262,16 @@ namespace App;
 function_exists('NewApp\main');
 ```
 
-PHP-Scoper assumes the string contained by `function_exists` is a fully-qualified function name.
-This is true however if `function_exists()` is the native PHP one. However,
-technically, if the function `App\function_exists()` does exist, then the call
-above would call `App\function_exists()` and not `function_exists()`.
+PHP-Scoper assumes that the string passed to `function_exists` is a
+fully qualified function name. This holds if `function_exists()` is the native
+PHP function. Technically, however, if the function `App\function_exists()`
+exists, the call above would invoke `App\function_exists()` rather than
+`function_exists()`.
 
-This is a very unlikely scenario which is why PHP-Scoper will assume it is the
-PHP native one.
+As this scenario is very unlikely, PHP-Scoper assumes the native PHP function
+is being called.
 
-If, by any chance, this is a problem, you will have to fix it with [patchers].
+If this does cause a problem, you will need to fix it with [patchers].
 
 
 <br />

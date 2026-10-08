@@ -11,7 +11,7 @@
 
 ### How to deal with unknown third-party symbols
 
-If you consider the following code:
+Consider the following code:
 
 ```php
 <?php
@@ -25,7 +25,7 @@ foreach (wp_list_users() as $user) {
 }
 ```
 
-It would be scoped as follows:
+It is scoped as follows:
 
 ```php
 <?php
@@ -39,39 +39,40 @@ foreach (wp_list_users() as $user) {
 }
 ```
 
-This however will be a problem if your code (or your vendor) never declares
-`wp_list_users`.
+However, this is a problem if neither your code nor your vendor dependencies
+ever declare `wp_list_users`.
 
-There are two ways to deal with this:
+There are two ways to address this:
 
 - excluding the symbol (recommended)
 - exposing the symbol (fragile)
 
-**Excluding** the symbol (see [excluded-symbols]) marks it as "internal", as if this
-symbol was coming from PHP itself or a PHP extension. This is the most appropriate
+**Excluding** the symbol (see [excluded-symbols]) marks it as "internal", as if it
+came from PHP itself or from a PHP extension. This is the most appropriate
 solution.
 
-**Exposing** the symbol _may_ work but is more fragile. Indeed, exposing the
-symbol will result in an alias being registered (see [exposed-symbols]), which
-means you _need_ to have the function declared within your codebase at some point.
+**Exposing** the symbol _may_ work but is more fragile: exposing a symbol
+registers an alias (see [exposed-symbols]), which means the function _must_ be
+declared somewhere in your codebase.
 
 
 ### Autoload aliases
 
 #### Class aliases
 
-When [exposing a class], an alias will be registered.
+When [exposing a class], an alias is registered.
 
 #### Function aliases
 
-When [exposing a function] or when a globally declared [excluded-function]
-declaration is found (see [#706]), an alias will be registered.
+When [exposing a function], or when a globally declared [excluded-function] is
+found (see [#706]), an alias is registered.
 
 
 ### Laravel support
 
-PHP-Scoper supports Laravel out of the box for the most part. There is one problematic piece that is not
-supported and that is the views. However, this can be fixed by hand without too much problems:
+PHP-Scoper supports Laravel largely out of the box. The one exception is views,
+which are not supported. However, this can be addressed manually with little
+effort:
 
 ```php
 <?php declare(strict_types=1);
@@ -114,8 +115,9 @@ return [
 
 ### Symfony Support
 
-When using [PHP configuration][symfony-php-config] files for your services, some elements may not be prefixed correctly
-due to being strings. For example (taken directly from the Symfony docs):
+When using [PHP configuration][symfony-php-config] files for your services, some
+elements may not be prefixed correctly because they are strings. For example
+(taken from the Symfony documentation):
 
 ```php
 <?php // config/services.php
@@ -140,8 +142,9 @@ return function(ContainerConfigurator $container): void {
 };
 ```
 
-The string `'App\\'` from `$services->load()` will not be made into `'Prefix\\App\\'`. To address this
-you need to use [patchers]. Alternatively, PHP-Scoper provides one which should handle such cases:
+The string `'App\\'` passed to `$services->load()` is not transformed into
+`'Prefix\\App\\'`. To address this, you need to use [patchers]. PHP-Scoper
+provides a patcher intended to handle such cases:
 
 ```php
 <?php // scoper.inc.php
@@ -154,14 +157,15 @@ return [
 ];
 ```
 
-Note that the path is the "regular path(s)" that can be passed to patchers.
+The path argument accepts the same "regular path(s)" that can be passed to
+patchers.
 
 
 ### WordPress Support
 
-When writing a WordPress plugin, you need to [exclude WordPress' symbols](#excluded-symbols). To facilitate
-this task, [Snicco] created a third-party CLI tool [php-scoper-excludes] that can be used to generate
-PHP-Scoper compatible symbol lists for any PHP codebase you point it to.
+When writing a WordPress plugin, you need to [exclude WordPress' symbols](#excluded-symbols).
+To simplify this, [Snicco] created [php-scoper-excludes], a third-party CLI tool
+that generates PHP-Scoper-compatible symbol lists for any PHP codebase.
 
 #### Example for WordPress Core
 
