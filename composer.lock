@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e070c0c2418526efd7b57b29410120c6",
+    "content-hash": "d3c69a405d49680f8de67406d7a04070",
     "packages": [
         {
             "name": "fidry/console",
@@ -6647,9 +6647,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "jetbrains/phpstorm-stubs": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
