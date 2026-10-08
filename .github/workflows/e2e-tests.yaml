@@ -46,7 +46,7 @@ jobs:
                     coverage: none
 
             -   name: Install Composer dependencies
-                uses: $/.github/actions/install-vendor
+                uses: ./.github/actions/install-vendor
 
             -   name: Build PHAR
                 run: make build
@@ -139,7 +139,7 @@ jobs:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
             -   name: Install Composer dependencies
-                uses: $/.github/actions/install-vendor
+                uses: ./.github/actions/install-vendor
 
             -   name: Retrieve built PHAR
                 uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0

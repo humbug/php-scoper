@@ -34,13 +34,13 @@ jobs:
                     coverage: none
 
             -   name: Install Composer dependencies
-                uses: $/.github/actions/install-vendor
+                uses: ./.github/actions/install-vendor
 
             -   name: Ensure that the root dependencies are updated correctly
                 run: make vendor_install
 
             -   name: Install PHP-CS-Fixer
-                uses: $/.github/actions/install-tool
+                uses: ./.github/actions/install-tool
                 with:
                     vendor-bin-tool: php-cs-fixer
                     makefile-command: php_cs_fixer_install

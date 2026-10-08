@@ -34,10 +34,10 @@ jobs:
                     coverage: none
 
             -   name: Install Composer dependencies
-                uses: $/.github/actions/install-vendor
+                uses: ./.github/actions/install-vendor
 
             -   name: Install PHP-CS-Fixer
-                uses: $/.github/actions/install-tool
+                uses: ./.github/actions/install-tool
                 with:
                     vendor-bin-tool: php-cs-fixer
                     makefile-command: php_cs_fixer_install
@@ -60,10 +60,10 @@ jobs:
                     coverage: none
 
             -   name: Install Composer dependencies
-                uses: $/.github/actions/install-vendor
+                uses: ./.github/actions/install-vendor
 
             -   name: Install PHPStan
-                uses: $/.github/actions/install-tool
+                uses: ./.github/actions/install-tool
                 with:
                     vendor-bin-tool: phpstan
                     makefile-command: phpstan_install
@@ -86,10 +86,10 @@ jobs:
                     coverage: none
 
             -   name: Install Composer dependencies
-                uses: $/.github/actions/install-vendor
+                uses: ./.github/actions/install-vendor
 
             -   name: Install Rector
-                uses: $/.github/actions/install-tool
+                uses: ./.github/actions/install-tool
                 with:
                     vendor-bin-tool: rector
                     makefile-command: rector_install

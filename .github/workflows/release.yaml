@@ -42,7 +42,7 @@ jobs:
                     coverage: none
 
             -   name: Install Composer dependencies
-                uses: $/.github/actions/install-vendor
+                uses: ./.github/actions/install-vendor
                 with:
                     # Do not use the cache for building the published artefacts.
                     # This is to avoid any potential cache poisoning
