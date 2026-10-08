@@ -15,6 +15,9 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
     cancel-in-progress: true
 
+permissions:
+    contents: read
+
 env:
     DOCKERFILE: Dockerfile
     DOCKERHUB_USERNAME: humbugphp
@@ -27,6 +30,7 @@ jobs:
             -   name: Checkout
                 uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
                 with:
+                    persist-credentials: false
                     fetch-depth: 0
 
             -   name: Setup PHP
@@ -39,6 +43,10 @@ jobs:
 
             -   name: Install Composer dependencies
                 uses: ./.github/actions/install-vendor
+                with:
+                    # Do not use the cache for building the published artefacts.
+                    # This is to avoid any potential cache poisoning
+                    ignore-cache: ${{ github.event_name == 'release' }}
 
             -   name: Configure the PHP platform
                 run: composer config platform.php $(php -r 'echo phpversion();') && composer update --lock
@@ -59,11 +67,13 @@ jobs:
 
             -   name: Sign the PHAR
                 if: github.event_name == 'release'
+                env:
+                    GPG_PASSPHRASE: ${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}
                 run: |
                    gpg --local-user theo.fidry+phpscoper@gmail.com \
                        --batch \
                        --yes \
-                       --passphrase="${{ secrets.GPG_KEY_74A754C9778AA03AA451D1C1A000F927D67184EE_PASSPHRASE }}" \
+                       --passphrase="${GPG_PASSPHRASE}" \
                        --detach-sign \
                        --output bin/php-scoper.phar.asc \
                        bin/php-scoper.phar
@@ -83,7 +93,7 @@ jobs:
             - 'build-phar'
         if: github.event_name == 'release'
         permissions:
-            contents: write
+            contents: write  # Required to upload the release assets.
         steps:
             -   uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
                 with:
@@ -91,21 +101,29 @@ jobs:
                     path: .
 
             -   name: Upload php-scoper.phar
-                uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-                with:
-                    token: ${{ secrets.GITHUB_TOKEN }}
-                    files: |
-                        php-scoper.phar
-                        php-scoper.phar.asc
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    RELEASE_TAG: ${{ github.event.release.tag_name }}
+                run: |
+                    gh release upload "${RELEASE_TAG}" \
+                        php-scoper.phar \
+                        php-scoper.phar.asc \
+                        --repo "${GITHUB_REPOSITORY}" \
+                        --clobber
 
     publish-docker-image:
         runs-on: ubuntu-latest
         name: Publish the Docker image
         needs:
             - build-phar
+        permissions:
+            contents: read
+            packages: read  # Required to log in to the GitHub Container Registry.
         steps:
             -   name: Checkout
                 uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+                with:
+                    persist-credentials: false
 
             -   name: Setup PHP
                 uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # 2.36.0
@@ -142,14 +160,16 @@ jobs:
                 if: github.event_name == 'release'
                 # Selects a random value for $EOF as a delimiter, and sets the DOCKER_TAGS environment variable
                 # as a multi-line environment variable.
+                env:
+                    RELEASE_TAG: ${{ github.ref_name }}
                 run: |
                     EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
 
                     echo "DOCKER_TAGS<<$EOF" >> $GITHUB_ENV
-                    echo "${{ env.DOCKERHUB_USERNAME }}/php-scoper:${{ github.ref_name }}" >> $GITHUB_ENV
-                    echo "${{ env.DOCKERHUB_USERNAME }}/php-scoper:latest" >> $GITHUB_ENV
+                    echo "${DOCKERHUB_USERNAME}/php-scoper:${RELEASE_TAG}" >> $GITHUB_ENV
+                    echo "${DOCKERHUB_USERNAME}/php-scoper:latest" >> $GITHUB_ENV
                     echo "$EOF" >> $GITHUB_ENV
-                    echo "DOCKER_TEST_TAG=${{ env.DOCKERHUB_USERNAME }}/php-scoper:latest" >> $GITHUB_ENV
+                    echo "DOCKER_TEST_TAG=${DOCKERHUB_USERNAME}/php-scoper:latest" >> $GITHUB_ENV
 
             -   name: Login to GitHub Container Registry
                 if: github.event_name != 'release'
@@ -175,7 +195,7 @@ jobs:
                     load: true
 
             -   name: Test the (release) image
-                run: docker run --rm ${{ env.DOCKER_TEST_TAG }} --version
+                run: docker run --rm "${DOCKER_TEST_TAG}" --version
 
             -   name: Build and push
                 if: github.event_name == 'release'

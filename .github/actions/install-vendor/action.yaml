@@ -8,13 +8,21 @@ inputs:
         description: The ramsey/composer-install dependency-versions used.
         required: false
         default: locked
+    ignore-cache:
+        description: >
+            Whether to ignore the Composer cache. Should be enabled when the
+            built artefacts are published (e.g. on release) to avoid cache poisoning.
+        required: false
+        default: 'false'
 
 runs:
     using: composite
     steps:
         # https://docs.github.com/en/actions/learn-github-actions/workflow-commands-for-github-actions#setting-an-environment-variable
+        # The value comes from a file versioned in the repository and the workflows
+        # are not triggered by privileged events (e.g. pull_request_target).
         -   name: Configure composer root version
-            run: |
+            run: | # zizmor: ignore[github-env]
                 . ./.composer-root-version
                 echo "COMPOSER_ROOT_VERSION=${COMPOSER_ROOT_VERSION}" >> $GITHUB_ENV
             shell: sh
@@ -23,3 +31,4 @@ runs:
             uses: ramsey/composer-install@1919f6c305aea6ab10e6181a8ddf72317ad77e0e # 2.3.1
             with:
                 dependency-versions: ${{ inputs.dependency-versions }}
+                ignore-cache: ${{ inputs.ignore-cache == 'true' && 'yes' || '' }}
