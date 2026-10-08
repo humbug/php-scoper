@@ -277,7 +277,7 @@ If this does cause a problem, you will need to fix it with [patchers].
 <br />
 <hr />
 
-« [Further Reading](further-reading.md#further-reading) • [Table of Contents](../README.md#table-of-contents) »
+« [Further Reading](further-reading.md#further-reading) • [Table of Contents](../README.md#table-of-contents) • [Architecture](architecture.md#architecture) »
 
 
 [autoload-files]: https://getcomposer.org/doc/04-schema.md#files

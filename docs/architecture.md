@@ -120,7 +120,7 @@ available under their original names.
 <br />
 <hr />
 
-« [Back to Table of Contents](../README.md#table-of-contents) »
+« [Limitations](limitations.md#limitations) • [Table of Contents](../README.md#table-of-contents) »
 
 
 [autoload-aliases]: further-reading.md#autoload-aliases
