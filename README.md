@@ -1,10 +1,7 @@
 # PHP-Scoper
 
 [![Package version](https://img.shields.io/packagist/v/humbug/php-scoper.svg?style=flat-square)](https://packagist.org/packages/humbug/php-scoper)
-[![Build Status](https://github.com/humbug/php-scoper/workflows/Build/badge.svg)](https://github.com/humbug/php-scoper/actions)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/humbug/php-scoper.svg?branch=main&style=flat-square)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=main)
-[![Code Coverage](https://scrutinizer-ci.com/g/humbug/php-scoper/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/humbug/php-scoper/?branch=main)
-[![Slack](https://img.shields.io/badge/slack-%23humbug-red.svg?style=flat-square)](https://symfony.com/slack-invite)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/humbug/php-scoper/tests.yaml?branch=main&style=flat-square)](https://github.com/humbug/php-scoper/actions/workflows/tests.yaml)
 [![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](LICENSE)
 
 PHP-Scoper is a tool which essentially moves any body of code, including all
