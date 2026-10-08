@@ -73,9 +73,9 @@ potentially very difficult to debug due to dissimilar or unsupported package ver
     - [Composer Autoloader](docs/limitations.md#composer-autoloader)
     - [Composer Plugins](docs/limitations.md#composer-plugins)
     - [PSR-0 Partial support](docs/limitations.md#psr-0-partial-support)
-    - [Files autoloading](docs/limitations.md#files-autoloading)
     - [Exposing/Excluding traits](docs/limitations.md#exposingexcluding-traits)
     - [Exposing/Excluding enums](docs/limitations.md#exposingexcluding-enums)
+    - [Declaring a custom namespaced function `function_exists()`](docs/limitations.md#declaring-a-custom-namespaced-function-function_exists)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -96,10 +96,6 @@ for the auto-loading, dumping the autoloader again is required.
 For a more concrete example, you can take a look at PHP-Scoper's build
 step in [Makefile](Makefile), especially if you are using Composer as
 there are steps both before and after running PHP-Scoper to consider.
-
-Refer to TBD for an in-depth look at scoping and building a PHAR taken from
-PHP-Scoper's makefile.
-
 
 ## Building a Scoped PHAR
 
@@ -156,10 +152,10 @@ composer dump-autoload --working-dir build --classmap-authoritative
 
 ## Recommendations
 
-There is 3 things to manage when dealing with isolated PHARs:
+There are 3 things to manage when dealing with isolated PHARs:
 
 - The PHAR format: there is some incompatibilities such as `realpath()` which
-  will no longer work for the files within the PHAR since the paths are not
+  will no longer work for the files within the PHAR since the paths are
   virtual.
 - Isolating the code: due to the dynamic nature of PHP, isolating your
   dependencies will never be a trivial task and as a result you should have
@@ -173,7 +169,7 @@ There is 3 things to manage when dealing with isolated PHARs:
   something (although the changes may be SemVer compliant, we are dealing with
   PHARs and isolated code)
 
-As a result, you _should_ have end-to-end tests for your (at the minimum) your 
+As a result, you _should_ have end-to-end tests for (at the minimum) your
 released PHAR.
 
 Since dealing with the 3 issues mentioned above at once can be tedious, it is
@@ -186,7 +182,7 @@ outside the PHAR to make sure the scoping process is not the issue.
 
 To check if the isolated code is working correctly, you have a number of solutions:
 
-- When using PHP-Scoper directly, by default PHP-Scoper dump the files in a 
+- When using PHP-Scoper directly, by default PHP-Scoper dumps the files in a 
   `build` directory. Do not forget that
   [you need to dump the Composer autoloader for the isolated code to work!](#step-2-run-php-scoper).
 - When using [Box][box], you can use its `--debug` option from the `compile` 

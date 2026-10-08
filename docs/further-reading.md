@@ -42,7 +42,7 @@ foreach (wp_list_users() as $user) {
 This however will be a problem if your code (or your vendor) never declares
 `wp_list_users`.
 
-There is "two" ways to deal with this:
+There are two ways to deal with this:
 
 - excluding the symbol (recommended)
 - exposing the symbol (fragile)
@@ -70,12 +70,13 @@ declaration is found (see [#706]), an alias will be registered.
 
 ### Laravel support
 
-PHP-Scoper supports laravel out of the box for the most part. There is one problematic piece that is not
+PHP-Scoper supports Laravel out of the box for the most part. There is one problematic piece that is not
 supported and that is the views. However, this can be fixed by hand without too much problems:
 
 ```php
-// scoper.inc.php
 <?php declare(strict_types=1);
+
+// scoper.inc.php
 
 /** @var Symfony\Component\Finder\Finder $finder */
 $finder = Isolated\Symfony\Component\Finder\Finder::class;
@@ -140,7 +141,7 @@ return function(ContainerConfigurator $container): void {
 ```
 
 The string `'App\\'` from `$services->load()` will not be made into `'Prefix\\App\\'`. To address this
-you need to use [patchers]. Alternatively, PHP-Scoper provides one which should should handle such cases:
+you need to use [patchers]. Alternatively, PHP-Scoper provides one which should handle such cases:
 
 ```php
 <?php // scoper.inc.php
@@ -160,15 +161,17 @@ Note that the path is the "regular path(s)" that can be passed to patchers.
 
 When writing a WordPress plugin, you need to [exclude WordPress' symbols](#excluded-symbols). To facilitate
 this task, [Snicco] created a third-party CLI tool [php-scoper-excludes] that can be used to generate
-PHP-Scoper compatible symbol lists for any PHP codebase you point it.
+PHP-Scoper compatible symbol lists for any PHP codebase you point it to.
 
-### Example for WordPress Core
+#### Example for WordPress Core
 
 ```shell
 composer require sniccowp/php-scoper-wordpress-excludes
 ```
 
 ```php
+<?php declare(strict_types=1);
+
 // scoper.inc.php
 
 function getWpExcludedSymbols(string $fileName): array

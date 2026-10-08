@@ -13,7 +13,7 @@ you will not have any dependency conflict issue.
 
 ## Phive
 
-You can install Box with [Phive][phive]
+You can install PHP-Scoper with [Phive][phive]
 
 ```bash
 $ phive install humbug/php-scoper --force-accept-unsigned
@@ -57,14 +57,14 @@ docker pull humbugphp/php-scoper
 
 ## GitHub
 
-You may download the Box PHAR directly from the [GitHub release][releases] directly.
+You may download the PHP-Scoper PHAR directly from the [GitHub release][releases].
 You should however beware that it is not as secure as downloading it from the other mediums.
 Hence, it is recommended to check the signature when doing so:
 
 ```shell
 # Do adjust the URL based on the latest release
-wget -O box.phar "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar"
-wget -O box.phar.asc "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar.asc"
+wget -O php-scoper.phar "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar"
+wget -O php-scoper.phar.asc "https://github.com/humbug/php-scoper/releases/download/0.18.4/php-scoper.phar.asc"
 
 # Check that the signature matches
 gpg --verify php-scoper.phar.asc php-scoper.phar

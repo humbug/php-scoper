@@ -27,7 +27,7 @@ be cases in which it will not be possible such as:
 
 ### Date symbols
 
-You code may be using a convention for the date string formats which could be
+Your code may be using a convention for the date string formats which could be
 mistaken for classes, e.g.:
 
 ```php
@@ -36,8 +36,8 @@ const ISO8601_BASIC = 'Ymd\THis\Z';
 
 In this scenario, PHP-Scoper has no way to tell that string `'Ymd\THis\Z'` does
 not refer to a symbol but is a date format. In this case, you will have to rely
-on patchers. Note however that PHP-Scoper will be able to
-handle some cases such as, see the [date-spec](../specs/misc/date.php).
+on patchers. Note however that PHP-Scoper is able to
+handle some cases, see the [date-spec](../specs/misc/date.php).
 
 
 ### Heredoc values
@@ -123,7 +123,7 @@ class_exists('Acme\Foo');
 ```
 
 PHP-Scoper uses a regex to determine if the string is a class name that must be
-prefixed. But there is bound to have confusing cases. For example:
+prefixed. But there are bound to be confusing cases. For example:
 
 - If you have a plain string `'Acme\Foo'` which has nothing to do with a class,
   PHP-Parser will not be able to tell and will prefix it
@@ -148,14 +148,14 @@ is_array([]);
 ```
 
 No use statement is used for the function `is_array`. This means that PHP will
-try to load the function `\Foo\is_array` and if fails to do so will fallback
+try to load the function `\Foo\is_array` and if it fails to do so will fallback
 on `\is_array` (note that PHP does so only for functions and constants, not
 classes).
 
 In order to bring some performance optimisation, the call will nonetheless be
 prefixed in `\is_array`. This *will* break your code if you were relying on
 `\Foo\is_array` instead. This however should be _extremely_ rare, so if that
-happens you have two solutions: use a [patcher](#patchers) or simply remove
+happens you have two solutions: use a [patcher][patchers] or simply remove
 any ambiguity by making use of a use statement (which is unneeded outside of
 the context of prefixing your code):
 
@@ -181,7 +181,7 @@ after prefixing an application.
 
 Note: when using [Box][box], Box is able to take care of that step for you.
 
-PHP-Scoper also can not handle Composers static file autoloaders. This is due
+PHP-Scoper also can not handle Composer's static file autoloaders. This is due
 to Composer loading files based on a hash which is generated from package name
 and relative file path. For a workaround see
 [#298](https://github.com/humbug/php-scoper/issues/298#issuecomment-525700081).
@@ -234,7 +234,7 @@ transforming it to PSR-4, i.e. in the case above:
 }
 ```
 
-If this works for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
+While this works for the classes under `src/JsonMapper/`, it will not for `JsonMapper.php`.
 
 
 ### Exposing/Excluding traits
@@ -260,7 +260,7 @@ namespace App;
 function_exists('NewApp\main');
 ```
 
-That the string contained by `function_exists` is a fully-qualified class name.
+PHP-Scoper assumes the string contained by `function_exists` is a fully-qualified function name.
 This is true however if `function_exists()` is the native PHP one. However,
 technically, if the function `App\function_exists()` does exist, then the call
 above would call `App\function_exists()` and not `function_exists()`.
