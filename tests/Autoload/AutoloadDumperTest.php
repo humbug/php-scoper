@@ -195,7 +195,7 @@ final class AutoloadDumperTest extends TestCase
                 })();
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 if (!function_exists('bar')) { function bar() { return \Humbug\bar(...func_get_args()); } }
                 if (!function_exists('foo')) { function foo() { return \Humbug\foo(...func_get_args()); } }
 
@@ -294,7 +294,7 @@ final class AutoloadDumperTest extends TestCase
                 })();
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 if (!function_exists('bar')) { function bar() { return \Humbug\bar(...func_get_args()); } }
                 if (!function_exists('foo')) { function foo() { return \Humbug\foo(...func_get_args()); } }
 
@@ -393,7 +393,7 @@ final class AutoloadDumperTest extends TestCase
                 }
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 namespace Acme {
                     if (!function_exists('Acme\bar')) { function bar() { return \Humbug\Acme\bar(...func_get_args()); } }
                     if (!function_exists('Acme\foo')) { function foo() { return \Humbug\Acme\foo(...func_get_args()); } }

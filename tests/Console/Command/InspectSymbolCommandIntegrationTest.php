@@ -32,13 +32,16 @@ class InspectSymbolCommandIntegrationTest extends FileSystemTestCase
 {
     private const STATIC_CONTENT = <<<'EOL'
 
-        Internal (configured via the `excluded-*` settings) are treated as PHP native symbols, i.e. will remain untouched.
-        Exposed symbols (configured via the `expose-*` settings) will be prefixed but aliased to its original symbol.
-        If a symbol is neither internal or exposed, it will be prefixed and not aliased
+        Internal symbols (PHP native symbols or configured via the `exclude-classes`, `exclude-functions` and `exclude-constants` settings) will remain untouched.
+        Exposed symbols (configured via the `expose-*` settings) will be prefixed but aliased to their original symbol.
+        If a symbol is neither internal nor exposed, it will be prefixed and not aliased.
+        Excluded namespaces (configured via the `exclude-namespaces` setting) are not taken into account.
 
         For more information, see:
-         * Doc link for excluded symbols
-         * Doc link for exposed symbols
+         * Symbols
+         * Internal symbols
+         * Excluded symbols
+         * Exposed symbols
 
 
         EOL;
