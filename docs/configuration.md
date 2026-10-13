@@ -235,14 +235,14 @@ it is declared and where it is used. The exceptions are:
 - [Exposed symbols](#exposed-symbols), which are prefixed but remain available
   under their original name.
 
-Note that by default, the symbols of the global namespace are exposed (see the
+By default, the symbols of the global namespace are exposed (see the
 `expose-global-constants`, `expose-global-classes` and `expose-global-functions`
 settings in [Exposed symbols](#exposed-symbols)).
 
-If a symbol is both excluded and exposed, the exclusion takes precedence. See
-the [summary](#symbols-summary) for an overview of the possible cases.
+If a symbol is both excluded and exposed, the exclusion takes precedence. The
+[summary](#symbols-summary) gives an overview of the possible cases.
 
-To check how a given symbol is treated with your configuration, use the
+To check how your configuration treats a given symbol, use the
 `inspect-symbol` command:
 
 ```shell
@@ -258,42 +258,41 @@ Inspecting the symbol PHP_EOL for type constant:
  * Exposed:  true
 ```
 
-The type (`class`, `function` or `constant`) is optional: by default, the
-symbol is inspected as each of them. As with the other commands, the
-configuration file is `scoper.inc.php` by default, and another one can be
+The type (`class`, `function` or `constant`) is optional. If it is omitted,
+the symbol is inspected as each type. As with the other commands, the
+configuration file defaults to `scoper.inc.php`, and a different one can be
 passed with `--config`.
 
 "Internal" covers both the internal symbols and the symbols listed in
 `exclude-classes`, `exclude-functions` and `exclude-constants`. Excluded
-namespaces, however, are not taken into account.
+namespaces are not taken into account.
 
 
 ### Internal symbols
 
 Internal symbols are the classes, functions and constants provided by PHP
 itself or by a PHP extension, e.g. `strlen`, `Stringable` or `PHP_EOL`. Their
-usages are never prefixed, as prefixing `strlen()` or `\Exception` would break
-the code.
+usages are never prefixed, since prefixing `strlen()` or `\Exception` would
+break the code.
 
-The list of internal symbols is static: it is made of the symbols known to the
+The list of internal symbols is static. It consists of the symbols known to the
 [PhpStorm stubs][phpstorm-stubs], which cover all PHP versions and the most
-common extensions, completed by PHP-Scoper for the symbols missing from the
-stubs. In particular, it does not depend on the PHP version or the extensions
-loaded when running PHP-Scoper, nor on the configured [PHP version](#php-version):
-a symbol from an extension unknown to the stubs is prefixed, even if the
-extension is loaded, e.g. `new \SomeExtensionClass()` becomes
-`new \Humbug\SomeExtensionClass()`. You can check
-whether a symbol is recognised as internal with the [`inspect-symbol`](#symbols)
-command. If it is not, add it to the [excluded symbols](#excluded-symbols) (and
-consider reporting it).
+common extensions, supplemented by PHP-Scoper with the symbols missing from the
+stubs. It therefore depends neither on the PHP version or extensions loaded
+when running PHP-Scoper, nor on the configured [PHP version](#php-version). A
+symbol from an extension unknown to the stubs is prefixed even if the extension
+is loaded, e.g. `new \SomeExtensionClass()` becomes
+`new \Humbug\SomeExtensionClass()`. Use the [`inspect-symbol`](#symbols)
+command to check whether a symbol is recognised as internal. If it is not, add
+it to the [excluded symbols](#excluded-symbols) (and consider reporting it).
 
 PHP-Scoper may also encounter the declaration of an internal symbol, typically
-in a polyfill. As for any other file, the declaration is prefixed: the namespace
-_needs_ to be added so as not to break autoloading. Wrapping the declaration in
-a non-namespaced block could work, but is tricky and has therefore not been
-implemented so far (proofs of concept supporting it are welcome). How
-PHP-Scoper deals with it depends on the kind of symbol, as described in the
-following sections.
+in a polyfill. As with any other file, the declaration is prefixed: the
+namespace _needs_ to be added so as not to break autoloading. Wrapping the
+declaration in a non-namespaced block could work, but is tricky and has not
+been implemented so far (proofs of concept are welcome). How PHP-Scoper handles
+the declaration depends on the kind of symbol, as described in the following
+sections.
 
 
 ### Internal classes
@@ -312,9 +311,9 @@ if (\PHP_VERSION_ID < 80000) {
 }
 ```
 
-The declaration is prefixed. Since the usages of `Stringable` are left
-untouched, PHP-Scoper also aliases `Humbug\Stringable` to `Stringable`, in the
-same way as for [exposed classes](#exposing-classes):
+the declaration is prefixed. Since the usages of `Stringable` are left
+untouched, PHP-Scoper also aliases `Humbug\Stringable` to `Stringable`, as it
+does for [exposed classes](#exposing-classes):
 
 ```php
 <?php
@@ -338,8 +337,8 @@ This does not apply to traits and enums, which cannot be aliased (see
 ### Internal functions
 
 The usages of internal functions are left untouched. Unqualified calls, e.g.
-`strlen()` in a namespace, are not made fully qualified: PHP falls back to the
-global function as before.
+`strlen()` in a namespace, are not made fully qualified, as PHP still falls
+back to the global function.
 
 If PHP-Scoper encounters the declaration of an internal function, for example:
 
@@ -353,8 +352,8 @@ if (!function_exists('str_contains')) {
 }
 ```
 
-The declaration is prefixed, and the `function_exists()` check is adjusted to
-check the prefixed function too:
+the declaration is prefixed, and the `function_exists()` check is extended to
+the prefixed function:
 
 ```php
 <?php
@@ -370,7 +369,7 @@ if (!\function_exists('str_contains') && !\function_exists('Humbug\str_contains'
 ```
 
 Since the usages of `str_contains` are left untouched, PHP-Scoper also declares
-`str_contains` in `vendor/scoper-autoload.php`, in the same way as for
+`str_contains` in `vendor/scoper-autoload.php`, as it does for
 [exposed functions](#exposing-functions).
 
 
@@ -381,9 +380,9 @@ PHP-Scoper treats internal constants as [exposed constants](#exposing-constants)
 - Their usages are not prefixed. Since an unqualified constant could refer to a
   namespaced constant, PHP-Scoper makes them fully qualified, e.g. `PHP_EOL`
   becomes `\PHP_EOL`.
-- Their declarations are transformed into `define()` statements using their
+- Their declarations are converted into `define()` statements that use their
   original name, so no alias is needed. For example, `const E_USER_DEPRECATED = 16384;`
-  becomes `\define('E_USER_DEPRECATED', 16384);`, and
+  becomes `\define('E_USER_DEPRECATED', 16384);`, while
   `define('E_USER_DEPRECATED', 16384);` keeps its name.
 
 Unlike class and function names, constant names are case-sensitive: `PHP_EOL`
@@ -408,18 +407,18 @@ return [
 ```
 
 `exclude-classes`, `exclude-functions` and `exclude-constants` extend the list
-of [internal symbols](#internal-symbols): their usages are left untouched and
-their declarations in the global namespace are aliased (classes and functions)
-or declared with `define()` (constants), e.g. `trigger_deprecation` from
-`symfony/deprecation-contracts`.
+of [internal symbols](#internal-symbols). Their usages are left untouched, and
+their declarations in the global namespace, such as `trigger_deprecation` in
+`symfony/deprecation-contracts`, are aliased (classes and functions) or
+declared with `define()` (constants).
 
-`exclude-namespaces` leaves untouched both the usages and the declarations of
-the symbols belonging to the namespace (see [Excluding namespaces](#excluding-namespaces)).
+`exclude-namespaces` leaves both the usages and the declarations of the symbols
+in the namespace untouched (see [Excluding namespaces](#excluding-namespaces)).
 
 No alias is added for excluded classes or functions declared outside the global
-namespace: if `Acme\Foo` is excluded (but not the namespace `Acme`), its declaration
-becomes `Humbug\Acme\Foo` whereas its usages remain `Acme\Foo`, which breaks the code.
-Exclude the namespace instead.
+namespace. If `Acme\Foo` is excluded but the `Acme` namespace is not, its
+declaration becomes `Humbug\Acme\Foo` while its usages remain `Acme\Foo`, which
+breaks the code. In that case, exclude the namespace instead.
 
 **WARNING**: This exclusion feature should be used with great care, as it can easily break
 Composer autoloading. For example, given the following package:
@@ -633,14 +632,15 @@ namespace Humbug\Acme;
 \define('Acme\FOO', 'X');
 ```
 
-Internal constants, including the ones listed in `exclude-constants`, are
-treated as exposed constants (see [Internal constants](#internal-constants)).
+Internal constants, including those listed in `exclude-constants`, are treated
+as exposed constants (see [Internal constants](#internal-constants)).
 
 
 ### Symbols summary
 
 The following table shows how a symbol is scoped depending on the
-configuration, with the prefix `Humbug`. Functions behave like classes.
+configuration, using the prefix `Humbug`. Functions behave in the same way as
+classes.
 
 | Symbol                                     | Declaration                              | Usages            |
 |--------------------------------------------|------------------------------------------|-------------------|
@@ -654,11 +654,12 @@ configuration, with the prefix `Humbug`. Functions behave like classes.
 | `Acme\FOO` (constant), exposed or excluded | `\define('Acme\FOO', …)`                 | `Acme\FOO`        |
 | Internal symbol, e.g. `strlen`             | (none), or as an excluded global symbol  | `strlen`          |
 
-*: Broken, as the usages do not point to the declared symbol. See
+*: Broken, since the usages do not point to the declared symbol. See
 [Excluded symbols](#excluded-symbols).
 
-**: With `expose-global-classes` (or `expose-global-functions` for functions)
-enabled, which is the default. Otherwise, it is not aliased.
+**: Assumes `expose-global-classes` (or `expose-global-functions` for
+functions) is enabled, which is the default. Otherwise, the symbol is not
+aliased.
 
 
 <br />
