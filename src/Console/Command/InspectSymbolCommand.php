@@ -209,15 +209,18 @@ final readonly class InspectSymbolCommand implements Command
     private static function printDocBlock(IO $io): void
     {
         $io->writeln([
-            'Internal (configured via the `excluded-*` settings) are treated as PHP native symbols, i.e. will remain untouched.',
-            'Exposed symbols (configured via the `expose-*` settings) will be prefixed but aliased to its original symbol.',
-            'If a symbol is neither internal or exposed, it will be prefixed and not aliased',
+            'Internal symbols (PHP native symbols or symbols configured via the `exclude-classes`, `exclude-functions` and `exclude-constants` settings) are left untouched.',
+            'Exposed symbols (configured via the `expose-*` settings) are prefixed but aliased to their original symbol.',
+            'Symbols that are neither internal nor exposed are prefixed and not aliased.',
+            'Excluded namespaces (configured via the `exclude-namespaces` setting) are not taken into account.',
             '',
             'For more information, see:',
         ]);
         $io->listing([
-            '<href=https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#excluded-symbols>Doc link for excluded symbols</>',
-            '<href=https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#exposed-symbols>Doc link for exposed symbols</>',
+            '<href=https://github.com/humbug/php-scoper/blob/main/docs/configuration.md#symbols>Symbols</>',
+            '<href=https://github.com/humbug/php-scoper/blob/main/docs/configuration.md#internal-symbols>Internal symbols</>',
+            '<href=https://github.com/humbug/php-scoper/blob/main/docs/configuration.md#excluded-symbols>Excluded symbols</>',
+            '<href=https://github.com/humbug/php-scoper/blob/main/docs/configuration.md#exposed-symbols>Exposed symbols</>',
         ]);
     }
 

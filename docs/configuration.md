@@ -6,13 +6,19 @@
 - [Finders and paths](#finders-and-paths)
 - [Patchers](#patchers)
 - [Excluded files](#excluded-files)
-- [Excluded Symbols](#excluded-symbols)
+- [Symbols](#symbols)
+- [Internal symbols](#internal-symbols)
+    - [Internal classes](#internal-classes)
+    - [Internal functions](#internal-functions)
+    - [Internal constants](#internal-constants)
+- [Excluded symbols](#excluded-symbols)
 - [Excluding namespaces](#excluding-namespaces)
-- [Exposed Symbols](#exposed-symbols)
+- [Exposed symbols](#exposed-symbols)
     - [Exposing namespaces](#exposing-namespaces)
     - [Exposing classes](#exposing-classes)
     - [Exposing functions](#exposing-functions)
     - [Exposing constants](#exposing-constants)
+- [Symbols summary](#symbols-summary)
 
 For more granular configuration, you can create a `scoper.inc.php` file by
 running `php-scoper init`. A different file or location can be passed with the
@@ -214,7 +220,176 @@ The contents of the files listed in `exclude-files` are left untouched during
 scoping.
 
 
-### Excluded Symbols
+### Symbols
+
+By default, every symbol (class, function or constant) is prefixed, both where
+it is declared and where it is used. The exceptions are:
+
+- [Internal symbols](#internal-symbols), i.e. the symbols provided by PHP
+  itself or by a PHP extension, whose usages are left untouched.
+- The symbols listed in `exclude-classes`, `exclude-functions` and
+  `exclude-constants` (see [Excluded symbols](#excluded-symbols)), which are
+  treated like internal symbols.
+- The symbols belonging to an [excluded namespace](#excluding-namespaces),
+  which are left entirely untouched, declarations included.
+- [Exposed symbols](#exposed-symbols), which are prefixed but remain available
+  under their original name.
+
+By default, the symbols of the global namespace are exposed (see the
+`expose-global-constants`, `expose-global-classes` and `expose-global-functions`
+settings in [Exposed symbols](#exposed-symbols)).
+
+If a symbol is both excluded and exposed, the exclusion takes precedence. The
+[summary](#symbols-summary) gives an overview of the possible cases.
+
+To check how your configuration treats a given symbol, use the
+`inspect-symbol` command:
+
+```shell
+php-scoper inspect-symbol PHP_EOL constant
+```
+
+```
+…
+
+Inspecting the symbol PHP_EOL for type constant:
+
+ * Internal: true
+ * Exposed:  true
+```
+
+The type (`class`, `function` or `constant`) is optional. If it is omitted,
+the symbol is inspected as each type. As with the other commands, the
+configuration file defaults to `scoper.inc.php`, and a different one can be
+passed with `--config`.
+
+"Internal" covers both the internal symbols and the symbols listed in
+`exclude-classes`, `exclude-functions` and `exclude-constants`. Excluded
+namespaces are not taken into account.
+
+
+### Internal symbols
+
+Internal symbols are the classes, functions and constants provided by PHP
+itself or by a PHP extension, e.g. `strlen`, `Stringable` or `PHP_EOL`. Their
+usages are never prefixed, since prefixing `strlen()` or `\Exception` would
+break the code.
+
+The list of internal symbols is static. It consists of the symbols known to the
+[PhpStorm stubs][phpstorm-stubs], which cover all PHP versions and the most
+common extensions, supplemented by PHP-Scoper with the symbols missing from the
+stubs. It therefore depends neither on the PHP version or extensions loaded
+when running PHP-Scoper, nor on the configured [PHP version](#php-version). A
+symbol from an extension unknown to the stubs is prefixed even if the extension
+is loaded, e.g. `new \SomeExtensionClass()` becomes
+`new \Humbug\SomeExtensionClass()`. Use the [`inspect-symbol`](#symbols)
+command to check whether a symbol is recognised as internal. If it is not, add
+it to the [excluded symbols](#excluded-symbols) (and consider reporting it).
+
+PHP-Scoper may also encounter the declaration of an internal symbol, typically
+in a polyfill. As with any other file, the declaration is prefixed: the
+namespace _needs_ to be added so as not to break autoloading. Wrapping the
+declaration in a non-namespaced block could work, but is tricky and has not
+been implemented so far (proofs of concept are welcome). How PHP-Scoper handles
+the declaration depends on the kind of symbol, as described in the following
+sections.
+
+
+### Internal classes
+
+The usages of internal classes are left untouched.
+
+If PHP-Scoper encounters the declaration of an internal class, for example:
+
+```php
+<?php
+
+// No namespace: this is the global namespace
+
+if (\PHP_VERSION_ID < 80000) {
+    interface Stringable { public function __toString(): string; }
+}
+```
+
+the declaration is prefixed. Since the usages of `Stringable` are left
+untouched, PHP-Scoper also aliases `Humbug\Stringable` to `Stringable`, as it
+does for [exposed classes](#exposing-classes):
+
+```php
+<?php
+
+namespace Humbug;
+
+if (\PHP_VERSION_ID < 80000) {
+    interface Stringable
+    {
+        public function __toString(): string;
+    }
+    \class_alias('Humbug\Stringable', 'Stringable', \false);
+}
+```
+
+This does not apply to traits and enums, which cannot be aliased (see
+[exposing/excluding traits](limitations.md#exposingexcluding-traits) and
+[exposing/excluding enums](limitations.md#exposingexcluding-enums)).
+
+
+### Internal functions
+
+The usages of internal functions are left untouched. Unqualified calls, e.g.
+`strlen()` in a namespace, are not made fully qualified, as PHP still falls
+back to the global function.
+
+If PHP-Scoper encounters the declaration of an internal function, for example:
+
+```php
+<?php
+
+// No namespace: this is the global namespace
+
+if (!function_exists('str_contains')) {
+    function str_contains(string $haystack, string $needle): bool { /* ... */ }
+}
+```
+
+the declaration is prefixed, and the `function_exists()` check is extended to
+the prefixed function:
+
+```php
+<?php
+
+namespace Humbug;
+
+if (!\function_exists('str_contains') && !\function_exists('Humbug\str_contains')) {
+    function str_contains(string $haystack, string $needle): bool
+    {
+        /* ... */
+    }
+}
+```
+
+Since the usages of `str_contains` are left untouched, PHP-Scoper also declares
+`str_contains` in `vendor/scoper-autoload.php`, as it does for
+[exposed functions](#exposing-functions).
+
+
+### Internal constants
+
+PHP-Scoper treats internal constants as [exposed constants](#exposing-constants):
+
+- Their usages are not prefixed. Since an unqualified constant could refer to a
+  namespaced constant, PHP-Scoper makes them fully qualified, e.g. `PHP_EOL`
+  becomes `\PHP_EOL`.
+- Their declarations are converted into `define()` statements that use their
+  original name, so no alias is needed. For example, `const E_USER_DEPRECATED = 16384;`
+  becomes `\define('E_USER_DEPRECATED', 16384);`, while
+  `define('E_USER_DEPRECATED', 16384);` keeps its name.
+
+Unlike class and function names, constant names are case-sensitive: `PHP_EOL`
+is internal but `php_eol` is not.
+
+
+### Excluded symbols
 
 Symbols can be marked as excluded as follows:
 
@@ -224,51 +399,26 @@ Symbols can be marked as excluded as follows:
 // scoper.inc.php
 
 return [
-    'exclude-namespaces' => [ 'WP', '/regex/' ],
-    'exclude-classes' => ['Stringable', '/regex/'],
-    'exclude-functions' => ['str_contains', '/regex/'],
-    'exclude-constants' => ['PHP_EOL', '/regex/'],
+    'exclude-namespaces' => ['WP', '/regex/'],
+    'exclude-classes' => ['WP_Error', '/regex/'],
+    'exclude-functions' => ['trigger_deprecation', '/regex/'],
+    'exclude-constants' => ['ABSPATH', '/regex/'],
 ];
 ```
 
-This extends the list of symbols that PHP-Scoper's Reflector considers "internal",
-i.e. PHP engine or extension symbols. Such symbols are left completely
-untouched.*
+`exclude-classes`, `exclude-functions` and `exclude-constants` extend the list
+of [internal symbols](#internal-symbols). Their usages are left untouched, and
+their declarations in the global namespace, such as `trigger_deprecation` in
+`symfony/deprecation-contracts`, are aliased (classes and functions) or
+declared with `define()` (constants).
 
-*: There is _one_ exception: function declarations. If the function
-`trigger_deprecation` is excluded, any usage of it in the code is left untouched:
+`exclude-namespaces` leaves both the usages and the declarations of the symbols
+in the namespace untouched (see [Excluding namespaces](#excluding-namespaces)).
 
-```php
-use function trigger_deprecation; // Will not be turned into Prefix\trigger_deprecation
-```
-
-However, PHP-Scoper may encounter its declaration:
-
-```php
-// global namespace!
-
-if (!function_exists('trigger_deprecation')) {
-    function trigger_deprecation() {}
-}
-```
-
-It is then scoped into:
-
-```php
-namespace Prefix;
-
-if (!function_exists('Prefix\trigger_deprecation')) {
-    function trigger_deprecation() {}
-}
-```
-
-The namespace _needs_ to be added so as not to break autoloading. Wrapping the function
-declaration in a non-namespaced block could work, but is tricky and has therefore not been
-implemented so far (proofs of concept supporting it are welcome).
-
-Left as is, this would break any code relying on `\trigger_deprecation`, which is why
-PHP-Scoper still adds an alias for it, as if it were an exposed function. A further benefit
-is that any polyfill can be scoped without issues.
+No alias is added for excluded classes or functions declared outside the global
+namespace. If `Acme\Foo` is excluded but the `Acme` namespace is not, its
+declaration becomes `Humbug\Acme\Foo` while its usages remain `Acme\Foo`, which
+breaks the code. In that case, exclude the namespace instead.
 
 **WARNING**: This exclusion feature should be used with great care, as it can easily break
 Composer autoloading. For example, given the following package:
@@ -306,7 +456,7 @@ To exclude symbols from the global namespace only, use the regex `/^$/`: regexes
 exclude only the namespaces they match.
 
 
-### Exposed Symbols
+### Exposed symbols
 
 PHP-Scoper's goal is to ensure that all of a project's code lies in a
 distinct PHP namespace. However, you may want to share a common API between
@@ -334,11 +484,7 @@ return [
 ```
 
 Notes:
-- An excluded symbol is not exposed. For example, if you expose the class
-  `Acme\Foo` but the `Acme` namespace is excluded, `Acme\Foo` will _not_
-  be exposed.
-- Exposing a namespace also exposes its sub-namespaces (the previous note still
-  applies).
+- Exposing a namespace also exposes its sub-namespaces.
 - Exposing symbols will most likely require PHP-Scoper to adjust the Composer
   autoloader. To do so with minimal conflicts, PHP-Scoper dumps everything
   necessary into `vendor/scoper-autoload.php` (which calls `vendor/autoload.php`).
@@ -350,9 +496,10 @@ Bear in mind that a symbol may not be exposed in the way you expect. More
 details about the internals, which you will need if you have to dig into the
 scoped code, are given below.
 
-**Note: If a symbol is both excluded _and_ exposed, the exclusion takes precedence.**
+If a symbol is both excluded and exposed, the exclusion takes precedence (see
+[Symbols](#symbols)).
 
-### Exposing Namespaces
+### Exposing namespaces
 
 Namespaces are configured in the same way as when [excluding namespaces](#excluding-namespaces).
 
@@ -484,6 +631,35 @@ namespace Humbug\Acme;
 
 \define('Acme\FOO', 'X');
 ```
+
+Internal constants, including those listed in `exclude-constants`, are treated
+as exposed constants (see [Internal constants](#internal-constants)).
+
+
+### Symbols summary
+
+The following table shows how a symbol is scoped depending on the
+configuration, using the prefix `Humbug`. Functions behave in the same way as
+classes.
+
+| Symbol                                     | Declaration                              | Usages            |
+|--------------------------------------------|------------------------------------------|-------------------|
+| `Acme\Foo`                                 | `Humbug\Acme\Foo`                        | `Humbug\Acme\Foo` |
+| `Acme\Foo`, exposed                        | `Humbug\Acme\Foo`, aliased to `Acme\Foo` | `Humbug\Acme\Foo` |
+| `Acme\Foo`, namespace `Acme` excluded      | `Acme\Foo`                               | `Acme\Foo`        |
+| `Foo` (global namespace)**                 | `Humbug\Foo`, aliased to `Foo`           | `Humbug\Foo`      |
+| `Foo` (global namespace), excluded         | `Humbug\Foo`, aliased to `Foo`           | `Foo`             |
+| `Acme\Foo`, excluded*                      | `Humbug\Acme\Foo`                        | `Acme\Foo`        |
+| `Acme\Foo`, excluded and exposed*          | `Humbug\Acme\Foo`                        | `Acme\Foo`        |
+| `Acme\FOO` (constant), exposed or excluded | `\define('Acme\FOO', …)`                 | `Acme\FOO`        |
+| Internal symbol, e.g. `strlen`             | (none), or as an excluded global symbol  | `strlen`          |
+
+*: Broken, since the usages do not point to the declared symbol. See
+[Excluded symbols](#excluded-symbols).
+
+**: Assumes `expose-global-classes` (or `expose-global-functions` for
+functions) is enabled, which is the default. Otherwise, the symbol is not
+aliased.
 
 
 <br />
