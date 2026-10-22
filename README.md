@@ -50,6 +50,7 @@ resulting issues can be very difficult to debug.
     - [Without Box](#without-box)
         - [Step 1: Configure build location and prep vendors](#step-1-configure-build-location-and-prep-vendors)
         - [Step 2: Run PHP-Scoper](#step-2-run-php-scoper)
+        - [Step 3: Load the scoped autoloader](#step-3-load-the-scoped-autoloader)
 - [Recommendations](#recommendations)
 - [Debugging](#debugging)
 - [Further Reading](docs/further-reading.md#further-reading)
@@ -153,6 +154,25 @@ composer dump-autoload --working-dir build --classmap-authoritative
 ```
 
 
+#### Step 3: Load the scoped autoloader
+
+When scoping a project with a `vendor` directory, PHP-Scoper also generates a
+`vendor/scoper-autoload.php` file. It requires `vendor/autoload.php`, then
+registers the aliases of the [exposed symbols][exposed-symbols] and takes care
+of the Composer autoloaded files excluded from scoping. Like
+`vendor/autoload.php`, it returns the Composer class loader.
+
+Your entry file should therefore require `vendor/scoper-autoload.php` instead of
+`vendor/autoload.php`; there is no need to require both:
+
+```php
+require __DIR__.'/vendor/scoper-autoload.php';
+```
+
+If you use [Box][box] with the
+[`PhpScoper` compactor][php-scoper-integration], this is done for you.
+
+
 ## Recommendations
 
 There are three aspects to manage when dealing with isolated PHARs:
@@ -218,6 +238,7 @@ has since moved under the [Humbug umbrella][humbug].
 [@webmozart]: https://twitter.com/webmozart
 [Bernhard Schussek]: https://webmozart.io/
 [box]: https://github.com/box-project/box
+[exposed-symbols]: docs/configuration.md#exposed-symbols
 [humbug]: https://github.com/humbug
 [patchers]: docs/configuration.md#patchers
 [php-scoper-integration]: https://github.com/box-project/box/blob/main/doc/code-isolation.md#phar-code-isolation
