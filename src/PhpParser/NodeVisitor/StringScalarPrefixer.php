@@ -182,9 +182,7 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
 
         // If belongs to the global namespace then we cannot differentiate the
         // value from a symbol and a regular string hence we leave it alone
-        return $this->belongsToTheGlobalNamespace($string)
-            ? $string
-            : $this->createPrefixedString($string);
+        return $this->createPrefixedStringIfDoesNotBelongToGlobalNamespace($string);
     }
 
     private function prefixStringArg(String_ $string, Arg $parentNode, string $normalizedValue): String_
@@ -379,9 +377,15 @@ final class StringScalarPrefixer extends NodeVisitorAbstract
     private function createPrefixedStringIfDoesNotBelongToGlobalNamespace(String_ $string): String_
     {
         // If belongs to the global namespace then we cannot differentiate the value from a symbol and a regular string
-        return $this->belongsToTheGlobalNamespace($string)
-            ? $string
-            : $this->createPrefixedString($string);
+        if ($this->belongsToTheGlobalNamespace($string)) {
+            return $string;
+        }
+
+        if ($this->enrichedReflector->isClassExcluded(ltrim($string->value, '\\'))) {
+            return $string;
+        }
+
+        return $this->createPrefixedString($string);
     }
 
     private function belongsToTheGlobalNamespace(String_ $string): bool

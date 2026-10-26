@@ -48,6 +48,39 @@ return [
 
         PHP,
 
+    'FQCN string argument referencing a namespaced internal class' => <<<'PHP'
+        <?php
+
+        new X('Random\\Randomizer');
+        new X('\\Random\\Randomizer');
+        new X('PDO\\Mysql');
+        new X('\\PDO\\Mysql');
+        new X('Pdo\\Sqlite');
+        new X('Filter\\FilterFailedException');
+        new X('\\Filter\\FilterFailedException');
+
+        new X('Symfony\\Component\\Yaml\\Ya_1');
+        new X('Yaml');
+        new DateTime('now');
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        new X('Random\Randomizer');
+        new X('\Random\Randomizer');
+        new X('PDO\Mysql');
+        new X('\PDO\Mysql');
+        new X('Pdo\Sqlite');
+        new X('Filter\FilterFailedException');
+        new X('\Filter\FilterFailedException');
+        new X('Humbug\Symfony\Component\Yaml\Ya_1');
+        new X('Yaml');
+        new \DateTime('now');
+
+        PHP,
+
     'FQCN string argument on exposed class' => SpecWithConfig::create(
         exposeClasses: ['Symfony\Component\Yaml\Yaml'],
         spec: <<<'PHP'
