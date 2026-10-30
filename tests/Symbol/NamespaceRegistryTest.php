@@ -237,6 +237,18 @@ class NamespaceRegistryTest extends TestCase
             false,
         ];
 
+        yield 'one level namespace name; symbol belonging to a namespace starting with the name' => [
+            ['Acme'],
+            'AcmeCorp\Foo',
+            false,
+        ];
+
+        yield 'one level namespace name; symbol belonging to a namespace containing the name' => [
+            ['Psr'],
+            'Nyholm\Psr7\Factory\Psr17Factory',
+            false,
+        ];
+
         yield 'one level namespace name; symbol belonging to a sub-namespace' => [
             ['Acme'],
             'Acme\Foo\Bar',
