@@ -24,7 +24,7 @@ use function explode;
 use function implode;
 use function ltrim;
 use function Safe\preg_match;
-use function str_contains;
+use function str_starts_with;
 use function strtolower;
 use function trim;
 use const SORT_STRING;
@@ -96,7 +96,8 @@ final readonly class NamespaceRegistry
 
         foreach ($this->names as $excludedNamespaceName) {
             if ('' === $excludedNamespaceName
-                || str_contains($normalizedNamespaceName, $excludedNamespaceName)
+                || $normalizedNamespaceName === $excludedNamespaceName
+                || str_starts_with($normalizedNamespaceName, $excludedNamespaceName.'\\')
             ) {
                 return true;
             }
