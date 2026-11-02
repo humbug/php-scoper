@@ -6,7 +6,7 @@
     "type": "project",
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^12.0",
+        "laravel/framework": "^13.38",
         "laravel/helpers": "*",
         "laravel/tinker": "*"
     },
