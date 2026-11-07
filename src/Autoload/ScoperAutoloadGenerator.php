@@ -33,12 +33,12 @@ final class ScoperAutoloadGenerator
 {
     private const FUNCTION_ALIASES_DOC = <<<'EOF'
         // Function aliases. For more information see:
-        // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+        // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
         EOF;
 
     private const CLASS_ALIASES_DOC = <<<'EOF'
         // Class aliases. For more information see:
-        // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
+        // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#class-aliases
         EOF;
 
     private const EXPOSE_CLASS_DECLARATION = <<<'PHP'

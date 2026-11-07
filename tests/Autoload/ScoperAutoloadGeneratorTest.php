@@ -132,7 +132,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 })();
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 if (!function_exists('bar')) { function bar() { return \Humbug\bar(...func_get_args()); } }
                 if (!function_exists('foo')) { function foo() { return \Humbug\foo(...func_get_args()); } }
 
@@ -173,7 +173,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 })();
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 if (!function_exists('bar')) { function bar() { return \Humbug\bar(...func_get_args()); } }
                 if (!function_exists('foo')) { function foo() { return \Humbug\foo(...func_get_args()); } }
 
@@ -218,7 +218,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 }
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 namespace Acme\Emca {
                     if (!function_exists('Acme\Emca\foo')) { function foo() { return \Humbug\Acme\Emca\foo(...func_get_args()); } }
                 }
@@ -274,7 +274,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 }
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 namespace Acme {
                     if (!function_exists('Acme\bar')) { function bar() { return \Humbug\Acme\bar(...func_get_args()); } }
                     if (!function_exists('Acme\foo')) { function foo() { return \Humbug\Acme\foo(...func_get_args()); } }
@@ -326,7 +326,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 }
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 namespace Acme {
                     if (!function_exists('Acme\bar')) { function bar() { return \Humbug\Acme\bar(...func_get_args()); } }
                     if (!function_exists('Acme\foo')) { function foo() { return \Humbug\Acme\foo(...func_get_args()); } }
@@ -374,7 +374,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 })();
 
                 // Class aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#class-aliases
                 if (!function_exists('humbug_phpscoper_expose_class')) {
                     function humbug_phpscoper_expose_class($exposed, $prefixed) {
                         if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
@@ -421,7 +421,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 })();
 
                 // Class aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#class-aliases
                 if (!function_exists('humbug_phpscoper_expose_class')) {
                     function humbug_phpscoper_expose_class($exposed, $prefixed) {
                         if (!class_exists($exposed, false) && !interface_exists($exposed, false) && !trait_exists($exposed, false)) {
@@ -477,7 +477,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 }
 
                 // Class aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#class-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#class-aliases
                 namespace {
                     if (!function_exists('humbug_phpscoper_expose_class')) {
                         function humbug_phpscoper_expose_class($exposed, $prefixed) {
@@ -490,7 +490,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 }
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 namespace Acme {
                     if (!function_exists('Acme\bar')) { function bar() { return \Humbug\Acme\bar(...func_get_args()); } }
                     if (!function_exists('Acme\foo')) { function foo() { return \Humbug\Acme\foo(...func_get_args()); } }
@@ -544,7 +544,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 })();
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 if (!function_exists('__autoload')) { function __autoload($className) { return \Humbug\__autoload(...func_get_args()); } }
 
                 return $loader;
@@ -587,7 +587,7 @@ class ScoperAutoloadGeneratorTest extends TestCase
                 }
 
                 // Function aliases. For more information see:
-                // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
+                // https://github.com/humbug/php-scoper/blob/main/docs/further-reading.md#function-aliases
                 namespace Acme {
                     if (!function_exists('Acme\foo')) { function foo() { return \Humbug\Acme\foo(...func_get_args()); } }
                 }

@@ -172,6 +172,6 @@ The tests under `tests/AutoReview` check that these remain in sync.
 [box]: https://github.com/humbug/box
 [composer-bin-plugin]: https://github.com/bamarni/composer-bin-plugin
 [direnv]: https://direnv.net/
-[node-visitors]: https://github.com/humbug/php-scoper/tree/master/src/PhpParser/NodeVisitor
+[node-visitors]: https://github.com/humbug/php-scoper/tree/main/src/PhpParser/NodeVisitor
 [php-parser]: https://github.com/nikic/PHP-Parser
 [PhpScoperSpecTest]: tests/Scoper/PhpScoperSpecTest.php
