@@ -69,7 +69,7 @@ return [
 
         namespace Humbug\Acme;
 
-        $x = \DIRECTORY_SEPARATOR;
+        $x = DIRECTORY_SEPARATOR;
         $x = Client::class;
         $x = Client::VERSION;
         $x = \Humbug\Client::class;

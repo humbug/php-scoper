@@ -78,7 +78,7 @@ return [
 
         namespace Humbug\Foo;
 
-        if (\true) {
+        if (true) {
             class A
             {
             }
@@ -104,7 +104,7 @@ return [
 
             namespace Humbug\Foo;
 
-            if (\true) {
+            if (true) {
                 class A
                 {
                 }
@@ -139,21 +139,21 @@ return [
 
         namespace Humbug\X;
 
-        if (\true) {
+        if (true) {
             class A
             {
             }
         }
         namespace Humbug\Y;
 
-        if (\true) {
+        if (true) {
             class B
             {
             }
         }
         namespace Humbug\Z;
 
-        if (\true) {
+        if (true) {
             class C
             {
             }

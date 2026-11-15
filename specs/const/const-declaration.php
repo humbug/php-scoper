@@ -239,7 +239,7 @@ return [
         namespace Humbug\Acme;
 
         const FOO_CONST = foo();
-        if (\true) {
+        if (true) {
             const X = 'x';
             const Y = '';
         }
@@ -292,7 +292,7 @@ return [
             namespace Acme;
 
             const FOO_CONST = foo();
-            if (\true) {
+            if (true) {
                 const X = 'x';
                 const Y = '';
             }
@@ -346,7 +346,7 @@ return [
             namespace Humbug\Acme;
 
             const FOO_CONST = foo();
-            if (\true) {
+            if (true) {
                 const X = 'x';
                 const Y = '';
             }
@@ -425,14 +425,14 @@ return [
             {
                 function isNewToken(int $token): bool
                 {
-                    return \NEW_TOKEN === $token;
+                    return NEW_TOKEN === $token;
                 }
                 function isAnotherNewToken(int $token): bool
                 {
                     if (!defined('ANOTHER_NEW_TOKEN')) {
                         define('ANOTHER_NEW_TOKEN', 502);
                     }
-                    return \ANOTHER_NEW_TOKEN === $token;
+                    return ANOTHER_NEW_TOKEN === $token;
                 }
             }
             namespace Humbug\FQ_PHPParser;
