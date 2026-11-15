@@ -387,13 +387,10 @@ final class NameStmtPrefixer extends NodeVisitorAbstract
         // It is not only unlikely but sketchy, hence should not be an issue
         // in practice.
 
-        // We distinguish exposed from internal here as internal are a much safer
-        // bet.
+        // Internal constants are checked first as they are also considered
+        // exposed.
         if ($this->enrichedReflector->isConstantInternal($resolvedNameString)) {
-            return new FullyQualified(
-                $resolvedNameString,
-                $resolvedName->getAttributes(),
-            );
+            return $resolvedName;
         }
 
         if ($this->enrichedReflector->isExposedConstant($resolvedNameString)) {

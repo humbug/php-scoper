@@ -185,7 +185,7 @@ return [
             }
             public static function who()
             {
-                echo __METHOD__ . \PHP_EOL;
+                echo __METHOD__ . PHP_EOL;
             }
             public static function test()
             {
@@ -215,7 +215,7 @@ return [
             }
             public static function who()
             {
-                echo __METHOD__ . \PHP_EOL;
+                echo __METHOD__ . PHP_EOL;
             }
         }
         namespace Humbug;

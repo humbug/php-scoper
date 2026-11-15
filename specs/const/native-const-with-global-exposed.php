@@ -33,7 +33,7 @@ return [
 
         namespace Humbug\Acme;
 
-        $x = \DIRECTORY_SEPARATOR;
+        $x = DIRECTORY_SEPARATOR;
 
         PHP,
 
