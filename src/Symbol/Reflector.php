@@ -316,6 +316,9 @@ final readonly class Reflector
         'FALSE',
         'NULL',
 
+        // Defined by HHVM only, e.g. checked by Composer's ClassLoader
+        'HHVM_VERSION',
+
         // https://youtrack.jetbrains.com/issue/WI-53323
         'TIDEWAYS_XHPROF_FLAGS_MEMORY',
         'TIDEWAYS_XHPROF_FLAGS_MEMORY_MU',

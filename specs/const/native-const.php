@@ -36,7 +36,7 @@ return [
 
         namespace Humbug\Acme;
 
-        $x = \DIRECTORY_SEPARATOR;
+        $x = DIRECTORY_SEPARATOR;
         if (!defined('PATH_SEPARATOR')) {
             define('PATH_SEPARATOR', "\n");
         }
@@ -65,6 +65,44 @@ return [
         $x = DIRECTORY_SEPARATOR;
         if (!defined('PATH_SEPARATOR')) {
             define('PATH_SEPARATOR', "\n");
+        }
+
+        PHP,
+
+    'Internal constants in a namespace' => <<<'PHP'
+        <?php
+
+        namespace Acme;
+
+        if (true !== false && defined('HHVM_VERSION')) {
+            trigger_error(HHVM_VERSION, E_USER_WARNING);
+        }
+
+        ----
+        <?php
+
+        namespace Humbug\Acme;
+
+        if (true !== false && defined('HHVM_VERSION')) {
+            trigger_error(HHVM_VERSION, E_USER_WARNING);
+        }
+
+        PHP,
+
+    'Internal constants in the global namespace' => <<<'PHP'
+        <?php
+
+        if (true !== false && defined('HHVM_VERSION')) {
+            trigger_error(HHVM_VERSION, E_USER_WARNING);
+        }
+
+        ----
+        <?php
+
+        namespace Humbug;
+
+        if (\true !== \false && \defined('HHVM_VERSION')) {
+            \trigger_error(\HHVM_VERSION, \E_USER_WARNING);
         }
 
         PHP,
