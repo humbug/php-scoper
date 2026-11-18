@@ -37,6 +37,7 @@ return [
         class Foo
         {
         }
+
         use Humbug\Foo;
 
         PHP,
@@ -56,6 +57,7 @@ return [
         class Foo
         {
         }
+
         use Humbug\Foo;
 
         PHP,

@@ -24,7 +24,11 @@ final readonly class StandardPrinter implements Printer
 
     public function print(array $newStmts, array $oldStmts, array $oldTokens): string
     {
-        $printedStatements = $this->decoratedPrinter->prettyPrintFile($newStmts);
+        $printedStatements = $this->decoratedPrinter->printFormatPreserving(
+            $newStmts,
+            $oldStmts,
+            $oldTokens,
+        );
 
         return $printedStatements."\n";
     }

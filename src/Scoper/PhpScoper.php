@@ -66,7 +66,7 @@ final readonly class PhpScoper implements Scoper
 
         return $this->printer->print(
             $scopedStatements,
-            $scopedStatements,
+            $statements,
             $oldTokens,
         );
     }
