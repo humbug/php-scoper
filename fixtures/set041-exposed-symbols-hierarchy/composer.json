@@ -1,0 +1,10 @@
+{
+    "bin": "index.php",
+    "autoload": {
+        "psr-4": {
+            "Set041\\Polyfill\\": "polyfill/",
+            "": "src/"
+        },
+        "classmap": ["stubs"]
+    }
+}

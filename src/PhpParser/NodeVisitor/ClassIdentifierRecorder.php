@@ -26,6 +26,8 @@ use PhpParser\Node\Name\FullyQualified;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\NodeVisitorAbstract;
+use function array_filter;
+use function array_merge;
 
 /**
  * Records the classes that need to be aliased.
@@ -70,10 +72,35 @@ final class ClassIdentifierRecorder extends NodeVisitorAbstract
             $this->symbolsRegistry->recordClass(
                 $resolvedName,
                 FullyQualifiedFactory::concat($this->prefix, $resolvedName),
+                self::getDependencies($parent),
             );
         }
 
         return $node;
+    }
+
+    /**
+     * @return FullyQualified[]
+     */
+    private static function getDependencies(Class_|Interface_ $node): array
+    {
+        return match(true) {
+            $node instanceof Class_ => self::getClassDependencies($node),
+            $node instanceof Interface_ => $node->extends,
+        };
+    }
+
+    private static function getClassDependencies(Class_ $class_): array
+    {
+        $dependencies = [];
+
+        if (null !== $class_->extends) {
+            $dependencies[] = [$class_->extends];
+        }
+
+        $dependencies[] = $class_->implements;
+
+        return [...$dependencies];
     }
 
     private function shouldBeAliased(string $resolvedName): bool

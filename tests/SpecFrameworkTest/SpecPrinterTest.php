@@ -354,8 +354,8 @@ final class SpecPrinterTest extends TestCase
                     ['another_recorded_function', 'Humbug\another_recorded_function'],
                 ],
                 [
-                    ['RecordedClass', 'Humbug\RecordedClass'],
-                    ['AnotherRecordedClass', 'Humbug\AnotherRecordedClass'],
+                    ['RecordedClass', 'Humbug\RecordedClass', []],
+                    ['AnotherRecordedClass', 'Humbug\AnotherRecordedClass', []],
                 ],
             ),
             $actualCode,
