@@ -1,6 +1,7 @@
 build/set032-isolated-finder
 ├── actual-tree
-├── file1.php
-└── file2.php
+└── dir
+    ├── file1.php
+    └── file2.php
 
-1 directory, 3 files
+2 directories, 3 files
